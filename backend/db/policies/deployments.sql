@@ -1,8 +1,13 @@
--- doc 02 §2.1 / §16: select all authenticated; write superadmin/ops_lead only.
+-- GENERATED — do not edit. Regenerate: bash backend/db/scripts/dump_policies.sh
+-- Table: public.deployments
+-- RLS enabled: true
+-- RLS forced: false
+
 create policy deployments_select_authenticated
-  on deployments for select to authenticated using (true);
+  on deployments for select to authenticated
+  using (true);
 
 create policy deployments_write_admin
   on deployments for all to authenticated
-  using (has_admin_role(array['superadmin', 'ops_lead']))
-  with check (has_admin_role(array['superadmin', 'ops_lead']));
+  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text]))
+  with check (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text]));
