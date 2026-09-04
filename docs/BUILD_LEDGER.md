@@ -336,8 +336,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Follow-up: make seed_core ON CONFLICT or drop keys already inserted by migrations 14/17/18 so `supabase db reset` is green.
 
 ## [Phase 1 / P1-A-09] Verification RPCs + OCR + identity hash
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00019 verification RPCs + storage bucket + identity hash; verification-ocr Edge with redaction; TS-VERIF-01 8/8; TS-PRES-03; Deno 7/7.
+- Reviewer verdict: PASS WITH NOTES — all acceptance MET. Notes: driver_verifications SELECT broader than doc 02 §3 (pre-existing); admin_reject untested; defaultOcr mock contains sample digits (never persisted).
+- Rework count: 0
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-E-01] along_core + along_data + realtime/location/notifications skeletons
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T22:08Z
+- Assigned: 2026-09-04T22:13Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
