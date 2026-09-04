@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "lint": "node -e \"process.exit(0)\"",
-    "build": "node -e \"process.exit(0)\"",
+    "build": "node scripts/build.mjs",
     "test": "node -e \"process.exit(0)\""
+  },
+  "devDependencies": {
+    "style-dictionary": "4.3.3"
   }
 }
