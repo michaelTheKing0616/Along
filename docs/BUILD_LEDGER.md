@@ -50,3 +50,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Schema deltas in doc 02 (`drivers.driver_code`, `accepts_digital`, `payments` columns, `rider_payment_methods`, 5 config keys); contracts in doc 03 §7; screens R-27 (upgraded), R-31, R-32, D-25, D-26, W-04, A-11/A-13 additions; tests TS-QR-01..12, TS-UI-06; tasks P4-A-09, P4-B-02, P4-C-02, P4-D-02, P4-E-03; P4-E-02 scope extended.
 - Deferred: NQR (NIBSS) as an additional QR payload — evaluate in Phase 8 once the aggregator path is confirmed; does not change the resolver design.
 **Escalations:** none.
+
+## [Phase 0 / P0-E-01] Bootstrap repo
+- Status: FAIL
+- Assigned: 2026-09-04
+- Worker report summary: Layout, Melos/pnpm/FVM/Supabase, CI skeletons, CODEOWNERS, PR template, ADR-0013 (`eu-west-2`) delivered on `task/p0-e-01` (4 commits). Open questions cleared on rework 1 (region + CODEOWNERS placeholders).
+- Reviewer verdict: FAIL — criterion "CI skeleton green on empty projects" NOT MET: `admin.yml` typecheck fails TS2835 (NodeNext relative imports need `.js` extension) in `admin-console/src/index.test.ts` and `backend/jobs/src/index.test.ts`.
+- Rework count: 2
+- Notes/escalations: CODEOWNERS uses placeholder `@along-ng/*` team slugs — confirm real GitHub org team names when available (non-blocking). Model policy (human): Workers + Reviewers use Cursor models only (`composer-2.5-fast`); never resume a non-Cursor Reviewer session (resume keeps prior model).
