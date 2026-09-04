@@ -5,16 +5,7 @@
 alter table graph_confirmations
   add column if not exists meta jsonb not null default '{}'::jsonb;
 
--- doc 04 §6.2 collusion down-weight (algorithm parameter; seeded at global)
-insert into app_config (key, scope_type, scope_id, value, description)
-values (
-  'promotion.collusion_downweight',
-  'global',
-  '*',
-  '0.25',
-  'Trust-weight multiplier when accounts share a device install id (doc 04 §6.2)'
-)
-on conflict (key, scope_type, scope_id) do nothing;
+-- promotion.collusion_downweight seeded in seed_core.sql (doc 04 §6.2)
 
 -- device install ids for Sybil / collusion detection (doc 04 §6.2, doc 12 §6)
 create table device_installs (
@@ -610,23 +601,6 @@ begin
         where gc.target_type = v_rec.target_type
           and gc.target_id = v_rec.target_id
       ),
-      agreeing as (
-        select c.*
-        from confs c
-        where case v_rec.target_type
-          when 'route_leg' then
-            v_rec.canonical_fare is not null
-            and c.proposed_value ? 'fare'
-            and abs((c.proposed_value->>'fare')::numeric - v_rec.canonical_fare)
-                <= v_tol_pct * v_rec.canonical_fare
-          when 'route_through_fare' then
-            v_rec.canonical_fare is not null
-            and c.proposed_value ? 'fare'
-            and abs((c.proposed_value->>'fare')::numeric - v_rec.canonical_fare)
-                <= v_tol_pct * v_rec.canonical_fare
-          else false
-        end
-      ),
       disagreeing as (
         select c.*
         from confs c
@@ -646,22 +620,17 @@ begin
           end
         )
       )
-      select coalesce(sum(trust_weight), 0) into v_dis_w from disagreeing;
+      select
+        coalesce((select sum(trust_weight) from disagreeing), 0),
+        (select array_agg((c.proposed_value->>'fare')::numeric order by (c.proposed_value->>'fare')::numeric)
+         from confs c where c.proposed_value ? 'fare'),
+        (select array_agg(c.trust_weight order by (c.proposed_value->>'fare')::numeric)
+         from confs c where c.proposed_value ? 'fare'),
+        (select confirmer_profile_id from disagreeing order by trust_weight desc limit 1)
+      into v_dis_w, v_fares, v_weights, v_system_submitter;
 
       if v_dis_w >= v_thresh_w and v_rec.target_type in ('route_leg', 'route_through_fare') then
-        select array_agg((c.proposed_value->>'fare')::numeric order by (c.proposed_value->>'fare')::numeric),
-               array_agg(c.trust_weight order by (c.proposed_value->>'fare')::numeric)
-        into v_fares, v_weights
-        from confs c
-        where c.proposed_value ? 'fare';
-
         v_median := weighted_median_fare(v_fares, v_weights);
-
-        select confirmer_profile_id
-        into v_system_submitter
-        from disagreeing
-        order by trust_weight desc
-        limit 1;
 
         insert into data_sources (source_type, notes)
         values ('admin', 'promotion sustained disagreement')
