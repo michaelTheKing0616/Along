@@ -90,3 +90,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — all three acceptance criteria MET on fresh db reset (13/13 assertions). Notes: local tests via psql (pg_prove in CI); admin_users stub intentional for P0-A-02; db lint not run in review session.
 - Rework count: 2
 - Notes/escalations: Amend doc 09 `\ir` guidance (inline+canonical policies/ accepted interim). CODEOWNERS real team slugs still needed (human).
+
+## [Phase 0 / P0-A-02] Migration 0003 identity
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Full §3 identity DDL; admin_users stub replaced; profiles auto-create; protect_driver_columns; private.identity_hashes; identity_rls 16/16.
+- Reviewer verdict: PASS WITH NOTES — all acceptance MET on fresh reset. Notes: rating_count/women_only_eligible untested in pgTAP (same trigger path); profiles/vehicles column triggers per doc 12 deferred; psql not pg_prove locally.
+- Rework count: 0
+- Notes/escalations: none blocking.
