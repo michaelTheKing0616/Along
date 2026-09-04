@@ -130,3 +130,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: FAIL — (1) fresh `supabase db reset` fails: duplicate `promotion.collusion_downweight` in migration and seed_core; (2) `promote_candidates` sustained-disagreement path references CTE out of scope (db lint).
 - Rework count: 2
 - Notes/escalations: none beyond fix list.
+
+## [Phase 0 / P0-A-05] Promotion pipeline
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 0006; trust weights, confirm_graph_value, promote_candidates, MAD guard, decay_confidence, pg_cron; collusion_downweight in seed_core via cfg; TS-GRAPH-01..05 12/12; reset+CTE fixes on rework.
+- Reviewer verdict: PASS WITH NOTES — prior FAIL fixed on fresh reset; Phase 0 collusion gate MET. Notes: add `promotion.collusion_downweight` to doc 02 §2.3 table (doc drift); unused-var lint warnings; sustained-disagreement path untested.
+- Rework count: 2
+- Notes/escalations: **Human/planner:** amend doc 02 §2.3 to list `promotion.collusion_downweight` default 0.25 (algorithm param from doc 04 §6.2). Autopilot model policy locked: Workers+Reviewers = `composer-2.5-fast` only; never resume non-Cursor Reviewer sessions.
