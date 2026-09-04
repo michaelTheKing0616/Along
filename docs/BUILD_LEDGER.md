@@ -219,3 +219,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — exit criterion MET. Notes: E2E publishes pre-matched row only; graph save untested; import confidence 0.3 literal note; blueprint map/third-scout deferred per scope.
 - Rework count: 1 (open-questions + grants migration)
 - Notes/escalations: none blocking.
+
+## [Phase 0 / P0-E-05] Design tokens + along_design theme
+- Status: FAIL
+- Assigned: 2026-09-04
+- Worker report summary: tokens.json (doc 05 §2 vibrant palette), Style Dictionary → Dart/CSS/Tailwind, along_design theme, stale gate, TS-DS-02 golden claimed PASS.
+- Reviewer verdict: FAIL — TS-DS-02 golden shows missing-glyph box (□) instead of ₦; test passes against wrong baseline. Colour direction MET (high-contrast). Pipeline/stale gate MET.
+- Rework count: 1
+- Notes/escalations: Product-owner colour direction (vibrant/high-contrast) applied via doc 05 §2 values.
