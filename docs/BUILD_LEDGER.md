@@ -310,3 +310,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — 10/10 new assertions. Notes: Na Me same-color deconfliction incomplete vs §16; hardcoded 15m planner TTL; expire_requests untested.
 - Rework count: 0
 - Notes/escalations: none blocking for merge; follow-ups before Phase 3 Na Me UX.
+
+## [Phase 1 / P1-A-06] Edge plan-trip v1 (direct candidates)
+- Status: IN PROGRESS
+- Assigned: 2026-09-04T21:11Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
