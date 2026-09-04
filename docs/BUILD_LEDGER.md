@@ -227,3 +227,12 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS (recheck) — flutter test 3/3; golden visually shows ₦450; check_stale PASS; colours match doc 05 §2 vibrant/high-contrast.
 - Rework count: 1 / 2
 - Notes/escalations: Prior FAIL was Ahem tofu box; fixed in 1d720ae. Style Dictionary collision warnings non-blocking; Inter full files larger than subset ideal. Product-owner colour direction (vibrant/high-contrast, not muted) encoded in tokens.
+
+## [Phase 0 / P0-E-06] Brand assets (SVG logos, icons, splash)
+- Status: IN PROGRESS
+- Assigned: 2026-09-04T15:59Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
+
