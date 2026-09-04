@@ -112,12 +112,18 @@ select ok(
   'TS-PLAN-06: coverage_gap includes nearest_stage'
 );
 
-set local role service_role;
+select set_config(
+  'test.plan06_report_id',
+  (select gap->>'report_id' from gap_result),
+  true
+);
+
+reset role;
 
 select ok(
   exists (
     select 1 from coverage_gap_reports cgr
-    where cgr.id = ((select gap->>'report_id' from gap_result))::uuid
+    where cgr.id = current_setting('test.plan06_report_id')::uuid
   ),
   'TS-PLAN-06: coverage_gap_reports row inserted'
 );
