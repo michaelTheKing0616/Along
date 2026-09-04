@@ -5,7 +5,7 @@ import type { Point } from './types.ts';
 Deno.test('TS-PLAN-05: OSRM down uses fallback and marks degraded', async () => {
   const client = createOsrmClient({
     baseUrl: '',
-    fetchFn: async () => {
+    fetchFn: () => {
       throw new Error('connection refused');
     },
   });

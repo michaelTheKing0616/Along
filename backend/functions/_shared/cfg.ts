@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { PlannerCfg } from '../types.ts';
+import type { PlannerCfg } from './types.ts';
 
 type CfgRow = { key: string; value: unknown };
 

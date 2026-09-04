@@ -58,9 +58,9 @@ select ok(
     ) c
     where c->>'source' = 'parked'
       and c->>'board_stage_id' = '0a040000-0000-4000-8000-000000000001'
-      and c->>'alight_stage_id' = '0a040000-0000-4000-8000-000000000005'
+      and c->>'alight_stage_id' = '0a040000-0000-4000-8000-000000000003'
   ),
-  'TS-PLAN-01: direct parked candidate from Alpha to Beta'
+  'TS-PLAN-01: direct parked candidate from Alpha to Delta (first downstream dest stage)'
 );
 
 select ok(
@@ -111,6 +111,8 @@ select ok(
   (select gap->'nearest_stage' ? 'stage_id' from gap_result),
   'TS-PLAN-06: coverage_gap includes nearest_stage'
 );
+
+set local role service_role;
 
 select ok(
   exists (

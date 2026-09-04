@@ -1,4 +1,4 @@
-import { corsHeaders, errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
+import { corsHeaders, errorResponse, requestId } from '../_shared/http.ts';
 import { handlePlanTrip, planTripRequestSchema } from './handler.ts';
 
 Deno.serve(async (req) => {

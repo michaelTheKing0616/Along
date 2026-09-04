@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { cityForPoint, loadPlannerCfg } from '../_shared/cfg.ts';
 import { fallbackWalkDistanceM, walkSeconds } from '../_shared/geo.ts';
 import { errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
-import { createOsrmClient } from '../_shared/osrm.ts';
+import { createOsrmClient, type OsrmClient } from '../_shared/osrm.ts';
 import {
   applyRanking,
   computeMetrics,
@@ -13,6 +13,7 @@ import { createServiceClient, createUserClient } from '../_shared/supabase.ts';
 import type {
   Fare,
   FareComponent,
+  Metrics,
   ModeRow,
   PlanCandidate,
   PlanCandidateLeg,
@@ -112,16 +113,23 @@ async function loadStages(
   return stageMap;
 }
 
+export type PlanTripDeps = {
+  service?: ReturnType<typeof createServiceClient>;
+  user?: ReturnType<typeof createUserClient>;
+  osrm?: OsrmClient;
+};
+
 export async function handlePlanTrip(
   req: PlanTripRequest,
   authHeader: string,
+  deps?: PlanTripDeps,
 ): Promise<Response> {
   const rid = requestId();
   const started = performance.now();
   let degraded = false;
 
-  const userClient = createUserClient(authHeader);
-  const service = createServiceClient();
+  const userClient = deps?.user ?? createUserClient(authHeader);
+  const service = deps?.service ?? createServiceClient();
 
   const { data: authData, error: authError } = await userClient.auth.getUser();
   if (authError || !authData.user) {
@@ -141,7 +149,7 @@ export async function handlePlanTrip(
   }
 
   const plannerCfg = await loadPlannerCfg(service, cityId);
-  const osrm = createOsrmClient();
+  const osrm = deps?.osrm ?? createOsrmClient();
 
   const { data: rawRows, error: candError } = await service.rpc(
     'planner_direct_candidates_latlng',
@@ -298,7 +306,7 @@ export async function handlePlanTrip(
     };
 
     const walkS = originWalkS + destWalkS;
-    const metrics = computeMetrics({
+    const partial = computeMetrics({
       walkTotalM,
       walkS,
       waitS,
@@ -308,6 +316,11 @@ export async function handlePlanTrip(
       mode,
       cfg: plannerCfg,
     });
+    const metrics: Metrics = {
+      ...partial,
+      recommended_score: 0,
+      explain: { fare: 0, time: 0, strenuous: 0 },
+    };
 
     built.push({
       candidate_id: crypto.randomUUID(),
