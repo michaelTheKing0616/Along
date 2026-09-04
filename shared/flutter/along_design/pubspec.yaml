@@ -21,4 +21,12 @@ flutter:
   fonts:
     - family: Inter
       fonts:
+        # Variable font (wght 100–900); min/max entries enable weight interpolation.
         - asset: assets/fonts/Inter.ttf
+          weight: 100
+        - asset: assets/fonts/Inter.ttf
+          weight: 900
+        # Static ExtraBold (w800) instantiated from the variable master at opsz 32
+        # so display.xl (40px, w800) resolves without variable-axis fallback gaps.
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
