@@ -7,6 +7,7 @@
   },
   "scripts": {
     "supabase": "supabase",
+    "tokens:build": "pnpm --filter @along/design-tokens build",
     "lint": "pnpm -r run lint --if-present",
     "typecheck": "pnpm -r run typecheck --if-present",
     "test": "pnpm -r run test --if-present"

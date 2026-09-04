@@ -35,6 +35,7 @@ coverage/
 .dart_tool/
 .packages
 build/
+!shared/design-tokens/build/
 .flutter-plugins
 .flutter-plugins-dependencies
 *.g.dart.bak
