@@ -328,9 +328,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-A-08] Realtime broadcast + presence-fanout + FCM notify
-- Status: IN PROGRESS
-- Assigned: 2026-09-04T21:37Z
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: none yet.
+- Status: FAIL
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00018 realtime RLS + register_device_token + fanout/notify Edge; TS-DISC-04 5/5; Deno 17/17.
+- Reviewer verdict: FAIL (CI-blocking notes) — seed_core duplicates fanout keys (db reset fails); new require-await deno lint on handlers. Acceptance tests otherwise MET.
+- Rework count: 1
+- Notes/escalations: Rework: remove seed_core duplicate keys; fix require-await lint. Do not seed service_role_key.
