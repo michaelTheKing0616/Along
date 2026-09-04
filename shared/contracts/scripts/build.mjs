@@ -3,8 +3,9 @@
  * Contract codegen (P1-A-02, ADR-0016).
  * Generates committed TS + Dart types from openapi.yaml and schemas/rpc/*.json.
  */
-import { cpSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';

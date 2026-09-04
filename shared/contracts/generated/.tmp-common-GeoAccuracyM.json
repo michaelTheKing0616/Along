@@ -1,8 +1,0 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "GeoAccuracyM",
-  "type": "number",
-  "minimum": 0,
-  "maximum": 500,
-  "description": "Rejected when > 500 m (doc 03 §0)."
-}
