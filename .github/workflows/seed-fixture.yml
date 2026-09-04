@@ -18,5 +18,8 @@ jobs:
       - name: Start Supabase local stack
         run: supabase start
 
-      - name: Seed fixture placeholder (P0-E-04)
-        run: echo "seed_testcity_fixture not yet implemented — skeleton passes"
+      - name: Apply migrations on fresh DB
+        run: supabase db reset --yes
+
+      - name: Seed fixture and TS-CFG scenarios
+        run: bash backend/db/scripts/check_seed_fixture.sh
