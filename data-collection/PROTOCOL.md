@@ -41,9 +41,11 @@ Form: `forms/along_route_v1.xlsx` (`along_route_v1`).
 
 ## Before fieldwork
 
+**Phase 0:** `export:choices` is **manual pre-fieldwork only** — run it against the target environment DB before each deployment cycle. There is no CI job for choice export in Phase 0.
+
 1. Run `pnpm --filter @along/data-collection export:choices` against the target environment DB.
 2. Run `pnpm --filter @along/data-collection build:forms` to refresh XLSForms with current corridor/park/mode ids.
-3. Deploy forms to ODK Central or Kobo; verify `scout_id` hidden/default matches each scout's `profiles.id`.
+3. Deploy forms to ODK Central or Kobo; each scout enters their own `scout_id` (visible field) matching their `profiles.id`.
 
 ## After field day
 
