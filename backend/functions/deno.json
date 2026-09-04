@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["deno.window"],
+    "lib": ["deno.window", "deno.unstable"],
     "noImplicitAny": true
+  },
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.49.1",
+    "zod": "npm:zod@3.24.2"
   },
   "lint": {
     "rules": {
@@ -20,6 +24,6 @@
   },
   "tasks": {
     "lint": "deno lint",
-    "test": "deno test --allow-env --allow-read"
+    "test": "deno test --allow-env --allow-read --allow-net"
   }
 }
