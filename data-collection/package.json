@@ -1,0 +1,21 @@
+{
+  "name": "@along/data-collection",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build:forms": "node --experimental-strip-types scripts/build_forms.ts",
+    "export:choices": "node --experimental-strip-types scripts/export_choices.ts",
+    "ingest": "node --experimental-strip-types scripts/ingest.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.29",
+    "typescript": "5.8.3",
+    "vitest": "3.2.1"
+  }
+}

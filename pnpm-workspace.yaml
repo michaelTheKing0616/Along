@@ -2,5 +2,6 @@ packages:
   - backend/functions
   - backend/jobs
   - admin-console
+  - data-collection
   - shared/contracts
   - shared/design-tokens
