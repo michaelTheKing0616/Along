@@ -352,9 +352,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-E-02] along_map MapLibre + along-light + PMTiles
-- Status: IN PROGRESS
-- Assigned: 2026-09-04T22:37Z
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: AlongMap + along-light overlays from tokens; 127 B Abuja fixture + offline cache tests; build_tiles.sh; MapPanBenchmark (device skipped in CI); ADR-0018 maplibre_gl 0.22.0.
+- Reviewer verdict: PASS WITH NOTES — flutter test 11 pass / 1 skip. Notes: no Tecno Spark 8C 60 fps run yet; fixture is structural stub; sprites/glyphs CDN; heading ticks missing.
 - Rework count: 0
-- Notes/escalations: none yet.
+- Notes/escalations: Hardware 60 fps before Phase 1 exit. Tiles-only offline sufficient for MVP.
