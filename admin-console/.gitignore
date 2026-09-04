@@ -1,0 +1,8 @@
+.env.local
+.env.local
+.tools/
+.playwright-browsers/
+e2e/.auth/
+test-results/
+playwright-report/
+tsconfig.tsbuildinfo

@@ -9,5 +9,5 @@
     "declaration": true,
     "rootDir": "."
   },
-  "include": ["field-ingestion.ts", "index.ts"]
+  "include": ["field-ingestion.ts", "index.ts", "db.types.ts"]
 }

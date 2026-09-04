@@ -7,13 +7,32 @@
     "node": ">=22.0.0"
   },
   "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:setup": "node --experimental-strip-types e2e/run-global-setup.ts",
+    "test:e2e:install": "playwright install chromium"
+  },
+  "dependencies": {
+    "@along/contracts": "workspace:*",
+    "@supabase/ssr": "0.6.1",
+    "@supabase/supabase-js": "2.49.8",
+    "next": "15.1.12",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.52.0",
     "@types/node": "22.15.29",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
     "eslint": "9.28.0",
+    "eslint-config-next": "15.1.12",
+    "otplib": "12.0.1",
     "typescript": "5.8.3",
     "typescript-eslint": "8.33.0",
     "vitest": "3.2.1"
