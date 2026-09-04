@@ -320,8 +320,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-A-07] Edge places-search + walking-directions
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00017 places_search_graph + places.* cfg; places-search (parks-first) + walking-directions (OSRM foot + degrade); routing compose + stub scripts; Deno 12/12.
+- Reviewer verdict: PASS WITH NOTES — parks-first test PASS; lint clean on changed files. Notes: routing stub path typo; Photon-degrade untested; places.* keys not in doc 02 §2.3 (planner follow-up).
+- Rework count: 0
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-A-08] Realtime broadcast + presence-fanout + FCM notify
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T21:30Z
+- Assigned: 2026-09-04T21:37Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
