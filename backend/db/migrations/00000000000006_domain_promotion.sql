@@ -5,6 +5,17 @@
 alter table graph_confirmations
   add column if not exists meta jsonb not null default '{}'::jsonb;
 
+-- doc 04 §6.2 collusion down-weight (algorithm parameter; seeded at global)
+insert into app_config (key, scope_type, scope_id, value, description)
+values (
+  'promotion.collusion_downweight',
+  'global',
+  '*',
+  '0.25',
+  'Trust-weight multiplier when accounts share a device install id (doc 04 §6.2)'
+)
+on conflict (key, scope_type, scope_id) do nothing;
+
 -- device install ids for Sybil / collusion detection (doc 04 §6.2, doc 12 §6)
 create table device_installs (
   profile_id uuid not null references profiles(id) on delete cascade,
@@ -153,8 +164,12 @@ begin
 end;
 $$;
 
--- Shared install id → collusion down-weight factor 0.25 (doc 04 §6.2)
-create or replace function fingerprint_collusion_factor(p_profile_id uuid)
+-- Shared install id → collusion down-weight via cfg (doc 04 §6.2)
+drop function if exists fingerprint_collusion_factor(uuid);
+create or replace function fingerprint_collusion_factor(
+  p_profile_id uuid,
+  p_city_id uuid default null
+)
 returns numeric
 language sql
 stable
@@ -169,7 +184,7 @@ as $$
         on di_other.install_id = di_self.install_id
        and di_other.profile_id <> di_self.profile_id
       where di_self.profile_id = p_profile_id
-    ) then 0.25
+    ) then cfg_num('promotion.collusion_downweight', p_city_id)
     else 1.0
   end;
 $$;
@@ -344,7 +359,7 @@ begin
   v_city_id := graph_target_city_id(p_target_type, p_target_id);
 
   v_base_weight := confirmer_trust_weight(p_confirmer_profile_id, v_role, v_city_id);
-  v_collusion := fingerprint_collusion_factor(p_confirmer_profile_id);
+  v_collusion := fingerprint_collusion_factor(p_confirmer_profile_id, v_city_id);
 
   if v_collusion < 1.0 then
     v_meta := v_meta || jsonb_build_object('collusion_downweight', true, 'collusion_factor', v_collusion);

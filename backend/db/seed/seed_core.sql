@@ -69,6 +69,7 @@ insert into app_config (key, scope_type, scope_id, value) values
   ('promotion.outlier_mad_k', 'global', '*', '3.0'),
   ('promotion.decay_window_days', 'global', '*', '90'),
   ('promotion.decay_step', 'global', '*', '0.15'),
+  ('promotion.collusion_downweight', 'global', '*', '0.25'),
   ('trust.rider_base', 'global', '*', '0.2'),
   ('trust.rider_per_trip', 'global', '*', '0.05'),
   ('trust.rider_cap', 'global', '*', '1.0'),
