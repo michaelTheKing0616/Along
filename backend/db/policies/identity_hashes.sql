@@ -1,0 +1,2 @@
+-- private.identity_hashes: RLS enabled, no client policies; service role only.
+-- Schema-level revoke in 0001; table-level revoke in 0003 migration.
