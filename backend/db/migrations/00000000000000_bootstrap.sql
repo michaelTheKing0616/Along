@@ -1,0 +1,2 @@
+-- Bootstrap placeholder migration (P0-E-01).
+-- Real schema begins in P0-A-01 (extensions, geo & config).

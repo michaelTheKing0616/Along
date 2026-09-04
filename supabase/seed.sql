@@ -1,0 +1,2 @@
+-- Local seed entrypoint (see backend/db/seed/ for bounded-context seeds).
+-- Full seed scripts land in P0-A-01 / P0-E-04.
