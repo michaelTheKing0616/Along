@@ -1,0 +1,686 @@
+ALONG
+STRUCTURING NIGERIA'S SHARED-TAXI ECONOMY
+A Business Plan for a Nigeria-first shared public transport platform
+Prepared for: Temitope
+Pilot market: Abuja (FCT), Nigeria
+August 2026
+CONFIDENTIAL — Prepared for internal planning and investor discussion purposes.
+
+1. Executive Summary
+Along is a mobile platform that digitizes Nigeria's existing informal shared-taxi economy — known in Abuja as “along” taxis, and by related names (kabu-kabu, danfo, keke) elsewhere in the country. Rather than building a new fleet from scratch, Along makes the transport system that already moves the majority of Nigerian commuters every day discoverable, trackable, priced transparently, and safe.
+Today, a commuter in Abuja who needs to travel across the city has no reliable way to know which junction to stand at, which vehicles go where, what the correct fare is, or how long the trip will take. This information exists — it lives in the heads of drivers, park touts, and long-time residents — but it is not written down anywhere. Along's core product is the digitization of that knowledge into a live, searchable, navigable transport graph, delivered through a simple mobile app for both riders and drivers.
+The offer
+	•	For riders: enter a destination and instantly see route options across multiple shared-transport modes — car/along taxi, keke, okada, minibus — each with its fare, nearest boarding point, and estimated time, which the rider can accept, decline, or swap for an alternative; then live tracking and turn-by-turn directions throughout the trip, including any transfers.
+	•	For drivers and keke/okada/vehicle owners: a channel to fill empty seats faster, be found by nearby riders, receive fair digital fare records, and (over time) access earnings tools, fuel-efficient routing, and safety support.
+	•	For government and city planners: anonymized origin-destination demand data that does not exist anywhere today, useful for transport policy and infrastructure planning.
+Along owns no vehicles. Every trip runs on an existing car, keke, okada, or minibus already operating in that market — Along is the discovery, routing, and trust layer on top of infrastructure that already exists, which is also what makes state-by-state and eventually cross-border expansion realistic without a capital-intensive fleet rollout (Section 3.3).
+Why now
+	•	Nigeria's ride-hailing and urban mobility market is valued in the hundreds of millions of dollars and growing at double-digit rates, but it remains a small, premium slice of how Nigerians actually move — the vast majority still rely on informal shared transport that no digital platform currently organizes.
+	•	Smartphone and mobile-money penetration have reached a level where a lightweight, low-data app is now realistic to deploy at mass-market scale in Nigerian cities.
+	•	A federal Ride-Hailing and Smart Mobility Bill is moving through the National Assembly, signalling that regulators are actively shaping this space — an opportunity for Along to help define fair rules for shared/informal transport rather than be defined by rules built for private-hire ride-hailing.
+	•	Abuja's own transport authorities and residents openly describe the city's public transport as unstructured and costly in time and money — a validated, acute local problem in Along's home market.
+The ask
+Along is seeking seed funding to fund a 6-9 month data-collection and MVP build in Abuja, followed by a single-corridor pilot, before scaling city-wide, then nationally across Nigeria, and eventually to other African countries with comparable informal shared-transport systems. Full detail is provided in Section 15 (Funding Ask & Use of Funds).
+
+2. The Problem
+2.1 Nigeria's cities move on informal transport that nobody has organized
+Across Nigerian cities, the majority of daily trips happen on minibuses, shared taxis, tricycles (keke), and motorcycle taxis (okada) operated independently or in loose park/union structures — not on any formal, scheduled transit system. In many Nigerian cities of significant size, motorcycle taxis alone carry the bulk of intra-city trips because no other option reaches those routes.
+Abuja, the Federal Capital Territory, is a clear example. Despite being the nation's capital and one of its fastest-growing cities, the FCT (population estimated at roughly 4.3 million) has no comprehensive, structured mass-transit network. Residents depend on an informal mix of minibuses, shared taxis (“along”), tricycles, and increasingly, privately-owned cars converted into informal taxis (“kabu-kabu”) — often driven by residents, including a growing number of women, supplementing household income against a difficult economic backdrop.
+Local reporting describes workers spending up to half of their income on commuting, and residents turning to informal carpooling out of necessity rather than convenience. Premium ride-hailing (Uber, Bolt, inDrive) exists in Abuja but is priced out of reach for the majority of daily commuters, particularly as fuel costs and fares have risen sharply.
+2.2 The specific gap Along addresses
+The problem is not a lack of vehicles or drivers — Nigerian cities have an abundance of both. The problem is information and coordination:
+	•	Riders do not know which junction/park to go to for a given destination, whether a direct route exists, what a fair price is, or how long the trip should take — this knowledge is informal, local, and undocumented.
+	•	Riders frequently must guess, ask strangers, or rely on word of mouth, and are vulnerable to being overcharged, especially non-regular travelers, women traveling alone, and out-of-towners.
+	•	Drivers waste time and fuel searching for passengers headed their way, and have no visibility into unmet demand elsewhere in the city.
+	•	There is no live tracking, no trip record, and no safety net if something goes wrong on a shared-taxi trip — a meaningful concern, particularly for women commuters, and one that has driven real safety incidents on existing ride-hailing apps as well.
+	•	No commercial map or ride-hailing app in Nigeria today models the informal shared-taxi network as a routable, fare-priced, multi-leg transit system. Google Maps and equivalent platforms route private/driving journeys well, and a small number of scheduled corporate bus operators (see Section 6) have digitized their own fixed-route fleets — but nobody has digitized the informal, driver-owned network that most Nigerians actually use every day.
+2.3 Who feels this problem most
+	•	Daily commuters (students, junior civil servants, traders, service workers) for whom ride-hailing is unaffordable but informal transport is unpredictable and time-consuming.
+	•	Newcomers to a city (new residents, visitors, NYSC corps members, students) who do not yet have the local knowledge of routes and parks that long-time residents build up over years.
+	•	Women and other riders with heightened safety concerns who currently have limited visibility, tracking, or recourse on shared-taxi trips.
+	•	Drivers/vehicle owners, including the growing population of Nigerians turning private vehicles into part-time taxis, who have no digital tool to find riders efficiently or build a track record.
+
+3. The Solution — Along
+Along is a two-sided mobile marketplace — a rider app and a driver app — built on top of a proprietary, crowdsourced map of Nigeria's informal shared-transport network: its parks, junctions, standard routes, and standard fares. Along does not own a fleet. It organizes the existing one.
+3.1 Two discovery modes: parked and roaming
+Not every along-registered driver operates from a fixed park. A large share of real-world “along” and kabu-kabu activity happens on the move — a driver slows for someone standing by the roadside, or a car already carrying passengers picks up one more along the way. Along is designed around both patterns from the outset, not just the park-based one:
+	•	Parked/at-park: a driver stationed at a known park, feeding the along-graph route/fare data described in Section 5.2, as covered in Section 3.2.
+	•	Roaming/on-route: a driver actively driving, not stationed anywhere, who opts in to broadcast a live position, seats available, and (optionally) a declared direction or destination. Nearby riders see these vehicles as live pins on their map, alongside parked options — filtered by whether the vehicle's direction plausibly serves the rider's destination, not shown as raw undirected proximity.
+	•	A rider can hail a roaming vehicle directly from the live map; the driver can accept or decline, mirroring the same accept/decline pattern used for route options in Section 3.2.
+	•	Roaming broadcast is strictly opt-in and only active while a driver has marked themselves available — it is a live availability signal, never passive background tracking of a driver's location.
+3.1.1 Why exact positions unlock only after you commit
+Showing a rider exactly where a specific nearby vehicle is, and showing a driver exactly where a specific nearby rider is, before either has actually committed to the other, would create two problems at once: it lets both sides simply coordinate a pickup directly and skip the app entirely once they've found each other through it, and it broadcasts a driver's or rider's precise live location to anyone browsing the app, whether or not they end up being matched — a real privacy and safety concern on its own, independent of the business question.
+Along solves both with the same mechanism, used by Uber and Bolt for the same reason: before a request is made, a rider sees only that some number of vehicles are operating nearby and roughly which way they're heading — enough to know it's worth waiting, not enough to identify or walk up to a specific car. The instant a one-tap request is made or accepted, the exact vehicle, its plate, and its live position become visible, and stay visible for the rest of that trip. Nothing about this adds a step to booking a ride — the one-tap action a rider or driver was already going to take is what unlocks the detail, so there is no extra friction, only a boundary on what's visible before that tap happens.
+3.2 How a trip works — multi-modal by design
+Along's trip planner does not assume one vehicle type. A single destination search can return several route options across different modes — a shared car/along taxi, a keke (tricycle), an okada (motorcycle), a minibus, or a combination requiring a transfer between modes — each shown with its own fare, boarding point, and estimated time. Rather than presenting a single “best” guess, the planner returns the full set of viable options and lets the rider sort or filter them by what matters most to that trip: cheapest, fastest, or least strenuous (fewest transfers and least walking) — see Section 3.2.2.
+	•	A rider opens the app and enters (or selects) a destination.
+	•	Along's trip planner checks all shared-transport modes available near the rider and along the route — both parked options from known parks and any live roaming vehicles heading the right direction — and returns the full set of viable route options, including multi-leg journeys via known transfer parks (the same decomposition logic transit-routing apps use for bus-and-train journeys, applied here across informal modes).
+	•	The rider sorts or filters these options — cheapest, fastest, least strenuous, or a balanced recommended default — and for each option sees the mode, fare, nearest boarding point or live pickup point, walking directions to it, an estimate of vehicle/seat availability, and total estimated trip time.
+	•	The rider can accept an option, decline it, or request an alternative (e.g., a cheaper keke leg instead of a car leg, or a roaming vehicle instead of walking to a park) before committing.
+	•	Once the rider boards (self-confirmed, or confirmed by the driver via the driver app), live GPS tracking begins. The rider's app shows live position, ETA, and any upcoming transfer points, including a mode change if the route involves one.
+	•	At trip end, the rider can rate the trip, flag a fare discrepancy, and — where the driver has opted into digital payment — pay via the app instead of cash.
+3.2.1 Never breaking a trip that doesn't need to be broken
+If a driver is already going directly to exactly where a rider wants to go, Along treats that as the right answer and looks for it explicitly — it does not settle for a transfer-based itinerary through an intermediate stop just because that was easier to construct. The planner always checks for a genuinely available direct match — whether that's a driver parked at a nearby park, a roaming vehicle already heading that way, or a driver who has set up their own route (Section 4.4) covering that destination — before it relies on a multi-leg alternative, and a real, reasonably-timed direct option always wins the default recommendation over a multi-leg one to the same place.
+This only applies when the direct option is genuinely reasonable, not merely technical — a direct driver who is 90 minutes away should not out-rank a multi-leg trip that gets the rider there in 20. Within a sensible distance, though, Along's default answer is always the simplest one that actually works, and only builds a transfer plan when no direct option genuinely exists.
+3.2.2 Sorting and filtering trip options
+Because a single destination search can return several genuinely different ways to make the same trip, Along lets the rider choose the criterion that matters to them rather than imposing one definition of “best” route:
+	•	Cheapest — ranks by total fare across all legs of the trip.
+	•	Fastest / most time-efficient — ranks by total estimated trip time, including wait time at boarding points and any transfer time, not just in-vehicle time.
+	•	Least strenuous — ranks by a combination of fewest transfers, least total walking distance, and preferred/more comfortable modes, so a rider with luggage, mobility needs, or simply a preference for comfort over cost can choose accordingly.
+	•	Recommended (default) — a balanced view weighing cost, time, and effort together, for a rider who has no strong preference either way.
+This is a presentation-layer capability over the same underlying set of route options the planner already computes — the planner is required to surface the full viable candidate set with cost, time, and effort metrics attached, rather than internally collapsing to one “best” route and discarding the rest (see the companion engineering build specification for the technical detail behind this).
+3.2.3 Fair pricing for mid-route boarding
+In practice, drivers on a fixed route rarely charge a single flat fare regardless of where a passenger boards — the price is usually reduced the further along the route the pickup happens, reflecting the shorter remaining distance. Along models this directly rather than forcing every route into a single origin-to-destination price: each route is represented as a sequence of recognized stops (“stages”) along the corridor — the same junctions and landmarks drivers and passengers already use informally — with a known fare between stages. A rider's fare is always calculated from their actual boarding stage to their actual alighting stage, not from the route's official starting point, using the best available data: a known price for that exact combination where one exists, otherwise the sum of the known segment prices between those two stages, and only as a last resort a flagged, unconfirmed estimate that both rider and driver agree to before the trip and that feeds back into the along-graph's correction pipeline (Section 5.2.1).
+This also strengthens fare-cap protection for mid-route boarders specifically — a rider who joins partway along a route is a common target for being quoted the full-route price, and correct stage-based pricing is what makes Along's overcharge alert (Section 4.1) meaningful for that rider rather than only for someone boarding at the official start of the route.
+3.3 Asset-light by design — a core operating principle
+Along will not own or lease any vehicles — no cars, kekes, okadas, or buses. Every vehicle on the platform belongs to and is operated by an independent driver or existing informal-transport operator using Nigeria's (and eventually other African countries') already-existing public transport infrastructure. Along's product is the discovery, routing, pricing, and safety layer on top of that infrastructure, not a fleet. This keeps capital requirements low, lets the platform scale to a new state or country largely as a data and driver-onboarding exercise rather than a fleet-procurement one, and avoids taking on vehicle-maintenance, insurance, and depreciation risk directly.
+3.4 What makes this different from Uber/Bolt/inDrive
+Along is not a private-hire competitor to Uber and Bolt — it targets the much larger, much cheaper shared-transport layer beneath them, and it is multi-modal by default rather than car-only. A rider does not get a dedicated car; they get help finding and choosing among the shared vehicles already running that route — car, keke, or okada — at the fare that route already charges, with the added value of visibility, choice, safety, and time savings.
+3.5 What makes this different from Shuttlers
+Shuttlers (the closest existing Nigerian precedent) operates a managed fleet of branded buses on fixed, pre-scheduled corporate routes, and has recently begun surfacing those scheduled routes inside Google Maps Transit. It is a strong model, but it is asset-heavy (Shuttlers owns/manages its buses), single-mode, and schedule-based, aimed primarily at corporate commuters. Along is asset-light and multi-modal by design: it organizes the far larger population of independent, driver-owned shared taxis, minibuses, kekes, and okadas that operate on demand rather than on a fixed schedule, and is aimed at the mass-market daily commuter, not primarily the corporate segment.
+
+4. Product & Feature Set
+4.1 Rider app — core features (MVP)
+	•	Destination search with route, fare, and boarding-point results
+	•	Live map showing nearby along-registered vehicles — both parked (at known parks) and roaming (on the road, opted-in) — filtered to those whose direction plausibly serves the rider's destination
+	•	Multi-modal route options (car/along taxi, keke, okada, minibus) shown side by side, with the rider able to accept, decline, or request an alternative mode or vehicle before committing to a trip
+	•	Sort/filter trip options by cheapest, fastest, or least strenuous (fewest transfers and least walking), plus a balanced recommended default
+	•	Multi-leg / transfer trip planning, including transfers between modes
+	•	Walking directions to the nearest boarding point, or live directions to a roaming vehicle's current position
+	•	Live GPS tracking and ETA during the trip
+	•	Fare transparency (standard fare shown before boarding, with a rider-facing fare cap/alert if a driver requests significantly more)
+	•	Trip history and receipts
+	•	Two-way ratings
+4.2 Rider app — differentiating features (post-MVP)
+	•	Live seat/vehicle availability indicator at nearby parks (“3 cars currently loading for Wuse”)
+	•	Trip-sharing with a trusted contact and an in-app SOS button routed to a monitored response line
+	•	Women-only vehicle/route option
+	•	Saved sort preference (e.g., always default to cheapest) and an accessibility-aware mode that weights least-strenuous options more heavily for riders who set it
+	•	Extend an in-progress trip to a further destination with a single tap, at an automatically recalculated fare, instead of negotiating a price on the spot (Section 10.4.7)
+	•	Scheduled/regular-commute matching for repeat trips (e.g., daily work commute)
+	•	Community hazard reporting: flooding, road closures, checkpoints, protests
+	•	Multi-modal integration with the Abuja Metro light rail and, longer-term, Lagos's Blue/Red rail lines and BRT networks
+	•	Offline-friendly / low-data mode with cached routes for previously traveled corridors, and a lightweight fallback flow for low-end devices
+	•	In-app cashless payment (bank transfer/USSD/wallet) alongside cash, which remains the default
+4.3 Driver app — core features (MVP)
+	•	Discoverability: appear to nearby riders searching for a route the driver runs
+	•	Availability toggle between “at park” (feeds the along-graph) and “roaming — available” (opt-in live position and seat count broadcast to nearby riders while actively driving)
+	•	Digital passenger manifest per trip (who is on board, for safety and accountability)
+	•	Simple onboarding: NIN, driver's license, vehicle particulars, verification
+	•	Ability to mark a vehicle as loading/available at a given park
+4.4 Driver route & fare setup — a few taps, full control
+Drivers, not Along, know their own route and how they price it — including the common real-world pattern where the fare drops the further along the route a passenger boards. Along lets a driver set this up directly, in as few taps as possible, and surfaces exactly what they set to riders.
+	•	Known-route fast path: if a driver's usual corridor is already in Along's map (a very common case once a corridor has any coverage), setup is a single tap — confirm “yes, this is my route” — with sensible default prices pre-filled from existing data, ready to adjust.
+	•	New-route path: a driver taps their stops directly on the map as they'd describe them out loud — “I start here, next stop is here, then here” — with each tap either matching an already-known stop (one-tap confirm) or creating a new one.
+	•	Pricing each stop is a single number — what it costs from that stop to the end of the route — pre-filled with a sensible suggested price the driver can accept with one tap or adjust. The driver never has to price every possible combination of stops themselves.
+	•	A single “Publish” tap makes the route live immediately — no review screen, no waiting.
+	•	Along then automatically works out the fare for a rider boarding anywhere along that route: between any two of a driver's stops, the fare is simply the difference between what each stop costs to the end — so a rider joining partway is charged correctly without the driver having to think about it.
+	•	Editing later uses the exact same map view — drag a stop, tap a price to change it — never a separate settings flow.
+4.5 Driver app — differentiating features (post-MVP)
+	•	Earnings dashboard and trip history
+	•	Route and demand insights (where riders are searching for trips the driver could serve)
+	•	Fuel-efficient routing suggestions
+	•	Access to Along's driver support line and, over time, optional micro-insurance and vehicle-financing partnerships
+4.6 Designed for speed — the one-tap principle
+Along trips are fast, spontaneous, and often happen mid-motion — a rider flagging a passing vehicle, a driver deciding in seconds whether to take on one more passenger. An app that asks for forms, typing, or multi-step confirmation in that moment will simply not get used, however good the underlying routing and pricing is. Every rider- and driver-facing interaction is therefore designed around a single governing constraint: the fewest possible taps, with typing avoided wherever a tap-based choice can substitute for it.
+	•	Accepting, declining, or requesting an alternative route or vehicle (Section 3.2) is a single tap in every case, with the alternative already computed and ready to show, not fetched on demand after the tap.
+	•	The driver's availability toggle between “at park,” “roaming — available,” and offline (Section 3.1) is a single switch, not a form.
+	•	Boarding is detected automatically from the same rider-driver GPS co-location signal built for commission-integrity verification (Section 10.4.6) — a rider does not need to tap “I've boarded” for a trip to begin tracking; a manual one-tap override remains available for the cases where GPS convergence is ambiguous (e.g., dense indoor pickup points).
+	•	Post-trip fare confirmation defaults to a single tap confirming the system's best estimate of what was paid, with a quick tap-to-adjust among two or three likely alternatives — never a blank field requiring the rider or driver to type an amount from scratch (this is also what makes the cost-reduction approach in Section 5.2.3 realistic, not just convenient).
+	•	SOS is a single press-and-hold action reachable from anywhere in the active-trip screen, never nested in a menu.
+This is a governing design constraint for every phase of the build, not a single feature — the companion engineering build specification treats it as a standing requirement checked on every task, not a one-time UI pass.
+4.7 Admin / operations console
+	•	Route, park, and fare-graph management and correction tools
+	•	Driver and vehicle verification queue
+	•	Incident and SOS monitoring dashboard
+	•	Corridor-level analytics: demand, fulfillment, average wait time, fare-discrepancy reports
+4.8 Future/expansion features
+	•	Corporate/B2B accounts for organizations coordinating staff transport on structured routes
+	•	Anonymized origin-destination data products for state transport authorities and urban planners (B2G)
+	•	Loyalty and rewards program for frequent riders
+	•	Per-trip micro-insurance
+	•	In-app advertising placements (banks, telcos, FMCG brands) reaching a high-frequency, mass-market commuter audience
+4.9 On-the-road identification — “Na Me”
+Matching two people digitally doesn't always resolve the confusion of actually finding each other on a busy street — several people converging on one car, or a rider unsure which of a few similar-looking vehicles is theirs. “Na Me” gives both sides a simple, visual, unmistakable way to identify each other, with no argument required.
+	•	The moment a rider and driver are matched, both apps are quietly given a shared identifier — a color and a shape, like “Green Diamond” — shown on both screens for the rest of the pickup.
+	•	A single “Na Me” button makes it unmistakable: the screen flashes that colour in a fast, highly visible pattern, the phone vibrates, and — on phones that support it — the camera flash strobes and a short sound or spoken line plays.
+	•	The other person's screen points them straight to it, using the same live-location technology already tracking the match.
+	•	If two people near a car both insist they booked it, this settles it in seconds: check whose phone is showing the matching colour.
+	•	It works even with no signal at the moment it's needed — the colour/shape pairing is delivered to both phones the instant they're matched, while both are still online, so pressing the button itself needs nothing more than the phone already has in hand.
+	•	The core version (colour, flash, vibration) works on virtually any phone; sound and camera-flash are automatic bonuses on phones that support them, never a requirement.
+4.10 Plan your whole day, not just one trip
+For a rider running several errands — drop the kids at school, get to work, stop at the market, get home — Along can hold the whole day's plan, not just the next ride. A rider lays out their stops once, in any order, and Along handles the parts that normally cause the most stress: knowing where to go next, how long to expect to wait, and whether anything is even coming.
+	•	Enter some or all of the day's stops up front, or add the next one as the day goes — either way works.
+	•	As each stop finishes, Along already has the next leg worked out and ready — usually a single tap to set it in motion, the same accept/decline the rider already knows from every other trip.
+	•	A simple view of the whole day shows what's done, what's happening now, and what's next — always one tap away from reordering or changing plans, since plans change.
+	•	This is not a reservation system — Along can't promise a specific driver hours ahead any more than the informal system it's built on can, since availability is genuinely live. What it removes is the rider having to figure out and search for each next step themselves; the moment-to-moment decision-making, not the real-time nature of the ride itself.
+4.11 Getting to the boarding point: text, map, or voice
+Walking to a park-based boarding point deserves the same care as the ride itself, in whichever format actually suits the rider in the moment:
+	•	Text directions — a simple step-by-step list. Works on any phone, uses almost no data, and is always available as the baseline.
+	•	Map directions — the route drawn on Along's live map, for a quick visual sense of where to go.
+	•	Voice directions — spoken turn-by-turn guidance for hands-full moments, or simply a rider's preference — and a genuine accessibility benefit for anyone who finds a map harder to follow than a spoken instruction.
+	•	Set once as a preference, not asked every single time — consistent with Along's one-tap philosophy (Section 4.6).
+	•	The same guidance system serves every walk to a boarding point across the app — an ordinary trip, a stop in the day planner (Section 4.10), or the nearest known option when a rider is somewhere Along doesn't have full coverage yet (Section 5.2.4).
+4.12 Along Pricing — faster, smarter negotiation for the routes Along doesn't know yet
+For the small share of trips where Along genuinely has no fare data — a stop nobody has mapped or declared yet — Along offers a negotiation feature researched directly against inDrive's own model, the closest real-world precedent (used on roughly three-quarters of trips in comparable emerging markets, according to independent research published with inDrive in January 2026). inDrive's version works well for a ride booked ahead of time: a rider names a price, it's broadcast to nearby drivers, and the rider waits and picks from whichever offers come back. That doesn't fit the moment Along is built for — a rider standing at the roadside as a specific vehicle is already passing, with seconds to decide, not minutes to wait for offers to trickle in.
+	•	Anchored, not a blind guess. Along already has real fare data for most of the network, so instead of asking a rider to name a number from nothing, Along shows its best estimate first and frames negotiation as a small adjustment around it — faster to agree on, and far less prone to wildly mismatched opening offers than a blind bid.
+	•	One-on-one with a vehicle already in view, not a broadcast to strangers. Negotiation attaches to a specific driver a rider can already see — on the live map or at a park — not an anonymous pool of offers to sift through.
+	•	A handful of one-tap buttons, not a keyboard. Quick preset adjustments up or down from the estimate, built for a thumb, not a typed number — fast enough to use while a car is slowing down.
+	•	A visible countdown and a short cap on how many rounds it can go — if it doesn't resolve quickly, Along offers a single one-tap “split the difference” rather than letting the back-and-forth drag on.
+	•	Every agreed price makes Along smarter for the next rider on that same stretch — something inDrive's model has no way to do, since each of its negotiations is a one-off with nothing underneath it. Along's negotiated prices feed directly into the same map-improvement pipeline as every other correction (Section 5.2.3), so a route that needs negotiating today needs it less and less over time.
+	•	Kept strictly to where it belongs: a route or stop Along already has real data for is shown at its standard, transparent fare — never up for negotiation. Haggling exists to fill a genuine gap in the map, not to replace the fare transparency the rest of the app is built around.
+4.12.1 A parked driver and a passing driver need different rules
+Haggling fits naturally at a park — a driver waiting there isn't going anywhere, and bargaining before boarding is already the local norm, so the fuller back-and-forth described above applies cleanly. A roaming vehicle is a different physical situation entirely: it will simply drive past within seconds if it doesn't stop, so a negotiation window has to reflect how much time is actually left, not a fixed countdown. Along handles this by tying the negotiation to the vehicle's own live arrival estimate, which the app already tracks for the live map:
+	•	If the vehicle is essentially already there, there's no real time to haggle — Along shows its best estimate with a single accept-or-skip choice, rather than pretending there's room for back-and-forth that doesn't exist.
+	•	If it's a little further out, Along allows exactly one counter-offer — enough for a quick adjustment without holding up a vehicle that's genuinely en route.
+	•	If it's still a couple of minutes away, the fuller multi-round exchange is available, since there's real time for it.
+	•	If a deal is struck but the vehicle has since moved past a sensible pickup distance before it's finalized, the negotiation simply lapses — an agreed price for a car that's already gone helps no one.
+	•	This only ever applies to a roaming vehicle with no set route of its own; one running a driver-declared route (Section 4.4) already has a standard, transparent fare and skips negotiation entirely.
+	•	Nothing here asks a driver to stop or slow down — that choice stays exactly where it already is today, with the driver.
+4.13 Flagging “load” — luggage that needs boot space
+A common, ordinary situation in shared transport: a rider has luggage or goods too big for the cabin — “load” — that needs the boot or some other accommodation a given vehicle may not have. Along lets a rider flag this up front, before it becomes an argument on the roadside.
+	•	A single tap to flag load, with an optional size (small, medium, large) and a short note if it helps — never a form to fill in.
+	•	The driver sees this before deciding whether to accept, not after — an informed choice instead of an on-road surprise.
+	•	If a rider flags load against a vehicle unlikely to have room for it — a keke or okada, typically — Along warns them before the request even goes out, sparing both sides a pointless back-and-forth.
+	•	Where a driver charges extra for load, that follows the same fare rules as everything else: either it's a standard, published add-on the driver has already set (Section 4.4), or, where no standard exists, it's a small, specific use of Along Pricing (Section 4.12) — never an unaccounted extra charged on the spot.
+	•	A rider carrying load for a whole outing can set it once for their day plan (Section 4.10) rather than flagging it again at every stop.
+
+5. Technology & Live Navigation Architecture (Nigeria-Practical)
+The central technical insight behind Along is that GPS positioning itself is not the hard problem in Nigeria — modern smartphones already deliver adequate GPS accuracy. The hard problem is that no structured, routable data exists anywhere describing the informal shared-transport network: its parks, its routes, and its fares. That data has to be built, and building it — not the mapping technology — is Along's real technical moat.
+5.1 Base mapping and routing
+	•	Base map layer: OpenStreetMap (OSM), which has meaningfully improved Nigeria/Africa coverage in recent years through humanitarian and community mapping efforts, used instead of a fully commercial provider to control unit costs at scale.
+	•	Routing engine: a self-hosted routing engine (OSRM or Valhalla) running on OSM road data, avoiding per-request fees that would erode margins on a low-fare, high-volume product.
+	•	Commercial map/geocoding APIs (Google Maps Platform, Mapbox) used selectively and as a variable cost — e.g., for address geocoding in areas where OSM data is thin — rather than as the primary routing layer.
+5.2 The “along graph” — Along's core proprietary dataset
+This is the product's real foundation: a structured database of parks and the smaller recognized stages along each route between them, the mode and fare between stages, and typical vehicle frequency by time of day. Routes are represented as a sequence of stages rather than a single origin-to-destination fare, so that a fare can be correctly calculated between any two points a rider actually boards and alights at — not just the official start and end of the route (Section 3.2.3). This does not exist anywhere today and cannot be bought or scraped — it has to be walked, ridden, and verified by people, the way OpenStreetMap itself or a public transit GTFS feed was originally built. Section 5.2.1 sets out the acquisition methodology in detail.
+5.2.1 Data acquisition methodology
+The approach is sequenced deliberately to keep cost bounded and data quality high: seed the graph with paid, verified field collection before opening it to crowdsourcing, rather than attempting to crowdsource from zero, which produces unreliable data when there is nothing yet to correct against.
+	•	Paid field agents, not crowdsourcing, at first. A small team of local “route scouts” — ideally students, NYSC corps members, or people already embedded in the target park/union community — physically ride each target corridor end-to-end and log every park, junction, and recognized intermediate stage along it, the routes and modes running through it, the fare from each stage to the next and to the route's common destinations, typical frequency and wait time, and operating hours. Logging fare at each intermediate stage, not just at the two endpoint parks, is what makes correct mid-route pricing (Section 3.2.3) possible, and is a modest addition to a scout's ride-through rather than a separate collection effort. An existing free field-survey tool (ODK Collect or KoboToolbox, both widely used for structured field data collection in African development and mapping work) is used rather than building custom data-collection tooling before the shape of the data is even known.
+	•	Capture the actual road path, not just the endpoints. Agents log a GPS trace (GPX) of the ride itself, which is what allows an accurate route line to be generated for the self-hosted routing engine (Section 5.1), instead of estimating the path between two points.
+	•	Recruit scouts from the park/union community itself. This produces faster, more trusted data than external contractors would gather alone, and simultaneously builds the stakeholder relationships Section 9 depends on — a scout who is a known, respected face at a given park is worth more than several outside contractors.
+	•	Verify with redundancy before anything goes live. Two independent scouts per corridor, reconciled by a small operations team; discrepancies get a third check. This step prevents a single wrong fare or park location from quietly corrupting the graph.
+	•	Open to driver- and rider-crowdsourcing only once a trust baseline exists. Verified drivers can propose new routes, stages, or fare corrections; riders confirm or dispute the fare they actually paid after a trip, including trips that boarded mid-route. Every submission sits in a review queue before going live, the way OpenStreetMap and Waze handle community edits — this is also the ongoing maintenance mechanism for fuel-price-driven fare changes, which occur often enough that a one-time collection effort would go stale quickly.
+	•	Pay for verified contributions, not raw submissions. A small credit or cash micro-incentive per verified new route, stage, or correction sustains crowdsourced maintenance without inviting spam.
+	•	Version every entry. Each route/stage/fare record carries a source, timestamp, and verifier, so fare history (e.g., a fuel-price-driven increase) is auditable rather than silently overwritten.
+5.2.2 What the graph powers
+The along graph is what drives the multi-leg, multi-modal trip planner described in Section 3.2 — decomposing a destination into a sequence of known legs, modes, and transfer parks, and calculating the correct fare between any two stages a rider actually travels between, rather than treating each trip as a single point-to-point booking priced only at the route's official endpoints.
+5.2.3 Reducing field-collection cost through weighted crowdsourced verification
+Paid field agents remain the right way to seed a corridor's backbone — its major parks and best-known transfer points — but requiring the same paid, two-scout process for every minor stage along every route is not the most efficient way to reach full coverage, and would slow the very in-app correction flows Section 4.6 depends on for speed. Along instead treats backbone seeding and long-tail coverage as two different problems with two different cost structures:
+	•	Field agents seed the backbone: major parks, primary transfer points, and enough stage density for the most common trips on a pilot corridor to price correctly from day one.
+	•	Everything else grows through the app itself. The one-tap post-trip fare confirmation (Section 4.6) doubles as a data-collection instrument — every trip a rider or driver completes is a potential correction or a new stage, submitted with effectively zero extra effort beyond the tap they were already making.
+	•	A new stage or fare starts as unconfirmed and is promoted to trusted status automatically once enough independent riders and drivers — weighted by account history, so a handful of new or colluding accounts cannot force a promotion — report consistent values, the same trust-through-volume principle OpenStreetMap and Waze rely on.
+	•	This meaningfully lowers Phase 0 cost and timeline: field agents map the skeleton of a corridor, not its every joint, and the network fills in and keeps itself current through ordinary use rather than repeated paid re-surveys.
+5.2.4 Serving riders in places Along hasn't mapped yet
+Field-agent mapping will only ever cover a small fraction of the places Along eventually operates — most coverage, especially early on and especially outside Nigeria's biggest cities, will come from mechanisms already built into the product rather than from further paid survey work:
+	•	Driver route setup (Section 4.4) is the main answer. Any verified driver, anywhere — including places no field agent has ever visited — can set up their own route and pricing directly, immediately creating real, usable data for that area from the moment they publish it.
+	•	The live map still helps even before a route is fully documented: a rider searching an unmapped area can see that vehicles are operating nearby, which is useful on its own, even before Along can offer a full route-and-fare answer.
+	•	Every stop and fare added this way — whether from a driver's setup or a rider's after-the-fact correction — grows in trust the same way any other crowdsourced data does (Section 5.2.3), so coverage keeps improving through ordinary use.
+	•	When a rider searches somewhere Along genuinely has nothing to offer yet, that search itself becomes useful: it's logged as a signal of real demand in that area, feeding directly into decisions about where to prioritize outreach or field mapping next, and the rider is still shown the nearest place Along can help from today, with directions there, rather than an empty result.
+5.2.5 Spotting parks nobody has told Along about yet
+With location sharing already granted for the live map (Section 3.1), Along can notice something drivers already know instinctively: if a meaningful number of different along-registered vehicles keep ending up at the same spot, day after day, that spot is very likely functioning as an informal park — whether or not anyone has ever told the app so directly. Along treats a repeated, multi-driver cluster of live positions as a candidate park worth checking, feeding it into the same trust-building review process used for every other piece of crowdsourced data (Section 5.2.3), rather than trusting a single busy moment. A handful of cars stopped at a red light or queued for fuel is not a park; several distinct drivers returning to the same spot across multiple days is a real, usable signal — and this uses location data Along is already collecting for the live map, not a new form of tracking.
+5.2.6 Every trip quietly makes the map better
+Beyond spotting parks, the ordinary GPS trace already generated by every trip — both the driver's and the rider's device, already collected for live tracking and the safety corroboration described in Section 10.4.6 — is a genuinely valuable, already-available resource for improving the map itself, not just the along-graph sitting on top of it. Along puts this existing data to three further uses, none of which require any additional permission or new tracking beyond what riders and drivers have already granted for their trip:
+	•	Correcting the underlying road map. Base map data (Section 5.1) has known gaps and inaccuracies in parts of Nigeria and similar markets. Where many real trips consistently travel a path the base map doesn't fully reflect — a road that's been extended, realigned, or was simply never mapped — that pattern is a strong, low-cost signal worth reviewing and correcting, the same way community mapping projects like OpenStreetMap have always improved: from real journeys, not survey teams alone.
+	•	Spotting routes nobody has explicitly declared yet. Beyond individual drivers setting up their own route (Section 4.4), a large enough pattern of many different trips consistently traveling the same corridor is itself evidence that an informal route exists there, even before any single driver has described it — the linear counterpart to spotting a park from clustered stops (Section 5.2.5).
+	•	Making arrival estimates genuinely accurate. Real travel times on real roads, by time of day, are what makes an ETA trustworthy — generic map data alone tends to assume ideal conditions. As trip data accumulates, Along can calibrate expected travel time per road segment against what actually happens on it, sharpening every estimate the app shows without waiting on any external map provider to do the same.
+As with every other crowdsourced input in this plan, none of this publishes automatically — a road correction or a newly detected route is reviewed the same way any other candidate data is (Section 5.2.3) before it's treated as reliable.
+5.3 Live road and traffic conditions
+	•	Driver-side GPS breadcrumbing (opt-in, anonymized) feeds a lightweight, crowdsourced live-traffic layer, since commercial live-traffic coverage remains thin outside a handful of major Lagos corridors.
+	•	Community-reported hazards (flooding, road closures, checkpoints, protests, accidents) layered on top, moderated to control for reliability.
+5.4 Design for real Nigerian network and device conditions
+	•	A lightweight app (small install size) with aggressive caching of previously used route/map data for offline or low-connectivity use.
+	•	A low-bandwidth/text-first fallback mode for lower-end devices and constrained data plans, given the price-sensitive target market.
+	•	Progressive rollout of a USSD or SMS-based route/fare lookup as a longer-term option for riders without smartphones at all — extending reach beyond the smartphone-only segment.
+5.5 Safety and trust systems
+	•	Driver and vehicle verification against national ID (NIN), driver's license, and vehicle particulars at onboarding.
+	•	Real-time trip sharing with a trusted contact, and an in-app SOS routed to a monitored response process.
+	•	Two-way ratings and an incident-reporting flow feeding the admin console described in Section 4.7.
+5.6 Payments
+Cash remains the default payment method, reflecting how the informal transport sector actually transacts today. Along layers in optional cashless payment — bank transfer, USSD, and in-app wallet via established Nigerian payment processors — recognizing Nigeria's very high and growing volume of instant digital payments, which makes cashless adoption a realistic near-term addition rather than a precondition for launch.
+5.7 Recommended technical stack (high-level)
+Layer
+Recommended approach
+Mobile apps (rider & driver)
+Cross-platform framework (e.g., Flutter) shipping on both Android and iOS from the outset — not an Android-first, iOS-later sequence — with Android prioritized only for test-device allocation given local device mix
+Backend
+Managed backend-as-a-service (e.g., Supabase/Postgres with PostGIS) for MVP speed, with a migration path to a dedicated services architecture as volume grows
+Mapping/routing
+OpenStreetMap data + self-hosted OSRM/Valhalla routing; commercial map APIs used selectively
+Map rendering
+Vector-tile renderer (not static/raster tiles) for smooth pan, zoom, and live-marker movement even on low-end devices — the single biggest visible driver of whether a map-heavy app feels premium
+Live tracking
+WebSocket/real-time channel for driver location broadcast to matched riders
+Payments
+Integration with a Nigerian payment aggregator (e.g., Paystack/Flutterwave/Moniepoint) for wallet, bank transfer, and USSD
+Admin console
+Web dashboard (e.g., Next.js) for route/fare management, verification, and incident monitoring
+Data pipeline
+Structured ingestion pipeline for field-collected route/park/fare data, versioned and auditable
+5.8 Building the polish riders expect from Uber, Bolt, and inDrive
+Riders and drivers will judge Along against the apps they already know, whether or not that comparison is fair to a much younger, leaner company. Getting close to that polish is achievable without Along's budget, because it comes less from raw design spend than from disciplined, consistent execution of a small number of principles — the same ones the major platforms describe in their own public design guidance:
+	•	A tight, deliberate visual language rather than an open-ended one — a small, fixed color palette with one accent color reserved for primary actions, large and highly legible type (especially for fares, ETAs, and other numbers a rider glances at rather than reads), and a single consistent spacing rhythm across every screen. Restraint, applied consistently, reads as premium; a wide, inconsistent palette reads as amateur regardless of how much time was spent on it.
+	•	Motion that feels fast and precise, not decorative — short, consistent transition timing used the same way everywhere reinforces a sense of reliability, which matters especially for a new brand still earning trust.
+	•	Clear, color-coded sequencing for multi-step trips — Bolt's use of consistent colour-coding and timestamps at every stage of a trip is a directly applicable lesson for Along, arguably more important here than for a single-leg Uber/Bolt ride, since Along's multi-leg, multi-modal trips are inherently more complex to visualize and need that clarity even more.
+	•	A shared internal component library used consistently across the rider app, driver app, and admin console, so the product feels like one coherent experience rather than a patchwork — this is exactly how Uber and Bolt maintain visual consistency at their scale, and matters just as much for a product being built by many separate work sessions over time, as this one is (see the companion engineering build specification's Section 5.2 for how this is enforced task by task).
+The companion engineering build specification translates each of these into concrete, checkable requirements — specific design tokens, a locked map-rendering technology choice, and gate criteria a reviewer can actually verify — rather than leaving “great UI” as a subjective aspiration no one can confirm was met.
+5.9 Where AI genuinely belongs — and where it deliberately doesn't
+The honest answer is that most of what makes Along excellent does not require AI at all — correct fare calculation, fair commission, reliable matching, and a fast one-tap interface all come from careful deterministic engineering and good data, not from a model. Along's core transactions need to be explainable: a driver disputing a blocked account or a commission charge deserves a clear, auditable reason, not “the algorithm decided.” That principle governs every choice below.
+	•	Where AI is close to necessary: understanding loosely-worded human input. A rider describing their whole day (“drop the kids at school, then work, then the market”) or a driver describing their route out loud during setup is exactly the kind of messy, natural-language task language models handle well and rigid form-based input handles poorly — genuinely important for hitting the effortless, few-taps standard the rest of this plan is built around. Every such interpretation is shown back to the person as a one-tap confirmation before it becomes real data, never committed silently.
+	•	Where AI is clearly valuable: voice, document verification, and fraud-signal quality. Speech-to-text and text-to-speech power the audio wayfinding option (Section 4.11); automated ID and vehicle-document verification meaningfully speeds up driver onboarding at real scale beyond a single pilot corridor; and statistical anomaly detection can sharpen the fraud-review signals described in Section 10.4 as real operating data accumulates — always feeding a human review step, never making the final call itself.
+	•	Where AI is useful but optional: forecasting where demand is emerging (to prioritize field mapping or driver recruitment) and gradually refining the “Recommended” ranking's weightings based on what riders actually choose — both genuine improvements over time, neither required to launch a strong product.
+	•	Where Along deliberately does not use AI: fare and commission calculation, the core route-matching logic itself (including the direct-match-first rule in Section 3.2.1), and any final decision to block or deactivate a driver's account. These stay deterministic and human-governed by design, not because AI couldn't technically touch them, but because the trust this business depends on — with riders, with drivers, and with the union relationships in Section 9 — requires that the rules be explainable and consistent, which is precisely what deterministic logic guarantees and a model does not.
+The companion engineering build specification (Section 5.3) sets out the same answer with implementation-level guardrails for each use case, so this stays a considered design position throughout the build rather than a decision made once and forgotten.
+
+6. Market Analysis
+6.1 Market size (formal ride-hailing, for reference)
+Third-party market research estimates place Nigeria's formal ride-hailing/urban mobility market at roughly US$300-450 million in annual revenue as of 2025-2026, projected to grow at a double-digit compound annual rate (estimates range from roughly 10% to 12% CAGR across different research firms) toward a market in the region of US$500 million to US$900+ million by the early 2030s. Ride-hailing user penetration in 2025 is estimated at around 14% of the population, projected to reach roughly 42-43 million users by 2029. These figures describe the formal, app-based private-hire segment (Uber, Bolt, inDrive, and similar) and should be treated as directional estimates from commercial research firms rather than precise figures.
+This formal ride-hailing market, however, is only the visible tip of Nigerian urban mobility. The informal shared-transport sector that Along targets — minibuses, shared taxis, kekes, okadas, and kabu-kabu — is understood to carry the large majority of daily urban trips in Nigerian cities, but it is not tracked by any commercial market-research category, which is itself evidence of the gap Along is built to fill.
+6.2 Structural tailwinds
+	•	Nigeria's urban population passed roughly 63% of the national total as of 2024 and continues to grow, concentrating daily trip demand in cities.
+	•	Total telecoms subscriptions in Nigeria reached approximately 180 million (2025), and instant digital payment volumes are very high and growing (Nigeria's interbank instant payment system processed billions of transactions in 2024 alone) — both supportive of a mobile-first, increasingly cashless transport product.
+	•	A federal Ride-Hailing and Smart Mobility Bill has passed its first reading in the Senate, proposing licensing, safety, and fare-regulation standards for digital transport platforms — an early sign that structured, compliant operators may be advantaged as the regulatory environment matures.
+	•	A separate Electric Vehicle Transition and Green Mobility Bill has passed its second Senate reading, signalling policy direction toward cleaner urban fleets that Along can align with over time (see Section 14).
+6.3 Local validation — Abuja specifically
+	•	Abuja (FCT), Along's planned pilot market, has an estimated population of roughly 4.3 million and no comprehensive structured mass-transit system.
+	•	Local reporting describes residents spending up to half their income on commuting and increasingly turning to informal carpooling and privately-operated “kabu-kabu” taxis out of necessity.
+	•	“Along” taxis — shared rides carrying 4-5 or more passengers, moving stop to stop, sometimes requiring multiple vehicles to complete one trip — are already the dominant, culturally established mode Along is named after and designed to serve.
+
+7. Competitive Landscape
+This section was refreshed against current market activity as of mid-2026, following specific diligence prompted by reports of comparable efforts emerging in Lagos. The short answer: there is real, accelerating activity around Nigeria's informal transport sector right now, but nothing found targets Along's specific combination of asset-light, multi-modal, park-and-roaming discovery of the existing independent-driver network. The closest efforts either replace the informal network with a owned fleet, or digitize payments on top of infrastructure that is already centrally owned — both structurally different from what Along does. Section 7.2 sets out the detail; Section 7.3 names the one competitive factor more significant than any startup found.
+Player
+Model
+How Along differs
+Uber / Bolt / inDrive
+App-based private-hire ride-hailing; inDrive uses a bidding model
+Along targets the much larger, much cheaper shared-taxi layer beneath private hire, not a private car for one party. Where a fare genuinely needs negotiating, Along Pricing (Section 4.12) is a faster, data-anchored, one-on-one version of inDrive's broadcast bidding, purpose-built for an on-the-go context
+FlexxyDrive / Cruz (2026 entrants)
+New Lagos-approved private-hire platforms competing on a zero-commission or discounted driver-first model
+Still single-passenger private hire, not shared/informal transit; a zero-commission launch offer is a common land-grab tactic in this category and is not, on its own, evidence of a durable structural advantage
+Shuttlers / Treepz
+Managed fleets of branded buses on fixed, pre-scheduled corporate routes
+Asset-heavy (they own/manage the buses), single-mode, and schedule-based, aimed at corporate commuters — Treepz's own public comments describe digitising the full informal network at once as too difficult, which is the exact gap Along is built to fill differently, not by owning a fleet
+Lagride (Omni)
+A Lagos mobility platform's newly launched branded minibus service, explicitly positioned to “disrupt Korope” (Lagos's shared-minibus equivalent of Abuja's “along”)
+Structurally the opposite approach: Omni replaces the informal multi-stop network with a company-owned fleet running direct, zero-stop trips. Along keeps the multi-stop, multi-driver network as-is and organizes it, rather than building a new fleet to compete with it
+Touch and Pay (TAP)
+YC-backed startup digitising cashless fare payment on Lagos's BRT and, potentially, danfo
+Solves payment collection, not discovery/routing/matching, and by its own account only works where the fleet is centrally owned or managed — a structural limitation that excludes the independently-owned drivers Along targets
+Lagos State / LAMATA (BITP)
+A state-government-led franchise-formalization program moving NURTW/RTEAN-affiliated danfo operators into a regulated, digitally-paid cooperative structure
+Not a startup competitor but the single most significant factor in this landscape — addressed directly in Section 7.3
+Informal status quo (word of mouth)
+No app; local knowledge only
+Along's true baseline competitor — most riders today simply ask around or already know the route from experience
+Google Maps Transit
+Surfaces transit data where operators (e.g., Shuttlers) supply structured feeds
+No structured feed exists for Nigeria's informal network; Along could ultimately become a data source for this layer rather than compete with it
+7.1 Along's defensibility
+	•	The “along graph” (Section 5.2) — a proprietary, field-verified and crowd-verified dataset of parks, stages, multi-modal routes, and stage-based fares — is expensive and slow for a new entrant to replicate, and improves continuously through usage. No competitor identified in this landscape is building anything equivalent; the closest ones are building a fleet instead.
+	•	Deep, early relationships with park unions and driver associations (Section 9) create local legitimacy that is hard for a foreign, fleet-owning, or Lagos-headquartered competitor to fast-follow.
+	•	An asset-light model keeps unit economics viable at the low price points the target market requires, where fleet-owning competitors (Shuttlers, Treepz, Lagride Omni) structurally cannot follow without abandoning their own model.
+	•	Driver self-service route setup (Section 4.4) and multi-modal, multi-leg, stage-based fare resolution (Section 3.2) have no equivalent among the players surveyed here — every identified competitor is single-mode and either fixed-route/fixed-schedule or single-leg point-to-point.
+7.2 What's actually happening in the market right now
+Investigating specific reports of comparable Lagos activity surfaced a genuinely active landscape, summarized in the table above, but nothing matching Along's model directly. Three findings are worth calling out specifically:
+	•	Every well-funded shared-transport player found (Shuttlers, Treepz, Lagride Omni) has chosen to own or manage a fleet rather than organize the existing independent-driver network — the harder, asset-light path Along has deliberately chosen, and the reason none of them compete with Along directly despite operating in adjacent territory.
+	•	Payment-digitization efforts (Touch and Pay, the Cowry card, Lagos's 2026 danfo digital-payment rollout) are real and growing, but by design require centrally-owned or managed vehicles to install hardware on — they cannot extend to Along's target segment of independently-owned informal vehicles without a fundamentally different approach.
+	•	New 2026 private-hire entrants (FlexxyDrive, Cruz) compete on commission and driver economics, validating the market pain described in Section 10.2, but remain single-passenger private hire — adjacent noise, not a threat to the shared/informal segment Along targets.
+7.2.1 What Treepz specifically found difficult, and why Along answers it differently
+A February 2026 feature on Lagos transport digitisation quoted Treepz directly on why it chose organized, owned fleets over digitizing the informal network as it exists. Their reasoning is specific enough to engage with point by point, rather than treated as a generic warning that this space is hard:
+	•	Driver digital-literacy gaps — Treepz found drivers are not always trained to use digital tools properly. Along is built around this constraint from the ground up rather than around it: a single status toggle, single-tap accept/decline for every recurring action (Section 4.6), and a route-setup flow explicitly modeled on a driver describing their route out loud rather than filling out a form (Section 4.4), with natural-language voice input as a planned extension (Section 5.9) for drivers who prefer speaking to typing entirely.
+	•	Vehicle unreliability undermining the technology layered on top — in a fleet model, a breakdown is the operator's own liability: their bus, their schedule, their stranded passengers. Along's asset-light, many-independent-vehicles model does not carry this failure mode the same way — a rider is shown multiple parked, roaming, and direct-match options at once (Section 3.2), so one unreliable vehicle does not strand anyone the way a single scheduled bus breaking down does.
+	•	Cash making revenue tracking almost impossible — this is the one obstacle Along has invested the most deliberate design effort in answering, not dismissed as unsolvable. The driver ledger, GPS-based reconciliation, independent rider-side corroboration, and agent-assisted cash-to-digital settlement (Section 10.4) are a developed, if openly imperfect, answer — the honest position throughout that section is that nothing can force a trip that never touches the app to be visible, but a materially better outcome than the status quo is a realistic and sufficient bar, not a perfect one.
+	•	Fragmentation and the need for centralized ownership — this is the most structural point, and the clearest place Along's approach diverges. Card-tap payment systems like TAP require hardware installed in every vehicle, which only makes economic sense when one owner can mandate it fleet-wide. Along requires no vehicle hardware at all — every device in the system is a driver's or rider's own phone. That is not an incidental implementation choice; it is the specific reason Along can reach independently-owned drivers that a hardware-dependent approach cannot reach at any funding level.
+Treepz's own conclusion — that digitising the entire informal network at once is difficult, and that growing step by step through organized, owned fleets works better — is a reasonable reading of their own experience trying to run fleet-management tooling on top of a sector that isn't organized as a fleet. Along's position is that the tooling, not the sector, was the mismatch: a product built around independent ownership from the outset, rather than adapted from fleet-management assumptions, answers each of the four obstacles above directly rather than needing to route around the sector's actual structure.
+7.3 The most significant competitive factor is not a startup
+Lagos State, through LAMATA, is actively running the Bus Industry Transition Programme (BITP): a government-led effort, backed by an MoU with NURTW and RTEAN, to move informal bus operators into a regulated franchise/cooperative structure with digital fare collection. This is not a hypothetical policy discussion — routes are already in transition on the Lekki-Epe corridor, and further modernisation (intelligent transport systems, digital ticketing) was under active discussion with RTEAN as of mid-2026.
+This matters more to Along's long-term ambitions than any startup identified in this research, for a simple reason: a state government working directly with the same union structures Along depends on (Section 9) has vastly more authority and resources to reorganize the informal sector than any private company does. If a LAMATA-style program successfully digitizes fare collection and route structure directly, in partnership with the unions, it narrows the specific gap Along exists to fill — at least in Lagos.
+Two things follow directly from this finding. First, it reinforces rather than undermines Along's existing go-to-market sequencing (Section 8): Abuja, not Lagos, was already chosen as the pilot market, and Abuja does not have a comparable state-led franchise-formalization program underway — the pilot corridor strategy avoids stepping directly into the strongest state-led substitution risk from day one. Second, it points to a genuine strategic option worth keeping open rather than dismissing defensively: engaging LAMATA-style programs as a potential technology partner — supplying the discovery, live-tracking, and multi-modal routing layer a franchise-formalization program still needs — could turn Along's most significant competitive risk into one of its more durable, government-anchored contracts, rather than treating every state initiative as purely adversarial.
+
+8. Go-to-Market Strategy
+Along's long-term ambition is national: every Nigerian state, and eventually other African countries where the same informal, multi-modal shared-transport pattern dominates daily mobility (much of West, East, and Southern Africa shares this structure under different local names — matatu, danfo, trotro, boda-boda, and others). The strategy below deliberately proves the model in one city before expanding, because the along graph (Section 5.2) and the local union/park relationships (Section 9) that make Along work are inherently local and cannot be built city-wide, let alone nationally, on day one.
+8.1 Why Abuja first
+Abuja is Along's home market, has a well-documented and acute structured-transport gap, a manageable geographic footprint compared to Lagos, and is the origin of the “along” concept the product is named after — giving the brand immediate cultural resonance with its first users. It is the beachhead, not the ceiling: the same data-collection and stakeholder-engagement playbook developed in Abuja (Sections 5.2 and 9) is designed from the outset to be repeatable state by state.
+8.2 Recommended pilot corridors
+Start with 2-3 high-traffic, well-understood corridors rather than attempting city-wide coverage on day one, to concentrate data-collection effort and reach density quickly on routes where demand is proven:
+	•	Lugbe ↔ Area 1 / City Centre — a well-documented, high-volume informal transport corridor
+	•	Nyanya ↔ CBD/Central Business District — a major commuter artery
+	•	Kubwa ↔ Wuse — another dense, well-established commuter route
+8.3 Phased rollout
+Phase
+Focus
+Target outcome
+Phase 0 — Data foundation (Months 1-3)
+Field mapping of pilot corridors; build the along graph; recruit first driver cohort
+Structured route/fare data for 2-3 corridors; 100-200 verified drivers
+Phase 1 — MVP launch (Months 3-6)
+Rider + driver app live on pilot corridors; manual/semi-automated matching; core safety features
+First paying/active trips; validate rider willingness to use the app over guessing
+Phase 2 — Abuja expansion (Months 6-14)
+Expand to 10+ corridors city-wide; live GPS tracking; in-app payments; women-only option
+Meaningful daily active trip volume across the FCT
+Phase 3 — Abuja depth + B2B/B2G (Months 14-20)
+Corporate accounts; government data partnership pilot; safety-feature maturity
+Diversified revenue beyond per-trip commission
+Phase 4 — Multi-city Nigeria expansion (Month 20+)
+Replicate the data-collection playbook in Lagos, Port Harcourt, Kano, or Ibadan
+Multi-city presence with a repeatable, lower-cost-per-city playbook
+Phase 5 — National coverage (Year 3-4)
+Extend the same playbook to additional states, prioritizing state capitals and high-density corridors first
+Along available in a majority of Nigerian states
+Phase 6 — Pan-African expansion (Year 4+)
+Adapt the playbook to a first non-Nigerian market with a comparable informal-transport pattern (e.g., matatu, trotro, or boda-boda systems)
+First market presence outside Nigeria, validating the playbook as Africa-portable, not Nigeria-specific
+Because Along owns no vehicles, expansion to a new state or country is primarily a data-collection, driver-onboarding, and stakeholder-relationship exercise rather than a capital-intensive fleet rollout — the same asset-light logic that keeps Abuja's unit economics viable is what makes this expansion path realistic (Section 3.3).
+8.4 Driver acquisition
+	•	Direct recruitment at parks and junctions on pilot corridors, working with park/union leadership rather than around them
+	•	Early-driver incentives (fee waivers, guaranteed minimum earnings support during ramp-up) to seed initial supply
+	•	Word-of-mouth and visible presence (branded stickers/signage at parks) to build trust and recognition
+8.5 Rider acquisition
+	•	On-the-ground activation at target parks and nearby residential/commercial clusters
+	•	Partnerships with universities, NYSC orientation camps, and large employers along pilot corridors — high-need, high-referral populations
+	•	Referral incentives and a simple, low-data onboarding flow to minimize friction
+
+9. Regulatory & Stakeholder Strategy
+Nigeria's ride-hailing sector has a difficult history with driver unions and park structures — Uber and Bolt's relationship with the National Union of Road Transport Workers (NURTW) and related park authorities has at times been adversarial, and a dedicated app-based driver union (the Amalgamated Union of App-based Transporters of Nigeria, AUATON) was formed in 2023 and has pushed for federal regulation and stronger driver protections. Along's strategy is to engage these structures directly and early rather than attempt to bypass them.
+9.1 Key stakeholders to engage
+	•	Park and union leadership (NURTW/RTEAN-affiliated) on each pilot corridor — as partners with a stake in Along's success, not as parties to route around
+	•	AUATON and driver associations — positioning Along as a tool that helps independent drivers earn more, not a platform that reclassifies or disadvantages them
+	•	FCT Transport Secretariat and relevant state/federal transport authorities — as a source of legitimacy and, longer-term, a data-partnership counterpart
+	•	The Federal Road Safety Corps (FRSC) and Vehicle Inspection Office (VIO) — for driver/vehicle verification pathways
+9.2 Regulatory environment to track
+	•	The Ride-Hailing and Smart Mobility Bill (2025), currently progressing through the National Assembly, would introduce federal licensing requirements, safety standards, fare regulation, and consumer protections for digital transport platforms. Along should engage constructively in the policy conversation, given its model (organizing existing informal transport rather than deploying new private-hire vehicles) sits somewhat differently from the private-hire platforms the bill primarily targets.
+	•	The Electric Vehicle Transition and Green Mobility Bill (2025), which has passed its second Senate reading, signals a policy push toward EV incentives and infrastructure — relevant to Along's longer-term fleet-partnership and sustainability positioning (Section 14).
+9.3 Principles for stakeholder relationships
+	•	Revenue-sharing or facilitation arrangements with park leadership where appropriate, rather than a purely extractive commission model.
+	•	Transparent, published commission structures for drivers, kept meaningfully lower than typical private-hire ride-hailing commissions, reflecting Along's asset-light role and the thin margins in the informal sector.
+	•	Active participation in industry/regulatory conversations (directly or via AUATON and transport authorities) rather than a reactive posture.
+
+10. Business Model & Revenue Streams
+Revenue stream
+Description
+Stage
+Trip commission
+A per-trip commission from drivers, targeted at roughly 5-10% — below all major Nigerian ride-hailing incumbents — given Along's asset-light role (see Section 10.2-10.3)
+Core, from MVP
+Driver subscription
+Optional flat-fee tier for high-volume drivers wanting priority visibility and full feature access instead of per-trip commission
+Phase 2+
+B2B corporate accounts
+Companies fund or subsidize staff transport on structured routes, similar in spirit to Shuttlers' corporate model
+Phase 3+
+B2G data partnerships
+Anonymized origin-destination and demand data licensed to state transport authorities and urban planners
+Phase 3+
+In-app advertising
+Brand placements (banks, telcos, FMCG) reaching a high-frequency, mass-market commuter audience
+Phase 2+
+Value-added services
+Optional per-trip micro-insurance, and referral/commission income from payments or vehicle-financing partners
+Phase 3+
+10.1 Pricing philosophy
+Along does not set or inflate fares — it surfaces the existing fare for a rider's actual boarding and alighting points on a given route (Section 3.2.3) and flags discrepancies to protect riders from overcharging, including the common case of a mid-route boarder being quoted a full-route price. Along's revenue comes from the commission/subscription layer on top of that fare, not from raising the price of transport itself. This is a deliberate choice: the value proposition is time saved, safety, and certainty — not necessarily a cheaper fare than the driver would otherwise charge.
+10.2 Commission benchmarks in the Nigerian market
+Ride-hailing commission structures in Nigeria are not officially regulated or consistently published, and are currently a live, contested issue rather than a settled figure. Based on driver-reported data through 2025-2026:
+	•	Uber: commission has reportedly been pushed toward roughly 25-30%, with drivers alleging simultaneous base-fare cuts — a combination the driver union AUATON has specifically protested.
+	•	Bolt: commonly marketed at around 15%, though multiple driver accounts describe it being raised toward Uber's level in practice, so 15% should be read as a stated rather than guaranteed rate.
+	•	inDrive: lower, roughly 8-13%, enabled by its passenger-negotiated fare model — though drivers note the negotiated fares themselves often come in low enough that per-trip take-home is not necessarily better.
+	•	A recurring driver complaint across all three platforms is a VAT charge added on top of commission that drivers say was not clearly disclosed at signup.
+This is directly relevant to Along's home market: as of mid-2026, the FCT Transport Secretariat and the federal Public Complaints Commission are actively investigating Uber, Bolt, and inDrive over excessive commissions and low fares, following a formal petition from AUATON's Abuja council. This is a live, public grievance in the exact city Along is launching in — not background context.
+10.3 Along's recommended commission position
+Given Along's asset-light role — no fleet, vehicle maintenance, or driver-support cost base comparable to a private-hire platform — and the live political opening described above, Along should price trip commission meaningfully below all three incumbents: in the region of 5-10% at launch, undercutting even inDrive, and should state this rate publicly and transparently rather than layering in undisclosed charges. This is not only a driver-acquisition tool but a credible, differentiated market position at a moment when commission fairness is already a public and regulatory talking point in Abuja.
+10.4 Enforcing commission collection on cash trips
+Cash is, and will remain, the default payment method (Section 5.6), which means most trips are not natively visible to Along at the moment of payment. Collecting commission on cash trips is therefore both the most important and the most structurally difficult part of the revenue model, and it deserves a direct, honest strategy rather than an assumption that a wallet mechanism alone will solve it.
+10.4.1 The core strategic constraint
+Unlike Uber and Bolt, whose apps created rider demand that did not previously exist, Along is digitizing a system that already works, in cash, without any app. A driver can simply choose not to log a given trip and lose nothing they had before Along existed. No enforcement mechanism can compel logging of a trip that never touches the platform in the first place. This reframes the problem: the objective is not to eliminate leakage — no cash-heavy platform anywhere achieves that — but to make logging a trip through Along worth more to the driver than the commission it costs, with enforcement mechanics as the backstop once a trip has entered the app, not the primary strategy.
+10.4.2 Incentives that make logging worthwhile
+	•	Incremental demand only reachable via Along: the live roaming-driver discovery and multi-modal trip planning (Section 3) put riders in front of a driver who would not otherwise have found them — genuinely additive revenue, not a cut taken from business the driver already had.
+	•	Dispute protection: a digital fare record protects the driver against rider disputes and arbitrary park-level extortion, a real and current concern given the AUATON commission grievance described in Section 10.2.
+	•	Exclusive access to B2B/corporate account trips (Section 10), a demand pool cash-only informal drivers cannot reach at all.
+	•	Vehicle-financing leverage: East African precedents (Tugende, Asaak) finance boda-boda motorcycles using a driver's app trip history as the underlying credit signal. A comparable financing partnership for Along drivers — many of whom rent rather than own their vehicle — would give drivers a self-interested reason to keep a complete, honest trip history regardless of payment method.
+	•	Reduced-commission tiers for drivers with strong, consistent logging compliance, rewarding the behavior Along needs rather than only penalizing its absence.
+10.4.3 Mechanics once a trip is logged in the app
+Industry practice (Uber and Bolt both use this model, per their published driver documentation) tracks commission owed on a cash trip as a running balance rather than collecting it at the moment of payment, and pauses new trip requests until it is settled — typically within a 48-hour window. Along should adopt the same core mechanic, adapted for a more cash-dependent, lower-trust-in-new-platforms context:
+	•	Cash-trip commission is recorded as a debit against the driver's Along balance immediately at trip completion, not collected in the moment.
+	•	Settlement should route through the same agent networks already ubiquitous at Nigerian parks (POS/mobile-money agents), not assume every driver defaults to app-based bank transfer, since cash-to-digital conversion friction is a real adoption barrier.
+	•	A small, refundable onboarding deposit — softer than Uber's pure-trust model, appropriate for a new platform without Uber's brand leverage — automatically covers a debt if a grace period lapses.
+	•	An escalation ladder applies for unresolved debt: warning, then temporary pause from new trip matching, then full deactivation, then referral to a guarantor or park leadership (Section 10.4.4), with formal legal recovery reserved as a last-resort deterrent rather than a practical tool for small individual debts.
+10.4.4 Community and structural leverage — Along's specific advantage over Uber/Bolt here
+Along's deep, deliberate park and union relationships (Section 9) are a genuine structural advantage private-hire platforms do not have access to in the same way:
+	•	Park leadership as enforcement partners: a driver who shortchanges Along has more to lose from a park chairman's disapproval than from an app notification alone — leverage that flows directly from the stakeholder strategy in Section 9, not a separate initiative.
+	•	Guarantor/cooperative-style co-signing at onboarding, borrowing from the SACCO tradition common in East African boda-boda financing, using a familiar informal-credit model rather than an imported corporate one.
+	•	Vehicle-owner alignment: where a driver rents rather than owns their vehicle, an owner whose income depends on the driver's standing becomes a second, self-interested accountability layer.
+10.4.5 Detecting manipulation of trips already in the app
+A specific, documented fraud pattern in the ride-hailing industry — sometimes called “premature trip conversion” — involves a driver reaching the pickup point, negotiating a lower off-app price directly with the rider, then marking the trip cancelled in the app before completing it, to keep the trip invisible to the platform. Along's live GPS infrastructure (Section 5.3) and post-trip rider confirmation flow (Section 5.2.1) provide two independent, low-cost cross-checks against this pattern: a trip marked cancelled whose GPS trace shows it was actually completed is a detectable mismatch, and a rider's post-trip confirmation is a signal the driver does not control. This detects manipulation of trips that entered the app; it has no visibility into a trip that never touched the app at all — which is precisely why Sections 10.4.2 and 10.4.4 carry more long-run weight than detection alone.
+10.4.6 Independent rider-side location corroboration
+A meaningful strengthening of Section 10.4.5: rather than relying only on the driver's own GPS trace — which the driver has some ability to influence — the rider's phone, which already shares live location during a trip for the rider's own map, ETA, and safety features, provides a second, independent trace. If a trip is marked cancelled but the rider's own device shows movement consistent with the expected route, ending near the destination, that is strong, driver-independent evidence the trip actually took place. This is a materially reliable signal specifically because, in this fraud scenario, the rider has no incentive to help the driver hide the trip — unlike collusion-based fraud (where a driver and rider fake a trip together for a bonus), a driver evading commission on a real trip gains the rider nothing by that rider staying quiet.
+Because Along's core product carries multiple riders in one shared vehicle, a single trip can be corroborated by several independent riders' traces at once — a materially stronger check than any single-passenger ride-hailing platform has access to, where it is always just one rider's account against one driver's. This is a structural advantage specific to Along's shared-transport model, not an incidental feature.
+As with all detection in this section, a location mismatch is a signal for admin review, never an automatic penalty — GPS accuracy in dense urban conditions is imperfect, and the mechanism must never punish a driver on the strength of a technical false positive.
+10.4.7 Mid-trip destination extensions
+A related scenario worth handling explicitly: a rider books a trip to one destination, and partway there, the driver offers — for an increased price — to take them further. Left unmanaged, this is a natural opening for the extended portion to be negotiated and paid entirely by word of mouth, invisible to Along even though the original trip started in the app.
+The elegant fix reuses machinery already built rather than inventing a separate one. Because fare already resolves from wherever a rider actually boards and alights (Section 5.2), extending a trip is simply updating its endpoint and letting that same resolution logic recalculate the fare — no new pricing system is needed. Along makes this a single tap for either party mid-trip: the driver proposes the new destination, the rider accepts (or the reverse), and the updated fare — and the correct incremental commission on it — is calculated automatically and recorded against the same trip. This is faster and more transparent for both sides than negotiating a price on the spot, which is itself the strongest reason to expect it gets used: it's easier to tap accept on a fair, pre-calculated fare than to haggle.
+For the case where a rider and driver still agree to an extension entirely by word of mouth, the same independent GPS corroboration described in Section 10.4.6 applies here too: a trip whose recorded endpoint falls well short of where the rider's own device shows the journey actually ending is a detectable mismatch, surfaced for admin review — not an automatic penalty — alongside the existing cancellation-pattern checks.
+10.4.8 What success looks like
+The realistic goal is a declining share of unlogged or underpaid cash trips over time, driven primarily by incremental demand, financing partnerships, and community leverage becoming more valuable to drivers than the commission avoided — mirrored by Nigeria's broader, ongoing shift toward cashless payment infrastructure (Section 6.2) reducing the cash share of trips generally. This should be tracked explicitly as an operating metric from Phase 1 onward, not assumed.
+
+10.5 Lessons from global reference platforms
+Prompted by a direct question about how comparable journey-planning platforms actually make money — TfL's Journey Planner and TfL Go, Citymapper, and Google Maps — this section sets out what real research shows, including a correction to a common but outdated impression of one of these platforms, and what specifically transfers to Along.
+10.5.1 The core pattern across all four
+None of these platforms makes meaningful money from the journey-planning feature itself. In every case, journey planning is a free, trust-building, daily-engagement layer; monetization happens elsewhere — in transactions, business/government infrastructure sales, and advertising built on top of that trusted daily usage. This matters directly for Along: Constitution-level design choices already made — fare transparency, no fare-setting, a free core rider experience — are the same structural choice these platforms converged on, not a departure from industry practice.
+10.5.2 TfL Journey Planner and TfL Go — ecosystem revenue, correctly sized
+TfL's own 2026/27 budget submission shows passenger fares at roughly £6.0 billion against total planned revenue expenditure of about £9.5 billion — fares alone cover roughly 57-60% of operating costs, with the remainder from congestion/ULEZ charging, business rates, council tax precept, and other income. Advertising — the figure most often cited as TfL's ecosystem-monetization proof point — is budgeted at about £184 million for 2026/27: real money, but only around 10% of TfL's non-fare revenue and roughly 2% of total revenue. TfL Go itself is a free, official app that carries no separate monetization of its own; its value to TfL is authoritative daily engagement, not direct revenue.
+The correction worth making explicitly: advertising is a genuine, additive revenue line for a mature, high-traffic transport network — not the primary engine some summaries of TfL's model imply. Along should treat advertising the same way: a real but secondary stream, sized honestly, not a pillar the core business depends on.
+10.5.3 Citymapper — a cautionary tale as much as an inspiration
+Citymapper is frequently cited as a monetization model to emulate (subscriptions, a mobility pass, referral commissions, enterprise licensing). The fuller history is more instructive than that summary suggests, and worth stating plainly rather than glossed over:
+	•	Citymapper's consumer subscription products (Citymapper Club, and the Citymapper Pass — a subsidized weekly travelcard undercutting TfL's own Oyster fare) never reached sustainable economics. The company had accumulated over £22 million in losses by late 2019, and COVID-19 then caused roughly 90% of its paying subscribers to cancel within weeks — a severe demonstration of how fragile a consumer subscription is when a free alternative (Google Maps, or the transit authority's own app) already exists for the core function.
+	•	Citymapper also attempted to own physical transport directly — a minibus and taxi service variously branded Smartbus, SmartRide, and Ride — and shut it down after roughly two difficult years. This is real-world, independent evidence for a structural position already established in this plan (Section 3.3, Section 7): owning a fleet is a different, harder business than organizing one, and a mobility-app company moving into fleet ownership is a well-documented failure pattern, not a hypothetical risk.
+	•	Citymapper was ultimately acquired by Via, a transit-technology company, in March 2023 — having built a large, loyal user base (over 50 million users across 100+ cities) but never an independently sustainable business. Its durable value turned out to be its technology and user base as an acquisition target for a B2G/B2B transit-infrastructure company, not standalone consumer-side profitability.
+The lesson for Along is therefore double-edged: Citymapper's instinct to "own the transaction, not just the route calculation" is sound and worth keeping (Section 10.6 below), but its two biggest bets — subsidized consumer subscriptions competing with a free alternative, and owning physical fleets — are exactly the two things Along's existing design already avoids. That alignment is worth recognizing as validation, not coincidence.
+10.5.4 Google Maps — the two-sided model most worth copying
+Google's own public statements describe advertising as funding its free consumer products, including Maps, while a separate line — the Google Maps Platform — charges developers and businesses directly for API access to mapping, routing, and places data. As of the platform's March 2025 pricing restructure, this runs on a per-SKU model (roughly $2-32 per 1,000 requests depending on the specific API and features used, e.g. $5/1,000 for basic route computation, up to $32/1,000 for advanced place-detail lookups) alongside flat monthly subscription tiers for predictable usage (approximately $100, $275, and $1,200 per month at the Starter, Essentials, and Pro levels as of 2026).
+This is the cleanest precedent for Along's own long-term technology-business opportunity: keep the consumer app free, and separately sell the underlying along-graph, routing, and live-position infrastructure to businesses and governments that need it — not by copying Google's prices, but by copying the structural separation between a free consumer product and a paid business-infrastructure product built on the same underlying data.
+10.6 An expanded revenue architecture for Along
+The revenue streams already established in Section 10 (trip commission, driver subscription, B2B corporate accounts, B2G data partnerships, in-app advertising, value-added services) remain the core model and the correct near-term priority — commission on real transactions already happening, per Citymapper's soundest instinct. This section extends that model with additional streams inspired directly by the reference platforms in Section 10.5, sequenced by when each genuinely becomes viable rather than introduced all at once.
+10.6.1 Operator and union B2B SaaS — the most durable addition
+Google's lesson (consumers free, businesses pay for infrastructure) and Citymapper's actual exit (acquired as B2G/B2B transit-technology, not a consumer business) point the same direction: a subscription dashboard sold to park/union leadership and multi-vehicle owners — not only large corporate accounts — is likely Along's most predictable, recurring revenue line once the along-graph and driver base exist. Realistic features: digital fare and dispute records for a park's drivers, basic fleet-lite tools for an owner with several vehicles, demand/analytics for a union deciding where to direct drivers, and priority support. This is a natural upsell on relationships Section 9's stakeholder strategy already requires Along to build — not a new go-to-market motion.
+10.6.2 Contextual advertising, sized like TfL's, not oversold
+A rider's destination search is a genuine high-intent commercial moment (a trip toward an airport, a market, a hotel district), and contextual, destination-aware advertising is a reasonable, non-intrusive way to monetize it — sponsored listings near a destination or boarding point, for example. Section 10.5.2's corrected TfL figures set the right expectation: treat this as a real but secondary line, roughly analogous to the low-single-digit share of total revenue advertising represents even for a mature network like TfL's, not a primary pillar. It must also follow the same privacy discipline already established for Along's data products generally (Section 4.5.4, Section 10.6.3): contextual and aggregated, never the sale of an individual rider's personal location history.
+10.6.3 Mobility data and analytics as a packaged product
+Section 10's existing B2G data-partnership line extends naturally into a proper data product once real volume exists: anonymized origin-destination demand data, corridor-level congestion and travel-time patterns (Section 4.5.4), and coverage-gap signals (Section 4.9) packaged for state transport authorities, urban planners, real estate developers assessing site accessibility, and retailers evaluating footfall near a location — following Google's stated separation between advertising monetization and selling personal information: this product is built on aggregated, anonymized patterns, never individual trip or identity data.
+10.6.4 Financial services — a later-stage, partnership-first opportunity
+Transport is a daily financial activity, and a transport wallet (rider-side, and a corporate variant for companies funding staff transport allowances) is a real long-term opportunity — but one that requires a licensed payments partner, not Along holding funds itself, consistent with the payments-integration boundary already set in this plan (Section 5.6) and the build specification's explicit rule against Along ever taking custody of funds beyond pass-through. Treated this way, the revenue is transaction and partnership fees on top of a licensed partner's rails, not a fintech license Along would need to hold itself.
+10.6.5 White-label platform licensing — the long-run global-scale opportunity
+This is the most direct extension of Along's own stated national and pan-African ambition (Section 8): once the along-graph methodology, the apps, and the operating playbook work in Abuja and a second Nigerian city, the same technology can be licensed to an operator, investor, or government in another African city that wants its own branded version — “Powered by Along” — rather than Along operating every market directly itself. This mirrors Google Maps Platform's model of packaging proven consumer-facing capability as paid infrastructure for others to build on, and is explicitly a Phase 5+ opportunity (Section 13.4), not a near-term revenue line — it depends on first proving the playbook works more than once under Along's own direct operation.
+10.6.6 Developer/partner API — furthest-out, highest-ceiling
+The furthest-out extension of the Google Maps Platform lesson: once the along-graph is mature in a market, exposing aggregated route, fare, and live-position data through a metered API lets third-party apps (logistics platforms, other consumer apps, government systems) query Along's data directly, priced per-request or via subscription tiers in the spirit of Google Maps Platform's own structure. This is the highest-ceiling but longest-horizon stream, dependent on the along-graph reaching a maturity no near-term phase assumes.
+10.6.7 Sequencing summary
+	•	Phases 0-1 (build and pilot): trip commission only, kept deliberately minimal — the priority is data and trust, not revenue, exactly as Section 8.3 already sets out.
+	•	Phase 2 (Abuja expansion): trip commission at scale, first driver subscriptions, first contextual advertising placements.
+	•	Phase 3 (Abuja depth + B2B/B2G): operator/union B2B SaaS (Section 10.6.1) and B2G data partnerships (Section 10.6.3) become real, alongside corporate accounts.
+	•	Phase 4-5 (multi-city, national): all of the above at scale, plus early exploration of financial-services partnerships (Section 10.6.4).
+	•	Phase 6 (pan-African): white-label licensing (Section 10.6.5) and, furthest out, the developer/partner API (Section 10.6.6).
+
+11. Operations Plan
+11.1 Data operations
+	•	A small, dedicated field-mapping team responsible for building and continuously verifying the along graph on active corridors
+	•	A lightweight review workflow for driver- and rider-submitted route/fare corrections before they go live
+11.2 Driver operations
+	•	Verification workflow at onboarding (NIN, driver's license, vehicle particulars)
+	•	A driver support channel (in-app + phone/WhatsApp) for onboarding help and issue resolution
+	•	Ongoing relationship management with park/union leadership on each active corridor
+11.3 Trust & safety operations
+	•	A monitored SOS/incident-response process during initial operating hours, expanding toward 24/7 as volume grows
+	•	A clear incident-reporting and escalation policy, with defined response times
+	•	Periodic safety audits of active drivers and corridors
+11.4 Customer support
+	•	In-app support and a low-cost channel (WhatsApp/USSD) reflecting how the target user base already communicates
+	•	A fare-discrepancy resolution process tied directly into the along-graph correction workflow
+
+12. Team & Organizational Plan
+Along is founder-led by a senior software developer with hands-on experience building and shipping mobile and backend systems solo. The build-out below reflects the roles needed to take Along from MVP to a scaled, multi-corridor operation; the founder can capably lead or directly execute the technical workstream, with the priority hires below filling the operational and local-relationship functions a solo technical founder cannot cover alone.
+12.1 Priority roles for the pilot phase
+	•	Operations / Community Lead — owns park and union relationships, driver recruitment, and on-the-ground corridor operations; ideally someone with existing credibility in Abuja's transport community
+	•	Field Data Lead — manages the data-collection team building and maintaining the along graph
+	•	Growth/Marketing Lead — owns rider acquisition, partnerships (universities, employers), and brand presence at parks
+	•	Trust & Safety Coordinator — owns the SOS/incident process and driver verification workflow
+12.2 Roles to add as the company scales
+	•	Finance/Accounting support (part-time/fractional initially)
+	•	Legal & Regulatory Counsel (fractional/advisory initially, given the active regulatory environment described in Section 9)
+	•	Additional backend/mobile engineers as the founder's solo capacity is exceeded
+	•	City leads for each new market as multi-city expansion begins (Section 8.3, Phase 4)
+12.3 Advisory needs
+	•	An advisor or advisory relationship with someone experienced in Nigerian transport-union dynamics
+	•	An advisor with prior Nigerian fintech/payments experience for the cashless-payment rollout
+
+13. Financial Plan
+The figures below are illustrative planning assumptions intended to frame the scale of investment and the general shape of the business — not financial projections to be relied on for investment decisions. They should be developed into a full financial model with a qualified accountant or financial advisor before being used in fundraising or regulatory filings.
+13.1 Illustrative 3-year outlook
+
+Year 1 (Abuja pilot + early expansion)
+Year 2 (Abuja city-wide + B2B)
+Year 3 (Multi-city expansion)
+Active corridors
+2-3
+10-15 (full FCT)
+FCT + 1-2 additional cities
+Verified drivers (cumulative)
+100-300
+1,000-2,500
+3,000-8,000
+Primary revenue streams
+Trip commission
+Trip commission + B2B + advertising
+Trip commission + B2B + B2G + advertising
+Focus of spend
+Data collection, MVP build, driver/rider acquisition
+Corridor expansion, safety infrastructure, payments integration
+New-city playbook replication, B2G partnerships
+13.2 Key cost drivers
+	•	Field data collection and ongoing graph maintenance (the single largest early-stage operating cost)
+	•	Product/engineering (mobile apps, backend, admin console)
+	•	Driver and rider acquisition incentives during each corridor's ramp-up period
+	•	Trust & safety operations (verification, SOS monitoring)
+	•	Regulatory/legal engagement given the active policy environment (Section 9.2)
+13.3 Path to unit economics
+Because Along does not own vehicles, its primary variable cost per trip is the platform/commission economics, not fleet capital or fuel — the core capital investment is front-loaded into data collection and driver/rider acquisition on each new corridor, with marginal cost per trip becoming low once a corridor's along-graph and driver base are established. A detailed unit-economics model (revenue per trip, commission rate, cost to acquire and retain a driver, cost to acquire a rider) should be built and stress-tested against real pilot-corridor data as early as possible, rather than assumed in advance.
+
+13.4 Phase-by-phase cost, revenue, and profit projections
+The figures below go a level deeper than Section 13.1's 3-year outlook, tying illustrative cost and revenue ranges to each phase in Section 8.3's roadmap, grounded in real, cited external benchmarks rather than invented numbers. The same disclaimer as the rest of this section applies without exception: these are planning scenarios for internal use, not projections to present as guaranteed outcomes, and should be rebuilt into a full financial model with a qualified accountant once real pilot-corridor data exists.
+13.4.1 Real-world inputs used to ground these figures
+	•	Nigerian software talent costs (2026, multiple salary surveys): junior developers roughly ₦150,000-400,000/month, mid-level ₦700,000-2,000,000/month, senior ₦2,000,000-4,000,000/month at local (non-remote-dollar) rates; a lean 2-4 person build team is realistic for Phases 0-1.
+	•	Real Nigerian ride-hailing trip economics (Lagos, 2026 reporting): on a representative ₦5,000 Bolt fare, the driver retains about ₦3,830 (over 75%), the platform's commission is about ₦1,000 (20%), of which roughly ₦170 is statutory (VAT and local regulatory levies) — meaning the platform's own usable margin on that commission, before its own operating costs, is closer to 15-16% of the fare, not the full commission rate. Along's lower 5-10% target commission (Section 10.3) means thinner per-trip revenue by design, consistent with the asset-light, lower-cost-base positioning already established, but it also means cost discipline matters more, not less, in these early phases.
+	•	Nigeria's formal ride-hailing market recorded roughly 134.3 million trips in 2025 across 200,000+ drivers on 19 platforms nationally — useful as a scale reference, though Along's target informal/shared-transport segment is understood to be considerably larger than this formal segment and has no equivalent published trip-count data, which is itself part of the opportunity described in Section 2.
+	•	Mapping/routing costs stay structurally low because of a decision already locked in Section 5.1: self-hosted OSRM/Valhalla on OpenStreetMap data, not commercial map APIs, for the core routing engine. Commercial map API pricing (Google Maps Platform, 2026: roughly $2-32 per 1,000 requests depending on product, or $100-1,200/month flat subscription tiers) is cited here specifically to show what Along is avoiding as its primary cost by that architecture choice — commercial APIs remain a small, variable cost for edge-case geocoding only, not the routing backbone.
+	•	Cloud/hosting costs for a Supabase/Postgres-based MVP (Section 5.1) are genuinely low at pilot-corridor volume (illustratively, well under ₦500,000/month) and should be treated as a placeholder pending real vendor quotes, not a researched external benchmark like the figures above.
+13.4.2 Phase-by-phase table (illustrative planning scenarios, monthly run-rate by end of phase)
+Phase
+Illustrative monthly cost (low–high)
+Illustrative monthly revenue (low–high)
+Net position
+Phase 0 — Data foundation (Months 1-3)
+₦1.5M–₦4M (field agents, minimal dev spend, tooling)
+₦0 (pre-launch, no trips)
+Fully cost-funded by seed capital — expected and by design
+Phase 1 — MVP launch (Months 3-6)
+₦3M–₦7M (small dev team, driver/rider incentives, minimal hosting)
+₦50,000–₦600,000 (illustrative: ~50-300 trips/day, ~₦600 avg fare, 5-10% commission)
+Substantially loss-making — expected; priority is validated repeat usage, not revenue
+Phase 2 — Abuja expansion (Months 6-14)
+₦8M–₦18M (larger team, 10+ corridor rollout, safety/payments build-out)
+₦2M–₦15M (illustrative: ~1,000-6,000 trips/day city-wide, commission + first driver subscriptions/advertising)
+Gap narrows through the phase; break-even on operating costs is a realistic phase-end goal, not a phase-start one
+Phase 3 — Abuja depth + B2B/B2G (Months 14-20)
+₦15M–₦30M (B2B/B2G sales capacity, deeper safety/ops)
+₦10M–₦35M (commission at maturity + operator SaaS (Section 10.6.1) + first B2G/corporate contracts)
+Operating break-even to modest positive is a realistic target; B2B/B2G revenue is lumpier and less predictable than commission
+Phase 4 — Multi-city Nigeria (Month 20+)
+Scales roughly with city count — each new city closer to a Phase 2 cost profile than a Phase 0 one, per the config-not-code claim (Section 7 of the build spec)
+Scales with combined city commission + growing B2B/B2G base
+Per-city profitability should improve with each replication as the playbook matures
+Phase 5 — National coverage (Year 3-4)
+Dominated by field/ops replication cost across many states, offset by Section 5.2.3's crowdsourcing cost reductions
+Broader commission base + white-label licensing (Section 10.6.5) begins to contribute
+Blended profitability depends heavily on how many cities have reached Phase 3-equivalent maturity
+Phase 6 — Pan-African (Year 4+)
+Market-entry cost per new country, materially higher uncertainty (regulatory, payments-rail, and language/currency variation not yet modeled)
+White-label/licensing fees + developer API (Section 10.6.6) become meaningful for the first time
+Genuinely long-range; treat any specific figure here as illustrative direction, not a forecast
+13.4.3 How to read this table
+	•	Every revenue figure is downstream of a trip-volume assumption stated in the row — change the assumed trips/day and the revenue range moves with it; none of these are top-down guesses independent of a stated mechanism.
+	•	Costs are dominated by people (field agents, developers, ops/support) in every early phase, consistent with Section 13.2's existing cost-driver list — this table adds real salary and trip-economics benchmarks to that list rather than replacing it.
+	•	The path to profitability runs through Phase 2-3, not Phase 0-1 — treating Phases 0-1 as loss-making by design (funded by seed capital, not revenue) is a feature of the plan, not a warning sign, provided Phase 2's trip-volume assumptions are validated against real pilot data before committing further capital.
+	•	Phases 4-6 are directional, not quantified with the same confidence as Phases 0-3, because they depend on decisions (which cities, which countries, which licensing terms) that don't exist yet — presenting them with false precision would be less honest than presenting them as a direction with clearly-stated open variables.
+
+14. Sustainability & Future-Proofing
+Nigeria's policy direction is moving toward electrified and lower-emission urban transport: an Electric Vehicle Transition and Green Mobility Bill has passed its second reading in the Senate, proposing incentives for EV manufacturing, charging infrastructure, and import-duty relief, and both the Lagos state government and private operators (including Shuttlers) have already begun incorporating EV and CNG vehicles into their fleets. EV adoption on Nigerian roads remains very small today (a low single-digit percentage of the vehicle fleet), so this is a medium-term consideration rather than a launch requirement.
+	•	Along's asset-light model does not require it to purchase vehicles, but it can structure partnerships and incentives that favor drivers using EV, CNG, or otherwise lower-emission vehicles as that segment grows.
+	•	Corridor and route data collected by Along has natural value to city planners and EV/charging-infrastructure planning, reinforcing the B2G data-partnership opportunity in Section 10.
+
+15. Funding Ask & Use of Funds
+Along is raising a seed round to fund Phase 0 and Phase 1 of the roadmap in Section 8.3: building the initial along graph for 2-3 Abuja pilot corridors, shipping the rider and driver MVP apps, and running the pilot through to validated repeat usage, before raising a subsequent round to fund Abuja-wide expansion (Phase 2).
+15.1 Illustrative use of seed funds
+Category
+Approx. allocation
+Field data collection & along-graph build
+30-35%
+Product & engineering (MVP build)
+25-30%
+Driver & rider acquisition (pilot corridors)
+15-20%
+Trust & safety infrastructure
+5-10%
+Regulatory, legal & stakeholder engagement
+5-10%
+Working capital & contingency
+10%
+These allocations are directional and should be refined against a detailed budget once Phase 0 scoping (Section 8.2-8.3) is complete.
+
+16. Risks & Mitigations
+Risk
+Mitigation
+Regulatory uncertainty (pending Ride-Hailing and Smart Mobility Bill)
+Engage proactively in the policy process; design Along's model to be clearly distinct from the private-hire platforms the bill primarily targets; maintain legal counsel tracking developments
+State-led franchise-formalization programs (e.g., Lagos's LAMATA/BITP) narrowing the informal-transit gap directly
+Pilot in Abuja first, where no comparable program is underway (Section 7.3); track BITP's progress and explore a technology-partner posture toward such programs rather than a purely competitive one before entering a market where one is active
+Resistance or extortion from park/union structures
+Lead with direct, revenue-sharing partnership rather than bypassing unions; build relationships with park leadership before launch on each corridor
+Safety incidents damaging trust
+Rigorous driver/vehicle verification, live trip-sharing and SOS from day one, transparent incident response
+Data-collection cost/time to build the along graph
+Start with 2-3 proven high-volume corridors rather than city-wide coverage; use a trained field team rather than relying solely on unverified crowdsourcing early on
+Driver and rider behavior change / adoption
+Early-driver incentives; focus rider acquisition on high-need segments (newcomers, students, safety-conscious riders) most motivated to change habits
+Competitive response from well-funded private-hire platforms moving down-market
+Along's asset-light, informal-network focus and local park relationships are structurally hard for a private-hire fleet model to replicate quickly
+Connectivity and device constraints among target users
+Low-data mode, lightweight app, and a longer-term USSD/SMS fallback channel
+Fraud (fake drivers, falsified trip/fare data)
+Verification at onboarding, ongoing rating and anomaly monitoring, and a review workflow for graph corrections
+Macro volatility (fuel price swings affecting driver economics and fares)
+Keep the along graph's fare data continuously updated rather than fixed, and keep Along's own commission low enough to remain viable for drivers through price swings
+
+17. Milestone Roadmap
+Milestone
+Target timing
+Complete field mapping of 2-3 Abuja pilot corridors; along graph v1 live
+Month 3
+Rider + driver MVP apps launched on pilot corridors
+Month 6
+First 100 verified drivers and validated repeat rider usage
+Month 6-9
+Live GPS tracking, in-app payments, and safety features (SOS, women-only option) live
+Month 9-14
+Full FCT (Abuja) coverage across 10+ corridors
+Month 14
+First B2B corporate account(s) and government data-partnership discussions initiated
+Month 14-20
+Launch in second Nigerian city
+Month 20-24
+Presence in a majority of Nigerian states
+Year 3-4
+First non-Nigerian African market launched
+Year 4+
+
+18. Closing Summary
+Along is not attempting to invent a new way for Nigerians to move around their cities — Nigerians have already built one, over decades, without any formal support. Along's job is to make that existing system visible, navigable, multi-modal, fairly priced, and safe, using the smartphone that is already in most riders' and drivers' pockets, without ever having to own a single vehicle. Starting in Abuja — the city that gave the product its name — Along has a clear, validated problem, a defensible data asset to build, and a realistic, asset-light path that scales the same way from one corridor, to a city, to every Nigerian state, to markets across Africa that share the same informal-transport pattern under a different local name.
+Sources & references (data-grounding note)
+Market sizing, regulatory, commission, and local-context figures in this plan are drawn from third-party market research firms (Ken Research, Expert Market Research, Research and Markets), Statista-sourced reporting via BusinessDay Nigeria, legal analysis from Aluko & Oyebode and ALN on the Ride-Hailing and Smart Mobility Bill, driver-reported commission data via TechCabal, Ridetransport, Within Nigeria, and Technext24 (including reporting on the FCT Transport Secretariat/Public Complaints Commission investigation into ride-hailing commissions), and further Nigerian press coverage (Daily Trust, Legit.ng, TechCrunch, Techpoint Africa, Nairametrics) current as of mid-2026. These are directional, third-party estimates and should be independently verified and refreshed before use in formal fundraising materials.

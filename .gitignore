@@ -1,0 +1,54 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Secrets & local env (never commit)
+.env
+.env.*
+!.env.example
+env/*.json
+!env/*.example.json
+supabase/.temp/
+supabase/.branches/
+
+# Node / pnpm
+node_modules/
+.pnpm-store/
+dist/
+.next/
+out/
+coverage/
+
+# Deno
+.deno/
+
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.g.dart.bak
+pubspec_overrides.yaml
+ios/Pods/
+ios/.symlinks/
+android/.gradle/
+android/local.properties
+*.jks
+*.keystore
+key.properties
+
+# Routing / tiles / data artefacts (large; rebuilt by scripts)
+backend/routing/data/
+backend/routing/extracts/
+*.osm.pbf
+*.osrm*
+*.pmtiles
+data-collection/raw/
+
+# Logs
+*.log
