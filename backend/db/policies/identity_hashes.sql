@@ -1,2 +1,6 @@
--- private.identity_hashes: RLS enabled, no client policies; service role only.
--- Schema-level revoke in 0001; table-level revoke in 0003 migration.
+-- GENERATED — do not edit. Regenerate: bash backend/db/scripts/dump_policies.sh
+-- Table: private.identity_hashes
+-- RLS enabled: true
+-- RLS forced: false
+
+-- (no policies)

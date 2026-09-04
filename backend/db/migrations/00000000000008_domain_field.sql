@@ -1,5 +1,5 @@
 -- P0-A-07: doc 02 §14 — field data tables, two-scout reconciliation, admin RPCs,
--- ingestion upsert helper (doc 13 §3). Canonical policies: backend/db/policies/field_*.sql
+-- ingestion upsert helper (doc 13 §3).
 
 create or replace function has_admin_role(roles text[]) returns boolean language sql stable security definer set search_path = public as $$
   select exists (
@@ -446,7 +446,7 @@ begin
 end;
 $$;
 
--- RLS (canonical source: backend/db/policies/field_*.sql)
+-- RLS policies inlined (Supabase CLI does not support \ir).
 alter table field_agents enable row level security;
 alter table field_submissions enable row level security;
 alter table field_reconciliations enable row level security;

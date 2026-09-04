@@ -317,7 +317,6 @@ create trigger route_through_fares_set_updated_at before update on route_through
   for each row execute function set_updated_at();
 
 -- RLS policies inlined (Supabase CLI does not support \ir).
--- Canonical readable source: backend/db/policies/<table>.sql — keep in sync.
 alter table data_sources enable row level security;
 alter table parks enable row level security;
 alter table routes enable row level security;
