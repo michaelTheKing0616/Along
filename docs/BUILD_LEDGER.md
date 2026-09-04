@@ -314,7 +314,7 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 ## [Phase 1 / P1-A-06] Edge plan-trip v1 (direct candidates)
 - Status: FAIL
 - Assigned: 2026-09-04
-- Worker report summary: Migration 00016 + Edge plan-trip; Deno 5/5; ADR-0017; TS-PLAN units.
-- Reviewer verdict: FAIL — deno lint fails; TS-PLAN-01-06 SQL 2/6 fail (wrong alight assert + RLS-blind coverage_gap check); no handler integration test.
-- Rework count: 1
-- Notes/escalations: Rework: lint; fix SQL asserts; add handler-level mocked test.
+- Worker report summary: Rework 1: lint + handler tests + alight fix; SQL test 6 still fails (temp table after service_role).
+- Reviewer verdict: FAIL (recheck) — deno lint/tests PASS; TS-PLAN-01-06 exits 3 on assertion 6 permission denied for gap_result; p95 PASS.
+- Rework count: 2
+- Notes/escalations: Final rework: fix assertion 6 only (capture report_id before role switch).
