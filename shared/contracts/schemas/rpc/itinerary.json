@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/itinerary.json",
+  "title": "ItineraryRpc",
+  "$defs": {
+    "ItineraryStopInput": {
+      "type": "object",
+      "required": ["sequence", "destination_description"],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 1 },
+        "destination_description": { "type": "string" },
+        "location": { "$ref": "../common.json#/$defs/Point" }
+      }
+    },
+    "CreateItineraryRequest": {
+      "type": "object",
+      "required": ["p_stops"],
+      "properties": {
+        "p_stops": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ItineraryStopInput" }
+        },
+        "p_load": { "$ref": "../common.json#/$defs/LoadFlag" }
+      }
+    },
+    "UpdateItineraryStopsRequest": {
+      "type": "object",
+      "required": ["p_itinerary_id", "p_ops"],
+      "properties": {
+        "p_itinerary_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_ops": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["op"],
+            "properties": {
+              "op": { "type": "string", "enum": ["add", "remove", "reorder", "edit"] }
+            }
+          }
+        }
+      }
+    },
+    "ItineraryStateRequest": {
+      "type": "object",
+      "required": ["p_itinerary_id"],
+      "properties": {
+        "p_itinerary_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "ItineraryMatchNextRequest": {
+      "type": "object",
+      "required": ["p_itinerary_id"],
+      "properties": {
+        "p_itinerary_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    }
+  }
+}

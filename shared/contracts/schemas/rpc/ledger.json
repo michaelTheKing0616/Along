@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/ledger.json",
+  "title": "LedgerAndPaymentsRpc",
+  "$defs": {
+    "DriverBalanceResponse": {
+      "type": "object",
+      "required": ["balance", "block_threshold", "standing", "deposit_held"],
+      "properties": {
+        "balance": { "$ref": "../common.json#/$defs/Money" },
+        "block_threshold": { "$ref": "../common.json#/$defs/Money" },
+        "standing": { "type": "string" },
+        "grace_deadline": { "$ref": "../common.json#/$defs/IsoDateTime" },
+        "deposit_held": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "DriverLedgerRequest": {
+      "type": "object",
+      "properties": {
+        "p_cursor": { "type": "string" },
+        "p_limit": { "$ref": "../common.json#/$defs/CursorLimit" }
+      }
+    },
+    "CreateAgentCodeRequest": {
+      "type": "object",
+      "required": ["p_amount"],
+      "properties": {
+        "p_amount": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "CreateAgentCodeResponse": {
+      "type": "object",
+      "required": ["agent_code", "expires_at"],
+      "properties": {
+        "agent_code": { "type": "string" },
+        "expires_at": { "$ref": "../common.json#/$defs/IsoDateTime" }
+      }
+    },
+    "ConfirmAgentSettlementRequest": {
+      "type": "object",
+      "required": ["p_agent_code", "p_amount"],
+      "properties": {
+        "p_agent_code": { "type": "string" },
+        "p_amount": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "QrSuggestedAmountsResponse": {
+      "type": "array",
+      "maxItems": 7,
+      "items": { "$ref": "../common.json#/$defs/Money" }
+    },
+    "CreatePaymentRequestResponse": {
+      "type": "object",
+      "required": ["url", "token", "amount", "expires_at"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "token": { "type": "string" },
+        "amount": { "$ref": "../common.json#/$defs/Money" },
+        "expires_at": { "$ref": "../common.json#/$defs/IsoDateTime" }
+      }
+    },
+    "SetPayoutBankRequest": {
+      "type": "object",
+      "required": ["p_bank_code", "p_account_number"],
+      "properties": {
+        "p_bank_code": { "type": "string" },
+        "p_account_number": { "type": "string" }
+      }
+    },
+    "SetAcceptsDigitalRequest": {
+      "type": "object",
+      "required": ["p_enabled"],
+      "properties": {
+        "p_enabled": { "type": "boolean" }
+      }
+    },
+    "MyPaymentsRequest": {
+      "type": "object",
+      "properties": {
+        "p_cursor": { "type": "string" },
+        "p_limit": { "$ref": "../common.json#/$defs/CursorLimit" }
+      }
+    }
+  }
+}

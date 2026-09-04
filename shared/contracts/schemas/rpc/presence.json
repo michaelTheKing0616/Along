@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/presence.json",
+  "title": "PresenceAndRoutesRpc",
+  "$defs": {
+    "SetPresenceRequest": {
+      "type": "object",
+      "required": ["p_status", "p_location", "p_seats_available"],
+      "properties": {
+        "p_status": {
+          "type": "string",
+          "enum": ["at_park", "roaming_available", "roaming_full", "offline"]
+        },
+        "p_location": { "$ref": "../common.json#/$defs/Point" },
+        "p_heading": { "type": "number" },
+        "p_seats_available": { "type": "integer", "minimum": 0 },
+        "p_park_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_declared_route_profile_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_declared_route_leg_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "SetPresenceResponse": {
+      "type": "object",
+      "required": ["session_id", "status"],
+      "properties": {
+        "session_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "status": { "type": "string" }
+      }
+    },
+    "PresencePingRequest": {
+      "type": "object",
+      "required": ["p_location", "p_heading", "p_speed_mps", "p_accuracy_m"],
+      "properties": {
+        "p_location": { "$ref": "../common.json#/$defs/Point" },
+        "p_heading": { "type": "number" },
+        "p_speed_mps": { "type": "number", "minimum": 0 },
+        "p_accuracy_m": { "$ref": "../common.json#/$defs/GeoAccuracyM" },
+        "p_seats_available": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "SuggestKnownRouteResponse": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["route", "stages"],
+          "properties": {
+            "route": { "type": "object" },
+            "stages": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["stage", "default_price_to_end"],
+                "properties": {
+                  "stage": { "type": "object" },
+                  "default_price_to_end": { "$ref": "../common.json#/$defs/Money" }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SnapStageRequest": {
+      "type": "object",
+      "required": ["p_lat", "p_lng"],
+      "properties": {
+        "p_lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "p_lng": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    },
+    "SnapStageResponse": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["stage_id", "name", "distance_m", "route_ids"],
+          "properties": {
+            "stage_id": { "$ref": "../common.json#/$defs/Uuid" },
+            "name": { "type": "string" },
+            "distance_m": { "type": "number", "minimum": 0 },
+            "route_ids": {
+              "type": "array",
+              "items": { "$ref": "../common.json#/$defs/Uuid" }
+            }
+          }
+        }
+      ]
+    },
+    "RouteProfileStop": {
+      "type": "object",
+      "required": ["sequence"],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 0 },
+        "route_stage_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "location": { "$ref": "../common.json#/$defs/Point" },
+        "custom_label": { "type": "string" },
+        "price_to_end": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "UpsertRouteProfileRequest": {
+      "type": "object",
+      "required": ["p_profile"],
+      "properties": {
+        "p_profile": {
+          "type": "object",
+          "required": ["mode_code", "stops"],
+          "properties": {
+            "id": { "$ref": "../common.json#/$defs/Uuid" },
+            "mode_code": { "type": "string" },
+            "name": { "type": "string" },
+            "load_surcharge": { "$ref": "../common.json#/$defs/Money" },
+            "stops": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/RouteProfileStop" }
+            }
+          }
+        }
+      }
+    },
+    "SuggestedStopPriceRequest": {
+      "type": "object",
+      "required": ["p_profile_id", "p_sequence", "p_location"],
+      "properties": {
+        "p_profile_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_sequence": { "type": "integer", "minimum": 0 },
+        "p_location": { "$ref": "../common.json#/$defs/Point" }
+      }
+    }
+  }
+}

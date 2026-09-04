@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/graph.json",
+  "title": "GraphContributionsRpc",
+  "$defs": {
+    "ConfirmGraphValueRequest": {
+      "type": "object",
+      "required": ["p_target_type", "p_target_id", "p_value"],
+      "properties": {
+        "p_target_type": { "type": "string" },
+        "p_target_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_value": { "type": "object" },
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "SubmitCorrectionRequest": {
+      "type": "object",
+      "required": ["p_trip_id", "p_proposed_fare"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_proposed_fare": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "ReportStageHereRequest": {
+      "type": "object",
+      "required": ["p_trip_id", "p_location"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_location": { "$ref": "../common.json#/$defs/Point" },
+        "p_label": { "type": "string" }
+      }
+    }
+  }
+}
