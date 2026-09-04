@@ -1,0 +1,20 @@
+# CODEOWNERS — default reviewers per area (doc 09 §2).
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @along-ng/platform
+
+/mobile-rider/ @along-ng/mobile
+/mobile-driver/ @along-ng/mobile
+/shared/flutter/ @along-ng/mobile
+
+/backend/db/ @along-ng/backend
+/backend/functions/ @along-ng/backend
+/backend/jobs/ @along-ng/backend
+/backend/routing/ @along-ng/backend
+
+/admin-console/ @along-ng/web
+/shared/contracts/ @along-ng/backend @along-ng/mobile
+/shared/design-tokens/ @along-ng/design
+
+/docs/adr/ @along-ng/platform
+/.github/ @along-ng/platform

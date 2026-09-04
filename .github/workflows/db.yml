@@ -1,0 +1,25 @@
+name: db
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.115.0
+
+      - name: Start Supabase local stack
+        run: supabase start
+
+      - name: Verify migrations apply on fresh DB
+        run: supabase db reset --yes
+
+      - name: Lint database (skeleton)
+        run: supabase db lint || true

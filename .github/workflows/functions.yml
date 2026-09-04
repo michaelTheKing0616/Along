@@ -1,0 +1,24 @@
+name: functions
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.6
+
+      - name: Deno lint
+        working-directory: backend/functions
+        run: deno lint
+
+      - name: Deno test
+        working-directory: backend/functions
+        run: deno test --allow-env --allow-read
