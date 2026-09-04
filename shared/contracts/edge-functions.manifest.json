@@ -1,0 +1,14 @@
+{
+  "functions": [
+    { "slug": "plan-trip", "tier": "A", "status": "stub" },
+    { "slug": "places-search", "tier": "A", "status": "stub" },
+    { "slug": "walking-directions", "tier": "A", "status": "stub" },
+    { "slug": "parse-itinerary", "tier": "A", "status": "stub" },
+    { "slug": "settlement/initiate", "tier": "I", "status": "stub" },
+    { "slug": "webhooks/paystack", "tier": "service", "status": "stub" },
+    { "slug": "payments/initiate", "tier": "B/A", "status": "stub" },
+    { "slug": "qr/resolve/{driver_code}", "tier": "A", "status": "stub" },
+    { "slug": "payments/methods", "tier": "B", "status": "stub" },
+    { "slug": "payments/receipt/{payment_id}", "tier": "B/A", "status": "stub" }
+  ]
+}

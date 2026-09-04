@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/trips.json",
+  "title": "TripsAndNegotiationRpc",
+  "$defs": {
+    "RequestTripRequest": {
+      "type": "object",
+      "required": ["p_candidate_id", "p_leg_index", "p_women_only", "p_client_ref"],
+      "properties": {
+        "p_candidate_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_leg_index": { "type": "integer", "minimum": 0 },
+        "p_load": { "$ref": "../common.json#/$defs/LoadFlag" },
+        "p_women_only": { "type": "boolean" },
+        "p_client_ref": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "HailRoamingRequest": {
+      "type": "object",
+      "required": ["p_candidate_token", "p_destination", "p_women_only", "p_client_ref"],
+      "properties": {
+        "p_candidate_token": { "type": "string" },
+        "p_destination": { "$ref": "../common.json#/$defs/Point" },
+        "p_load": { "$ref": "../common.json#/$defs/LoadFlag" },
+        "p_women_only": { "type": "boolean" },
+        "p_client_ref": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "RespondToTripRequest": {
+      "type": "object",
+      "required": ["p_trip_id", "p_action"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_action": { "type": "string", "enum": ["accept", "decline"] },
+        "p_decline_reason": { "type": "string" }
+      }
+    },
+    "CancelTripRequest": {
+      "type": "object",
+      "required": ["p_trip_id"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_reason": { "type": "string" }
+      }
+    },
+    "OpenNegotiationRequest": {
+      "type": "object",
+      "required": ["p_context", "p_client_ref"],
+      "properties": {
+        "p_context": { "type": "string" },
+        "p_candidate_token": { "type": "string" },
+        "p_driver_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_from": {},
+        "p_to": {},
+        "p_client_ref": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "OpenNegotiationResponse": {
+      "type": "object",
+      "required": [
+        "negotiation_id",
+        "anchor",
+        "chip_steps",
+        "round_cap",
+        "round_timeout_s",
+        "eta_band",
+        "expires_at"
+      ],
+      "properties": {
+        "negotiation_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "anchor": { "$ref": "../common.json#/$defs/Money" },
+        "chip_steps": {
+          "type": "array",
+          "items": { "$ref": "../common.json#/$defs/Money" }
+        },
+        "round_cap": { "type": "integer", "minimum": 1 },
+        "round_timeout_s": { "type": "integer", "minimum": 1 },
+        "eta_band": { "type": "string" },
+        "expires_at": { "$ref": "../common.json#/$defs/IsoDateTime" }
+      }
+    },
+    "NegotiationRoundRequest": {
+      "type": "object",
+      "required": ["p_negotiation_id", "p_action"],
+      "properties": {
+        "p_negotiation_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_action": { "type": "string", "enum": ["accept", "counter", "decline"] },
+        "p_amount": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "NegotiationSplitRequest": {
+      "type": "object",
+      "required": ["p_negotiation_id"],
+      "properties": {
+        "p_negotiation_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "TripSnapshotRequest": {
+      "type": "object",
+      "required": ["p_trip_id"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "LocationSamplePoint": {
+      "type": "object",
+      "required": ["ts", "lat", "lng", "accuracy_m"],
+      "properties": {
+        "ts": { "$ref": "../common.json#/$defs/IsoDateTime" },
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lng": { "type": "number", "minimum": -180, "maximum": 180 },
+        "accuracy_m": { "$ref": "../common.json#/$defs/GeoAccuracyM" },
+        "speed_mps": { "type": "number", "minimum": 0 },
+        "heading": { "type": "number" }
+      }
+    },
+    "TripLocationSampleRequest": {
+      "type": "object",
+      "required": ["p_trip_id", "p_points"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_points": {
+          "type": "array",
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/LocationSamplePoint" }
+        }
+      }
+    },
+    "TripLocationSampleResponse": {
+      "type": "object",
+      "required": ["boarded_auto"],
+      "properties": {
+        "boarded_auto": { "type": "boolean" }
+      }
+    },
+    "CompleteTripResponse": {
+      "type": "object",
+      "required": ["commission", "fare"],
+      "properties": {
+        "commission": { "$ref": "../common.json#/$defs/Money" },
+        "fare": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "ProposeExtensionResponse": {
+      "type": "object",
+      "required": ["extension_id", "fare_delta", "new_total", "tier", "unconfirmed"],
+      "properties": {
+        "extension_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "fare_delta": { "$ref": "../common.json#/$defs/Money" },
+        "new_total": { "$ref": "../common.json#/$defs/Money" },
+        "tier": { "$ref": "../common.json#/$defs/FareTier" },
+        "unconfirmed": { "type": "boolean" }
+      }
+    },
+    "ConfirmFareRequest": {
+      "type": "object",
+      "required": ["p_trip_id", "p_outcome"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_outcome": { "type": "string", "enum": ["as_shown", "different"] },
+        "p_paid_amount": { "$ref": "../common.json#/$defs/Money" }
+      }
+    },
+    "RateTripRequest": {
+      "type": "object",
+      "required": ["p_trip_id", "p_score", "p_tags"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_score": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "p_tags": { "type": "array", "items": { "type": "string" } },
+        "p_comment": { "type": "string", "maxLength": 500 }
+      }
+    }
+  }
+}

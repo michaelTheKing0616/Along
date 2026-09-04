@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/safety.json",
+  "title": "SafetyRpc",
+  "$defs": {
+    "RaiseSosRequest": {
+      "type": "object",
+      "required": ["p_location", "p_accuracy_m"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_journey_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_location": { "$ref": "../common.json#/$defs/Point" },
+        "p_accuracy_m": { "$ref": "../common.json#/$defs/GeoAccuracyM" }
+      }
+    },
+    "RaiseSosResponse": {
+      "type": "object",
+      "required": ["sos_id", "emergency_number"],
+      "properties": {
+        "sos_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "emergency_number": { "type": "string" }
+      }
+    },
+    "UpdateSosRequest": {
+      "type": "object",
+      "required": ["p_sos_id"],
+      "properties": {
+        "p_sos_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "CreateTripShareRequest": {
+      "type": "object",
+      "required": ["p_journey_id"],
+      "properties": {
+        "p_journey_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_contact_name": { "type": "string" },
+        "p_contact_phone": { "type": "string" }
+      }
+    },
+    "CreateTripShareResponse": {
+      "type": "object",
+      "required": ["url", "expires_at"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "expires_at": { "$ref": "../common.json#/$defs/IsoDateTime" }
+      }
+    },
+    "RevokeTripShareRequest": {
+      "type": "object",
+      "required": ["p_share_id"],
+      "properties": {
+        "p_share_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "SharedTripViewRequest": {
+      "type": "object",
+      "required": ["p_token"],
+      "properties": {
+        "p_token": { "type": "string" }
+      }
+    },
+    "SharedTripViewResponse": {
+      "type": "object",
+      "required": [
+        "rider_first_name",
+        "status",
+        "mode",
+        "vehicle",
+        "driver_first_name",
+        "current_location",
+        "destination_label",
+        "eta_s",
+        "legs_progress"
+      ],
+      "properties": {
+        "rider_first_name": { "type": "string" },
+        "status": { "type": "string" },
+        "mode": { "$ref": "../common.json#/$defs/ModeRef" },
+        "vehicle": {
+          "type": "object",
+          "required": ["plate", "color"],
+          "properties": {
+            "plate": { "type": "string" },
+            "color": { "type": "string" }
+          }
+        },
+        "driver_first_name": { "type": "string" },
+        "current_location": { "$ref": "../common.json#/$defs/Point" },
+        "destination_label": { "type": "string" },
+        "eta_s": { "type": "integer", "minimum": 0 },
+        "legs_progress": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "ReportIncidentRequest": {
+      "type": "object",
+      "required": ["p_type", "p_description", "p_attachment_paths"],
+      "properties": {
+        "p_trip_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_type": { "type": "string" },
+        "p_description": { "type": "string", "maxLength": 2000 },
+        "p_attachment_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

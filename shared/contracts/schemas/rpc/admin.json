@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://along.ng/schemas/rpc/admin.json",
+  "title": "AdminRpc",
+  "$defs": {
+    "AdminApproveVerificationRequest": {
+      "type": "object",
+      "required": ["p_verification_id"],
+      "properties": {
+        "p_verification_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_women_only_eligible": { "type": "boolean" }
+      }
+    },
+    "AdminRejectVerificationRequest": {
+      "type": "object",
+      "required": ["p_verification_id", "reason"],
+      "properties": {
+        "p_verification_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "reason": { "type": "string" }
+      }
+    },
+    "AdminReviewFareCorrectionRequest": {
+      "type": "object",
+      "required": ["id", "action"],
+      "properties": {
+        "id": { "$ref": "../common.json#/$defs/Uuid" },
+        "action": { "type": "string", "enum": ["approve", "reject"] },
+        "note": { "type": "string" }
+      }
+    },
+    "AdminPublishGraphEntityRequest": {
+      "type": "object",
+      "required": ["p_type", "p_payload"],
+      "properties": {
+        "p_type": { "type": "string" },
+        "p_payload": { "type": "object" }
+      }
+    },
+    "AdminReconcileFieldEntityRequest": {
+      "type": "object",
+      "required": ["p_reconciliation_id", "action"],
+      "properties": {
+        "p_reconciliation_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "action": { "type": "string", "enum": ["match", "discrepant", "resolve"] },
+        "p_resolution": { "type": "string" }
+      }
+    },
+    "AdminReviewFlagRequest": {
+      "type": "object",
+      "required": ["p_flag_id", "action"],
+      "properties": {
+        "p_flag_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "action": { "type": "string", "enum": ["clear", "action"] },
+        "note": { "type": "string" }
+      }
+    },
+    "AdminTransitionStandingRequest": {
+      "type": "object",
+      "required": ["p_driver_id", "p_to", "p_reason"],
+      "properties": {
+        "p_driver_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_to": { "type": "string" },
+        "p_reason": { "type": "string" }
+      }
+    },
+    "AdminManualLedgerAdjustmentRequest": {
+      "type": "object",
+      "required": ["p_driver_id", "p_amount", "p_memo"],
+      "properties": {
+        "p_driver_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_amount": { "$ref": "../common.json#/$defs/Money" },
+        "p_memo": { "type": "string" }
+      }
+    },
+    "AdminAckSosRequest": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "AdminResolveSosRequest": {
+      "type": "object",
+      "required": ["id", "status", "note"],
+      "properties": {
+        "id": { "$ref": "../common.json#/$defs/Uuid" },
+        "status": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "AdminTriageIncidentRequest": {
+      "type": "object",
+      "required": ["id", "status"],
+      "properties": {
+        "id": { "$ref": "../common.json#/$defs/Uuid" },
+        "status": { "type": "string" },
+        "assigned_to": { "$ref": "../common.json#/$defs/Uuid" },
+        "severity": { "type": "string" }
+      }
+    },
+    "AdminSetConfigRequest": {
+      "type": "object",
+      "required": ["key", "scope_type", "scope_id", "value"],
+      "properties": {
+        "key": { "type": "string" },
+        "scope_type": { "type": "string" },
+        "scope_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "value": {}
+      }
+    },
+    "AdminCorridorAnalyticsRequest": {
+      "type": "object",
+      "required": ["p_corridor_id", "p_from", "p_to"],
+      "properties": {
+        "p_corridor_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "p_from": { "$ref": "../common.json#/$defs/IsoDateTime" },
+        "p_to": { "$ref": "../common.json#/$defs/IsoDateTime" },
+        "p_cursor": { "type": "string" },
+        "p_limit": { "$ref": "../common.json#/$defs/CursorLimit" }
+      }
+    }
+  }
+}

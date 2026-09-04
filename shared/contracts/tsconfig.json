@@ -9,5 +9,12 @@
     "declaration": true,
     "rootDir": "."
   },
-  "include": ["field-ingestion.ts", "index.ts", "db.types.ts"]
+  "include": [
+    "field-ingestion.ts",
+    "index.ts",
+    "db.types.ts",
+    "generated/edge.ts",
+    "generated/rpc.ts",
+    "generated/common.ts"
+  ]
 }
