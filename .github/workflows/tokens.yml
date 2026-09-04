@@ -23,5 +23,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile=false
 
-      - name: Build design tokens (skeleton)
-        run: pnpm --filter @along/design-tokens build
+      - name: Verify design tokens are current
+        run: bash shared/design-tokens/scripts/check_stale.sh

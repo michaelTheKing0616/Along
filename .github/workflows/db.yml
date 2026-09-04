@@ -18,8 +18,17 @@ jobs:
       - name: Start Supabase local stack
         run: supabase start
 
-      - name: Verify migrations apply on fresh DB
+      - name: Apply migrations on fresh DB
         run: supabase db reset --yes
 
-      - name: Lint database (skeleton)
-        run: supabase db lint || true
+      - name: Run pgTAP tests
+        run: bash backend/db/scripts/run_pgtap.sh
+
+      - name: Lint database
+        run: supabase db lint
+
+      - name: RLS coverage check
+        run: bash backend/db/scripts/run_rls_coverage.sh
+
+      - name: Schema types contract check
+        run: bash backend/db/scripts/check_schema_types.sh

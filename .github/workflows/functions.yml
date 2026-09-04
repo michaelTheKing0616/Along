@@ -22,3 +22,6 @@ jobs:
       - name: Deno test
         working-directory: backend/functions
         run: deno test --allow-env --allow-read
+
+      - name: OpenAPI contract check
+        run: bash backend/functions/scripts/check_openapi_contract.sh

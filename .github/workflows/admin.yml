@@ -31,3 +31,6 @@ jobs:
 
       - name: Test admin-console
         run: pnpm --filter @along/admin-console test
+
+      - name: Playwright E2E against local stack
+        run: bash admin-console/scripts/check_playwright.sh

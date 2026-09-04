@@ -28,3 +28,6 @@ jobs:
 
       - name: Dart test
         run: melos exec -- flutter test
+
+      - name: Release APK analyze-size gate
+        run: bash mobile-rider/scripts/check_release_build.sh
