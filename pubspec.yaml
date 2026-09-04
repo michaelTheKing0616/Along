@@ -1,0 +1,9 @@
+name: along_workspace
+description: Along monorepo workspace root (Melos).
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dev_dependencies:
+  melos: ^6.3.2

@@ -1,0 +1,30 @@
+name: mobile
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.2'
+          cache: true
+
+      - name: Install Melos
+        run: dart pub global activate melos 6.3.2
+
+      - name: Melos bootstrap
+        run: melos bootstrap
+
+      - name: Dart analyze
+        run: melos exec -- dart analyze --fatal-infos
+
+      - name: Dart test
+        run: melos exec -- flutter test

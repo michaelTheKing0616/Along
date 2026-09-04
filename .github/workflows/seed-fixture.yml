@@ -1,0 +1,22 @@
+name: seed-fixture
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  seed-fixture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.115.0
+
+      - name: Start Supabase local stack
+        run: supabase start
+
+      - name: Seed fixture placeholder (P0-E-04)
+        run: echo "seed_testcity_fixture not yet implemented — skeleton passes"

@@ -1,0 +1,6 @@
+packages:
+  - backend/functions
+  - backend/jobs
+  - admin-console
+  - shared/contracts
+  - shared/design-tokens

@@ -1,0 +1,21 @@
+{
+  "name": "@along/admin-console",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.29",
+    "eslint": "9.28.0",
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.33.0",
+    "vitest": "3.2.1"
+  }
+}

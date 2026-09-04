@@ -1,0 +1,17 @@
+{
+  "name": "along",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "supabase": "supabase",
+    "lint": "pnpm -r run lint --if-present",
+    "typecheck": "pnpm -r run typecheck --if-present",
+    "test": "pnpm -r run test --if-present"
+  },
+  "devDependencies": {
+    "supabase": "2.115.0"
+  }
+}

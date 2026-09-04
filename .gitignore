@@ -2,6 +2,7 @@
 .DS_Store
 Thumbs.db
 .idea/
+*.iml
 .vscode/*
 !.vscode/extensions.json
 *.swp
@@ -25,6 +26,10 @@ coverage/
 
 # Deno
 .deno/
+
+# FVM / local SDK caches
+.fvm/flutter_sdk
+.fvm/versions
 
 # Dart / Flutter
 .dart_tool/
