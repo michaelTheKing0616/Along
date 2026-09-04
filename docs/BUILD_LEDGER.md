@@ -74,3 +74,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — both acceptance criteria MET; intentional red placeholders OK until downstream tasks. Notes: seed gate presence-only; pgTAP RLS heuristic loose; Playwright script always exits 1 until P0-D-01.
 - Rework count: 0
 - Notes/escalations: none blocking. Follow-ups absorbed by P0-A-01 / P0-D-01 / P0-E-04 / P0-E-05 as named in gate scripts.
+
+## [Phase 0 / P0-A-01] Migrations 0001/0002 geo & config
+- Status: FAIL
+- Assigned: 2026-09-04
+- Worker report summary: 0001/0002 + seed_core + cfg/city_for_point + pgTAP suites; RLS coverage excludes PostGIS catalogs; open questions cleared on rework.
+- Reviewer verdict: FAIL — pgTAP tests call `plan()` before `create extension pgtap`, so fresh `supabase db reset` / CI path fails with `function plan(integer) does not exist`. Logic and seed MET when pgtap pre-installed.
+- Rework count: 2
+- Notes/escalations: Doc 09 `\ir` vs Supabase CLI — interim pattern (inline in migration + canonical `policies/`) accepted; human should amend doc 09 or add ADR. CODEOWNERS placeholders still pending.
