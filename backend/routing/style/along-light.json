@@ -1,0 +1,264 @@
+{
+  "version": 8,
+  "name": "along-light",
+  "metadata": {
+    "along:tile-version": "20260904",
+    "along:description": "Along basemap + overlay layers (doc 05 §8)"
+  },
+  "center": [7.3986, 9.0765, 12],
+  "zoom": 12,
+  "bearing": 0,
+  "pitch": 0,
+  "sources": {
+    "basemap": {
+      "type": "vector",
+      "url": "pmtiles://{{PMTILES_URL}}"
+    },
+    "along-puck": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-puck-ring": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-parks": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-stages": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-route-active": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-route-walk": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-ambient-cells": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    },
+    "along-vehicle": {
+      "type": "geojson",
+      "data": { "type": "FeatureCollection", "features": [] }
+    }
+  },
+  "sprite": "{{SPRITE_URL}}",
+  "glyphs": "{{GLYPHS_URL}}",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#F4F4F2" }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "water",
+      "paint": { "fill-color": "#CFE3EA" }
+    },
+    {
+      "id": "landcover-grass",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "landcover",
+      "filter": ["==", "class", "grass"],
+      "paint": { "fill-color": "#E6EEE3" }
+    },
+    {
+      "id": "landcover-wood",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "landcover",
+      "filter": ["==", "class", "wood"],
+      "paint": { "fill-color": "#E6EEE3" }
+    },
+    {
+      "id": "landuse-park",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "landuse",
+      "filter": ["in", "class", "park", "national_park"],
+      "paint": { "fill-color": "#E6EEE3" }
+    },
+    {
+      "id": "road-minor",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "transportation",
+      "filter": ["in", "class", "minor", "service", "path"],
+      "paint": {
+        "line-color": "#E8E8E6",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.5, 16, 2]
+      }
+    },
+    {
+      "id": "road-primary",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "transportation",
+      "filter": ["in", "class", "primary", "secondary", "tertiary"],
+      "paint": {
+        "line-color": "#DEDEDC",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 16, 4]
+      }
+    },
+    {
+      "id": "road-motorway",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "transportation",
+      "filter": ["==", "class", "motorway"],
+      "paint": {
+        "line-color": "#D8D8D6",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 16, 6]
+      }
+    },
+    {
+      "id": "road-label",
+      "type": "symbol",
+      "source": "basemap",
+      "source-layer": "transportation_name",
+      "minzoom": 13,
+      "layout": {
+        "text-field": ["get", "name"],
+        "text-font": ["Inter Regular"],
+        "text-size": 12
+      },
+      "paint": {
+        "text-color": "#6B6B6B",
+        "text-halo-color": "#F4F4F2",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "building",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "building",
+      "minzoom": 15,
+      "paint": { "fill-color": "#EBEBE9", "fill-opacity": 0.8 }
+    },
+    {
+      "id": "along-route-walk-casing",
+      "type": "line",
+      "source": "along-route-walk",
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": {
+        "line-color": "#6B6B6B",
+        "line-width": 3,
+        "line-dasharray": [2, 2]
+      }
+    },
+    {
+      "id": "along-route-active-casing",
+      "type": "line",
+      "source": "along-route-active",
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#FFFFFF", "line-width": 7 }
+    },
+    {
+      "id": "along-route-active",
+      "type": "line",
+      "source": "along-route-active",
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#0A0A0A", "line-width": 5 }
+    },
+    {
+      "id": "along-ambient-cells",
+      "type": "circle",
+      "source": "along-ambient-cells",
+      "paint": {
+        "circle-color": "rgba(247, 209, 23, 0.18)",
+        "circle-stroke-color": "#F7D117",
+        "circle-stroke-width": 1,
+        "circle-radius": [
+          "interpolate",
+          ["linear"],
+          ["get", "bucket"],
+          1, 12,
+          5, 20,
+          10, 28
+        ]
+      }
+    },
+    {
+      "id": "along-ambient-label",
+      "type": "symbol",
+      "source": "along-ambient-cells",
+      "layout": {
+        "text-field": ["to-string", ["get", "count"]],
+        "text-size": 11,
+        "text-font": ["Inter Bold"]
+      },
+      "paint": { "text-color": "#0A0A0A" }
+    },
+    {
+      "id": "along-stages",
+      "type": "circle",
+      "source": "along-stages",
+      "minzoom": 14,
+      "paint": {
+        "circle-color": "#0A0A0A",
+        "circle-radius": 3
+      }
+    },
+    {
+      "id": "along-parks",
+      "type": "symbol",
+      "source": "along-parks",
+      "minzoom": 13,
+      "layout": {
+        "icon-image": "park-pin",
+        "icon-size": 1,
+        "text-field": ["get", "name"],
+        "text-font": ["Inter Regular"],
+        "text-size": 12,
+        "text-offset": [0, 1.2],
+        "text-anchor": "top"
+      },
+      "paint": {
+        "text-color": "#0A0A0A",
+        "text-halo-color": "#F4F4F2",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "along-puck-ring",
+      "type": "circle",
+      "source": "along-puck-ring",
+      "paint": {
+        "circle-color": "rgba(247, 209, 23, 0.25)",
+        "circle-radius": ["get", "radius"]
+      }
+    },
+    {
+      "id": "along-puck",
+      "type": "circle",
+      "source": "along-puck",
+      "paint": {
+        "circle-color": "#F7D117",
+        "circle-radius": 8,
+        "circle-stroke-color": "#0A0A0A",
+        "circle-stroke-width": 2
+      }
+    },
+    {
+      "id": "along-vehicle",
+      "type": "symbol",
+      "source": "along-vehicle",
+      "layout": {
+        "icon-image": ["get", "mode-icon"],
+        "icon-size": 1,
+        "icon-rotate": ["get", "heading"],
+        "icon-rotation-alignment": "map",
+        "icon-allow-overlap": true
+      }
+    }
+  ]
+}

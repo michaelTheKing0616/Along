@@ -10,8 +10,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  maplibre_gl: 0.22.0
+  along_design:
+    path: ../along_design
+  along_core:
+    path: ../along_core
+  path: 1.9.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+flutter:
+  assets:
+    - assets/style/along-light-test.json
+    - assets/fixtures/abuja_fixture.pmtiles
