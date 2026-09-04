@@ -1,0 +1,51 @@
+# Self-hosted routing, places, and tiles (doc 09 §4, ADR-0013).
+# Local dev uses a small Abuja extract; production rebuilds weekly from the same OSM snapshot.
+
+services:
+  osrm-car:
+    image: osrm/osrm-backend:v5.27.1
+    command: osrm-routed --algorithm mld /data/car.osrm
+    volumes:
+      - ./data/car:/data
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  osrm-foot:
+    image: osrm/osrm-backend:v5.27.1
+    command: osrm-routed --algorithm mld /data/foot.osrm
+    volumes:
+      - ./data/foot:/data
+    ports:
+      - "5001:5000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  photon:
+    image: komoot/photon:0.6.2
+    volumes:
+      - ./data/photon:/photon/photon_data
+    ports:
+      - "2322:2322"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:2322/api?q=health&limit=1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Local-only vector tile server (PMTiles); staging/prod serve from CDN.
+  pmtiles-serve:
+    profiles: ["local"]
+    image: ghcr.io/protomaps/go-pmtiles:v1.19.0
+    command: serve /data --port 8080
+    volumes:
+      - ./data/tiles:/data
+    ports:
+      - "8080:8080"

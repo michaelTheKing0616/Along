@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { PlannerCfg } from './types.ts';
+import type { PlacesCfg, PlannerCfg } from './types.ts';
 
 type CfgRow = { key: string; value: unknown };
 
@@ -69,6 +69,27 @@ export async function loadPlannerCfg(
       medium: ['none', 'small'],
       large: ['none', 'small', 'medium'],
     }),
+  };
+}
+
+export async function loadPlacesCfg(
+  client: SupabaseClient,
+  cityId: string,
+): Promise<PlacesCfg> {
+  const keys = [
+    'places.search_radius_m',
+    'places.trigram_min_similarity',
+    'places.photon_timeout_ms',
+  ] as const;
+
+  const values = await Promise.all(
+    keys.map((k) => cfgValue(client, k, cityId)),
+  );
+
+  return {
+    searchRadiusM: parseNum(values[0], 5000),
+    trigramMinSimilarity: parseNum(values[1], 0.2),
+    photonTimeoutMs: parseNum(values[2], 800),
   };
 }
 

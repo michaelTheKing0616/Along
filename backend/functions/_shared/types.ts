@@ -118,3 +118,26 @@ export type ModeRow = ModeRef & {
   load_capacity: string;
   default_dwell_s: number;
 };
+
+export type PlaceResult = {
+  kind: 'park' | 'stage' | 'place';
+  id?: string;
+  name: string;
+  area: string;
+  location: Point;
+  distance_m: number;
+};
+
+export type WalkingStep = {
+  instruction: string;
+  distance_m: number;
+  bearing: number;
+  maneuver: string;
+  geometry: Point[];
+};
+
+export type PlacesCfg = {
+  searchRadiusM: number;
+  trigramMinSimilarity: number;
+  photonTimeoutMs: number;
+};

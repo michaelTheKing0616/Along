@@ -1,8 +1,8 @@
 {
   "functions": [
     { "slug": "plan-trip", "tier": "A", "status": "implemented" },
-    { "slug": "places-search", "tier": "A", "status": "stub" },
-    { "slug": "walking-directions", "tier": "A", "status": "stub" },
+    { "slug": "places-search", "tier": "A", "status": "implemented" },
+    { "slug": "walking-directions", "tier": "A", "status": "implemented" },
     { "slug": "parse-itinerary", "tier": "A", "status": "stub" },
     { "slug": "settlement/initiate", "tier": "I", "status": "stub" },
     { "slug": "webhooks/paystack", "tier": "service", "status": "stub" },
