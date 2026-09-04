@@ -194,3 +194,12 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS — ledger follow-up from P0-A-04 resolved.
 - Rework count: 0
 - Notes/escalations: none.
+
+---
+
+## [Phase 0 / Decision] Planner resolution of blueprint gaps raised in session 1
+**Date:** 2026-09-04
+1. **doc 02 §2.3** now lists `promotion.collusion_downweight` (`0.25`); doc 04 §6.2 references it via `cfg()` instead of a literal.
+2. **`\ir` vs Supabase CLI → ADR-0015:** RLS policies are defined inline in migrations (single source of truth); `backend/db/policies/` becomes a generated, CI-checked snapshot from `pg_policies`. Docs 01 §3, 02 §16, 09 §3 amended. New task **P0-A-09** (S, depends P0-A-08) performs the conversion and adds the CI check; the interim "canonical policies/" comments are removed by that task.
+3. **CODEOWNERS:** no git remote/GitHub org exists yet, so the file has no effect. Keep `@along-ng/*` placeholders; revisit when the repo is pushed (record under the task that creates the remote). Non-blocking.
+**Escalations:** none.

@@ -203,6 +203,7 @@ language sql stable as $$ select (cfg(p_key,p_city,p_corridor))::text::numeric $
 | `promotion.fare_tolerance_pct` | `0.15` | §4.5 tolerance |
 | `promotion.location_tolerance_m` | `50` | §4.5 |
 | `promotion.outlier_mad_k` | `3.0` | §4.5.1 sharp deviation → review |
+| `promotion.collusion_downweight` | `0.25` | doc 04 §6.2 — weight multiplier for confirmations from accounts sharing a device fingerprint / phone-prefix cluster (doc 12 §6) |
 | `promotion.decay_window_days` | `90` | §4.5.1 re-validation |
 | `promotion.decay_step` | `0.15` | confidence decrement per window |
 | `trust.rider_base` | `0.2`; `trust.rider_per_trip` `0.05`; `trust.rider_cap` `1.0`; `trust.rider_min_age_days` `7` | §4.5.1 account_trust_weight |
@@ -1234,7 +1235,7 @@ create table notifications (
 
 ---
 
-## 16. RLS policy matrix (summary — full policies live in `backend/db/policies/*.sql`, one file per table, tested in pgTAP)
+## 16. RLS policy matrix (summary — policies are defined inline in migrations; `backend/db/policies/*.sql` is the generated per-table snapshot (ADR-0015); tested in pgTAP)
 
 Legend: **O** own rows · **P** party to trip/journey · **S** admin in city scope · **R** specific admin roles · **F** function/RPC only · **—** none · **T** Tier-A aggregate view only
 

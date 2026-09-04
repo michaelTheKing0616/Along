@@ -194,7 +194,7 @@ field_agent: 3.0 ; admin: 3.0 (admin confirmations are still logged, never bypas
 Weight is snapshotted into `graph_confirmations.trust_weight` at confirmation time.
 
 ### 6.2 Independent confirmation (§4.5.1)
-A confirmation counts once per `(target, confirmer_profile_id)` (unique constraint). Confirmations from accounts sharing a device fingerprint or phone-prefix cluster flagged by doc 12 §6 are down-weighted ×0.25 (recorded in `meta`).
+A confirmation counts once per `(target, confirmer_profile_id)` (unique constraint). Confirmations from accounts sharing a device fingerprint or phone-prefix cluster flagged by doc 12 §6 are down-weighted × `cfg('promotion.collusion_downweight')` (default 0.25; recorded in `meta`).
 
 ### 6.3 Promotion
 ```

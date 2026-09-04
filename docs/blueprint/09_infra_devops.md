@@ -27,7 +27,7 @@ Deploy: `main` → staging automatically (migrations via `supabase db push` with
 
 ## 3. Database operations
 
-- Migrations: `backend/db/migrations/NNNN_<context>.sql`; one bounded context per file; every function file idempotent (`create or replace`); policies in `backend/db/policies/<table>.sql` applied by migrations (`\ir`).
+- Migrations: `backend/db/migrations/NNNN_<context>.sql`; one bounded context per file; every function file idempotent (`create or replace`). **RLS policies are written inline in the migration that creates or changes them — migrations are the single source of truth** (the Supabase CLI runner does not support psql meta-commands such as `\ir`; ADR-0015). `backend/db/policies/<table>.sql` is a **generated snapshot**, never hand-edited: `backend/db/scripts/dump_policies.sh` runs after `supabase db reset` and writes one file per table from `pg_policies` (policy name, command, roles, `using`, `with check`) plus a header line stating whether RLS is enabled/forced. The `db` CI workflow regenerates and fails on any diff, exactly like the tokens check. Reviewers read the snapshot; Workers change policies only via a migration.
 - Partitions: `ensure_partitions()` (pg_cron daily) for `trip_location_samples`, `driver_presence_history` (monthly); retention drops old partitions per `cfg`.
 - Connection pooling: Supavisor transaction mode for Edge Functions; session mode for the jobs worker.
 - Backups: Supabase daily backups + PITR (7 days) in prod; weekly restore drill into a scratch project (runbook `db_restore_drill.md`), verified by TS-OPS-01 (row counts + ledger balance invariants).

@@ -77,7 +77,7 @@ along/
 ├── backend/
 │   ├── db/
 │   │   ├── migrations/           supabase/migrations/*.sql (numbered, forward-only)
-│   │   ├── policies/             RLS policies, one file per table (applied by migrations)
+│   │   ├── policies/             generated RLS snapshot, one file per table (from pg_policies; CI-checked, never hand-edited — ADR-0015)
 │   │   ├── functions/            SQL functions grouped by bounded context
 │   │   ├── seed/                 seed_core.sql (modes, config), seed_abuja_pilot/, seed_testcity_fixture/
 │   │   └── tests/                pgTAP tests (mirror of functions/ and policies/)
