@@ -344,8 +344,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-E-01] along_core + along_data + realtime/location/notifications skeletons
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: along_core 96.1% coverage; along_data repos + Drift queue; skeletons for realtime/location/notifications; ADR-0018.
+- Reviewer verdict: PASS WITH NOTES — coverage 96.1%; 36+6+2+2+2 tests. Notes: auth/routes repos untested; flutter_foreground_task deferred to P1-C-02.
+- Rework count: 0
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-E-02] along_map MapLibre + along-light + PMTiles
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T22:13Z
+- Assigned: 2026-09-04T22:37Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
