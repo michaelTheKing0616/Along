@@ -1,6 +1,5 @@
 import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { DeployPlaybook } from './deploy-playbook';
 
@@ -10,12 +9,11 @@ interface PageProps {
 
 async function loadDeployStats(cityId: string) {
   const supabase = await createClient();
-  const admin = createAdminClient();
 
   const [parksRes, routesRes, corridorsRes] = await Promise.all([
     supabase.from('parks').select('id', { count: 'exact', head: true }).eq('city_id', cityId),
     supabase.from('routes').select('id', { count: 'exact', head: true }).eq('city_id', cityId),
-    admin.from('corridors').select('id', { count: 'exact', head: true }).eq('city_id', cityId),
+    supabase.from('corridors').select('id', { count: 'exact', head: true }).eq('city_id', cityId),
   ]);
 
   const { data: parkNames } = await supabase.from('parks').select('name').eq('city_id', cityId);

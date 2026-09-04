@@ -1,4 +1,4 @@
-import { createAdminClient } from '@/lib/supabase/admin';
+import { createClient } from '@/lib/supabase/server';
 
 export type CityRow = {
   id: string;
@@ -8,8 +8,7 @@ export type CityRow = {
 };
 
 export async function getCityBySlug(slug: string): Promise<CityRow | null> {
-  // cities lacks SELECT grant for authenticated (P0-A-09); admin console resolves city server-side.
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('cities')
     .select('id, name, slug, status')

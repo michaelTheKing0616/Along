@@ -1,6 +1,5 @@
 import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { GraphEditor } from './graph-editor';
 
@@ -46,10 +45,9 @@ export type GraphCorridor = {
 
 async function loadGraph(cityId: string) {
   const supabase = await createClient();
-  const admin = createAdminClient();
 
   const [corridorsRes, routesRes, stagesRes, parksRes] = await Promise.all([
-    admin.from('corridors').select('id, name, slug, status').eq('city_id', cityId).order('name'),
+    supabase.from('corridors').select('id, name, slug, status').eq('city_id', cityId).order('name'),
     supabase
       .from('routes')
       .select(
