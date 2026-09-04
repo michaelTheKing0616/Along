@@ -138,3 +138,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — prior FAIL fixed on fresh reset; Phase 0 collusion gate MET. Notes: add `promotion.collusion_downweight` to doc 02 §2.3 table (doc drift); unused-var lint warnings; sustained-disagreement path untested.
 - Rework count: 2
 - Notes/escalations: **Human/planner:** amend doc 02 §2.3 to list `promotion.collusion_downweight` default 0.25 (algorithm param from doc 04 §6.2). Autopilot model policy locked: Workers+Reviewers = `composer-2.5-fast` only; never resume non-Cursor Reviewer sessions.
+
+## [Phase 0 / P0-A-06] planner_decompose MVP
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 0007 planner_decompose (cfg-bounded recursive multi-leg); triangle backbone fixture; 9/9 pgTAP; every park pair has a path.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: single shortest path (Yen → P2-A-01); silent fare null on resolve_fare errors; Abuja re-validation → P0-E-04.
+- Rework count: 0
+- Notes/escalations: none blocking.
