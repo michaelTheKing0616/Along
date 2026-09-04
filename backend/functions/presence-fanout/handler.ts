@@ -95,7 +95,7 @@ export async function handlePresenceFanout(
   });
 }
 
-export async function handlePresenceFanoutDefault(
+export function handlePresenceFanoutDefault(
   req: PresenceFanoutRequest,
 ): Promise<Response> {
   return handlePresenceFanout(req, {

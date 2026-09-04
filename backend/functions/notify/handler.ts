@@ -125,7 +125,7 @@ export async function handleNotify(
   return jsonResponse({ data: { kind: body.kind }, meta: { request_id: rid } });
 }
 
-export async function handleNotifyDefault(body: NotifyRequest): Promise<Response> {
+export function handleNotifyDefault(body: NotifyRequest): Promise<Response> {
   return handleNotify(body, {
     service: createServiceClient(),
     realtime: createRealtimeBroadcastClient(),

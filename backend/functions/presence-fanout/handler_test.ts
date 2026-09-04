@@ -55,8 +55,9 @@ function createMockFanoutService(): SupabaseClient {
 Deno.test('presence-fanout: publishes ambient cells and reports cfg interval ≤ 10 s', async () => {
   const broadcasts: Array<{ topic: string; payload: unknown }> = [];
   const realtime: RealtimeBroadcastClient = {
-    send: async ({ topic, payload }) => {
+    send: ({ topic, payload }) => {
       broadcasts.push({ topic, payload });
+      return Promise.resolve();
     },
   };
 
@@ -90,9 +91,9 @@ Deno.test('fcm client: stub when FCM env missing', async () => {
   Deno.env.delete('FCM_ACCESS_TOKEN');
 
   try {
-    const client = createFcmClient(async () => {
-      throw new Error('fetch should not be called without FCM config');
-    });
+    const client = createFcmClient(() =>
+      Promise.reject(new Error('fetch should not be called without FCM config'))
+    );
     const result = await client.sendDataMessage({
       token: 'device-token',
       data: { trip_id: TRIP_ID },
@@ -114,10 +115,10 @@ Deno.test('fcm client: sends HTTP when configured', async () => {
   try {
     let capturedUrl = '';
     let capturedBody = '';
-    const client = createFcmClient(async (url, init) => {
+    const client = createFcmClient((url, init) => {
       capturedUrl = url;
       capturedBody = String(init.body);
-      return { ok: true, status: 200, body: '{"name":"projects/along/messages/abc"}' };
+      return Promise.resolve({ ok: true, status: 200, body: '{"name":"projects/along/messages/abc"}' });
     });
 
     const result = await client.sendDataMessage({
@@ -213,16 +214,17 @@ Deno.test('notify: trip_request broadcasts to driver channel and sends FCM data 
   const res = await handleNotify(body, {
     service: createMockNotifyService(),
     realtime: {
-      send: async ({ topic, event }) => {
+      send: ({ topic, event }) => {
         broadcasts.push({ topic, event });
+        return Promise.resolve();
       },
     },
     fcm: {
-      sendDataMessage: async (msg) => {
+      sendDataMessage: (msg) => {
         fcmTokens.push(msg.token);
         assertEquals(msg.ttlSeconds, 25);
         assertEquals(msg.collapseKey, `trip_${TRIP_ID}`);
-        return { messageId: 'fcm-1' };
+        return Promise.resolve({ messageId: 'fcm-1' });
       },
     },
   });
