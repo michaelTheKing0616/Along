@@ -312,9 +312,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking for merge; follow-ups before Phase 3 Na Me UX.
 
 ## [Phase 1 / P1-A-06] Edge plan-trip v1 (direct candidates)
-- Status: IN PROGRESS
-- Assigned: 2026-09-04T21:11Z
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: none yet.
+- Status: FAIL
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00016 + Edge plan-trip; Deno 5/5; ADR-0017; TS-PLAN units.
+- Reviewer verdict: FAIL — deno lint fails; TS-PLAN-01-06 SQL 2/6 fail (wrong alight assert + RLS-blind coverage_gap check); no handler integration test.
+- Rework count: 1
+- Notes/escalations: Rework: lint; fix SQL asserts; add handler-level mocked test.
