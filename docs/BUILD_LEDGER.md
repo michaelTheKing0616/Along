@@ -58,3 +58,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: FAIL — criterion "CI skeleton green on empty projects" NOT MET: `admin.yml` typecheck fails TS2835 (NodeNext relative imports need `.js` extension) in `admin-console/src/index.test.ts` and `backend/jobs/src/index.test.ts`.
 - Rework count: 2
 - Notes/escalations: CODEOWNERS uses placeholder `@along-ng/*` team slugs — confirm real GitHub org team names when available (non-blocking). Model policy (human): Workers + Reviewers use Cursor models only (`composer-2.5-fast`); never resume a non-Cursor Reviewer session (resume keeps prior model).
+
+## [Phase 0 / P0-E-01] Bootstrap repo
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Repo layout (doc 01 §3), Melos/pnpm/FVM, Supabase CLI init, lint configs, CODEOWNERS (placeholder teams), PR template §2.3, six CI skeletons, ADR-0013 (`eu-west-2`). TS2835 NodeNext import fix on rework.
+- Reviewer verdict: PASS WITH NOTES — all four acceptance criteria MET; prior typecheck FAIL fixed and re-verified. Notes: melos/deno not re-executed in reviewer PATH (CI wired); skeleton `db lint || true` and missing Playwright intentional until later tasks.
+- Rework count: 2
+- Notes/escalations: Confirm real GitHub CODEOWNERS team slugs (`@along-ng/*` placeholders). Formal Lagos/Abuja RTT before cloud provision remains P1-E-04. Autopilot model policy: Workers and Reviewers must use Cursor models only (`composer-2.5-fast`); never Claude/GPT; never `resume` a non-Cursor Reviewer (resume preserves model).
