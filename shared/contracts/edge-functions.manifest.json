@@ -1,6 +1,6 @@
 {
   "functions": [
-    { "slug": "plan-trip", "tier": "A", "status": "stub" },
+    { "slug": "plan-trip", "tier": "A", "status": "implemented" },
     { "slug": "places-search", "tier": "A", "status": "stub" },
     { "slug": "walking-directions", "tier": "A", "status": "stub" },
     { "slug": "parse-itinerary", "tier": "A", "status": "stub" },
