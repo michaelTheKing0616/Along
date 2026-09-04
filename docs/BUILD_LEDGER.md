@@ -237,10 +237,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking. Colour direction (vibrant/high-contrast) preserved in SVG fills.
 
 ## [Phase 0 / P0-A-09] ADR-0015 policies snapshot + CI regenerate-and-diff
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: dump_policies.sh + check_policies_stale.sh; 31 GENERATED snapshots; migration canonical-comment cleanup; db.yml stale step after reset.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET; stale tamper test fails as designed. Notes: identity_hashes pgTAP gap pre-existing; 00002 comment cleanup beyond literal 0003–0010 range (correct per ADR).
+- Rework count: 0
+- Notes/escalations: none blocking for this task.
+
+## [Phase 0 / Gate] IN PROGRESS
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T16:17Z
-- Worker report summary: (pending)
+- Assigned: 2026-09-04
+- Worker report summary: n/a (gate Reviewer only)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: none yet.
-
+- Notes/escalations: All Phase 0 tasks PASS; awaiting gate Reviewer against master.
