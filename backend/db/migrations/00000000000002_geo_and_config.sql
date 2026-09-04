@@ -142,7 +142,8 @@ create trigger mode_config_set_updated_at before update on mode_config
 create trigger admin_users_set_updated_at before update on admin_users
   for each row execute function set_updated_at();
 
--- RLS policies (canonical copies in backend/db/policies/*.sql)
+-- RLS policies inlined here (Supabase CLI does not support \ir).
+-- Canonical readable source: backend/db/policies/<table>.sql — keep in sync.
 alter table deployments enable row level security;
 alter table countries enable row level security;
 alter table cities enable row level security;

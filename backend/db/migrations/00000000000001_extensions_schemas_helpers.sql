@@ -20,7 +20,9 @@ begin raise exception 'table % is append-only', tg_table_name using errcode = '4
 
 create or replace function current_profile_id() returns uuid language sql stable as $$ select auth.uid() $$;
 
--- Minimal admin_users for §1 helper functions; full identity FK to profiles lands in P0-A-02 (§3).
+-- STUB ONLY (P0-A-01): minimal admin_users so doc 02 §1 is_admin/has_admin_role compile.
+-- P0-A-02 owns reconciliation: replace this stub with full doc 02 §3 admin_users DDL
+-- (admin_role enum, profiles FK, deployment_id FK) via DROP+recreate or equivalent.
 create table admin_users (
   id uuid primary key,
   role text not null,
