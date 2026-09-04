@@ -66,3 +66,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — all four acceptance criteria MET; prior typecheck FAIL fixed and re-verified. Notes: melos/deno not re-executed in reviewer PATH (CI wired); skeleton `db lint || true` and missing Playwright intentional until later tasks.
 - Rework count: 2
 - Notes/escalations: Confirm real GitHub CODEOWNERS team slugs (`@along-ng/*` placeholders). Formal Lagos/Abuja RTT before cloud provision remains P1-E-04. Autopilot model policy: Workers and Reviewers must use Cursor models only (`composer-2.5-fast`); never Claude/GPT; never `resume` a non-Cursor Reviewer (resume preserves model).
+
+## [Phase 0 / P0-E-02] CI workflows + RLS coverage
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Six PR workflows upgraded with doc 09 §2 fail-when-missing gates; RLS coverage SQL + regression test proves fail on table without RLS.
+- Reviewer verdict: PASS WITH NOTES — both acceptance criteria MET; intentional red placeholders OK until downstream tasks. Notes: seed gate presence-only; pgTAP RLS heuristic loose; Playwright script always exits 1 until P0-D-01.
+- Rework count: 0
+- Notes/escalations: none blocking. Follow-ups absorbed by P0-A-01 / P0-D-01 / P0-E-04 / P0-E-05 as named in gate scripts.
