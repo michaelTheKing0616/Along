@@ -122,3 +122,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: absorb into P0-E-04 acceptance when seeding Abuja pilot.
 - Rework count: 0
 - Notes/escalations: Re-run TS-FARE-08 p95 ≤ 150 ms over 1,000 pairs on seed_abuja_pilot.
+
+## [Phase 0 / P0-A-05] Promotion pipeline
+- Status: FAIL
+- Assigned: 2026-09-04
+- Worker report summary: Migration 0006 pipeline + collusion cfg; TS-GRAPH 12/12 when seeded.
+- Reviewer verdict: FAIL — (1) fresh `supabase db reset` fails: duplicate `promotion.collusion_downweight` in migration and seed_core; (2) `promote_candidates` sustained-disagreement path references CTE out of scope (db lint).
+- Rework count: 2
+- Notes/escalations: none beyond fix list.
