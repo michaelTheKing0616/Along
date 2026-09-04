@@ -29,7 +29,8 @@ done < <(
            CASE WHEN c.relforcerowsecurity THEN 'true' ELSE 'false' END
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
-    WHERE c.relkind = 'r'
+    WHERE c.relkind IN ('r', 'p')  -- include partitioned parent tables (relkind = p)
+      AND NOT c.relispartition     -- exclude partition children; parent policies apply
       AND c.relrowsecurity
       AND n.nspname IN ('public', 'private')
       AND NOT EXISTS (
