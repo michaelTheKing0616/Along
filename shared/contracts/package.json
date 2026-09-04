@@ -5,14 +5,22 @@
   "type": "module",
   "exports": {
     ".": "./index.ts",
-    "./db.types": "./db.types.ts"
+    "./db.types": "./db.types.ts",
+    "./edge": "./generated/edge.ts",
+    "./rpc": "./generated/rpc.ts",
+    "./common": "./generated/common.ts"
   },
   "scripts": {
     "lint": "node -e \"process.exit(0)\"",
+    "build": "node scripts/build.mjs",
+    "validate": "node scripts/validate_openapi.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node -e \"process.exit(0)\""
   },
   "devDependencies": {
-    "typescript": "^5.7.3"
+    "@redocly/openapi-core": "1.28.3",
+    "json-schema-to-typescript": "15.0.4",
+    "openapi-typescript": "7.6.1",
+    "typescript": "5.8.3"
   }
 }
