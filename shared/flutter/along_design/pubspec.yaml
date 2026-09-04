@@ -18,6 +18,21 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/logos/
+    - assets/icons/android/mipmap-mdpi/
+    - assets/icons/android/mipmap-hdpi/
+    - assets/icons/android/mipmap-xhdpi/
+    - assets/icons/android/mipmap-xxhdpi/
+    - assets/icons/android/mipmap-xxxhdpi/
+    - assets/icons/android/mipmap-anydpi-v26/
+    - assets/icons/android/drawable-mdpi/
+    - assets/icons/android/drawable-hdpi/
+    - assets/icons/android/drawable-xhdpi/
+    - assets/icons/android/drawable-xxhdpi/
+    - assets/icons/android/drawable-xxxhdpi/
+    - assets/icons/ios/AppIcon.appiconset/
+    - assets/splash/
   fonts:
     - family: Inter
       fonts:
