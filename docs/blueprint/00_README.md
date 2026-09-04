@@ -26,9 +26,10 @@
 | 11 | `11_task_breakdown.md` | Phase-by-phase work breakdown: task IDs, scope, dependencies, parallel streams, acceptance criteria mapped to spec §6/§7 gates | Orchestrator |
 | 12 | `12_security_privacy.md` | Threat model, authorization matrix, PII/NDPR handling, secrets, abuse/rate limiting, incident classes | Backend Workers, Reviewers, Phase 11 audit |
 | 13 | `13_data_collection.md` | ODK/Kobo form schemas, field-agent protocol, ingestion + two-scout reconciliation pipeline, seed data formats, fictional test-city fixture | Data Workers |
+| 14 | `14_qr_payments.md` | QR scan-to-pay: per-driver codes and universal links, static sticker + dynamic trip QR, rider/web/driver flows with tap budgets, resolver + initiate + webhook logic, split/fee-bearer rules, ledger offset, security controls, tests, Phase 4 tasks | Backend + Mobile + Admin Workers (Phase 4) |
 
 Supporting folders:
-- `docs/adr/` — Architecture Decision Records. ADR-0001…0012 record the decisions this blueprint makes beyond the spec. New top-level dirs or schema changes to the along-graph require a new ADR (spec §3, §4).
+- `docs/adr/` — Architecture Decision Records. ADR-0001…0014 record the decisions this blueprint makes beyond the spec. New top-level dirs or schema changes to the along-graph require a new ADR (spec §3, §4).
 - `docs/design/` — the two original Stitch `DESIGN.md` variants, reference screenshots for every screen discussed in doc 06, and the brand logos.
 - `docs/runbooks/` — runbook templates (SOS escalation, incident response, deploy, corridor onboarding, guarantor referral). Filled in by the phases that own them.
 - `docs/BUILD_LEDGER.md` — append-only; Orchestrator only.

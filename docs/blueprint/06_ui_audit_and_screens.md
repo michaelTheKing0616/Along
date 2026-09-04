@@ -113,9 +113,13 @@ Global rules for every mobile screen: safe-area aware; back gesture always works
 
 **R-25 Share trip** — Sheet: "Share live trip" → creates link; share sheet (WhatsApp/SMS/copy); list of active shares with revoke; expiry note. **W-01** (public web page): rider first name, vehicle plate/colour, mode, live marker (≤ 30 s old), destination label, ETA, leg progress; auto-expires.
 
-**R-26 Account & settings** — Profile (name, phone), Preferences: wayfinding mode (text/map/audio), default sort, women-only (visible when `regulatory_flags.women_only_matching`), language; Payment (cash default; add card/bank — post-MVP); Safety centre (trusted contacts, how SOS works); Help (R-28); Legal; Sign out.
+**R-26 Account & settings** — Profile (name, phone), Preferences: wayfinding mode (text/map/audio), default sort, women-only (visible when `regulatory_flags.women_only_matching`), language; Payment (cash default; saved methods → R-32, Phase 4); Safety centre (trusted contacts, how SOS works); Help (R-28); Legal; Sign out.
 
-**R-27 Digital payment (post-MVP)** — After completion when `payment_method='digital'`: amount, Paystack sheet (card/transfer/USSD), status. Cash remains default; this sheet never appears on cash trips.
+**R-27 Pay driver (Phase 4, behind `payments.digital_enabled`)** — One sheet for all digital payments: reached from the `Pay ₦450` button on R-13/R-17 (no QR needed), from a scanned static/dynamic QR (R-31 or OS camera via universal link), or from a typed `driver_code`. Anatomy: driver first name + rating, **plate in `numeric.l`** (verification against the vehicle), mode chip; `FareHero` amount — prefilled and locked when tied to a trip or dynamic token, otherwise chips (`qr_suggested_amounts`) + keypad; `TierPill` when a trip is attached; default payment method row (saved card brand/last4, or "Bank transfer", or "USSD") with "Change"; `Pay ₦450` primary 56. States: cash-only driver ("Musa accepts cash only" — nothing else); inactive code; `different_driver` warning (rider's active trip is with another driver: red banner + explicit "This isn't my trip's driver — pay anyway" required); pending (transfer account + countdown / USSD code); success — itemised "₦416 to Musa · ₦34 Along fee · Receipt saved", `Done`, `Save receipt`; failed with retry. Unattributed success offers "Add this trip to your history?" (opt-in only). Tap budget: 1 tap after scan with saved method; 2 with a chip. Cash remains default; this sheet never appears on cash trips unless the rider opens it. Data: `qr/resolve`, `payments/initiate`, Broadcast payment status. Doc 14 §3, §6.
+
+**R-31 Scan to pay** — Camera view with framing guide, torch toggle, "Enter code instead" (8-char input with Crockford normalisation); recognises only `along.ng/p/*` payloads (anything else: "Not an Along code"). Reached from R-13/R-17 `Scan` and R-05 sheet. → R-27.
+
+**R-32 Payment methods** — From R-26 → Payment. Saved methods (brand/last4/bank), set default, remove; "Add card" (Paystack tokenisation flow); preference: "Pay with transfer by default". Never shows or stores card numbers (tokens only, doc 14 §5).
 
 **R-28 Help & support** — Search, categories (Fares, Safety, Account, How Along works), recent tickets, chat/WhatsApp support link. Stitch ref: `help_support_center` (nav fixed).
 
@@ -165,7 +169,13 @@ Global rules for every mobile screen: safe-area aware; back gesture always works
 
 **D-23 Insights (post-MVP)** — Where riders searched near your routes (aggregate cells), your routes' avg wait/fulfilment, best hours; tabular + tiny bars, no heavy charts. Stitch ref: `driver_business_insights_final_quality_pass` (semantics fixed).
 
-**D-24 Account** — Profile, vehicle(s) (switch active), documents (D-06 statuses), payout bank (for positive balances), language, safety centre, help, legal, sign out.
+**D-24 Account** — Profile, vehicle(s) (switch active), documents (D-06 statuses), payout bank (Paystack subaccount — receives digital fares directly; `set_payout_bank`), **My QR code → D-25**, language, safety centre, help, legal, sign out.
+
+**D-25 My QR code (Phase 4)** — Large static QR (`along.ng/p/<driver_code>`, error-correction H, yellow-on-ink frame with plate text underneath) + `driver_code` in `display.l` for riders who type it; `Share as image`; `Order printed sticker` (creates an ops sticker request, shows status); `Verify my sticker` (opens the scanner and confirms the sticker resolves to this driver — sticker-swap self-check); `Pause digital payments` toggle (`set_accepts_digital`); `Rotate code` (destructive style, confirm dialog: "Your current stickers will stop working"). If no subaccount: this screen is the payout-bank setup prompt instead. Doc 14 §6.
+
+**D-26 Payment request (dynamic QR)** — From `Request payment` on D-16/D-18: full-screen QR with amount `display.l`, rider first name, countdown (ttl); when the webhook lands: green "Paid ₦450 ✓ · ₦416 to your bank" with haptic + short sound, auto-dismiss 3 s. Data: `create_payment_request`, Broadcast `payment_received`.
+
+Additions on existing driver screens: **D-16/D-18** gain `Request payment` (secondary) and, if the rider pays digitally, D-18 replaces "rider pays you in cash" with "Paid digitally · ₦416 sent to your bank · Along fee already deducted" and removes the cash-confirmation step; **D-19** gains an informational third section "Digital payments received" (list from `my_payments`, captioned "Paid straight to your bank — not part of your Along balance"); **D-08** shows a `PaymentToast` "₦450 received" for unattributed QR payments.
 
 ### B3. Admin console (A) — Next.js, desktop-first (min 1280), also usable at 1024
 
@@ -191,11 +201,11 @@ Global: left sidebar (role-filtered), top bar (city selector scoped to `admin_ca
 
 **A-10 Integrity review** — Flags queue (score desc, filters by type/city/driver); detail: side-by-side driver & rider traces on map with destination radius circle, event timeline (accepted → cancelled with timestamps), evidence JSON rendered as bullets, corroborating riders count with links, driver risk summary (30 d); actions: Clear · Action → opens Standing dialog (A-11) — never automatic. Stitch ref: `admin_fraud_review_final_quality_pass`.
 
-**A-11 Driver detail** — Header (name, phone masked, city, verified, standing, rating); tabs: Overview, Ledger (entries + balance + manual adjustment form with dual control), Standing (ladder visual + transition form with reason), Trips, Flags, Routes, Documents, Guarantor (notify button → runbook), Audit.
+**A-11 Driver detail** — Header (name, phone masked, city, verified, standing, rating); tabs: Overview, Ledger (entries + balance + manual adjustment form with dual control), Standing (ladder visual + transition form with reason), Trips, Flags, Routes, Documents, Guarantor (notify button → runbook), **Payments** (driver code, subaccount status, QR payments received, rotate code, sticker request status), Audit.
 
 **A-12 Safety board** — Open SOS list (age, rider/driver, trip, location, ack button) with live map and trip context; incident queue with triage form; runbook link; SLA timers.
 
-**A-13 Finance** — Pending/confirmed settlements, agents CRUD, payouts for positive balances, manual adjustments queue (dual control approvals), reconciliation with Paystack (daily import diff), exports (CSV).
+**A-13 Finance** — Pending/confirmed settlements, agents CRUD, payouts for positive balances, manual adjustments queue (dual control approvals), reconciliation with Paystack (daily import diff, including split settlements vs `payments`), **QR payments** (attributed / unattributed lists, per-driver totals, fee-bearer economics: commission collected vs provider fees), **Sticker batches** (select drivers → PDF export: QR + plate + code per label; mark printed/delivered), exports (CSV).
 
 **A-14 Intelligence review** — Tabs: Candidate parks (map cluster + stats; Promote → creates candidate stage/park; Dismiss), Route inference candidates, Geometry corrections (before/after overlay). All actions audited.
 
@@ -215,7 +225,7 @@ Global: left sidebar (role-filtered), top bar (city selector scoped to `admin_ca
 **O-01 Operator overview** (drivers in the operator's park/union: online counts, trips/day aggregate, fare-discrepancy rate; no per-rider data).
 
 ### B5. Public web (W)
-**W-01 Shared trip** (R-25) · **W-02 Guarantor acknowledgement** · **W-03 Legal** (terms, privacy — NDPR notice).
+**W-01 Shared trip** (R-25) · **W-02 Guarantor acknowledgement** · **W-03 Legal** (terms, privacy — NDPR notice) · **W-04 Pay a driver** (`along.ng/p/<driver_code>` fallback when the app is not installed): mobile-first, ≤ 60 KB, no login; driver first name, plate large, mode; amount chips + keypad (or locked amount from a dynamic token); `Pay` → Paystack hosted checkout with split; success receipt itemised (to driver / Along fee) with optional phone for SMS receipt; "Get Along" link. Cash-only / inactive states mirror R-27. Doc 14 §3.3.
 
 ---
 
@@ -236,3 +246,8 @@ Global: left sidebar (role-filtered), top bar (city selector scoped to `admin_ca
 | Negotiation counter | 1 (chip) + 1 (offer) | R-16 |
 | Boarding | 0 (auto) / 1 manual | R-11/D-15 |
 | Flag load | 1–2 | R-09 |
+| Pay driver digitally (in-app trip, saved method) | 1 | R-17 → R-27 |
+| Pay by QR (app, matched trip, saved method) | scan + 1 | R-31/OS camera → R-27 |
+| Pay by QR (app, no matched trip) | scan + 2 (chip, pay) | R-27 |
+| Pay by QR (no app) | scan + 2 + provider checkout | W-04 |
+| Show trip QR to rider | 1 | D-16/D-18 → D-26 |

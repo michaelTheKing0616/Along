@@ -232,6 +232,7 @@ language sql stable as $$ select (cfg(p_key,p_city,p_corridor))::text::numeric $
 | `geometry.min_supporting_traces` | `15`; `inference.min_trips` `20` | doc 04 §15 |
 | `field.location_tol_m` | `50`; `field.fare_tol_pct` `0.15` | doc 13 §3 |
 | `payments.digital_enabled` | `false` (flipped per country after P4-E-02 sign-off) | ADR-0010 |
+| `payments.min_digital_amount` | `100`; `payments.fee_bearer` `'account'`; `payments.qr_resolve_rate_per_min` `30`; `payments.unattributed_lookback_hours` `24`; `payments.dynamic_qr_ttl_s` `600` | doc 14, ADR-0014 |
 | `rating.tags` | `["safe_driving","fair_fare","clean_vehicle","polite","on_time","overcharged","unsafe","rude"]` | R-17 / D-18 |
 
 > RLS: select all authenticated (values are not secret — secrets are never config); write `has_admin_role('{superadmin,ops_lead}')`. Audited.
@@ -277,6 +278,9 @@ create table drivers (
   women_only_eligible boolean not null default false,  -- set by verifier, requires profiles.gender='female' + verified
   payout_subaccount_code text,                     -- Paystack subaccount (ADR-0010); presence = can accept digital payments
   payout_bank_last4 text,                          -- display only; full account number never stored
+  driver_code text unique,                         -- 8-char Crockford base32, random; printed on the QR sticker (doc 14, ADR-0014); set at verification approval
+  driver_code_rotated_at timestamptz,
+  accepts_digital boolean not null default true,   -- driver may pause QR/digital acceptance; effective only with a subaccount
   home_park_id uuid,                               -- fk added after parks
   created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
@@ -887,16 +891,37 @@ create table settlements (
 alter table driver_ledger_entries add constraint dle_settlement_fk foreign key (settlement_id) references settlements(id);
 alter table trip_extensions add constraint te_ledger_fk foreign key (ledger_entry_id) references driver_ledger_entries(id);
 
-create table payments (                           -- rider digital payments for a trip (pass-through only)
+create table payments (                           -- digital payments to a driver, split at source (ADR-0010/0014); driver-centric, trip/rider optional (QR + web)
   id uuid primary key default gen_random_uuid(),
-  trip_id uuid not null references trips(id),
-  rider_id uuid not null references riders(id),
+  driver_id uuid not null references drivers(id),
+  trip_id uuid references trips(id),              -- null for unattributed QR / web payments
+  rider_id uuid references riders(id),            -- null for anonymous web payers
+  source text not null check (source in ('app_trip','qr_static','qr_dynamic','web_anonymous')),
+  channel text not null check (channel in ('app','web')),
   amount numeric(12,2) not null, currency char(3) not null,
+  commission_amount numeric(12,2) not null, driver_amount numeric(12,2) not null, -- driver_amount = amount − commission, to the minor unit
+  fee_bearer text not null check (fee_bearer in ('account','subaccount')),
+  provider_fee numeric(12,2),                     -- from webhook
   provider text not null, provider_reference text not null unique,
   method text not null,                           -- 'card','bank_transfer','ussd','wallet'
-  status text not null check (status in ('initiated','pending','succeeded','failed','refunded')),
+  status text not null check (status in ('initiated','pending','succeeded','failed','expired','refunded')),
+  payer_phone_e164 text,                          -- anonymous web receipt, consented, optional
   created_at timestamptz not null default now(), confirmed_at timestamptz
 );
+create index payments_driver_created on payments(driver_id, created_at desc);
+create unique index payments_one_success_per_trip on payments(trip_id) where trip_id is not null and status = 'succeeded';
+
+create table rider_payment_methods (              -- saved provider authorisations; tokens only, never card data (doc 14 §5)
+  id uuid primary key default gen_random_uuid(),
+  rider_id uuid not null references riders(id) on delete cascade,
+  provider text not null default 'paystack',
+  authorization_code text not null,               -- never exposed to clients; view returns brand/last4 only
+  brand text, last4 text, exp_month smallint, exp_year smallint, bank text,
+  is_default boolean not null default false,
+  created_at timestamptz not null default now(),
+  unique (rider_id, authorization_code)
+);
+create unique index rider_payment_methods_default on rider_payment_methods(rider_id) where is_default;
 create table private.payment_webhook_raw (id bigserial primary key, provider text, received_at timestamptz default now(), signature_ok boolean, body jsonb);
 
 create table driver_standing_transitions (        -- §4.4.3 append-only
@@ -923,7 +948,7 @@ create table guarantors (                         -- §4.4.4 notification only; 
   created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
 ```
-> RLS: `driver_ledger_entries` — driver select own; `finance/ops_lead` select in scope; **no client insert** (only `ledger_post()` security definer). `settlements` — driver select/insert-via-RPC own; agents select rows with their `agent_id`; finance all. `payments` — rider own select; writes by webhook function only. `driver_standing_transitions` — driver own select; admins. `guarantors` — driver own; admins.
+> RLS: `driver_ledger_entries` — driver select own; `finance/ops_lead` select in scope; **no client insert** (only `ledger_post()` security definer). `settlements` — driver select/insert-via-RPC own; agents select rows with their `agent_id`; finance all. `payments` — rider own select, driver own select (`driver_id`); writes by Edge functions/webhook only (doc 14). `rider_payment_methods` — rider select own via a view that omits `authorization_code`; writes by Edge only. `driver_standing_transitions` — driver own select; admins. `guarantors` — driver own; admins.
 
 ---
 
@@ -1236,7 +1261,8 @@ Legend: **O** own rows · **P** party to trip/journey · **S** admin in city sco
 | trip_extensions / negotiations / rounds | — | P | P | — | — | S | S | S | S | — | all |
 | driver_ledger_entries | — | — | O sel | — | — | — | — | S sel | S sel | agg | all |
 | settlements | — | — | O | O(agent rows) | — | — | — | S | S all | — | all |
-| payments | — | O | — | — | — | — | — | S | S | — | all |
+| payments | — | O sel | O sel (driver_id) | — | — | — | — | S | S | agg | all |
+| rider_payment_methods | — | O (view: brand/last4 only) | — | — | — | — | — | — | — | — | service |
 | driver_standing_transitions | — | — | O sel | — | — | S | S | S | S | — | all |
 | guarantors | — | — | O | — | — | — | S | S | — | — | all |
 | trip_reconciliation_flags / driver_risk_scores | — | — | — | — | — | S | — | S | S | — | all |

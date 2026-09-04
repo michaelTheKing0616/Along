@@ -57,7 +57,9 @@ Node/TS service (Docker) on the routing VM: `map-match`, `speed-profiles`, `rout
 
 ## 7. Secrets
 
-Supabase Vault for DB-side secrets (identity hash pepper, candidate-token HMAC key); Supabase Function secrets for provider keys; GitHub Environments for CI; Vercel env for admin (public keys only). Rotation runbook `secrets_rotation.md`; candidate-token key rotates monthly with a 2-key overlap.
+Public web (`along.ng`): the Next.js app on Vercel also serves the public pages W-01…W-04 and the universal-link files `/.well-known/apple-app-site-association` and `/.well-known/assetlinks.json` (doc 14 §2); `/p/[code]` must render without auth, ≤ 60 KB, cache resolver responses ≤ 30 s, and sit behind Vercel rate limiting / WAF rules for `/p/*` and the `qr/resolve` function.
+
+Supabase Vault for DB-side secrets (identity hash pepper, candidate-token HMAC key, **payment-request token HMAC key** — doc 14 §2, rotates with the same 2-key overlap); Supabase Function secrets for provider keys; GitHub Environments for CI; Vercel env for admin (public keys only). Rotation runbook `secrets_rotation.md`; candidate-token key rotates monthly with a 2-key overlap.
 
 ## 8. Observability
 

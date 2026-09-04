@@ -120,8 +120,23 @@ Determinism: fixed seeds, frozen clock (`set_config('along.now', …)` in SQL te
 - **TS-UI-01** One-tap table (doc 06 Part C) verified by patrol tap counts.
 - **TS-UI-02** Offline: Na Me fires with airplane mode on (integration test using cached pairing).
 - **TS-UI-03** Skeletons appear for > 300 ms waits (widget test with delayed mock).
-- **TS-UI-04** Cash trip shows no payment UI; digital trip shows R-27.
+- **TS-UI-04** Cash trip shows no payment UI unless the rider opens Pay; R-27 amount is locked when a trip/token is attached.
 - **TS-UI-05** Driver blocked banner shows balance, threshold and Settle CTA (Phase 4 gate).
+- **TS-UI-06** Tap budgets for payments (doc 06 Part C): app + matched trip + saved method = 1 tap after scan (patrol); W-04 = 2 taps before provider checkout (Playwright); `different_driver` warning blocks Pay until confirmed.
+
+### QR & digital payments (Phase 4, doc 14)
+- **TS-QR-01** `qr/resolve` known code → first name/plate/mode only; unknown code → 404 with the same response time class; inactive driver → `active=false`, no identity; 31st request/min/IP → 429.
+- **TS-QR-02** Authenticated rider with an unpaid trip with this driver (≤ lookback) → `context.amount = fare_shown + load_surcharge + accepted extensions`, `locked=true`.
+- **TS-QR-03** Rider's active trip is with another driver → `warning='different_driver'`; `initiate` without `confirm_other_driver=true` → `VALIDATION`.
+- **TS-QR-04** Dynamic token: tampered HMAC or expired → `CANDIDATE_EXPIRED`; valid → amount locked to token; token for a trip of a different driver → `FORBIDDEN`.
+- **TS-QR-05** `initiate` writes `driver_amount + commission_amount = amount` to the minor unit; commission rate from `trips.commission_rate` when attached, else city config; `fee_bearer` from config; driver without subaccount or `accepts_digital=false` → `STATE_INVALID`; amount < `min_digital_amount` → `VALIDATION`.
+- **TS-QR-06** Webhook success on a completed cash trip that already has `cash_commission_debit` → `payment_method='digital'` and an offsetting `digital_settlement_credit` (`trip:{id}:digital_offset`); balance delta for the trip = 0; webhook replay → no second row.
+- **TS-QR-07** Webhook success before completion → completion posts no `cash_commission_debit`.
+- **TS-QR-08** Second `initiate` for an already-paid trip → `CONFLICT` with the existing `payment_id`; unique index blocks a second `succeeded` row.
+- **TS-QR-09** Anonymous web payment → `payments(rider_id null, source='web_anonymous', channel='web')`; no ledger rows; driver receives `payment_received` Broadcast + push.
+- **TS-QR-10** `rotate_driver_code` → old code resolves `404`, new code resolves; audit row; sticker request created.
+- **TS-QR-11** `rider_payment_methods` view never exposes `authorization_code` (RLS test as rider); Edge charges a saved authorisation only for its owning rider.
+- **TS-QR-12** Daily reconciliation: provider split settlement totals per subaccount equal `sum(driver_amount)` of succeeded payments for the day; mismatch → finance alert row.
 
 ### Config-not-code (all phases)
 - **TS-CFG-01** Zaria-Test fixture: planner, fares, thresholds all use overrides; no code branch references a city slug (grep gate for `'abuja'`).
