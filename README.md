@@ -28,6 +28,14 @@ mobile-rider/  mobile-driver/  backend/{db,functions,routing,jobs}/  admin-conso
 - `docs/design/` — Stitch reference screenshots (layout intent only), the two original Stitch design docs, brand logos.
 - `docs/BUILD_LEDGER.md` — append-only build history (Orchestrator only).
 
+## Starting the build
+
+Open a Cursor Agent chat at the repo root and paste one line:
+
+> Read `docs/AUTOPILOT_PROMPT.md` in full and execute it exactly. Start now.
+
+That session becomes the Orchestrator: it spawns a fresh Worker subagent per task and a fresh Reviewer subagent per review, maintains `docs/BUILD_LEDGER.md`, merges passing branches, and stops only for the human decisions listed in the prompt's §6 (blocked tasks, blueprint gaps, credentials, phase gates). Reply with your decisions and "continue" to resume.
+
 ## Status
 
 Planning complete; no application code yet. Phase 0 begins with task `P0-E-01` (repo bootstrap) in `docs/blueprint/11_task_breakdown.md`.
