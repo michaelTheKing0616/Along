@@ -312,9 +312,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking for merge; follow-ups before Phase 3 Na Me UX.
 
 ## [Phase 1 / P1-A-06] Edge plan-trip v1 (direct candidates)
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-04
-- Worker report summary: Rework 1: lint + handler tests + alight fix; SQL test 6 still fails (temp table after service_role).
-- Reviewer verdict: FAIL (recheck) — deno lint/tests PASS; TS-PLAN-01-06 exits 3 on assertion 6 permission denied for gap_result; p95 PASS.
-- Rework count: 2
-- Notes/escalations: Final rework: fix assertion 6 only (capture report_id before role switch).
+- Worker report summary: Migration 00016 + Edge plan-trip; OSRM degrade; ranking; Deno 7/7; TS-PLAN-01/05/06/08 + p95; ADR-0017; 2 reworks (lint/asserts/handler tests; assert-6 role fix).
+- Reviewer verdict: PASS WITH NOTES (final) — SQL 6/6 + p95 + Deno 7/7. Notes: quote TTL/OSRM fallback literals; driver_profile untested; full deno lint pre-existing verify_openapi issue.
+- Rework count: 2 / 2
+- Notes/escalations: none blocking.
