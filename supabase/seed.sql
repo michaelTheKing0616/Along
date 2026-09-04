@@ -1,2 +1,1 @@
--- Local seed entrypoint (see backend/db/seed/ for bounded-context seeds).
--- Full seed scripts land in P0-A-01 / P0-E-04.
+-- Entrypoint symlinked to backend/db/seed/seed_core.sql (Supabase CLI does not support \ir).
