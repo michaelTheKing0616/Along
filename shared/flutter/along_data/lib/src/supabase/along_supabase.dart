@@ -1,0 +1,88 @@
+import 'package:along_core/along_core.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+/// Testable gateway over Supabase RPC and Edge HTTP calls.
+abstract class AlongSupabase {
+  Future<Map<String, dynamic>> rpc(
+    String fn, {
+    Map<String, dynamic>? params,
+  });
+
+  Future<Map<String, dynamic>> invokeFunction(
+    String slug, {
+    Map<String, dynamic>? body,
+  });
+
+  User? get currentUser;
+  Stream<AuthState> authStateChanges();
+  Future<void> signInWithOtp({required String phone});
+  Future<AuthResponse> verifyOtp({
+    required String phone,
+    required String token,
+  });
+  Future<void> signOut();
+}
+
+class SupabaseAlongGateway implements AlongSupabase {
+  SupabaseAlongGateway(this._client);
+
+  final SupabaseClient _client;
+
+  @override
+  User? get currentUser => _client.auth.currentUser;
+
+  @override
+  Stream<AuthState> authStateChanges() => _client.auth.onAuthStateChange;
+
+  @override
+  Future<void> signInWithOtp({required String phone}) =>
+      _client.auth.signInWithOtp(phone: phone);
+
+  @override
+  Future<AuthResponse> verifyOtp({
+    required String phone,
+    required String token,
+  }) =>
+      _client.auth.verifyOTP(type: OtpType.sms, phone: phone, token: token);
+
+  @override
+  Future<void> signOut() => _client.auth.signOut();
+
+  @override
+  Future<Map<String, dynamic>> rpc(
+    String fn, {
+    Map<String, dynamic>? params,
+  }) async {
+    final result = await _client.rpc(fn, params: params ?? {});
+    if (result is Map<String, dynamic>) return result;
+    if (result == null) return {};
+    throw AlongException(
+      code: AlongErrorCode.validation,
+      message: 'Unexpected RPC response type for $fn',
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> invokeFunction(
+    String slug, {
+    Map<String, dynamic>? body,
+  }) async {
+    final result = await _client.functions.invoke(slug, body: body ?? {});
+    final data = result.data;
+    if (data is Map<String, dynamic>) return data;
+    if (data == null) return {};
+    throw AlongException(
+      code: AlongErrorCode.validation,
+      message: 'Unexpected Edge response type for $slug',
+    );
+  }
+}
+
+/// Initializes Supabase for app startup.
+Future<AlongSupabase> createAlongSupabase({
+  required String url,
+  required String anonKey,
+}) async {
+  await Supabase.initialize(url: url, anonKey: anonKey);
+  return SupabaseAlongGateway(Supabase.instance.client);
+}
