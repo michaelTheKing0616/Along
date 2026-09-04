@@ -192,7 +192,8 @@ Authorized via RLS on `realtime.messages` (topic must match a trip the caller is
 | `rpc.create_agent_code(p_amount)` | I (own) | `{agent_code, expires_at}` (15 min). |
 | `rpc.confirm_agent_settlement(p_agent_code, p_amount)` | agent | Agent must be active in driver's city; posts `digital_settlement_credit`; idempotent on code. |
 | `POST /functions/v1/webhooks/paystack` | service | Verifies `x-paystack-signature` HMAC-SHA512 with secret; stores raw; on `charge.success` → `ledger_post` (settlement) or `payments.succeeded` (rider trip payment) idempotent on `reference`. Always 200 after signature check; retries safe. |
-| `POST /functions/v1/payments/initiate` | B (rider) | Digital trip payment for `trips.payment_method='digital'`; returns Paystack authorization. Cash trips never call this (Phase 4 gate). |
+| `POST /functions/v1/payments/initiate` | B (rider) | Digital trip payment for `trips.payment_method='digital'`; creates a Paystack transaction with `split` to the driver's subaccount (driver share = fare − commission, Along = commission; ADR-0010). Returns authorization. Only offered when the driver has a subaccount; cash trips never call this (Phase 4 gate). |
+| `rpc.set_payout_bank(p_bank_code, p_account_number)` | I (own driver) | Verifies account name via provider, creates the Paystack subaccount, stores the subaccount code (never the account number in plaintext beyond what the provider returns). Requires re-auth (OTP) — doc 12 T7. |
 | `rpc.my_standing_history()` | I (own) | |
 
 ---

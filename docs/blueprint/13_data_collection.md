@@ -35,10 +35,16 @@ Both forms carry `form_version`, device id, submission timestamp. Choice lists a
 Import runs a dry-run diff, then applies with `source_type='import'` and `verification_status` = `candidate` unless a matching `field_reconciliations.matched` exists.
 
 ## 5. Abuja pilot corridors (business plan §7, Phase 0 gate ≥ 3)
-1. Lugbe ↔ Area 1 / Berger (car + keke feeders)
-2. Nyanya/Mararaba ↔ AYA ↔ CBD (minibus + car)
-3. Kubwa ↔ Wuse (car + keke)
-Backbone parks: Lugbe Park, Area 1 Park, Berger Junction, Nyanya Park, AYA, Kubwa Bus Stop, Wuse Market, Jabi Park (transfer). Field team: 4 scouts, 3 weeks; expected ~120 stages, ~300 leg fares.
+
+Selected 2026-09-04 (product owner delegated the choice). Selection criteria: (a) highest daily shared-transport volume into the city core, (b) each corridor enters the core from a *different* axis so transfer logic is exercised at real hubs rather than along one road, (c) mode diversity across the three, (d) mid-route stages that make Tier 1/2 fare resolution meaningful.
+
+1. **Nyanya / Mararaba ↔ AYA ↔ Berger / CBD** (east axis, Keffi Road) — the heaviest commuter corridor in the FCT; minibus + car; many stages (Nyanya, Karu, Jikwoyi junction, AYA, Asokoro, Berger) → best test of stage-based fares and of multi-rider corroboration.
+2. **Lugbe ↔ Area 1 / Berger** (south-west axis, Airport Road) — car with keke feeders inside Lugbe; exercises mode transfers (keke → car at Lugbe Park) and roaming pickups along the expressway.
+3. **Kubwa ↔ Wuse / Berger** (north axis, Kubwa Expressway) — car + keke; long haul with Dutse/Bwari feeders; exercises direct-vs-multi-leg viability and coverage-gap fallback at the periphery.
+
+Berger Junction and Wuse/Jabi are the shared transfer nodes across all three, so a rider can be planned across corridors from day one. Considered and deferred: Gwagwalada ↔ Zuba (volume high but far; better as a Phase 7 add), Bwari ↔ Dutse (feeder into corridor 3).
+
+Backbone parks: Nyanya Park, Karu, AYA, Asokoro Junction, Berger Junction, Lugbe Park, Area 1 Park, Kubwa Bus Stop, Dutse Junction, Wuse Market, Jabi Park. Field team: 4 scouts, 3 weeks; expected ~140 stages, ~350 leg fares.
 
 ## 6. Fictional test city fixture
 `seed_testcity_fixture/` ("Zaria-Test"): 1 corridor, 2 modes, 5 stages, 1 through-fare, config overrides (`commission.rate=0.05`, `graph.snap_radius_m=40`, `currency` still NGN). Exists only to prove FM5 in CI (TS-CFG-01) and to give Workers a second city for any "does this work in another city?" question without touching Abuja data.

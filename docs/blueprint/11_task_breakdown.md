@@ -115,6 +115,8 @@ Standing acceptance for *every* task (not repeated below): spec §6 checklist; t
 | P4-C-01 | D-18 Trip complete summary (fare vs fee vs balance), D-19 Earnings & balance (two sections), D-20 Settle (channels + agent code), D-21 Standing, D-22 Guarantor, D-17 Extend; blocked banner on D-08 | L | 06 D-17–22 | P4-A-02, P4-A-03 | TS-UI-05 (blocked banner gate); labels human, never enum names |
 | P4-D-01 | A-10 Integrity review (side-by-side traces, evidence, corroboration, Clear/Action→standing dialog), A-11 Driver detail (ledger, standing, guarantor notify), A-13 Finance (settlements, agents, dual-control queue) | L | 06 A-10/11/13, 08 §5 | P4-A-06, P4-A-07 | TS-INTEG-06; Playwright dual control; no auto action path exists (review) |
 | P4-E-01 | Agent app surface: minimal agent web page in admin console (`agent` role) for `confirm_agent_settlement` | S | 03 §7 | P4-A-03 | Playwright: code redeem, replay rejected |
+| P4-A-08 | Paystack subaccounts: `set_payout_bank` (account-name verification, subaccount creation, re-auth), split configuration in `payments/initiate`, reconciliation of split settlements | M | 03 §7, ADR-0010 | P4-A-03 | Split amounts equal fare − commission / commission to the minor unit; driver without subaccount → digital option hidden |
+| P4-E-02 | **Legal review checkpoint (human):** confirm no-funds-held posture under CBN rules with split payments, subaccount KYC obligations, VAT treatment of commission, terms for drivers/riders. Digital payments stay behind `cfg payments.digital_enabled=false` in prod until sign-off. | S | 12 §7, ADR-0010 | P4-A-08 | Written sign-off attached to the ledger; flag flipped only after |
 
 ---
 
@@ -170,6 +172,7 @@ Standing acceptance for *every* task (not repeated below): spec §6 checklist; t
 | P8-A-03 | Operator accounts + scoped RLS + aggregates; `sponsored_placements` (contextual only) + counters; `api_keys` + rate-limited aggregate endpoints | L | 02 §13, 03 §11 | P6-A-01 | FM39/FM40 tests: no rider id path; API returns aggregates only |
 | P8-D-01 | Corporate portal C-01..C-05; Operator portal O-01; A-19 revenue hooks admin | L | 06 B4, A-19 | P8-A-01, P8-A-03 | Exit criterion flows via Playwright |
 | P8-B-01 | Contextual placement slot on R-07/R-22 (config-gated, clearly labelled "Sponsored") | S | 06, 02 §13 | P8-A-03 | No personal data in request (network assertion) |
+| P8-E-01 | **Legal review checkpoint (human):** corporate invoicing/VAT, B2G data licensing terms under NDPA, advertising standards, operator SaaS terms | S | 12 §7 | P8-A-01..03 | Sign-off in ledger before any B2B contract goes live |
 
 ---
 

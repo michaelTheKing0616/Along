@@ -231,6 +231,7 @@ language sql stable as $$ select (cfg(p_key,p_city,p_corridor))::text::numeric $
 | `export.k` | `10` | Phase 8 anonymisation |
 | `geometry.min_supporting_traces` | `15`; `inference.min_trips` `20` | doc 04 §15 |
 | `field.location_tol_m` | `50`; `field.fare_tol_pct` `0.15` | doc 13 §3 |
+| `payments.digital_enabled` | `false` (flipped per country after P4-E-02 sign-off) | ADR-0010 |
 | `rating.tags` | `["safe_driving","fair_fare","clean_vehicle","polite","on_time","overcharged","unsafe","rude"]` | R-17 / D-18 |
 
 > RLS: select all authenticated (values are not secret — secrets are never config); write `has_admin_role('{superadmin,ops_lead}')`. Audited.
@@ -274,6 +275,8 @@ create table drivers (
   rating numeric(3,2), rating_count int not null default 0,
   tenure_started_at timestamptz,                  -- first verified_at
   women_only_eligible boolean not null default false,  -- set by verifier, requires profiles.gender='female' + verified
+  payout_subaccount_code text,                     -- Paystack subaccount (ADR-0010); presence = can accept digital payments
+  payout_bank_last4 text,                          -- display only; full account number never stored
   home_park_id uuid,                               -- fk added after parks
   created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
@@ -1253,7 +1256,7 @@ Legend: **O** own rows · **P** party to trip/journey · **S** admin in city sco
 
 ## 17. Seed data requirements
 
-- `seed_core.sql`: `deployments` (Along NG), `countries` (NG: NGN, 2 minor units, ₦, +234, Africa/Lagos, verification_schema for nin/drivers_license/vehicle_particulars), `mode_config` (4 rows), `app_config` (all keys in §2.3), Na Me palettes.
+- `seed_core.sql`: `deployments` (Along NG), `countries` (NG: NGN, 2 minor units, ₦, +234, Africa/Lagos, verification_schema for nin/drivers_license/vehicle_particulars, `regulatory_flags = {"women_only_matching": true}` — **enabled at launch, product-owner decision 2026-09-04**), `mode_config` (4 rows), `app_config` (all keys in §2.3; `commission.rate = 0.075` **confirmed by product owner**, editable only through A-09 → `admin_set_config`, audited, scoped per city if ever needed), Na Me palettes.
 - `seed_abuja_pilot/`: `cities` (abuja), `corridors` (lugbe-area1, nyanya-cbd, kubwa-wuse), backbone `parks`, `routes` per mode where field data exists, `route_stages`, `route_legs`, `route_through_fares`, `transfer_points` — all with `source_type='field_agent'` and `field_verified` only when a reconciliation record exists (Phase 0 gate).
 - `seed_testcity_fixture/`: fictional city **"Zaria-Test"** (real coordinates, fictional parks) with one corridor, 2 modes, 5 stages, deliberately different `app_config` overrides (`commission.rate`, `graph.snap_radius_m`) — exists to prove FM5 in CI. Never deployed to prod.
 - `seed_test_scenarios/`: fixtures for every TS-* scenario in doc 10 (mid-route boarding, direct-vs-multileg, collusion, negotiation ETA bands, threshold block, premature conversion with/without rider trace, multi-rider corroboration, cluster false positive).

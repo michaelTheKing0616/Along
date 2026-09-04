@@ -27,3 +27,13 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Confirm women-only feature is enabled for NG at launch (`regulatory_flags.women_only_matching`).
 - Legal review timing for payouts/stored-value posture (doc 12 §7) before Phase 8.
 **Escalations:** none.
+
+---
+
+## [Pre-Phase 0 / Planning] — Product-owner decisions on open items
+**Date:** 2026-09-04
+1. **Commission 7.5%** confirmed. Lives in `app_config.commission.rate` (global default; city override possible), edited only via admin console A-09 → `admin_set_config` (validated, reason required, audited). No code change to alter it.
+2. **Abuja pilot corridors** chosen by planning (owner delegated): Nyanya/Mararaba–AYA–Berger/CBD; Lugbe–Area 1/Berger; Kubwa–Wuse/Berger. Rationale and deferred alternatives in doc 13 §5.
+3. **Women-only matching enabled at launch** for NG: `countries.regulatory_flags.women_only_matching = true` in `seed_core.sql`.
+4. **Payments posture (ADR-0010 amended):** digital rider payments split at source via Paystack subaccounts so Along never holds funds; `payout_debit` reduced to exceptional use. Legal review checkpoints added as human tasks P4-E-02 (before enabling digital payments in prod; `payments.digital_enabled` defaults false) and P8-E-01 (before B2B contracts). New RPC `set_payout_bank`, new driver columns, new task P4-A-08.
+**Escalations:** none.

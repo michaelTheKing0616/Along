@@ -50,7 +50,7 @@ Rider/driver data rights (NDPA): export (`rpc.export_my_data` → JSON, async), 
 Device fingerprint (app-generated random install id + coarse device model; no IMEI) stored per session; clusters of accounts sharing an install id or confirming identical values within minutes are down-weighted in the promotion pipeline and surfaced in A-10. No automatic bans (FM13 spirit applies to riders too).
 
 ## 7. Payments posture
-Along never stores card data; Paystack hosted flows only; webhook endpoint IP-allowlisted where provider supports; reconciliation job compares provider ledger with `settlements/payments` daily. Along is not a wallet: positive driver balances are paid out, not held as stored value beyond T+2 payout cycles (legal review item in Phase 8 before any stored-value feature).
+Along never stores card data; Paystack hosted flows only; webhook endpoint IP-allowlisted where provider supports; reconciliation job compares provider ledger with `settlements/payments` daily. Along is not a wallet and never holds funds: digital rider payments are split at source via Paystack subaccounts (ADR-0010 amendment) — driver share goes straight to the driver's bank, commission to Along. Driver *debts* (cash commission owed) are receivables, not customer funds. Legal review checkpoints: before enabling digital payments in prod (P4-E-02: confirm the no-funds-held reading under CBN rules, KYC obligations for subaccounts, VAT on commission) and before Phase 8 (P8-E-01: corporate invoicing, B2G data licensing under NDPA, advertising standards).
 
 ## 8. Operational security
 - Least-privilege service accounts; Supabase project owners = 2 people; MFA on all consoles.
