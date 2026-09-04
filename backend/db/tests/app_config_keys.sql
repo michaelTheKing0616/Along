@@ -35,6 +35,7 @@ with required_global as (
     'promotion.outlier_mad_k',
     'promotion.decay_window_days',
     'promotion.decay_step',
+    'promotion.collusion_downweight',  -- doc 04 §6.2 algorithm parameter
     'trust.rider_base',
     'trust.rider_per_trip',
     'trust.rider_cap',
