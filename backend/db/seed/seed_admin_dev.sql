@@ -5,7 +5,8 @@
 --   psql "$DATABASE_URL" -f backend/db/seed/seed_admin_dev.sql
 --
 -- Staging:
---   Run once per environment after migrations via CI job or ops runbook (same file).
+--   Manual ops runbook only — not wired into supabase config seed paths or CI auto-apply.
+--   Run once per environment after migrations when an admin login is needed.
 --   Replace the password before any shared/staging use; credentials here are dev-only placeholders.
 --
 -- Sign-in (local Supabase Auth):

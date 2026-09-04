@@ -10,8 +10,8 @@ create table audit_log (
   target_id text not null,
   before jsonb,
   after jsonb,
-  ip inet,
-  user_agent text,
+  ip inet,                                      -- deferred: populated when admin console / Edge request-context wiring lands
+  user_agent text,                              -- deferred: same
   created_at timestamptz not null default now()
 );
 
