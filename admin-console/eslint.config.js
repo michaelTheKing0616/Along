@@ -5,6 +5,6 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['dist/**', 'node_modules/**', '.next/**'],
+    ignores: ['dist/**', 'node_modules/**', '.next/**', 'e2e/**', 'playwright-report/**', 'test-results/**', 'playwright.config.mjs'],
   },
 );
