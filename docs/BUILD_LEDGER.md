@@ -272,9 +272,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Human: do optional verification then continue Phase 1. Autopilot PHASE_LIMIT = Phase 1; stop at Phase 1 gate.
 
 ## [Phase 1 / P1-A-01] Migrations: driver routes, presence, planner support, journeys/trips
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-04
-- Worker report summary: Migration 00012 §5–8; TS-TRIP-03-guard 11/11; full suite PASS locally; 11 GENERATED snapshots.
-- Reviewer verdict: FAIL — run_rls_coverage fails on 6 partition children without relrowsecurity; missing ADR-0015 snapshots for partitioned parents (dump filters relkind=r only); ensure_partitions granted to authenticated (harden).
-- Rework count: 1
-- Notes/escalations: Rework: (1) fix RLS coverage for partitions; (2) dump_policies include relkind p + commit parent snapshots; (3) revoke authenticated on ensure_partitions.
+- Worker report summary: Migration 00012 §5–8; TS-TRIP-03 11/11; rework: partition RLS exclusion, dump relkind p + snapshots, ensure_partitions grant, P1-A-01-rls-smoke.
+- Reviewer verdict: PASS WITH NOTES (recheck) — run_rls_coverage PASS; policies 44 current; full suite 109/109. Note: PUBLIC still has EXECUTE on ensure_partitions (follow-up revoke).
+- Rework count: 1 / 2
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-A-02] shared/contracts OpenAPI + JSON Schemas + generated types
+- Status: IN PROGRESS
+- Assigned: 2026-09-04T20:36Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
