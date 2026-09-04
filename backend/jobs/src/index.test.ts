@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { JOBS_VERSION } from './index';
+import { JOBS_VERSION } from './index.js';
 
 describe('jobs bootstrap', () => {
   it('exports version', () => {

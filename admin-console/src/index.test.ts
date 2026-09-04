@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ADMIN_VERSION } from './index';
+import { ADMIN_VERSION } from './index.js';
 
 describe('admin-console bootstrap', () => {
   it('exports version', () => {
