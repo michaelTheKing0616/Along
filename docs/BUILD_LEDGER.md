@@ -244,10 +244,10 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Rework count: 0
 - Notes/escalations: none blocking for this task.
 
-## [Phase 0 / Gate] IN PROGRESS
-- Status: IN PROGRESS
+## [Phase 0 / Gate]
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-04
 - Worker report summary: n/a (gate Reviewer only)
-- Reviewer verdict: (pending)
+- Reviewer verdict: PASS WITH NOTES — all 17 P0-* tasks PASS/PASS WITH NOTES; Phase 0 gates + exit criteria MET; independently re-ran 87/87 self-contained pgTAP. Abuja exit harnesses not re-run (partial local seed; reset blocked). No product blockers.
 - Rework count: 0
-- Notes/escalations: All Phase 0 tasks PASS; awaiting gate Reviewer against master.
+- Notes/escalations: STOP for human before Phase 1. Recommend fresh `supabase db reset` + full pgTAP before Phase 1 kickoff. Colour direction (vibrant/high-contrast) locked in tokens/brand assets.
