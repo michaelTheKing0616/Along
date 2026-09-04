@@ -1,8 +1,8 @@
 -- pgTAP: every required app_config key from doc 02 §2.3 is present in seed
+create extension if not exists pgtap;
+
 begin;
 select plan(4);
-
-create extension if not exists pgtap;
 
 -- Assumes seed_core.sql was applied by supabase db reset before pg_prove runs.
 with required_global as (

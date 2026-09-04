@@ -1,8 +1,8 @@
 -- pgTAP: cfg() resolution order corridor > city > country > global
+create extension if not exists pgtap;
+
 begin;
 select plan(4);
-
-create extension if not exists pgtap;
 
 -- Fixture: geo hierarchy for scoped overrides
 insert into deployments (id, tenant_name) values

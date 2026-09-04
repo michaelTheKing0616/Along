@@ -1,8 +1,8 @@
 -- pgTAP: city_for_point() boundary match + centroid fallback
+create extension if not exists pgtap;
+
 begin;
 select plan(5);
-
-create extension if not exists pgtap;
 
 insert into deployments (id, tenant_name) values
   ('e0000000-0000-4000-8000-000000000001', 'Geo Test Tenant');
