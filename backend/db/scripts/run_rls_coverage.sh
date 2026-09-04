@@ -27,6 +27,14 @@ done < <(
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE c.relkind = 'r'
       AND n.nspname IN ('public', 'private')
+      AND NOT EXISTS (
+        SELECT 1
+        FROM pg_depend d
+        WHERE d.classid = 'pg_class'::regclass
+          AND d.objid = c.oid
+          AND d.refobjid IN (SELECT oid FROM pg_extension)
+          AND d.deptype = 'e'
+      )
     ORDER BY 1, 2;
   "
 )
@@ -42,4 +50,4 @@ if [ "${#tables[@]}" -gt 0 ]; then
   done
 fi
 
-echo "PASS: RLS coverage check — all public/private tables have RLS enabled."
+echo "PASS: RLS coverage check — all Along application tables in public/private have RLS enabled."
