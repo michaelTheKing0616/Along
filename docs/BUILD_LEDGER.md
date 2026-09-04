@@ -221,9 +221,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 0 / P0-E-05] Design tokens + along_design theme
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-04
-- Worker report summary: tokens.json (doc 05 §2 vibrant palette), Style Dictionary → Dart/CSS/Tailwind, along_design theme, stale gate, TS-DS-02 golden claimed PASS.
-- Reviewer verdict: FAIL — TS-DS-02 golden shows missing-glyph box (□) instead of ₦; test passes against wrong baseline. Colour direction MET (high-contrast). Pipeline/stale gate MET.
-- Rework count: 1
-- Notes/escalations: Product-owner colour direction (vibrant/high-contrast) applied via doc 05 §2 values.
+- Worker report summary: tokens.json (doc 05 §2 vibrant palette), Style Dictionary → Dart/CSS/Tailwind, along_design theme, stale gate; rework loaded Inter for ₦ golden.
+- Reviewer verdict: PASS (recheck) — flutter test 3/3; golden visually shows ₦450; check_stale PASS; colours match doc 05 §2 vibrant/high-contrast.
+- Rework count: 1 / 2
+- Notes/escalations: Prior FAIL was Ahem tofu box; fixed in 1d720ae. Style Dictionary collision warnings non-blocking; Inter full files larger than subset ideal. Product-owner colour direction (vibrant/high-contrast, not muted) encoded in tokens.
