@@ -203,3 +203,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 2. **`\ir` vs Supabase CLI → ADR-0015:** RLS policies are defined inline in migrations (single source of truth); `backend/db/policies/` becomes a generated, CI-checked snapshot from `pg_policies`. Docs 01 §3, 02 §16, 09 §3 amended. New task **P0-A-09** (S, depends P0-A-08) performs the conversion and adds the CI check; the interim "canonical policies/" comments are removed by that task.
 3. **CODEOWNERS:** no git remote/GitHub org exists yet, so the file has no effect. Keep `@along-ng/*` placeholders; revisit when the repo is pushed (record under the task that creates the remote). Non-blocking.
 **Escalations:** none.
+
+## [Phase 0 / P0-D-01] Admin console bootstrap
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Next.js 15 App Router; Supabase SSR email+TOTP; middleware role routing; AuditDrawer; tokens.css placeholder; Playwright 10/10 (sign-in per role + unauthorized redirect).
+- Reviewer verdict: PASS WITH NOTES — both acceptance criteria MET (independently re-run). Notes: hardcoded abuja defaults; safety/ops_lead MFA not E2E-seeded; sign-out link stub; check_playwright port conflict handling.
+- Rework count: 0
+- Notes/escalations: Follow-ups non-blocking; city slug hardcode cleanup before multi-city (P9). Do not raise CODEOWNERS again until remote exists (Decision 2026-09-04).
