@@ -154,3 +154,19 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: tighten reconcile_field_submission caller check in P0-E-03; unused v_currency; discrepant-status publish assert optional.
 - Rework count: 1 (open-questions clear only)
 - Notes/escalations: none blocking.
+
+## [Phase 0 / P0-A-08] Audit log + Phase 0 admin write triggers
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 0009 audit_log + audit_admin_write on 15 Phase 0 tables; append-only; seed_admin_dev.sql manual; pgTAP 5/5.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: ip/user_agent deferred; seed manual-only; remaining §15 tables → P6-A-01.
+- Rework count: 1 (open-questions clear only)
+- Notes/escalations: none blocking.
+
+## [Phase 0 / Decision] Autopilot model policy (human)
+- Status: PASS
+- Assigned: 2026-09-04
+- Worker report summary: n/a
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Workers and Reviewers MUST use Cursor model `composer-2.5-fast` only. Never Claude/GPT/API models. Never `resume` a Reviewer that was started on a non-Cursor model (resume preserves model). Always spawn a fresh Reviewer Task with `model: composer-2.5-fast`.
