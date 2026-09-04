@@ -211,3 +211,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — both acceptance criteria MET (independently re-run). Notes: hardcoded abuja defaults; safety/ops_lead MFA not E2E-seeded; sign-out link stub; check_playwright port conflict handling.
 - Rework count: 0
 - Notes/escalations: Follow-ups non-blocking; city slug hardcode cleanup before multi-city (P9). Do not raise CODEOWNERS again until remote exists (Decision 2026-09-04).
+
+## [Phase 0 / P0-D-02] A-07/A-05/A-08 admin screens
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Field reconciliation, graph editor (basic), city playbook CSV dry-run/apply; migration 00011 SELECT grants; Playwright 13/13 including publish to field_verified without SQL.
+- Reviewer verdict: PASS WITH NOTES — exit criterion MET. Notes: E2E publishes pre-matched row only; graph save untested; import confidence 0.3 literal note; blueprint map/third-scout deferred per scope.
+- Rework count: 1 (open-questions + grants migration)
+- Notes/escalations: none blocking.
