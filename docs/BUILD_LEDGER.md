@@ -98,3 +98,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — all acceptance MET on fresh reset. Notes: rating_count/women_only_eligible untested in pgTAP (same trigger path); profiles/vehicles column triggers per doc 12 deferred; psql not pg_prove locally.
 - Rework count: 0
 - Notes/escalations: none blocking.
+
+## [Phase 0 / P0-A-03] Migration 0004 along-graph
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Full §4 along-graph DDL; adjacency/order triggers; graph_revisions; data_sources; drivers.home_park_id FK; along_graph pgTAP 6/6; RLS on all new tables.
+- Reviewer verdict: PASS WITH NOTES — all three acceptance criteria MET on fresh reset. Notes: psql vs pg_prove; target_type naming inconsistency; INSERT revision path untested.
+- Rework count: 0
+- Notes/escalations: none blocking.
