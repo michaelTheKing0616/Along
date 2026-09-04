@@ -22,4 +22,9 @@ Deno.test('TS-PLAN-05: OSRM down uses fallback and marks degraded', async () => 
   const route = await client.carRoute(origin, dest);
   assertEquals(route.degraded, true);
   assertEquals(route.durationS > 0, true);
+
+  const foot = await client.footRoute(origin, dest);
+  assertEquals(foot.degraded, true);
+  assertEquals(foot.distanceM > 0, true);
+  assertEquals(foot.steps.length >= 1, true);
 });

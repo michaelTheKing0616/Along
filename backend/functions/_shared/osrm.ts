@@ -1,5 +1,5 @@
 import { fallbackWalkDistanceM, walkSeconds } from './geo.ts';
-import type { Point } from './types.ts';
+import type { Point, WalkingStep } from './types.ts';
 
 export type OsrmTableResult = {
   distances: number[][];
@@ -13,9 +13,18 @@ export type OsrmRouteResult = {
   degraded: boolean;
 };
 
+export type OsrmFootRouteResult = {
+  distanceM: number;
+  durationS: number;
+  steps: WalkingStep[];
+  polyline: Point[];
+  degraded: boolean;
+};
+
 export interface OsrmClient {
   footTable(sources: Point[], destinations: Point[]): Promise<OsrmTableResult>;
   carRoute(from: Point, to: Point): Promise<OsrmRouteResult>;
+  footRoute(from: Point, to: Point): Promise<OsrmFootRouteResult>;
 }
 
 type FetchFn = typeof fetch;
@@ -28,14 +37,95 @@ function straightLineTable(sources: Point[], destinations: Point[]): OsrmTableRe
   return { distances, durations, degraded: true };
 }
 
+function straightLineFootRoute(from: Point, to: Point, walkSpeedMps: number): OsrmFootRouteResult {
+  const distanceM = Math.round(fallbackWalkDistanceM(from, to));
+  const durationS = walkSeconds(distanceM, walkSpeedMps);
+  return {
+    distanceM,
+    durationS,
+    steps: [{
+      instruction: 'Walk to destination',
+      distance_m: distanceM,
+      bearing: 0,
+      maneuver: 'depart',
+      geometry: [from, to],
+    }],
+    polyline: [from, to],
+    degraded: true,
+  };
+}
+
+function parseFootRoute(body: {
+  code?: string;
+  routes?: Array<{
+    distance?: number;
+    duration?: number;
+    geometry?: { coordinates?: number[][] };
+    legs?: Array<{
+      steps?: Array<{
+        name?: string;
+        distance?: number;
+        duration?: number;
+        maneuver?: { type?: string; modifier?: string; bearing_after?: number };
+        geometry?: { coordinates?: number[][] };
+      }>;
+    }>;
+  }>;
+}, from: Point, to: Point, walkSpeedMps: number): OsrmFootRouteResult {
+  const route = body.routes?.[0];
+  if (body.code !== 'Ok' || !route) {
+    return straightLineFootRoute(from, to, walkSpeedMps);
+  }
+
+  const polyline: Point[] = (route.geometry?.coordinates ?? []).map((c) => ({
+    lng: c[0] ?? 0,
+    lat: c[1] ?? 0,
+  }));
+
+  const steps: WalkingStep[] = [];
+  for (const leg of route.legs ?? []) {
+    for (const step of leg.steps ?? []) {
+      const maneuver = step.maneuver?.type ?? 'continue';
+      const modifier = step.maneuver?.modifier;
+      const instruction = step.name
+        ? `${maneuver}${modifier ? ` ${modifier}` : ''} onto ${step.name}`
+        : `${maneuver}${modifier ? ` ${modifier}` : ''}`;
+      steps.push({
+        instruction,
+        distance_m: Math.round(step.distance ?? 0),
+        bearing: Math.round(step.maneuver?.bearing_after ?? 0),
+        maneuver,
+        geometry: (step.geometry?.coordinates ?? []).map((c) => ({
+          lng: c[0] ?? 0,
+          lat: c[1] ?? 0,
+        })),
+      });
+    }
+  }
+
+  if (steps.length === 0) {
+    return straightLineFootRoute(from, to, walkSpeedMps);
+  }
+
+  return {
+    distanceM: Math.round(route.distance ?? 0),
+    durationS: Math.round(route.duration ?? 0),
+    steps,
+    polyline: polyline.length > 0 ? polyline : [from, to],
+    degraded: false,
+  };
+}
+
 export function createOsrmClient(options?: {
   baseUrl?: string;
   timeoutMs?: number;
+  walkSpeedMps?: number;
   fetchFn?: FetchFn;
 }): OsrmClient {
   const baseUrl = (options?.baseUrl ?? Deno.env.get('OSRM_BASE_URL') ?? '').replace(/\/$/, '');
   const timeoutMs = options?.timeoutMs ??
     Number(Deno.env.get('OSRM_TIMEOUT_MS') ?? '800');
+  const walkSpeedMps = options?.walkSpeedMps ?? 1.25;
   const fetchFn = options?.fetchFn ?? fetch;
 
   async function callOsrm(path: string): Promise<Response | null> {
@@ -115,6 +205,16 @@ export function createOsrmClient(options?: {
         distanceM: Math.round(route.distance ?? 0),
         degraded: false,
       };
+    },
+
+    async footRoute(from, to) {
+      const path =
+        `/route/v1/foot/${from.lng},${from.lat};${to.lng},${to.lat}?steps=true&geometries=geojson&overview=full`;
+      const res = await callOsrm(path);
+      if (!res) return straightLineFootRoute(from, to, walkSpeedMps);
+
+      const body = await res.json() as Parameters<typeof parseFootRoute>[0];
+      return parseFootRoute(body, from, to, walkSpeedMps);
     },
   };
 }

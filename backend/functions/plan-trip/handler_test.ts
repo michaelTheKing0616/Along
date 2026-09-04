@@ -141,6 +141,14 @@ function mockOsrmClient(): OsrmClient {
       }),
     carRoute: () =>
       Promise.resolve({ durationS: 500, distanceM: 2000, degraded: false }),
+    footRoute: () =>
+      Promise.resolve({
+        distanceM: 100,
+        durationS: 80,
+        steps: [],
+        polyline: [],
+        degraded: false,
+      }),
   };
 }
 
