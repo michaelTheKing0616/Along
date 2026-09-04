@@ -304,9 +304,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-A-05] Trip request/respond/cancel + Na Me + TripView
-- Status: IN PROGRESS
-- Assigned: 2026-09-04T21:05Z
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00015; request/respond/cancel/expire/trip_transition subset; TripView; Na Me; TS-TRIP-02/06 + TS-DISC-03.
+- Reviewer verdict: PASS WITH NOTES — 10/10 new assertions. Notes: Na Me same-color deconfliction incomplete vs §16; hardcoded 15m planner TTL; expire_requests untested.
 - Rework count: 0
-- Notes/escalations: none yet.
+- Notes/escalations: none blocking for merge; follow-ups before Phase 3 Na Me UX.
