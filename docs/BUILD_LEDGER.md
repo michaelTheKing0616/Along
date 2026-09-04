@@ -82,3 +82,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: FAIL — pgTAP tests call `plan()` before `create extension pgtap`, so fresh `supabase db reset` / CI path fails with `function plan(integer) does not exist`. Logic and seed MET when pgtap pre-installed.
 - Rework count: 2
 - Notes/escalations: Doc 09 `\ir` vs Supabase CLI — interim pattern (inline in migration + canonical `policies/`) accepted; human should amend doc 09 or add ADR. CODEOWNERS placeholders still pending.
+
+## [Phase 0 / P0-A-01] Migrations 0001/0002 geo & config
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: 0001 extensions/helpers (+ admin_users stub), 0002 geo/config with cfg()/city_for_point(), seed_core all §2.3 keys, pgTAP suites, RLS on all Along tables; PostGIS catalogs excluded from RLS gate; pgTAP extension ordered before plan().
+- Reviewer verdict: PASS WITH NOTES — all three acceptance criteria MET on fresh db reset (13/13 assertions). Notes: local tests via psql (pg_prove in CI); admin_users stub intentional for P0-A-02; db lint not run in review session.
+- Rework count: 2
+- Notes/escalations: Amend doc 09 `\ir` guidance (inline+canonical policies/ accepted interim). CODEOWNERS real team slugs still needed (human).
