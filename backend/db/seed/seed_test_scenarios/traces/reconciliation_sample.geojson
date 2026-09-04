@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "role": "driver", "scenario": "premature_conversion_with_trace" },
+      "geometry": { "type": "LineString", "coordinates": [[7.700, 11.060], [7.702, 11.062], [7.705, 11.065]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "role": "rider", "scenario": "premature_conversion_with_trace" },
+      "geometry": { "type": "LineString", "coordinates": [[7.700, 11.060], [7.703, 11.063], [7.705, 11.065]] }
+    }
+  ]
+}

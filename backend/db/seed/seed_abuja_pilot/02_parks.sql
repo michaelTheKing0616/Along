@@ -1,0 +1,15 @@
+-- Backbone parks (doc 13 §5). All field_verified via matched reconciliations in 06_provenance_records.sql.
+
+insert into parks (id, city_id, name, name_aliases, location, source_id, verification_status, confidence_score) values
+  ('b1100000-0000-4000-8000-000000000001', 'b1000000-0000-4000-8000-000000000001', 'Nyanya Park', array['Nyanya'], st_setsrid(st_makepoint(7.595, 9.012), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000002', 'b1000000-0000-4000-8000-000000000001', 'Karu', array['Karu Junction'], st_setsrid(st_makepoint(7.575, 9.025), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000003', 'b1000000-0000-4000-8000-000000000001', 'Jikwoyi Junction', array['Jikwoyi'], st_setsrid(st_makepoint(7.555, 9.030), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000004', 'b1000000-0000-4000-8000-000000000001', 'AYA', array['Area 11'], st_setsrid(st_makepoint(7.520, 9.038), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000005', 'b1000000-0000-4000-8000-000000000001', 'Asokoro Junction', array['Asokoro'], st_setsrid(st_makepoint(7.535, 9.045), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000006', 'b1000000-0000-4000-8000-000000000001', 'Berger Junction', array['Berger','Utako Berger'], st_setsrid(st_makepoint(7.433, 9.067), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000007', 'b1000000-0000-4000-8000-000000000001', 'Lugbe Park', array['Lugbe'], st_setsrid(st_makepoint(7.365, 8.987), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000008', 'b1000000-0000-4000-8000-000000000001', 'Area 1 Park', array['Area 1'], st_setsrid(st_makepoint(7.495, 9.048), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-000000000009', 'b1000000-0000-4000-8000-000000000001', 'Kubwa Bus Stop', array['Kubwa'], st_setsrid(st_makepoint(7.398, 9.158), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-00000000000a', 'b1000000-0000-4000-8000-000000000001', 'Dutse Junction', array['Dutse'], st_setsrid(st_makepoint(7.410, 9.120), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-00000000000b', 'b1000000-0000-4000-8000-000000000001', 'Wuse Market', array['Wuse'], st_setsrid(st_makepoint(7.489, 9.074), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950),
+  ('b1100000-0000-4000-8000-00000000000c', 'b1000000-0000-4000-8000-000000000001', 'Jabi Park', array['Jabi'], st_setsrid(st_makepoint(7.438, 9.082), 4326)::geography, 'b1300000-0000-4000-8000-000000000001', 'field_verified', 0.950);
