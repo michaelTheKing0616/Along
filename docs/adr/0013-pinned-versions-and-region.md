@@ -71,15 +71,17 @@ Pin all toolchain versions at repo bootstrap. Upgrading a **major** version requ
 
 **Selected region:** `eu-west-2` (London)
 
-**Basis (provisional):** Blueprint doc 09 §1 states eu-west is typically ~100–120 ms RTT from Lagos/Abuja. Formal ICMP/HTTPS RTT measurement from Lagos and Abuja endpoints was **not completed in the P0-E-01 worker environment** (no Nigeria egress from CI sandbox). Product owner should confirm with a one-time measurement from both cities before provisioning `along-staging` / `along-prod`.
+**Basis:** Blueprint doc 09 §1 — choose the Supabase region with the lowest RTT from Lagos/Abuja; eu-west is typically ~100–120 ms. **`eu-west-2` is the bootstrap choice** (accepted at P0-E-01).
 
-| Measurement target | Expected RTT | Measured (pending) |
+**Deferred gate:** Formal ICMP/HTTPS RTT measurement from Lagos and Abuja is required before first Supabase cloud project provisioning (task **P1-E-04**). Product owner may confirm measurements in the build ledger Notes; this is not a P0-E-01 acceptance gate.
+
+| Measurement target | Expected RTT | Measured |
 |---|---|---|
-| Lagos → `eu-west-2.supabase.co` | ~100–120 ms | _TBD_ |
-| Abuja → `eu-west-2.supabase.co` | ~100–120 ms | _TBD_ |
-| Lagos → `eu-west-1.supabase.co` | ~100–120 ms | _TBD_ |
+| Lagos → `eu-west-2.supabase.co` | ~100–120 ms | _TBD (P1-E-04)_ |
+| Abuja → `eu-west-2.supabase.co` | ~100–120 ms | _TBD (P1-E-04)_ |
+| Lagos → `eu-west-1.supabase.co` | ~100–120 ms | _TBD (P1-E-04)_ |
 
-If measurement shows `eu-west-1` (Ireland) materially lower, update this ADR before first cloud project creation.
+If P1-E-04 measurement shows `eu-west-1` (Ireland) materially lower, update this ADR before creating `along-staging` / `along-prod`.
 
 ## Rule
 
