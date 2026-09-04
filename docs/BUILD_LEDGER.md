@@ -296,8 +296,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-A-04] Presence RPCs + ambient + stale job
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00014; set_presence/presence_ping/ambient_*/presence_plausible/presence_stale; driver_is_matchable stub; TS-PRES/DISC/PLAN-10.
+- Reviewer verdict: PASS WITH NOTES — 18/18 named assertions PASS. Notes: ambient_demand untested; presence_ping accuracy>500 not rejected yet; LEDGER_BLOCKED for unverified OK.
+- Rework count: 0
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-A-05] Trip request/respond/cancel + Na Me + TripView
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T20:58Z
+- Assigned: 2026-09-04T21:05Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
