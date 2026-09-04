@@ -24,7 +24,7 @@ function parseJson<T>(raw: unknown, fallback: T): T {
 async function cfgValue(
   client: SupabaseClient,
   key: string,
-  cityId: string,
+  cityId: string | null,
 ): Promise<unknown> {
   const { data, error } = await client.rpc('cfg', { p_key: key, p_city: cityId });
   if (error) throw error;
@@ -101,6 +101,29 @@ export async function cityForPoint(
   const { data, error } = await client.rpc('city_for_lat_lng', { p_lat: lat, p_lng: lng });
   if (error) throw error;
   return data as string | null;
+}
+
+export async function loadPresenceFanoutCfg(
+  client: SupabaseClient,
+  cityId: string | null = null,
+): Promise<{ fanoutIntervalS: number; fanoutRadiusM: number }> {
+  const keys = ['presence.fanout_interval_s', 'presence.fanout_radius_m'] as const;
+  const values = await Promise.all(
+    keys.map((k) => cfgValue(client, k, cityId)),
+  );
+
+  return {
+    fanoutIntervalS: parseNum(values[0], 10),
+    fanoutRadiusM: parseNum(values[1], 3000),
+  };
+}
+
+export async function loadDispatchCfg(
+  client: SupabaseClient,
+  cityId: string,
+): Promise<{ requestTtlS: number }> {
+  const ttl = await cfgValue(client, 'dispatch.request_ttl_s', cityId);
+  return { requestTtlS: parseNum(ttl, 25) };
 }
 
 /** Unused export kept for cfg module completeness — satisfies lint for CfgRow. */

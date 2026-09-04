@@ -52,6 +52,8 @@ with required_global as (
     'presence.history_downsampled_days',
     'presence.downsample_interval_s',
     'presence.ambient_cell_precision',
+    'presence.fanout_interval_s',
+    'presence.fanout_radius_m',
     'boarding.colocation_radius_m',
     'boarding.colocation_duration_s',
     'boarding.min_speed_mps',
