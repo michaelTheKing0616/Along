@@ -1,0 +1,13 @@
+name: along
+repository: https://github.com/along-ng/along
+
+packages:
+  - mobile-rider
+  - mobile-driver
+  - shared/flutter/*
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+  version:
+    linkDependencies: true
