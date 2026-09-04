@@ -318,3 +318,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES (final) — SQL 6/6 + p95 + Deno 7/7. Notes: quote TTL/OSRM fallback literals; driver_profile untested; full deno lint pre-existing verify_openapi issue.
 - Rework count: 2 / 2
 - Notes/escalations: none blocking.
+
+## [Phase 1 / P1-A-07] Edge places-search + walking-directions
+- Status: IN PROGRESS
+- Assigned: 2026-09-04T21:30Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
