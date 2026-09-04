@@ -44,6 +44,8 @@ echo "Seeding Abuja city for E2E routes..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ROOT/backend/db/seed/seed_abuja_pilot/00_city_and_corridors.sql"
 echo "Seeding E2E admin users..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-e2e-admins.sql"
+echo "Seeding E2E field reconciliation queue..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-field-reconciliation.sql"
 
 echo "Running Playwright E2E..."
 cd "$ADMIN"
@@ -55,6 +57,12 @@ if [ -f "$ADMIN/.env.local" ]; then
 fi
 pnpm build
 pnpm test:e2e:setup
+
+if lsof -ti:3000 >/dev/null 2>&1; then
+  echo "Stopping existing process on port 3000 before E2E server start..."
+  lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+  sleep 1
+fi
 
 NODE_BIN=""
 if [ -x "$ADMIN/.tools/node-v22.15.0-darwin-arm64/bin/node" ]; then
