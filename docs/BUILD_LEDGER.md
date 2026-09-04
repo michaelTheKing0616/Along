@@ -178,3 +178,19 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: GPX upload deferred; round_trip not in CI; route form missing new_park group; entity_keys duplication.
 - Rework count: 1 (open-questions clear only)
 - Notes/escalations: none blocking. Follow-ups absorbable by later field/ops tasks.
+
+## [Phase 0 / P0-E-04] Abuja pilot + Zaria-Test + scenario seeds
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: seed_abuja_pilot (3 corridors), seed_testcity_fixture (Zaria-Test), seed_test_scenarios; apply_seeds.sh; TS-CFG-01 8/8; phase0_exit 6/6; TS-FARE-08 Abuja p95 0.101ms; CI runs TS-CFG-01.
+- Reviewer verdict: PASS WITH NOTES — all acceptance MET. Notes: synthetic two-scout exemplar only; apply_seeds idempotency; exit/perf tests not all in CI.
+- Rework count: 1 (open-questions clear only)
+- Notes/escalations: none blocking.
+
+## [Phase 0 / follow-up] TS-FARE-08 on Abuja seed
+- Status: PASS
+- Assigned: 2026-09-04
+- Worker report summary: Closed by P0-E-04 TS-FARE-08-abuja.sql (p95 0.101 ms).
+- Reviewer verdict: PASS — ledger follow-up from P0-A-04 resolved.
+- Rework count: 0
+- Notes/escalations: none.
