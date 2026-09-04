@@ -280,9 +280,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-A-02] shared/contracts OpenAPI + JSON Schemas + generated types
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-04
-- Worker report summary: OpenAPI 3.1 (10 paths), RPC JSON Schemas, TS/Dart codegen, contracts.yml + drift gates, ADR-0016.
-- Reviewer verdict: FAIL — Dart compile gate exits 2 (42 invalid_null_aware_operator warnings); missing RPCs acknowledge_guarantor + my_standing_history.
-- Rework count: 1
-- Notes/escalations: Rework: fix generate_dart / compile; add two missing RPC schemas+manifest.
+- Worker report summary: OpenAPI 3.1 (10 paths), RPC schemas, TS/Dart codegen, contracts.yml drift gates, ADR-0016; rework fixed Dart toJson + 2 RPCs.
+- Reviewer verdict: PASS WITH NOTES (recheck) — check_compile/check_stale PASS; acknowledge_guarantor + my_standing_history present.
+- Rework count: 1 / 2
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-A-03] resolve_fare Tier 0/3 + route profile RPCs
+- Status: IN PROGRESS
+- Assigned: 2026-09-04T20:49Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
