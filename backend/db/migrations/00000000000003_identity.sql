@@ -210,7 +210,6 @@ create trigger driver_verifications_set_updated_at before update on driver_verif
   for each row execute function set_updated_at();
 
 -- RLS policies inlined (Supabase CLI does not support \ir).
--- Canonical readable source: backend/db/policies/<table>.sql — keep in sync.
 alter table profiles enable row level security;
 alter table riders enable row level security;
 alter table drivers enable row level security;

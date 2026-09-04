@@ -257,7 +257,7 @@ begin
 end;
 $$;
 
--- RLS (canonical source: backend/db/policies/fare_quotes.sql)
+-- RLS policies inlined (Supabase CLI does not support \ir).
 alter table fare_quotes enable row level security;
 
 create policy fare_quotes_select_rider
