@@ -251,3 +251,30 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — all 17 P0-* tasks PASS/PASS WITH NOTES; Phase 0 gates + exit criteria MET; independently re-ran 87/87 self-contained pgTAP. Abuja exit harnesses not re-run (partial local seed; reset blocked). No product blockers.
 - Rework count: 0
 - Notes/escalations: STOP for human before Phase 1. Recommend fresh `supabase db reset` + full pgTAP before Phase 1 kickoff. Colour direction (vibrant/high-contrast) locked in tokens/brand assets.
+
+## [Phase 0 / Verification] Fresh db reset + full pgTAP (pre–Phase 1)
+- Status: PASS
+- Assigned: 2026-09-04T20:25Z
+- Worker report summary: Orchestrator ran `supabase db reset --yes` then all 13 `backend/db/tests/*.sql` on clean DB (tests load seeds inside txn).
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations:
+  - 13/13 files PASS; ~94 ok assertions; 0 not-ok; policies stale check PASS (31 files).
+  - phase0_exit_criteria: 6/6; TS-FARE-08 Abuja: ok (p95 ≤ 150 ms); TS-CFG-01: 8/8; promotion_pipeline TS-GRAPH-01..05: 12/12.
+  - Human approved continue into Phase 1 after optional verification.
+
+## [Phase 1 / Decision] Human continue
+- Status: PASS
+- Assigned: 2026-09-04T20:25Z
+- Worker report summary: n/a
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Human: do optional verification then continue Phase 1. Autopilot PHASE_LIMIT = Phase 1; stop at Phase 1 gate.
+
+## [Phase 1 / P1-A-01] Migrations: driver routes, presence, planner support, journeys/trips
+- Status: IN PROGRESS
+- Assigned: 2026-09-04T20:25Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
