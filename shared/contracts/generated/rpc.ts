@@ -252,6 +252,16 @@ export interface RegisterGuarantorRequest {
   profile_id?: string;
 }
 
+/** auth.json → AcknowledgeGuarantorRequest */
+export interface AcknowledgeGuarantorRequest {
+  p_token: string;
+}
+
+/** auth.json → AcknowledgeGuarantorResponse */
+export interface AcknowledgeGuarantorResponse {
+  acknowledged_at: string;
+}
+
 /** graph.json → ConfirmGraphValueRequest */
 export interface ConfirmGraphValueRequest {
   p_target_type: string;
@@ -532,6 +542,26 @@ export interface MyPaymentsRequest {
   p_cursor?: string;
   p_limit?: number;
 }
+
+/** ledger.json → StandingTransitionEntry */
+export interface StandingTransitionEntry {
+  from_standing?: string | null;
+  to_standing: string;
+  actor_type: string;
+  reason: string;
+  balance_at?: string;
+  created_at: string;
+}
+
+/** ledger.json → MyStandingHistoryResponse */
+export type MyStandingHistoryResponse = {
+  from_standing?: string | null;
+  to_standing: string;
+  actor_type: string;
+  reason: string;
+  balance_at?: string;
+  created_at: string;
+}[];
 
 /** presence.json → SetPresenceRequest */
 export interface SetPresenceRequest {

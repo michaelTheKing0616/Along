@@ -80,6 +80,22 @@
         "p_cursor": { "type": "string" },
         "p_limit": { "$ref": "../common.json#/$defs/CursorLimit" }
       }
+    },
+    "StandingTransitionEntry": {
+      "type": "object",
+      "required": ["to_standing", "actor_type", "reason", "created_at"],
+      "properties": {
+        "from_standing": { "type": ["string", "null"] },
+        "to_standing": { "type": "string" },
+        "actor_type": { "type": "string" },
+        "reason": { "type": "string" },
+        "balance_at": { "type": "string" },
+        "created_at": { "$ref": "../common.json#/$defs/IsoDateTime" }
+      }
+    },
+    "MyStandingHistoryResponse": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/StandingTransitionEntry" }
     }
   }
 }

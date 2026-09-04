@@ -227,8 +227,8 @@ function fromJsonExpr(dartType, jsonKey, nullable) {
     : `${dartType}.fromJson(${access} as Map<String, dynamic>)`;
 }
 
-/** @param {string} dartType @param {string} prop */
-function toJsonExpr(dartType, prop) {
+/** @param {string} dartType @param {string} prop @param {boolean} nullable */
+function toJsonExpr(dartType, prop, nullable) {
   if (dartType === 'List<Map<String, dynamic>>') return prop;
   if (['String', 'int', 'double', 'bool', 'Object?'].includes(dartType) || dartType.startsWith('Map<')) {
     return prop;
@@ -237,9 +237,11 @@ function toJsonExpr(dartType, prop) {
     return prop;
   }
   if (dartType.startsWith('List<')) {
-    return `${prop}?.map((e) => e.toJson()).toList()`;
+    return nullable
+      ? `${prop}?.map((e) => e.toJson()).toList()`
+      : `${prop}.map((e) => e.toJson()).toList()`;
   }
-  return `${prop}?.toJson()`;
+  return nullable ? `${prop}?.toJson()` : `${prop}.toJson()`;
 }
 
 /** @param {string} dart @param {boolean} nullable */
@@ -286,7 +288,8 @@ function emitClass(name, schema) {
   for (const [prop, propSchema] of Object.entries(props)) {
     const hint = className + prop[0].toUpperCase() + prop.slice(1);
     const resolved = resolveSchema(propSchema, hint, true);
-    lines.push(`    ${JSON.stringify(prop)}: ${toJsonExpr(resolved.dart, prop)},`);
+    const nullable = !required.has(prop);
+    lines.push(`    ${JSON.stringify(prop)}: ${toJsonExpr(resolved.dart, prop, nullable)},`);
   }
   lines.push('  };');
   lines.push('}');
