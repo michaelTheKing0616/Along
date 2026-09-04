@@ -146,3 +146,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: single shortest path (Yen → P2-A-01); silent fare null on resolve_fare errors; Abuja re-validation → P0-E-04.
 - Rework count: 0
 - Notes/escalations: none blocking.
+
+## [Phase 0 / P0-A-07] Field tables + reconciliation + ingestion contract
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 0008 field_* tables; admin_reconcile/publish (park-only); TS-GRAPH-07 8/8; shared/contracts field-ingestion + db.types.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: tighten reconcile_field_submission caller check in P0-E-03; unused v_currency; discrepant-status publish assert optional.
+- Rework count: 1 (open-questions clear only)
+- Notes/escalations: none blocking.
