@@ -30,5 +30,8 @@ jobs:
       - name: RLS coverage check
         run: bash backend/db/scripts/run_rls_coverage.sh
 
+      - name: RLS policy snapshot check
+        run: bash backend/db/scripts/check_policies_stale.sh
+
       - name: Schema types contract check
         run: bash backend/db/scripts/check_schema_types.sh
