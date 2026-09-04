@@ -488,7 +488,8 @@ begin
 end;
 $$;
 
-grant execute on function ensure_partitions() to authenticated;
+revoke execute on function ensure_partitions() from authenticated;
+grant execute on function ensure_partitions() to service_role;
 
 -- ---------------------------------------------------------------------------
 -- RLS (doc 02 §16 matrix)

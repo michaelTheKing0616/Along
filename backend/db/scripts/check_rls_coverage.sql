@@ -13,6 +13,7 @@ BEGIN
   JOIN pg_namespace n ON n.oid = c.relnamespace
   WHERE c.relkind = 'r'
     AND n.nspname IN ('public', 'private')
+    AND NOT c.relispartition  -- partition children inherit parent RLS policies
     AND NOT c.relrowsecurity
     AND NOT EXISTS (
       SELECT 1
