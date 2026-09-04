@@ -27,6 +27,7 @@ done < <(
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE c.relkind = 'r'
       AND n.nspname IN ('public', 'private')
+      AND NOT c.relispartition  -- partition children inherit parent RLS policies
       AND NOT EXISTS (
         SELECT 1
         FROM pg_depend d
