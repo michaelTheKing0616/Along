@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { AuditDrawer } from '@/components/along/AuditDrawer';
 
 interface PageProps {
@@ -16,14 +16,7 @@ export default async function DashboardPage({ params }: PageProps) {
           City: <strong>{city}</strong>
         </p>
       </div>
-      <nav className="nav-links" aria-label="Console navigation">
-        <Link href={`/${city}/dashboard`}>Dashboard</Link>
-        <Link href={`/${city}/verification`}>Verification</Link>
-        <Link href={`/${city}/finance`}>Finance</Link>
-        <Link href={`/${city}/safety`}>Safety</Link>
-        <Link href={`/${city}/audit`}>Audit</Link>
-        <Link href={`/${city}/admins`}>Admins</Link>
-      </nav>
+      <ConsoleNav city={city} />
       <AuditDrawer targetId="commission.rate" targetLabel="Global commission config" />
     </>
   );

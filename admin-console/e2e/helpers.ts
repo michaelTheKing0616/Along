@@ -23,6 +23,10 @@ async function completeMfaIfNeeded(page: Page, email: string) {
   await page.getByRole('button', { name: 'Verify' }).click();
 }
 
+function consolePathPattern(): RegExp {
+  return /^\/(?:[^/]+\/)?(?:dashboard|finance|admins|verification|safety|audit|field|graph|deploy|unauthorized)(?:\/|$)/;
+}
+
 export async function signInAs(page: Page, email: string, options?: { landing?: string }) {
   const landing = options?.landing ?? `/${E2E_CITY}/dashboard`;
 
@@ -31,11 +35,14 @@ export async function signInAs(page: Page, email: string, options?: { landing?: 
   await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  await page.waitForURL(/\/(mfa|dashboard|finance|admins|verification|safety|audit|unauthorized)/);
+  await page.waitForURL((url) => {
+    const path = new URL(url).pathname;
+    return path === '/mfa' || consolePathPattern().test(path);
+  });
   await completeMfaIfNeeded(page, email);
 
   if (!page.url().includes('/unauthorized')) {
-    await expect(page).toHaveURL(new RegExp(landing.replace(/\//g, '\\/')));
+    await expect(page).toHaveURL(new RegExp(`${landing.replace(/\//g, '\\/')}(?:/)?$`));
   }
 }
 
