@@ -288,8 +288,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-A-03] resolve_fare Tier 0/3 + route profile RPCs
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 00013; resolve_fare Tier 0/3 + load surcharge; upsert/my/suggest route profile RPCs; TS-FARE-04–07 + TS-GRAPH-06.
+- Reviewer verdict: PASS WITH NOTES — all named TS PASS (10+6+10). Notes: hardcoded ±50 and 14 days in auxiliary RPCs → cfg follow-up; some RPCs lack dedicated pgTAP.
+- Rework count: 0
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-A-04] Presence RPCs + ambient + stale job
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T20:49Z
+- Assigned: 2026-09-04T20:58Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
