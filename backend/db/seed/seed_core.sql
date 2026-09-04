@@ -86,6 +86,8 @@ insert into app_config (key, scope_type, scope_id, value) values
   ('presence.history_downsampled_days', 'global', '*', '30'),
   ('presence.downsample_interval_s', 'global', '*', '60'),
   ('presence.ambient_cell_precision', 'global', '*', '6'),
+  ('presence.fanout_interval_s', 'global', '*', '10'),
+  ('presence.fanout_radius_m', 'global', '*', '3000'),
   ('boarding.colocation_radius_m', 'global', '*', '25'),
   ('boarding.colocation_duration_s', 'global', '*', '20'),
   ('boarding.min_speed_mps', 'global', '*', '1.5'),
