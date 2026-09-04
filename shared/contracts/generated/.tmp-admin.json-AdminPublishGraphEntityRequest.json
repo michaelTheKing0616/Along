@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AdminPublishGraphEntityRequest",
+  "type": "object",
+  "required": [
+    "p_type",
+    "p_payload"
+  ],
+  "properties": {
+    "p_type": {
+      "type": "string"
+    },
+    "p_payload": {
+      "type": "object"
+    }
+  }
+}

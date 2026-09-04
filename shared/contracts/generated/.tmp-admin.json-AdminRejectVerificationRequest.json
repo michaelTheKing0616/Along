@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AdminRejectVerificationRequest",
+  "type": "object",
+  "required": [
+    "p_verification_id",
+    "reason"
+  ],
+  "properties": {
+    "p_verification_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reason": {
+      "type": "string"
+    }
+  }
+}

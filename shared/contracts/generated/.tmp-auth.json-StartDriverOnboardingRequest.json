@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StartDriverOnboardingRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "city_id",
+    "display_name"
+  ],
+  "properties": {
+    "city_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "gender": {
+      "type": "string"
+    }
+  }
+}

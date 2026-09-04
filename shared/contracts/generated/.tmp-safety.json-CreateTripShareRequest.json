@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CreateTripShareRequest",
+  "type": "object",
+  "required": [
+    "p_journey_id"
+  ],
+  "properties": {
+    "p_journey_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "p_contact_name": {
+      "type": "string"
+    },
+    "p_contact_phone": {
+      "type": "string"
+    }
+  }
+}

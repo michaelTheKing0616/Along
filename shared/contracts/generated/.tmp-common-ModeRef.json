@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModeRef",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "code",
+    "label",
+    "icon_key",
+    "color_token"
+  ],
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "icon_key": {
+      "type": "string"
+    },
+    "color_token": {
+      "type": "string"
+    }
+  }
+}

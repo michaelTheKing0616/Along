@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RevokeTripShareRequest",
+  "type": "object",
+  "required": [
+    "p_share_id"
+  ],
+  "properties": {
+    "p_share_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

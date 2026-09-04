@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ConfirmFareRequest",
+  "type": "object",
+  "required": [
+    "p_trip_id",
+    "p_outcome"
+  ],
+  "properties": {
+    "p_trip_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "p_outcome": {
+      "type": "string",
+      "enum": [
+        "as_shown",
+        "different"
+      ]
+    },
+    "p_paid_amount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,2})?$"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      }
+    }
+  }
+}

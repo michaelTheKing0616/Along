@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ErrorCode",
+  "type": "string",
+  "enum": [
+    "UNAUTHENTICATED",
+    "FORBIDDEN",
+    "NOT_FOUND",
+    "VALIDATION",
+    "CONFLICT",
+    "RATE_LIMITED",
+    "STATE_INVALID",
+    "DRIVER_NOT_MATCHABLE",
+    "LEDGER_BLOCKED",
+    "CANDIDATE_EXPIRED",
+    "NEGOTIATION_CLOSED",
+    "FARE_UNRESOLVED",
+    "COVERAGE_GAP",
+    "DEGRADED_UPSTREAM",
+    "IDEMPOTENT_REPLAY"
+  ]
+}

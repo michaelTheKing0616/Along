@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ItineraryStateRequest",
+  "type": "object",
+  "required": [
+    "p_itinerary_id"
+  ],
+  "properties": {
+    "p_itinerary_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

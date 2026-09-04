@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RegisterVehicleResponse",
+  "type": "object",
+  "required": [
+    "vehicle_id"
+  ],
+  "properties": {
+    "vehicle_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MyPaymentsRequest",
+  "type": "object",
+  "properties": {
+    "p_cursor": {
+      "type": "string"
+    },
+    "p_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    }
+  }
+}

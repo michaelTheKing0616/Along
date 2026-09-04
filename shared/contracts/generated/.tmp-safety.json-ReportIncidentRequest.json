@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ReportIncidentRequest",
+  "type": "object",
+  "required": [
+    "p_type",
+    "p_description",
+    "p_attachment_paths"
+  ],
+  "properties": {
+    "p_trip_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "p_type": {
+      "type": "string"
+    },
+    "p_description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "p_attachment_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

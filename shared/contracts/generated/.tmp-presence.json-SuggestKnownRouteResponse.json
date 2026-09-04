@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SuggestKnownRouteResponse",
+  "oneOf": [
+    {
+      "type": "null"
+    },
+    {
+      "type": "object",
+      "required": [
+        "route",
+        "stages"
+      ],
+      "properties": {
+        "route": {
+          "type": "object"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "stage",
+              "default_price_to_end"
+            ],
+            "properties": {
+              "stage": {
+                "type": "object"
+              },
+              "default_price_to_end": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "amount",
+                  "currency"
+                ],
+                "properties": {
+                  "amount": {
+                    "type": "string",
+                    "pattern": "^\\d+(\\.\\d{1,2})?$"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 3
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

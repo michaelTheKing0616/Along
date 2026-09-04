@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FareComponent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "amount",
+    "label"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "through_fare",
+        "leg",
+        "profile",
+        "estimate",
+        "load_surcharge",
+        "negotiated"
+      ]
+    },
+    "ref_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "amount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,2})?$"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      }
+    },
+    "label": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CancelTripRequest",
+  "type": "object",
+  "required": [
+    "p_trip_id"
+  ],
+  "properties": {
+    "p_trip_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "p_reason": {
+      "type": "string"
+    }
+  }
+}

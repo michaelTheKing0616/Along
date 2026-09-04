@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenNegotiationRequest",
+  "type": "object",
+  "required": [
+    "p_context",
+    "p_client_ref"
+  ],
+  "properties": {
+    "p_context": {
+      "type": "string"
+    },
+    "p_candidate_token": {
+      "type": "string"
+    },
+    "p_driver_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "p_from": {},
+    "p_to": {},
+    "p_client_ref": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

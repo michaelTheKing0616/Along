@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AdminReviewFlagRequest",
+  "type": "object",
+  "required": [
+    "p_flag_id",
+    "action"
+  ],
+  "properties": {
+    "p_flag_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "clear",
+        "action"
+      ]
+    },
+    "note": {
+      "type": "string"
+    }
+  }
+}

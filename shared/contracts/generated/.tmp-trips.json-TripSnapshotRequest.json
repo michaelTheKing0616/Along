@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TripSnapshotRequest",
+  "type": "object",
+  "required": [
+    "p_trip_id"
+  ],
+  "properties": {
+    "p_trip_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

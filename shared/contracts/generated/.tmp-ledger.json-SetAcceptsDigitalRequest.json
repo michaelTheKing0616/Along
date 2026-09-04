@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SetAcceptsDigitalRequest",
+  "type": "object",
+  "required": [
+    "p_enabled"
+  ],
+  "properties": {
+    "p_enabled": {
+      "type": "boolean"
+    }
+  }
+}

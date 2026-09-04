@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AdminSetConfigRequest",
+  "type": "object",
+  "required": [
+    "key",
+    "scope_type",
+    "scope_id",
+    "value"
+  ],
+  "properties": {
+    "key": {
+      "type": "string"
+    },
+    "scope_type": {
+      "type": "string"
+    },
+    "scope_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "value": {}
+  }
+}

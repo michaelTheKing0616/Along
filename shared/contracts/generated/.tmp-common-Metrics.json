@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Metrics",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "total_fare",
+    "total_time_s",
+    "in_vehicle_s",
+    "wait_s",
+    "walk_s",
+    "transfer_count",
+    "total_walking_distance_m",
+    "strenuousness_score",
+    "recommended_score",
+    "explain"
+  ],
+  "properties": {
+    "total_fare": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,2})?$"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      }
+    },
+    "total_time_s": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "in_vehicle_s": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "wait_s": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "walk_s": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "transfer_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total_walking_distance_m": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "strenuousness_score": {
+      "type": "number",
+      "minimum": 0
+    },
+    "recommended_score": {
+      "type": "number"
+    },
+    "explain": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    }
+  }
+}

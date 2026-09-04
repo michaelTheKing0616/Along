@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FareComponentKind",
+  "type": "string",
+  "enum": [
+    "through_fare",
+    "leg",
+    "profile",
+    "estimate",
+    "load_surcharge",
+    "negotiated"
+  ]
+}

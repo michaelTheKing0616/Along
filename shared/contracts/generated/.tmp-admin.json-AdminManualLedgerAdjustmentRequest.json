@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AdminManualLedgerAdjustmentRequest",
+  "type": "object",
+  "required": [
+    "p_driver_id",
+    "p_amount",
+    "p_memo"
+  ],
+  "properties": {
+    "p_driver_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "p_amount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,2})?$"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      }
+    },
+    "p_memo": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LoadFlag",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "flagged"
+  ],
+  "properties": {
+    "flagged": {
+      "type": "boolean"
+    },
+    "size": {
+      "type": "string",
+      "enum": [
+        "small",
+        "medium",
+        "large"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "acknowledged_warning": {
+      "type": "boolean"
+    }
+  }
+}

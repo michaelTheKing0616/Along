@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ResponseMeta",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_id"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "degraded": {
+      "type": "boolean"
+    },
+    "next_cursor": {
+      "type": "string"
+    },
+    "idempotent_replay": {
+      "type": "boolean"
+    }
+  }
+}
