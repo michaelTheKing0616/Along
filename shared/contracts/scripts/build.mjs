@@ -58,13 +58,17 @@ async function compileDef(name, def, localDefs, label) {
     title: name,
     ...def,
   }, localDefs);
-  const tmpPath = join(generatedDir, `.tmp-${label}-${name}.json`);
+  const tmpPath = join(tmpdir(), `along-contracts-${label}-${name}.json`);
   writeFileSync(tmpPath, JSON.stringify(standalone, null, 2));
-  return compileFromFile(tmpPath, {
-    bannerComment: '',
-    additionalProperties: false,
-    enableConstEnums: true,
-  });
+  try {
+    return await compileFromFile(tmpPath, {
+      bannerComment: '',
+      additionalProperties: false,
+      enableConstEnums: true,
+    });
+  } finally {
+    unlinkSync(tmpPath);
+  }
 }
 
 // --- OpenAPI → TS ---
