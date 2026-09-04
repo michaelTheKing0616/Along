@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./db.types": "./db.types.ts"
+  },
   "scripts": {
     "lint": "node -e \"process.exit(0)\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
