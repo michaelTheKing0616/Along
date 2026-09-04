@@ -170,3 +170,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: n/a
 - Rework count: 0
 - Notes/escalations: Workers and Reviewers MUST use Cursor model `composer-2.5-fast` only. Never Claude/GPT/API models. Never `resume` a Reviewer that was started on a non-Cursor model (resume preserves model). Always spawn a fresh Reviewer Task with `model: composer-2.5-fast`.
+
+## [Phase 0 / P0-E-03] ODK forms + ingest + PROTOCOL
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Park/route XLSForms, export_choices, ingest.ts (service-role), PROTOCOL, round-trip vitest 2/2 with correct variance.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: GPX upload deferred; round_trip not in CI; route form missing new_park group; entity_keys duplication.
+- Rework count: 1 (open-questions clear only)
+- Notes/escalations: none blocking. Follow-ups absorbable by later field/ops tasks.
