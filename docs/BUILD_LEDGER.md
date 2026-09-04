@@ -106,3 +106,19 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — all three acceptance criteria MET on fresh reset. Notes: psql vs pg_prove; target_type naming inconsistency; INSERT revision path untested.
 - Rework count: 0
 - Notes/escalations: none blocking.
+
+## [Phase 0 / P0-A-04] snap_stage + resolve_fare Tier 1–2 + fare_quotes
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: Migration 0005; snap_stage (cfg radius); resolve_fare Tier 1–2; fare_quotes + RLS; Tier 0/3 raise deferred to P1-A-03; TS-FARE-01/02/03/08 10/10 on minimal fixture.
+- Reviewer verdict: PASS WITH NOTES — all four TS-FARE criteria MET. Notes: TS-FARE-08 minimal fixture (Abuja re-run → P0-E-04); no fare_quotes RLS behavioral pgTAP; snap_stage enum-order tie-break fragile.
+- Rework count: 1 (open-questions clear only)
+- Notes/escalations: P0-E-04 must re-assert TS-FARE-08 against seed_abuja_pilot.
+
+## [Phase 0 / follow-up] TS-FARE-08 on Abuja seed
+- Status: BLOCKED — follow-up
+- Assigned: 2026-09-04
+- Worker report summary: n/a
+- Reviewer verdict: absorb into P0-E-04 acceptance when seeding Abuja pilot.
+- Rework count: 0
+- Notes/escalations: Re-run TS-FARE-08 p95 ≤ 150 ms over 1,000 pairs on seed_abuja_pilot.
