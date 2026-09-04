@@ -10,3 +10,8 @@ create policy driver_verifications_select_admin
 create policy driver_verifications_select_own
   on driver_verifications for select to authenticated
   using (driver_id = auth.uid());
+
+create policy driver_verifications_update_admin
+  on driver_verifications for update to authenticated
+  using (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'superadmin'::text]))
+  with check (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'superadmin'::text]));
