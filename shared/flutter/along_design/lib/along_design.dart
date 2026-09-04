@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'src/tokens.g.dart';
 
+export 'src/brand_assets.dart';
 export 'src/theme.dart';
 export 'src/tokens.g.dart';
 
