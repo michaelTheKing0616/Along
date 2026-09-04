@@ -23,3 +23,9 @@ jobs:
 
       - name: Seed fixture and TS-CFG scenarios
         run: bash backend/db/scripts/check_seed_fixture.sh
+
+      - name: Run TS-CFG-01 on Zaria-Test fixture
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f backend/db/tests/TS-CFG-01.sql
