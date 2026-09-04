@@ -229,8 +229,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Prior FAIL was Ahem tofu box; fixed in 1d720ae. Style Dictionary collision warnings non-blocking; Inter full files larger than subset ideal. Product-owner colour direction (vibrant/high-contrast, not muted) encoded in tokens.
 
 ## [Phase 0 / P0-E-06] Brand assets (SVG logos, icons, splash)
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: SVG wordmarks (#0A0A0A/#F7D117), Android adaptive+legacy all densities, iOS AppIcon set, splash assets; brand_assets paths + 6 asset tests; flutter test 9/9.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET; vibrant fills confirmed; no Stitch logo. Notes: iOS 1024 may need safe-zone inset later; potrace not hand-optimized.
+- Rework count: 0
+- Notes/escalations: none blocking. Colour direction (vibrant/high-contrast) preserved in SVG fills.
+
+## [Phase 0 / P0-A-09] ADR-0015 policies snapshot + CI regenerate-and-diff
 - Status: IN PROGRESS
-- Assigned: 2026-09-04T15:59Z
+- Assigned: 2026-09-04T16:17Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
