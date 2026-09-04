@@ -23,6 +23,7 @@ Pin first-party Flutter/Dart dependencies introduced by `along_core`, `along_dat
 | `geolocator` | **13.0.2** | `along_location` |
 | `firebase_messaging` | **15.2.4** | `along_notifications` |
 | `flutter_local_notifications` | **18.0.1** | `along_notifications` |
+| `maplibre_gl` | **0.22.0** | `along_map` |
 | `build_runner` | **2.4.12** | `along_data` (dev) |
 
 ## Alternatives

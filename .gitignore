@@ -54,6 +54,9 @@ backend/routing/extracts/
 *.osm.pbf
 *.osrm*
 *.pmtiles
+# Tiny Abuja test fixtures (127 B); production tiles stay gitignored.
+!shared/flutter/along_map/assets/fixtures/*.pmtiles
+!shared/flutter/along_map/test/fixtures/*.pmtiles
 data-collection/raw/
 
 # Logs
