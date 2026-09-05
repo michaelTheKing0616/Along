@@ -45,6 +45,7 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(String bucket, String path, List<int> bytes)? onUpload;
   void Function(Map<String, dynamic> params)? onSetPresence;
   void Function(Map<String, dynamic> params)? onPresencePing;
+  void Function(Map<String, dynamic> params)? onRespondToTrip;
   void Function(Map<String, dynamic> profile)? onUpsertRouteProfile;
 
   List<Map<String, dynamic>> routeProfiles;
@@ -166,7 +167,98 @@ class FakeAlongSupabase implements AlongSupabase {
           .toList(growable: false);
       return null;
     }
+    if (fn == 'respond_to_trip') {
+      onRespondToTrip?.call(params ?? {});
+      return _sampleTripView(
+        tripId: params?['p_trip_id'] as String? ?? 'trip-1',
+        status: params?['p_action'] == 'accept' ? 'accepted' : 'declined',
+      );
+    }
+    if (fn == 'trip_snapshot') {
+      return _sampleTripView(
+        tripId: params?['p_trip_id'] as String? ?? 'trip-1',
+        status: 'requested',
+      );
+    }
     return {};
+  }
+
+  static Map<String, dynamic> _sampleTripView({
+    required String tripId,
+    required String status,
+    bool loadFlagged = false,
+  }) {
+    return {
+      'trip_id': tripId,
+      'journey_id': 'j1',
+      'journey_sequence': 1,
+      'status': status,
+      'mode': {
+        'code': 'car',
+        'label': 'Car',
+        'icon_key': 'car',
+        'color_token': 'mode.car',
+      },
+      'rider': {
+        'display_name': 'Ada',
+        'rating': 4.8,
+        'trip_count': 12,
+      },
+      'driver': {},
+      'vehicle': {},
+      'board': {
+        'stage_id': 's1',
+        'name': 'Lugbe Park',
+        'location': {'lat': 9.0, 'lng': 7.0},
+        'walk_m': 400,
+        'walk_s': 300,
+        'wayfinding_available': true,
+      },
+      'alight': {
+        'stage_id': 's2',
+        'name': 'Area 1 Park',
+        'location': {'lat': 9.1, 'lng': 7.1},
+      },
+      'route_leg_ids': [],
+      'fare': {
+        'total': {'amount': '450.00', 'currency': 'NGN'},
+        'tier': 1,
+        'confidence': 1,
+        'unconfirmed': false,
+        'components': [],
+        'quote_id': 'q1',
+        'expires_at': '2026-09-05T13:00:00Z',
+      },
+      'load': {
+        'flagged': loadFlagged,
+        'size': loadFlagged ? 'Medium' : 'none',
+        'note': loadFlagged ? '1 bag, needs boot' : null,
+      },
+      'women_only': false,
+      'na_me': {
+        'color_token': 'green',
+        'shape': 'diamond',
+        'label': 'Green Diamond',
+      },
+      'live_channel': 'trip:$tripId',
+      'expires_at': '2026-09-05T14:00:00Z',
+      'timestamps': {},
+    };
+  }
+
+  Map<String, dynamic> sampleTripRequestEnvelope({
+    String tripId = 'trip-1',
+    bool loadFlagged = true,
+  }) {
+    return {
+      'type': 'trip_request',
+      'expires_at': '2026-09-05T14:00:00Z',
+      'trip': _sampleTripView(
+        tripId: tripId,
+        status: 'requested',
+        loadFlagged: loadFlagged,
+      ),
+    };
   }
 
   @override
@@ -272,6 +364,26 @@ class FakeAlongSupabase implements AlongSupabase {
             'scope_type': 'global',
             'scope_id': '*',
             'value': '60',
+          },
+        ];
+      }
+      if (key == 'commission.rate') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '0.075',
+          },
+        ];
+      }
+      if (key == 'dispatch.request_ttl_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '25',
           },
         ];
       }

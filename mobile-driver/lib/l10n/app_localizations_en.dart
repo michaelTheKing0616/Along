@@ -399,4 +399,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeParkSomewhereElse => 'I\'m somewhere else';
+
+  @override
+  String get incomingRequestTitle => 'New request';
+
+  @override
+  String incomingRequestCountdown(int seconds) {
+    return '${seconds}s';
+  }
+
+  @override
+  String incomingRequestRiderLine(String name, String rating, int trips) {
+    return '$name · $rating · $trips trips';
+  }
+
+  @override
+  String get incomingRequestPickup => 'Pickup';
+
+  @override
+  String get incomingRequestDropoff => 'Drop-off';
+
+  @override
+  String incomingRequestPickupMeta(int distance, int eta) {
+    return '$distance m · $eta min';
+  }
+
+  @override
+  String incomingRequestFareLine(String amount, String tierLabel) {
+    return 'Rider pays $amount · $tierLabel';
+  }
+
+  @override
+  String incomingRequestAlongFee(String amount, String percent) {
+    return 'Along fee $amount ($percent%) — added to your balance at completion';
+  }
+
+  @override
+  String get incomingRequestLoadDefault => 'Passenger flagged load';
+
+  @override
+  String incomingRequestLoadDetail(String size, String note) {
+    return '$size load — $note';
+  }
+
+  @override
+  String get incomingRequestWomenOnly => 'Women-only match';
+
+  @override
+  String get incomingRequestAccept => 'Accept';
+
+  @override
+  String get incomingRequestDecline => 'Decline';
+
+  @override
+  String get declineReasonTitle => 'Why are you declining?';
+
+  @override
+  String get declineReasonNoRoomForLoad => 'No room for load';
+
+  @override
+  String get declineReasonTooFar => 'Too far';
+
+  @override
+  String get declineReasonEndingShift => 'Ending shift';
+
+  @override
+  String get declineReasonOther => 'Other';
+
+  @override
+  String get fareTierStandard => 'Standard fare';
+
+  @override
+  String get fareTierCommunity => 'Community fare';
+
+  @override
+  String get fareTierProfile => 'Driver price';
+
+  @override
+  String get fareTierEstimate => 'Estimate — agree price';
 }

@@ -53,6 +53,30 @@ class TripsRepository {
     }
   }
 
+  Future<TripSummary> respondToTrip({
+    required String tripId,
+    required String action,
+    String? declineReason,
+  }) async {
+    try {
+      final raw = await _gateway.rpc(
+        'respond_to_trip',
+        params: dto.RespondToTripRequest(
+          p_trip_id: tripId,
+          p_action: action,
+          p_decline_reason: declineReason,
+        ).toJson(),
+      );
+      final view = dto.TripView.fromJson(raw as Map<String, dynamic>);
+      final summary = DomainMappers.tripFromDto(view);
+      await _cacheTrip(view);
+      await _persistNaMePairing(summary);
+      return summary;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
   Future<TripSummary?> cachedActiveTrip() async {
     final rows = await _db.select(_db.tripCache).get();
     for (final row in rows) {

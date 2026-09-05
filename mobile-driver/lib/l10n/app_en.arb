@@ -202,5 +202,63 @@
       "meters": {"type": "int"}
     }
   },
-  "homeParkSomewhereElse": "I'm somewhere else"
+  "homeParkSomewhereElse": "I'm somewhere else",
+  "incomingRequestTitle": "New request",
+  "incomingRequestCountdown": "{seconds}s",
+  "@incomingRequestCountdown": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "incomingRequestRiderLine": "{name} · {rating} · {trips} trips",
+  "@incomingRequestRiderLine": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "rating": {"type": "String"},
+      "trips": {"type": "int"}
+    }
+  },
+  "incomingRequestPickup": "Pickup",
+  "incomingRequestDropoff": "Drop-off",
+  "incomingRequestPickupMeta": "{distance} m · {eta} min",
+  "@incomingRequestPickupMeta": {
+    "placeholders": {
+      "distance": {"type": "int"},
+      "eta": {"type": "int"}
+    }
+  },
+  "incomingRequestFareLine": "Rider pays {amount} · {tierLabel}",
+  "@incomingRequestFareLine": {
+    "placeholders": {
+      "amount": {"type": "String"},
+      "tierLabel": {"type": "String"}
+    }
+  },
+  "incomingRequestAlongFee": "Along fee {amount} ({percent}%) — added to your balance at completion",
+  "@incomingRequestAlongFee": {
+    "placeholders": {
+      "amount": {"type": "String"},
+      "percent": {"type": "String"}
+    }
+  },
+  "incomingRequestLoadDefault": "Passenger flagged load",
+  "incomingRequestLoadDetail": "{size} load — {note}",
+  "@incomingRequestLoadDetail": {
+    "placeholders": {
+      "size": {"type": "String"},
+      "note": {"type": "String"}
+    }
+  },
+  "incomingRequestWomenOnly": "Women-only match",
+  "incomingRequestAccept": "Accept",
+  "incomingRequestDecline": "Decline",
+  "declineReasonTitle": "Why are you declining?",
+  "declineReasonNoRoomForLoad": "No room for load",
+  "declineReasonTooFar": "Too far",
+  "declineReasonEndingShift": "Ending shift",
+  "declineReasonOther": "Other",
+  "fareTierStandard": "Standard fare",
+  "fareTierCommunity": "Community fare",
+  "fareTierProfile": "Driver price",
+  "fareTierEstimate": "Estimate — agree price"
 }

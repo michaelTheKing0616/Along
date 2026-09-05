@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/home/presentation/widgets/park_picker_sheet.dart';
+import 'package:mobile_driver/features/incoming_request/presentation/decline_reason_sheet.dart';
+import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
+import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_sheet.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
 /// D-08 Home — presence control + demand awareness (doc 06).
@@ -21,9 +24,17 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(driverHomeControllerProvider);
+    final incoming = ref.watch(incomingRequestNotifierProvider);
     final config = ref.watch(appConfigProvider);
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+
+    ref.listen(incomingRequestNotifierProvider, (previous, next) {
+      if (next?.showDeclineReasons == true &&
+          previous?.showDeclineReasons != true) {
+        _openDeclineReasons(l10n);
+      }
+    });
 
     ref.listen(driverHomeControllerProvider, (previous, next) {
       if (next.status == DriverStatus.atPark &&
@@ -57,6 +68,26 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
               },
             ),
           ),
+          if (incoming != null)
+            Positioned.fill(
+              child: ColoredBox(
+                color: AlongColors.ink900.withValues(alpha: 0.55),
+              ),
+            ),
+          if (incoming != null)
+            Positioned.fill(
+              child: IncomingRequestSheet(
+                key: const Key('incoming_request_sheet'),
+                state: incoming,
+                l10n: l10n,
+                onAccept: () => ref
+                    .read(incomingRequestNotifierProvider.notifier)
+                    .accept(),
+                onDecline: () => ref
+                    .read(incomingRequestNotifierProvider.notifier)
+                    .openDeclineReasons(),
+              ),
+            ),
           Positioned(
             top: 0,
             left: 0,
@@ -199,6 +230,23 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
         ? RoamingDirection.none
         : RoamingDirection.onRoute;
     await ref.read(driverHomeControllerProvider.notifier).setRoamingDirection(next);
+  }
+
+  Future<void> _openDeclineReasons(AppLocalizations l10n) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DeclineReasonSheet(
+        l10n: l10n,
+        onReasonSelected: (reason) {
+          Navigator.of(context).pop();
+          ref
+              .read(incomingRequestNotifierProvider.notifier)
+              .decline(reason: reason);
+        },
+      ),
+    );
+    ref.read(incomingRequestNotifierProvider.notifier).closeDeclineReasons();
   }
 
   void _syncMapLayers(DriverHomeState state) {

@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_location/along_location.dart';
+import 'package:along_notifications/along_notifications.dart';
+import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
+import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
+import 'package:mobile_driver/testing/fakes/fake_driver_channel.dart';
 import 'package:path_provider/path_provider.dart';
 
 final appConfigProvider = Provider<AppConfig>((ref) {
@@ -39,6 +43,25 @@ final configRepositoryProvider = Provider<ConfigRepository>((ref) {
 
 final presenceRepositoryProvider = Provider<PresenceRepository>((ref) {
   return PresenceRepository(ref.watch(alongSupabaseProvider));
+});
+
+final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
+  return TripsRepository(
+    ref.watch(alongSupabaseProvider),
+    ref.watch(alongDatabaseProvider),
+  );
+});
+
+final driverChannelProvider = Provider<DriverChannel>((ref) {
+  throw UnimplementedError(
+    'driverChannelProvider must be overridden at startup',
+  );
+});
+
+final pushServiceProvider = Provider<PushService>((ref) {
+  throw UnimplementedError(
+    'pushServiceProvider must be overridden at startup',
+  );
 });
 
 final placesRepositoryProvider = Provider<PlacesRepository>((ref) {
@@ -126,12 +149,20 @@ List<Override> buildProviderOverrides({
   BatteryMonitor? batteryMonitor,
   DriverForegroundNotifier? foregroundNotifier,
   Clock? clock,
+  DriverChannel? driverChannel,
+  PushService? pushService,
 }) {
   return [
     appConfigProvider.overrideWithValue(config),
     alongSupabaseProvider.overrideWithValue(supabase),
     alongDatabaseProvider.overrideWithValue(
       database ?? AlongDatabase.memory(),
+    ),
+    driverChannelProvider.overrideWithValue(
+      driverChannel ?? FakeDriverChannel(),
+    ),
+    pushServiceProvider.overrideWithValue(
+      pushService ?? StubPushService(),
     ),
     if (onboardingPreferences != null)
       driverOnboardingPreferencesProvider.overrideWithValue(

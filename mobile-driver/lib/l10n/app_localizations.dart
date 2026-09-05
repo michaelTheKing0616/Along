@@ -801,6 +801,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I\'m somewhere else'**
   String get homeParkSomewhereElse;
+
+  /// No description provided for @incomingRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New request'**
+  String get incomingRequestTitle;
+
+  /// No description provided for @incomingRequestCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds}s'**
+  String incomingRequestCountdown(int seconds);
+
+  /// No description provided for @incomingRequestRiderLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {rating} · {trips} trips'**
+  String incomingRequestRiderLine(String name, String rating, int trips);
+
+  /// No description provided for @incomingRequestPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup'**
+  String get incomingRequestPickup;
+
+  /// No description provided for @incomingRequestDropoff.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop-off'**
+  String get incomingRequestDropoff;
+
+  /// No description provided for @incomingRequestPickupMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} m · {eta} min'**
+  String incomingRequestPickupMeta(int distance, int eta);
+
+  /// No description provided for @incomingRequestFareLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider pays {amount} · {tierLabel}'**
+  String incomingRequestFareLine(String amount, String tierLabel);
+
+  /// No description provided for @incomingRequestAlongFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Along fee {amount} ({percent}%) — added to your balance at completion'**
+  String incomingRequestAlongFee(String amount, String percent);
+
+  /// No description provided for @incomingRequestLoadDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger flagged load'**
+  String get incomingRequestLoadDefault;
+
+  /// No description provided for @incomingRequestLoadDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} load — {note}'**
+  String incomingRequestLoadDetail(String size, String note);
+
+  /// No description provided for @incomingRequestWomenOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Women-only match'**
+  String get incomingRequestWomenOnly;
+
+  /// No description provided for @incomingRequestAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get incomingRequestAccept;
+
+  /// No description provided for @incomingRequestDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get incomingRequestDecline;
+
+  /// No description provided for @declineReasonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you declining?'**
+  String get declineReasonTitle;
+
+  /// No description provided for @declineReasonNoRoomForLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'No room for load'**
+  String get declineReasonNoRoomForLoad;
+
+  /// No description provided for @declineReasonTooFar.
+  ///
+  /// In en, this message translates to:
+  /// **'Too far'**
+  String get declineReasonTooFar;
+
+  /// No description provided for @declineReasonEndingShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Ending shift'**
+  String get declineReasonEndingShift;
+
+  /// No description provided for @declineReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get declineReasonOther;
+
+  /// No description provided for @fareTierStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard fare'**
+  String get fareTierStandard;
+
+  /// No description provided for @fareTierCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community fare'**
+  String get fareTierCommunity;
+
+  /// No description provided for @fareTierProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver price'**
+  String get fareTierProfile;
+
+  /// No description provided for @fareTierEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate — agree price'**
+  String get fareTierEstimate;
 }
 
 class _AppLocalizationsDelegate
