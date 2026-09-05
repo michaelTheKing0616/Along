@@ -588,9 +588,17 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 - Notes/escalations: Hard gate before Phase 3. Attach screenshots + notes to the ledger when run.
 
 ## [Phase 1 / P1-B-04] FM36 live path (showCapacityWarning)
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Live R-09 derives warning from cfg load.warn_capacities + mode_config.load_capacity; Request anyway sets acknowledged_warning; 5/5 widget+unit tests; no dead `showCapacityWarning: false`.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Sheet uses recommended candidate mode, not the card later requested (server still rejects). Config fetch failure swallows warning (server backstop). Merged 9d0a6f0.
+
+## [Phase 2 / P2-A-01] planner_decompose prod + plan-trip v2
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Must PASS before FM36 can be claimed on P1-G-01.
+- Notes/escalations: Unblocks P2-A-05 and P2-B-01.
