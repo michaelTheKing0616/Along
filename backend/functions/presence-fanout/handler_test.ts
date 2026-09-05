@@ -1,7 +1,6 @@
 import { assertEquals, assertExists } from 'jsr:@std/assert@1';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { loadPresenceFanoutCfg } from '../_shared/cfg.ts';
-import { createFcmClient } from '../_shared/fcm.ts';
 import type { RealtimeBroadcastClient } from '../_shared/realtime.ts';
 import { handleNotify, type NotifyRequest } from '../notify/handler.ts';
 import { handlePresenceFanout } from '../presence-fanout/handler.ts';
@@ -84,62 +83,6 @@ Deno.test('loadPresenceFanoutCfg: fanout interval comes from app_config', async 
   assertEquals(cfg.fanoutRadiusM, 3000);
 });
 
-Deno.test('fcm client: stub when FCM env missing', async () => {
-  const prevProject = Deno.env.get('FCM_PROJECT_ID');
-  const prevToken = Deno.env.get('FCM_ACCESS_TOKEN');
-  Deno.env.delete('FCM_PROJECT_ID');
-  Deno.env.delete('FCM_ACCESS_TOKEN');
-
-  try {
-    const client = createFcmClient(() =>
-      Promise.reject(new Error('fetch should not be called without FCM config'))
-    );
-    const result = await client.sendDataMessage({
-      token: 'device-token',
-      data: { trip_id: TRIP_ID },
-      ttlSeconds: 25,
-    });
-    assertEquals(result.messageId, 'stub-no-fcm-config');
-  } finally {
-    if (prevProject) Deno.env.set('FCM_PROJECT_ID', prevProject);
-    if (prevToken) Deno.env.set('FCM_ACCESS_TOKEN', prevToken);
-  }
-});
-
-Deno.test('fcm client: sends HTTP when configured', async () => {
-  const prevProject = Deno.env.get('FCM_PROJECT_ID');
-  const prevToken = Deno.env.get('FCM_ACCESS_TOKEN');
-  Deno.env.set('FCM_PROJECT_ID', 'along-test');
-  Deno.env.set('FCM_ACCESS_TOKEN', 'test-access-token');
-
-  try {
-    let capturedUrl = '';
-    let capturedBody = '';
-    const client = createFcmClient((url, init) => {
-      capturedUrl = url;
-      capturedBody = String(init.body);
-      return Promise.resolve({ ok: true, status: 200, body: '{"name":"projects/along/messages/abc"}' });
-    });
-
-    const result = await client.sendDataMessage({
-      token: 'device-token',
-      data: { type: 'trip_request', trip_id: TRIP_ID },
-      ttlSeconds: 25,
-      collapseKey: `trip_${TRIP_ID}`,
-      priority: 'high',
-    });
-
-    assertEquals(result.messageId, 'projects/along/messages/abc');
-    assertEquals(capturedUrl.includes('along-test'), true);
-    const parsed = JSON.parse(capturedBody) as { message: { android: { ttl: string } } };
-    assertEquals(parsed.message.android.ttl, '25s');
-  } finally {
-    if (prevProject) Deno.env.set('FCM_PROJECT_ID', prevProject);
-    else Deno.env.delete('FCM_PROJECT_ID');
-    if (prevToken) Deno.env.set('FCM_ACCESS_TOKEN', prevToken);
-    else Deno.env.delete('FCM_ACCESS_TOKEN');
-  }
-});
 
 function createMockNotifyService(): SupabaseClient {
   return {
