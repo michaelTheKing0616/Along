@@ -360,8 +360,16 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Hardware 60 fps before Phase 1 exit. Tiles-only offline sufficient for MVP.
 
 ## [Phase 1 / P1-E-03] along_design components batch 1
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-04
+- Worker report summary: 16 batch-1 components; 104 goldens + TS-DS-03 1.3× on fare surfaces; flutter test 113/113 including TS-DS-02.
+- Reviewer verdict: PASS WITH NOTES — visual ₦/fares/colours MET. Notes: BalanceCard stub (Phase 4); TS-DS-02 DEBUG ribbon cosmetic.
+- Rework count: 0
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-B-01] Rider app shell + R-01..R-04 onboarding
 - Status: IN PROGRESS
-- Assigned: 2026-09-05T13:39Z
+- Assigned: 2026-09-05T13:45Z
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
