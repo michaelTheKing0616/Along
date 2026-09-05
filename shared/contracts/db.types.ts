@@ -2084,6 +2084,22 @@ export type Database = {
             Returns: string
           }
       admin_can_access_city: { Args: { p_city: string }; Returns: boolean }
+      admin_approve_verification: {
+        Args: { p_verification_id: string; p_women_only_eligible?: boolean }
+        Returns: Json
+      }
+      admin_reject_verification: {
+        Args: { p_verification_id: string; p_reason: string }
+        Returns: Json
+      }
+      admin_log_view_document: {
+        Args: { p_verification_id: string }
+        Returns: Json
+      }
+      admin_check_identity_duplicate: {
+        Args: { p_verification_id: string }
+        Returns: Json
+      }
       admin_publish_field_entity: {
         Args: { p_reconciliation_id: string }
         Returns: Json

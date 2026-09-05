@@ -84,6 +84,8 @@
     { "name": "report_stage_here", "tier": "own", "request": "graph.json#/$defs/ReportStageHereRequest" },
     { "name": "admin_approve_verification", "tier": "I", "request": "admin.json#/$defs/AdminApproveVerificationRequest" },
     { "name": "admin_reject_verification", "tier": "I", "request": "admin.json#/$defs/AdminRejectVerificationRequest" },
+    { "name": "admin_log_view_document", "tier": "I", "request": "admin.json#/$defs/AdminLogViewDocumentRequest" },
+    { "name": "admin_check_identity_duplicate", "tier": "I", "request": "admin.json#/$defs/AdminCheckIdentityDuplicateRequest" },
     { "name": "admin_review_fare_correction", "tier": "I", "request": "admin.json#/$defs/AdminReviewFareCorrectionRequest" },
     { "name": "admin_publish_graph_entity", "tier": "I", "request": "admin.json#/$defs/AdminPublishGraphEntityRequest" },
     { "name": "admin_update_graph_entity", "tier": "I", "request": "admin.json#/$defs/AdminPublishGraphEntityRequest" },
