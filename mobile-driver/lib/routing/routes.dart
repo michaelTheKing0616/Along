@@ -9,5 +9,7 @@ abstract final class AppRoutes {
   static const documentCapture = '/documents/capture';
   static const pending = '/pending';
   static const home = '/home';
-  static const routesStub = '/routes-stub';
+  static const routesTab = '/routes';
+  static const routeFastSetup = '/routes/fast-setup';
+  static const routeDraw = '/routes/draw';
 }

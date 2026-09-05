@@ -104,8 +104,75 @@
   },
   "pendingWhatNext": "We'll notify you when you're approved. You can set up your route while you wait.",
   "setupRouteCta": "Set up your route while you wait",
-  "routesStubTitle": "Your routes",
-  "routesStubBody": "Route setup coming in the next step.",
+  "routesListTitle": "Your routes",
+  "routesAddRoute": "Add route",
+  "routesEmptyTitle": "Set up your route in a few taps",
+  "routesEmptyBody": "Publish your stops and prices so riders can find you on your usual path.",
+  "routeSuggestedCardTitle": "Suggested route",
+  "routeSuggestedCardBody": "We detected a usual {mode} path with {stopCount} stops.",
+  "@routeSuggestedCardBody": {
+    "placeholders": {
+      "mode": {"type": "String"},
+      "stopCount": {"type": "int"}
+    }
+  },
+  "routeSuggestedCardCta": "Tap to review and publish",
+  "routeUnnamedProfile": "{mode} route",
+  "@routeUnnamedProfile": {
+    "placeholders": {
+      "mode": {"type": "String"}
+    }
+  },
+  "routeStopsCount": "{count} stops",
+  "@routeStopsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "routeLoadSurchargeLabel": "Load surcharge: {amount}",
+  "@routeLoadSurchargeLabel": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "routeLoadSurchargeOptional": "Load surcharge (optional)",
+  "routeLoadSurchargeHint": "e.g. 50",
+  "routeFastSetupTitle": "Route setup",
+  "routeFastSetupQuestion": "Is this your route?",
+  "routeFastSetupSubtitle": "{count} stops detected from your usual path",
+  "@routeFastSetupSubtitle": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "routeYesPublish": "Yes, publish",
+  "routeEditPrices": "Edit prices",
+  "routeDrawManually": "No, draw manually",
+  "routeDrawTitle": "Draw your route",
+  "routeDrawHint": "Tap the map to add stops",
+  "routeDrawEmptyStops": "Add at least two stops on the map",
+  "routePublish": "Publish",
+  "routePriceToEnd": "To end: {amount}",
+  "@routePriceToEnd": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "routeSnapMatched": "Matched: {name} ✓",
+  "@routeSnapMatched": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "routeSnapNewStopHint": "New stop — name?",
+  "routeSnapPending": "Snapping…",
+  "routePriceKeypadTitle": "Set price to end",
+  "routePriceKeypadSet": "Set",
+  "routePriceErrorNonMonotone": "Prices must not increase toward the destination.",
+  "routePriceErrorLastNotZero": "Last stop must be ₦0.",
+  "routePriceErrorEmpty": "Add at least one priced stop.",
+  "routeLoadError": "Could not load routes.",
+  "routePublishError": "Could not publish route. Try again.",
   "back": "Back",
   "navHome": "Home",
   "navRoutes": "Routes",

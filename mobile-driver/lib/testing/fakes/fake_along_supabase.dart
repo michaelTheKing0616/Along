@@ -14,11 +14,17 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Map<String, dynamic>>? verificationSchema,
     List<Map<String, dynamic>>? verifications,
     User? signedInUser,
+    Map<String, dynamic>? suggestedRoute,
+    List<Map<String, dynamic>>? routeProfiles,
+    List<Map<String, dynamic>>? placesSearchResults,
   })  : cities = cities ?? defaultTestCities(),
         modes = modes ?? defaultTestModes(),
         countryConfig = countryConfig ?? defaultTestCountry(),
         verificationSchema = verificationSchema ?? defaultVerificationSchema(),
-        verifications = verifications ?? [] {
+        verifications = verifications ?? [],
+        suggestedRoute = suggestedRoute,
+        routeProfiles = routeProfiles ?? [],
+        placesSearchResults = placesSearchResults ?? [] {
     if (signedInUser != null) {
       _user = signedInUser;
     }
@@ -39,6 +45,11 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(String bucket, String path, List<int> bytes)? onUpload;
   void Function(Map<String, dynamic> params)? onSetPresence;
   void Function(Map<String, dynamic> params)? onPresencePing;
+  void Function(Map<String, dynamic> profile)? onUpsertRouteProfile;
+
+  List<Map<String, dynamic>> routeProfiles;
+  Map<String, dynamic>? suggestedRoute;
+  List<Map<String, dynamic>> placesSearchResults;
 
   User? _user;
   String? _storedVehicleId;
@@ -124,6 +135,37 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'ambient_demand') {
       return {'cells': <Map<String, dynamic>>[]};
     }
+    if (fn == 'my_route_profiles') {
+      return routeProfiles;
+    }
+    if (fn == 'suggest_known_route') {
+      return suggestedRoute;
+    }
+    if (fn == 'upsert_route_profile') {
+      final profile = params?['p_profile'] as Map<String, dynamic>? ?? {};
+      onUpsertRouteProfile?.call(profile);
+      final id = profile['id'] as String? ?? 'published-profile-id';
+      routeProfiles = [
+        {
+          'id': id,
+          'route_id': 'route-id',
+          'mode_code': profile['mode_code'],
+          'name': profile['name'],
+          'active': true,
+          'load_surcharge_amount': profile['load_surcharge']?['amount'],
+          'load_surcharge_currency': profile['load_surcharge']?['currency'],
+          'stops': profile['stops'],
+        },
+      ];
+      return {'id': id, 'active': true, 'route_id': 'route-id'};
+    }
+    if (fn == 'deactivate_route_profile') {
+      final id = params?['p_id'] as String?;
+      routeProfiles = routeProfiles
+          .map((row) => row['id'] == id ? {...row, 'active': false} : row)
+          .toList(growable: false);
+      return null;
+    }
     return {};
   }
 
@@ -136,6 +178,13 @@ class FakeAlongSupabase implements AlongSupabase {
       return {
         'data': {
           'hints': {'full_name': 'Test Driver'},
+        },
+      };
+    }
+    if (slug == 'places-search') {
+      return {
+        'data': {
+          'results': placesSearchResults,
         },
       };
     }
@@ -213,6 +262,16 @@ class FakeAlongSupabase implements AlongSupabase {
             'scope_type': 'global',
             'scope_id': '*',
             'value': '150',
+          },
+        ];
+      }
+      if (key == 'graph.snap_radius_m') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '60',
           },
         ];
       }
