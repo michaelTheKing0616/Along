@@ -1,10 +1,10 @@
--- pgTAP: every required app_config key from doc 02 §2.3 is present in seed
+-- pgTAP: every required app_config key from doc 02 §2.3 is present (migrations via config_default; seed adds scoped overrides only)
 create extension if not exists pgtap;
 
 begin;
 select plan(4);
 
--- Assumes seed_core.sql was applied by supabase db reset before pg_prove runs.
+-- Assumes supabase db reset (migrations + seed_core) before pg_prove runs.
 with required_global as (
   select unnest(array[
     'commission.rate',
@@ -111,7 +111,7 @@ missing_global as (
 select is(
   (select count(*) from missing_global),
   0::bigint,
-  'all doc 02 §2.3 global app_config keys are present at global scope'
+  'all doc 02 §2.3 global app_config keys are present at global scope (migration defaults)'
 );
 
 select ok(

@@ -1,10 +1,8 @@
 -- P1-A-07: doc 03 §3 — places-search graph RPC (trigram on parks/stages).
 
-insert into app_config (key, scope_type, scope_id, value) values
-  ('places.search_radius_m', 'global', '*', '5000'),
-  ('places.trigram_min_similarity', 'global', '*', '0.2'),
-  ('places.photon_timeout_ms', 'global', '*', '800')
-on conflict (key, scope_type, scope_id) do update set value = excluded.value;
+select config_default('places.search_radius_m', '5000');
+select config_default('places.trigram_min_similarity', '0.2');
+select config_default('places.photon_timeout_ms', '800');
 
 create or replace function places_search_graph(
   p_q text,
