@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -34,10 +35,13 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     }
   }
 
-  String? _localizedError(AppLocalizations l10n, String? key) {
-    return switch (key) {
+  String? _localizedError(AppLocalizations l10n, OnboardingState state) {
+    final config = ref.read(appConfigProvider);
+    return switch (state.errorMessage) {
       'invalid_phone' => l10n.errorInvalidPhone,
-      'rate_limited' => l10n.errorRateLimited(60),
+      'rate_limited' => l10n.errorRateLimited(
+          state.rateLimitRetrySeconds ?? config.otpRateLimitRetryS,
+        ),
       'generic' => l10n.errorGeneric,
       _ => null,
     };
@@ -72,7 +76,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
               const SizedBox(height: AlongSpace.s24),
               PhoneField(
                 controller: _controller,
-                errorText: _localizedError(l10n, state.errorMessage),
+                errorText: _localizedError(l10n, state),
                 onChanged: (_) {
                   if (state.errorMessage != null) {
                     ref.read(onboardingControllerProvider.notifier);

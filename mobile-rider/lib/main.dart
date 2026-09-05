@@ -23,7 +23,7 @@ Future<void> main() async {
       (options) {
         options.dsn = config.sentryDsn;
         options.beforeSend = scrubPii;
-        options.tracesSampleRate = 0.2;
+        options.tracesSampleRate = config.sentryTracesSampleRate;
       },
       appRunner: runAlongApp,
     );

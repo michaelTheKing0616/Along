@@ -3,5 +3,8 @@
   "SUPABASE_URL": "https://placeholder.supabase.co",
   "SUPABASE_ANON_KEY": "placeholder-anon-key",
   "SENTRY_DSN": "",
-  "TILES_BASE_URL": "https://tiles.along.ng"
+  "TILES_BASE_URL": "https://tiles.along.ng",
+  "OTP_RESEND_COOLDOWN_S": "30",
+  "OTP_RATE_LIMIT_RETRY_S": "60",
+  "SENTRY_TRACES_SAMPLE_RATE": "0.2"
 }

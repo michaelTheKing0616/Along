@@ -62,6 +62,6 @@ void main() {
       fakeSupabase.dispose();
       container.dispose();
     },
-    skip: skipPatrol ? false : 'No Android/iOS emulator on worker host',
+    skip: skipPatrol ? null : true,
   );
 }

@@ -6,6 +6,9 @@ class AppConfig {
     required this.supabaseAnonKey,
     this.sentryDsn,
     this.tilesBaseUrl,
+    this.otpResendCooldownS = 30,
+    this.otpRateLimitRetryS = 60,
+    this.sentryTracesSampleRate = 0.2,
   });
 
   final String flavor;
@@ -13,6 +16,9 @@ class AppConfig {
   final String supabaseAnonKey;
   final String? sentryDsn;
   final String? tilesBaseUrl;
+  final int otpResendCooldownS;
+  final int otpRateLimitRetryS;
+  final double sentryTracesSampleRate;
 
   bool get hasSentry =>
       sentryDsn != null && sentryDsn!.trim().isNotEmpty;
@@ -23,6 +29,18 @@ class AppConfig {
     const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
     const sentryDsn = String.fromEnvironment('SENTRY_DSN');
     const tilesBaseUrl = String.fromEnvironment('TILES_BASE_URL');
+    const otpResendCooldownS = int.fromEnvironment(
+      'OTP_RESEND_COOLDOWN_S',
+      defaultValue: 30,
+    );
+    const otpRateLimitRetryS = int.fromEnvironment(
+      'OTP_RATE_LIMIT_RETRY_S',
+      defaultValue: 60,
+    );
+    const sentryTracesSampleRateRaw = String.fromEnvironment(
+      'SENTRY_TRACES_SAMPLE_RATE',
+      defaultValue: '0.2',
+    );
 
     return AppConfig(
       flavor: flavor,
@@ -30,6 +48,10 @@ class AppConfig {
       supabaseAnonKey: supabaseAnonKey,
       sentryDsn: sentryDsn.isEmpty ? null : sentryDsn,
       tilesBaseUrl: tilesBaseUrl.isEmpty ? null : tilesBaseUrl,
+      otpResendCooldownS: otpResendCooldownS,
+      otpRateLimitRetryS: otpRateLimitRetryS,
+      sentryTracesSampleRate:
+          double.tryParse(sentryTracesSampleRateRaw) ?? 0.2,
     );
   }
 }

@@ -15,12 +15,14 @@ class OnboardingState {
     this.isSubmitting = false,
     this.errorMessage,
     this.resendSecondsRemaining = 0,
+    this.rateLimitRetrySeconds,
   });
 
   final String? phoneE164;
   final bool isSubmitting;
   final String? errorMessage;
   final int resendSecondsRemaining;
+  final int? rateLimitRetrySeconds;
 
   String? get displayPhone =>
       phoneE164 == null ? null : PhoneNumberFormatter.formatDisplay(phoneE164!);
@@ -30,6 +32,7 @@ class OnboardingState {
     bool? isSubmitting,
     String? errorMessage,
     int? resendSecondsRemaining,
+    int? rateLimitRetrySeconds,
     bool clearError = false,
   }) {
     return OnboardingState(
@@ -38,6 +41,9 @@ class OnboardingState {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       resendSecondsRemaining:
           resendSecondsRemaining ?? this.resendSecondsRemaining,
+      rateLimitRetrySeconds: clearError
+          ? null
+          : (rateLimitRetrySeconds ?? this.rateLimitRetrySeconds),
     );
   }
 }
@@ -81,6 +87,7 @@ class OnboardingController extends Notifier<OnboardingState> {
       state = state.copyWith(
         isSubmitting: false,
         errorMessage: _errorKey(e),
+        rateLimitRetrySeconds: _retryAfterSeconds(e),
       );
       return false;
     } catch (_) {
@@ -105,6 +112,7 @@ class OnboardingController extends Notifier<OnboardingState> {
       state = state.copyWith(
         isSubmitting: false,
         errorMessage: _errorKey(e),
+        rateLimitRetrySeconds: _retryAfterSeconds(e),
       );
       return false;
     } catch (_) {
@@ -126,6 +134,7 @@ class OnboardingController extends Notifier<OnboardingState> {
       state = state.copyWith(
         isSubmitting: false,
         errorMessage: _errorKey(e),
+        rateLimitRetrySeconds: _retryAfterSeconds(e),
       );
     } catch (_) {
       state = state.copyWith(isSubmitting: false, errorMessage: 'generic');
@@ -142,6 +151,7 @@ class OnboardingController extends Notifier<OnboardingState> {
       state = state.copyWith(
         isSubmitting: false,
         errorMessage: _errorKey(e),
+        rateLimitRetrySeconds: _retryAfterSeconds(e),
       );
       rethrow;
     } catch (_) {
@@ -165,8 +175,9 @@ class OnboardingController extends Notifier<OnboardingState> {
   }
 
   void _startResendCountdown() {
+    final cooldown = ref.read(appConfigProvider).otpResendCooldownS;
     _resendTimer?.cancel();
-    state = state.copyWith(resendSecondsRemaining: 30);
+    state = state.copyWith(resendSecondsRemaining: cooldown);
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final next = state.resendSecondsRemaining - 1;
       if (next <= 0) {
@@ -185,6 +196,27 @@ class OnboardingController extends Notifier<OnboardingState> {
       AlongErrorCode.unauthenticated => 'expired_otp',
       _ => 'generic',
     };
+  }
+
+  int? _retryAfterSeconds(AlongException e) {
+    if (e.code != AlongErrorCode.rateLimited) return null;
+
+    final details = e.details;
+    if (details == null) return null;
+    if (details is num) return details.round();
+    if (details is Map) {
+      for (final key in [
+        'retry_after_s',
+        'retryAfter',
+        'retry_after',
+        'seconds',
+      ]) {
+        final value = details[key];
+        if (value is num) return value.round();
+        if (value is String) return int.tryParse(value);
+      }
+    }
+    return null;
   }
 }
 
