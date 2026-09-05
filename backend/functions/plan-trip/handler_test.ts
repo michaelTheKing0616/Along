@@ -1,4 +1,4 @@
-import { assertEquals, assertExists, assertNotEquals } from 'jsr:@std/assert@1';
+import { assertEquals, assertExists } from 'jsr:@std/assert@1';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { OsrmClient } from '../_shared/osrm.ts';
 import { applyRanking, computeMetrics } from '../_shared/planner/ranking.ts';
@@ -343,9 +343,9 @@ function makeCandidate(
 Deno.test('TS-PLAN-03: four sort orders differ on engineered dataset', () => {
   const candidates = [
     makeCandidate('cheap', 'multi_leg', 100, 5000, 2, 800),
-    makeCandidate('fast', 'direct', 900, 800, 0, 100),
-    makeCandidate('easy', 'direct', 600, 3000, 0, 50),
-    makeCandidate('balanced', 'multi_leg', 400, 2000, 1, 200),
+    makeCandidate('fast', 'multi_leg', 800, 600, 0, 50),
+    makeCandidate('easy', 'direct', 700, 2500, 0, 30),
+    makeCandidate('balanced', 'direct', 450, 1800, 0, 150),
   ];
 
   const { sortOrders } = applyRanking(candidates, cfg);
@@ -356,8 +356,11 @@ Deno.test('TS-PLAN-03: four sort orders differ on engineered dataset', () => {
     sortOrders.recommended.join(','),
   ];
   const unique = new Set(all);
-  assertEquals(unique.size >= 3, true);
-  assertNotEquals(sortOrders.cheapest[0], sortOrders.fastest[0]);
+  assertEquals(unique.size, 4);
+  assertEquals(sortOrders.cheapest[0], 'cheap');
+  assertEquals(sortOrders.fastest[0], 'fast');
+  assertEquals(sortOrders.least_strenuous[0], 'easy');
+  assertEquals(sortOrders.recommended[0], 'balanced');
 });
 
 Deno.test('TS-PLAN-09 handler: candidate count respects max_candidates', async () => {
