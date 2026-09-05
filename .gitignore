@@ -13,6 +13,9 @@ Thumbs.db
 !.env.example
 env/*.json
 !env/*.example.json
+env/*.plist
+env/*.p8
+env/*.pem
 supabase/.temp/
 supabase/.branches/
 
