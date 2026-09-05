@@ -518,3 +518,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Wiring inputs now present: `env/staging.json` (URL, anon, publishable, Sentry DSNs, Firebase project id), `env/google-services.staging.json`, `env/fcm-service-account.staging.json` (local only), Edge secret `FCM_SERVICE_ACCOUNT`.
 - P1-E-04 is **unblocked**. Scope remains: no VM (OSRM via optional cloudflared + degrade), no Termii (SMS log-mode), `public.origin` empty, Android smoke on Redmi A2+, FCM token minting from the service-account key (not a static access token). iOS compile stays on P1-E-05; iOS device/push still deferred.
 **Escalations:** none.
+
+## [Phase 1 / P1-A-10] Config defaults → migrations (ADR-0016)
+- Status: IN PROGRESS
+- Assigned: 2026-09-05
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Must PASS before P1-E-04 `db push` to staging.
