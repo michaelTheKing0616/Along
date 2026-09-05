@@ -550,3 +550,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Stop after gate. Do not start Phase 2.
+
+## [Phase 1 / Gate] Core Booking MVP
+- Status: FAIL
+- Assigned: 2026-09-05
+- Worker report summary: n/a — all 23 Phase 1 tasks have PASS / PASS WITH NOTES; exit evidence not run.
+- Reviewer verdict: FAIL — code/automated tests in place; §7 exit criterion NOT MET (no live corridor screenshots). Skipped: Redmi 60 fps, Patrol OTP, Playwright A-04, Redmi staging smoke, ios-compile CI green. FM36 `showCapacityWarning` still dead.
+- Rework count: 0
+- Notes/escalations: Human/device list to close the gate: (1) Auth Send SMS hook + secret; (2) Redmi A2+ smoke runbook; (3) Patrol OTP emulator; (4) Playwright A-04; (5) Redmi 60 fps; (6) ios-compile CI green; (7) live corridor E2E + screenshots (search, roaming map, publish <1 min, Tier 0 mid-route, FM35/36); (8) offline drop on rider map. Do not start Phase 2.
