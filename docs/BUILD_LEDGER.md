@@ -448,6 +448,14 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking.
 
 ## [Phase 1 / P1-C-04] D-14 incoming request + Accept
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: D-14 sheet + load row pre-accept; commission from `commission.rate`; 1-tap Accept; Broadcast `driver:{id}`; StubPushService FCM. 22/22 driver tests.
+- Reviewer verdict: PASS WITH NOTES — FM35 + 1-tap MET. Notes: FCM is stub-only (no FirebaseMessaging / background full-screen intent).
+- Rework count: 0
+- Notes/escalations: Follow-up: real FCM wake + push→present test (absorb in P1-E-04 device smoke).
+
+## [Phase 1 / P1-D-01] A-04 verification queue + document viewer
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
