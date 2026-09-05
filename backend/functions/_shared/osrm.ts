@@ -122,7 +122,12 @@ export function createOsrmClient(options?: {
   walkSpeedMps?: number;
   fetchFn?: FetchFn;
 }): OsrmClient {
-  const baseUrl = (options?.baseUrl ?? Deno.env.get('OSRM_BASE_URL') ?? '').replace(/\/$/, '');
+  const baseUrl = (
+    options?.baseUrl ??
+      Deno.env.get('OSRM_BASE_URL') ??
+      Deno.env.get('OSRM_URL') ??
+      ''
+  ).replace(/\/$/, '');
   const timeoutMs = options?.timeoutMs ??
     Number(Deno.env.get('OSRM_TIMEOUT_MS') ?? '800');
   const walkSpeedMps = options?.walkSpeedMps ?? 1.25;

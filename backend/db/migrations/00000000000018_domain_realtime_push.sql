@@ -159,7 +159,7 @@ returns table (
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_default_radius int;
@@ -319,7 +319,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, extensions, private
 as $$
 declare
   v_rider_id uuid := auth.uid();

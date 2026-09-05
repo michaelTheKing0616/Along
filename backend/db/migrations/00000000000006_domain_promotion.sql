@@ -448,7 +448,7 @@ create or replace function promote_candidates()
 returns void
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_rec record;

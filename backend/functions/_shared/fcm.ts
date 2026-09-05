@@ -1,5 +1,7 @@
 /** FCM HTTP v1 provider interface (ADR-0011). No Firebase Admin SDK — raw HTTP only. */
 
+import { getFcmAccessToken, resolveFcmProjectId, parseFcmServiceAccount } from './fcm_token.ts';
+
 export type FcmDataMessage = {
   token: string;
   data: Record<string, string>;
@@ -22,14 +24,25 @@ export type FcmHttpResponse = {
   body: string;
 };
 
+function resolveProjectId(): string | null {
+  const rawAccount = Deno.env.get('FCM_SERVICE_ACCOUNT');
+  const serviceAccount = rawAccount?.trim()
+    ? parseFcmServiceAccount(rawAccount)
+    : undefined;
+  return resolveFcmProjectId(serviceAccount);
+}
+
 export function createFcmClient(
   fetchFn: (url: string, init: RequestInit) => Promise<FcmHttpResponse>,
 ): FcmClient {
-  const projectId = Deno.env.get('FCM_PROJECT_ID');
-  const accessToken = Deno.env.get('FCM_ACCESS_TOKEN');
-
   return {
     async sendDataMessage(message: FcmDataMessage): Promise<FcmSendResult> {
+      const projectId = resolveProjectId();
+      const accessToken = await getFcmAccessToken(async (url, init) => {
+        const res = await fetchFn(url, init);
+        return new Response(res.body, { status: res.status });
+      });
+
       if (!projectId || !accessToken) {
         return { messageId: 'stub-no-fcm-config' };
       }

@@ -16,8 +16,10 @@ env/*.json
 env/*.plist
 env/*.p8
 env/*.pem
-supabase/.temp/
-supabase/.branches/
+admin-console/.env.local
+admin-console/.env.staging.local
+mobile-rider/android/app/src/*/google-services.json
+mobile-driver/android/app/src/*/google-services.json
 
 # Node / pnpm
 node_modules/

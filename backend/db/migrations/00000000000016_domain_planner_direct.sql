@@ -36,6 +36,7 @@ create or replace function _planner_stage_point(p_stage_id uuid)
 returns geography
 language sql
 stable
+set search_path = public, extensions
 as $$
   select rs.location from route_stages rs where rs.id = p_stage_id
 $$;
@@ -113,6 +114,7 @@ create or replace function city_for_lat_lng(p_lat double precision, p_lng double
 returns uuid
 language sql
 stable
+set search_path = public, extensions
 as $$
   select city_for_point(st_setsrid(st_makepoint(p_lng, p_lat), 4326)::geography)
 $$;
@@ -124,6 +126,7 @@ create or replace function stage_points(p_stage_ids uuid[])
 returns table(id uuid, name text, lat double precision, lng double precision)
 language sql
 stable
+set search_path = public, extensions
 as $$
   select
     rs.id,
@@ -147,7 +150,7 @@ returns setof jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_walk_radius numeric;
@@ -391,7 +394,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_walk_radius numeric;
@@ -476,7 +479,7 @@ returns setof jsonb
 language sql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select planner_direct_candidates(
     st_setsrid(st_makepoint(p_origin_lng, p_origin_lat), 4326)::geography,
@@ -498,7 +501,7 @@ returns jsonb
 language sql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select record_coverage_gap(
     p_rider_id,
@@ -532,7 +535,7 @@ returns uuid
 language sql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   insert into planner_queries (
     id,
