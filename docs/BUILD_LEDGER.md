@@ -528,9 +528,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none blocking. Safe to `db push` baseline to staging.
 
 ## [Phase 1 / P1-E-04] Staging wiring
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: FCM JWT mint from FCM_SERVICE_ACCOUNT; send-sms log hook; wire_staging.sh; tiles-staging 00022; PostGIS search_path fixes; db push through 00022; Deno 33/33. Redmi smoke SKIP + runbook.
+- Reviewer verdict: PASS WITH NOTES — no secrets in diff; FCM minting MET. Notes: device smoke human; .gitignore dropped supabase/.temp/.branches.
+- Rework count: 1 / 2
+- Notes/escalations: Human: enable Auth Send SMS hook + SEND_SMS_HOOK_SECRETS in dashboard; run `docs/runbooks/staging_android_smoke.md` on Redmi A2+. Restore supabase/.temp gitignore (absorb P1-E-05 if touching .gitignore).
+
+## [Phase 1 / P1-E-05] iOS compile parity
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Unblocked. Do not print secrets. FCM_SERVICE_ACCOUNT already set — mint tokens from that JSON.
+- Notes/escalations: Phase 1 gate blocker. No Apple Developer / codesign / TestFlight.
