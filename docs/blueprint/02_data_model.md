@@ -171,9 +171,17 @@ language sql stable security definer set search_path = public as $$
 
 create or replace function cfg_num(p_key text, p_city uuid default null, p_corridor uuid default null) returns numeric
 language sql stable as $$ select (cfg(p_key,p_city,p_corridor))::text::numeric $$;
+
+-- Config defaults are owned by MIGRATIONS, not seeds (ADR-0016): seed.sql only runs on local `db reset`,
+-- never on `db push`, so a default that lives only in a seed never reaches staging or prod.
+-- Defaults fill gaps only — never overwrite a value an admin has set through A-09.
+create or replace function config_default(p_key text, p_value jsonb, p_scope_type config_scope default 'global', p_scope_id text default '*')
+returns void language sql as $$
+  insert into app_config (key, scope_type, scope_id, value) values (p_key, p_scope_type, p_scope_id, p_value)
+  on conflict (key, scope_type, scope_id) do nothing $$;
 ```
 
-**Required keys with defaults (seed_core.sql must insert all of these at `global`):**
+**Required keys with defaults.** Every key below is registered by the migration that introduces the feature using it, via `select config_default('<key>', '<json>');` — one call per key, **`on conflict do nothing`**, never `do update` (a re-deployed default must not clobber an operator's live edit). `seed_core.sql` inserts **no** `app_config` rows; it may only add *scoped overrides* for seeded entities (e.g. the NG country `sos.emergency_number`), also via `config_default`. Changing a live value in any environment goes through A-09 → `admin_set_config`, audited. Test `TS-CFG-02` asserts every key in this table exists after migrations alone (seed not applied).
 
 | key | default | used by (spec) |
 |---|---|---|
@@ -1283,7 +1291,7 @@ Legend: **O** own rows · **P** party to trip/journey · **S** admin in city sco
 
 ## 17. Seed data requirements
 
-- `seed_core.sql`: `deployments` (Along NG), `countries` (NG: NGN, 2 minor units, ₦, +234, Africa/Lagos, verification_schema for nin/drivers_license/vehicle_particulars, `regulatory_flags = {"women_only_matching": true}` — **enabled at launch, product-owner decision 2026-09-04**), `mode_config` (4 rows), `app_config` (all keys in §2.3; `commission.rate = 0.075` **confirmed by product owner**, editable only through A-09 → `admin_set_config`, audited, scoped per city if ever needed), Na Me palettes.
+- `seed_core.sql`: `deployments` (Along NG), `countries` (NG: NGN, 2 minor units, ₦, +234, Africa/Lagos, verification_schema for nin/drivers_license/vehicle_particulars, `regulatory_flags = {"women_only_matching": true}` — **enabled at launch, product-owner decision 2026-09-04**), `mode_config` (4 rows), Na Me palettes. **No global `app_config` rows** — defaults are registered by migrations via `config_default()` (ADR-0016); the seed may add only scoped overrides for seeded entities (NG `sos.emergency_number`), also via `config_default()`. `commission.rate = 0.075` (**confirmed by product owner**) is therefore a migration default, editable only through A-09 → `admin_set_config`, audited, scoped per city if ever needed.
 - `seed_abuja_pilot/`: `cities` (abuja), `corridors` (lugbe-area1, nyanya-cbd, kubwa-wuse), backbone `parks`, `routes` per mode where field data exists, `route_stages`, `route_legs`, `route_through_fares`, `transfer_points` — all with `source_type='field_agent'` and `field_verified` only when a reconciliation record exists (Phase 0 gate).
 - `seed_testcity_fixture/`: fictional city **"Zaria-Test"** (real coordinates, fictional parks) with one corridor, 2 modes, 5 stages, deliberately different `app_config` overrides (`commission.rate`, `graph.snap_radius_m`) — exists to prove FM5 in CI. Never deployed to prod.
 - `seed_test_scenarios/`: fixtures for every TS-* scenario in doc 10 (mid-route boarding, direct-vs-multileg, collusion, negotiation ETA bands, threshold block, premature conversion with/without rider trace, multi-rider corroboration, cluster false positive).

@@ -470,3 +470,12 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: n/a
 - Rework count: 0
 - Notes/escalations: Autopilot stop (§6.3). Human must provision: Supabase staging (eu-west-2), OSRM/Photon VM, tiles CDN, Termii sandbox, FCM project, Sentry DSN. Then “continue” for Worker to wire env + smoke plan-trip from a device. Phase 1 gate also still needs: Tecno Spark 8C 60 fps (P1-E-02), Patrol OTP on emulator (P1-B-01), live corridor screenshots.
+
+---
+
+## [Phase 1 / Decision] Planner resolution: config defaults, staging provisioning, gate evidence
+**Date:** 2026-09-05
+1. **`seed_core` vs migration `app_config_pkey` is a Phase 1 gate blocker, not "known, non-blocking" → ADR-0016.** Root cause is a blueprint error (P0-A-01 put config defaults in the seed; `seed.sql` never runs on `db push`, so staging would have had no config). Migrations now own defaults via `config_default()` (`on conflict do nothing`); seeds own data only; migration 0014's `do update` is a defect. New task **P1-A-10** (S, depends P1-A-08) implements it, plus `TS-CFG-02`. Docs 02 §2.3/§17, 10, 11 amended. P1-A-10 must PASS before P1-E-04 wiring (staging needs the baseline migration).
+2. **P1-E-04 provisioning** is the product owner's (autopilot §6.3 — correct stop). Scope trimmed for staging: OSRM car+foot on one VM now; **Photon deferred** to the first Phase 2 task that needs `places-search` (P1-A-07's Photon compose entry stays local-only until then); tiles = object bucket with range requests (no CDN product needed at staging volume).
+3. **Gate evidence rules restated:** Tecno Spark 8C 60 fps needs the physical reference device (emulator numbers are not evidence); Patrol OTP runs against Supabase auth *test OTP* numbers in `config.toml`, never real SMS; a Reviewer may not PASS a task whose acceptance evidence is a Playwright/Patrol run that was skipped — mark PASS WITH NOTES + follow-up, and the phase gate stays open until the run exists.
+**Escalations:** none.

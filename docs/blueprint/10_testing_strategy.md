@@ -140,6 +140,7 @@ Determinism: fixed seeds, frozen clock (`set_config('along.now', …)` in SQL te
 
 ### Config-not-code (all phases)
 - **TS-CFG-01** Zaria-Test fixture: planner, fares, thresholds all use overrides; no code branch references a city slug (grep gate for `'abuja'`).
+- **TS-CFG-02** Migrations alone (no seed applied): every key in doc 02 §2.3 resolves via `cfg()`; fresh `supabase db reset` exits 0; no `insert into app_config … do update` exists in any migration (ADR-0016).
 
 ### Ops (Phase 9)
 - **TS-OPS-01** Restore drill: ledger invariant + row counts match.
