@@ -206,6 +206,16 @@ class FakeAlongSupabase implements AlongSupabase {
           },
         ];
       }
+      if (key == 'presence.at_park_radius_m') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '150',
+          },
+        ];
+      }
     }
     if (table == 'drivers') {
       return [

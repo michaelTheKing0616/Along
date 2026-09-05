@@ -119,14 +119,12 @@ final driverHomeControllerProvider =
 
 class DriverHomeController extends Notifier<DriverHomeState> {
   StreamSubscription<LocationSample>? _locationSub;
-  Timer? _demandRefreshTimer;
   DriverPresenceSession? _presenceSession;
 
   @override
   DriverHomeState build() {
     ref.onDispose(() {
       _locationSub?.cancel();
-      _demandRefreshTimer?.cancel();
       unawaited(_presenceSession?.goOffline());
     });
     Future.microtask(_bootstrap);
@@ -323,21 +321,17 @@ class DriverHomeController extends Notifier<DriverHomeState> {
       foregroundVisible: session.notificationVisible,
       batteryGuardActive: scheduler.batteryGuardActive,
     );
-
-    _demandRefreshTimer?.cancel();
-    _demandRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      final location = state.userLocation;
-      if (location != null && state.isOnline) {
-        unawaited(_refreshDemand(location));
-      }
-    });
   }
 
   Future<void> _stopOnlineSession() async {
-    _demandRefreshTimer?.cancel();
-    _demandRefreshTimer = null;
     await _presenceSession?.goOffline();
     _presenceSession = null;
+  }
+
+  /// Called from presence ping cadence (`presence.ping_interval_*`) while online.
+  Future<void> refreshDemandAt(GeoPoint location) async {
+    if (!state.isOnline) return;
+    await _refreshDemand(location);
   }
 
   Future<void> _refreshDemand(GeoPoint location) async {
@@ -406,7 +400,7 @@ class ParkPickerController extends Notifier<ParkPickerState> {
 
     state = state.copyWith(isLoading: true);
     try {
-      final config = ref.read(appConfigProvider);
+      final configRepo = ref.read(configRepositoryProvider);
       final places = ref.read(placesRepositoryProvider);
       final cityId = home.cityId ?? await places.cityForLocation(location);
       if (cityId == null) {
@@ -421,7 +415,8 @@ class ParkPickerController extends Notifier<ParkPickerState> {
         limit: 12,
       );
 
-      final radiusM = config.parkPickerRadiusM;
+      final radiusM =
+          (await configRepo.configNum('presence.at_park_radius_m')).round();
       final parks = results
           .where(
             (place) =>

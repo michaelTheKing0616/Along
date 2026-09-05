@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
-/// D-09 Park picker — nearby parks within configured radius (doc 06).
+/// D-09 Park picker — nearby parks within `presence.at_park_radius_m` (doc 06).
 class ParkPickerSheet extends ConsumerWidget {
   const ParkPickerSheet({super.key, required this.l10n});
 

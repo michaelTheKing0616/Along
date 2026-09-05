@@ -96,6 +96,9 @@ final presencePingSchedulerProvider = Provider<PresencePingScheduler>((ref) {
               p_seats_available: home.seatsAvailable,
             ),
           );
+      await ref
+          .read(driverHomeControllerProvider.notifier)
+          .refreshDemandAt(sample.point);
     },
   );
 });

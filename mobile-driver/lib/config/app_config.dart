@@ -10,7 +10,6 @@ class AppConfig {
     this.otpRateLimitRetryS = 60,
     this.sentryTracesSampleRate = 0.2,
     this.batteryGuardPercent = 15,
-    this.parkPickerRadiusM = 500,
   });
 
   final String flavor;
@@ -22,7 +21,6 @@ class AppConfig {
   final int otpRateLimitRetryS;
   final double sentryTracesSampleRate;
   final int batteryGuardPercent;
-  final int parkPickerRadiusM;
 
   bool get hasSentry =>
       sentryDsn != null && sentryDsn!.trim().isNotEmpty;
@@ -49,10 +47,6 @@ class AppConfig {
       'BATTERY_GUARD_PERCENT',
       defaultValue: 15,
     );
-    const parkPickerRadiusM = int.fromEnvironment(
-      'PARK_PICKER_RADIUS_M',
-      defaultValue: 500,
-    );
 
     return AppConfig(
       flavor: flavor,
@@ -65,7 +59,6 @@ class AppConfig {
       sentryTracesSampleRate:
           double.tryParse(sentryTracesSampleRateRaw) ?? 0.2,
       batteryGuardPercent: batteryGuardPercent,
-      parkPickerRadiusM: parkPickerRadiusM,
     );
   }
 }

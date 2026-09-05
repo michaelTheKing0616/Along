@@ -16,7 +16,6 @@ void main() {
     supabaseUrl: 'https://example.supabase.co',
     supabaseAnonKey: 'anon',
     batteryGuardPercent: 15,
-    parkPickerRadiusM: 500,
   );
 
   ProviderContainer buildContainer({
