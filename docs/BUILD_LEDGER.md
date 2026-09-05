@@ -456,9 +456,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Follow-up: real FCM wake + push→present test (absorb in P1-E-04 device smoke).
 
 ## [Phase 1 / P1-D-01] A-04 verification queue + document viewer
-- Status: IN PROGRESS
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-05
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: A-04 queue + signed/watermarked viewer; migration 00020 `admin_log_view_document`; vitest 9/9; pgTAP 3/3; Playwright spec SKIP (Chromium hang).
+- Reviewer verdict: PASS WITH NOTES — view_document audit MET (pgTAP). Playwright approve/reject specified but not executed. ADR-0015 policies untouched.
 - Rework count: 0
-- Notes/escalations: none yet.
+- Notes/escalations: Run `admin-console/scripts/check_playwright.sh` when Chromium is available. Known: seed_core vs migration `app_config_pkey` still breaks `supabase db reset`.
+
+## [Phase 1 / P1-E-04] Staging environment
+- Status: BLOCKED — human
+- Assigned: 2026-09-05
+- Worker report summary: not started — requires paid/cloud accounts (Supabase project, routing VM, tiles CDN, Termii sandbox, FCM, Sentry) and secrets.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Autopilot stop (§6.3). Human must provision: Supabase staging (eu-west-2), OSRM/Photon VM, tiles CDN, Termii sandbox, FCM project, Sentry DSN. Then “continue” for Worker to wire env + smoke plan-trip from a device. Phase 1 gate also still needs: Tecno Spark 8C 60 fps (P1-E-02), Patrol OTP on emulator (P1-B-01), live corridor screenshots.
