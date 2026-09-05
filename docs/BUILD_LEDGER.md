@@ -392,6 +392,14 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Follow-up: run Patrol OTP on CI/emulator with `PATROL_HAS_EMULATOR=true` (absorb in P1-E-04 device smoke or Phase 1 gate). Cosmetic: `MaterialApp.title` not l10n; phone `onChanged` does not clear validation errors.
 
 ## [Phase 1 / P1-B-02] R-05 Home + R-06/R-06b search & pickup
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: R-05 AlongMap + ambient discs + peek/recents; Broadcast `ambient:{city}:{gh5}` after initial RPC; stale from `presence.stale_after_s`; location-denied banner; R-06/R-06b; client-side snap. Rework 1 (open Qs → Broadcast + no 15s poll).
+- Reviewer verdict: PASS WITH NOTES — all three AC MET; 14 tests pass. Notes: R-06b map is a static placeholder; analyze unused-import warnings; no R-06 widget tests.
+- Rework count: 1 / 2
+- Notes/escalations: Follow-up: `rpc.snap_stage(p_lat, p_lng)` wrapper never shipped (P0-A-04 geography-only) — absorb in a later A-stream/planner task. R-06b interactive AlongMap polish before Phase 1 live corridor test.
+
+## [Phase 1 / P1-B-03] R-07 options + R-09/R-10/R-18 request flow
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
