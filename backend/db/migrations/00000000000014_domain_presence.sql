@@ -14,6 +14,7 @@ returns double precision
 language sql
 immutable
 parallel safe
+set search_path = public, extensions
 as $$
   select case
     when degrees(st_azimuth(a::geometry, b::geometry)) < 0
@@ -36,6 +37,7 @@ returns text
 language sql
 immutable
 parallel safe
+set search_path = public, extensions
 as $$
   select st_geohash(p::geometry, p_precision)
 $$;
@@ -45,6 +47,7 @@ returns geography
 language sql
 immutable
 parallel safe
+set search_path = public, extensions
 as $$
   select st_setsrid(st_centroid(st_geomfromgeohash(p_geohash, p_precision)::geometry), 4326)::geography
 $$;
@@ -143,6 +146,7 @@ create or replace function presence_plausible(
 returns boolean
 language plpgsql
 stable
+set search_path = public, extensions
 as $$
 declare
   v_route_id uuid;
@@ -203,7 +207,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_driver_id uuid := auth.uid();
@@ -356,7 +360,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_driver_id uuid := auth.uid();
@@ -431,7 +435,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_origin geography := st_setsrid(st_makepoint(p_lng, p_lat), 4326)::geography;
@@ -540,7 +544,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_origin geography := st_setsrid(st_makepoint(p_lng, p_lat), 4326)::geography;

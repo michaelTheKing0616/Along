@@ -48,7 +48,7 @@ returns fare_resolution
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_result fare_resolution;
@@ -433,6 +433,7 @@ create or replace function _point_from_json(p_loc jsonb)
 returns geography
 language sql
 immutable
+set search_path = public, extensions
 as $$
   select st_setsrid(
     st_makepoint((p_loc->>'lng')::double precision, (p_loc->>'lat')::double precision),
@@ -445,7 +446,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_driver_id uuid := auth.uid();
@@ -694,7 +695,7 @@ returns numeric
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_driver_id uuid := auth.uid();
@@ -776,7 +777,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_driver_id uuid := auth.uid();
