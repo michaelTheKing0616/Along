@@ -13,6 +13,8 @@ class _FakeGateway implements AlongSupabase {
   Future<List<Map<String, dynamic>>> selectRows(
     String table, {
     Map<String, Object?> filters = const {},
+    String? inColumn,
+    List<Object?>? inValues,
   }) async =>
       rows.where((row) => filters['key'] == null || row['key'] == filters['key']).toList();
 }

@@ -40,7 +40,7 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
       DriverOnboardingStep.vehicle => AppRoutes.vehicle,
       DriverOnboardingStep.documents => AppRoutes.documents,
       DriverOnboardingStep.pending => AppRoutes.pending,
-      DriverOnboardingStep.complete => AppRoutes.pending,
+      DriverOnboardingStep.complete => AppRoutes.home,
     };
   }
 

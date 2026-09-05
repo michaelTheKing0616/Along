@@ -216,6 +216,22 @@ void main() {
 
       expect(fake.rpcCalls.single.$1, 'set_presence');
     });
+
+    test('setPresence offline invokes set_presence RPC immediately', () async {
+      final fake = FakeAlongSupabase(rpcHandler: (_, __) => {});
+      final repo = PresenceRepository(fake);
+
+      await repo.setPresence(
+        const SetPresenceRequest(
+          p_status: 'offline',
+          p_location: Point(lat: 9, lng: 7),
+          p_seats_available: 4,
+        ),
+      );
+
+      expect(fake.rpcCalls.single.$1, 'set_presence');
+      expect(fake.rpcCalls.single.$2['p_status'], 'offline');
+    });
   });
 
   group('PendingActionQueue', () {

@@ -1,7 +1,13 @@
+import 'dart:io';
+
+import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
+import 'package:along_location/along_location.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/config/app_config.dart';
+import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 final appConfigProvider = Provider<AppConfig>((ref) {
   throw UnimplementedError('appConfigProvider must be overridden at startup');
@@ -31,6 +37,14 @@ final configRepositoryProvider = Provider<ConfigRepository>((ref) {
   return ConfigRepository(ref.watch(alongSupabaseProvider));
 });
 
+final presenceRepositoryProvider = Provider<PresenceRepository>((ref) {
+  return PresenceRepository(ref.watch(alongSupabaseProvider));
+});
+
+final placesRepositoryProvider = Provider<PlacesRepository>((ref) {
+  return PlacesRepository(ref.watch(alongSupabaseProvider));
+});
+
 final alongDatabaseProvider = Provider<AlongDatabase>((ref) {
   throw UnimplementedError(
     'alongDatabaseProvider must be overridden at startup',
@@ -48,11 +62,70 @@ final driverOnboardingStepProvider = FutureProvider<DriverOnboardingStep>(
   },
 );
 
+final locationStreamSourceProvider = Provider<LocationStreamSource>((ref) {
+  return GeolocatorLocationSource();
+});
+
+final batteryMonitorProvider = Provider<BatteryMonitor>((ref) {
+  return DeviceBatteryMonitor();
+});
+
+final driverForegroundNotifierProvider = Provider<DriverForegroundNotifier>(
+  (ref) {
+    return InMemoryDriverForegroundNotifier();
+  },
+);
+
+final presencePingSchedulerProvider = Provider<PresencePingScheduler>((ref) {
+  final config = ref.watch(appConfigProvider);
+  return PresencePingScheduler(
+    locationSource: ref.watch(locationStreamSourceProvider),
+    batteryMonitor: ref.watch(batteryMonitorProvider),
+    batteryGuardPercent: config.batteryGuardPercent,
+    onPing: (sample) async {
+      final home = ref.read(driverHomeControllerProvider);
+      await ref.read(presenceRepositoryProvider).presencePing(
+            PresencePingRequest(
+              p_location: Point(
+                lat: sample.point.lat,
+                lng: sample.point.lng,
+              ),
+              p_heading: sample.headingDegrees ?? 0,
+              p_speed_mps: sample.speedMps ?? 0,
+              p_accuracy_m: sample.accuracyM,
+              p_seats_available: home.seatsAvailable,
+            ),
+          );
+      await ref
+          .read(driverHomeControllerProvider.notifier)
+          .refreshDemandAt(sample.point);
+    },
+  );
+});
+
+final driverPresenceSessionProvider = Provider<DriverPresenceSession>((ref) {
+  return DriverPresenceSession(
+    scheduler: ref.watch(presencePingSchedulerProvider),
+    foregroundNotifier: ref.watch(driverForegroundNotifierProvider),
+  );
+});
+
+final clockProvider = Provider<Clock>((ref) => Clock.system);
+
+final mapCacheDirectoryProvider = FutureProvider<Directory>((ref) async {
+  final dir = await getApplicationDocumentsDirectory();
+  return Directory('${dir.path}/map_cache');
+});
+
 List<Override> buildProviderOverrides({
   required AppConfig config,
   required AlongSupabase supabase,
   AlongDatabase? database,
   DriverOnboardingPreferences? onboardingPreferences,
+  LocationStreamSource? locationStreamSource,
+  BatteryMonitor? batteryMonitor,
+  DriverForegroundNotifier? foregroundNotifier,
+  Clock? clock,
 }) {
   return [
     appConfigProvider.overrideWithValue(config),
@@ -64,5 +137,12 @@ List<Override> buildProviderOverrides({
       driverOnboardingPreferencesProvider.overrideWithValue(
         onboardingPreferences,
       ),
+    if (locationStreamSource != null)
+      locationStreamSourceProvider.overrideWithValue(locationStreamSource),
+    if (batteryMonitor != null)
+      batteryMonitorProvider.overrideWithValue(batteryMonitor),
+    if (foregroundNotifier != null)
+      driverForegroundNotifierProvider.overrideWithValue(foregroundNotifier),
+    if (clock != null) clockProvider.overrideWithValue(clock),
   ];
 }

@@ -1,5 +1,6 @@
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_location/along_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,10 +41,15 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
   );
 
   return ProviderContainer(
-    overrides: buildProviderOverrides(
-      config: config,
-      supabase: supabase,
-      database: await AlongDatabase.open(fileName: 'driver.db'),
-    ),
+    overrides: [
+      ...buildProviderOverrides(
+        config: config,
+        supabase: supabase,
+        database: await AlongDatabase.open(fileName: 'driver.db'),
+      ),
+      driverForegroundNotifierProvider.overrideWithValue(
+        FlutterForegroundDriverNotifier(),
+      ),
+    ],
   );
 }

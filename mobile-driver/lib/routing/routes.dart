@@ -1,4 +1,4 @@
-/// Typed route paths for the driver app (doc 06 D-01..D-07).
+/// Typed route paths for the driver app (doc 06 D-01..D-09).
 abstract final class AppRoutes {
   static const launch = '/';
   static const phone = '/phone';
@@ -8,5 +8,6 @@ abstract final class AppRoutes {
   static const documents = '/documents';
   static const documentCapture = '/documents/capture';
   static const pending = '/pending';
+  static const home = '/home';
   static const routesStub = '/routes-stub';
 }
