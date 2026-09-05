@@ -438,3 +438,19 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: FAIL — gate (a): hardcoded ₦300 fare fallback in `draw_route_controller.dart`. AC otherwise MET. Also load surcharge dropped on edit (`initialLoadSurcharge` always null).
 - Rework count: 0 / 2
 - Notes/escalations: none.
+
+## [Phase 1 / P1-C-03] D-10..D-13 route setup + publish
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: D-10–D-13 + 1-tap/snap/monotone tests. Rework 1: removed ₦300 fallback; load surcharge parsed on edit. 8/8 route tests.
+- Reviewer verdict: PASS WITH NOTES — all three AC MET; gate (a) closed. Notes: snapRadiusM=60 until config loads; no seeded integration test.
+- Rework count: 1 / 2
+- Notes/escalations: none blocking.
+
+## [Phase 1 / P1-C-04] D-14 incoming request + Accept
+- Status: IN PROGRESS
+- Assigned: 2026-09-05
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
