@@ -520,9 +520,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 **Escalations:** none.
 
 ## [Phase 1 / P1-A-10] Config defaults → migrations (ADR-0016)
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: `config_default()` in 0002; baseline 00021 all §2.3 keys; seed globals removed; 0014/17/18 converted; TS-CFG-02 2/2; `db reset --yes` exit 0; CI grep + TS-CFG-02.
+- Reviewer verdict: PASS WITH NOTES — all AC MET; 90/90 keys; live reset exit 0. Notes: local `pg_prove` missing (psql verified); sos.emergency_number duplicated in 00021 + seed (idempotent).
+- Rework count: 0
+- Notes/escalations: none blocking. Safe to `db push` baseline to staging.
+
+## [Phase 1 / P1-E-04] Staging wiring
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Must PASS before P1-E-04 `db push` to staging.
+- Notes/escalations: Unblocked. Do not print secrets. FCM_SERVICE_ACCOUNT already set — mint tokens from that JSON.
