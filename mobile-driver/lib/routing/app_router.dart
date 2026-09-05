@@ -1,3 +1,4 @@
+import 'package:along_data/along_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
@@ -9,6 +10,10 @@ import 'package:mobile_driver/features/onboarding/presentation/launch_screen.dar
 import 'package:mobile_driver/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_driver/features/profile/presentation/profile_screen.dart';
+import 'package:mobile_driver/features/routes/presentation/draw_route_controller.dart';
+import 'package:mobile_driver/features/routes/presentation/draw_route_screen.dart';
+import 'package:mobile_driver/features/routes/presentation/fast_route_setup_screen.dart';
+import 'package:mobile_driver/features/routes/presentation/routes_list_screen.dart';
 import 'package:mobile_driver/features/shell/presentation/driver_shell_screen.dart';
 import 'package:mobile_driver/features/vehicle/presentation/vehicle_screen.dart';
 import 'package:mobile_driver/features/verification/presentation/verification_pending_screen.dart';
@@ -54,8 +59,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const VerificationPendingScreen(),
       ),
       GoRoute(
-        path: AppRoutes.routesStub,
-        builder: (context, state) => const RoutesStubScreen(),
+        path: AppRoutes.routeFastSetup,
+        builder: (context, state) {
+          final suggestion = state.extra! as SuggestedKnownRoute;
+          return FastRouteSetupScreen(suggestion: suggestion);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.routeDraw,
+        builder: (context, state) {
+          final args = state.extra as DrawRouteArgs? ?? const DrawRouteArgs();
+          return DrawRouteScreen(args: args);
+        },
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
@@ -72,8 +87,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/routes',
-                builder: (context, state) => const RoutesTabStubScreen(),
+                path: AppRoutes.routesTab,
+                builder: (context, state) => const RoutesListScreen(),
               ),
             ],
           ),

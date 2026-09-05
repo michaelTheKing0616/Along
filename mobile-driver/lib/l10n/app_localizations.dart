@@ -484,17 +484,203 @@ abstract class AppLocalizations {
   /// **'Set up your route while you wait'**
   String get setupRouteCta;
 
-  /// No description provided for @routesStubTitle.
+  /// No description provided for @routesListTitle.
   ///
   /// In en, this message translates to:
   /// **'Your routes'**
-  String get routesStubTitle;
+  String get routesListTitle;
 
-  /// No description provided for @routesStubBody.
+  /// No description provided for @routesAddRoute.
   ///
   /// In en, this message translates to:
-  /// **'Route setup coming in the next step.'**
-  String get routesStubBody;
+  /// **'Add route'**
+  String get routesAddRoute;
+
+  /// No description provided for @routesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your route in a few taps'**
+  String get routesEmptyTitle;
+
+  /// No description provided for @routesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish your stops and prices so riders can find you on your usual path.'**
+  String get routesEmptyBody;
+
+  /// No description provided for @routeSuggestedCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested route'**
+  String get routeSuggestedCardTitle;
+
+  /// No description provided for @routeSuggestedCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We detected a usual {mode} path with {stopCount} stops.'**
+  String routeSuggestedCardBody(String mode, int stopCount);
+
+  /// No description provided for @routeSuggestedCardCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to review and publish'**
+  String get routeSuggestedCardCta;
+
+  /// No description provided for @routeUnnamedProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode} route'**
+  String routeUnnamedProfile(String mode);
+
+  /// No description provided for @routeStopsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stops'**
+  String routeStopsCount(int count);
+
+  /// No description provided for @routeLoadSurchargeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Load surcharge: {amount}'**
+  String routeLoadSurchargeLabel(String amount);
+
+  /// No description provided for @routeLoadSurchargeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Load surcharge (optional)'**
+  String get routeLoadSurchargeOptional;
+
+  /// No description provided for @routeLoadSurchargeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 50'**
+  String get routeLoadSurchargeHint;
+
+  /// No description provided for @routeFastSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Route setup'**
+  String get routeFastSetupTitle;
+
+  /// No description provided for @routeFastSetupQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this your route?'**
+  String get routeFastSetupQuestion;
+
+  /// No description provided for @routeFastSetupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stops detected from your usual path'**
+  String routeFastSetupSubtitle(int count);
+
+  /// No description provided for @routeYesPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, publish'**
+  String get routeYesPublish;
+
+  /// No description provided for @routeEditPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit prices'**
+  String get routeEditPrices;
+
+  /// No description provided for @routeDrawManually.
+  ///
+  /// In en, this message translates to:
+  /// **'No, draw manually'**
+  String get routeDrawManually;
+
+  /// No description provided for @routeDrawTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw your route'**
+  String get routeDrawTitle;
+
+  /// No description provided for @routeDrawHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the map to add stops'**
+  String get routeDrawHint;
+
+  /// No description provided for @routeDrawEmptyStops.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least two stops on the map'**
+  String get routeDrawEmptyStops;
+
+  /// No description provided for @routePublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get routePublish;
+
+  /// No description provided for @routePriceToEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'To end: {amount}'**
+  String routePriceToEnd(String amount);
+
+  /// No description provided for @routeSnapMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched: {name} ✓'**
+  String routeSnapMatched(String name);
+
+  /// No description provided for @routeSnapNewStopHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New stop — name?'**
+  String get routeSnapNewStopHint;
+
+  /// No description provided for @routeSnapPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapping…'**
+  String get routeSnapPending;
+
+  /// No description provided for @routePriceKeypadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set price to end'**
+  String get routePriceKeypadTitle;
+
+  /// No description provided for @routePriceKeypadSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get routePriceKeypadSet;
+
+  /// No description provided for @routePriceErrorNonMonotone.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices must not increase toward the destination.'**
+  String get routePriceErrorNonMonotone;
+
+  /// No description provided for @routePriceErrorLastNotZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Last stop must be ₦0.'**
+  String get routePriceErrorLastNotZero;
+
+  /// No description provided for @routePriceErrorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one priced stop.'**
+  String get routePriceErrorEmpty;
+
+  /// No description provided for @routeLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load routes.'**
+  String get routeLoadError;
+
+  /// No description provided for @routePublishError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not publish route. Try again.'**
+  String get routePublishError;
 
   /// No description provided for @back.
   ///

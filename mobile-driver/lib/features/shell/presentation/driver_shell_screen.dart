@@ -74,25 +74,3 @@ class AccountStubScreen extends StatelessWidget {
     );
   }
 }
-
-class RoutesTabStubScreen extends StatelessWidget {
-  const RoutesTabStubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.navRoutes),
-        backgroundColor: AlongColors.surface0,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AlongSpace.s24),
-          child: Text(l10n.routesStubBody),
-        ),
-      ),
-    );
-  }
-}

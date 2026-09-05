@@ -21,6 +21,7 @@ class AlongMap extends StatefulWidget {
     this.onMapCreated,
     this.onStyleLoaded,
     this.onLayerControllerReady,
+    this.onMapClick,
     this.gestureRecognizers,
     this.myLocationEnabled = false,
   });
@@ -36,6 +37,7 @@ class AlongMap extends StatefulWidget {
   final void Function(MapLibreMapController controller)? onMapCreated;
   final VoidCallback? onStyleLoaded;
   final void Function(MapLayerController controller)? onLayerControllerReady;
+  final OnMapClickCallback? onMapClick;
   final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
   final bool myLocationEnabled;
 
@@ -78,6 +80,7 @@ class _AlongMapState extends State<AlongMap> {
           widget.initialCameraPosition ?? MapCamera.abujaDefault(),
       myLocationEnabled: widget.myLocationEnabled,
       gestureRecognizers: widget.gestureRecognizers,
+      onMapClick: widget.onMapClick,
       onMapCreated: (controller) {
         if (!_controllerCompleter.isCompleted) {
           _controllerCompleter.complete(controller);

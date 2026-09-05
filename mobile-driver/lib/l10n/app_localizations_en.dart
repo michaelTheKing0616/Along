@@ -219,10 +219,119 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupRouteCta => 'Set up your route while you wait';
 
   @override
-  String get routesStubTitle => 'Your routes';
+  String get routesListTitle => 'Your routes';
 
   @override
-  String get routesStubBody => 'Route setup coming in the next step.';
+  String get routesAddRoute => 'Add route';
+
+  @override
+  String get routesEmptyTitle => 'Set up your route in a few taps';
+
+  @override
+  String get routesEmptyBody =>
+      'Publish your stops and prices so riders can find you on your usual path.';
+
+  @override
+  String get routeSuggestedCardTitle => 'Suggested route';
+
+  @override
+  String routeSuggestedCardBody(String mode, int stopCount) {
+    return 'We detected a usual $mode path with $stopCount stops.';
+  }
+
+  @override
+  String get routeSuggestedCardCta => 'Tap to review and publish';
+
+  @override
+  String routeUnnamedProfile(String mode) {
+    return '$mode route';
+  }
+
+  @override
+  String routeStopsCount(int count) {
+    return '$count stops';
+  }
+
+  @override
+  String routeLoadSurchargeLabel(String amount) {
+    return 'Load surcharge: $amount';
+  }
+
+  @override
+  String get routeLoadSurchargeOptional => 'Load surcharge (optional)';
+
+  @override
+  String get routeLoadSurchargeHint => 'e.g. 50';
+
+  @override
+  String get routeFastSetupTitle => 'Route setup';
+
+  @override
+  String get routeFastSetupQuestion => 'Is this your route?';
+
+  @override
+  String routeFastSetupSubtitle(int count) {
+    return '$count stops detected from your usual path';
+  }
+
+  @override
+  String get routeYesPublish => 'Yes, publish';
+
+  @override
+  String get routeEditPrices => 'Edit prices';
+
+  @override
+  String get routeDrawManually => 'No, draw manually';
+
+  @override
+  String get routeDrawTitle => 'Draw your route';
+
+  @override
+  String get routeDrawHint => 'Tap the map to add stops';
+
+  @override
+  String get routeDrawEmptyStops => 'Add at least two stops on the map';
+
+  @override
+  String get routePublish => 'Publish';
+
+  @override
+  String routePriceToEnd(String amount) {
+    return 'To end: $amount';
+  }
+
+  @override
+  String routeSnapMatched(String name) {
+    return 'Matched: $name ✓';
+  }
+
+  @override
+  String get routeSnapNewStopHint => 'New stop — name?';
+
+  @override
+  String get routeSnapPending => 'Snapping…';
+
+  @override
+  String get routePriceKeypadTitle => 'Set price to end';
+
+  @override
+  String get routePriceKeypadSet => 'Set';
+
+  @override
+  String get routePriceErrorNonMonotone =>
+      'Prices must not increase toward the destination.';
+
+  @override
+  String get routePriceErrorLastNotZero => 'Last stop must be ₦0.';
+
+  @override
+  String get routePriceErrorEmpty => 'Add at least one priced stop.';
+
+  @override
+  String get routeLoadError => 'Could not load routes.';
+
+  @override
+  String get routePublishError => 'Could not publish route. Try again.';
 
   @override
   String get back => 'Back';

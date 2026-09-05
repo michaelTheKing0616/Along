@@ -64,7 +64,7 @@ class VerificationPendingScreen extends ConsumerWidget {
               AlongButton(
                 key: const Key('setup_route_button'),
                 label: l10n.setupRouteCta,
-                onPressed: () => context.push(AppRoutes.routesStub),
+                onPressed: () => context.go(AppRoutes.routesTab),
               ),
             ],
           ),
@@ -77,27 +77,3 @@ class VerificationPendingScreen extends ConsumerWidget {
 final _expectedReviewHoursProvider = FutureProvider<int?>((ref) async {
   return ref.read(documentsControllerProvider.notifier).expectedReviewHours();
 });
-
-/// D-10 stub — route setup placeholder (not implemented in P1-C-01).
-class RoutesStubScreen extends ConsumerWidget {
-  const RoutesStubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.routesStubTitle),
-        backgroundColor: AlongColors.surface0,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AlongSpace.s24),
-          child: Text(l10n.routesStubBody),
-        ),
-      ),
-    );
-  }
-}
