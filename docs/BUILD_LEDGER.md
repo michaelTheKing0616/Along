@@ -408,6 +408,22 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Follow-up: wire `showCapacityWarning` when a candidate has load capacity none; add FM36/Tier 3 widget tests; l10n `option_card_mapper` meta strings; R-07/R-10 AlongMap placeholders.
 
 ## [Phase 1 / P1-C-01] Driver app shell + D-01..D-07 onboarding
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Driver shell + D-01–D-07; OCR confirm-before-fill; widget upload→pending; Patrol SKIP. 8/8 driver tests.
+- Reviewer verdict: PASS WITH NOTES — both AC MET. Notes: along_data test fakes do not implement new `selectRows`/`uploadStorageObject` (suite compile-fails); Patrol SKIP; one `Text('${seatCapacity}')`.
+- Rework count: 0
+- Notes/escalations: Follow-up absorbed by P1-C-02: repair `along_data` test fakes. Backend: `start_driver_onboarding` listed in doc 03 but never migrated — later A-stream.
+
+## [Phase 1 / P1-C-01] along_data test fakes after AlongSupabase change
+- Status: BLOCKED — follow-up
+- Assigned: 2026-09-05
+- Worker report summary: P1-C-01 extended AlongSupabase; along_data FakeAlongSupabase / ConfigRepository test gateway not updated.
+- Reviewer verdict: n/a — absorb in P1-C-02 (must compile `flutter test` in along_data).
+- Rework count: 0
+- Notes/escalations: none.
+
+## [Phase 1 / P1-C-02] D-08 Home status, park, pings, demand
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
