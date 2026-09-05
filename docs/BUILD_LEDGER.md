@@ -509,3 +509,12 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 2. **No custom domain in scope until investment.** `cfg public.origin` (new doc 02 §2.3 key) is the only hostname clients/QR/share/W-04 use. Intended prod value `https://along.ng` when purchased; empty until then. Package IDs `ng.along.*` stay — they do not require owning the domain. Printed QR stickers and App/Universal Links stay gated while origin is empty; in-app `along://p/<code>` still works (doc 14 §2). Do not rename identifiers when a domain is later bought — only set `public.origin` and well-known files.
 3. **Staging env files (gitignored except `*.example.json`):** `env/staging.json` written with Supabase URL/anon/publishable, project ref `upqeypbdegteofwvekie`, Firebase `along-32c0e`, four Sentry DSNs. Owner also placed `env/google-services.staging.json` (contains `ng.along.rider.staging` + `ng.along.driver.staging` + leftover `com.topmost.along`) and `env/fcm-service-account.staging.json`. P1-E-04 may wire from these files; still BLOCKED on the human running `supabase secrets set` for the FCM service-account JSON (do not paste into chat). SMS remains log-mode.
 **Escalations:** none.
+
+---
+
+## [Phase 1 / Decision] Staging secrets ready — P1-E-04 unblocked
+**Date:** 2026-09-05
+- Product owner confirmed `npx supabase secrets set` succeeded for `FCM_SERVICE_ACCOUNT` on project `upqeypbdegteofwvekie`.
+- Wiring inputs now present: `env/staging.json` (URL, anon, publishable, Sentry DSNs, Firebase project id), `env/google-services.staging.json`, `env/fcm-service-account.staging.json` (local only), Edge secret `FCM_SERVICE_ACCOUNT`.
+- P1-E-04 is **unblocked**. Scope remains: no VM (OSRM via optional cloudflared + degrade), no Termii (SMS log-mode), `public.origin` empty, Android smoke on Redmi A2+, FCM token minting from the service-account key (not a static access token). iOS compile stays on P1-E-05; iOS device/push still deferred.
+**Escalations:** none.
