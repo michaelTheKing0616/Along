@@ -558,3 +558,23 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: FAIL — code/automated tests in place; §7 exit criterion NOT MET (no live corridor screenshots). Skipped: Redmi 60 fps, Patrol OTP, Playwright A-04, Redmi staging smoke, ios-compile CI green. FM36 `showCapacityWarning` still dead.
 - Rework count: 0
 - Notes/escalations: Human/device list to close the gate: (1) Auth Send SMS hook + secret; (2) Redmi A2+ smoke runbook; (3) Patrol OTP emulator; (4) Playwright A-04; (5) Redmi 60 fps; (6) ios-compile CI green; (7) live corridor E2E + screenshots (search, roaming map, publish <1 min, Tier 0 mid-route, FM35/36); (8) offline drop on rider map. Do not start Phase 2.
+
+---
+
+## [Phase 1 / Gate] PASS WITH DEFERRED EVIDENCE — Phase 2 authorised
+**Date:** 2026-09-05
+Product-owner decision: do not block engineering on human/device evidence. Spec §7 live-corridor exit is **not waived** — it is retargeted.
+
+**Starts now (code, not evidence):**
+- P1-B-04 — FM36 `showCapacityWarning` is a dead path (`false` literal). Defect, not a screenshot. Must PASS before anyone can claim FM36 on corridor day.
+- P2-E-02 — Patrol OTP, Playwright A-04, ios-compile CI green. Automated; run in the Phase 2 stream.
+
+**Deferred to P1-G-01 (human + Redmi A2+). Hard gate: Phase 3 must not start until PASS:**
+- Dashboard Send-SMS hook + `SEND_SMS_HOOK_SECRETS`
+- Staging Android smoke (logged OTP, plan-trip or honest degrade)
+- MapPanBenchmark 60 fps
+- Live corridor E2E + screenshots (graph fare/boarding, roaming on map, driver publish < 1 min, Tier 0 mid-route, FM35, FM36 after P1-B-04)
+- Driver offline → gone from rider map
+
+**Phase 2 is open.** First Worker task: P1-B-04 (unblocks a constitution failure), then P2-A-01 / P2-E-01 / P2-E-02 per dependencies. Do not open Phase 3 without P1-G-01.
+**Escalations:** none.
