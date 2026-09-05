@@ -30,6 +30,27 @@ class DomainMappers {
         expiresAt: DateTime.parse(fare.expires_at),
       );
 
+  static RiderPreview riderFromDto(Map<String, dynamic> json) => RiderPreview(
+        displayName: json['display_name'] as String? ?? 'Rider',
+        rating: (json['rating'] as num?)?.toDouble() ?? 0,
+        tripCount: (json['trip_count'] as num?)?.toInt() ?? 0,
+      );
+
+  static TripBoardStop boardFromDto(dto.BoardStop board) => TripBoardStop(
+        name: board.name,
+        walkM: board.walk_m,
+        walkS: board.walk_s,
+      );
+
+  static TripAlightStop alightFromDto(dto.StageLocation alight) =>
+      TripAlightStop(name: alight.name);
+
+  static TripLoadInfo loadFromDto(dto.LoadFlag load) => TripLoadInfo(
+        flagged: load.flagged,
+        size: load.size,
+        note: load.note,
+      );
+
   static TripSummary tripFromDto(dto.TripView view) {
     final status = TripStatus.tryParse(view.status);
     if (status == null) {
@@ -47,6 +68,43 @@ class DomainMappers {
       naMe: naMeFromDto(view.na_me, tripId: view.trip_id),
       liveChannel: view.live_channel,
       expiresAt: DateTime.parse(view.expires_at),
+      rider: riderFromDto(view.rider),
+      board: boardFromDto(view.board),
+      alight: alightFromDto(view.alight),
+      load: loadFromDto(view.load),
+      womenOnly: view.women_only,
     );
+  }
+
+  /// Parses Broadcast / FCM `trip_request` envelope (doc 03 §5).
+  static TripSummary incomingTripFromEnvelope(Map<String, dynamic> envelope) {
+    final tripJson = envelope['trip'];
+    if (tripJson is! Map<String, dynamic>) {
+      throw AlongException(
+        code: AlongErrorCode.validation,
+        message: 'Missing trip in trip_request payload',
+      );
+    }
+    final view = dto.TripView.fromJson(tripJson);
+    final summary = tripFromDto(view);
+    final envelopeExpires = envelope['expires_at'];
+    if (envelopeExpires is String) {
+      return TripSummary(
+        tripId: summary.tripId,
+        journeyId: summary.journeyId,
+        journeySequence: summary.journeySequence,
+        status: summary.status,
+        fare: summary.fare,
+        naMe: summary.naMe,
+        liveChannel: summary.liveChannel,
+        expiresAt: DateTime.parse(envelopeExpires),
+        rider: summary.rider,
+        board: summary.board,
+        alight: summary.alight,
+        load: summary.load,
+        womenOnly: summary.womenOnly,
+      );
+    }
+    return summary;
   }
 }

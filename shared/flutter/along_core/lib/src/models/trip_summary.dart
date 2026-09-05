@@ -1,6 +1,9 @@
 import 'package:along_core/src/enums/trip_status.dart';
 import 'package:along_core/src/models/fare_quote.dart';
 import 'package:along_core/src/models/na_me_pairing.dart';
+import 'package:along_core/src/models/trip_load.dart';
+import 'package:along_core/src/models/trip_party.dart';
+import 'package:along_core/src/models/trip_stop.dart';
 import 'package:along_core/src/value/money.dart';
 
 /// Lightweight trip view for client state and offline cache.
@@ -14,6 +17,15 @@ class TripSummary {
     required this.naMe,
     required this.liveChannel,
     required this.expiresAt,
+    this.rider = const RiderPreview(
+      displayName: 'Rider',
+      rating: 0,
+      tripCount: 0,
+    ),
+    this.board = const TripBoardStop(name: ''),
+    this.alight = const TripAlightStop(name: ''),
+    this.load = const TripLoadInfo(flagged: false),
+    this.womenOnly = false,
   });
 
   final String tripId;
@@ -24,6 +36,11 @@ class TripSummary {
   final NaMePairing naMe;
   final String liveChannel;
   final DateTime expiresAt;
+  final RiderPreview rider;
+  final TripBoardStop board;
+  final TripAlightStop alight;
+  final TripLoadInfo load;
+  final bool womenOnly;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||
