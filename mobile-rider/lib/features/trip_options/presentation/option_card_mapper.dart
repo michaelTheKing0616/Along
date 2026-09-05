@@ -45,9 +45,7 @@ class OptionCardMapper {
     core.PlanCandidate candidate,
     LoadFlagState load,
   ) {
-    if (!load.flagged) return false;
-    return candidate.legs.any(
-      (leg) => leg.loadWarning?.blocksMode ?? false,
-    );
+    if (!load.flagged || load.size == null) return false;
+    return candidate.legs.any((leg) => leg.loadWarning != null);
   }
 }

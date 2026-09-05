@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_data/along_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/trip_options/domain/load_capacity_warning.dart';
 import 'package:mobile_rider/features/trip_options/presentation/coverage_gap_view.dart';
 import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
@@ -269,11 +272,44 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
     );
   }
 
-  void _openLoadSheet(TripOptionsState state) {
+  Future<void> _openLoadSheet(TripOptionsState state) async {
+    final recommendedId =
+        state.plan?.sortOrders[SortCriterion.recommended]?.firstOrNull;
+    final selectedCandidate = state.sortedCandidates
+        .where((candidate) => candidate.candidateId == recommendedId)
+        .firstOrNull;
+
+    Map<String, List<String>> warnCapacities = const {};
+    String? modeLoadCapacity;
+
+    if (selectedCandidate != null) {
+      try {
+        final configRepo = ref.read(configRepositoryProvider);
+        final catalogRepo = ref.read(catalogRepositoryProvider);
+        final rawWarnCapacities = await configRepo.configJson(
+          'load.warn_capacities',
+          cityId: state.plan?.cityId,
+        );
+        warnCapacities = parseWarnCapacities(rawWarnCapacities);
+        final modeCode = selectedCandidate.legs.first.mode.code;
+        final modeConfigs = await catalogRepo.modeConfigs();
+        modeLoadCapacity = modeConfigs
+            .where((mode) => mode.code == modeCode)
+            .map((mode) => mode.loadCapacity)
+            .firstOrNull;
+      } catch (_) {
+        warnCapacities = const {};
+        modeLoadCapacity = null;
+      }
+    }
+
+    if (!mounted) return;
+
     showLoadFlagSheet(
       context,
       initial: state.load,
-      showCapacityWarning: false,
+      warnCapacities: warnCapacities,
+      modeLoadCapacity: modeLoadCapacity,
       onApply: (load) {
         ref.read(tripOptionsControllerProvider.notifier).updateLoad(load);
       },

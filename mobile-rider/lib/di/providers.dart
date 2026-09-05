@@ -24,6 +24,10 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(ref.watch(alongSupabaseProvider));
 });
 
+final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
+  return CatalogRepository(ref.watch(alongSupabaseProvider));
+});
+
 final configRepositoryProvider = Provider<ConfigRepository>((ref) {
   return ConfigRepository(ref.watch(alongSupabaseProvider));
 });
