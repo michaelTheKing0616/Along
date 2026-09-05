@@ -95,17 +95,47 @@ class PlacesRepository {
 
   Future<SnappedStage?> snapStage({
     required GeoPoint location,
+    required String cityId,
+    required int snapRadiusM,
   }) async {
     try {
-      final raw = await _gateway.rpc(
-        'snap_stage',
-        params: {
-          'p_lat': location.lat,
-          'p_lng': location.lng,
-        },
+      final results = await searchPlaces(
+        query: 'st',
+        near: location,
+        cityId: cityId,
+        limit: 8,
       );
-      if (raw.isEmpty) return null;
-      return SnappedStage.fromJson(raw);
+
+      PlaceResult? nearest;
+      for (final place in results) {
+        if (place.kind != 'park' && place.kind != 'stage') continue;
+        if (place.distanceM > snapRadiusM) continue;
+        if (nearest == null || place.distanceM < nearest.distanceM) {
+          nearest = place;
+        }
+      }
+
+      if (nearest == null || nearest.id == null) return null;
+
+      return SnappedStage(
+        stageId: nearest.id!,
+        name: nearest.name,
+        distanceM: nearest.distanceM,
+        routeIds: const [],
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<String?> citySlugForId(String cityId) async {
+    try {
+      final rows = await _gateway.selectRows(
+        'cities',
+        filters: {'id': cityId},
+      );
+      if (rows.isEmpty) return null;
+      return rows.first['slug'] as String?;
     } catch (e) {
       throw mapSupabaseError(e);
     }

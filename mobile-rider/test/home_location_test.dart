@@ -9,6 +9,7 @@ import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/home/presentation/widgets/location_denied_banner.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_rider/testing/fakes/fake_recent_places_store.dart';
 
@@ -41,6 +42,7 @@ void main() {
 
   group('HomeController', () {
     late _ConfigurableFakeSupabase fakeSupabase;
+    late FakeAmbientChannel fakeAmbient;
     late ProviderContainer container;
 
     setUp(() {
@@ -49,6 +51,7 @@ void main() {
         ambientAsOf: DateTime.utc(2026, 1, 1),
         ambientCells: [sampleAmbientCell()],
       );
+      fakeAmbient = FakeAmbientChannel();
       container = ProviderContainer(
         overrides: buildProviderOverrides(
           config: const AppConfig(
@@ -69,12 +72,14 @@ void main() {
             ],
           ),
           clock: Clock.fixed(DateTime.utc(2026, 1, 1, 0, 1, 0)),
+          ambientChannel: fakeAmbient,
         ),
       );
     });
 
     tearDown(() {
       fakeSupabase.dispose();
+      fakeAmbient.dispose();
       container.dispose();
     });
 
@@ -100,6 +105,7 @@ void main() {
             supabaseAnonKey: 'test-key',
           ),
           supabase: fakeSupabase,
+          ambientChannel: FakeAmbientChannel(),
           recentPlacesStore: FakeRecentPlacesStore(),
           locationStreamSource: FakeLocationStreamSource(
             permissionGranted: false,

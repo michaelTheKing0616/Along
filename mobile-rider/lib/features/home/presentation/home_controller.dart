@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_location/along_location.dart';
-import 'package:along_map/along_map.dart' as map_geo;
+import 'package:along_realtime/along_realtime.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
-import 'package:along_map/along_map.dart';
+import 'package:along_map/along_map.dart' show AbujaMapConstants;
+import 'package:along_map/along_map.dart' as map_geo;
 import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 
 class HomeState {
@@ -90,13 +91,17 @@ final homeControllerProvider =
 
 class HomeController extends Notifier<HomeState> {
   StreamSubscription<LocationSample>? _locationSub;
-  Timer? _ambientTimer;
+  StreamSubscription<Map<String, dynamic>>? _ambientBroadcastSub;
+  String? _ambientTopic;
+  late final AmbientChannel _ambientChannel;
 
   @override
   HomeState build() {
+    _ambientChannel = ref.read(ambientChannelProvider);
     ref.onDispose(() {
       _locationSub?.cancel();
-      _ambientTimer?.cancel();
+      _ambientBroadcastSub?.cancel();
+      unawaited(_ambientChannel.unsubscribe());
     });
     Future.microtask(_bootstrap);
     return const HomeState();
@@ -139,6 +144,9 @@ class HomeController extends Notifier<HomeState> {
       activeLayers: {HomeMapOverlayLayer.puck},
     );
 
+    _ambientBroadcastSub ??=
+        _ambientChannel.cellUpdates.listen(_onAmbientBroadcast);
+
     _locationSub?.cancel();
     _locationSub = FilteredLocationStream(source).track().listen((sample) {
       state = state.copyWith(
@@ -150,13 +158,7 @@ class HomeController extends Notifier<HomeState> {
           ),
         },
       );
-      unawaited(_refreshAmbient(sample.point));
-    });
-
-    _ambientTimer?.cancel();
-    _ambientTimer = Timer.periodic(const Duration(seconds: 15), (_) {
-      final loc = state.userLocation;
-      if (loc != null) unawaited(_refreshAmbient(loc));
+      unawaited(_ensureAmbientSubscription(sample.point));
     });
   }
 
@@ -164,19 +166,54 @@ class HomeController extends Notifier<HomeState> {
     // Location denied path — user can still search via R-06 / R-06b.
   }
 
-  Future<void> _refreshAmbient(GeoPoint location) async {
+  /// One-shot RPC refresh on recenter / resume (doc 07 §5).
+  Future<void> refreshAmbientOnce() async {
+    final location = state.userLocation;
+    if (location == null) return;
+    await _fetchAmbientRpc(location);
+  }
+
+  Future<void> _ensureAmbientSubscription(GeoPoint location) async {
+    final radius = state.fanoutRadiusM;
+    if (radius == null) return;
+
+    final places = ref.read(placesRepositoryProvider);
+    final cityId = state.cityId ?? await places.cityForLocation(location);
+    if (cityId == null) return;
+
+    final citySlug = await places.citySlugForId(cityId);
+    if (citySlug == null) return;
+
+    final topic = ambientChannelTopic(citySlug: citySlug, location: location);
+    if (_ambientTopic != topic) {
+      await _ambientChannel.subscribe(
+            citySlug: citySlug,
+            geohash5: geohashEncode(location, precision: 5),
+          );
+      _ambientTopic = topic;
+      if (state.cityId == null) {
+        state = state.copyWith(cityId: cityId);
+      }
+    }
+
+    await _fetchAmbientRpc(location);
+  }
+
+  void _onAmbientBroadcast(Map<String, dynamic> payload) {
+    if (payload['type'] != 'cells') return;
+    final asOf = payload['as_of'];
+    final cells = payload['cells'];
+    if (asOf is! String || cells is! List<dynamic>) return;
+    _applyAmbientData(asOf: asOf, rawCells: cells);
+  }
+
+  Future<void> _fetchAmbientRpc(GeoPoint location) async {
     final radius = state.fanoutRadiusM;
     final staleAfterS = state.staleAfterS;
     if (radius == null || staleAfterS == null) return;
 
     state = state.copyWith(isLoadingAmbient: true);
     try {
-      final places = ref.read(placesRepositoryProvider);
-      final cityId = state.cityId ?? await places.cityForLocation(location);
-      if (cityId != null && state.cityId == null) {
-        state = state.copyWith(cityId: cityId);
-      }
-
       final presence = ref.read(presenceRepositoryProvider);
       final response = await presence.ambientVehicles(
         AmbientVehiclesRequest(
@@ -185,55 +222,72 @@ class HomeController extends Notifier<HomeState> {
           p_radius_m: radius,
         ),
       );
-
-      if (response.cells.isEmpty) {
-        state = state.copyWith(
-          ambientCells: const [],
-          nearbyRows: const [],
-          activeLayers: {HomeMapOverlayLayer.puck},
-          isLoadingAmbient: false,
-        );
-        return;
-      }
-
-      final asOf = DateTime.parse(response.as_of);
-      final mapCells = AmbientCellMapper.toMapCells(
-        apiCells: response.cells,
-        asOf: asOf,
-        staleAfterS: staleAfterS,
-        now: ref.read(clockProvider).now(),
-      );
-
-      final rows = [
-        for (final cell in response.cells)
-          NearbyAmbientRow(
-            modeLabelKey: 'mode_${cell.mode.code}',
-            countBucket: cell.count_bucket,
-            headingLabel: AmbientCellMapper.headingLabel(
-              AmbientCellMapper.toMapCells(
-                apiCells: [cell],
-                asOf: asOf,
-                staleAfterS: staleAfterS,
-                now: ref.read(clockProvider).now(),
-              ).first.headingDegrees,
-            ),
-            etaMinutes: (cell.eta_band_s / 60).ceil(),
-            modeCode: cell.mode.code,
-          ),
-      ];
-
-      state = state.copyWith(
-        ambientCells: mapCells,
-        nearbyRows: rows,
-        activeLayers: {
-          HomeMapOverlayLayer.puck,
-          HomeMapOverlayLayer.ambientCells,
-        },
-        isLoadingAmbient: false,
+      _applyAmbientData(
+        asOf: response.as_of,
+        rawCells: response.cells.map((cell) => cell.toJson()).toList(),
       );
     } catch (_) {
       state = state.copyWith(isLoadingAmbient: false);
     }
+  }
+
+  void _applyAmbientData({
+    required String asOf,
+    required List<dynamic> rawCells,
+  }) {
+    final staleAfterS = state.staleAfterS;
+    if (staleAfterS == null) return;
+
+    if (rawCells.isEmpty) {
+      state = state.copyWith(
+        ambientCells: const [],
+        nearbyRows: const [],
+        activeLayers: {HomeMapOverlayLayer.puck},
+        isLoadingAmbient: false,
+      );
+      return;
+    }
+
+    final apiCells = rawCells
+        .cast<Map<String, dynamic>>()
+        .map(AmbientCell.fromJson)
+        .toList(growable: false);
+    final parsedAsOf = DateTime.parse(asOf);
+    final now = ref.read(clockProvider).now();
+    final mapCells = AmbientCellMapper.toMapCells(
+      apiCells: apiCells,
+      asOf: parsedAsOf,
+      staleAfterS: staleAfterS,
+      now: now,
+    );
+
+    final rows = [
+      for (final cell in apiCells)
+        NearbyAmbientRow(
+          modeLabelKey: 'mode_${cell.mode.code}',
+          countBucket: cell.count_bucket,
+          headingLabel: AmbientCellMapper.headingLabel(
+            AmbientCellMapper.toMapCells(
+              apiCells: [cell],
+              asOf: parsedAsOf,
+              staleAfterS: staleAfterS,
+              now: now,
+            ).first.headingDegrees,
+          ),
+          etaMinutes: (cell.eta_band_s / 60).ceil(),
+          modeCode: cell.mode.code,
+        ),
+    ];
+
+    state = state.copyWith(
+      ambientCells: mapCells,
+      nearbyRows: rows,
+      activeLayers: {
+        HomeMapOverlayLayer.puck,
+        HomeMapOverlayLayer.ambientCells,
+      },
+      isLoadingAmbient: false,
+    );
   }
 
   Future<void> reloadRecents() async {
@@ -309,7 +363,7 @@ class SearchController extends Notifier<SearchState> {
   Future<void> _search(String query) async {
     final home = ref.read(homeControllerProvider);
     final location = home.userLocation ??
-        const GeoPoint(
+        GeoPoint(
           lat: AbujaMapConstants.centerLat,
           lng: AbujaMapConstants.centerLng,
         );
@@ -386,7 +440,7 @@ class AdjustPickupController extends Notifier<AdjustPickupState> {
   AdjustPickupState build() {
     final home = ref.read(homeControllerProvider);
     final center = home.userLocation ??
-        const GeoPoint(
+        GeoPoint(
           lat: AbujaMapConstants.centerLat,
           lng: AbujaMapConstants.centerLng,
         );
@@ -407,21 +461,34 @@ class AdjustPickupController extends Notifier<AdjustPickupState> {
     try {
       final placesRepo = ref.read(placesRepositoryProvider);
       final home = ref.read(homeControllerProvider);
-      final cityId = home.cityId ??
-          await placesRepo.cityForLocation(center);
-      final snapped = await placesRepo.snapStage(location: center);
-      List<PlaceResult> nearby = const [];
-      if (cityId != null) {
-        nearby = await placesRepo.searchPlaces(
-          query: 'park',
-          near: center,
+      final cityId = home.cityId ?? await placesRepo.cityForLocation(center);
+      if (cityId == null) {
+        state = state.copyWith(isLoading: false);
+        return;
+      }
+
+      final snapRadiusM = state.snapRadiusM;
+      SnappedStage? snapped;
+      if (snapRadiusM != null) {
+        snapped = await placesRepo.snapStage(
+          location: center,
           cityId: cityId,
-          limit: 8,
+          snapRadiusM: snapRadiusM,
         );
       }
+
+      final nearby = await placesRepo.searchPlaces(
+        query: 'st',
+        near: center,
+        cityId: cityId,
+        limit: 8,
+      );
+
       state = state.copyWith(
         snappedStage: snapped,
-        nearbyPlaces: nearby,
+        nearbyPlaces: nearby
+            .where((place) => place.kind == 'park' || place.kind == 'stage')
+            .toList(growable: false),
         isLoading: false,
       );
     } catch (_) {

@@ -145,8 +145,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _recenter(GeoPoint location) async {
-    // Camera recentre is handled by myLocationEnabled when granted.
     _layerController?.setPuck(location);
+    await ref.read(homeControllerProvider.notifier).refreshAmbientOnce();
   }
 }
 

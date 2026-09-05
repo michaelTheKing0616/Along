@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/app.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:patrol/patrol.dart';
 
@@ -34,6 +35,7 @@ void main() {
             supabaseAnonKey: 'test-key',
           ),
           supabase: fakeSupabase,
+          ambientChannel: FakeAmbientChannel(),
           onboardingPreferences: fakePrefs,
         ),
       );

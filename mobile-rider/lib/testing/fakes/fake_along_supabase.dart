@@ -13,6 +13,7 @@ class FakeAlongSupabase implements AlongSupabase {
     this.placeResults = const [],
     this.snappedStage,
     this.cityId = 'b1000000-0000-4000-8000-000000000001',
+    this.citySlug = 'abuja',
   });
 
   final String otpCode;
@@ -25,6 +26,7 @@ class FakeAlongSupabase implements AlongSupabase {
   List<Map<String, dynamic>> placeResults;
   Map<String, dynamic>? snappedStage;
   String? cityId;
+  String? citySlug;
 
   User? _user;
   final _controller = StreamController<AuthState>.broadcast();
@@ -110,6 +112,15 @@ class FakeAlongSupabase implements AlongSupabase {
     String table, {
     Map<String, Object?> filters = const {},
   }) async {
+    if (table == 'cities') {
+      final id = filters['id'];
+      if (id == cityId) {
+        return [
+          {'id': cityId, 'slug': citySlug ?? 'abuja'},
+        ];
+      }
+      return [];
+    }
     if (table != 'app_config') return [];
     final key = filters['key'];
     return configRows

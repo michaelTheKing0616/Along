@@ -2,6 +2,8 @@
 library;
 
 export 'src/channels/along_realtime_channels.dart';
+export 'src/channels/supabase_ambient_channel.dart';
+export 'src/geo/geohash.dart';
 export 'src/reconnect/reconnect_policy.dart';
 
 const String alongRealtimeVersion = '0.0.1';

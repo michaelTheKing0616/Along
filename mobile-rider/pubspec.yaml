@@ -18,6 +18,8 @@ dependencies:
     path: ../shared/flutter/along_location
   along_map:
     path: ../shared/flutter/along_map
+  along_realtime:
+    path: ../shared/flutter/along_realtime
   connectivity_plus: 6.1.4
   flutter:
     sdk: flutter

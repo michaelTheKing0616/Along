@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_location/along_location.dart';
+import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
@@ -35,6 +36,12 @@ final placesRepositoryProvider = Provider<PlacesRepository>((ref) {
   return PlacesRepository(ref.watch(alongSupabaseProvider));
 });
 
+final ambientChannelProvider = Provider<AmbientChannel>((ref) {
+  throw UnimplementedError(
+    'ambientChannelProvider must be overridden at startup',
+  );
+});
+
 final recentPlacesStoreProvider = Provider<RecentPlacesReader>((ref) {
   return RecentPlacesStore();
 });
@@ -58,6 +65,7 @@ final onboardingPreferencesProvider = Provider<OnboardingPreferences>((ref) {
 List<Override> buildProviderOverrides({
   required AppConfig config,
   required AlongSupabase supabase,
+  required AmbientChannel ambientChannel,
   OnboardingPreferences? onboardingPreferences,
   LocationStreamSource? locationStreamSource,
   RecentPlacesReader? recentPlacesStore,
@@ -66,6 +74,7 @@ List<Override> buildProviderOverrides({
   return [
     appConfigProvider.overrideWithValue(config),
     alongSupabaseProvider.overrideWithValue(supabase),
+    ambientChannelProvider.overrideWithValue(ambientChannel),
     if (onboardingPreferences != null)
       onboardingPreferencesProvider.overrideWithValue(onboardingPreferences),
     if (locationStreamSource != null)

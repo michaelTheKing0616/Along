@@ -7,6 +7,7 @@ import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:mobile_rider/features/onboarding/presentation/name_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
+import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 
 void main() {
@@ -28,6 +29,7 @@ void main() {
             supabaseAnonKey: 'test-key',
           ),
           supabase: fakeSupabase,
+          ambientChannel: FakeAmbientChannel(),
           onboardingPreferences: fakePrefs,
         ),
       );
