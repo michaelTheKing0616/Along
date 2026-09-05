@@ -34,11 +34,14 @@ select ok(
 );
 
 select ok(
-  planner_decompose(
-    '0a020000-0000-4000-8000-000000000001',
-    '0a020000-0000-4000-8000-000000000002',
-    '0a000000-0000-4000-8000-000000000001'
-  ) is not null,
+  exists (
+    select 1
+    from planner_decompose(
+      '0a020000-0000-4000-8000-000000000001',
+      '0a020000-0000-4000-8000-000000000002',
+      '0a000000-0000-4000-8000-000000000001'
+    )
+  ),
   'TS-CFG-01: planner_decompose works on Zaria-Test graph'
 );
 

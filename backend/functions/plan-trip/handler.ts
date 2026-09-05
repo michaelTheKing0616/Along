@@ -1,22 +1,17 @@
 import { z } from 'zod';
 import { cityForPoint, loadPlannerCfg } from '../_shared/cfg.ts';
-import { fallbackWalkDistanceM, walkSeconds } from '../_shared/geo.ts';
 import { errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
 import { createOsrmClient, type OsrmClient } from '../_shared/osrm.ts';
 import {
-  applyRanking,
-  computeMetrics,
-  loadWarning,
-  parkedWaitS,
-} from '../_shared/planner/ranking.ts';
+  buildDirectCandidates,
+  buildMultiLegCandidates,
+  directSignature,
+  type RawMultiLegItinerary,
+} from '../_shared/planner/build.ts';
+import { applyRanking } from '../_shared/planner/ranking.ts';
 import { createServiceClient, createUserClient } from '../_shared/supabase.ts';
 import type {
-  Fare,
-  FareComponent,
-  Metrics,
-  ModeRow,
   PlanCandidate,
-  PlanCandidateLeg,
   Point,
   RawDirectCandidate,
   StageRow,
@@ -45,55 +40,8 @@ export const planTripRequestSchema = z.object({
 
 export type PlanTripRequest = z.infer<typeof planTripRequestSchema>;
 
-type FareResolution = {
-  quote_id: string;
-  amount: number;
-  currency: string;
-  tier: number;
-  confidence: number;
-  components: Array<{ kind: string; amount: number; ref_id?: string }>;
-  unconfirmed: boolean;
-};
-
-function money(amount: number, currency: string) {
-  return { amount: amount.toFixed(2), currency };
-}
-
-function mapFare(res: FareResolution, expiresAt: string): Fare {
-  const components: FareComponent[] = (res.components ?? []).map((c) => ({
-    kind: c.kind,
-    ref_id: c.ref_id,
-    label: c.kind.replace(/_/g, ' '),
-    amount: money(Number(c.amount), res.currency),
-  }));
-  return {
-    total: money(res.amount, res.currency),
-    tier: res.tier,
-    confidence: res.confidence,
-    unconfirmed: res.unconfirmed,
-    components,
-    quote_id: res.quote_id,
-    expires_at: expiresAt,
-  };
-}
-
 function stagePoint(stage: StageRow): Point {
   return { lat: stage.lat, lng: stage.lng };
-}
-
-function boardStop(
-  stage: StageRow,
-  walkM: number,
-  walkS: number,
-) {
-  return {
-    stage_id: stage.id,
-    name: stage.name,
-    location: { lat: stage.lat, lng: stage.lng },
-    walk_m: Math.round(walkM),
-    walk_s: walkS,
-    wayfinding_available: true,
-  };
 }
 
 async function loadStages(
@@ -151,29 +99,52 @@ export async function handlePlanTrip(
   const plannerCfg = await loadPlannerCfg(service, cityId);
   const osrm = deps?.osrm ?? createOsrmClient();
 
-  const { data: rawRows, error: candError } = await service.rpc(
-    'planner_direct_candidates_latlng',
-    {
+  const [directResult, multiResult] = await Promise.all([
+    service.rpc('planner_direct_candidates_latlng', {
       p_origin_lat: origin.lat,
       p_origin_lng: origin.lng,
       p_dest_lat: destination.lat,
       p_dest_lng: destination.lng,
       p_city_id: cityId,
       p_filters: filters,
-    },
-  );
-  if (candError) {
-    return errorResponse('VALIDATION', candError.message, 400, { request_id: rid });
+    }),
+    service.rpc('planner_decompose_latlng', {
+      p_origin_lat: origin.lat,
+      p_origin_lng: origin.lng,
+      p_dest_lat: destination.lat,
+      p_dest_lng: destination.lng,
+      p_city_id: cityId,
+      p_filters: filters,
+    }),
+  ]);
+
+  if (directResult.error) {
+    return errorResponse('VALIDATION', directResult.error.message, 400, {
+      request_id: rid,
+    });
+  }
+  if (multiResult.error) {
+    return errorResponse('VALIDATION', multiResult.error.message, 400, {
+      request_id: rid,
+    });
   }
 
-  const rawCandidates = (rawRows ?? []) as RawDirectCandidate[];
-  const stageIds = [...new Set(
-    rawCandidates.flatMap((c) => [c.board_stage_id, c.alight_stage_id]),
-  )];
+  const rawDirect = (directResult.data ?? []) as RawDirectCandidate[];
+  const rawMulti = (multiResult.data ?? []) as RawMultiLegItinerary[];
+
+  const stageIds = [...new Set([
+    ...rawDirect.flatMap((c) => [c.board_stage_id, c.alight_stage_id]),
+    ...rawMulti.flatMap((it) =>
+      it.legs.flatMap((l) => [l.from_stage_id, l.to_stage_id])
+    ),
+  ])];
   const stageMap = await loadStages(service, stageIds);
 
-  const modeCodes = [...new Set(rawCandidates.map((c) => c.mode_code))];
-  const modeMap = new Map<string, ModeRow>();
+  const modeCodes = [...new Set([
+    ...rawDirect.map((c) => c.mode_code),
+    ...rawMulti.flatMap((it) => it.legs.map((l) => l.mode_code)),
+  ])];
+  const modeMap = new Map<string, import('../_shared/types.ts').ModeRow>();
   if (modeCodes.length > 0) {
     const { data: modes } = await service
       .from('mode_config')
@@ -182,12 +153,12 @@ export async function handlePlanTrip(
       )
       .in('code', modeCodes);
     for (const m of modes ?? []) {
-      modeMap.set(m.code, m as ModeRow);
+      modeMap.set(m.code, m as import('../_shared/types.ts').ModeRow);
     }
   }
 
-  const boardStages = [...new Set(rawCandidates.map((c) => c.board_stage_id))];
-  const alightStages = [...new Set(rawCandidates.map((c) => c.alight_stage_id))];
+  const boardStages = [...new Set(rawDirect.map((c) => c.board_stage_id))];
+  const alightStages = [...new Set(rawDirect.map((c) => c.alight_stage_id))];
 
   const boardPoints = boardStages.map((id) => {
     const s = stageMap.get(id);
@@ -208,131 +179,46 @@ export async function handlePlanTrip(
     : { distances: [], durations: [], degraded: false };
   if (fromAlight.degraded) degraded = true;
 
-  const boardIndex = new Map<string, number>();
-  boardStages.forEach((id, i) => boardIndex.set(id, i));
-  const alightIndex = new Map<string, number>();
-  alightStages.forEach((id, i) => alightIndex.set(id, i));
-
-  const built: PlanCandidate[] = [];
-
-  for (const raw of rawCandidates) {
-    const board = stageMap.get(raw.board_stage_id);
-    const alight = stageMap.get(raw.alight_stage_id);
-    const mode = modeMap.get(raw.mode_code);
-    if (!board || !alight || !mode) continue;
-
-    const bi = boardIndex.get(raw.board_stage_id) ?? 0;
-    const ai = alightIndex.get(raw.alight_stage_id) ?? 0;
-
-    const originWalkM = toBoard.distances[0]?.[bi] ??
-      Math.round(fallbackWalkDistanceM(origin, stagePoint(board)));
-    const originWalkS = toBoard.durations[0]?.[bi] ??
-      walkSeconds(originWalkM, plannerCfg.walkSpeedMps);
-
-    const destWalkM = fromAlight.distances[ai]?.[0] ??
-      Math.round(fallbackWalkDistanceM(stagePoint(alight), destination));
-    const destWalkS = fromAlight.durations[ai]?.[0] ??
-      walkSeconds(destWalkM, plannerCfg.walkSpeedMps);
-
-    const walkTotalM = originWalkM + destWalkM;
-
-    let inVehicleS = raw.in_vehicle_time_estimate_s ?? 0;
-    if (inVehicleS <= 0 && raw.route_id) {
-      const route = await osrm.carRoute(stagePoint(board), stagePoint(alight));
-      if (route.degraded) degraded = true;
-      inVehicleS = Math.round(route.durationS * plannerCfg.sharedVehicleFactor);
-    }
-
-    let waitS = raw.avg_wait_time_estimate_s ?? plannerCfg.defaultWaitS;
-    if (raw.source === 'parked') {
-      waitS = parkedWaitS(mode);
-    }
-
-    const loadJson = filters.load.flagged
-      ? { flagged: true, size: filters.load.size ?? null }
-      : null;
-
-    const fareArgs: Record<string, unknown> = {
-      p_mode_code: raw.mode_code,
-      p_city_id: cityId,
-      p_load: loadJson,
-      p_rider_id: riderId,
-    };
-    if (raw.profile_id) {
-      fareArgs.p_profile_id = raw.profile_id;
-      fareArgs.p_from_stage_id = raw.board_stage_id;
-      fareArgs.p_to_stage_id = raw.alight_stage_id;
-    } else if (raw.route_id) {
-      fareArgs.p_route_id = raw.route_id;
-      fareArgs.p_from_stage_id = raw.board_stage_id;
-      fareArgs.p_to_stage_id = raw.alight_stage_id;
-    }
-
-    const { data: fareData, error: fareError } = await service.rpc(
-      'resolve_fare',
-      fareArgs,
-    );
-    if (fareError || !fareData) continue;
-
-    const fareRes = fareData as FareResolution;
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-    const fare = mapFare(fareRes, expiresAt);
-
-    const warning = filters.load.flagged
-      ? loadWarning(mode.load_capacity, filters.load.size, plannerCfg.warnCapacities)
-      : null;
-
-    const leg: PlanCandidateLeg = {
-      leg_index: 0,
-      mode: {
-        code: mode.code,
-        label: mode.label,
-        icon_key: mode.icon_key,
-        color_token: mode.color_token,
-      },
-      board: boardStop(board, originWalkM, originWalkS),
-      alight: {
-        stage_id: alight.id,
-        name: alight.name,
-        location: { lat: alight.lat, lng: alight.lng },
-      },
-      route_id: raw.route_id,
-      route_leg_ids: raw.route_leg_ids ?? [],
-      in_vehicle_s: inVehicleS,
-      wait_s: waitS,
-      fare,
-      supply: raw.supply,
-      load_warning: warning,
-    };
-
-    const walkS = originWalkS + destWalkS;
-    const partial = computeMetrics({
-      walkTotalM,
-      walkS,
-      waitS,
-      inVehicleS,
-      transferCount: 0,
-      totalFare: fare.total,
-      mode,
-      cfg: plannerCfg,
+  const { candidates: directBuilt, degraded: directDegraded } =
+    await buildDirectCandidates({
+      service,
+      osrm,
+      rawCandidates: rawDirect,
+      stageMap,
+      modeMap,
+      origin,
+      destination,
+      cityId,
+      riderId,
+      filters,
+      plannerCfg,
+      toBoard,
+      fromAlight,
+      boardStages,
+      alightStages,
     });
-    const metrics: Metrics = {
-      ...partial,
-      recommended_score: 0,
-      explain: { fare: 0, time: 0, strenuous: 0 },
-    };
+  if (directDegraded) degraded = true;
 
-    built.push({
-      candidate_id: crypto.randomUUID(),
-      kind: 'direct',
-      source: raw.source as PlanCandidate['source'],
-      viable_direct: true,
-      legs: [leg],
-      transfers: [],
-      metrics,
+  const directSignatures = new Set(directBuilt.map(directSignature));
+
+  const { candidates: multiBuilt, degraded: multiDegraded } =
+    await buildMultiLegCandidates({
+      service,
+      osrm,
+      itineraries: rawMulti,
+      stageMap,
+      modeMap,
+      origin,
+      destination,
+      cityId,
+      riderId,
+      filters,
+      plannerCfg,
+      directSignatures,
     });
-  }
+  if (multiDegraded) degraded = true;
 
+  const built: PlanCandidate[] = [...directBuilt, ...multiBuilt];
   const { candidates, sortOrders } = applyRanking(built, plannerCfg);
 
   let coverageGap: Record<string, unknown> | null = null;

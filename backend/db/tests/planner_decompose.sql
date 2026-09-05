@@ -3,7 +3,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(9);
+select plan(10);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: parks A, B, C; routes A→B, B→C, C→A; transfer_points at each hub
@@ -126,7 +126,10 @@ select ok(
     where o.city_id = 'd0000000-0000-4000-8000-000000000002'
       and d.city_id = 'd0000000-0000-4000-8000-000000000002'
       and o.id <> d.id
-      and planner_decompose(o.id, d.id, 'd0000000-0000-4000-8000-000000000002') is null
+      and not exists (
+        select 1
+        from planner_decompose(o.id, d.id, 'd0000000-0000-4000-8000-000000000002')
+      )
   ),
   'planner_decompose returns a path for every ordered backbone park pair'
 );
@@ -134,11 +137,16 @@ select ok(
 -- Direct edge A → B is a single leg
 select is(
   jsonb_array_length(
-    planner_decompose(
-      'd0000000-0000-4000-8000-000000000030',
-      'd0000000-0000-4000-8000-000000000031',
-      'd0000000-0000-4000-8000-000000000002'
-    )->'legs'
+    (
+      select itin->'legs'
+      from planner_decompose(
+        'd0000000-0000-4000-8000-000000000030',
+        'd0000000-0000-4000-8000-000000000031',
+        'd0000000-0000-4000-8000-000000000002'
+      ) itin
+      order by jsonb_array_length(itin->'legs'), jsonb_array_length(itin->'transfers')
+      limit 1
+    )
   ),
   1,
   'direct A→B is one leg'
@@ -147,33 +155,47 @@ select is(
 -- Reverse B → A requires a transfer (two legs on the triangle)
 select is(
   jsonb_array_length(
-    planner_decompose(
-      'd0000000-0000-4000-8000-000000000031',
-      'd0000000-0000-4000-8000-000000000030',
-      'd0000000-0000-4000-8000-000000000002'
-    )->'legs'
+    (
+      select itin->'legs'
+      from planner_decompose(
+        'd0000000-0000-4000-8000-000000000031',
+        'd0000000-0000-4000-8000-000000000030',
+        'd0000000-0000-4000-8000-000000000002'
+      ) itin
+      order by jsonb_array_length(itin->'legs'), jsonb_array_length(itin->'transfers')
+      limit 1
+    )
   ),
   2,
   'reverse B→A uses two legs via transfer'
 );
 
 select is(
-  planner_decompose(
-    'd0000000-0000-4000-8000-000000000031',
-    'd0000000-0000-4000-8000-000000000030',
-    'd0000000-0000-4000-8000-000000000002'
-  )->>'kind',
+  (
+    select itin->>'kind'
+    from planner_decompose(
+      'd0000000-0000-4000-8000-000000000031',
+      'd0000000-0000-4000-8000-000000000030',
+      'd0000000-0000-4000-8000-000000000002'
+    ) itin
+    limit 1
+  ),
   'multi_leg',
   'itinerary kind is multi_leg'
 );
 
 select ok(
   jsonb_array_length(
-    planner_decompose(
-      'd0000000-0000-4000-8000-000000000031',
-      'd0000000-0000-4000-8000-000000000030',
-      'd0000000-0000-4000-8000-000000000002'
-    )->'transfers'
+    (
+      select itin->'transfers'
+      from planner_decompose(
+        'd0000000-0000-4000-8000-000000000031',
+        'd0000000-0000-4000-8000-000000000030',
+        'd0000000-0000-4000-8000-000000000002'
+      ) itin
+      order by jsonb_array_length(itin->'transfers') desc
+      limit 1
+    )
   ) >= 1,
   'multi-leg itinerary includes at least one transfer record'
 );
@@ -181,11 +203,15 @@ select ok(
 -- Same-park query returns empty legs
 select is(
   jsonb_array_length(
-    planner_decompose(
-      'd0000000-0000-4000-8000-000000000030',
-      'd0000000-0000-4000-8000-000000000030',
-      'd0000000-0000-4000-8000-000000000002'
-    )->'legs'
+    (
+      select itin->'legs'
+      from planner_decompose(
+        'd0000000-0000-4000-8000-000000000030',
+        'd0000000-0000-4000-8000-000000000030',
+        'd0000000-0000-4000-8000-000000000002'
+      ) itin
+      limit 1
+    )
   ),
   0,
   'same origin and destination park yields zero legs'
@@ -194,9 +220,10 @@ select is(
 -- Leg count respects cfg.planner.max_legs (global default 3)
 select ok(
   (
-    select max(jsonb_array_length(planner_decompose(o.id, d.id, 'd0000000-0000-4000-8000-000000000002')->'legs'))
+    select max(jsonb_array_length(itin->'legs'))
     from parks o
     cross join parks d
+    cross join lateral planner_decompose(o.id, d.id, 'd0000000-0000-4000-8000-000000000002') itin
     where o.city_id = 'd0000000-0000-4000-8000-000000000002'
       and d.city_id = 'd0000000-0000-4000-8000-000000000002'
       and o.id <> d.id
@@ -207,13 +234,33 @@ select ok(
 -- Resolved fares attached when leg fare data exists
 select ok(
   (
-    planner_decompose(
+    select itin->'legs'->0->'fare'->>'amount'
+    from planner_decompose(
       'd0000000-0000-4000-8000-000000000030',
       'd0000000-0000-4000-8000-000000000031',
       'd0000000-0000-4000-8000-000000000002'
-    )->'legs'->0->'fare'->>'amount'
+    ) itin
+    limit 1
   ) is not null,
   'direct leg includes resolved fare amount'
+);
+
+-- k-shortest returns multiple genuinely different paths on triangle (A→C direct + via B)
+select ok(
+  (
+    select count(*) >= 2
+    from (
+      select string_agg(l->>'route_id', ',' order by ord) as route_sig
+      from planner_decompose(
+        'd0000000-0000-4000-8000-000000000030',
+        'd0000000-0000-4000-8000-000000000032',
+        'd0000000-0000-4000-8000-000000000002'
+      ) itin
+      cross join lateral jsonb_array_elements(itin->'legs') with ordinality as t(l, ord)
+      group by itin
+    ) sigs
+  ),
+  'k-shortest returns at least two distinct route sequences A→C'
 );
 
 -- Isolated park (no routes) returns null
@@ -227,12 +274,15 @@ values (
 );
 
 select is(
-  planner_decompose(
-    'd0000000-0000-4000-8000-000000000030',
-    'd0000000-0000-4000-8000-000000000099',
-    'd0000000-0000-4000-8000-000000000002'
+  (
+    select count(*)::int
+    from planner_decompose(
+      'd0000000-0000-4000-8000-000000000030',
+      'd0000000-0000-4000-8000-000000000099',
+      'd0000000-0000-4000-8000-000000000002'
+    )
   ),
-  null,
+  0,
   'no path when destination is unreachable'
 );
 

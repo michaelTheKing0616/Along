@@ -30,7 +30,10 @@ select ok(
     where o.city_id = 'b1000000-0000-4000-8000-000000000001'
       and d.city_id = 'b1000000-0000-4000-8000-000000000001'
       and o.id <> d.id
-      and planner_decompose(o.id, d.id, 'b1000000-0000-4000-8000-000000000001') is null
+      and not exists (
+        select 1
+        from planner_decompose(o.id, d.id, 'b1000000-0000-4000-8000-000000000001')
+      )
   ),
   'Phase 0 exit: planner_decompose path for every ordered backbone park pair'
 );
