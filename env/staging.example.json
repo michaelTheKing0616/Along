@@ -1,0 +1,18 @@
+{
+  "SUPABASE_URL": "https://<project-ref>.supabase.co",
+  "SUPABASE_ANON_KEY": "<legacy-anon-jwt>",
+  "SUPABASE_PUBLISHABLE_KEY": "<sb_publishable_...>",
+  "SUPABASE_PROJECT_REF": "<project-ref>",
+  "FIREBASE_PROJECT_ID": "<firebase-project-id>",
+  "SENTRY_DSN_MOBILE_RIDER": "https://<key>@<host>/<id>",
+  "SENTRY_DSN_MOBILE_DRIVER": "https://<key>@<host>/<id>",
+  "SENTRY_DSN_ADMIN": "https://<key>@<host>/<id>",
+  "SENTRY_DSN_FUNCTIONS": "https://<key>@<host>/<id>",
+  "PUBLIC_ORIGIN": "",
+  "TILES_BASE": "",
+  "OSRM_URL": "",
+  "ANDROID_APPLICATION_ID_RIDER": "ng.along.rider.staging",
+  "ANDROID_APPLICATION_ID_DRIVER": "ng.along.driver.staging",
+  "IOS_BUNDLE_ID_RIDER": "ng.along.rider",
+  "IOS_BUNDLE_ID_DRIVER": "ng.along.driver"
+}

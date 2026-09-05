@@ -12,7 +12,10 @@ Two thin apps (`mobile-rider`, `mobile-driver`) over five shared Dart packages i
 - Dart SDK per Flutter; `melos` workspace at `shared/flutter/melos.yaml` also including the two apps; `very_good_analysis` lint set + project overrides (no `avoid_print` exceptions; `prefer_const_constructors` on).
 - Android: `minSdk 24` (Android 7.0 — covers > 97% of Nigerian Android devices; 23 and lower excluded for TLS 1.2 + WebView reasons), `targetSdk` latest. iOS 14+.
 - Build flavours: `dev`, `staging`, `prod` (bundle ids `ng.along.rider.dev` …). Env via `--dart-define-from-file=env/<flavor>.json` (Supabase URL/anon key, tiles URL, Sentry DSN). **No secrets in the app** — the anon key is public by design; every privilege is RLS.
-- CI: `melos run analyze`, `melos run test`, golden tests on Linux with pinned fonts, `flutter build apk --release --analyze-size` gate ≤ 25 MB (rider), ≤ 28 MB (driver).
+- CI (both apps, every PR — iOS is not optional):
+  - Linux: `melos run analyze`, `melos run test`, golden tests with pinned fonts, `flutter build apk --release --analyze-size` gate ≤ 25 MB (rider), ≤ 28 MB (driver).
+  - **macOS:** `flutter build ios --no-codesign --flavor staging` for **both** `mobile-rider` and `mobile-driver`. This compiles the iOS tree without an Apple Developer account, certificates, or a device. A missing `ios/` directory, a bundle-id drift, or an iOS-only compile break is a **FAIL**, same as an Android break.
+  - Device / TestFlight / App Store / APNs / Patrol-on-simulator-with-push: deferred until an Apple Developer account exists. Patrol iOS specs are **written and committed** with the Android ones; they `skip` unless `PATROL_IOS=true`. Never delete, `#if ANDROID`, or "we'll add iOS later" a screen, plugin, or flavour.
 
 ## 2. Packages
 

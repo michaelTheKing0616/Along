@@ -230,6 +230,8 @@ returns void language sql as $$
 | `share.link_ttl_hours` | `12` | Phase 5 |
 | `otp.rate_limit_per_hour` | `5` | doc 12 |
 | `sms.providers` | `["termii","twilio"]` | doc 01 §9 |
+| `sms.provider` | `"log"` (staging/local until Termii sender-ID is approved; then `"termii"`) | ADR-0012 |
+| `public.origin` | `""` until a domain is purchased; intended prod `https://along.ng` | doc 14, W-01/W-04, share links. No trailing slash. QR stickers and App/Universal Links are not issued while empty. |
 | `load.warn_capacities` | `{"small":["none"],"medium":["none","small"],"large":["none","small","medium"]}` | §4.13 FM36 |
 | `fare.default_rate_per_km` | `{"car":120,"keke":90,"okada":110,"minibus":60}` (city currency) | doc 04 §3 Tier 3 fallback |
 | `fare.min_fare` | `{"car":200,"keke":100,"okada":100,"minibus":100}` | doc 04 §3 |

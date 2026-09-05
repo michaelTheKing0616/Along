@@ -19,7 +19,7 @@ Two QR types, one URL scheme, one resolver:
 
 `driver_code`: 8 characters, Crockford base32 (no `I L O U`), random, unique, non-sequential. It is public information (it's on a sticker), so the resolver returns only what the sticker context already reveals — driver first name, vehicle plate, mode, digital-acceptance status — and is rate-limited (30/min per IP). Rotation (`rpc.rotate_driver_code`) invalidates old stickers; ops reprints.
 
-Universal link / App Link: iOS `apple-app-site-association` and Android `assetlinks.json` served from `along.ng` so the OS camera opens the rider app when installed; otherwise the browser opens **W-04**.
+Universal link / App Link: iOS `apple-app-site-association` and Android `assetlinks.json` served from `cfg('public.origin')` so the OS camera opens the rider app when installed; otherwise the browser opens **W-04**. The intended production origin is `https://along.ng` once that domain is purchased (not in scope until investment). While `public.origin` is empty, QR payloads still encode `along://p/<code>` (custom scheme — works in-app) and W-04 is reachable only via the admin/Vercel host; **do not print stickers** until a real https origin exists.
 
 ## 3. Rider flows and tap counts
 
