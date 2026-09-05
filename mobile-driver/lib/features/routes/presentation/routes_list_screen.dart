@@ -1,5 +1,6 @@
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -118,7 +119,9 @@ class RoutesListScreen extends ConsumerWidget {
                                 initialLoadSurcharge: profile.loadSurchargeAmount ==
                                         null
                                     ? null
-                                    : null,
+                                    : Decimal.parse(
+                                        profile.loadSurchargeAmount!.toString(),
+                                      ),
                               ),
                             ),
                           ),

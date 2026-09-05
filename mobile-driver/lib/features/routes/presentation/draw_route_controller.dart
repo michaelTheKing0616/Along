@@ -144,11 +144,12 @@ class DrawRouteController extends StateNotifier<DrawRouteState> {
       final previousLast = updated[lastIndex];
       if (previousLast.priceToEnd == Decimal.zero) {
         final suggested = await _fetchSuggestedPrice(
-              previousLast.sequence,
-              previousLast.location,
-            ) ??
-            Decimal.fromInt(300);
-        updated[lastIndex] = previousLast.copyWith(priceToEnd: suggested);
+          previousLast.sequence,
+          previousLast.location,
+        );
+        if (suggested != null) {
+          updated[lastIndex] = previousLast.copyWith(priceToEnd: suggested);
+        }
       }
     }
     updated.add(stop);
