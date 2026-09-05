@@ -84,5 +84,7 @@ else
   echo "WARN: ${GOOGLE_SERVICES} not found — skipped google-services copy" >&2
 fi
 
+bash "${ROOT}/scripts/prepare_ios_firebase.sh"
+
 echo ""
 echo "Done. Re-run after env/staging.json changes."

@@ -21,6 +21,10 @@ admin-console/.env.staging.local
 mobile-rider/android/app/src/*/google-services.json
 mobile-driver/android/app/src/*/google-services.json
 
+# Supabase CLI local state (never commit)
+supabase/.temp/
+supabase/.branches/
+
 # Node / pnpm
 node_modules/
 .pnpm-store/
