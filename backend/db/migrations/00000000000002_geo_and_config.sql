@@ -128,6 +128,12 @@ language sql stable security definer set search_path = public as $$
 create or replace function cfg_num(p_key text, p_city uuid default null, p_corridor uuid default null) returns numeric
 language sql stable as $$ select (cfg(p_key,p_city,p_corridor))::text::numeric $$;
 
+-- Config defaults are owned by migrations, not seeds (ADR-0016).
+create or replace function config_default(p_key text, p_value jsonb, p_scope_type config_scope default 'global', p_scope_id text default '*')
+returns void language sql as $$
+  insert into app_config (key, scope_type, scope_id, value) values (p_key, p_scope_type, p_scope_id, p_value)
+  on conflict (key, scope_type, scope_id) do nothing $$;
+
 -- updated_at triggers
 create trigger deployments_set_updated_at before update on deployments
   for each row execute function set_updated_at();

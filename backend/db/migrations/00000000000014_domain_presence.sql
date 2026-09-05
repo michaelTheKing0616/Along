@@ -3,10 +3,8 @@
 -- ---------------------------------------------------------------------------
 -- Config (doc 02 §2.3 — no literals for intervals/thresholds)
 -- ---------------------------------------------------------------------------
-insert into app_config (key, scope_type, scope_id, value) values
-  ('presence.ping_min_interval_s', 'global', '*', '2'),
-  ('presence.at_park_radius_m', 'global', '*', '150')
-on conflict (key, scope_type, scope_id) do update set value = excluded.value;
+select config_default('presence.ping_min_interval_s', '2');
+select config_default('presence.at_park_radius_m', '150');
 
 -- ---------------------------------------------------------------------------
 -- Geometry helpers (doc 04 §1)

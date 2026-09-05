@@ -22,10 +22,8 @@ values (
 );
 
 -- Deliberately different from global defaults (FM5 / TS-CFG-01)
-insert into app_config (key, scope_type, scope_id, value) values
-  ('commission.rate', 'city', '0a000000-0000-4000-8000-000000000001', '0.05'),
-  ('graph.snap_radius_m', 'city', '0a000000-0000-4000-8000-000000000001', '40')
-on conflict (key, scope_type, scope_id) do update set value = excluded.value;
+select config_default('commission.rate', '0.05', 'city', '0a000000-0000-4000-8000-000000000001');
+select config_default('graph.snap_radius_m', '40', 'city', '0a000000-0000-4000-8000-000000000001');
 
 insert into data_sources (id, source_type, notes)
 values ('0a010000-0000-4000-8000-000000000001', 'import', 'Zaria-Test CI fixture — not field data')

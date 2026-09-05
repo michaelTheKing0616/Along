@@ -4,10 +4,8 @@
 -- ---------------------------------------------------------------------------
 -- Config (doc 03 §2 — fan-out cadence; not listed in doc 02 §2.3 table)
 -- ---------------------------------------------------------------------------
-insert into app_config (key, scope_type, scope_id, value) values
-  ('presence.fanout_interval_s', 'global', '*', '10'),
-  ('presence.fanout_radius_m', 'global', '*', '3000')
-on conflict (key, scope_type, scope_id) do update set value = excluded.value;
+select config_default('presence.fanout_interval_s', '10');
+select config_default('presence.fanout_radius_m', '3000');
 
 -- ---------------------------------------------------------------------------
 -- Realtime topic authorization helpers

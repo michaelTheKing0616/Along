@@ -18,7 +18,13 @@ jobs:
       - name: Start Supabase local stack
         run: supabase start
 
-      - name: Apply migrations on fresh DB
+      - name: ADR-0016 app_config migration grep gate
+        run: bash backend/db/scripts/check_app_config_migrations.sh
+
+      - name: TS-CFG-02 (migrations only, no seed)
+        run: bash backend/db/scripts/run_ts_cfg_02.sh
+
+      - name: Apply migrations and seed on fresh DB
         run: supabase db reset --yes
 
       - name: Run pgTAP tests
