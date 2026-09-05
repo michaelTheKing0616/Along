@@ -226,4 +226,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navRoutes => 'Routes';
+
+  @override
+  String get navEarnings => 'Earnings';
+
+  @override
+  String get navAccount => 'Account';
+
+  @override
+  String get earningsStubBody => 'Earnings and balance coming in Phase 4.';
+
+  @override
+  String get accountStubBody => 'Account settings coming soon.';
+
+  @override
+  String get homeUnverifiedBanner => 'Complete verification to go online.';
+
+  @override
+  String get homeBatteryGuardBanner =>
+      'Battery low — location updates slowed to save power.';
+
+  @override
+  String get homeLedgerBlockedBanner =>
+      'Matching paused — settle your balance to go online.';
+
+  @override
+  String get homeSelectPark => 'At: select park ▾';
+
+  @override
+  String homeAtPark(String parkName) {
+    return 'At: $parkName ▾';
+  }
+
+  @override
+  String get homeDirectionOnRoute => 'Direction: on my route ▾';
+
+  @override
+  String get homeDirectionNone => 'Direction: none ▾';
+
+  @override
+  String get homeErrorSelectPark =>
+      'Choose a park before going online at park.';
+
+  @override
+  String get homeErrorLocation => 'Enable location to go online.';
+
+  @override
+  String get homeParkPickerTitle => 'Nearby parks';
+
+  @override
+  String get homeParkPickerEmpty => 'No parks within range.';
+
+  @override
+  String homeParkDistance(int meters) {
+    return '$meters m away';
+  }
+
+  @override
+  String get homeParkSomewhereElse => 'I\'m somewhere else';
 }

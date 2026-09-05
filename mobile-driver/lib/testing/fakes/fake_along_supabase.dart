@@ -37,6 +37,8 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(RegisterVehicleRequest request)? onRegisterVehicle;
   void Function(SubmitVerificationRequest request)? onSubmitVerification;
   void Function(String bucket, String path, List<int> bytes)? onUpload;
+  void Function(Map<String, dynamic> params)? onSetPresence;
+  void Function(Map<String, dynamic> params)? onPresencePing;
 
   User? _user;
   String? _storedVehicleId;
@@ -108,6 +110,20 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'my_verifications') {
       return verifications;
     }
+    if (fn == 'set_presence') {
+      onSetPresence?.call(params ?? {});
+      return {
+        'session_id': 'test-session',
+        'status': params?['p_status'],
+      };
+    }
+    if (fn == 'presence_ping') {
+      onPresencePing?.call(params ?? {});
+      return {'accepted': true};
+    }
+    if (fn == 'ambient_demand') {
+      return {'cells': <Map<String, dynamic>>[]};
+    }
     return {};
   }
 
@@ -160,6 +176,46 @@ class FakeAlongSupabase implements AlongSupabase {
           },
         ];
       }
+      if (key == 'presence.ping_interval_moving_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '4',
+          },
+        ];
+      }
+      if (key == 'presence.ping_interval_still_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '15',
+          },
+        ];
+      }
+      if (key == 'presence.fanout_radius_m') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '3000',
+          },
+        ];
+      }
+    }
+    if (table == 'drivers') {
+      return [
+        {
+          'id': _user?.id ?? 'test-driver-id',
+          'verified_status': 'verified',
+          'city_id': 'b1000000-0000-4000-8000-000000000001',
+          'standing': 'good_standing',
+        },
+      ];
     }
     return [];
   }

@@ -501,6 +501,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Routes'**
+  String get navRoutes;
+
+  /// No description provided for @navEarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Earnings'**
+  String get navEarnings;
+
+  /// No description provided for @navAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get navAccount;
+
+  /// No description provided for @earningsStubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Earnings and balance coming in Phase 4.'**
+  String get earningsStubBody;
+
+  /// No description provided for @accountStubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Account settings coming soon.'**
+  String get accountStubBody;
+
+  /// No description provided for @homeUnverifiedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete verification to go online.'**
+  String get homeUnverifiedBanner;
+
+  /// No description provided for @homeBatteryGuardBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery low — location updates slowed to save power.'**
+  String get homeBatteryGuardBanner;
+
+  /// No description provided for @homeLedgerBlockedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching paused — settle your balance to go online.'**
+  String get homeLedgerBlockedBanner;
+
+  /// No description provided for @homeSelectPark.
+  ///
+  /// In en, this message translates to:
+  /// **'At: select park ▾'**
+  String get homeSelectPark;
+
+  /// No description provided for @homeAtPark.
+  ///
+  /// In en, this message translates to:
+  /// **'At: {parkName} ▾'**
+  String homeAtPark(String parkName);
+
+  /// No description provided for @homeDirectionOnRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction: on my route ▾'**
+  String get homeDirectionOnRoute;
+
+  /// No description provided for @homeDirectionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction: none ▾'**
+  String get homeDirectionNone;
+
+  /// No description provided for @homeErrorSelectPark.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a park before going online at park.'**
+  String get homeErrorSelectPark;
+
+  /// No description provided for @homeErrorLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location to go online.'**
+  String get homeErrorLocation;
+
+  /// No description provided for @homeParkPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby parks'**
+  String get homeParkPickerTitle;
+
+  /// No description provided for @homeParkPickerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No parks within range.'**
+  String get homeParkPickerEmpty;
+
+  /// No description provided for @homeParkDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'{meters} m away'**
+  String homeParkDistance(int meters);
+
+  /// No description provided for @homeParkSomewhereElse.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m somewhere else'**
+  String get homeParkSomewhereElse;
 }
 
 class _AppLocalizationsDelegate

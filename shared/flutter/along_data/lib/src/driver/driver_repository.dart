@@ -2,7 +2,7 @@ import 'package:along_data/src/contracts/api_contracts.g.dart';
 import 'package:along_data/src/supabase/along_supabase.dart';
 import 'package:along_data/src/supabase/error_mapper.dart';
 
-/// Driver onboarding RPCs (doc 03 §1).
+/// Driver onboarding and profile reads (doc 03 §1).
 class DriverRepository {
   DriverRepository(this._gateway);
 
@@ -38,4 +38,40 @@ class DriverRepository {
       throw mapSupabaseError(e);
     }
   }
+
+  Future<DriverProfileSnapshot?> fetchDriverProfile(String driverId) async {
+    try {
+      final rows = await _gateway.selectRows(
+        'drivers',
+        filters: {'id': driverId},
+      );
+      if (rows.isEmpty) return null;
+      final row = rows.first;
+      return DriverProfileSnapshot(
+        driverId: driverId,
+        verifiedStatus: row['verified_status'] as String? ?? 'unverified',
+        cityId: row['city_id'] as String?,
+        standing: row['standing'] as String? ?? 'good_standing',
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+}
+
+class DriverProfileSnapshot {
+  const DriverProfileSnapshot({
+    required this.driverId,
+    required this.verifiedStatus,
+    required this.cityId,
+    required this.standing,
+  });
+
+  final String driverId;
+  final String verifiedStatus;
+  final String? cityId;
+  final String standing;
+
+  bool get isVerified => verifiedStatus == 'verified';
+  bool get isLedgerBlocked => standing == 'matching_paused';
 }

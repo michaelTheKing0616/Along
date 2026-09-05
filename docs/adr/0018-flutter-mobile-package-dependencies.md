@@ -24,6 +24,8 @@ Pin first-party Flutter/Dart dependencies introduced by `along_core`, `along_dat
 | `firebase_messaging` | **15.2.4** | `along_notifications` |
 | `flutter_local_notifications` | **18.0.1** | `along_notifications` |
 | `maplibre_gl` | **0.22.0** | `along_map` |
+| `flutter_foreground_task` | **8.17.0** | `along_location` (driver foreground presence, P1-C-02) |
+| `battery_plus` | **6.2.1** | `along_location` (driver battery guard, P1-C-02) |
 | `build_runner` | **2.4.12** | `along_data` (dev) |
 
 ## Alternatives

@@ -106,5 +106,34 @@
   "setupRouteCta": "Set up your route while you wait",
   "routesStubTitle": "Your routes",
   "routesStubBody": "Route setup coming in the next step.",
-  "back": "Back"
+  "back": "Back",
+  "navHome": "Home",
+  "navRoutes": "Routes",
+  "navEarnings": "Earnings",
+  "navAccount": "Account",
+  "earningsStubBody": "Earnings and balance coming in Phase 4.",
+  "accountStubBody": "Account settings coming soon.",
+  "homeUnverifiedBanner": "Complete verification to go online.",
+  "homeBatteryGuardBanner": "Battery low — location updates slowed to save power.",
+  "homeLedgerBlockedBanner": "Matching paused — settle your balance to go online.",
+  "homeSelectPark": "At: select park ▾",
+  "homeAtPark": "At: {parkName} ▾",
+  "@homeAtPark": {
+    "placeholders": {
+      "parkName": {"type": "String"}
+    }
+  },
+  "homeDirectionOnRoute": "Direction: on my route ▾",
+  "homeDirectionNone": "Direction: none ▾",
+  "homeErrorSelectPark": "Choose a park before going online at park.",
+  "homeErrorLocation": "Enable location to go online.",
+  "homeParkPickerTitle": "Nearby parks",
+  "homeParkPickerEmpty": "No parks within range.",
+  "homeParkDistance": "{meters} m away",
+  "@homeParkDistance": {
+    "placeholders": {
+      "meters": {"type": "int"}
+    }
+  },
+  "homeParkSomewhereElse": "I'm somewhere else"
 }

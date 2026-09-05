@@ -60,4 +60,21 @@ class FakeAlongSupabase implements AlongSupabase {
     if (functionHandler == null) return {};
     return functionHandler!(slug, b);
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> selectRows(
+    String table, {
+    Map<String, Object?> filters = const {},
+    String? inColumn,
+    List<Object?>? inValues,
+  }) async =>
+      const [];
+
+  @override
+  Future<void> uploadStorageObject({
+    required String bucket,
+    required String path,
+    required List<int> bytes,
+    String contentType = 'image/jpeg',
+  }) async {}
 }
