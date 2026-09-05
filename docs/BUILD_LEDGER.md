@@ -536,9 +536,17 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Human: enable Auth Send SMS hook + SEND_SMS_HOOK_SECRETS in dashboard; run `docs/runbooks/staging_android_smoke.md` on Redmi A2+. Restore supabase/.temp gitignore (absorb P1-E-05 if touching .gitignore).
 
 ## [Phase 1 / P1-E-05] iOS compile parity
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Driver ios/ scaffolded; rider bundle ids ng.along.rider; macos ios-compile CI for both apps; Patrol iOS skip; gitignore restored. Local xcodebuild missing.
+- Reviewer verdict: PASS WITH NOTES — trees + IDs + CI job MET. Notes: CI green and local compile not verified; no Podfile committed (first CI risk).
+- Rework count: 0
+- Notes/escalations: Confirm `ios-compile` green on first remote CI run.
+
+## [Phase 1 / Gate] Core Booking MVP
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
-- Worker report summary: (pending)
+- Worker report summary: n/a — gate review against master
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Phase 1 gate blocker. No Apple Developer / codesign / TestFlight.
+- Notes/escalations: Stop after gate. Do not start Phase 2.
