@@ -358,3 +358,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: PASS WITH NOTES — flutter test 11 pass / 1 skip. Notes: no Tecno Spark 8C 60 fps run yet; fixture is structural stub; sprites/glyphs CDN; heading ticks missing.
 - Rework count: 0
 - Notes/escalations: Hardware 60 fps before Phase 1 exit. Tiles-only offline sufficient for MVP.
+
+## [Phase 1 / P1-E-03] along_design components batch 1
+- Status: IN PROGRESS
+- Assigned: 2026-09-05T13:39Z
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
