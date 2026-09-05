@@ -59,6 +59,21 @@ function candidate(id: string, fare: number, time: number): PlanCandidate {
   };
 }
 
+Deno.test('TS-PLAN-02 ranking: slow direct unviable when fast multi-leg exists', () => {
+  const slowDirect = candidate('slow', 400, 5400);
+  slowDirect.kind = 'direct';
+  const fastMulti = candidate('fast', 500, 1400);
+  fastMulti.kind = 'multi_leg';
+  fastMulti.metrics.transfer_count = 1;
+  fastMulti.viable_direct = false;
+
+  const { candidates, sortOrders } = applyRanking([slowDirect, fastMulti], cfg);
+  const direct = candidates.find((c) => c.candidate_id === 'slow');
+  const multi = candidates.find((c) => c.candidate_id === 'fast');
+  assertEquals(direct?.viable_direct, false);
+  assertEquals(sortOrders.recommended[0], multi?.candidate_id);
+});
+
 Deno.test('TS-PLAN-01 direct-only: recommended[0] is viable direct', () => {
   const a = candidate('a', 400, 900);
   const b = candidate('b', 200, 1200);
