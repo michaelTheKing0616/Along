@@ -1,5 +1,6 @@
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/app_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AlongRiderApp extends ConsumerWidget {
   const AlongRiderApp({super.key});
@@ -44,6 +46,7 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
     overrides: buildProviderOverrides(
       config: config,
       supabase: supabase,
+      ambientChannel: SupabaseAmbientChannel(Supabase.instance.client),
     ),
   );
 }

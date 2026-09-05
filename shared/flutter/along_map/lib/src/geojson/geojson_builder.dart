@@ -85,6 +85,7 @@ abstract final class GeoJsonBuilder {
                 'bucket': cell.bucket,
                 'count': cell.count,
                 'heading': cell.headingDegrees ?? 0,
+                'stale': cell.stale,
               },
             ),
         ],
@@ -129,10 +130,12 @@ class AmbientCell {
     required this.bucket,
     required this.count,
     this.headingDegrees,
+    this.stale = false,
   });
 
   final GeoPoint center;
   final int bucket;
   final int count;
   final double? headingDegrees;
+  final bool stale;
 }

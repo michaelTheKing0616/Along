@@ -73,8 +73,93 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get onboardingCompleteTitle => 'You\'re all set';
+  String get navHome => 'Home';
 
   @override
-  String get onboardingCompleteBody => 'Home search arrives in the next task.';
+  String get navTrips => 'Trips';
+
+  @override
+  String get navAccount => 'Account';
+
+  @override
+  String get homeSearchHint => 'Where to?';
+
+  @override
+  String get homeLocationDeniedBanner =>
+      'Enable location to see nearby vehicles';
+
+  @override
+  String get homeChooseOnMap => 'Choose on map';
+
+  @override
+  String get homeNearbyTitle => 'Nearby';
+
+  @override
+  String homeNearbyRow(
+    String countBucket,
+    String mode,
+    String heading,
+    int minutes,
+  ) {
+    return '$countBucket $mode nearby · heading $heading · ~$minutes min';
+  }
+
+  @override
+  String get homeExpandNearby => 'Show nearby';
+
+  @override
+  String get homeCollapseNearby => 'Hide nearby';
+
+  @override
+  String get modeCar => 'cars';
+
+  @override
+  String get modeKeke => 'kekes';
+
+  @override
+  String get modeOkada => 'okadas';
+
+  @override
+  String get modeMinibus => 'minibuses';
+
+  @override
+  String get searchTitle => 'Where to?';
+
+  @override
+  String get searchRecentsTitle => 'Recents';
+
+  @override
+  String get searchResultsTitle => 'Results';
+
+  @override
+  String get searchOfflineHint => 'Offline — showing recents only';
+
+  @override
+  String searchResultSubtitle(String area, int distanceM) {
+    return '$area · $distanceM m away';
+  }
+
+  @override
+  String get adjustPickupTitle => 'Adjust pickup';
+
+  @override
+  String adjustPickupBoardingAt(String stageName) {
+    return 'Boarding at: $stageName';
+  }
+
+  @override
+  String get adjustPickupConfirm => 'Confirm location';
+
+  @override
+  String get tripsStubBody => 'Your trips will appear here.';
+
+  @override
+  String get accountStubBody => 'Account settings arrive in a later task.';
+
+  @override
+  String get tripOptionsStubTitle => 'Trip options';
+
+  @override
+  String get tripOptionsStubBody =>
+      'Route and fare options arrive in the next task.';
 }

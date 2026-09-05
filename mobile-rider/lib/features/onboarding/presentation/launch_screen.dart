@@ -34,8 +34,8 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
         context.go(AppRoutes.phone);
       case LaunchDestination.nameEntry:
         context.go(AppRoutes.name);
-      case LaunchDestination.onboardingComplete:
-        context.go(AppRoutes.onboardingComplete);
+      case LaunchDestination.home:
+        context.go(AppRoutes.home);
     }
   }
 

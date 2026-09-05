@@ -16,11 +16,11 @@ abstract class TripChannel {
   Future<void> publishLocation(Map<String, dynamic> sample);
 }
 
-/// Contract for ambient discovery channel `ambient:{city}:{gh5}`.
+/// Contract for ambient discovery channel `ambient:{city_slug}:{geohash5}`.
 abstract class AmbientChannel {
   Stream<Map<String, dynamic>> get cellUpdates;
   Future<void> subscribe({
-    required String cityId,
+    required String citySlug,
     required String geohash5,
   });
   Future<void> unsubscribe();

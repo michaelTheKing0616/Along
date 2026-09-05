@@ -22,18 +22,18 @@ void main() {
       expect(line['geometry']['coordinates'], hasLength(2));
     });
 
-    test('builds ambient cells with bucket and count', () {
+    test('builds ambient cells with stale flag', () {
       final geojson = GeoJsonBuilder.ambientCells(const [
         AmbientCell(
           center: GeoPoint(lat: 9.07, lng: 7.39),
           bucket: 5,
           count: 12,
           headingDegrees: 90,
+          stale: true,
         ),
       ]);
       final feature = (geojson['features'] as List).single as Map;
-      expect(feature['properties']['bucket'], 5);
-      expect(feature['properties']['count'], 12);
+      expect(feature['properties']['stale'], isTrue);
     });
   });
 

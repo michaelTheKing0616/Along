@@ -28,7 +28,7 @@ class _NameScreenState extends ConsumerState<NameScreen> {
       await ref.read(onboardingControllerProvider.notifier).completeOnboarding(
             displayName: includeName ? _controller.text.trim() : null,
           );
-      if (mounted) context.go(AppRoutes.onboardingComplete);
+      if (mounted) context.go(AppRoutes.home);
     } catch (_) {
       // Error surfaced via controller state.
     }

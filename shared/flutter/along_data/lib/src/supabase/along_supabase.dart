@@ -13,6 +13,12 @@ abstract class AlongSupabase {
     Map<String, dynamic>? body,
   });
 
+  /// Reads rows from a Supabase table (e.g. `app_config`).
+  Future<List<Map<String, dynamic>>> selectRows(
+    String table, {
+    Map<String, Object?> filters = const {},
+  });
+
   User? get currentUser;
   Stream<AuthState> authStateChanges();
   Future<void> signInWithOtp({required String phone});
@@ -75,6 +81,24 @@ class SupabaseAlongGateway implements AlongSupabase {
       code: AlongErrorCode.validation,
       message: 'Unexpected Edge response type for $slug',
     );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> selectRows(
+    String table, {
+    Map<String, Object?> filters = const {},
+  }) async {
+    var query = _client.from(table).select();
+    for (final entry in filters.entries) {
+      final value = entry.value;
+      if (value != null) {
+        query = query.eq(entry.key, value);
+      }
+    }
+    final result = await query;
+    return (result as List<dynamic>)
+        .cast<Map<String, dynamic>>()
+        .toList(growable: false);
   }
 }
 

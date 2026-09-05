@@ -8,12 +8,25 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class FakeAlongSupabase implements AlongSupabase {
   FakeAlongSupabase({
     this.otpCode = '123456',
+    this.configRows = const [],
+    this.ambientCells = const [],
+    this.placeResults = const [],
+    this.snappedStage,
+    this.cityId = 'b1000000-0000-4000-8000-000000000001',
+    this.citySlug = 'abuja',
   });
 
   final String otpCode;
   void Function(String phone)? onRequestOtp;
   void Function(String phone, String token)? onVerifyOtp;
   void Function(String? displayName)? onCompleteOnboarding;
+
+  List<Map<String, dynamic>> configRows;
+  List<Map<String, dynamic>> ambientCells;
+  List<Map<String, dynamic>> placeResults;
+  Map<String, dynamic>? snappedStage;
+  String? cityId;
+  String? citySlug;
 
   User? _user;
   final _controller = StreamController<AuthState>.broadcast();
@@ -64,6 +77,18 @@ class FakeAlongSupabase implements AlongSupabase {
       onCompleteOnboarding?.call(params?['display_name'] as String?);
       return {};
     }
+    if (fn == 'ambient_vehicles') {
+      return {
+        'as_of': DateTime.now().toUtc().toIso8601String(),
+        'cells': ambientCells,
+      };
+    }
+    if (fn == 'city_for_lat_lng') {
+      return {'city_id': cityId};
+    }
+    if (fn == 'snap_stage') {
+      return snappedStage ?? {};
+    }
     return {};
   }
 
@@ -71,8 +96,37 @@ class FakeAlongSupabase implements AlongSupabase {
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
-  }) async =>
-      {};
+  }) async {
+    if (slug == 'places-search') {
+      return {
+        'data': {
+          'results': placeResults,
+        },
+      };
+    }
+    return {};
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> selectRows(
+    String table, {
+    Map<String, Object?> filters = const {},
+  }) async {
+    if (table == 'cities') {
+      final id = filters['id'];
+      if (id == cityId) {
+        return [
+          {'id': cityId, 'slug': citySlug ?? 'abuja'},
+        ];
+      }
+      return [];
+    }
+    if (table != 'app_config') return [];
+    final key = filters['key'];
+    return configRows
+        .where((row) => key == null || row['key'] == key)
+        .toList(growable: false);
+  }
 
   void dispose() => _controller.close();
 }
@@ -96,3 +150,45 @@ class FakeOnboardingPreferences implements OnboardingPreferences {
     complete = false;
   }
 }
+
+/// Default app_config rows for tests (doc 02 §2.3 keys only).
+List<Map<String, dynamic>> defaultTestConfigRows() => [
+      {
+        'key': 'presence.stale_after_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '45',
+      },
+      {
+        'key': 'presence.fanout_radius_m',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '3000',
+      },
+      {
+        'key': 'graph.snap_radius_m',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '60',
+      },
+    ];
+
+/// Sample ambient cell payload (Tier A — no vehicle identity).
+Map<String, dynamic> sampleAmbientCell({
+  String countBucket = '3-5',
+  String modeCode = 'keke',
+}) =>
+    {
+      'cell': 's0k8tz',
+      'centroid': {'lat': 9.0765, 'lng': 7.3986},
+      'mode': {
+        'code': modeCode,
+        'label': modeCode,
+        'icon_key': 'mode-$modeCode',
+        'color_token': 'modeKeke',
+      },
+      'count_bucket': countBucket,
+      'heading_sectors': [0, 1, 0, 0, 0, 0, 0, 0],
+      'serves_destination': true,
+      'eta_band_s': 180,
+    };
