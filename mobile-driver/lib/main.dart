@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/app.dart';
+import 'package:mobile_driver/config/app_config.dart';
+import 'package:mobile_driver/observability/sentry_config.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-void main() {
-  runApp(const AlongDriverApp());
-}
+Future<void> main() async {
+  final config = AppConfig.fromEnvironment();
 
-class AlongDriverApp extends StatelessWidget {
-  const AlongDriverApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(child: Text('Along Driver')),
+  Future<void> runAlongApp() async {
+    final container = await bootstrapApp(configOverride: config);
+    runApp(
+      UncontrolledProviderScope(
+        container: container,
+        child: const AlongDriverApp(),
       ),
     );
+  }
+
+  if (config.hasSentry) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = config.sentryDsn;
+        options.beforeSend = scrubPii;
+        options.tracesSampleRate = config.sentryTracesSampleRate;
+      },
+      appRunner: runAlongApp,
+    );
+  } else {
+    await runAlongApp();
   }
 }

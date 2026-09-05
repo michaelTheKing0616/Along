@@ -40,7 +40,7 @@ class FakeAlongSupabase implements AlongSupabase {
   }
 
   @override
-  Future<Map<String, dynamic>> rpc(
+  Future<dynamic> rpc(
     String fn, {
     Map<String, dynamic>? params,
   }) async {
