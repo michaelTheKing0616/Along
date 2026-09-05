@@ -374,3 +374,11 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: none yet.
+
+## [Phase 1 / P1-B-01] Rider app shell + R-01..R-04 onboarding
+- Status: FAIL
+- Assigned: 2026-09-05
+- Worker report summary: Rider shell (flavours, Riverpod, go_router, ARB, Sentry) + R-01–R-04; widget tests 2/2; Patrol authored but SKIP (no emulator); claimed `flutter analyze` PASS.
+- Reviewer verdict: FAIL — `flutter analyze` fails (`otp_flow_patrol_test.dart:65` skip type Object vs bool?); hardcoded OTP resend `30` and rate-limit `60` (gate a). Patrol not run (no device). Strings keyed MET.
+- Rework count: 0 / 2
+- Notes/escalations: Do not add a new `app_config` DB key — doc 02 §2.3 only defines `otp.rate_limit_per_hour`. Client UX timers belong on flavour `AppConfig` / env JSON. Honest Patrol SKIP remains NOTES after analyze is clean.
