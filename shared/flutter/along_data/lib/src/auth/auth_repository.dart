@@ -39,4 +39,18 @@ class AuthRepository {
       throw mapSupabaseError(e);
     }
   }
+
+  Future<void> completeRiderOnboarding({String? displayName}) async {
+    try {
+      await _gateway.rpc(
+        'complete_rider_onboarding',
+        params: {
+          if (displayName != null && displayName.trim().isNotEmpty)
+            'display_name': displayName.trim(),
+        },
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
 }

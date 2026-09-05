@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_rider/app.dart';
+import 'package:mobile_rider/config/app_config.dart';
+import 'package:mobile_rider/observability/sentry_config.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-void main() {
-  runApp(const AlongRiderApp());
-}
+Future<void> main() async {
+  final config = AppConfig.fromEnvironment();
 
-class AlongRiderApp extends StatelessWidget {
-  const AlongRiderApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(child: Text('Along Rider')),
+  Future<void> runAlongApp() async {
+    final container = await bootstrapApp(configOverride: config);
+    runApp(
+      UncontrolledProviderScope(
+        container: container,
+        child: const AlongRiderApp(),
       ),
     );
+  }
+
+  if (config.hasSentry) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = config.sentryDsn;
+        options.beforeSend = scrubPii;
+        options.tracesSampleRate = 0.2;
+      },
+      appRunner: runAlongApp,
+    );
+  } else {
+    await runAlongApp();
   }
 }

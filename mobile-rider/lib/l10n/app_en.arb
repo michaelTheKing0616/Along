@@ -1,0 +1,105 @@
+{
+  "@@locale": "en",
+  "phoneEntryTitle": "Move around. Your way.",
+  "@phoneEntryTitle": {
+    "description": "R-02 heading"
+  },
+  "phoneEntrySubtitle": "Enter your number to continue",
+  "@phoneEntrySubtitle": {
+    "description": "R-02 body copy"
+  },
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Primary CTA on phone and name screens"
+  },
+  "legalPrefix": "By continuing, you agree to our ",
+  "@legalPrefix": {
+    "description": "Legal line prefix on R-02"
+  },
+  "termsLink": "Terms",
+  "@termsLink": {
+    "description": "Terms of service link label"
+  },
+  "legalMiddle": " and ",
+  "@legalMiddle": {
+    "description": "Legal line connector"
+  },
+  "privacyLink": "Privacy Policy",
+  "@privacyLink": {
+    "description": "Privacy policy link label"
+  },
+  "otpTitle": "Enter the 6-digit code sent to {phone}",
+  "@otpTitle": {
+    "description": "R-03 heading with masked phone",
+    "placeholders": {
+      "phone": {
+        "type": "String",
+        "example": "+234 801 234 5678"
+      }
+    }
+  },
+  "wrongNumber": "Wrong number?",
+  "@wrongNumber": {
+    "description": "R-03 link back to phone entry"
+  },
+  "resendCode": "Resend code",
+  "@resendCode": {
+    "description": "R-03 resend OTP action"
+  },
+  "resendCountdown": "Resend in {seconds}s",
+  "@resendCountdown": {
+    "description": "R-03 resend cooldown",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "nameTitle": "What should drivers call you?",
+  "@nameTitle": {
+    "description": "R-04 heading"
+  },
+  "nameHint": "Your name",
+  "@nameHint": {
+    "description": "R-04 text field hint"
+  },
+  "skip": "Skip",
+  "@skip": {
+    "description": "R-04 skip optional name"
+  },
+  "errorInvalidPhone": "Enter a valid Nigerian number",
+  "@errorInvalidPhone": {
+    "description": "R-02 validation error"
+  },
+  "errorRateLimited": "Too many attempts. Try again in {seconds}s",
+  "@errorRateLimited": {
+    "description": "R-02/R-03 rate limit error",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "60"
+      }
+    }
+  },
+  "errorWrongOtp": "Incorrect code — try again",
+  "@errorWrongOtp": {
+    "description": "R-03 invalid OTP"
+  },
+  "errorExpiredOtp": "Code expired — request a new one",
+  "@errorExpiredOtp": {
+    "description": "R-03 expired OTP"
+  },
+  "errorGeneric": "Something went wrong. Please try again.",
+  "@errorGeneric": {
+    "description": "Fallback error message"
+  },
+  "onboardingCompleteTitle": "You're all set",
+  "@onboardingCompleteTitle": {
+    "description": "Post-onboarding placeholder until R-05 (P1-B-02)"
+  },
+  "onboardingCompleteBody": "Home search arrives in the next task.",
+  "@onboardingCompleteBody": {
+    "description": "Post-onboarding placeholder body"
+  }
+}
