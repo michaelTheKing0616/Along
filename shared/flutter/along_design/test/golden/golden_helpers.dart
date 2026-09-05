@@ -75,3 +75,8 @@ Future<void> expectAlongGolden(
 /// | RequestSheet  | default/load/womenOnly                   | 1.0 + 1.3     |
 /// | BalanceCard   | good/warned/paused                       | 1.0 + 1.3     |
 /// | NaMeChip      | green diamond (representative)           | 1.0 only      |
+/// | NegotiationSheet | park/roaming/extension variants × rounds | 1.0 + 1.3  |
+/// | LegTimeline   | compact + full itinerary                 | 1.0 only      |
+/// | FareHero      | collapsed/expanded + delta               | 1.0 + 1.3     |
+/// | StepList      | text / audioPlaying                      | 1.0 only      |
+/// | AmbientCluster| 3 buckets × fresh/stale                  | 1.0 only      |
