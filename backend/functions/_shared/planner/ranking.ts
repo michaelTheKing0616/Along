@@ -52,10 +52,10 @@ export function applyRanking(
     };
   });
 
-  const directTimes = scored
-    .filter((c) => c.kind === 'direct')
+  const multiLegTimes = scored
+    .filter((c) => c.kind === 'multi_leg')
     .map((c) => c.metrics.total_time_s);
-  const bestAlt = directTimes.length > 0 ? Math.min(...directTimes) : Infinity;
+  const bestAlt = multiLegTimes.length > 0 ? Math.min(...multiLegTimes) : Infinity;
 
   const withViability = scored.map((c) => {
     if (c.kind !== 'direct') return { ...c, viable_direct: false };
