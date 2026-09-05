@@ -1,0 +1,9 @@
+{
+  "FLAVOR": "prod",
+  "SUPABASE_URL": "https://placeholder.supabase.co",
+  "SUPABASE_ANON_KEY": "placeholder-anon-key",
+  "SENTRY_DSN": "",
+  "OTP_RESEND_COOLDOWN_S": "30",
+  "OTP_RATE_LIMIT_RETRY_S": "60",
+  "SENTRY_TRACES_SAMPLE_RATE": "0.1"
+}
