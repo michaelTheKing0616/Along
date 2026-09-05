@@ -162,4 +162,111 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tripOptionsStubBody =>
       'Route and fare options arrive in the next task.';
+
+  @override
+  String get tripOptionsTitle => 'Trip options';
+
+  @override
+  String get tripOptionsHeading => 'Choose how to go';
+
+  @override
+  String get tripOptionsDegradedBanner => 'Live times unavailable';
+
+  @override
+  String get tripOptionsSlowerDirectCaption => 'Slower than transfer options';
+
+  @override
+  String get tripOptionsAgreePrice => 'Agree price';
+
+  @override
+  String get tripOptionsAgreePricePlaceholder =>
+      'Along Pricing arrives in a later phase';
+
+  @override
+  String get requestUndoMessage => 'Requesting…';
+
+  @override
+  String get loadFlagTitle => 'Carrying load?';
+
+  @override
+  String get loadFlagSizeSmall => 'Small';
+
+  @override
+  String get loadFlagSizeMedium => 'Medium';
+
+  @override
+  String get loadFlagSizeLarge => 'Large';
+
+  @override
+  String get loadFlagNoteHint => 'Optional note (140 characters)';
+
+  @override
+  String get loadFlagRememberDay => 'Remember for today';
+
+  @override
+  String get loadFlagCapacityWarning => 'This mode may not fit your load';
+
+  @override
+  String get loadFlagRequestAnyway => 'Request anyway';
+
+  @override
+  String get loadFlagDone => 'Done';
+
+  @override
+  String requestingTitle(String mode) {
+    return 'Requesting a $mode…';
+  }
+
+  @override
+  String requestingCountdown(int seconds) {
+    return '${seconds}s remaining';
+  }
+
+  @override
+  String get requestingFindingAnother => 'Finding another vehicle…';
+
+  @override
+  String get requestingCancel => 'Cancel';
+
+  @override
+  String get requestingExpired => 'No driver responded — see other options';
+
+  @override
+  String get requestingAcceptedPlaceholder =>
+      'Driver accepted — meet your vehicle arrives next';
+
+  @override
+  String get coverageGapTitle => 'No mapped routes here yet';
+
+  @override
+  String coverageGapNearestBoarding(String name, String distance) {
+    return 'Nearest known boarding point: $name · $distance';
+  }
+
+  @override
+  String coverageGapDistanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String coverageGapDistanceM(int m) {
+    return '$m m';
+  }
+
+  @override
+  String get coverageGapVehiclesNone => 'Vehicles nearby: none';
+
+  @override
+  String coverageGapVehiclesNearby(int count) {
+    return 'Vehicles nearby: $count';
+  }
+
+  @override
+  String get coverageGapWalkThere => 'Walk there';
+
+  @override
+  String get coverageGapTellUs => 'Tell us about this area';
+
+  @override
+  String get coverageGapThanks => 'Thanks — we logged your report';
 }

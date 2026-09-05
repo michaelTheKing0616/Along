@@ -231,5 +231,169 @@
   "tripOptionsStubBody": "Route and fare options arrive in the next task.",
   "@tripOptionsStubBody": {
     "description": "R-07 stub body until P1-B-03"
+  },
+  "tripOptionsTitle": "Trip options",
+  "@tripOptionsTitle": {
+    "description": "R-07 screen title"
+  },
+  "tripOptionsHeading": "Choose how to go",
+  "@tripOptionsHeading": {
+    "description": "R-07 sheet heading"
+  },
+  "tripOptionsDegradedBanner": "Live times unavailable",
+  "@tripOptionsDegradedBanner": {
+    "description": "R-07 degraded planner banner"
+  },
+  "tripOptionsSlowerDirectCaption": "Slower than transfer options",
+  "@tripOptionsSlowerDirectCaption": {
+    "description": "R-07 non-viable direct caption"
+  },
+  "tripOptionsAgreePrice": "Agree price",
+  "@tripOptionsAgreePrice": {
+    "description": "R-07 Tier 3 CTA placeholder"
+  },
+  "tripOptionsAgreePricePlaceholder": "Along Pricing arrives in a later phase",
+  "@tripOptionsAgreePricePlaceholder": {
+    "description": "R-07 Tier 3 toast — negotiation is P2"
+  },
+  "requestUndoMessage": "Requesting…",
+  "@requestUndoMessage": {
+    "description": "R-07 undo toast while commit window is open"
+  },
+  "loadFlagTitle": "Carrying load?",
+  "@loadFlagTitle": {
+    "description": "R-09 sheet title"
+  },
+  "loadFlagSizeSmall": "Small",
+  "@loadFlagSizeSmall": {
+    "description": "R-09 load size chip"
+  },
+  "loadFlagSizeMedium": "Medium",
+  "@loadFlagSizeMedium": {
+    "description": "R-09 load size chip"
+  },
+  "loadFlagSizeLarge": "Large",
+  "@loadFlagSizeLarge": {
+    "description": "R-09 load size chip"
+  },
+  "loadFlagNoteHint": "Optional note (140 characters)",
+  "@loadFlagNoteHint": {
+    "description": "R-09 optional note field"
+  },
+  "loadFlagRememberDay": "Remember for today",
+  "@loadFlagRememberDay": {
+    "description": "R-09 remember-for-day toggle"
+  },
+  "loadFlagCapacityWarning": "This mode may not fit your load",
+  "@loadFlagCapacityWarning": {
+    "description": "R-09 / FM36 inline capacity warning"
+  },
+  "loadFlagRequestAnyway": "Request anyway",
+  "@loadFlagRequestAnyway": {
+    "description": "R-09 FM36 acknowledge and proceed"
+  },
+  "loadFlagDone": "Done",
+  "@loadFlagDone": {
+    "description": "R-09 apply load flag"
+  },
+  "requestingTitle": "Requesting a {mode}…",
+  "@requestingTitle": {
+    "description": "R-10 sheet title",
+    "placeholders": {
+      "mode": {
+        "type": "String",
+        "example": "keke"
+      }
+    }
+  },
+  "requestingCountdown": "{seconds}s remaining",
+  "@requestingCountdown": {
+    "description": "R-10 countdown from server expires_at",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "requestingFindingAnother": "Finding another vehicle…",
+  "@requestingFindingAnother": {
+    "description": "R-10 roaming cascade — never names who declined"
+  },
+  "requestingCancel": "Cancel",
+  "@requestingCancel": {
+    "description": "R-10 cancel action"
+  },
+  "requestingExpired": "No driver responded — see other options",
+  "@requestingExpired": {
+    "description": "R-10 expired state"
+  },
+  "requestingAcceptedPlaceholder": "Driver accepted — meet your vehicle arrives next",
+  "@requestingAcceptedPlaceholder": {
+    "description": "R-10 accepted placeholder until R-11"
+  },
+  "coverageGapTitle": "No mapped routes here yet",
+  "@coverageGapTitle": {
+    "description": "R-18 heading"
+  },
+  "coverageGapNearestBoarding": "Nearest known boarding point: {name} · {distance}",
+  "@coverageGapNearestBoarding": {
+    "description": "R-18 nearest stage line",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Dutse Junction"
+      },
+      "distance": {
+        "type": "String",
+        "example": "1.2 km"
+      }
+    }
+  },
+  "coverageGapDistanceKm": "{km} km",
+  "@coverageGapDistanceKm": {
+    "description": "R-18 distance in kilometres",
+    "placeholders": {
+      "km": {
+        "type": "String",
+        "example": "1.2"
+      }
+    }
+  },
+  "coverageGapDistanceM": "{m} m",
+  "@coverageGapDistanceM": {
+    "description": "R-18 distance in metres",
+    "placeholders": {
+      "m": {
+        "type": "int",
+        "example": "800"
+      }
+    }
+  },
+  "coverageGapVehiclesNone": "Vehicles nearby: none",
+  "@coverageGapVehiclesNone": {
+    "description": "R-18 honest ambient line — zero"
+  },
+  "coverageGapVehiclesNearby": "Vehicles nearby: {count}",
+  "@coverageGapVehiclesNearby": {
+    "description": "R-18 honest ambient line — non-zero",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "coverageGapWalkThere": "Walk there",
+  "@coverageGapWalkThere": {
+    "description": "R-18 walk to nearest boarding"
+  },
+  "coverageGapTellUs": "Tell us about this area",
+  "@coverageGapTellUs": {
+    "description": "R-18 coverage report action"
+  },
+  "coverageGapThanks": "Thanks — we logged your report",
+  "@coverageGapThanks": {
+    "description": "R-18 report acknowledgement"
   }
 }

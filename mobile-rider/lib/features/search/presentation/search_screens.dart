@@ -7,7 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:mobile_rider/routing/routes.dart';
+import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
+import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 
 /// R-06 Destination search (doc 06).
 class DestinationSearchScreen extends ConsumerStatefulWidget {
@@ -63,7 +66,10 @@ class _DestinationSearchScreenState
                 key: Key('recent_${recent.label}'),
                 leading: const Icon(Icons.history_rounded),
                 title: Text(recent.label),
-                onTap: () => context.push(AppRoutes.tripOptions),
+                onTap: () {
+                  _startTripPlan(ref, recent.label, recent.location);
+                  context.push(AppRoutes.tripOptions);
+                },
               ),
             ),
             if (state.isOffline)
@@ -97,6 +103,7 @@ class _DestinationSearchScreenState
                         await ref
                             .read(searchControllerProvider.notifier)
                             .selectPlace(result);
+                        _startTripPlan(ref, result.name, result.location);
                         if (context.mounted) {
                           context.push(AppRoutes.tripOptions);
                         }
@@ -185,11 +192,42 @@ class AdjustPickupScreen extends ConsumerWidget {
             child: AlongButton(
               key: const Key('adjust_pickup_confirm'),
               label: l10n.adjustPickupConfirm,
-              onPressed: () => context.push(AppRoutes.tripOptions),
+              onPressed: () {
+                final home = ref.read(homeControllerProvider);
+                final origin = home.userLocation ??
+                    GeoPoint(
+                      lat: AbujaMapConstants.centerLat,
+                      lng: AbujaMapConstants.centerLng,
+                    );
+                ref.read(tripPlanSessionProvider.notifier).setSession(
+                      TripPlanSession(
+                        origin: origin,
+                        destination: state.center,
+                        destinationLabel: l10n.adjustPickupConfirm,
+                      ),
+                    );
+                context.push(AppRoutes.tripOptions);
+              },
             ),
           ),
         ],
       ),
     );
   }
+}
+
+void _startTripPlan(WidgetRef ref, String label, GeoPoint destination) {
+  final home = ref.read(homeControllerProvider);
+  final origin = home.userLocation ??
+      GeoPoint(
+        lat: AbujaMapConstants.centerLat,
+        lng: AbujaMapConstants.centerLng,
+      );
+  ref.read(tripPlanSessionProvider.notifier).setSession(
+        TripPlanSession(
+          origin: origin,
+          destination: destination,
+          destinationLabel: label,
+        ),
+      );
 }

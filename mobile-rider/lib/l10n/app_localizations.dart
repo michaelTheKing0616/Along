@@ -368,6 +368,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Route and fare options arrive in the next task.'**
   String get tripOptionsStubBody;
+
+  /// R-07 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Trip options'**
+  String get tripOptionsTitle;
+
+  /// R-07 sheet heading
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how to go'**
+  String get tripOptionsHeading;
+
+  /// R-07 degraded planner banner
+  ///
+  /// In en, this message translates to:
+  /// **'Live times unavailable'**
+  String get tripOptionsDegradedBanner;
+
+  /// R-07 non-viable direct caption
+  ///
+  /// In en, this message translates to:
+  /// **'Slower than transfer options'**
+  String get tripOptionsSlowerDirectCaption;
+
+  /// R-07 Tier 3 CTA placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Agree price'**
+  String get tripOptionsAgreePrice;
+
+  /// R-07 Tier 3 toast — negotiation is P2
+  ///
+  /// In en, this message translates to:
+  /// **'Along Pricing arrives in a later phase'**
+  String get tripOptionsAgreePricePlaceholder;
+
+  /// R-07 undo toast while commit window is open
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting…'**
+  String get requestUndoMessage;
+
+  /// R-09 sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Carrying load?'**
+  String get loadFlagTitle;
+
+  /// R-09 load size chip
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get loadFlagSizeSmall;
+
+  /// R-09 load size chip
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get loadFlagSizeMedium;
+
+  /// R-09 load size chip
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get loadFlagSizeLarge;
+
+  /// R-09 optional note field
+  ///
+  /// In en, this message translates to:
+  /// **'Optional note (140 characters)'**
+  String get loadFlagNoteHint;
+
+  /// R-09 remember-for-day toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Remember for today'**
+  String get loadFlagRememberDay;
+
+  /// R-09 / FM36 inline capacity warning
+  ///
+  /// In en, this message translates to:
+  /// **'This mode may not fit your load'**
+  String get loadFlagCapacityWarning;
+
+  /// R-09 FM36 acknowledge and proceed
+  ///
+  /// In en, this message translates to:
+  /// **'Request anyway'**
+  String get loadFlagRequestAnyway;
+
+  /// R-09 apply load flag
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get loadFlagDone;
+
+  /// R-10 sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting a {mode}…'**
+  String requestingTitle(String mode);
+
+  /// R-10 countdown from server expires_at
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds}s remaining'**
+  String requestingCountdown(int seconds);
+
+  /// R-10 roaming cascade — never names who declined
+  ///
+  /// In en, this message translates to:
+  /// **'Finding another vehicle…'**
+  String get requestingFindingAnother;
+
+  /// R-10 cancel action
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get requestingCancel;
+
+  /// R-10 expired state
+  ///
+  /// In en, this message translates to:
+  /// **'No driver responded — see other options'**
+  String get requestingExpired;
+
+  /// R-10 accepted placeholder until R-11
+  ///
+  /// In en, this message translates to:
+  /// **'Driver accepted — meet your vehicle arrives next'**
+  String get requestingAcceptedPlaceholder;
+
+  /// R-18 heading
+  ///
+  /// In en, this message translates to:
+  /// **'No mapped routes here yet'**
+  String get coverageGapTitle;
+
+  /// R-18 nearest stage line
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest known boarding point: {name} · {distance}'**
+  String coverageGapNearestBoarding(String name, String distance);
+
+  /// R-18 distance in kilometres
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String coverageGapDistanceKm(String km);
+
+  /// R-18 distance in metres
+  ///
+  /// In en, this message translates to:
+  /// **'{m} m'**
+  String coverageGapDistanceM(int m);
+
+  /// R-18 honest ambient line — zero
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles nearby: none'**
+  String get coverageGapVehiclesNone;
+
+  /// R-18 honest ambient line — non-zero
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles nearby: {count}'**
+  String coverageGapVehiclesNearby(int count);
+
+  /// R-18 walk to nearest boarding
+  ///
+  /// In en, this message translates to:
+  /// **'Walk there'**
+  String get coverageGapWalkThere;
+
+  /// R-18 coverage report action
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about this area'**
+  String get coverageGapTellUs;
+
+  /// R-18 report acknowledgement
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks — we logged your report'**
+  String get coverageGapThanks;
 }
 
 class _AppLocalizationsDelegate

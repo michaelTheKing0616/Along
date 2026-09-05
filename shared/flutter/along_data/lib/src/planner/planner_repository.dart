@@ -13,7 +13,8 @@ class PlannerRepository {
     required Map<String, dynamic> requestBody,
   }) async {
     try {
-      final envelope = await _gateway.invokeFunction('plan-trip', body: requestBody);
+      final envelope =
+          await _gateway.invokeFunction('plan-trip', body: requestBody);
       final data = envelope['data'] as Map<String, dynamic>? ?? envelope;
       final candidatesJson = (data['candidates'] as List<dynamic>? ?? [])
           .cast<Map<String, dynamic>>();
@@ -36,26 +37,53 @@ class PlannerRepository {
         degraded: data['degraded'] as bool? ?? false,
         candidates: candidates,
         sortOrders: sortOrders,
+        coverageGap: _mapCoverageGap(data['coverage_gap']),
       );
     } catch (e) {
       throw mapSupabaseError(e);
     }
   }
 
+  CoverageGap? _mapCoverageGap(Object? raw) {
+    if (raw is! Map<String, dynamic>) return null;
+    final nearest = raw['nearest_stage'] as Map<String, dynamic>?;
+    if (nearest == null) return null;
+    final location = nearest['location'] as Map<String, dynamic>;
+    return CoverageGap(
+      reportId: raw['report_id'] as String? ?? '',
+      nearestStage: NearestStage(
+        stageId: nearest['stage_id'] as String? ?? '',
+        name: nearest['name'] as String? ?? '',
+        location: GeoPoint(
+          lat: (location['lat'] as num).toDouble(),
+          lng: (location['lng'] as num).toDouble(),
+        ),
+        distanceM: (nearest['distance_m'] as num?)?.toInt() ?? 0,
+      ),
+      ambientVehicleCount:
+          (raw['ambient_vehicle_count'] as num?)?.toInt() ?? 0,
+    );
+  }
+
   PlanCandidate _mapCandidate(Map<String, dynamic> json) {
-    final legsJson = (json['legs'] as List<dynamic>).cast<Map<String, dynamic>>();
+    final legsJson =
+        (json['legs'] as List<dynamic>).cast<Map<String, dynamic>>();
     final legs = legsJson.map((leg) {
       final modeCode = (leg['mode'] as Map<String, dynamic>)['code'] as String;
       final mode = TransportMode.tryParse(modeCode) ?? TransportMode.car;
       final fareJson = leg['fare'] as Map<String, dynamic>;
+      final board = leg['board'] as Map<String, dynamic>;
       return PlanCandidateLeg(
         legIndex: (leg['leg_index'] as num).toInt(),
         mode: mode,
-        boardName: (leg['board'] as Map)['name'] as String? ?? '',
+        boardName: board['name'] as String? ?? '',
         alightName: (leg['alight'] as Map)['name'] as String? ?? '',
+        walkMeters: (board['walk_m'] as num?)?.toInt() ?? 0,
+        walkSeconds: (board['walk_s'] as num?)?.toInt() ?? 0,
         inVehicleSeconds: (leg['in_vehicle_s'] as num).toInt(),
         waitSeconds: (leg['wait_s'] as num).toInt(),
         fare: FareQuote.fromJson(fareJson),
+        loadWarning: _mapLoadWarning(leg['load_warning']),
       );
     }).toList();
 
@@ -70,6 +98,14 @@ class PlannerRepository {
           legs.fold(0, (sum, l) => sum + l.fare.total.minorUnits),
       totalTimeSeconds: (metrics['total_time_s'] as num?)?.toInt() ?? 0,
       transferCount: (metrics['transfer_count'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  LoadWarning? _mapLoadWarning(Object? raw) {
+    if (raw is! Map<String, dynamic>) return null;
+    return LoadWarning(
+      reason: raw['reason'] as String? ?? 'mode_capacity',
+      modeCapacity: raw['mode_capacity'] as String?,
     );
   }
 

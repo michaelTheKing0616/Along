@@ -31,6 +31,7 @@ class OptionCard extends StatelessWidget {
     this.unavailableReason,
     this.loadWarning,
     this.onRequest,
+    this.requestLabel,
   });
 
   final OptionCardVariant variant;
@@ -46,6 +47,7 @@ class OptionCard extends StatelessWidget {
   final String? unavailableReason;
   final String? loadWarning;
   final VoidCallback? onRequest;
+  final String? requestLabel;
 
   bool get _isUnavailable => visualState == OptionCardVisualState.unavailable;
   bool get _hasLoadWarning => visualState == OptionCardVisualState.warning;
@@ -180,7 +182,8 @@ class OptionCard extends StatelessWidget {
                       AlongSpace.s16,
                     ),
                     child: AlongButton(
-                      label: 'Request ${formatMoney(fareNaira)}',
+                      label: requestLabel ??
+                          'Request ${formatMoney(fareNaira)}',
                       size: AlongButtonSize.secondary,
                       onPressed: onRequest ?? () {},
                     ),
