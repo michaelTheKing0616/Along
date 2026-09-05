@@ -1,8 +1,14 @@
-/// Typed route paths for rider onboarding (R-01..R-04).
+/// Typed route paths for the rider app (doc 06 / doc 07 §3).
 abstract final class AppRoutes {
   static const launch = '/';
   static const phone = '/phone';
   static const otp = '/otp';
   static const name = '/name';
-  static const onboardingComplete = '/onboarding-complete';
+
+  static const home = '/home';
+  static const trips = '/trips';
+  static const account = '/account';
+  static const search = '/search';
+  static const adjustPickup = '/adjust-pickup';
+  static const tripOptions = '/trip-options';
 }

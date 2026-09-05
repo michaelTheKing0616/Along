@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/home/presentation/home_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/launch_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/name_screen.dart';
-import 'package:mobile_rider/features/onboarding/presentation/onboarding_complete_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
+import 'package:mobile_rider/features/search/presentation/search_screens.dart';
+import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
+import 'package:mobile_rider/features/trip_options/presentation/trip_options_placeholder.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
+  final shellNavigatorKey = GlobalKey<NavigatorState>();
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
@@ -33,9 +37,47 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.name,
         builder: (context, state) => const NameScreen(),
       ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            RiderShellScreen(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.trips,
+                builder: (context, state) => const TripsStubScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.account,
+                builder: (context, state) => const AccountStubScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
-        path: AppRoutes.onboardingComplete,
-        builder: (context, state) => const OnboardingCompleteScreen(),
+        path: AppRoutes.search,
+        builder: (context, state) => const DestinationSearchScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.adjustPickup,
+        builder: (context, state) => const AdjustPickupScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.tripOptions,
+        builder: (context, state) => const TripOptionsPlaceholderScreen(),
       ),
     ],
     redirect: (context, state) {
@@ -69,7 +111,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           (location == AppRoutes.phone ||
               location == AppRoutes.otp ||
               location == AppRoutes.name)) {
-        return AppRoutes.onboardingComplete;
+        return AppRoutes.home;
       }
 
       return null;

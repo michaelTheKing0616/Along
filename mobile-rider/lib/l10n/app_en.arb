@@ -94,12 +94,142 @@
   "@errorGeneric": {
     "description": "Fallback error message"
   },
-  "onboardingCompleteTitle": "You're all set",
-  "@onboardingCompleteTitle": {
-    "description": "Post-onboarding placeholder until R-05 (P1-B-02)"
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom nav Home tab"
   },
-  "onboardingCompleteBody": "Home search arrives in the next task.",
-  "@onboardingCompleteBody": {
-    "description": "Post-onboarding placeholder body"
+  "navTrips": "Trips",
+  "@navTrips": {
+    "description": "Bottom nav Trips tab"
+  },
+  "navAccount": "Account",
+  "@navAccount": {
+    "description": "Bottom nav Account tab"
+  },
+  "homeSearchHint": "Where to?",
+  "@homeSearchHint": {
+    "description": "R-05 search field hint"
+  },
+  "homeLocationDeniedBanner": "Enable location to see nearby vehicles",
+  "@homeLocationDeniedBanner": {
+    "description": "R-05 location denied banner"
+  },
+  "homeChooseOnMap": "Choose on map",
+  "@homeChooseOnMap": {
+    "description": "R-06 manual pin path"
+  },
+  "homeNearbyTitle": "Nearby",
+  "@homeNearbyTitle": {
+    "description": "R-05 half sheet nearby section title"
+  },
+  "homeNearbyRow": "{countBucket} {mode} nearby · heading {heading} · ~{minutes} min",
+  "@homeNearbyRow": {
+    "description": "R-05 nearby ambient row",
+    "placeholders": {
+      "countBucket": {
+        "type": "String",
+        "example": "3-5"
+      },
+      "mode": {
+        "type": "String",
+        "example": "kekes"
+      },
+      "heading": {
+        "type": "String",
+        "example": "NE"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "homeExpandNearby": "Show nearby",
+  "@homeExpandNearby": {
+    "description": "Expand home sheet to half"
+  },
+  "homeCollapseNearby": "Hide nearby",
+  "@homeCollapseNearby": {
+    "description": "Collapse home sheet to peek"
+  },
+  "modeCar": "cars",
+  "@modeCar": {
+    "description": "Ambient row mode label — car/along"
+  },
+  "modeKeke": "kekes",
+  "@modeKeke": {
+    "description": "Ambient row mode label — keke"
+  },
+  "modeOkada": "okadas",
+  "@modeOkada": {
+    "description": "Ambient row mode label — okada"
+  },
+  "modeMinibus": "minibuses",
+  "@modeMinibus": {
+    "description": "Ambient row mode label — minibus"
+  },
+  "searchTitle": "Where to?",
+  "@searchTitle": {
+    "description": "R-06 screen title"
+  },
+  "searchRecentsTitle": "Recents",
+  "@searchRecentsTitle": {
+    "description": "R-06 recents section"
+  },
+  "searchResultsTitle": "Results",
+  "@searchResultsTitle": {
+    "description": "R-06 autocomplete results"
+  },
+  "searchOfflineHint": "Offline — showing recents only",
+  "@searchOfflineHint": {
+    "description": "R-06 offline state"
+  },
+  "searchResultSubtitle": "{area} · {distanceM} m away",
+  "@searchResultSubtitle": {
+    "description": "R-06 result subtitle",
+    "placeholders": {
+      "area": {
+        "type": "String",
+        "example": "Wuse"
+      },
+      "distanceM": {
+        "type": "int",
+        "example": "450"
+      }
+    }
+  },
+  "adjustPickupTitle": "Adjust pickup",
+  "@adjustPickupTitle": {
+    "description": "R-06b title"
+  },
+  "adjustPickupBoardingAt": "Boarding at: {stageName}",
+  "@adjustPickupBoardingAt": {
+    "description": "R-06b snapped stage label",
+    "placeholders": {
+      "stageName": {
+        "type": "String",
+        "example": "Berger Junction"
+      }
+    }
+  },
+  "adjustPickupConfirm": "Confirm location",
+  "@adjustPickupConfirm": {
+    "description": "R-06b confirm CTA"
+  },
+  "tripsStubBody": "Your trips will appear here.",
+  "@tripsStubBody": {
+    "description": "Trips tab stub until later phase"
+  },
+  "accountStubBody": "Account settings arrive in a later task.",
+  "@accountStubBody": {
+    "description": "Account tab stub until later phase"
+  },
+  "tripOptionsStubTitle": "Trip options",
+  "@tripOptionsStubTitle": {
+    "description": "R-07 stub title until P1-B-03"
+  },
+  "tripOptionsStubBody": "Route and fare options arrive in the next task.",
+  "@tripOptionsStubBody": {
+    "description": "R-07 stub body until P1-B-03"
   }
 }

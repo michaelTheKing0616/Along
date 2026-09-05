@@ -174,8 +174,18 @@
       "type": "circle",
       "source": "along-ambient-cells",
       "paint": {
-        "circle-color": "rgba(247, 209, 23, 0.18)",
-        "circle-stroke-color": "#F7D117",
+        "circle-color": [
+          "case",
+          ["get", "stale"],
+          "rgba(107, 107, 107, 0.18)",
+          "rgba(247, 209, 23, 0.18)"
+        ],
+        "circle-stroke-color": [
+          "case",
+          ["get", "stale"],
+          "#B8B8B8",
+          "#F7D117"
+        ],
         "circle-stroke-width": 1,
         "circle-radius": [
           "interpolate",
@@ -196,7 +206,14 @@
         "text-size": 11,
         "text-font": ["Inter Bold"]
       },
-      "paint": { "text-color": "#0A0A0A" }
+      "paint": {
+        "text-color": [
+          "case",
+          ["get", "stale"],
+          "#B8B8B8",
+          "#0A0A0A"
+        ]
+      }
     },
     {
       "id": "along-stages",

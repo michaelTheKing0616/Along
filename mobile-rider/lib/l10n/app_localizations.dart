@@ -208,17 +208,166 @@ abstract class AppLocalizations {
   /// **'Something went wrong. Please try again.'**
   String get errorGeneric;
 
-  /// Post-onboarding placeholder until R-05 (P1-B-02)
+  /// Bottom nav Home tab
   ///
   /// In en, this message translates to:
-  /// **'You\'re all set'**
-  String get onboardingCompleteTitle;
+  /// **'Home'**
+  String get navHome;
 
-  /// Post-onboarding placeholder body
+  /// Bottom nav Trips tab
   ///
   /// In en, this message translates to:
-  /// **'Home search arrives in the next task.'**
-  String get onboardingCompleteBody;
+  /// **'Trips'**
+  String get navTrips;
+
+  /// Bottom nav Account tab
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get navAccount;
+
+  /// R-05 search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Where to?'**
+  String get homeSearchHint;
+
+  /// R-05 location denied banner
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location to see nearby vehicles'**
+  String get homeLocationDeniedBanner;
+
+  /// R-06 manual pin path
+  ///
+  /// In en, this message translates to:
+  /// **'Choose on map'**
+  String get homeChooseOnMap;
+
+  /// R-05 half sheet nearby section title
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby'**
+  String get homeNearbyTitle;
+
+  /// R-05 nearby ambient row
+  ///
+  /// In en, this message translates to:
+  /// **'{countBucket} {mode} nearby · heading {heading} · ~{minutes} min'**
+  String homeNearbyRow(
+    String countBucket,
+    String mode,
+    String heading,
+    int minutes,
+  );
+
+  /// Expand home sheet to half
+  ///
+  /// In en, this message translates to:
+  /// **'Show nearby'**
+  String get homeExpandNearby;
+
+  /// Collapse home sheet to peek
+  ///
+  /// In en, this message translates to:
+  /// **'Hide nearby'**
+  String get homeCollapseNearby;
+
+  /// Ambient row mode label — car/along
+  ///
+  /// In en, this message translates to:
+  /// **'cars'**
+  String get modeCar;
+
+  /// Ambient row mode label — keke
+  ///
+  /// In en, this message translates to:
+  /// **'kekes'**
+  String get modeKeke;
+
+  /// Ambient row mode label — okada
+  ///
+  /// In en, this message translates to:
+  /// **'okadas'**
+  String get modeOkada;
+
+  /// Ambient row mode label — minibus
+  ///
+  /// In en, this message translates to:
+  /// **'minibuses'**
+  String get modeMinibus;
+
+  /// R-06 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Where to?'**
+  String get searchTitle;
+
+  /// R-06 recents section
+  ///
+  /// In en, this message translates to:
+  /// **'Recents'**
+  String get searchRecentsTitle;
+
+  /// R-06 autocomplete results
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get searchResultsTitle;
+
+  /// R-06 offline state
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — showing recents only'**
+  String get searchOfflineHint;
+
+  /// R-06 result subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'{area} · {distanceM} m away'**
+  String searchResultSubtitle(String area, int distanceM);
+
+  /// R-06b title
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust pickup'**
+  String get adjustPickupTitle;
+
+  /// R-06b snapped stage label
+  ///
+  /// In en, this message translates to:
+  /// **'Boarding at: {stageName}'**
+  String adjustPickupBoardingAt(String stageName);
+
+  /// R-06b confirm CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm location'**
+  String get adjustPickupConfirm;
+
+  /// Trips tab stub until later phase
+  ///
+  /// In en, this message translates to:
+  /// **'Your trips will appear here.'**
+  String get tripsStubBody;
+
+  /// Account tab stub until later phase
+  ///
+  /// In en, this message translates to:
+  /// **'Account settings arrive in a later task.'**
+  String get accountStubBody;
+
+  /// R-07 stub title until P1-B-03
+  ///
+  /// In en, this message translates to:
+  /// **'Trip options'**
+  String get tripOptionsStubTitle;
+
+  /// R-07 stub body until P1-B-03
+  ///
+  /// In en, this message translates to:
+  /// **'Route and fare options arrive in the next task.'**
+  String get tripOptionsStubBody;
 }
 
 class _AppLocalizationsDelegate

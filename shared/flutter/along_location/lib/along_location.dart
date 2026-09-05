@@ -1,6 +1,7 @@
 /// Location stream abstraction with accuracy filtering.
 library;
 
+export 'src/geolocator_source.dart';
 export 'src/location_sample.dart';
 export 'src/location_stream.dart';
 

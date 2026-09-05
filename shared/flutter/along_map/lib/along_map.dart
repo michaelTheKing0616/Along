@@ -1,6 +1,7 @@
 /// MapLibre map integration for Along.
 library;
 
+export 'src/constants/abuja.dart';
 export 'src/benchmark/map_pan_benchmark.dart';
 export 'src/cache/tile_cache_manager.dart';
 export 'src/camera/map_camera.dart';

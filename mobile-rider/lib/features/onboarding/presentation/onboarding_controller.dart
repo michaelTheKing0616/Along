@@ -169,7 +169,7 @@ class OnboardingController extends Notifier<OnboardingState> {
     final user = _auth.currentUser;
     if (user == null) return LaunchDestination.phoneEntry;
     if (await _prefs.isComplete()) {
-      return LaunchDestination.onboardingComplete;
+      return LaunchDestination.home;
     }
     return LaunchDestination.nameEntry;
   }
@@ -223,7 +223,7 @@ class OnboardingController extends Notifier<OnboardingState> {
 enum LaunchDestination {
   phoneEntry,
   nameEntry,
-  onboardingComplete,
+  home,
 }
 
 /// Reads auth session for router guards.

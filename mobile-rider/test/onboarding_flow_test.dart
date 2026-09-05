@@ -82,7 +82,7 @@ void main() {
 
       expect(savedName, 'Ada');
       expect(fakePrefs.complete, isTrue);
-      expect(find.textContaining("You're all set"), findsOneWidget);
+      expect(find.text('Where to?'), findsWidgets);
 
       container.read(onboardingControllerProvider.notifier).clearPhone();
       await tester.pump();
