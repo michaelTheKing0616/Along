@@ -612,9 +612,25 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 - Notes/escalations: AmbientCluster goldens omit some bucket×stale combos; LegTimeline no 1.3× golden. Merged ea515cd.
 
 ## [Phase 2 / P2-E-02] Phase 1 automated residuals
+- Status: BLOCKED — needs human
+- Assigned: 2026-09-05
+- Worker report summary: Playwright A-04 PASS (14/14 via check_playwright.sh). Patrol OTP FAIL — no emulator/device. ios-compile FAIL — Xcode.app missing (`Application not configured for iOS`). Podfiles + pod-install committed on `task/p2-e-02` @ eeabf0a. Not reviewed.
+- Reviewer verdict: n/a — OPEN QUESTIONS; not sent to Review
+- Rework count: 0
+- Notes/escalations: See Decision below. Branch left unmerged.
+
+## [Phase 2 / Decision] P2-E-02 toolchain
+**Date:** 2026-09-05
+Answers (from spec / doc 11 — criteria not lowered):
+- Patrol stays on P2-E-02. Do not absorb into closed P1-E-04 or P1-G-01 (Redmi corridor). Need a booted Android emulator (or attached device) on this Mac; then re-run with `--dart-define=PATROL_HAS_EMULATOR=true`.
+- ios-compile: need full Xcode.app + `xcode-select` **or** a git remote + working `gh` so the macos `ios-compile` job can prove green. Local Podfile wiring is already on `task/p2-e-02`.
+- Patrol invocation: `flutter test integration_test/otp_flow_patrol_test.dart --dart-define=PATROL_HAS_EMULATOR=true` is acceptable. `patrol_cli 3.14.1` missing from pub.dev is not a blocker.
+Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depends on P2-E-02 PASS.
+
+## [Phase 2 / P2-A-02] Negotiation tables + RPCs + clock
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Skipped runs are FAIL. Need real Patrol OTP + Playwright A-04 + ios-compile evidence. Both ios/ trees lack Podfile.
+- Notes/escalations: Unblocks P2-A-03, P2-B-02, P2-C-01, P2-D-01.
