@@ -432,9 +432,9 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: P1-C-01 along_data fake follow-up absorbed (suite green). Isolate pings + D-08 l10n polish later.
 
 ## [Phase 1 / P1-C-03] D-10..D-13 route setup + publish
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-05
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: none yet.
+- Worker report summary: D-10–D-13 + 1-tap/snap/monotone tests; 13/13 PASS.
+- Reviewer verdict: FAIL — gate (a): hardcoded ₦300 fare fallback in `draw_route_controller.dart`. AC otherwise MET. Also load surcharge dropped on edit (`initialLoadSurcharge` always null).
+- Rework count: 0 / 2
+- Notes/escalations: none.
