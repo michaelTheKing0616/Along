@@ -10,7 +10,8 @@ import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_rider/features/search/presentation/search_screens.dart';
 import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
-import 'package:mobile_rider/features/trip_options/presentation/trip_options_placeholder.dart';
+import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
+import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -77,7 +78,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.tripOptions,
-        builder: (context, state) => const TripOptionsPlaceholderScreen(),
+        builder: (context, state) => const TripOptionsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.requesting,
+        builder: (context, state) {
+          final args = state.extra as RequestingRouteArgs;
+          return RequestingScreen(
+            trip: args.trip,
+            roamingSource: args.roamingSource,
+          );
+        },
       ),
     ],
     redirect: (context, state) {

@@ -1,6 +1,6 @@
 import 'package:along_core/src/enums/transport_mode.dart';
 import 'package:along_core/src/models/fare_quote.dart';
-import 'package:along_core/src/models/geo_point.dart';
+import 'package:along_core/src/models/load_warning.dart';
 
 /// A single leg within a planner candidate.
 class PlanCandidateLeg {
@@ -9,18 +9,24 @@ class PlanCandidateLeg {
     required this.mode,
     required this.boardName,
     required this.alightName,
+    required this.walkMeters,
+    required this.walkSeconds,
     required this.inVehicleSeconds,
     required this.waitSeconds,
     required this.fare,
+    this.loadWarning,
   });
 
   final int legIndex;
   final TransportMode mode;
   final String boardName;
   final String alightName;
+  final int walkMeters;
+  final int walkSeconds;
   final int inVehicleSeconds;
   final int waitSeconds;
   final FareQuote fare;
+  final LoadWarning? loadWarning;
 }
 
 /// Planner option returned from `plan-trip`.

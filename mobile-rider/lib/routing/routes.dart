@@ -11,4 +11,5 @@ abstract final class AppRoutes {
   static const search = '/search';
   static const adjustPickup = '/adjust-pickup';
   static const tripOptions = '/trip-options';
+  static const requesting = '/requesting';
 }

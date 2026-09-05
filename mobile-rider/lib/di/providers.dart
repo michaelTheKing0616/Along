@@ -36,6 +36,23 @@ final placesRepositoryProvider = Provider<PlacesRepository>((ref) {
   return PlacesRepository(ref.watch(alongSupabaseProvider));
 });
 
+final alongDatabaseProvider = Provider<AlongDatabase>((ref) {
+  throw UnimplementedError(
+    'alongDatabaseProvider must be overridden at startup',
+  );
+});
+
+final plannerRepositoryProvider = Provider<PlannerRepository>((ref) {
+  return PlannerRepository(ref.watch(alongSupabaseProvider));
+});
+
+final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
+  return TripsRepository(
+    ref.watch(alongSupabaseProvider),
+    ref.watch(alongDatabaseProvider),
+  );
+});
+
 final ambientChannelProvider = Provider<AmbientChannel>((ref) {
   throw UnimplementedError(
     'ambientChannelProvider must be overridden at startup',
@@ -66,6 +83,7 @@ List<Override> buildProviderOverrides({
   required AppConfig config,
   required AlongSupabase supabase,
   required AmbientChannel ambientChannel,
+  AlongDatabase? database,
   OnboardingPreferences? onboardingPreferences,
   LocationStreamSource? locationStreamSource,
   RecentPlacesReader? recentPlacesStore,
@@ -75,6 +93,9 @@ List<Override> buildProviderOverrides({
     appConfigProvider.overrideWithValue(config),
     alongSupabaseProvider.overrideWithValue(supabase),
     ambientChannelProvider.overrideWithValue(ambientChannel),
+    alongDatabaseProvider.overrideWithValue(
+      database ?? AlongDatabase.memory(),
+    ),
     if (onboardingPreferences != null)
       onboardingPreferencesProvider.overrideWithValue(onboardingPreferences),
     if (locationStreamSource != null)

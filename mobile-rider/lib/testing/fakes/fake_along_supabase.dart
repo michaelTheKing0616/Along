@@ -14,6 +14,9 @@ class FakeAlongSupabase implements AlongSupabase {
     this.snappedStage,
     this.cityId = 'b1000000-0000-4000-8000-000000000001',
     this.citySlug = 'abuja',
+    this.planTripResponse,
+    this.planTripDelay = Duration.zero,
+    this.requestTripResponse,
   });
 
   final String otpCode;
@@ -27,6 +30,12 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? snappedStage;
   String? cityId;
   String? citySlug;
+  Map<String, dynamic>? planTripResponse;
+  Duration planTripDelay;
+  Map<String, dynamic>? requestTripResponse;
+
+  int planTripInvokeCount = 0;
+  int requestTripInvokeCount = 0;
 
   User? _user;
   final _controller = StreamController<AuthState>.broadcast();
@@ -89,6 +98,16 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'snap_stage') {
       return snappedStage ?? {};
     }
+    if (fn == 'request_trip') {
+      requestTripInvokeCount++;
+      return requestTripResponse ?? {};
+    }
+    if (fn == 'trip_snapshot') {
+      return requestTripResponse ?? {};
+    }
+    if (fn == 'cancel_trip') {
+      return {};
+    }
     return {};
   }
 
@@ -103,6 +122,13 @@ class FakeAlongSupabase implements AlongSupabase {
           'results': placeResults,
         },
       };
+    }
+    if (slug == 'plan-trip') {
+      planTripInvokeCount++;
+      if (planTripDelay > Duration.zero) {
+        await Future<void>.delayed(planTripDelay);
+      }
+      return planTripResponse ?? {'data': {'candidates': []}};
     }
     return {};
   }

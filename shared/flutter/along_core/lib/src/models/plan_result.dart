@@ -1,5 +1,6 @@
 import 'package:along_core/src/enums/sort_criterion.dart';
 import 'package:along_core/src/models/candidate.dart';
+import 'package:along_core/src/models/coverage_gap.dart';
 
 /// Planner response with sort orders keyed by criterion.
 class PlanResult {
@@ -9,6 +10,7 @@ class PlanResult {
     required this.degraded,
     required this.candidates,
     required this.sortOrders,
+    this.coverageGap,
   });
 
   final String queryId;
@@ -16,6 +18,7 @@ class PlanResult {
   final bool degraded;
   final List<PlanCandidate> candidates;
   final Map<SortCriterion, List<String>> sortOrders;
+  final CoverageGap? coverageGap;
 
   List<PlanCandidate> sortedBy(SortCriterion criterion) {
     final order = sortOrders[criterion];
