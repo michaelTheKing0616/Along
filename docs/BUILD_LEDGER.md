@@ -424,6 +424,14 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: none.
 
 ## [Phase 1 / P1-C-02] D-08 Home status, park, pings, demand
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: D-08 StatusToggle + demand discs + D-09 (at_park_radius_m); ping scheduler; battery guard; FG notification. along_data 8/8 compile fix absorbed. Rework 1 (open Qs: radius + drop 30s poll).
+- Reviewer verdict: PASS WITH NOTES — all three AC MET. Notes: pings on main thread not isolate; hardcoded English on balance strip; no D-08 widget test.
+- Rework count: 1 / 2
+- Notes/escalations: P1-C-01 along_data fake follow-up absorbed (suite green). Isolate pings + D-08 l10n polish later.
+
+## [Phase 1 / P1-C-03] D-10..D-13 route setup + publish
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
