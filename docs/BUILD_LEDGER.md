@@ -400,6 +400,14 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Notes/escalations: Follow-up: `rpc.snap_stage(p_lat, p_lng)` wrapper never shipped (P0-A-04 geography-only) — absorb in a later A-stream/planner task. R-06b interactive AlongMap polish before Phase 1 live corridor test.
 
 ## [Phase 1 / P1-B-03] R-07 options + R-09/R-10/R-18 request flow
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: R-07 plan-trip OptionCards + one-tap request/undo; R-09 load sheet; R-10 expires_at countdown; R-18 EmptyState; Tier 3 Agree price placeholder. Tests 14/14 rider + TS-UI-01/03.
+- Reviewer verdict: PASS WITH NOTES — TS-UI-01/03 MET; FM36 inline warning MET but R-09 “Request anyway” `showCapacityWarning` never true (dead path). No R-11/negotiation/SQL.
+- Rework count: 0
+- Notes/escalations: Follow-up: wire `showCapacityWarning` when a candidate has load capacity none; add FM36/Tier 3 widget tests; l10n `option_card_mapper` meta strings; R-07/R-10 AlongMap placeholders.
+
+## [Phase 1 / P1-C-01] Driver app shell + D-01..D-07 onboarding
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
