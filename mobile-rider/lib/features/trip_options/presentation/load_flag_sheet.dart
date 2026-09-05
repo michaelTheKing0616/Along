@@ -1,5 +1,6 @@
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_rider/features/trip_options/domain/load_capacity_warning.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
@@ -8,13 +9,15 @@ class LoadFlagSheet extends StatefulWidget {
   const LoadFlagSheet({
     super.key,
     required this.initial,
-    required this.showCapacityWarning,
+    required this.warnCapacities,
+    required this.modeLoadCapacity,
     required this.onApply,
     this.onRequestAnyway,
   });
 
   final LoadFlagState initial;
-  final bool showCapacityWarning;
+  final Map<String, List<String>> warnCapacities;
+  final String? modeLoadCapacity;
   final ValueChanged<LoadFlagState> onApply;
   final VoidCallback? onRequestAnyway;
 
@@ -46,6 +49,11 @@ class _LoadFlagSheetState extends State<LoadFlagSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final showCapacityWarning = shouldWarnLoadCapacity(
+      loadSize: _load.size,
+      modeLoadCapacity: widget.modeLoadCapacity,
+      warnCapacities: widget.warnCapacities,
+    );
 
     return Padding(
       padding: EdgeInsets.only(
@@ -98,7 +106,7 @@ class _LoadFlagSheetState extends State<LoadFlagSheet> {
               setState(() => _load = _load.copyWith(rememberForDay: value));
             },
           ),
-          if (widget.showCapacityWarning) ...[
+          if (showCapacityWarning) ...[
             const SizedBox(height: AlongSpace.s8),
             Container(
               padding: const EdgeInsets.all(AlongSpace.s12),
@@ -165,7 +173,8 @@ class _LoadFlagSheetState extends State<LoadFlagSheet> {
 void showLoadFlagSheet(
   BuildContext context, {
   required LoadFlagState initial,
-  required bool showCapacityWarning,
+  required Map<String, List<String>> warnCapacities,
+  required String? modeLoadCapacity,
   required ValueChanged<LoadFlagState> onApply,
   VoidCallback? onRequestAnyway,
 }) {
@@ -174,7 +183,8 @@ void showLoadFlagSheet(
     isScrollControlled: true,
     builder: (context) => LoadFlagSheet(
       initial: initial,
-      showCapacityWarning: showCapacityWarning,
+      warnCapacities: warnCapacities,
+      modeLoadCapacity: modeLoadCapacity,
       onApply: onApply,
       onRequestAnyway: onRequestAnyway,
     ),

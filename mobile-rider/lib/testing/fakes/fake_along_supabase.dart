@@ -9,6 +9,7 @@ class FakeAlongSupabase implements AlongSupabase {
   FakeAlongSupabase({
     this.otpCode = '123456',
     this.configRows = const [],
+    this.modeConfigRows = const [],
     this.ambientCells = const [],
     this.placeResults = const [],
     this.snappedStage,
@@ -25,6 +26,7 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(String? displayName)? onCompleteOnboarding;
 
   List<Map<String, dynamic>> configRows;
+  List<Map<String, dynamic>> modeConfigRows;
   List<Map<String, dynamic>> ambientCells;
   List<Map<String, dynamic>> placeResults;
   Map<String, dynamic>? snappedStage;
@@ -147,6 +149,9 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       return [];
     }
+    if (table == 'mode_config') {
+      return modeConfigRows;
+    }
     if (table != 'app_config') return [];
     final key = filters['key'];
     return configRows
@@ -196,6 +201,59 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_type': 'global',
         'scope_id': '*',
         'value': '60',
+      },
+    ];
+
+/// Default `load.warn_capacities` + `mode_config` rows for FM36 tests.
+List<Map<String, dynamic>> defaultLoadWarningConfigRows() => [
+      {
+        'key': 'load.warn_capacities',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': {
+          'small': ['none'],
+          'medium': ['none', 'small'],
+          'large': ['none', 'small', 'medium'],
+        },
+      },
+    ];
+
+List<Map<String, dynamic>> defaultModeConfigRows() => [
+      {
+        'code': 'car',
+        'label': 'Along taxi',
+        'icon_key': 'mode.car',
+        'color_token': 'mode.car',
+        'load_capacity': 'large',
+        'default_seat_capacity': 4,
+        'sort_order': 10,
+      },
+      {
+        'code': 'keke',
+        'label': 'Keke',
+        'icon_key': 'mode.keke',
+        'color_token': 'mode.keke',
+        'load_capacity': 'small',
+        'default_seat_capacity': 3,
+        'sort_order': 20,
+      },
+      {
+        'code': 'okada',
+        'label': 'Okada',
+        'icon_key': 'mode.okada',
+        'color_token': 'mode.okada',
+        'load_capacity': 'none',
+        'default_seat_capacity': 1,
+        'sort_order': 30,
+      },
+      {
+        'code': 'minibus',
+        'label': 'Minibus',
+        'icon_key': 'mode.minibus',
+        'color_token': 'mode.minibus',
+        'load_capacity': 'medium',
+        'default_seat_capacity': 14,
+        'sort_order': 40,
       },
     ];
 

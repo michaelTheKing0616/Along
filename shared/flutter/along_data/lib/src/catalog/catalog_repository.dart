@@ -32,6 +32,7 @@ class ModeConfigRow {
     required this.label,
     required this.iconKey,
     required this.colorToken,
+    required this.loadCapacity,
     required this.defaultSeatCapacity,
     required this.sortOrder,
   });
@@ -40,6 +41,7 @@ class ModeConfigRow {
   final String label;
   final String iconKey;
   final String colorToken;
+  final String loadCapacity;
   final int defaultSeatCapacity;
   final int sortOrder;
 
@@ -49,6 +51,7 @@ class ModeConfigRow {
       label: json['label'] as String,
       iconKey: json['icon_key'] as String,
       colorToken: json['color_token'] as String,
+      loadCapacity: json['load_capacity'] as String? ?? 'none',
       defaultSeatCapacity: (json['default_seat_capacity'] as num).toInt(),
       sortOrder: (json['sort_order'] as num?)?.toInt() ?? 0,
     );
