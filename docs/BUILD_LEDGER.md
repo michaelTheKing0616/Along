@@ -382,3 +382,19 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 - Reviewer verdict: FAIL — `flutter analyze` fails (`otp_flow_patrol_test.dart:65` skip type Object vs bool?); hardcoded OTP resend `30` and rate-limit `60` (gate a). Patrol not run (no device). Strings keyed MET.
 - Rework count: 0 / 2
 - Notes/escalations: Do not add a new `app_config` DB key — doc 02 §2.3 only defines `otp.rate_limit_per_hour`. Client UX timers belong on flavour `AppConfig` / env JSON. Honest Patrol SKIP remains NOTES after analyze is clean.
+
+## [Phase 1 / P1-B-01] Rider app shell + R-01..R-04 onboarding
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Rider shell (flavours, Riverpod, go_router, ARB, Sentry) + R-01–R-04; AppConfig OTP/Sentry knobs; widget tests 2/2; analyze clean; Patrol SKIP (no emulator). Rework 1.
+- Reviewer verdict: PASS WITH NOTES — all AC MET except Patrol emulator run (honest SKIP; widget + analyze cover). Strings keyed. No new DB keys.
+- Rework count: 1 / 2
+- Notes/escalations: Follow-up: run Patrol OTP on CI/emulator with `PATROL_HAS_EMULATOR=true` (absorb in P1-E-04 device smoke or Phase 1 gate). Cosmetic: `MaterialApp.title` not l10n; phone `onChanged` does not clear validation errors.
+
+## [Phase 1 / P1-B-02] R-05 Home + R-06/R-06b search & pickup
+- Status: IN PROGRESS
+- Assigned: 2026-09-05
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: none yet.
