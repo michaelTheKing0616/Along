@@ -19,6 +19,20 @@
         "reason": { "type": "string" }
       }
     },
+    "AdminLogViewDocumentRequest": {
+      "type": "object",
+      "required": ["p_verification_id"],
+      "properties": {
+        "p_verification_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
+    "AdminCheckIdentityDuplicateRequest": {
+      "type": "object",
+      "required": ["p_verification_id"],
+      "properties": {
+        "p_verification_id": { "$ref": "../common.json#/$defs/Uuid" }
+      }
+    },
     "AdminReviewFareCorrectionRequest": {
       "type": "object",
       "required": ["id", "action"],
