@@ -578,3 +578,19 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 
 **Phase 2 is open.** First Worker task: P1-B-04 (unblocks a constitution failure), then P2-A-01 / P2-E-01 / P2-E-02 per dependencies. Do not open Phase 3 without P1-G-01.
 **Escalations:** none.
+
+## [Phase 1 / P1-G-01] Corridor evidence day
+- Status: BLOCKED — human
+- Assigned: 2026-09-05
+- Worker report summary: not started — human + Redmi A2+ only.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Hard gate before Phase 3. Attach screenshots + notes to the ledger when run.
+
+## [Phase 1 / P1-B-04] FM36 live path (showCapacityWarning)
+- Status: IN PROGRESS
+- Assigned: 2026-09-05
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Must PASS before FM36 can be claimed on P1-G-01.
