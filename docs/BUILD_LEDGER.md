@@ -604,9 +604,17 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 - Notes/escalations: Merged 95c8004. Unblocks P2-A-05 and P2-B-01 (still needs P2-A-04).
 
 ## [Phase 2 / P2-E-01] along_design batch 2 goldens
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: NegotiationSheet, LegTimeline, FareHero, StepList, AmbientCluster + 25 goldens; full suite 129/129. AlongToast already covered snackbar matrix.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: AmbientCluster goldens omit some bucket×stale combos; LegTimeline no 1.3× golden. Merged ea515cd.
+
+## [Phase 2 / P2-E-02] Phase 1 automated residuals
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Batch 2: NegotiationSheet, LegTimeline, FareHero, StepList, AmbientCluster polish, Snackbar variants.
+- Notes/escalations: Skipped runs are FAIL. Need real Patrol OTP + Playwright A-04 + ios-compile evidence. Both ios/ trees lack Podfile.
