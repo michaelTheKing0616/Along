@@ -479,3 +479,14 @@ Append-only. Orchestrator writes; Workers and Reviewers read. Format per spec §
 2. **P1-E-04 provisioning** is the product owner's (autopilot §6.3 — correct stop). Scope trimmed for staging: OSRM car+foot on one VM now; **Photon deferred** to the first Phase 2 task that needs `places-search` (P1-A-07's Photon compose entry stays local-only until then); tiles = object bucket with range requests (no CDN product needed at staging volume).
 3. **Gate evidence rules restated:** Tecno Spark 8C 60 fps needs the physical reference device (emulator numbers are not evidence); Patrol OTP runs against Supabase auth *test OTP* numbers in `config.toml`, never real SMS; a Reviewer may not PASS a task whose acceptance evidence is a Playwright/Patrol run that was skipped — mark PASS WITH NOTES + follow-up, and the phase gate stays open until the run exists.
 **Escalations:** none.
+
+---
+
+## [Phase 1 / Decision] Staging provisioning outcomes and no-VM interim architecture
+**Date:** 2026-09-05
+1. **Provisioned by product owner:** Supabase staging project (PostGIS, pg_cron, btree_gist enabled); Termii account (sender-ID approval in progress); Firebase project with Android + iOS apps; Sentry org with projects mobile-rider (Flutter), mobile-driver (Flutter), admin-console (Next.js), functions (Deno).
+2. **Not provisioned, worked around (doc 09 §1 amended):** no routing VM — OSRM stays in the local `backend/routing` compose, exposed for staging smokes via a free `cloudflared` quick tunnel (`OSRM_URL` secret set per smoke session); Edge Functions degrade per doc 01 §9 when unreachable. No Cloudflare — staging PMTiles served from a public Supabase Storage bucket `tiles-staging` (Range requests supported). Photon remains deferred (Phase 2). Oracle Cloud Always Free ARM VM noted as the permanent free option.
+3. **Reference device = Xiaomi Redmi A2+** (owned; Android Go class), replacing the Tecno Spark 8C for all performance gates (doc 07 §device matrix amended). P1-E-02's 60 fps gate runs on it.
+4. **Defect flagged during wiring review:** `backend/functions/_shared/fcm.ts` reads a static `FCM_ACCESS_TOKEN` env — Google OAuth access tokens expire in ~1 h, so push would die in staging. P1-E-04 wiring must mint tokens from the FCM service-account key (JWT → oauth2 exchange) with in-memory caching; the service-account JSON lives in Edge Function secrets, never in the repo.
+5. **Secrets handling:** no secret is ever pasted into an agent chat. Shareable identifiers (Supabase URL/anon key, Firebase project id/package names, Sentry DSNs) go into gitignored env files; API keys and the FCM service account go in via `supabase secrets set` run by the human. P1-E-04 stays BLOCKED — human until the owner confirms the named files/secrets exist.
+**Escalations:** none.

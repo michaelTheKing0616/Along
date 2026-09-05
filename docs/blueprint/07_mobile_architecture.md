@@ -102,4 +102,4 @@ ARB files per app + shared strings in `along_core/l10n`; locales `en-NG` (defaul
 - Performance: `flutter drive --profile` timeline on the reference device; frame build ≤ 16 ms for option list scroll.
 
 ## 13. Device matrix (reference for perf and manual QA)
-Tecno Spark 8C (2 GB), Infinix Hot 10 Lite (2 GB, Android 10 Go), Samsung A12 (3 GB), Redmi 9A, plus one iPhone SE 2 and one Pixel-class emulator. Network profiles: 2G-edge (50 kbps, 800 ms RTT), 3G (750 kbps, 400 ms), LTE.
+**Owned reference device (all performance gates run here): Xiaomi Redmi A2+ (Helio G36, 2–3 GB RAM, 720p — Android Go class; product-owner decision 2026-09-05, standing in for the Tecno Spark 8C named originally).** Wider field-test matrix (acquire before Phase 7): Tecno Spark 8C (2 GB), Infinix Hot 10 Lite (2 GB, Android 10 Go), Samsung A12 (3 GB), Redmi 9A, plus one iPhone SE 2 and one Pixel-class emulator. Network profiles: 2G-edge (50 kbps, 800 ms RTT), 3G (750 kbps, 400 ms), LTE.
