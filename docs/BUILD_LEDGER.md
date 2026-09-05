@@ -596,9 +596,17 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 - Notes/escalations: Sheet uses recommended candidate mode, not the card later requested (server still rejects). Config fetch failure swallows warning (server backstop). Merged 9d0a6f0.
 
 ## [Phase 2 / P2-A-01] planner_decompose prod + plan-trip v2
-- Status: FAIL
+- Status: PASS
 - Assigned: 2026-09-05
-- Worker report summary: Production k-shortest decompose + plan-trip v2 merge; Deno 10/10; pgTAP TS-PLAN-v2 8/8 + p95 1/1. TS-PLAN-03 asserted `unique.size >= 3`.
-- Reviewer verdict: FAIL
+- Worker report summary: Production k-shortest decompose + plan-trip v2 merge; Deno 10/10; pgTAP TS-PLAN-v2 + p95. Rework 1: TS-PLAN-03 four distinct sorts.
+- Reviewer verdict: PASS (after 1 rework)
+- Rework count: 1
+- Notes/escalations: Merged 95c8004. Unblocks P2-A-05 and P2-B-01 (still needs P2-A-04).
+
+## [Phase 2 / P2-E-01] along_design batch 2 goldens
+- Status: IN PROGRESS
+- Assigned: 2026-09-05
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Must-fix: re-engineer handler_test.ts TS-PLAN-03 so all four sorts differ (`recommended` !== `fastest`); assert `unique.size === 4`. Rework 1 of 2 authorised.
+- Notes/escalations: Batch 2: NegotiationSheet, LegTimeline, FareHero, StepList, AmbientCluster polish, Snackbar variants.
