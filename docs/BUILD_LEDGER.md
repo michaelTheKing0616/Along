@@ -830,9 +830,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 58af5e0. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-A-07] Dual-control adjustments + payouts
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00042 — pending_ledger_adjustments (SQL dual control), driver_payouts, admin RPCs, transfer.success → payout_debit. TS-LEDGER-10 13/13 PASS.
+- Reviewer verdict: PASS WITH NOTES — independently re-ran 13/13. initiatePayoutTransfer not wired to an edge caller (P4-D-01); recipient placeholder until P4-A-08.
+- Rework count: 0
+- Notes/escalations: Merged 2d658ff. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-B-01] Rider complete / extend / history / pay sheet
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00042. ledger.dual_control_threshold already 20000. Admin UI is P4-D-01 — SQL + RPCs only. Do not flip digital_enabled.
+- Notes/escalations: R-17/15/22/27. digital_enabled stays false — R-27 hidden. Live-device deferred to P1-G-01. Do not implement R-31 scan (P4-B-02).
