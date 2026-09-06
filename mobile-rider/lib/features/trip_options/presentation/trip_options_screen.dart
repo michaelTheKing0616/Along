@@ -297,7 +297,9 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
               : null,
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
           onRequest: isTier3
-              ? () => _openPricingForTier3(candidate, state)
+              ? () => state.session?.isHail == true
+                  ? _openPricingForHail(candidate, state)
+                  : _openPricingForTier3(candidate, state)
               : () => ref
                   .read(tripOptionsControllerProvider.notifier)
                   .requestCandidate(candidate),
@@ -335,6 +337,25 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
         to: session.destination,
         clientRef: 'park-${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
         destinationLabel: session.destinationLabel,
+      ),
+    );
+  }
+
+  void _openPricingForHail(PlanCandidate candidate, TripOptionsState state) {
+    final session = state.session;
+    final hail = session?.hailIntent;
+    if (session == null || hail == null) return;
+    context.push(
+      AppRoutes.pricing,
+      extra: PricingRouteArgs(
+        context: 'roaming',
+        from: session.origin,
+        to: session.destination,
+        clientRef:
+            'hail-${hail.candidateToken}-${DateTime.now().microsecondsSinceEpoch}',
+        destinationLabel: session.destinationLabel,
+        candidateToken: hail.candidateToken,
+        hailIntent: hail,
       ),
     );
   }

@@ -10,7 +10,6 @@ import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
-import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 
@@ -240,23 +239,6 @@ void _startTripPlan(WidgetRef ref, String label, GeoPoint destination) {
 }
 
 void _afterDestinationSelected(BuildContext context, WidgetRef ref) {
-  final session = ref.read(tripPlanSessionProvider);
-  if (session?.isHail == true) {
-    final hail = session!.hailIntent!;
-    context.push(
-      AppRoutes.pricing,
-      extra: PricingRouteArgs(
-        context: 'roaming',
-        from: session.origin,
-        to: session.destination,
-        clientRef: 'hail-${hail.candidateToken}-${DateTime.now().microsecondsSinceEpoch}',
-        destinationLabel: session.destinationLabel,
-        candidateToken: hail.candidateToken,
-        hailIntent: hail,
-      ),
-    );
-    ref.read(hailIntentProvider.notifier).state = null;
-    return;
-  }
+  ref.read(hailIntentProvider.notifier).state = null;
   context.push(AppRoutes.tripOptions);
 }
