@@ -736,9 +736,9 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 - Notes/escalations: Full 5k TS-OPS-03 deferred to P3-E-01. Merged be2061b.
 
 ## [Phase 3 / P3-B-01] Rider meet / Na Me / active trip
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: R-11/12/13 + TS-UI-02 widget; wayfinding CTA wired. TS-CFG-02 missing motion.naMe.* and sos.hold_duration_ms.
+- Reviewer verdict: FAIL (ADR-0016 list incomplete; feature otherwise PASS WITH NOTES)
 - Rework count: 0
-- Notes/escalations: Live/airplane observations deferred to P1-G-01. Widget/unit tests are the gate. Do not FAIL for no device.
+- Notes/escalations: Must-fix: add the three new keys to TS-CFG-02.sql. Rework 1 of 2.
