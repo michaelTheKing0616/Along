@@ -952,9 +952,17 @@ P1-G-01 still blocks Phase 7 only.
 - Notes/escalations: Closed by 9a9aaf2.
 
 ## [Phase 4 / P4-C-02] Driver QR / payment request
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: D-25/D-26, D-16/D-18 request+digital-paid (rework 1 wired), D-19 section, D-08 toast. qr_flutter 4.1.0. Migration 00048 sticker RPC. Widget 8/8, suite 44/44. digital_enabled unchanged.
+- Reviewer verdict: PASS WITH NOTES (recheck) — ACs MET; D-18 wired. Notes: no haptic/sound; no full ActiveTripScreen integration test.
+- Rework count: 1 / 2
+- Notes/escalations: Merged 5c99872. Live-device camera: deferred to P1-G-01. No production stickers printed.
+
+## [Phase 4 / P4-D-02] W-04 web pay + admin QR ops
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Flag-gated. No production stickers. No real rider charge. Do not flip digital_enabled. Live-device: deferred to P1-G-01.
+- Notes/escalations: Flag-gated. Playwright vs mocked sandbox only — no real rider charge. PDF is ops preview, not production sticker print. Do not flip digital_enabled.
