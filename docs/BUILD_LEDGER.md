@@ -790,9 +790,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged d7745a9. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-A-02] Threshold policy + standing + guarantors
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00037 — transition_standing, apply_threshold_policy (cron 10 min), notifications, guarantors RPCs, admin RPCs, my_standing_history, flags schema-only. TS-LEDGER-07 9/9 PASS.
+- Reviewer verdict: PASS WITH NOTES — independently re-ran TS-LEDGER-07; FM13 honored; no auto-deactivate; guarantor notification-only. SMS delivery deferred.
+- Rework count: 0
+- Notes/escalations: Merged b3fff55. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-A-03] Settlements + Paystack webhook
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00037. Config keys ledger.warn/block/grace/deactivate already exist. Flags table may be created schema-only for TS-LEDGER-07; no reconcile job (P4-A-06).
+- Notes/escalations: Next migration 00038. Do not flip payments.digital_enabled. Cash trip = zero payment calls (hard gate). Rider payments/initiate is P4-A-04; subaccounts P4-A-08; QR P4-A-09. P4-E-02 legal stop still ahead — do not skip.
