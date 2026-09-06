@@ -712,9 +712,17 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 **Escalations:** none.
 
 ## [Phase 3 / P3-A-01] Full trip_transition + location + boarding
+- Status: PASS
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00031 lifecycle RPCs + auto-boarding; TS-TRIP-01/02/04/05 + false-trigger + TS-TRIP-07 all PASS. Commission stubbed.
+- Reviewer verdict: PASS
+- Rework count: 0
+- Notes/escalations: New boarding.* keys not yet in doc 02 §2.3. Merged e097b7c.
+
+## [Phase 3 / P3-A-02] Presence retention + stale hardening
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Extend 00026 partial SM; do not duplicate. Next migration 00031. Unblocks P3-B-01 and P3-C-01.
+- Notes/escalations: Unblocks P3-E-01. Next migration 00032.
