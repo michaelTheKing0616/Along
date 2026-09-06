@@ -585,7 +585,7 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 - Worker report summary: not started — human + Redmi A2+ only.
 - Reviewer verdict: n/a
 - Rework count: 0
-- Notes/escalations: Hard gate before Phase 3. Attach screenshots + notes to the ledger when run.
+- Notes/escalations: Hard gate before Phase 3 *gate* and all Phase 4 (Phase 3 code may land). Now also includes Patrol OTP + ios-compile (absorbed from P2-E-02). Attach screenshots + notes when run.
 
 ## [Phase 1 / P1-B-04] FM36 live path (showCapacityWarning)
 - Status: PASS WITH NOTES
@@ -612,12 +612,12 @@ Product-owner decision: do not block engineering on human/device evidence. Spec 
 - Notes/escalations: AmbientCluster goldens omit some bucket×stale combos; LegTimeline no 1.3× golden. Merged ea515cd.
 
 ## [Phase 2 / P2-E-02] Phase 1 automated residuals
-- Status: BLOCKED — needs human
+- Status: PASS WITH DEFERRED EVIDENCE
 - Assigned: 2026-09-05
-- Worker report summary: Playwright A-04 PASS (14/14 via check_playwright.sh). Patrol OTP FAIL — no emulator/device. ios-compile FAIL — Xcode.app missing (`Application not configured for iOS`). Podfiles + pod-install committed on `task/p2-e-02` @ eeabf0a. Not reviewed.
-- Reviewer verdict: n/a — OPEN QUESTIONS; not sent to Review
+- Worker report summary: Playwright A-04 PASS (14/14). Patrol OTP and ios-compile not re-run — absorbed into P1-G-01 (owner 2026-09-06).
+- Reviewer verdict: file review of iOS Podfile wiring only (standard Flutter CocoaPods, iOS 15). ios-compile is NOT green.
 - Rework count: 0
-- Notes/escalations: See Decision below. Branch left unmerged.
+- Notes/escalations: Did not merge whole `task/p2-e-02` (00024 audit_log would collide with 00024 negotiation). iOS Podfile/xcconfig/pbxproj/lock taken onto master only.
 
 ## [Phase 2 / Decision] P2-E-02 toolchain
 **Date:** 2026-09-05
@@ -710,3 +710,11 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 3. **Phase 3 implementation is OPEN** (P3-A-01 first). The previous "Phase 3 must not start" line is amended: Phase 3 *code* may land; the **Phase 3 gate Reviewer and all Phase 4 tasks stay closed until P1-G-01 is PASS** (corridor + Redmi + Patrol OTP + ios-compile).
 4. P3-B-01 / P3-C-01 acceptance still names live/airplane Na Me — Workers write the code and unit/widget tests; they record "live observation deferred to P1-G-01" instead of failing the task for lack of a device.
 **Escalations:** none.
+
+## [Phase 3 / P3-A-01] Full trip_transition + location + boarding
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Extend 00026 partial SM; do not duplicate. Next migration 00031. Unblocks P3-B-01 and P3-C-01.
