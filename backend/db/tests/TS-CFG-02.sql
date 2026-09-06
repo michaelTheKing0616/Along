@@ -99,6 +99,7 @@ with required_global as (
     'planner.default_wait_s',
     'planner.shared_vehicle_factor',
     'dispatch.no_show_after_s',
+    'extension.proposal_ttl_s',
     'decline.reasons',
     'ledger.dual_control_threshold',
     'ledger.deactivate_after_days',
