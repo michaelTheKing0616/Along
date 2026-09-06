@@ -886,9 +886,25 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 5240c67. Live-device: deferred to P1-G-01. Next: P4-A-09 (QR backend). Then stop at P4-E-02 (human legal). Do not flip digital_enabled.
 
 ## [Phase 4 / P4-A-09] QR scan-to-pay backend
-- Status: IN PROGRESS
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: Migration 00047; qr/resolve, initiate extension, methods, receipt; HMAC tokens; expire_payments; payment_received notify. pgTAP 35/35, Deno 10/10. digital_enabled unchanged. Zero card data at rest.
+- Reviewer verdict: PASS WITH NOTES — TS-QR-01..12 MET; flag still false. Notes: expired-token pgTAP missing; CONFLICT body omits existing payment_id; saved-auth Edge test thin.
 - Rework count: 0
-- Notes/escalations: Next migration 00047. TS-QR-01..12. Zero card data at rest. Do not flip payments.digital_enabled. Live-device: deferred to P1-G-01.
+- Notes/escalations: Merged 3e07ecf. Live-device: deferred to P1-G-01. Follow-ups absorb into P4-B-02 (CONFLICT payment_id + expired-token test).
+
+## [Phase 4 / P4-A-09 follow-up] Initiate CONFLICT + expired token tests
+- Status: BLOCKED — follow-up
+- Assigned: 2026-09-06
+- Worker report summary: n/a
+- Reviewer verdict: P4-A-09 notes — absorb into P4-B-02
+- Rework count: 0
+- Notes/escalations: (1) Return existing payment_id on second initiate CONFLICT. (2) pgTAP expired HMAC token → CANDIDATE_EXPIRED. (3) Optional: Deno min_digital_amount / missing subaccount / chargeAuthorization ownership.
+
+## [Phase 4 / P4-E-02] Legal review checkpoint (human)
+- Status: BLOCKED — human
+- Assigned: 2026-09-06
+- Worker report summary: n/a — human legal stop. Orchestrator did not attempt.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: STOP. Confirm no-funds-held posture under CBN rules with split payments; subaccount KYC obligations; VAT on commission; driver/rider terms; fee-bearer economics (`payments.fee_bearer`) vs current Paystack schedule. Written sign-off must attach to this ledger. Do NOT flip `payments.digital_enabled` until BOTH this sign-off AND P1-G-01 are PASS. Digital/QR stay behind the flag. Next implementation tasks after sign-off (not before flag flip): P4-B-02 / C-02 / D-02 / E-03.
