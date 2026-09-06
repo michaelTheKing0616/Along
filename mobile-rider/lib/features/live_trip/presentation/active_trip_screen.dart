@@ -4,29 +4,69 @@ import 'package:along_design/along_design.dart' as design show TransportMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/live_trip/domain/na_me_chip_mapper.dart';
+import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
+import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
+import 'package:mobile_rider/features/live_trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:go_router/go_router.dart';
 
-/// R-13 Active trip — map follow, SOS placeholder, LegTimeline, share placeholder.
-class ActiveTripScreen extends ConsumerWidget {
+/// R-13 Active trip — map follow, SOS placeholder, LegTimeline, extend/complete.
+class ActiveTripScreen extends ConsumerStatefulWidget {
   const ActiveTripScreen({super.key, required this.trip});
 
   final TripSummary trip;
 
+  @override
+  ConsumerState<ActiveTripScreen> createState() => _ActiveTripScreenState();
+}
+
+class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
   LiveTripArgs get _args => LiveTripArgs(
-        tripId: trip.tripId,
-        initialTrip: trip,
+        tripId: widget.trip.tripId,
+        initialTrip: widget.trip,
       );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(liveTripControllerFamilyProvider(_args));
+    final controller =
+        ref.read(liveTripControllerFamilyProvider(_args).notifier);
     final liveTrip = state.trip;
+    final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider).maybeWhen(
+          data: (value) => value,
+          orElse: () => false,
+        );
+
+    ref.listen(liveTripControllerFamilyProvider(_args), (previous, next) {
+      if (next.showCompleteSheet &&
+          previous?.showCompleteSheet != next.showCompleteSheet &&
+          mounted) {
+        TripCompleteSheet.show(
+          context,
+          trip: next.trip,
+          receipt: next.completeReceipt,
+          onFinished: controller.acknowledgeCompleteSheet,
+        );
+      }
+      if (next.pendingExtension != null &&
+          previous?.pendingExtension?.extensionId !=
+              next.pendingExtension?.extensionId &&
+          mounted) {
+        IncomingExtensionSheet.show(
+          context,
+          trip: next.trip,
+          proposal: next.pendingExtension!,
+          onResponded: (_) => controller.clearPendingExtension(),
+        );
+      }
+    });
+
     final heading = liveTrip.live?.driver?.headingDegrees;
     final showNaMe = liveTrip.status == TripStatus.accepted ||
         liveTrip.status == TripStatus.boarded;
@@ -110,6 +150,18 @@ class ActiveTripScreen extends ConsumerWidget {
                       ],
                     ),
                   ],
+                  if (digitalEnabled) ...[
+                    const SizedBox(height: AlongSpace.s12),
+                    AlongButton(
+                      key: const Key('active_trip_pay'),
+                      label: l10n.payDriverCta(formatMoney(liveTrip.totalFare)),
+                      variant: AlongButtonVariant.yellow,
+                      onPressed: () => PayDriverSheet.show(
+                        context,
+                        trip: liveTrip,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: AlongSpace.s12),
                   Row(
                     children: [
@@ -118,11 +170,13 @@ class ActiveTripScreen extends ConsumerWidget {
                           key: const Key('active_trip_extend'),
                           label: l10n.activeTripExtend,
                           variant: AlongButtonVariant.secondary,
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.extendPlaceholder)),
-                            );
-                          },
+                          onPressed: liveTrip.status == TripStatus.inTransit ||
+                                  liveTrip.status == TripStatus.boarded
+                              ? () => ExtendTripSheet.show(
+                                    context,
+                                    trip: liveTrip,
+                                  )
+                              : null,
                         ),
                       ),
                       const SizedBox(width: AlongSpace.s8),

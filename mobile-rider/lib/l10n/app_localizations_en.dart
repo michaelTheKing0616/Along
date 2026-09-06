@@ -423,4 +423,87 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportPlaceholder => 'Report incident — coming in Phase 5';
+
+  @override
+  String get tripCompleteTitle => 'Trip complete';
+
+  @override
+  String tripCompletePaidQuestion(String amount) {
+    return 'Did you pay $amount?';
+  }
+
+  @override
+  String get tripCompleteTier3Question => 'What did you pay?';
+
+  @override
+  String get tripCompleteYes => 'Yes';
+
+  @override
+  String get tripCompleteDifferent => 'Different amount';
+
+  @override
+  String get tripCompleteDifferentPrompt => 'Pick the amount you paid';
+
+  @override
+  String get tripCompleteRateTitle => 'Rate your trip';
+
+  @override
+  String get extendTripTitle => 'Extend trip';
+
+  @override
+  String get extendTripSearchHint => 'Where to now?';
+
+  @override
+  String extendTripDestination(String destination) {
+    return 'Continuing to $destination';
+  }
+
+  @override
+  String get extendTripSend => 'Send to driver';
+
+  @override
+  String get incomingExtensionTitle => 'Extension request';
+
+  @override
+  String incomingExtensionBody(String destination, String delta) {
+    return 'Driver proposes continuing to $destination for +$delta';
+  }
+
+  @override
+  String get incomingExtensionAccept => 'Accept';
+
+  @override
+  String get incomingExtensionDecline => 'Decline';
+
+  @override
+  String get payDriverTitle => 'Pay driver';
+
+  @override
+  String payDriverCta(String amount) {
+    return 'Pay $amount';
+  }
+
+  @override
+  String get payDriverAmountLocked => 'Amount locked to this trip';
+
+  @override
+  String get payDriverMethodSaved => 'Visa ···4242';
+
+  @override
+  String get payDriverPending => 'Payment initiation — deferred to P1-G-01';
+
+  @override
+  String get tripsEmpty => 'No completed trips yet.';
+
+  @override
+  String get tripDetailTitle => 'Trip details';
+
+  @override
+  String get tripDetailMissing => 'Trip not found';
+
+  @override
+  String get tripDetailShareReceipt => 'Share receipt';
+
+  @override
+  String get tripDetailReceiptCopied => 'Receipt copied to clipboard';
 }

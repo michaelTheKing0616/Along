@@ -232,4 +232,111 @@ class DomainMappers {
       ),
     );
   }
+
+  static TripReceipt receiptFromCompleteTripJson(Map<String, dynamic> json) {
+    final currency =
+        (json['fare'] as Map<String, dynamic>?)?['currency'] as String? ?? 'NGN';
+    final fare = moneyFromDto(
+      dto.Money.fromJson(json['fare'] as Map<String, dynamic>),
+    );
+    Money? surcharge;
+    final surchargeJson = json['surcharge'];
+    if (surchargeJson is Map<String, dynamic>) {
+      surcharge = moneyFromDto(dto.Money.fromJson(surchargeJson));
+    }
+    Money? commission;
+    final commissionJson = json['commission'];
+    if (commissionJson is Map<String, dynamic>) {
+      commission = moneyFromDto(dto.Money.fromJson(commissionJson));
+    }
+    final totalJson = json['total'];
+    final total = totalJson is Map<String, dynamic>
+        ? moneyFromDto(dto.Money.fromJson(totalJson))
+        : fare + (surcharge ?? Money.zero(currency: currency));
+    return TripReceipt(
+      fare: fare,
+      surcharge: surcharge,
+      commission: commission,
+      total: total,
+    );
+  }
+
+  static ProposeExtensionResult proposeExtensionFromJson(
+    Map<String, dynamic> json,
+  ) {
+    return ProposeExtensionResult(
+      extensionId: json['extension_id'] as String,
+      fareDelta: moneyFromDto(
+        dto.Money.fromJson(json['fare_delta'] as Map<String, dynamic>),
+      ),
+      newTotal: moneyFromDto(
+        dto.Money.fromJson(json['new_total'] as Map<String, dynamic>),
+      ),
+      tier: FareTier.fromInt((json['tier'] as num).toInt()),
+      unconfirmed: json['unconfirmed'] as bool,
+    );
+  }
+
+  static TripExtensionProposal? extensionProposalFromRow(
+    Map<String, dynamic> row, {
+    String destinationName = 'New destination',
+  }) {
+    if (row['status'] != 'proposed') return null;
+    final delta = row['fare_delta'];
+    if (delta == null) return null;
+    final currency = row['currency'] as String? ?? 'NGN';
+    return TripExtensionProposal(
+      extensionId: row['id'] as String,
+      tripId: row['trip_id'] as String,
+      proposedBy: row['proposed_by'] as String,
+      destinationName: destinationName,
+      fareDelta: Money.parse(delta.toString(), currency: currency),
+      currency: currency,
+    );
+  }
+
+  static TripHistoryEntry historyEntryFromTripRow(Map<String, dynamic> row) {
+    final status = TripStatus.tryParse(row['status'] as String?) ??
+        TripStatus.completed;
+    final currency = row['fare_currency'] as String? ?? 'NGN';
+    final fareShown = row['fare_shown'];
+    final surcharge = row['load_surcharge_amount'];
+    final commission = row['commission_amount'];
+    final fare = fareShown != null
+        ? Money.parse(fareShown.toString(), currency: currency)
+        : Money.zero(currency: currency);
+    final surchargeMoney = surcharge != null &&
+            num.tryParse(surcharge.toString()) != null &&
+            num.parse(surcharge.toString()) > 0
+        ? Money.parse(surcharge.toString(), currency: currency)
+        : null;
+    final commissionMoney = commission != null &&
+            num.tryParse(commission.toString()) != null &&
+            num.parse(commission.toString()) > 0
+        ? Money.parse(commission.toString(), currency: currency)
+        : null;
+    final total = fare +
+        (surchargeMoney ?? Money.zero(currency: currency));
+    final endedAt = row['ended_at'] as String?;
+    return TripHistoryEntry(
+      tripId: row['id'] as String,
+      completedAt: endedAt != null
+          ? DateTime.parse(endedAt)
+          : DateTime.now().toUtc(),
+      boardName: row['boarding_name'] as String? ?? 'Pickup',
+      alightName: row['alighting_name'] as String? ?? 'Drop-off',
+      modeCode: row['mode_code'] as String? ?? 'car',
+      modeLabel: row['mode_label'] as String? ?? 'Car',
+      status: status,
+      totalFare: total,
+      driverName: row['driver_name'] as String?,
+      plateNumber: row['plate_number'] as String?,
+      receipt: TripReceipt(
+        fare: fare,
+        surcharge: surchargeMoney,
+        commission: commissionMoney,
+        total: total,
+      ),
+    );
+  }
 }

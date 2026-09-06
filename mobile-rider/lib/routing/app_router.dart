@@ -21,6 +21,9 @@ import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
+import 'package:mobile_rider/features/trips/presentation/trip_detail_screen.dart';
+import 'package:mobile_rider/features/trips/presentation/trips_history_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -63,7 +66,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.trips,
-                builder: (context, state) => const TripsStubScreen(),
+                builder: (context, state) => const TripsHistoryScreen(),
               ),
             ],
           ),
@@ -132,6 +135,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final args = state.extra as NaMeRouteArgs;
           return NaMeScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.tripDetail,
+        builder: (context, state) {
+          final tripId = state.extra as String;
+          return TripDetailScreen(tripId: tripId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.payDriver,
+        builder: (context, state) {
+          final trip = state.extra as TripSummary?;
+          return Scaffold(
+            body: SafeArea(
+              child: PayDriverSheet(trip: trip),
+            ),
+          );
         },
       ),
       GoRoute(

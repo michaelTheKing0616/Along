@@ -34,6 +34,9 @@ class LiveTripState {
     this.driverSignalLost = false,
     this.lastLiveAt,
     this.errorMessage,
+    this.pendingExtension,
+    this.showCompleteSheet = false,
+    this.completeReceipt,
   });
 
   final TripSummary trip;
@@ -42,6 +45,9 @@ class LiveTripState {
   final bool driverSignalLost;
   final DateTime? lastLiveAt;
   final String? errorMessage;
+  final TripExtensionProposal? pendingExtension;
+  final bool showCompleteSheet;
+  final TripReceipt? completeReceipt;
 
   LiveTripState copyWith({
     TripSummary? trip,
@@ -50,7 +56,12 @@ class LiveTripState {
     bool? driverSignalLost,
     DateTime? lastLiveAt,
     String? errorMessage,
+    TripExtensionProposal? pendingExtension,
+    bool? showCompleteSheet,
+    TripReceipt? completeReceipt,
     bool clearError = false,
+    bool clearPendingExtension = false,
+    bool clearCompleteSheet = false,
   }) {
     return LiveTripState(
       trip: trip ?? this.trip,
@@ -59,6 +70,12 @@ class LiveTripState {
       driverSignalLost: driverSignalLost ?? this.driverSignalLost,
       lastLiveAt: lastLiveAt ?? this.lastLiveAt,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      pendingExtension: clearPendingExtension
+          ? null
+          : (pendingExtension ?? this.pendingExtension),
+      showCompleteSheet:
+          clearCompleteSheet ? false : (showCompleteSheet ?? this.showCompleteSheet),
+      completeReceipt: completeReceipt ?? this.completeReceipt,
     );
   }
 }
@@ -92,8 +109,12 @@ class LiveTripController extends FamilyNotifier<LiveTripState, LiveTripArgs> {
   Future<void> _poll() async {
     if (!state.isPolling) return;
     try {
-      final summary =
-          await ref.read(tripsRepositoryProvider).tripSnapshot(arg.tripId);
+      final repo = ref.read(tripsRepositoryProvider);
+      final summary = await repo.tripSnapshot(arg.tripId);
+      final pendingExtension = summary.status == TripStatus.inTransit ||
+              summary.status == TripStatus.boarded
+          ? await repo.pendingExtension(arg.tripId)
+          : null;
       final now = ref.read(clockProvider).now();
       final LiveTripConfig config =
           _config ?? await ref.read(liveTripConfigProvider.future);
@@ -105,13 +126,20 @@ class LiveTripController extends FamilyNotifier<LiveTripState, LiveTripArgs> {
           sinceLive >= config.driverOfflineAfter &&
           summary.status == TripStatus.accepted;
 
+      final becameCompleted =
+          summary.status == TripStatus.completed &&
+              state.trip.status != TripStatus.completed;
+
       state = state.copyWith(
         trip: summary,
         lastLiveAt: summary.live?.asOf ?? state.lastLiveAt,
         livePaused:
             sinceLive != null && sinceLive >= config.livePausedAfter,
         driverSignalLost: driverLost,
+        pendingExtension: pendingExtension,
+        showCompleteSheet: becameCompleted || state.showCompleteSheet,
         clearError: true,
+        clearPendingExtension: pendingExtension == null,
       );
     } catch (e) {
       state = state.copyWith(errorMessage: e.toString());
@@ -137,5 +165,13 @@ class LiveTripController extends FamilyNotifier<LiveTripState, LiveTripArgs> {
   void stopPolling() {
     _pollTimer?.cancel();
     state = state.copyWith(isPolling: false);
+  }
+
+  void acknowledgeCompleteSheet() {
+    state = state.copyWith(clearCompleteSheet: true);
+  }
+
+  void clearPendingExtension() {
+    state = state.copyWith(clearPendingExtension: true);
   }
 }
