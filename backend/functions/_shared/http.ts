@@ -18,8 +18,12 @@ export function errorResponse(
   message: string,
   status: number,
   meta: { request_id: string; degraded?: boolean },
+  details?: Record<string, unknown>,
 ): Response {
-  return jsonResponse({ error: { code, message }, meta }, status);
+  return jsonResponse(
+    { error: { code, message, ...(details != null ? { details } : {}) }, meta },
+    status,
+  );
 }
 
 export function corsHeaders(): Record<string, string> {

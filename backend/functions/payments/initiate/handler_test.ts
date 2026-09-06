@@ -312,6 +312,26 @@ Deno.test('TS-QR-05: split amounts equal fare − commission to the kobo', async
   assertEquals(capturedParams?.driverSubaccountCode, 'ACCT_test_sub');
 });
 
+Deno.test('TS-QR-08: second initiate for paid trip returns CONFLICT with payment_id', async () => {
+  const body = paymentInitiateSchema.parse({ driver_code: DRIVER_CODE, trip_id: TRIP_ID, channel: 'app' });
+  const service = createMockService({ existingPaid: true });
+
+  const res = await handlePaymentInitiate(body, {
+    userClient: {} as never,
+    service: service as never,
+    riderId: RIDER_ID,
+    provider: createMockProvider(),
+    cfgBool: async () => true,
+    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: async () => 'account',
+  });
+
+  assertEquals(res.status, 409);
+  const json = await res.json();
+  assertEquals(json.error.code, 'CONFLICT');
+  assertEquals(json.error.details.payment_id, 'existing');
+});
+
 Deno.test('TS-QR-09: anonymous web initiate stores web_anonymous source', async () => {
   const body = paymentInitiateSchema.parse({
     driver_code: DRIVER_CODE,

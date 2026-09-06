@@ -5,6 +5,9 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const paymentsMethodsSchema = z.discriminatedUnion('action', [
   z.object({
+    action: z.literal('list'),
+  }),
+  z.object({
     action: z.literal('add'),
     authorization_code: z.string().min(1),
     brand: z.string().optional(),
@@ -33,7 +36,9 @@ export async function handlePaymentsMethods(
 ): Promise<Response> {
   const rid = requestId();
 
-  if (body.action === 'add') {
+  if (body.action === 'list') {
+    // fall through to list query below
+  } else if (body.action === 'add') {
     const { error } = await service.rpc('upsert_rider_payment_method', {
       p_authorization_code: body.authorization_code,
       p_brand: body.brand ?? null,
