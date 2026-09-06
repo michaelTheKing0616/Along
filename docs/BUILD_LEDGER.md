@@ -798,9 +798,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged b3fff55. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-A-03] Settlements + Paystack webhook
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00038 — settlements, settlement_agents, webhook raw, agent RPCs, PaymentProvider + Paystack HMAC-SHA512, Edge settlement/initiate + webhooks/paystack. TS-LEDGER-03/08/09 PASS. digital_enabled unchanged.
+- Reviewer verdict: PASS WITH NOTES — pgTAP + Deno independently verified. Deno cash-trip fetch-spy is vacuous (SQL+pgTAP still prove zero payment rows). Deploy webhooks/paystack with --no-verify-jwt.
+- Rework count: 0
+- Notes/escalations: Merged 01bb655. Live-device: deferred to P1-G-01. P4-E-02 legal stop still ahead.
+
+## [Phase 4 / P4-A-04] Rider digital payment + confirm_fare + ratings
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00038. Do not flip payments.digital_enabled. Cash trip = zero payment calls (hard gate). Rider payments/initiate is P4-A-04; subaccounts P4-A-08; QR P4-A-09. P4-E-02 legal stop still ahead — do not skip.
+- Notes/escalations: Next migration 00039. Do NOT flip payments.digital_enabled. payments/initiate must fail closed when flag is false. QR/subaccounts/saved methods are later tasks.
