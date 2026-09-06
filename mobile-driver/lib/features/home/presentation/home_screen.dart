@@ -8,6 +8,8 @@ import 'package:mobile_driver/features/home/presentation/widgets/park_picker_she
 import 'package:mobile_driver/features/incoming_request/presentation/decline_reason_sheet.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_sheet.dart';
+import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
+import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_sheet.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
 /// D-08 Home — presence control + demand awareness (doc 06).
@@ -25,6 +27,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(driverHomeControllerProvider);
     final incoming = ref.watch(incomingRequestNotifierProvider);
+    final pricing = ref.watch(driverPricingNotifierProvider);
     final config = ref.watch(appConfigProvider);
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
@@ -87,6 +90,16 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                     .read(incomingRequestNotifierProvider.notifier)
                     .openDeclineReasons(),
               ),
+            ),
+          if (incoming == null && pricing.isVisible)
+            Positioned.fill(
+              child: ColoredBox(
+                color: AlongColors.ink900.withValues(alpha: 0.55),
+              ),
+            ),
+          if (incoming == null && pricing.isVisible)
+            Positioned.fill(
+              child: const DriverPricingSheet(),
             ),
           Positioned(
             top: 0,

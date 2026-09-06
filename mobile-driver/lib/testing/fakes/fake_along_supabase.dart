@@ -387,6 +387,36 @@ class FakeAlongSupabase implements AlongSupabase {
           },
         ];
       }
+      if (key == 'dispatch.max_cascade') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '3',
+          },
+        ];
+      }
+      if (key == 'driver.negotiation_poll_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '2',
+          },
+        ];
+      }
+      if (key == 'negotiation.chip_steps') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '[-100,-50,50,100]',
+          },
+        ];
+      }
     }
     if (table == 'drivers') {
       return [

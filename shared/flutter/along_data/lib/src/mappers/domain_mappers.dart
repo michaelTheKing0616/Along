@@ -73,6 +73,8 @@ class DomainMappers {
       alight: alightFromDto(view.alight),
       load: loadFromDto(view.load),
       womenOnly: view.women_only,
+      dispatchAttempt: _dispatchAttemptFromTripJson(view),
+      isRoamingHail: _isRoamingHailFromTripJson(view),
     );
   }
 
@@ -87,24 +89,57 @@ class DomainMappers {
     }
     final view = dto.TripView.fromJson(tripJson);
     final summary = tripFromDto(view);
+    final dispatchAttempt = _readDispatchAttempt(envelope, tripJson);
+    final isRoamingHail = _readRoamingHail(tripJson, summary);
     final envelopeExpires = envelope['expires_at'];
-    if (envelopeExpires is String) {
-      return TripSummary(
-        tripId: summary.tripId,
-        journeyId: summary.journeyId,
-        journeySequence: summary.journeySequence,
-        status: summary.status,
-        fare: summary.fare,
-        naMe: summary.naMe,
-        liveChannel: summary.liveChannel,
-        expiresAt: DateTime.parse(envelopeExpires),
-        rider: summary.rider,
-        board: summary.board,
-        alight: summary.alight,
-        load: summary.load,
-        womenOnly: summary.womenOnly,
-      );
-    }
-    return summary;
+    final expiresAt = envelopeExpires is String
+        ? DateTime.parse(envelopeExpires)
+        : summary.expiresAt;
+
+    return TripSummary(
+      tripId: summary.tripId,
+      journeyId: summary.journeyId,
+      journeySequence: summary.journeySequence,
+      status: summary.status,
+      fare: summary.fare,
+      naMe: summary.naMe,
+      liveChannel: summary.liveChannel,
+      expiresAt: expiresAt,
+      rider: summary.rider,
+      board: summary.board,
+      alight: summary.alight,
+      load: summary.load,
+      womenOnly: summary.womenOnly,
+      dispatchAttempt: dispatchAttempt,
+      isRoamingHail: isRoamingHail,
+    );
+  }
+
+  static int _readDispatchAttempt(
+    Map<String, dynamic> envelope,
+    Map<String, dynamic> tripJson,
+  ) {
+    final envelopeAttempt = envelope['dispatch_attempt'];
+    if (envelopeAttempt is num) return envelopeAttempt.toInt();
+    final tripAttempt = tripJson['dispatch_attempt'];
+    if (tripAttempt is num) return tripAttempt.toInt();
+    return 1;
+  }
+
+  static bool _readRoamingHail(
+    Map<String, dynamic> tripJson,
+    TripSummary summary,
+  ) {
+    final explicit = tripJson['is_roaming_hail'];
+    if (explicit is bool) return explicit;
+    return summary.isRoamingHail;
+  }
+
+  static int _dispatchAttemptFromTripJson(dto.TripView view) => 1;
+
+  static bool _isRoamingHailFromTripJson(dto.TripView view) {
+    final board = view.board;
+    final noStage = board.stage_id.isEmpty;
+    return noStage && board.name == 'Pickup' && !board.wayfinding_available;
   }
 }

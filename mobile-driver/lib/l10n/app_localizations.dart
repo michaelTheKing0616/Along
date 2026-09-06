@@ -826,6 +826,15 @@ abstract class AppLocalizations {
   /// **'Pickup'**
   String get incomingRequestPickup;
 
+  /// No description provided for @incomingRequestRoamingPickup.
+  String get incomingRequestRoamingPickup;
+
+  /// No description provided for @incomingRequestRoamingPickupMeta.
+  String get incomingRequestRoamingPickupMeta;
+
+  /// No description provided for @incomingRequestCascade.
+  String incomingRequestCascade(int attempt, int max);
+
   /// No description provided for @incomingRequestDropoff.
   ///
   /// In en, this message translates to:
@@ -933,6 +942,21 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Estimate — agree price'**
   String get fareTierEstimate;
+
+  /// No description provided for @pricingRiderOffer.
+  String pricingRiderOffer(String amount);
+
+  /// No description provided for @pricingLapsed.
+  String get pricingLapsed;
+
+  /// No description provided for @pricingOutOfRange.
+  String get pricingOutOfRange;
+
+  /// No description provided for @pricingDeclined.
+  String get pricingDeclined;
+
+  /// No description provided for @pricingDismiss.
+  String get pricingDismiss;
 }
 
 class _AppLocalizationsDelegate
