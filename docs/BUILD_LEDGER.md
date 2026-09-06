@@ -838,9 +838,9 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 2d658ff. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-B-01] Rider complete / extend / history / pay sheet
-- Status: IN PROGRESS
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: R-17 2-tap complete (confirm_fare+rate_trip), R-15 embed R-06 + 1-tap accept, R-22 history+itemised receipt, R-27 hidden when digital_enabled=false. Widget tests 12/12.
+- Reviewer verdict: PASS WITH NOTES — independently re-ran 12/12. Pay submit is placeholder snackbar; R-22 omits map/leg list; R-27 full states deferred to P4-B-02 while flag is off.
 - Rework count: 0
-- Notes/escalations: R-17/15/22/27. digital_enabled stays false — R-27 hidden. Live-device deferred to P1-G-01. Do not implement R-31 scan (P4-B-02).
+- Notes/escalations: Merged cb9579c. Live-device: deferred to P1-G-01. Next: P4-C-01.
