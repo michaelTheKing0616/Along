@@ -44,6 +44,11 @@ Widget _harness({
   );
 }
 
+FakeAlongSupabase _ledgerFake() => FakeAlongSupabase(
+      driverBalanceResponse:
+          FakeAlongSupabase.ledgerBlockedDriverBalanceResponse(),
+    );
+
 ProviderContainer _ledgerContainer(FakeAlongSupabase fake) {
   final container = ProviderContainer(
     overrides: buildProviderOverrides(
@@ -173,7 +178,7 @@ void main() {
 
   group('D-18 trip complete two-tap', () {
     testWidgets('Yes then Done completes in two taps', (tester) async {
-      final fake = FakeAlongSupabase();
+      final fake = _ledgerFake();
       final container = _ledgerContainer(fake);
       final result = _sampleCompleteResult();
 
@@ -212,7 +217,7 @@ void main() {
 
   group('D-17 extension one-tap accept', () {
     testWidgets('accept rider extension in one tap', (tester) async {
-      final fake = FakeAlongSupabase();
+      final fake = _ledgerFake();
       final container = _ledgerContainer(fake);
       final proposal = TripExtensionProposal(
         extensionId: 'ext-1',
@@ -255,7 +260,7 @@ void main() {
 
   group('D-20 nearby agents', () {
     testWidgets('shows city-bound agent list under agent code', (tester) async {
-      final fake = FakeAlongSupabase();
+      final fake = _ledgerFake();
       final container = _ledgerContainer(fake);
 
       await tester.pumpWidget(

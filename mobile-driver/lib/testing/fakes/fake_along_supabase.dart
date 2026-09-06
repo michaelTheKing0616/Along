@@ -66,6 +66,22 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(Map<String, dynamic> params)? onRespondExtension;
   void Function(String tripId)? onMarkBoarded;
 
+  static Map<String, dynamic> defaultDriverBalanceResponse() => {
+        'balance': {'amount': '0.00', 'currency': 'NGN'},
+        'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
+        'standing': 'good_standing',
+        'grace_deadline': null,
+        'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
+      };
+
+  static Map<String, dynamic> ledgerBlockedDriverBalanceResponse() => {
+        'balance': {'amount': '-5200.00', 'currency': 'NGN'},
+        'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
+        'standing': 'matching_paused',
+        'grace_deadline': null,
+        'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
+      };
+
   int confirmFareInvokeCount = 0;
   int respondExtensionInvokeCount = 0;
 
@@ -254,14 +270,7 @@ class FakeAlongSupabase implements AlongSupabase {
       return {'boarded_auto': false};
     }
     if (fn == 'driver_balance') {
-      return driverBalanceResponse ??
-          {
-            'balance': {'amount': '-5200.00', 'currency': 'NGN'},
-            'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
-            'standing': 'matching_paused',
-            'grace_deadline': null,
-            'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
-          };
+      return driverBalanceResponse ?? defaultDriverBalanceResponse();
     }
     if (fn == 'driver_ledger') {
       return {
@@ -682,7 +691,7 @@ class FakeAlongSupabase implements AlongSupabase {
           'id': _user?.id ?? 'test-driver-id',
           'verified_status': 'verified',
           'city_id': 'b1000000-0000-4000-8000-000000000001',
-          'standing': 'matching_paused',
+          'standing': 'good_standing',
         },
       ];
     }
