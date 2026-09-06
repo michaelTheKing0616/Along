@@ -843,4 +843,12 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Worker report summary: R-17 2-tap complete (confirm_fare+rate_trip), R-15 embed R-06 + 1-tap accept, R-22 history+itemised receipt, R-27 hidden when digital_enabled=false. Widget tests 12/12.
 - Reviewer verdict: PASS WITH NOTES — independently re-ran 12/12. Pay submit is placeholder snackbar; R-22 omits map/leg list; R-27 full states deferred to P4-B-02 while flag is off.
 - Rework count: 0
-- Notes/escalations: Merged cb9579c. Live-device: deferred to P1-G-01. Next: P4-C-01.
+- Notes/escalations: Merged cb9579c. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-C-01] Driver earnings / settle / standing
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: D-17–22 + D-08 blocked banner (TS-UI-05). Next migration 00043 if driver_balance / driver_ledger RPCs are missing. Labels human, never enum names. Live-device: deferred to P1-G-01. Do not flip digital_enabled. QR (D-25/26) is P4-C-02.
