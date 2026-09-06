@@ -728,9 +728,17 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 - Notes/escalations: stale_job_interval_s and realtime.* keys registered but not all wired. Merged 5800694.
 
 ## [Phase 3 / P3-A-03] Realtime location channel hardening
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00033 admin:{city} RLS + payload guard + trip_snapshot live; TS-DISC-04 7/7; TS-OPS-03 pilot 7/7.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Full 5k TS-OPS-03 deferred to P3-E-01. Merged be2061b.
+
+## [Phase 3 / P3-B-01] Rider meet / Na Me / active trip
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00033 if needed. Unblocks nothing in Phase 3 except later admin map (P6).
+- Notes/escalations: Live/airplane observations deferred to P1-G-01. Widget/unit tests are the gate. Do not FAIL for no device.
