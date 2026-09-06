@@ -1,5 +1,6 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
+import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -95,7 +96,7 @@ class _WayfindingScreenState extends ConsumerState<WayfindingScreen> {
                                   .textTheme
                                   .titleMedium
                                   ?.copyWith(
-                                    color: Colors.green.shade700,
+                                    color: AlongColors.semanticSuccessFill,
                                   ),
                             ),
                           Expanded(
@@ -150,7 +151,7 @@ Future<int?> _readWayfindingArrivedRadius(
 ) async {
   try {
     return (await configRepo.configNum(
-      'wayfinding.arrived_radius_m',
+      'boarding.colocation_radius_m',
       cityId: cityId,
     ))
         .toInt();

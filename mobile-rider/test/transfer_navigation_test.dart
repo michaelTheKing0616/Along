@@ -148,7 +148,7 @@ void main() {
         },
       ];
 
-      await tester.pump(kJourneyPollInterval);
+      await tester.pump(const Duration(seconds: 3));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 

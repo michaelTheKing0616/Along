@@ -12,7 +12,7 @@ class WayfindingPanel extends StatefulWidget {
     required this.mode,
     required this.onModeChanged,
     required this.tts,
-    this.arrivedRadiusM = 25,
+    this.arrivedRadiusM,
     this.userLocation,
     this.destination,
     this.onArrived,

@@ -316,7 +316,7 @@ class TransferController extends FamilyNotifier<TransferState, TransferRouteArgs
 Future<int?> _readArrivedRadius(ConfigRepository configRepo, String? cityId) async {
   try {
     return (await configRepo.configNum(
-      'wayfinding.arrived_radius_m',
+      'boarding.colocation_radius_m',
       cityId: cityId,
     ))
         .toInt();

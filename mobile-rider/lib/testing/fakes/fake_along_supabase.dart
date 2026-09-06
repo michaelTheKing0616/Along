@@ -246,6 +246,18 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_id': '*',
         'value': '60',
       },
+      {
+        'key': 'client.trip_poll_interval_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '3',
+      },
+      {
+        'key': 'boarding.colocation_radius_m',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '25',
+      },
     ];
 
 /// Default `load.warn_capacities` + `mode_config` rows for FM36 tests.

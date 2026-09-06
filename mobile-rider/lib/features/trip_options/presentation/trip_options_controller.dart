@@ -371,7 +371,13 @@ class RequestingController extends FamilyNotifier<RequestingState, RequestingArg
     _tickTimer?.cancel();
     _pollTimer?.cancel();
     _tickTimer = Timer.periodic(const Duration(seconds: 1), (_) => _onTick());
-    _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => _pollTrip());
+    unawaited(_startPollTimer());
+  }
+
+  Future<void> _startPollTimer() async {
+    final interval = await readTripPollInterval(ref);
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(interval, (_) => _pollTrip());
   }
 
   int _secondsUntilExpiry(TripSummary trip) {

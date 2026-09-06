@@ -6,8 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/transfer/presentation/transfer_screen.dart';
 
-/// Poll interval aligned with [RequestingController] trip polling.
-const kJourneyPollInterval = Duration(seconds: 3);
+/// Reads [client.trip_poll_interval_s] — shared by [ActiveJourneyMonitor] and [RequestingController].
+Future<Duration> readTripPollInterval(Ref ref) async {
+  final seconds = (await ref
+          .read(configRepositoryProvider)
+          .configNum('client.trip_poll_interval_s'))
+      .toInt();
+  return Duration(seconds: seconds);
+}
 
 class ActiveJourneyMonitorState {
   const ActiveJourneyMonitorState({
@@ -67,7 +73,13 @@ class ActiveJourneyMonitor extends Notifier<ActiveJourneyMonitorState> {
       afterTripSequence: trip.journeySequence,
       candidateId: candidateId,
     );
-    _pollTimer = Timer.periodic(kJourneyPollInterval, (_) => _poll());
+    unawaited(_startPolling());
+  }
+
+  Future<void> _startPolling() async {
+    final interval = await readTripPollInterval(ref);
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(interval, (_) => _poll());
     unawaited(_poll());
   }
 
