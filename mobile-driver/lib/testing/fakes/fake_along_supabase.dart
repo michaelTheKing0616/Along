@@ -450,6 +450,7 @@ class FakeAlongSupabase implements AlongSupabase {
     required String tripId,
     required String status,
     bool loadFlagged = false,
+    String paymentMethod = 'cash',
   }) {
     return {
       'trip_id': tripId,
@@ -506,6 +507,7 @@ class FakeAlongSupabase implements AlongSupabase {
       'live_channel': 'trip:$tripId',
       'expires_at': '2026-09-05T14:00:00Z',
       'timestamps': {},
+      'payment_method': paymentMethod,
     };
   }
 

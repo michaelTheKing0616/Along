@@ -35,9 +35,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
       if (next.completeResult != null &&
           previous?.completeResult == null &&
           context.mounted) {
+        final paidDigitally = next.digitalPayment != null ||
+            next.completeResult!.trip.paymentMethod == 'digital';
         TripCompleteSheet.show(
           context,
           result: next.completeResult!,
+          paidDigitally: paidDigitally,
+          driverAmountReceived: next.digitalPayment?.driverAmount,
           onFinished: () {
             if (context.mounted) context.pop();
           },

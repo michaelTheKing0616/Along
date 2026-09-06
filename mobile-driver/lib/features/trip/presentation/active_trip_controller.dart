@@ -5,6 +5,7 @@ import 'package:along_data/along_data.dart';
 import 'package:along_location/along_location.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/payments/presentation/payment_received_notifier.dart';
 import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 
 class ActiveTripArgs {
@@ -34,6 +35,7 @@ class ActiveTripState {
     this.isSubmitting = false,
     this.errorMessage,
     this.completeResult,
+    this.digitalPayment,
   });
 
   final TripSummary? trip;
@@ -42,6 +44,7 @@ class ActiveTripState {
   final bool isSubmitting;
   final String? errorMessage;
   final CompleteTripResult? completeResult;
+  final PaymentReceivedEvent? digitalPayment;
 
   ActiveTripState copyWith({
     TripSummary? trip,
@@ -50,6 +53,7 @@ class ActiveTripState {
     bool? isSubmitting,
     String? errorMessage,
     CompleteTripResult? completeResult,
+    PaymentReceivedEvent? digitalPayment,
     bool clearComplete = false,
     bool clearError = false,
   }) {
@@ -61,6 +65,7 @@ class ActiveTripState {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       completeResult:
           clearComplete ? null : (completeResult ?? this.completeResult),
+      digitalPayment: digitalPayment ?? this.digitalPayment,
     );
   }
 }
@@ -74,11 +79,13 @@ final activeTripControllerFamilyProvider = NotifierProvider.family<
 class ActiveTripController
     extends FamilyNotifier<ActiveTripState, ActiveTripArgs> {
   TripLocationPublisher? _locationPublisher;
+  TripPaymentListener? _paymentListener;
 
   @override
   ActiveTripState build(ActiveTripArgs args) {
     ref.onDispose(() {
       unawaited(_locationPublisher?.stop());
+      unawaited(_paymentListener?.dispose());
     });
     Future.microtask(_bootstrap);
     return ActiveTripState(
@@ -93,6 +100,7 @@ class ActiveTripController
           await ref.read(tripsRepositoryProvider).tripSnapshot(arg.tripId);
       state = state.copyWith(trip: summary, isLoading: false, clearError: true);
       await _syncLocationPublisher(summary.status);
+      await _syncPaymentListener(summary.status);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
@@ -115,6 +123,28 @@ class ActiveTripController
     }
   }
 
+  Future<void> _syncPaymentListener(TripStatus status) async {
+    if (status != TripStatus.inTransit) {
+      await _paymentListener?.dispose();
+      _paymentListener = null;
+      return;
+    }
+
+    final driverId = ref.read(alongSupabaseProvider).currentUser?.id;
+    if (driverId == null) return;
+
+    _paymentListener ??= TripPaymentListener(
+      channel: ref.read(driverChannelProvider),
+      tripId: arg.tripId,
+      onPaid: _onDigitalPayment,
+    );
+    await _paymentListener!.start(driverId);
+  }
+
+  void _onDigitalPayment(PaymentReceivedEvent event) {
+    state = state.copyWith(digitalPayment: event);
+  }
+
   Future<void> startTrip() async {
     state = state.copyWith(isSubmitting: true, clearError: true);
     try {
@@ -122,6 +152,7 @@ class ActiveTripController
           await ref.read(tripsRepositoryProvider).startTrip(arg.tripId);
       state = state.copyWith(trip: summary, isSubmitting: false, clearError: true);
       await _syncLocationPublisher(summary.status);
+      await _syncPaymentListener(summary.status);
     } catch (e) {
       state = state.copyWith(isSubmitting: false, errorMessage: e.toString());
     }
@@ -133,6 +164,8 @@ class ActiveTripController
       final result =
           await ref.read(tripsRepositoryProvider).completeTrip(arg.tripId);
       await _locationPublisher?.stop();
+      await _paymentListener?.dispose();
+      _paymentListener = null;
       state = state.copyWith(
         trip: result.trip,
         completeResult: result,
@@ -153,6 +186,7 @@ class ActiveTripController
           await ref.read(tripsRepositoryProvider).markBoarded(arg.tripId);
       state = state.copyWith(trip: summary, isSubmitting: false, clearError: true);
       await _syncLocationPublisher(summary.status);
+      await _syncPaymentListener(summary.status);
       return summary;
     } catch (e) {
       state = state.copyWith(isSubmitting: false, errorMessage: e.toString());

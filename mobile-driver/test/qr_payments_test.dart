@@ -1,5 +1,5 @@
 import 'package:along_core/along_core.dart';
-import 'package:along_data/along_data.dart';
+import 'package:along_data/along_data.dart' hide Money;
 import 'package:along_design/along_design.dart';
 import 'package:along_location/along_location.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +18,7 @@ import 'package:mobile_driver/features/payments/presentation/payment_received_no
 import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_screen.dart';
 import 'package:mobile_driver/features/payments/presentation/widgets/payment_toast.dart';
+import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_driver/testing/fakes/fake_driver_channel.dart';
@@ -89,6 +90,23 @@ ProviderContainer _qrContainer({
   );
   addTearDown(container.dispose);
   return container;
+}
+
+CompleteTripResult _digitalCompleteResult() {
+  final tripJson = FakeAlongSupabase.sampleTripView(
+    tripId: 'trip-digital-1',
+    status: 'completed',
+    paymentMethod: 'digital',
+  );
+  final trip = DomainMappers.tripFromDto(
+    TripView.fromJson(tripJson),
+    raw: tripJson,
+  );
+  return CompleteTripResult(
+    trip: trip,
+    commission: Money.parse('34.00', currency: 'NGN'),
+    fare: Money.parse('450.00', currency: 'NGN'),
+  );
 }
 
 void main() {
@@ -285,6 +303,46 @@ void main() {
         isTrue,
       );
       containerOn.dispose();
+    });
+
+    testWidgets('D-18 digital paid skips cash confirm buttons', (tester) async {
+      final fake = FakeAlongSupabase(digitalPaymentsEnabled: true);
+      final container = _qrContainer(fake: fake, channel: FakeDriverChannel());
+      final result = _digitalCompleteResult();
+      final driverShare = Money.fromMinorUnits(41600, currency: 'NGN');
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: Builder(
+            builder: (context) {
+              return AlongButton(
+                label: 'Open complete',
+                onPressed: () => TripCompleteSheet.show(
+                  context,
+                  result: result,
+                  paidDigitally: true,
+                  driverAmountReceived: driverShare,
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.tap(find.text('Open complete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.textContaining('Paid digitally'), findsOneWidget);
+      expect(find.textContaining('416'), findsWidgets);
+      expect(find.textContaining('already deducted'), findsOneWidget);
+      expect(find.byKey(const Key('trip_complete_digital_done')), findsOneWidget);
+      expect(find.byKey(const Key('trip_complete_yes')), findsNothing);
+      expect(find.byKey(const Key('trip_complete_different')), findsNothing);
+      expect(find.text('Confirm cash received?'), findsNothing);
     });
   });
 }
