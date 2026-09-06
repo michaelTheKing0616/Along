@@ -14,5 +14,6 @@
   "ANDROID_APPLICATION_ID_RIDER": "ng.along.rider.staging",
   "ANDROID_APPLICATION_ID_DRIVER": "ng.along.driver.staging",
   "IOS_BUNDLE_ID_RIDER": "ng.along.rider",
-  "IOS_BUNDLE_ID_DRIVER": "ng.along.driver"
+  "IOS_BUNDLE_ID_DRIVER": "ng.along.driver",
+  "PAYSTACK_SECRET_KEY": "sk_test_<paystack-secret-placeholder>"
 }
