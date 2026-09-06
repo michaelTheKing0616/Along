@@ -55,8 +55,30 @@ export type PayoutTransferResult = {
   status: 'pending' | 'success' | 'failed';
 };
 
+export type ResolveAccountNameParams = {
+  bankCode: string;
+  accountNumber: string;
+};
+
+export type ResolveAccountNameResult = {
+  accountName: string;
+};
+
+export type CreateSubaccountParams = {
+  businessName: string;
+  bankCode: string;
+  accountNumber: string;
+  contactEmail: string;
+};
+
+export type CreateSubaccountResult = {
+  subaccountCode: string;
+};
+
 export interface PaymentProvider {
   initiateSettlement(params: SettlementInitiateParams): Promise<SettlementInitiateResult>;
   initiateTripPayment(params: TripPaymentInitiateParams): Promise<TripPaymentInitiateResult>;
   initiatePayoutTransfer(params: PayoutTransferParams): Promise<PayoutTransferResult>;
+  resolveAccountName(params: ResolveAccountNameParams): Promise<ResolveAccountNameResult>;
+  createSubaccount(params: CreateSubaccountParams): Promise<CreateSubaccountResult>;
 }

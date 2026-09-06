@@ -1,5 +1,5 @@
 import { assertEquals } from 'jsr:@std/assert@1';
-import type { PaymentProvider } from '../../_shared/payments/mod.ts';
+import type { PaymentProvider, TripPaymentInitiateParams } from '../../_shared/payments/mod.ts';
 import {
   handlePaymentInitiate,
   paymentInitiateSchema,
@@ -31,26 +31,36 @@ const DRIVER_ROW = {
   accepts_digital: true,
 };
 
-function createMockProvider(onCall?: () => void): PaymentProvider {
+function createMockProvider(onCall?: (params: TripPaymentInitiateParams) => void): PaymentProvider {
   return {
     initiateSettlement: () => Promise.reject(new Error('not used')),
-    initiateTripPayment: () => {
-      onCall?.();
+    initiateTripPayment: (params) => {
+      onCall?.(params);
       return Promise.resolve({
         providerReference: 'pay_ref_test_001',
         authorizationUrl: 'https://checkout.paystack.com/test',
         expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       });
     },
+    initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
+    resolveAccountName: () => Promise.reject(new Error('not used')),
+    createSubaccount: () => Promise.reject(new Error('not used')),
   };
 }
 
 function createMockService(options?: {
   digitalEnabled?: boolean;
   existingPaid?: boolean;
+  driverRow?: {
+    id: string;
+    city_id: string;
+    payout_subaccount_code: string | null;
+    accepts_digital: boolean;
+  };
 }) {
   const payments: Record<string, unknown>[] = [];
   const digitalEnabled = options?.digitalEnabled ?? true;
+  const driverRow = options?.driverRow ?? DRIVER_ROW;
 
   return {
     from: (table: string) => {
@@ -67,7 +77,7 @@ function createMockService(options?: {
         return {
           select: () => ({
             eq: () => ({
-              single: () => Promise.resolve({ data: DRIVER_ROW, error: null }),
+              single: () => Promise.resolve({ data: driverRow, error: null }),
             }),
           }),
         };
@@ -210,4 +220,75 @@ Deno.test('TS-UI-04: payments/initiate accepts matching client amount equal to s
 
   assertEquals(res.status, 200);
   assertEquals(providerCalls, 1);
+});
+
+Deno.test('P4-A-08: driver without subaccount → STATE_INVALID, zero provider calls', async () => {
+  let providerCalls = 0;
+  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, channel: 'app' });
+  const service = createMockService({
+    driverRow: { ...DRIVER_ROW, payout_subaccount_code: null },
+  });
+
+  const res = await handlePaymentInitiate(body, {
+    userClient: {} as never,
+    service: service as never,
+    riderId: RIDER_ID,
+    provider: createMockProvider(() => {
+      providerCalls += 1;
+    }),
+    cfgBool: async () => true,
+    cfgNum: async () => 100,
+    cfgText: async () => 'account',
+  });
+
+  assertEquals(res.status, 409);
+  const json = await res.json();
+  assertEquals(json.error.code, 'STATE_INVALID');
+  assertEquals(providerCalls, 0);
+});
+
+Deno.test('P4-A-08: split amounts equal fare − commission to the kobo', async () => {
+  let capturedParams: TripPaymentInitiateParams | undefined;
+  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, channel: 'app' });
+  const service = createMockService();
+
+  const res = await handlePaymentInitiate(body, {
+    userClient: {} as never,
+    service: service as never,
+    riderId: RIDER_ID,
+    provider: createMockProvider((params) => {
+      capturedParams = params;
+    }),
+    cfgBool: async () => true,
+    cfgNum: async () => 100,
+    cfgText: async () => 'account',
+  });
+
+  assertEquals(res.status, 200);
+  const json = await res.json();
+
+  const amount = 850;
+  const commission = 42.5;
+  const driverAmount = 807.5;
+
+  assertEquals(json.data.amount, amount);
+  assertEquals(json.data.commission_amount, commission);
+  assertEquals(json.data.driver_amount, driverAmount);
+
+  const amountKobo = Math.round(amount * 100);
+  const commissionKobo = Math.round(commission * 100);
+  const driverKobo = Math.round(driverAmount * 100);
+
+  assertEquals(amountKobo, commissionKobo + driverKobo);
+  assertEquals(capturedParams?.amount, amount);
+  assertEquals(capturedParams?.commissionAmount, commission);
+  assertEquals(capturedParams?.driverSubaccountCode, 'ACCT_test_sub');
+  assertEquals(Math.round((capturedParams?.commissionAmount ?? 0) * 100), commissionKobo);
+
+  const stored = (service as ReturnType<typeof createMockService> & {
+    _payments: () => Record<string, unknown>[];
+  })._payments();
+  assertEquals(stored[0]?.amount, amount);
+  assertEquals(stored[0]?.commission_amount, commission);
+  assertEquals(stored[0]?.driver_amount, driverAmount);
 });

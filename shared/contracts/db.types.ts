@@ -2562,6 +2562,7 @@ export type Database = {
           id: string
           locale: string
           phone_e164: string | null
+          phone_reauth_at: string | null
           updated_at: string
         }
         Insert: {
@@ -2572,6 +2573,7 @@ export type Database = {
           id: string
           locale?: string
           phone_e164?: string | null
+          phone_reauth_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -2582,6 +2584,7 @@ export type Database = {
           id?: string
           locale?: string
           phone_e164?: string | null
+          phone_reauth_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -3239,6 +3242,53 @@ export type Database = {
           srtext?: string | null
         }
         Relationships: []
+      }
+      split_settlement_alerts: {
+        Row: {
+          created_at: string
+          delta: number
+          driver_id: string
+          expected_driver_total: number
+          id: string
+          provider_reported_total: number
+          reconciliation_day: string
+          resolved_at: string | null
+          status: string
+          subaccount_code: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          driver_id: string
+          expected_driver_total: number
+          id?: string
+          provider_reported_total: number
+          reconciliation_day: string
+          resolved_at?: string | null
+          status?: string
+          subaccount_code: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          driver_id?: string
+          expected_driver_total?: number
+          id?: string
+          provider_reported_total?: number
+          reconciliation_day?: string
+          resolved_at?: string | null
+          status?: string
+          subaccount_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "split_settlement_alerts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transfer_points: {
         Row: {
@@ -4712,6 +4762,7 @@ export type Database = {
         }
       }
       apply_threshold_policy: { Args: never; Returns: undefined }
+      assert_payout_reauth: { Args: { p_user_id?: string }; Returns: undefined }
       audit_row_target_id: { Args: { p_row: Json }; Returns: string }
       auto_boarding_check: { Args: { p_trip_id: string }; Returns: boolean }
       auto_in_transit_check: { Args: { p_trip_id: string }; Returns: boolean }
@@ -5137,6 +5188,10 @@ export type Database = {
       pass:
         | { Args: never; Returns: string }
         | { Args: { "": string }; Returns: string }
+      persist_driver_payout_bank: {
+        Args: { p_bank_last4: string; p_subaccount_code: string }
+        Returns: Json
+      }
       pg_version: { Args: never; Returns: string }
       pg_version_num: { Args: never; Returns: number }
       pgtap_version: { Args: never; Returns: number }
@@ -5316,6 +5371,10 @@ export type Database = {
         Args: { p_submission_id: string }
         Returns: string
       }
+      reconcile_split_settlements: {
+        Args: { p_day: string; p_provider_totals?: Json }
+        Returns: number
+      }
       record_coverage_gap: {
         Args: {
           p_city_id: string
@@ -5336,6 +5395,7 @@ export type Database = {
         }
         Returns: Json
       }
+      record_phone_reauth: { Args: never; Returns: string }
       register_device_token: {
         Args: { p_app: string; p_platform: string; p_token: string }
         Returns: undefined

@@ -96,6 +96,7 @@ with required_global as (
     'sos.hold_duration_ms',
     'share.link_ttl_hours',
     'otp.rate_limit_per_hour',
+    'auth.payout_reauth_window_s',
     'sms.providers',
     'load.warn_capacities',
     'fare.default_rate_per_km',

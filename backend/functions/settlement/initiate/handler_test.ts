@@ -19,6 +19,9 @@ function createMockProvider(onCall?: () => void): PaymentProvider {
       });
     },
     initiateTripPayment: () => Promise.reject(new Error('not used in settlement')),
+    initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
+    resolveAccountName: () => Promise.reject(new Error('not used')),
+    createSubaccount: () => Promise.reject(new Error('not used')),
   };
 }
 
@@ -124,6 +127,9 @@ Deno.test('cash-trip gate: PaymentProvider not invoked when settlement/initiate 
       });
     },
     initiateTripPayment: () => Promise.reject(new Error('not used in settlement')),
+    initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
+    resolveAccountName: () => Promise.reject(new Error('not used')),
+    createSubaccount: () => Promise.reject(new Error('not used')),
   };
 
   // Cash trip flow uses complete_trip SQL only — no edge settlement/initiate handler.

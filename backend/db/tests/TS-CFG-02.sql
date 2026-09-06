@@ -90,6 +90,7 @@ with required_global as (
     'name.shapes',
     'share.link_ttl_hours',
     'otp.rate_limit_per_hour',
+    'auth.payout_reauth_window_s',
     'sms.providers',
     'sms.provider',
     'public.origin',
