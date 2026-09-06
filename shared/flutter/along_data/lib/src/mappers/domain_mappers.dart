@@ -176,4 +176,60 @@ class DomainMappers {
     final noStage = board.stage_id.isEmpty;
     return noStage && board.name == 'Pickup' && !board.wayfinding_available;
   }
+
+  /// Parses one element from `driver_manifest()` (doc 03 §5).
+  static DriverManifestEntry manifestEntryFromJson(Map<String, dynamic> json) {
+    final tripId = json['trip_id'] as String;
+    final status = TripStatus.tryParse(json['status'] as String?);
+    if (status == null) {
+      throw AlongException(
+        code: AlongErrorCode.validation,
+        message: 'Unknown manifest status: ${json['status']}',
+      );
+    }
+    final boardJson = json['board'] as Map<String, dynamic>? ?? {};
+    final location = boardJson['location'] as Map<String, dynamic>?;
+    return DriverManifestEntry(
+      tripId: tripId,
+      status: status,
+      journeySequence: (json['journey_sequence'] as num?)?.toInt() ?? 1,
+      rider: riderFromDto(json['rider'] as Map<String, dynamic>? ?? {}),
+      board: TripBoardStop(
+        name: boardJson['name'] as String? ?? '',
+        location: location == null
+            ? null
+            : GeoPoint(
+                lat: (location['lat'] as num).toDouble(),
+                lng: (location['lng'] as num).toDouble(),
+              ),
+      ),
+      naMe: naMeFromDto(
+        json['na_me'] as Map<String, dynamic>? ?? {},
+        tripId: tripId,
+      ),
+      expiresAt: json['expires_at'] is String
+          ? DateTime.parse(json['expires_at'] as String)
+          : null,
+    );
+  }
+
+  static CompleteTripResult completeTripFromJson(Map<String, dynamic> json) {
+    final tripJson = json['trip'];
+    if (tripJson is! Map<String, dynamic>) {
+      throw AlongException(
+        code: AlongErrorCode.validation,
+        message: 'Missing trip in complete_trip response',
+      );
+    }
+    final view = dto.TripView.fromJson(tripJson);
+    return CompleteTripResult(
+      trip: tripFromDto(view, raw: tripJson),
+      commission: moneyFromDto(
+        dto.Money.fromJson(json['commission'] as Map<String, dynamic>),
+      ),
+      fare: moneyFromDto(
+        dto.Money.fromJson(json['fare'] as Map<String, dynamic>),
+      ),
+    );
+  }
 }

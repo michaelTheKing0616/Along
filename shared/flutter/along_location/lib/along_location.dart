@@ -8,5 +8,6 @@ export 'src/geolocator_source.dart';
 export 'src/location_sample.dart';
 export 'src/location_stream.dart';
 export 'src/presence_ping_service.dart';
+export 'src/trip_location_publisher.dart';
 
 const String alongLocationVersion = '0.0.1';

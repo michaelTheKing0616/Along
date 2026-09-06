@@ -47,7 +47,13 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(Map<String, dynamic> params)? onPresencePing;
   void Function(Map<String, dynamic> params)? onRespondToTrip;
   void Function(Map<String, dynamic> profile)? onUpsertRouteProfile;
+  void Function(String tripId)? onStartTrip;
+  void Function(String tripId)? onCompleteTrip;
+  void Function(Map<String, dynamic> params)? onTripLocationSample;
+  void Function(String tripId)? onMarkBoarded;
 
+  List<Map<String, dynamic>> manifestEntries = [];
+  final Map<String, String> tripStatuses = {};
   List<Map<String, dynamic>> routeProfiles;
   Map<String, dynamic>? suggestedRoute;
   List<Map<String, dynamic>> placesSearchResults;
@@ -175,12 +181,71 @@ class FakeAlongSupabase implements AlongSupabase {
       );
     }
     if (fn == 'trip_snapshot') {
-      return _sampleTripView(
-        tripId: params?['p_trip_id'] as String? ?? 'trip-1',
-        status: 'requested',
-      );
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      final status = tripStatuses[tripId] ?? 'accepted';
+      return _sampleTripView(tripId: tripId, status: status);
+    }
+    if (fn == 'driver_manifest') {
+      if (manifestEntries.isNotEmpty) return manifestEntries;
+      return [
+        _manifestEntry(tripId: 'trip-accepted-1', status: 'accepted'),
+        _manifestEntry(tripId: 'trip-boarded-1', status: 'boarded'),
+      ];
+    }
+    if (fn == 'mark_boarded') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      onMarkBoarded?.call(tripId);
+      tripStatuses[tripId] = 'boarded';
+      return _sampleTripView(tripId: tripId, status: 'boarded');
+    }
+    if (fn == 'start_trip') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      onStartTrip?.call(tripId);
+      tripStatuses[tripId] = 'in_transit';
+      return _sampleTripView(tripId: tripId, status: 'in_transit');
+    }
+    if (fn == 'complete_trip') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      onCompleteTrip?.call(tripId);
+      tripStatuses[tripId] = 'completed';
+      return {
+        'trip': _sampleTripView(tripId: tripId, status: 'completed'),
+        'commission': {'amount': '34.00', 'currency': 'NGN'},
+        'fare': {'amount': '450.00', 'currency': 'NGN'},
+      };
+    }
+    if (fn == 'trip_location_sample') {
+      onTripLocationSample?.call(params ?? {});
+      return {'boarded_auto': false};
     }
     return {};
+  }
+
+  static Map<String, dynamic> _manifestEntry({
+    required String tripId,
+    required String status,
+  }) {
+    return {
+      'trip_id': tripId,
+      'status': status,
+      'journey_sequence': 1,
+      'rider': {
+        'display_name': 'Ada',
+        'rating': 4.8,
+        'trip_count': 12,
+      },
+      'board': {
+        'stage_id': 's1',
+        'name': 'Lugbe Park',
+        'location': {'lat': 9.0, 'lng': 7.0},
+      },
+      'na_me': {
+        'color_token': 'green',
+        'shape': 'diamond',
+        'label': 'Green Diamond',
+      },
+      'expires_at': '2026-09-05T14:00:00Z',
+    };
   }
 
   static Map<String, dynamic> _sampleTripView({
@@ -414,6 +479,66 @@ class FakeAlongSupabase implements AlongSupabase {
             'scope_type': 'global',
             'scope_id': '*',
             'value': '[-100,-50,50,100]',
+          },
+        ];
+      }
+      if (key == 'driver.manifest_poll_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '3',
+          },
+        ];
+      }
+      if (key == 'client.trip_location_sample_interval_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '5',
+          },
+        ];
+      }
+      if (key == 'motion.naMe.strobe_ms') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '250',
+          },
+        ];
+      }
+      if (key == 'motion.naMe.cycle_duration_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '8',
+          },
+        ];
+      }
+      if (key == 'sos.hold_duration_ms') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '600',
+          },
+        ];
+      }
+      if (key == 'dispatch.no_show_after_s') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': '300',
           },
         ];
       }

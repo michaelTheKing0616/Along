@@ -15,6 +15,10 @@ import 'package:mobile_driver/features/routes/presentation/draw_route_screen.dar
 import 'package:mobile_driver/features/routes/presentation/fast_route_setup_screen.dart';
 import 'package:mobile_driver/features/routes/presentation/routes_list_screen.dart';
 import 'package:mobile_driver/features/shell/presentation/driver_shell_screen.dart';
+import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
+import 'package:mobile_driver/features/trip/presentation/active_trip_screen.dart';
+import 'package:mobile_driver/features/trip/presentation/manifest_screen.dart';
+import 'package:mobile_driver/features/trip/presentation/na_me_screen.dart';
 import 'package:mobile_driver/features/vehicle/presentation/vehicle_screen.dart';
 import 'package:mobile_driver/features/verification/presentation/verification_pending_screen.dart';
 import 'package:mobile_driver/routing/routes.dart';
@@ -70,6 +74,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final args = state.extra as DrawRouteArgs? ?? const DrawRouteArgs();
           return DrawRouteScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.manifest,
+        builder: (context, state) => const ManifestScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.activeTrip,
+        builder: (context, state) {
+          final args = state.extra! as ActiveTripArgs;
+          return ActiveTripScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.naMe,
+        builder: (context, state) {
+          final args = state.extra! as NaMeRouteArgs;
+          return NaMeScreen(args: args);
         },
       ),
       StatefulShellRoute.indexedStack(
