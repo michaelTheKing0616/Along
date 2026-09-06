@@ -878,9 +878,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Split at source (ADR-0010). Persist payout_subaccount_code + payout_bank_last4 only. set_payout_bank requires OTP re-auth. Driver without subaccount → digital option hidden. Split amounts equal fare − commission / commission to the minor unit. Live-device deferred to P1-G-01. P1-G-01 still blocks Phase 7 only.
 
 ## [Phase 4 / P4-A-08] Paystack subaccounts
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-06
 - Worker report summary: payouts/set-bank + persist last4/subaccount; split kobo tests; reconcile_split_settlements. Deno 14/14, pgTAP 9/9. digital_enabled unchanged.
-- Reviewer verdict: FAIL — acceptance MET; `shared/contracts/db.types.ts` corrupted with Supabase CLI stdout (`Connecting to db 5432` + upgrade banner). Typecheck broken.
+- Reviewer verdict: PASS WITH NOTES (recheck) — prior db.types.ts pollution gone; typecheck clean; AC MET. Notes: Edge adapter vs rpc.set_payout_bank; Flutter D-24 deferred.
 - Rework count: 1 / 2
-- Notes/escalations: Minimal fix: regenerate `db.types.ts` cleanly. Live-device: deferred to P1-G-01. Do not flip digital_enabled.
+- Notes/escalations: Merged 5240c67. Live-device: deferred to P1-G-01. Next: P4-A-09 (QR backend). Then stop at P4-E-02 (human legal). Do not flip digital_enabled.
+
+## [Phase 4 / P4-A-09] QR scan-to-pay backend
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Next migration 00047. TS-QR-01..12. Zero card data at rest. Do not flip payments.digital_enabled. Live-device: deferred to P1-G-01.
