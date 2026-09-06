@@ -282,7 +282,27 @@
           "additionalProperties": { "type": "string", "format": "date-time" }
         },
         "extension": {},
-        "payment_method": { "type": "string" }
+        "payment_method": { "type": "string" },
+        "live": {
+          "type": "object",
+          "required": ["as_of"],
+          "properties": {
+            "as_of": { "type": "string", "format": "date-time" },
+            "driver": { "$ref": "#/$defs/LivePosition" },
+            "rider": { "$ref": "#/$defs/LivePosition" }
+          }
+        }
+      }
+    },
+    "LivePosition": {
+      "type": "object",
+      "required": ["lat", "lng", "ts"],
+      "properties": {
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "heading": { "type": ["integer", "null"] },
+        "speed_mps": { "type": ["number", "null"] },
+        "ts": { "type": "string", "format": "date-time" }
       }
     },
     "CountBucket": {

@@ -1,8 +1,8 @@
--- pgTAP: TS-DISC-04 — Realtime authz: rider joining trip:{other} rejected (P1-A-08)
+-- pgTAP: TS-DISC-04 — Realtime authz: rider joining trip:{other} rejected (P1-A-08, hardened P3-A-03)
 create extension if not exists pgtap;
 
 begin;
-select plan(5);
+select plan(7);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 
@@ -143,6 +143,23 @@ set local role authenticated;
 select ok(
   exists (select 1 from realtime.messages where extension = 'broadcast'),
   'party rider can read trip broadcast channel'
+);
+
+-- Rider must not receive admin:{city} precise positions (P3-A-03)
+select set_config('request.jwt.claim.sub', '0e300000-0000-4000-8000-000000000001', true);
+select set_config('realtime.topic', 'admin:zaria-test', true);
+set local role authenticated;
+
+select is(
+  realtime_admin_city('admin:zaria-test', '0e300000-0000-4000-8000-000000000001'::uuid),
+  false,
+  'TS-DISC-04: outsider rider blocked from admin:{city} channel'
+);
+
+select is(
+  (select count(*)::int from realtime.messages where extension = 'broadcast'),
+  0,
+  'TS-DISC-04: outsider rider cannot read admin:{city} broadcast channel'
 );
 
 select * from finish();

@@ -46,6 +46,21 @@ function createMockFanoutService(): SupabaseClient {
           error: null,
         });
       }
+      if (name === 'admin_presence_fanout') {
+        return Promise.resolve({
+          data: {
+            type: 'presence',
+            as_of: '2026-09-04T12:00:00.000Z',
+            vehicles: [{
+              driver_id: DRIVER_ID,
+              lat: 11.061,
+              lng: 7.701,
+              status: 'at_park',
+            }],
+          },
+          error: null,
+        });
+      }
       return Promise.resolve({ data: null, error: { message: `unexpected rpc: ${name}` } });
     },
   } as unknown as SupabaseClient;
@@ -67,12 +82,14 @@ Deno.test('presence-fanout: publishes ambient cells and reports cfg interval ≤
 
   assertEquals(res.status, 200);
   const body = await res.json();
-  assertEquals(body.data.published, 1);
+  assertEquals(body.data.published, 2);
   assertEquals(body.data.fanout_interval_s, 10);
   assertEquals(body.data.fanout_interval_s <= 10, true);
-  assertEquals(broadcasts.length, 1);
+  assertEquals(broadcasts.length, 2);
   assertEquals(broadcasts[0].topic, 'ambient:zaria-test:s0k8t');
   assertEquals((broadcasts[0].payload as { type: string }).type, 'cells');
+  assertEquals(broadcasts[1].topic, 'admin:zaria-test');
+  assertEquals((broadcasts[1].payload as { type: string }).type, 'presence');
   assertExists(body.meta.request_id);
 });
 

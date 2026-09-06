@@ -60,6 +60,8 @@ with required_global as (
     'presence.fanout_radius_m',
     'realtime.ambient_stale_grace_s',
     'realtime.max_payload_bytes',
+    'realtime.heartbeat_stale_s',
+    'realtime.live_paused_after_s',
     'boarding.colocation_radius_m',
     'boarding.colocation_duration_s',
     'boarding.min_speed_mps',
