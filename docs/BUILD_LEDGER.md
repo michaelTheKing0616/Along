@@ -765,3 +765,18 @@ All Phase 3 implementation tasks are PASS / PASS WITH NOTES. Phase 3 gate Review
 
 To open the Phase 3 gate and Phase 4, attach P1-G-01 evidence (corridor + Redmi + Patrol OTP + ios-compile) and say continue.
 **Escalations:** none.
+
+---
+
+## [Phase 3 / Gate] PASS WITH DEFERRED EVIDENCE — Phase 4 implementation authorised
+**Date:** 2026-09-06
+Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / corridor / Xcode).
+
+1. Phase 3 gate = PASS WITH DEFERRED EVIDENCE. Live trip, roaming hail, airplane-mode Na Me ride with P1-G-01 (checklist extended to include those Phase 3 observations).
+2. **Phase 4 is OPEN** from P4-A-01. Do not spawn a Phase 3 gate Reviewer that would FAIL for missing screenshots.
+3. **Hard gates from this point (do not move again without a new human decision):**
+   - Do not start **Phase 7** (Abuja scale-out / real multi-corridor usage) until P1-G-01 is PASS.
+   - Do not flip `cfg payments.digital_enabled` until **both** P4-E-02 (legal) **and** P1-G-01 are PASS.
+   - P4-E-02 remains a human stop when reached — that is law, not a device.
+4. Phase 4–6 implementation tasks: unit/pgTAP/widget/Playwright-against-local are enough; live-device clauses in acceptance are noted "deferred to P1-G-01", not FAIL.
+**Escalations:** none.

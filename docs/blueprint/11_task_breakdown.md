@@ -69,7 +69,7 @@ Standing acceptance for *every* task (not repeated below): spec §6 checklist; t
 | P1-E-04 | Staging wiring (no VM, no Termii, no custom domain): Edge + admin + mobile flavours read `env/staging.json` + `env/google-services.staging.json`; `supabase secrets` for FCM service-account JSON; mint FCM tokens from the key (do not use a static `FCM_ACCESS_TOKEN`); SMS hook in `cfg sms.provider='log'`; tiles bucket `tiles-staging`; OSRM via optional cloudflared tunnel; Sentry DSNs from env; `public.origin` empty | M | 09 §1, §4, §7, 07 §1 | P1-A-10 | Android smoke on Redmi A2+: sign-in via logged OTP, `plan-trip` returns options when the tunnel is up (or honest degrade when it is not). No secret committed. |
 | P1-E-05 | **iOS parity (compile, don't ship):** scaffold `mobile-driver/ios`; normalise both apps' bundle ids to `ng.along.rider` / `ng.along.driver` (+ `.dev`/`.staging` flavours); add macOS CI job `flutter build ios --no-codesign --flavor staging` for **both** apps; copy `GoogleService-Info.plist` from `env/` when present (else a stub that compiles); write Patrol iOS specs alongside Android, `skip` unless `PATROL_IOS=true`. No Apple Developer account, no codesign, no TestFlight | M | 07 §1, §13 | P1-E-01 | CI macos job green; `ios/` exists in both apps; grep finds no `if (Platform.isAndroid)` that hides a rider/driver feature; Reviewer fails any iOS-shaped hole |
 | P1-B-04 | **FM36 live path:** wire `showCapacityWarning` from `cfg load.warn_capacities` + the selected candidate's mode `load_capacity` (never a hardcoded mode list); "Request anyway" sets `p_load.acknowledged_warning=true`; server still rejects without it. Widget tests: warning shown for okada+medium, hidden for car+small | S | 06 R-09, 04 §4.13, FM36 | P1-B-03 | `showCapacityWarning` is not a literal `false`; TS covering both branches; grep finds no dead `showCapacityWarning: false` on the live path |
-| P1-G-01 | **Evidence day (human):** dashboard Send-SMS hook + `SEND_SMS_HOOK_SECRETS`; Redmi A2+ staging smoke + MapPanBenchmark 60 fps; live corridor E2E + screenshots (graph fare/boarding, roaming on map, driver publish < 1 min, Tier 0 mid-route, FM35, FM36); driver offline → gone from rider map; Patrol OTP on emulator (`PATROL_HAS_EMULATOR=true`); `ios-compile` green (full Xcode.app locally **or** git remote + `gh` + macos job). Playwright A-04 already PASS (P2-D-01 / P2-E-02). | L | spec §7 Phase 1 + 2 exits | P1-B-04 | Screenshots + pasted CI/Patrol output in the ledger. **Hard gate: Phase 3 *gate* (live trip / roaming hail / Na Me offline) must not PASS, and Phase 4 must not start, until this is PASS.** Phase 3 *implementation* may proceed. |
+| P1-G-01 | **Evidence day (human):** dashboard Send-SMS hook + `SEND_SMS_HOOK_SECRETS`; Redmi A2+ staging smoke + MapPanBenchmark 60 fps; live corridor E2E + screenshots (graph fare/boarding, roaming on map, driver publish < 1 min, Tier 0 mid-route, FM35, FM36; plus a Phase 3 live trip with auto-board / transfer and airplane-mode Na Me); driver offline → gone from rider map; Patrol OTP on emulator; `ios-compile` green. Playwright A-04 already PASS. | L | spec §7 Phases 1–3 exits | P1-B-04 | Screenshots + pasted CI/Patrol output in the ledger. **Hard gate: do not start Phase 7, and do not flip `payments.digital_enabled` (P4-E-02), until this is PASS.** Phases 3–6 implementation and their *code* gates may proceed as PASS WITH DEFERRED EVIDENCE. |
 
 **Phase 1 code exit (2026-09-05):** implementation PASS / PASS WITH NOTES. Spec §7 live-corridor exit deferred to P1-G-01.
 
@@ -95,7 +95,7 @@ Standing acceptance for *every* task (not repeated below): spec §6 checklist; t
 
 ## Phase 3 — Live Tracking, Trip Lifecycle & Presence Hardening
 
-**Phase 2 code exit (2026-09-06):** all Phase 2 implementation tasks PASS / PASS WITH NOTES. Spec §7 transfer/sort/Pricing live exit deferred to P1-G-01 (same evidence day). Phase 3 implementation is open. Phase 3 *gate* and Phase 4 stay closed until P1-G-01 PASS.
+**Phase 2 code exit (2026-09-06):** implementation PASS / PASS WITH NOTES. Live exit deferred to P1-G-01.
 
 | ID | Task | Size | Attach | Depends | Acceptance |
 |---|---|---|---|---|---|
@@ -106,9 +106,13 @@ Standing acceptance for *every* task (not repeated below): spec §6 checklist; t
 | P3-C-01 | D-15 Manifest, D-16 Active trip (Na Me, start/complete), Na Me shared component, location publishing during trips | L | 06 D-15/16 | P3-A-01 | Live test: end-to-end transitions incl. transfer; Na Me offline |
 | P3-E-01 | Realtime/presence load test v1 (k6: pings + subscribers) on staging; tune fan-out | M | 10 §3 Ops, 01 §7 | P3-A-02 | Results attached; budgets met at pilot scale |
 
+**Phase 3 code exit (2026-09-06):** implementation PASS / PASS WITH NOTES. Spec §7 live-trip / roaming-hail / airplane Na Me exit deferred to P1-G-01. Phase 3 gate = PASS WITH DEFERRED EVIDENCE. Phase 4 implementation is open.
+
 ---
 
 ## Phase 4 — Fare Transparency, Commission, Ledger & Payments
+
+Device/corridor evidence is not a Phase 4 implementation blocker. **P4-E-02 (legal) stays human** and still blocks flipping `payments.digital_enabled`. **P1-G-01 stays the hard gate before Phase 7.**
 
 | ID | Task | Size | Attach | Depends | Acceptance |
 |---|---|---|---|---|---|
