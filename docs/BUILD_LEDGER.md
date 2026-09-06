@@ -660,9 +660,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: New test reused TS-PLAN-09 id (collision with p95). Merged ebd7e29.
 
 ## [Phase 2 / P2-B-01] Multi-leg rider UI
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-05
-- Worker report summary: Rework 1 closed poll/radius. ADR-0016 lists still missing client.trip_poll_interval_s.
-- Reviewer verdict: FAIL (re-review)
-- Rework count: 1
-- Notes/escalations: Must-fix: add client.trip_poll_interval_s to TS-CFG-02.sql and app_config_keys.sql. Rework 2 of 2.
+- Worker report summary: R-07/14/19 + TTS ADR-0020; widget TS-UI-01; R-14 auto-present; config poll + boarding radius. 2 reworks (literals; TS-CFG-02 list).
+- Reviewer verdict: PASS WITH NOTES (after 2 reworks)
+- Rework count: 2
+- Notes/escalations: R-19 map mode is a placeholder (follow-up). Merged fccb2e2.
+
+## [Phase 2 / P2-B-02] Along Pricing sheet + hail-from-cell
+- Status: IN PROGRESS
+- Assigned: 2026-09-05
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Patrol emulator blocked — widget tests required; skip is FAIL for behavior.
