@@ -782,9 +782,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 **Escalations:** none.
 
 ## [Phase 4 / P4-A-01] Ledger + commission posting
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00036 — append-only driver_ledger_entries, ledger_post (advisory lock + idempotency), driver_balances, balance-aware driver_is_matchable, complete_trip cash_commission_debit. TS-LEDGER-01/02/04/05/06 all PASS locally (15 pgTAP + concurrency harness).
+- Reviewer verdict: PASS WITH NOTES — all TS-LEDGER-01/02/04/05/06 independently re-run after supabase db reset. settlement_id FK deferred to P4-A-03; run_ts_ledger_04.sh leaves Zaria fixture (run after reset); multi-currency sum is NGN-pilot-safe.
+- Rework count: 0
+- Notes/escalations: Merged d7745a9. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-A-02] Threshold policy + standing + guarantors
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00036. Extends driver_is_matchable with balance. complete_trip already stubs commission_amount (00031).
+- Notes/escalations: Next migration 00037. Config keys ledger.warn/block/grace/deactivate already exist. Flags table may be created schema-only for TS-LEDGER-07; no reconcile job (P4-A-06).
