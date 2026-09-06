@@ -18,6 +18,29 @@ export type SettlementInitiateResult = {
   expiresAt: string;
 };
 
+export type PaymentMethodPref = 'card' | 'bank_transfer' | 'ussd';
+
+export type TripPaymentInitiateParams = {
+  paymentId: string;
+  amount: number;
+  commissionAmount: number;
+  currency: string;
+  method: PaymentMethodPref;
+  riderEmail?: string;
+  driverSubaccountCode: string;
+  feeBearer: 'account' | 'subaccount';
+  callbackUrl?: string;
+};
+
+export type TripPaymentInitiateResult = {
+  providerReference: string;
+  authorizationUrl?: string;
+  ussdCode?: string;
+  bankAccount?: Record<string, unknown>;
+  expiresAt: string;
+};
+
 export interface PaymentProvider {
   initiateSettlement(params: SettlementInitiateParams): Promise<SettlementInitiateResult>;
+  initiateTripPayment(params: TripPaymentInitiateParams): Promise<TripPaymentInitiateResult>;
 }

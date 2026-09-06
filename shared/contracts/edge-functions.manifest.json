@@ -7,7 +7,7 @@
     { "slug": "parse-itinerary", "tier": "A", "status": "stub" },
     { "slug": "settlement/initiate", "tier": "I", "status": "implemented" },
     { "slug": "webhooks/paystack", "tier": "service", "status": "implemented" },
-    { "slug": "payments/initiate", "tier": "B/A", "status": "stub" },
+    { "slug": "payments/initiate", "tier": "B/A", "status": "implemented" },
     { "slug": "qr/resolve/{driver_code}", "tier": "A", "status": "stub" },
     { "slug": "payments/methods", "tier": "B", "status": "stub" },
     { "slug": "payments/receipt/{payment_id}", "tier": "B/A", "status": "stub" }

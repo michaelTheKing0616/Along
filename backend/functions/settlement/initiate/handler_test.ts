@@ -18,6 +18,7 @@ function createMockProvider(onCall?: () => void): PaymentProvider {
         expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       });
     },
+    initiateTripPayment: () => Promise.reject(new Error('not used in settlement')),
   };
 }
 
@@ -122,6 +123,7 @@ Deno.test('cash-trip gate: PaymentProvider not invoked when settlement/initiate 
         expiresAt: new Date().toISOString(),
       });
     },
+    initiateTripPayment: () => Promise.reject(new Error('not used in settlement')),
   };
 
   // Cash trip flow uses complete_trip SQL only — no edge settlement/initiate handler.
