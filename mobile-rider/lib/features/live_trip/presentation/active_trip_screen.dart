@@ -152,14 +152,29 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                   ],
                   if (digitalEnabled) ...[
                     const SizedBox(height: AlongSpace.s12),
-                    AlongButton(
-                      key: const Key('active_trip_pay'),
-                      label: l10n.payDriverCta(formatMoney(liveTrip.totalFare)),
-                      variant: AlongButtonVariant.yellow,
-                      onPressed: () => PayDriverSheet.show(
-                        context,
-                        trip: liveTrip,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AlongButton(
+                            key: const Key('active_trip_scan'),
+                            label: l10n.activeTripScan,
+                            variant: AlongButtonVariant.secondary,
+                            onPressed: () => context.push(AppRoutes.scanToPay),
+                          ),
+                        ),
+                        const SizedBox(width: AlongSpace.s8),
+                        Expanded(
+                          child: AlongButton(
+                            key: const Key('active_trip_pay'),
+                            label: l10n.payDriverCta(formatMoney(liveTrip.totalFare)),
+                            variant: AlongButtonVariant.yellow,
+                            onPressed: () => PayDriverSheet.show(
+                              context,
+                              trip: liveTrip,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                   const SizedBox(height: AlongSpace.s12),

@@ -1,4 +1,5 @@
 import 'package:along_core/along_core.dart';
+import 'package:along_data/along_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,6 +25,9 @@ import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.
 import 'package:mobile_rider/features/trips/presentation/trip_detail_screen.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
+import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
+import 'package:mobile_rider/features/payments/presentation/payment_methods_screen.dart';
+import 'package:mobile_rider/features/payments/presentation/scan_to_pay_screen.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -147,13 +151,34 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.payDriver,
         builder: (context, state) {
-          final trip = state.extra as TripSummary?;
+          final args = state.extra;
+          if (args is PayDriverRouteArgs) {
+            return Scaffold(
+              body: SafeArea(
+                child: PayDriverSheet(
+                  trip: args.trip as TripSummary?,
+                  driverCode: args.driverCode,
+                  dynamicToken: args.dynamicToken,
+                  preloadedResolve: args.preloadedResolve as QrResolveResult?,
+                ),
+              ),
+            );
+          }
+          final trip = args as TripSummary?;
           return Scaffold(
             body: SafeArea(
               child: PayDriverSheet(trip: trip),
             ),
           );
         },
+      ),
+      GoRoute(
+        path: AppRoutes.scanToPay,
+        builder: (context, state) => const ScanToPayScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.paymentMethods,
+        builder: (context, state) => const PaymentMethodsScreen(),
       ),
       GoRoute(
         path: AppRoutes.activeTrip,

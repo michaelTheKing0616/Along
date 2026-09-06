@@ -20,4 +20,6 @@ abstract final class AppRoutes {
   static const activeTrip = '/active-trip';
   static const tripDetail = '/trip-detail';
   static const payDriver = '/pay-driver';
+  static const scanToPay = '/scan-to-pay';
+  static const paymentMethods = '/payment-methods';
 }

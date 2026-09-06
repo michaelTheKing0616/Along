@@ -308,6 +308,7 @@ Map<String, dynamic> sampleAcceptedTripResponse({
       'display_name': 'Musa',
       'rating': 4.8,
       'trips_completed': 320,
+      'driver_code': 'TEST0301',
     },
     'vehicle': {
       'plate_number': 'ABC-123-XY',
