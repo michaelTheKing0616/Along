@@ -4,7 +4,7 @@ import { signInAs } from './helpers';
 
 test.describe('Admin sign-in per role', () => {
   for (const user of TEST_USERS) {
-    test(`${user.role} can sign in`, async ({ page }) => {
+    test(`${user.email.split('@')[0]} (${user.role}) can sign in`, async ({ page }) => {
       await signInAs(page, user.email);
       await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
       await expect(page.getByText(`City: ${E2E_CITY}`)).toBeVisible();
