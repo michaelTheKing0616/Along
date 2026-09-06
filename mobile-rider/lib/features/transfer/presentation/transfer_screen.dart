@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_panel.dart';
@@ -143,6 +144,10 @@ class _TransferScreenState extends ConsumerState<TransferScreen> {
           .read(transferControllerProvider(widget.args).notifier)
           .requestNextLeg();
       if (trip != null && mounted) {
+        ref.read(activeJourneyMonitorProvider.notifier).trackFromTrip(
+              trip,
+              candidateId: widget.args.candidateId,
+            );
         context.push(
           AppRoutes.requesting,
           extra: RequestingRouteArgs(trip: trip, roamingSource: false),

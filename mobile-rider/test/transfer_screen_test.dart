@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/transfer/presentation/transfer_screen.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -115,6 +116,8 @@ void main() {
       expect(fakeSupabase.requestTripInvokeCount, 1);
       expect(fakeSupabase.lastRequestTripParams?['p_leg_index'], 1);
       expect(fakeSupabase.lastRequestTripParams?['p_candidate_id'], 'cand-multi-1');
+
+      container.read(activeJourneyMonitorProvider.notifier).stopTracking();
     });
   });
 }

@@ -3,6 +3,21 @@ import 'package:along_data/src/supabase/along_supabase.dart';
 import 'package:along_data/src/supabase/error_mapper.dart';
 import 'package:along_data/src/wayfinding/walking_directions_repository.dart';
 
+/// Lightweight journey row for client polling (doc 04 §11).
+class JourneyStatusSnapshot {
+  const JourneyStatusSnapshot({
+    required this.journeyId,
+    required this.status,
+    this.currentTripSequence,
+    this.candidateId,
+  });
+
+  final String journeyId;
+  final String status;
+  final int? currentTripSequence;
+  final String? candidateId;
+}
+
 /// Loads journey transfer state and prefetched walk directions (P2-A-04).
 class JourneyRepository {
   JourneyRepository(this._gateway, this._directionsRepo);
@@ -101,6 +116,29 @@ class JourneyRepository {
         (transfers[idx]['transfer_time_s'] as num?)?.toInt() ??
         180;
     return (walkS / 60).ceil().clamp(1, 999);
+  }
+
+  /// Poll-friendly journey status for transfer auto-navigation (R-14).
+  Future<JourneyStatusSnapshot?> journeyStatusSnapshot(String journeyId) async {
+    try {
+      final journeys = await _gateway.selectRows(
+        'journeys',
+        filters: {'id': journeyId},
+      );
+      if (journeys.isEmpty) return null;
+      final journey = journeys.first;
+      final snapshot =
+          journey['plan_snapshot'] as Map<String, dynamic>? ?? {};
+      return JourneyStatusSnapshot(
+        journeyId: journeyId,
+        status: journey['status'] as String? ?? '',
+        currentTripSequence:
+            (journey['current_trip_sequence'] as num?)?.toInt(),
+        candidateId: snapshot['candidate_id'] as String?,
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
   }
 
   /// Candidate id stored on the journey for re-planning remaining segment.

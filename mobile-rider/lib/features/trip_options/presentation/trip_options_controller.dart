@@ -5,6 +5,7 @@ import 'package:along_data/along_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
+import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
 
@@ -264,6 +265,10 @@ class TripOptionsController extends Notifier<TripOptionsState> {
         activeTrip: summary,
         clearPending: true,
       );
+      ref.read(activeJourneyMonitorProvider.notifier).trackFromTrip(
+            summary,
+            candidateId: candidateId,
+          );
       return summary;
     } catch (e) {
       state = state.copyWith(clearPending: true);
