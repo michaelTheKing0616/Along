@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { formatMoney } from '@/lib/drivers/format';
 import type {
+  FeeBearerReport,
   PendingAdjustmentRow,
   PayoutRow,
+  QrPaymentFinanceRow,
   SettlementAgentRow,
   SettlementRow,
+  StickerBatchDriver,
 } from '@/lib/finance/types';
 import { approvePendingAdjustment, upsertSettlementAgent } from './actions';
 
@@ -18,6 +21,9 @@ interface FinanceConsoleProps {
   agents: SettlementAgentRow[];
   pendingAdjustments: PendingAdjustmentRow[];
   payouts: PayoutRow[];
+  qrPayments: QrPaymentFinanceRow[];
+  feeBearerReport: FeeBearerReport | null;
+  stickerDrivers: StickerBatchDriver[];
   currentAdminId: string | null;
 }
 
@@ -28,10 +34,15 @@ export function FinanceConsole({
   agents,
   pendingAdjustments,
   payouts,
+  qrPayments,
+  feeBearerReport,
+  stickerDrivers,
   currentAdminId,
 }: FinanceConsoleProps) {
   const [businessName, setBusinessName] = useState('');
   const [phone, setPhone] = useState('');
+  const [selectedStickerDrivers, setSelectedStickerDrivers] = useState<Set<string>>(new Set());
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -50,6 +61,54 @@ export function FinanceConsole({
       }
     });
   }
+
+  function toggleStickerDriver(id: string) {
+    setSelectedStickerDrivers((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  async function exportStickerBatch() {
+    setMessage(null);
+    setError(null);
+    if (selectedStickerDrivers.size === 0) {
+      setError('Select at least one driver.');
+      return;
+    }
+    setExportingPdf(true);
+    try {
+      const res = await fetch('/api/finance/sticker-batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cityId,
+          driverIds: [...selectedStickerDrivers],
+        }),
+      });
+      if (!res.ok) {
+        const body = (await res.json()) as { error?: string };
+        throw new Error(body.error ?? 'Export failed');
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'along-sticker-batch-preview.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+      setMessage('Sticker batch PDF downloaded (preview).');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Export failed');
+    } finally {
+      setExportingPdf(false);
+    }
+  }
+
+  const attributed = qrPayments.filter((p) => p.trip_id);
+  const unattributed = qrPayments.filter((p) => !p.trip_id);
 
   return (
     <div data-testid="finance-console">
@@ -238,8 +297,142 @@ export function FinanceConsole({
           </table>
         )}
         <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-3)' }}>
-          QR payments and Paystack daily import reconciliation — deferred to P4-D-02.
+          Paystack daily import reconciliation remains on the settlements pipeline.
         </p>
+      </section>
+
+      <section style={{ marginBottom: 'var(--space-8)' }} data-testid="qr-payments-section">
+        <h2 style={{ fontSize: '1.125rem' }}>QR payments</h2>
+        {feeBearerReport ? (
+          <div className="card" style={{ marginBottom: 'var(--space-4)' }} data-testid="fee-bearer-report">
+            <h3 style={{ marginTop: 0, fontSize: '1rem' }}>Fee-bearer economics</h3>
+            <dl
+              style={{
+                margin: 0,
+                display: 'grid',
+                gridTemplateColumns: 'max-content 1fr',
+                gap: 'var(--space-2) var(--space-4)',
+                fontSize: '0.875rem',
+              }}
+            >
+              <dt style={{ color: 'var(--color-text-muted)' }}>Config</dt>
+              <dd style={{ margin: 0 }}>{feeBearerReport.fee_bearer}</dd>
+              <dt style={{ color: 'var(--color-text-muted)' }}>Succeeded QR payments</dt>
+              <dd style={{ margin: 0 }}>{feeBearerReport.payment_count}</dd>
+              <dt style={{ color: 'var(--color-text-muted)' }}>Commission collected</dt>
+              <dd style={{ margin: 0 }}>
+                {formatMoney(feeBearerReport.commission_total, 'NGN')}
+              </dd>
+              <dt style={{ color: 'var(--color-text-muted)' }}>Provider fees recorded</dt>
+              <dd style={{ margin: 0 }}>
+                {formatMoney(feeBearerReport.provider_fee_total, 'NGN')}
+              </dd>
+            </dl>
+          </div>
+        ) : null}
+
+        <h3 style={{ fontSize: '1rem' }}>Attributed</h3>
+        {attributed.length === 0 ? (
+          <p style={{ color: 'var(--color-text-muted)' }}>No attributed QR payments.</p>
+        ) : (
+          <table className="data-table" data-testid="qr-payments-attributed" style={{ marginBottom: 'var(--space-4)' }}>
+            <thead>
+              <tr>
+                <th>Driver</th>
+                <th>Amount</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attributed.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.driver_code ?? row.driver_id.slice(0, 8)}</td>
+                  <td>{formatMoney(row.amount, row.currency)}</td>
+                  <td>{row.source}</td>
+                  <td>{row.status}</td>
+                  <td>{new Date(row.created_at).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        <h3 style={{ fontSize: '1rem' }}>Unattributed</h3>
+        {unattributed.length === 0 ? (
+          <p style={{ color: 'var(--color-text-muted)' }}>No unattributed QR payments.</p>
+        ) : (
+          <table className="data-table" data-testid="qr-payments-unattributed">
+            <thead>
+              <tr>
+                <th>Driver</th>
+                <th>Amount</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              {unattributed.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.driver_code ?? row.driver_id.slice(0, 8)}</td>
+                  <td>{formatMoney(row.amount, row.currency)}</td>
+                  <td>{row.source}</td>
+                  <td>{row.status}</td>
+                  <td>{new Date(row.created_at).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      <section data-testid="sticker-batch-section">
+        <h2 style={{ fontSize: '1.125rem' }}>Sticker batches (preview)</h2>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+          Export QR + plate + code labels marked STAGING — not for production vehicles.
+        </p>
+        {stickerDrivers.length === 0 ? (
+          <p style={{ color: 'var(--color-text-muted)' }}>No drivers with codes in this city.</p>
+        ) : (
+          <>
+            <table className="data-table" data-testid="sticker-batch-drivers" style={{ marginBottom: 'var(--space-4)' }}>
+              <thead>
+                <tr>
+                  <th />
+                  <th>Code</th>
+                  <th>Plate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stickerDrivers.map((driver) => (
+                  <tr key={driver.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedStickerDrivers.has(driver.id)}
+                        onChange={() => toggleStickerDriver(driver.id)}
+                        data-testid={`sticker-select-${driver.driver_code}`}
+                      />
+                    </td>
+                    <td>{driver.driver_code}</td>
+                    <td>{driver.plate ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={pending || exportingPdf || selectedStickerDrivers.size === 0}
+              data-testid="export-sticker-batch"
+              onClick={() => void exportStickerBatch()}
+            >
+              Export PDF preview
+            </button>
+          </>
+        )}
       </section>
     </div>
   );
