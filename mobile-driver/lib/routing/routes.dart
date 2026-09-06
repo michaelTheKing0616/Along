@@ -10,6 +10,11 @@ abstract final class AppRoutes {
   static const pending = '/pending';
   static const home = '/home';
   static const routesTab = '/routes';
+  static const earnings = '/earnings';
+  static const settle = '/earnings/settle';
+  static const standing = '/earnings/standing';
+  static const guarantor = '/earnings/guarantor';
+  static const account = '/account';
   static const routeFastSetup = '/routes/fast-setup';
   static const routeDraw = '/routes/draw';
   static const manifest = '/manifest';

@@ -543,4 +543,199 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sosPlaceholder => 'SOS will connect in a future release';
+
+  @override
+  String get homeLedgerBlockedTitle => 'Matching paused';
+
+  @override
+  String homeLedgerBlockedBalance(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String homeLedgerBlockedThreshold(String amount) {
+    return 'Block limit $amount';
+  }
+
+  @override
+  String get settleCta => 'Settle';
+
+  @override
+  String get settleTitle => 'Settle balance';
+
+  @override
+  String settleCurrentBalance(String amount) {
+    return 'Current balance: $amount';
+  }
+
+  @override
+  String get settleAmountLabel => 'Amount to pay';
+
+  @override
+  String get settleChannelBank => 'Bank transfer';
+
+  @override
+  String get settleChannelUssd => 'USSD';
+
+  @override
+  String get settleChannelCard => 'Card';
+
+  @override
+  String get settleChannelAgent => 'Pay an agent';
+
+  @override
+  String get settleAgentCodeTitle => 'Your agent code';
+
+  @override
+  String settleAgentExpires(String time) {
+    return 'Expires $time';
+  }
+
+  @override
+  String get settleDone => 'Done';
+
+  @override
+  String get earningsLedgerSection => 'ALONG BALANCE';
+
+  @override
+  String get earningsTripsSection => 'TRIPS';
+
+  @override
+  String get earningsLedgerEmpty => 'No ledger entries yet';
+
+  @override
+  String get earningsTripsCaption =>
+      'Cash you collected directly — not part of your Along balance';
+
+  @override
+  String get earningsTripsEmpty => 'No completed cash trips today';
+
+  @override
+  String earningsTripsTodaySummary(int count, String amount) {
+    return '$count trips today · $amount collected';
+  }
+
+  @override
+  String get standingLink => 'Standing';
+
+  @override
+  String get standingTitle => 'Your standing';
+
+  @override
+  String standingBalanceAt(String amount) {
+    return 'Balance at transition: $amount';
+  }
+
+  @override
+  String standingBlockThreshold(String amount) {
+    return 'Matching pauses below $amount';
+  }
+
+  @override
+  String standingGraceDeadline(String date) {
+    return 'Grace deadline: $date';
+  }
+
+  @override
+  String get standingRestoreHint =>
+      'Settle above the warn threshold to restore good standing';
+
+  @override
+  String get standingHistoryTitle => 'HISTORY';
+
+  @override
+  String get standingHistoryEmpty => 'No standing changes yet';
+
+  @override
+  String get guarantorLink => 'Add a guarantor';
+
+  @override
+  String get guarantorTitle => 'Guarantor';
+
+  @override
+  String get guarantorExplainer =>
+      'Your guarantor is notified if your balance stays unsettled after the grace period. Nothing is ever deducted from them.';
+
+  @override
+  String get guarantorTypeDriver => 'Fellow driver';
+
+  @override
+  String get guarantorTypeOwner => 'Vehicle owner';
+
+  @override
+  String get guarantorNameLabel => 'Full name';
+
+  @override
+  String get guarantorPhoneLabel => 'Phone number';
+
+  @override
+  String get guarantorSubmit => 'Add guarantor';
+
+  @override
+  String get guarantorSuccess =>
+      'Guarantor added — they will receive an acknowledgement link';
+
+  @override
+  String get extendTripTitle => 'Extend trip';
+
+  @override
+  String get extendTripSearchHint => 'Where to now?';
+
+  @override
+  String extendTripDestination(String destination) {
+    return 'Continuing to $destination';
+  }
+
+  @override
+  String get extendTripPropose => 'Propose to rider';
+
+  @override
+  String get incomingExtensionTitle => 'Extension request';
+
+  @override
+  String get incomingExtensionDecline => 'Decline';
+
+  @override
+  String get incomingExtensionAccept => 'Accept';
+
+  @override
+  String incomingRiderExtensionBody(String destination, String delta) {
+    return 'Rider proposes continuing to $destination for +$delta';
+  }
+
+  @override
+  String get tripCompleteTitle => 'Trip complete';
+
+  @override
+  String tripCompleteFareLine(String amount) {
+    return 'Fare $amount — rider pays you in cash';
+  }
+
+  @override
+  String tripCompleteAlongFeeLine(String amount) {
+    return 'Along fee $amount — posted to your balance';
+  }
+
+  @override
+  String tripCompleteNewBalance(String amount) {
+    return 'New balance $amount';
+  }
+
+  @override
+  String get tripCompleteCashQuestion => 'Confirm cash received?';
+
+  @override
+  String get tripCompleteYes => 'Yes';
+
+  @override
+  String get tripCompleteDifferent => 'Different amount';
+
+  @override
+  String get tripCompleteDifferentPrompt => 'How much did you receive?';
+
+  @override
+  String get tripCompleteRateTitle => 'Rate your rider';
+
+  @override
+  String get tripCompleteDone => 'Done';
 }

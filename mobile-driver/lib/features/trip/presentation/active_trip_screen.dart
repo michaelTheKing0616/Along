@@ -7,18 +7,40 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
+import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
+import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/na_me_screen.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
 
-/// D-16 Active trip — map, Na Me, start/complete (doc 06).
-class ActiveTripScreen extends ConsumerWidget {
+/// D-16 Active trip — map, Na Me, start/complete, extend (doc 06).
+class ActiveTripScreen extends ConsumerStatefulWidget {
   const ActiveTripScreen({super.key, required this.args});
 
   final ActiveTripArgs args;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ActiveTripScreen> createState() => _ActiveTripScreenState();
+}
+
+class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final args = widget.args;
+
+    ref.listen(activeTripControllerFamilyProvider(args), (previous, next) {
+      if (next.completeResult != null &&
+          previous?.completeResult == null &&
+          context.mounted) {
+        TripCompleteSheet.show(
+          context,
+          result: next.completeResult!,
+          onFinished: () {
+            if (context.mounted) context.pop();
+          },
+        );
+      }
+    });
     final l10n = AppLocalizations.of(context);
     final configAsync = ref.watch(driverTripConfigProvider);
     final state = ref.watch(activeTripControllerFamilyProvider(args));
@@ -160,7 +182,17 @@ class ActiveTripScreen extends ConsumerWidget {
                                   ? null
                                   : () => controller.startTrip(),
                             ),
-                          if (status == TripStatus.inTransit)
+                          if (status == TripStatus.inTransit) ...[
+                            AlongButton(
+                              key: const Key('active_trip_extend'),
+                              label: l10n.extendTripTitle,
+                              variant: AlongButtonVariant.secondary,
+                              onPressed: () => ExtendTripSheet.show(
+                                context,
+                                tripId: args.tripId,
+                              ),
+                            ),
+                            const SizedBox(height: AlongSpace.s8),
                             AlongButton(
                               key: const Key('active_trip_complete'),
                               label: l10n.activeTripComplete,
@@ -169,15 +201,9 @@ class ActiveTripScreen extends ConsumerWidget {
                                   : AlongButtonVisualState.normal,
                               onPressed: state.isSubmitting
                                   ? null
-                                  : () async {
-                                      final result =
-                                          await controller.completeTrip();
-                                      if (!context.mounted || result == null) {
-                                        return;
-                                      }
-                                      context.pop(result);
-                                    },
+                                  : () => controller.completeTrip(),
                             ),
+                          ],
                           if (state.errorMessage != null) ...[
                             const SizedBox(height: AlongSpace.s8),
                             Text(

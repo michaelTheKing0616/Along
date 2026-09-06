@@ -12,6 +12,7 @@ export 'src/mappers/domain_mappers.dart';
 export 'src/negotiation/negotiation_repository.dart';
 export 'src/negotiation/negotiation_view.dart';
 export 'src/journeys/journey_repository.dart';
+export 'src/ledger/ledger_repository.dart';
 export 'src/places/places_repository.dart';
 export 'src/planner/planner_repository.dart';
 export 'src/presence/presence_repository.dart';
