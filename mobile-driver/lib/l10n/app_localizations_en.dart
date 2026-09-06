@@ -746,4 +746,148 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tripCompleteDone => 'Done';
+
+  @override
+  String get requestPayment => 'Request payment';
+
+  @override
+  String tripCompleteDigitalLine(String amount) {
+    return 'Paid digitally · $amount sent to your bank';
+  }
+
+  @override
+  String tripCompleteDigitalFeeLine(String amount) {
+    return 'Along fee $amount already deducted';
+  }
+
+  @override
+  String get myQrTitle => 'My QR code';
+
+  @override
+  String get myQrAccountSubtitle => 'Share your code for digital payments';
+
+  @override
+  String get myQrDigitalDisabledBanner =>
+      'Digital payments are not live yet — your QR is for setup and testing only.';
+
+  @override
+  String get myQrPayoutPrompt => 'Set up payout bank';
+
+  @override
+  String get myQrPayoutHint =>
+      'Add your bank account so riders can pay you digitally. Along never holds your money.';
+
+  @override
+  String get myQrSetupPayout => 'Set up payout bank';
+
+  @override
+  String get myQrPayoutComingSoon =>
+      'Payout setup opens from Account once digital payments go live.';
+
+  @override
+  String get myQrShare => 'Share as image';
+
+  @override
+  String get myQrOrderSticker => 'Order printed sticker';
+
+  @override
+  String myQrStickerStatus(String status) {
+    return 'Sticker request: $status';
+  }
+
+  @override
+  String get myQrVerifySticker => 'Verify my sticker';
+
+  @override
+  String get myQrVerifyMatch => 'Sticker matches your code and plate';
+
+  @override
+  String get myQrVerifyMismatch => 'This sticker does not match your account';
+
+  @override
+  String get myQrVerifyInvalid => 'Not a valid Along QR code';
+
+  @override
+  String get myQrVerifyTimeout => 'Scan timed out — try again';
+
+  @override
+  String get myQrPauseDigital => 'Pause digital payments';
+
+  @override
+  String get myQrPauseDigitalHint => 'Riders will see cash only while paused';
+
+  @override
+  String get myQrPausedBanner =>
+      'Digital payments are paused — riders see cash only';
+
+  @override
+  String get myQrRotate => 'Rotate code';
+
+  @override
+  String get myQrRotateConfirmTitle => 'Rotate QR code?';
+
+  @override
+  String get myQrRotateConfirmBody =>
+      'Your current stickers will stop working. Ops will need to print new ones.';
+
+  @override
+  String get myQrRotateCancel => 'Cancel';
+
+  @override
+  String get myQrRotateConfirm => 'Rotate';
+
+  @override
+  String get paymentRequestTitle => 'Payment request';
+
+  @override
+  String paymentRequestForRider(String riderName) {
+    return 'For $riderName';
+  }
+
+  @override
+  String paymentRequestCountdown(int seconds) {
+    return 'Expires in ${seconds}s';
+  }
+
+  @override
+  String get paymentRequestWaiting => 'Waiting for payment…';
+
+  @override
+  String paymentRequestPaidLine(String amount) {
+    return 'Paid $amount ✓';
+  }
+
+  @override
+  String paymentRequestBankLine(String amount) {
+    return '$amount to your bank';
+  }
+
+  @override
+  String get paymentRequestDone => 'Done';
+
+  @override
+  String get paymentRequestExpired => 'This QR has expired — create a new one';
+
+  @override
+  String get paymentRequestDigitalDisabled =>
+      'Digital payments are not enabled yet';
+
+  @override
+  String get paymentRequestTokenError =>
+      'Could not verify payment QR — try again';
+
+  @override
+  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+
+  @override
+  String get earningsDigitalCaption =>
+      'Paid straight to your bank — not part of your Along balance';
+
+  @override
+  String get earningsDigitalEmpty => 'No digital payments yet';
+
+  @override
+  String earningsDigitalRow(String source) {
+    return 'Digital · $source';
+  }
 }

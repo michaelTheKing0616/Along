@@ -28,6 +28,29 @@ class FakeDriverChannel implements DriverChannel {
     }
   }
 
+  void emitPaymentReceived({
+    required String paymentId,
+    required double amount,
+    required double driverAmount,
+    required double commissionAmount,
+    String currency = 'NGN',
+    String source = 'qr_static',
+    String? tripId,
+  }) {
+    if (!_events.isClosed) {
+      _events.add({
+        'type': 'payment_received',
+        'payment_id': paymentId,
+        'amount': amount,
+        'driver_amount': driverAmount,
+        'commission_amount': commissionAmount,
+        'currency': currency,
+        'source': source,
+        'trip_id': tripId,
+      });
+    }
+  }
+
   void dispose() {
     _events.close();
   }

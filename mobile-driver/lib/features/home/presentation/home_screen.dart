@@ -13,6 +13,8 @@ import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_s
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/features/ledger/presentation/widgets/ledger_blocked_banner.dart';
+import 'package:mobile_driver/features/payments/presentation/payment_received_notifier.dart';
+import 'package:mobile_driver/features/payments/presentation/widgets/payment_toast.dart';
 import 'package:mobile_driver/features/trip/presentation/manifest_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
@@ -29,10 +31,23 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   MapLayerController? _layerController;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startPaymentListener());
+  }
+
+  Future<void> _startPaymentListener() async {
+    final userId = ref.read(alongSupabaseProvider).currentUser?.id;
+    if (userId == null) return;
+    await ref.read(paymentToastProvider.notifier).start(userId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(driverHomeControllerProvider);
     final ledger = ref.watch(driverLedgerControllerProvider);
     final incoming = ref.watch(incomingRequestNotifierProvider);
+    final paymentToast = ref.watch(paymentToastProvider);
     final pricing = ref.watch(driverPricingNotifierProvider);
     final config = ref.watch(appConfigProvider);
     final l10n = AppLocalizations.of(context);
@@ -155,6 +170,20 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
               right: AlongSpace.s16,
               top: 140,
               child: _DemandLabelsCard(labels: state.demandLabels),
+            ),
+          if (paymentToast.event != null)
+            Positioned(
+              left: AlongSpace.s16,
+              right: AlongSpace.s16,
+              top: 96,
+              child: SafeArea(
+                bottom: false,
+                child: PaymentToast(
+                  amount: paymentToast.event!.amount,
+                  onDismiss: () =>
+                      ref.read(paymentToastProvider.notifier).dismiss(),
+                ),
+              ),
             ),
           Positioned(
             left: AlongSpace.s16,

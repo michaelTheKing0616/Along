@@ -1383,6 +1383,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get tripCompleteDone;
+
+  /// No description provided for @requestPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Request payment'**
+  String get requestPayment;
+
+  /// No description provided for @tripCompleteDigitalLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid digitally · {amount} sent to your bank'**
+  String tripCompleteDigitalLine(String amount);
+
+  /// No description provided for @tripCompleteDigitalFeeLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Along fee {amount} already deducted'**
+  String tripCompleteDigitalFeeLine(String amount);
+
+  /// No description provided for @myQrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My QR code'**
+  String get myQrTitle;
+
+  /// No description provided for @myQrAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your code for digital payments'**
+  String get myQrAccountSubtitle;
+
+  /// No description provided for @myQrDigitalDisabledBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital payments are not live yet — your QR is for setup and testing only.'**
+  String get myQrDigitalDisabledBanner;
+
+  /// No description provided for @myQrPayoutPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up payout bank'**
+  String get myQrPayoutPrompt;
+
+  /// No description provided for @myQrPayoutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your bank account so riders can pay you digitally. Along never holds your money.'**
+  String get myQrPayoutHint;
+
+  /// No description provided for @myQrSetupPayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up payout bank'**
+  String get myQrSetupPayout;
+
+  /// No description provided for @myQrPayoutComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Payout setup opens from Account once digital payments go live.'**
+  String get myQrPayoutComingSoon;
+
+  /// No description provided for @myQrShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share as image'**
+  String get myQrShare;
+
+  /// No description provided for @myQrOrderSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Order printed sticker'**
+  String get myQrOrderSticker;
+
+  /// No description provided for @myQrStickerStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticker request: {status}'**
+  String myQrStickerStatus(String status);
+
+  /// No description provided for @myQrVerifySticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify my sticker'**
+  String get myQrVerifySticker;
+
+  /// No description provided for @myQrVerifyMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticker matches your code and plate'**
+  String get myQrVerifyMatch;
+
+  /// No description provided for @myQrVerifyMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'This sticker does not match your account'**
+  String get myQrVerifyMismatch;
+
+  /// No description provided for @myQrVerifyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid Along QR code'**
+  String get myQrVerifyInvalid;
+
+  /// No description provided for @myQrVerifyTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan timed out — try again'**
+  String get myQrVerifyTimeout;
+
+  /// No description provided for @myQrPauseDigital.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause digital payments'**
+  String get myQrPauseDigital;
+
+  /// No description provided for @myQrPauseDigitalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Riders will see cash only while paused'**
+  String get myQrPauseDigitalHint;
+
+  /// No description provided for @myQrPausedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital payments are paused — riders see cash only'**
+  String get myQrPausedBanner;
+
+  /// No description provided for @myQrRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate code'**
+  String get myQrRotate;
+
+  /// No description provided for @myQrRotateConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate QR code?'**
+  String get myQrRotateConfirmTitle;
+
+  /// No description provided for @myQrRotateConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current stickers will stop working. Ops will need to print new ones.'**
+  String get myQrRotateConfirmBody;
+
+  /// No description provided for @myQrRotateCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get myQrRotateCancel;
+
+  /// No description provided for @myQrRotateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate'**
+  String get myQrRotateConfirm;
+
+  /// No description provided for @paymentRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request'**
+  String get paymentRequestTitle;
+
+  /// No description provided for @paymentRequestForRider.
+  ///
+  /// In en, this message translates to:
+  /// **'For {riderName}'**
+  String paymentRequestForRider(String riderName);
+
+  /// No description provided for @paymentRequestCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires in {seconds}s'**
+  String paymentRequestCountdown(int seconds);
+
+  /// No description provided for @paymentRequestWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for payment…'**
+  String get paymentRequestWaiting;
+
+  /// No description provided for @paymentRequestPaidLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid {amount} ✓'**
+  String paymentRequestPaidLine(String amount);
+
+  /// No description provided for @paymentRequestBankLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} to your bank'**
+  String paymentRequestBankLine(String amount);
+
+  /// No description provided for @paymentRequestDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get paymentRequestDone;
+
+  /// No description provided for @paymentRequestExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This QR has expired — create a new one'**
+  String get paymentRequestExpired;
+
+  /// No description provided for @paymentRequestDigitalDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital payments are not enabled yet'**
+  String get paymentRequestDigitalDisabled;
+
+  /// No description provided for @paymentRequestTokenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not verify payment QR — try again'**
+  String get paymentRequestTokenError;
+
+  /// No description provided for @earningsDigitalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'DIGITAL PAYMENTS RECEIVED'**
+  String get earningsDigitalSection;
+
+  /// No description provided for @earningsDigitalCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid straight to your bank — not part of your Along balance'**
+  String get earningsDigitalCaption;
+
+  /// No description provided for @earningsDigitalEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No digital payments yet'**
+  String get earningsDigitalEmpty;
+
+  /// No description provided for @earningsDigitalRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital · {source}'**
+  String earningsDigitalRow(String source);
 }
 
 class _AppLocalizationsDelegate

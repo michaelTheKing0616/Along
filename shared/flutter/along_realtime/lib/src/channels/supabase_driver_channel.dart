@@ -35,6 +35,15 @@ class SupabaseDriverChannel implements DriverChannel {
       },
     );
 
+    channel.onBroadcast(
+      event: 'payment_received',
+      callback: (payload) {
+        if (!_events.isClosed) {
+          _events.add(_unwrapPayload(payload));
+        }
+      },
+    );
+
     await channel.subscribe();
     _channel = channel;
     _activeDriverId = driverId;

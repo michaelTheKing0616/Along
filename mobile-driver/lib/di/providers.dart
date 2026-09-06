@@ -11,6 +11,9 @@ import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
+import 'package:mobile_driver/features/payments/domain/qr_scanner_port.dart';
+import 'package:mobile_driver/features/payments/domain/share_image_port.dart';
+import 'package:mobile_driver/features/payments/presentation/my_qr_controller.dart';
 import 'package:mobile_driver/testing/fakes/fake_driver_channel.dart';
 import 'package:mobile_driver/testing/fakes/fake_negotiation_channel.dart';
 import 'package:path_provider/path_provider.dart';
@@ -168,6 +171,8 @@ List<Override> buildProviderOverrides({
   DriverChannel? driverChannel,
   PushService? pushService,
   NegotiationChannel? negotiationChannel,
+  QrScannerPort? qrScanner,
+  ShareImagePort? shareImagePort,
 }) {
   return [
     appConfigProvider.overrideWithValue(config),
@@ -195,5 +200,9 @@ List<Override> buildProviderOverrides({
     if (foregroundNotifier != null)
       driverForegroundNotifierProvider.overrideWithValue(foregroundNotifier),
     if (clock != null) clockProvider.overrideWithValue(clock),
+    if (qrScanner != null)
+      qrScannerProvider.overrideWithValue(qrScanner),
+    if (shareImagePort != null)
+      shareImageProvider.overrideWithValue(shareImagePort),
   ];
 }

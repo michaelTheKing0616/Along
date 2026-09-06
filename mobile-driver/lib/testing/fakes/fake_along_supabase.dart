@@ -22,6 +22,14 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Map<String, dynamic>>? tripExtensionRows,
     List<Map<String, dynamic>>? settlementRows,
     List<Map<String, dynamic>>? nearbySettlementAgents,
+    this.digitalPaymentsEnabled = false,
+    this.driverCode = 'ABC12345',
+    this.driverPlate = 'ABC-123-KJ',
+    this.acceptsDigital = true,
+    this.hasPayoutSubaccount = true,
+    this.publicOrigin,
+    List<Map<String, dynamic>>? qrStickerRequests,
+    List<Map<String, dynamic>>? digitalPayments,
   })  : cities = cities ?? defaultTestCities(),
         modes = modes ?? defaultTestModes(),
         countryConfig = countryConfig ?? defaultTestCountry(),
@@ -34,9 +42,19 @@ class FakeAlongSupabase implements AlongSupabase {
         tripExtensionRows = tripExtensionRows ?? [],
         settlementRows = settlementRows ?? [],
         nearbySettlementAgents = nearbySettlementAgents ??
-            defaultNearbySettlementAgents() {
+            defaultNearbySettlementAgents(),
+        qrStickerRequests = qrStickerRequests ?? [],
+        digitalPayments = digitalPayments ?? [] {
     if (signedInUser != null) {
       _user = signedInUser;
+    } else {
+      _user = User(
+        id: 'test-driver-id',
+        appMetadata: const {},
+        userMetadata: const {},
+        aud: 'authenticated',
+        createdAt: DateTime.now().toIso8601String(),
+      );
     }
   }
 
@@ -95,6 +113,15 @@ class FakeAlongSupabase implements AlongSupabase {
   List<Map<String, dynamic>> tripExtensionRows;
   List<Map<String, dynamic>> settlementRows;
   List<Map<String, dynamic>> nearbySettlementAgents;
+  bool digitalPaymentsEnabled;
+  String driverCode;
+  String driverPlate;
+  bool acceptsDigital;
+  bool hasPayoutSubaccount;
+  String? publicOrigin;
+  List<Map<String, dynamic>> qrStickerRequests;
+  List<Map<String, dynamic>> digitalPayments;
+  final Map<String, Map<String, dynamic>> paymentRequestsByTrip = {};
 
   static List<Map<String, dynamic>> defaultNearbySettlementAgents() => [
         {
@@ -351,6 +378,44 @@ class FakeAlongSupabase implements AlongSupabase {
         'trip': sampleTripView(tripId: 'trip-1', status: 'in_transit'),
       };
     }
+    if (fn == 'create_payment_request') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      final expiresAt = DateTime.utc(2026, 9, 6, 12, 10);
+      final token = 'signed-token-$tripId';
+      final url = publicOrigin == null || publicOrigin!.isEmpty
+          ? 'along://p/$driverCode?t=$token'
+          : '$publicOrigin/p/$driverCode?t=$token';
+      final payload = {
+        'url': url,
+        'token': token,
+        'amount': {'amount': '450.00', 'currency': 'NGN'},
+        'expires_at': expiresAt.toIso8601String(),
+      };
+      paymentRequestsByTrip[tripId] = payload;
+      return payload;
+    }
+    if (fn == 'rotate_driver_code') {
+      driverCode = 'NEWCODE1';
+      return {
+        'driver_code': driverCode,
+        'rotated_at': DateTime.utc(2026, 9, 6).toIso8601String(),
+      };
+    }
+    if (fn == 'set_accepts_digital') {
+      acceptsDigital = params?['p_enabled'] as bool? ?? true;
+      return {'accepts_digital': acceptsDigital};
+    }
+    if (fn == 'request_qr_sticker') {
+      final row = {
+        'id': 'sticker-${qrStickerRequests.length + 1}',
+        'driver_code': driverCode,
+        'reason': 'initial',
+        'status': 'pending',
+        'created_at': DateTime.utc(2026, 9, 6).toIso8601String(),
+      };
+      qrStickerRequests.insert(0, row);
+      return row;
+    }
     return {};
   }
 
@@ -463,7 +528,27 @@ class FakeAlongSupabase implements AlongSupabase {
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
+    AlongHttpMethod method = AlongHttpMethod.post,
+    Map<String, String>? queryParameters,
   }) async {
+    if (slug.startsWith('qr/resolve/')) {
+      final code = slug.split('/').last;
+      if (code != driverCode) {
+        return const {'data': {}};
+      }
+      return {
+        'data': {
+          'driver': {
+            'first_name': 'Musa',
+            'plate': driverPlate,
+            'mode': {'code': 'car'},
+            'accepts_digital': acceptsDigital,
+            'active': true,
+          },
+          'currency': 'NGN',
+        },
+      };
+    }
     if (slug == 'verification-ocr') {
       return {
         'data': {
@@ -674,6 +759,26 @@ class FakeAlongSupabase implements AlongSupabase {
           },
         ];
       }
+      if (key == 'payments.digital_enabled') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': digitalPaymentsEnabled.toString(),
+          },
+        ];
+      }
+      if (key == 'public.origin') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': publicOrigin == null ? '""' : '"$publicOrigin"',
+          },
+        ];
+      }
       if (key == 'dispatch.no_show_after_s') {
         return [
           {
@@ -692,8 +797,49 @@ class FakeAlongSupabase implements AlongSupabase {
           'verified_status': 'verified',
           'city_id': 'b1000000-0000-4000-8000-000000000001',
           'standing': 'good_standing',
+          'driver_code': driverCode,
+          'accepts_digital': acceptsDigital,
+          'payout_subaccount_code':
+              hasPayoutSubaccount ? 'ACCT_test_subaccount' : null,
         },
       ];
+    }
+    if (table == 'driver_vehicles') {
+      return [
+        {
+          'driver_id': _user?.id ?? 'test-driver-id',
+          'vehicle_id': 'test-vehicle-id',
+          'active': true,
+        },
+      ];
+    }
+    if (table == 'vehicles') {
+      return [
+        {
+          'id': 'test-vehicle-id',
+          'plate_number': driverPlate,
+        },
+      ];
+    }
+    if (table == 'payments') {
+      return digitalPayments
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
+    }
+    if (table == 'qr_sticker_requests') {
+      return qrStickerRequests
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
     }
     if (table == 'settlements') {
       if (settlementRows.isNotEmpty) return settlementRows;
