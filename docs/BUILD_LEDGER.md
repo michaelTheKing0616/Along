@@ -676,9 +676,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: Terminal states tested via setTerminalForTest. Merged 024af3a.
 
 ## [Phase 2 / P2-C-01] Driver negotiation + roaming D-14
+- Status: PASS
+- Assigned: 2026-09-05
+- Worker report summary: Driver NegotiationSheet + roaming D-14 cascade; identity tests strip phone; 7/7 tests.
+- Reviewer verdict: PASS
+- Rework count: 0
+- Notes/escalations: Merged 3f47c9a.
+
+## [Phase 2 / P2-D-01] Admin fare corrections queue
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Driver never sees rider identity pre-request beyond Tier B.
+- Notes/escalations: Playwright approve → confirmation + possible promotion. Skipped Playwright is FAIL.
