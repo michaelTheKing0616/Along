@@ -806,9 +806,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 01bb655. Live-device: deferred to P1-G-01. P4-E-02 legal stop still ahead.
 
 ## [Phase 4 / P4-A-04] Rider digital payment + confirm_fare + ratings
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00039 — payments, ratings, confirm_fare (FM33), rate_trip, complete_trip itemisation, payments/initiate fail-closed, webhook payment_id. digital_enabled remains false.
+- Reviewer verdict: PASS WITH NOTES — TS-UI-04 SQL 5/5 + Deno 4/4 independently re-run. Notes: db.types.ts stale; OpenAPI still requires driver_code (deferred P4-A-09); rate_trip negatives untested.
+- Rework count: 0
+- Notes/escalations: Merged 3615eee. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-A-05] Trip extensions
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00039. Do NOT flip payments.digital_enabled. payments/initiate must fail closed when flag is false. QR/subaccounts/saved methods are later tasks.
+- Notes/escalations: Next migration 00040. trip_extensions table already exists (00012). MUST reuse resolve_fare unmodified. Commission delta at completion only.
