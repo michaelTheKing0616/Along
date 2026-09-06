@@ -814,9 +814,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 3615eee. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-A-05] Trip extensions
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00040 — propose_extension / respond_extension; complete_trip posts base + accepted ext commissions (ext:{id}); resolve_fare unmodified. TS-TRIP-08 9/9 PASS.
+- Reviewer verdict: PASS WITH NOTES — independently re-ran TS-TRIP-08; resolve_fare hard gate clean; no ledger_post on accept. Tier-3 negotiation path client-triggered, not in pgTAP.
+- Rework count: 0
+- Notes/escalations: Merged 433bcf8. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-A-06] Reconciliation + risk scores
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00040. trip_extensions table already exists (00012). MUST reuse resolve_fare unmodified. Commission delta at completion only.
+- Notes/escalations: Next migration 00041. trip_reconciliation_flags schema already exists (00037). Flags MUST NOT call transition_standing (FM13). TS-INTEG-06 is P4-D-01.
