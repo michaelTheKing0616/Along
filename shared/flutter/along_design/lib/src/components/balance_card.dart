@@ -4,23 +4,31 @@ import '../tokens.g.dart';
 import '../utils/format_money.dart';
 import 'along_button.dart';
 
-/// Balance card states (doc 05 §9 `BalanceCard` — stub for Phase 4 ledger).
+/// Balance card states (doc 05 §9 `BalanceCard`).
 enum BalanceCardState { good, warned, paused }
 
-/// Driver ledger balance summary — stub until Phase 4 ledger integration.
+enum BalanceCardVariant { full, compact }
+
+/// Driver ledger balance summary (doc 05 §9, D-08/D-19).
 class BalanceCard extends StatelessWidget {
   const BalanceCard({
     super.key,
+    this.variant = BalanceCardVariant.full,
     this.state = BalanceCardState.good,
     this.balanceNaira = 1250,
-    this.thresholdNaira = -500,
+    this.thresholdNaira = -5000,
+    this.standingLabel = 'Good standing',
     this.onSettle,
+    this.onTap,
   });
 
+  final BalanceCardVariant variant;
   final BalanceCardState state;
   final int balanceNaira;
   final int thresholdNaira;
+  final String standingLabel;
   final VoidCallback? onSettle;
+  final VoidCallback? onTap;
 
   Color get _balanceColor => switch (state) {
         BalanceCardState.good => AlongColors.ink900,
@@ -28,14 +36,78 @@ class BalanceCard extends StatelessWidget {
         BalanceCardState.paused => AlongColors.semanticDanger,
       };
 
+  Color get _standingColor => switch (state) {
+        BalanceCardState.good => AlongColors.semanticSuccess,
+        BalanceCardState.warned => AlongColors.semanticWarning,
+        BalanceCardState.paused => AlongColors.semanticDanger,
+      };
+
   String get _statusLine => switch (state) {
         BalanceCardState.good => 'Balance healthy',
         BalanceCardState.warned => 'Approaching settlement threshold',
-        BalanceCardState.paused => 'Account paused — settle to go online',
+        BalanceCardState.paused => 'Matching pauses below ${formatMoney(thresholdNaira)}',
       };
 
   @override
   Widget build(BuildContext context) {
+    if (variant == BalanceCardVariant.compact) {
+      return _buildCompact(context);
+    }
+    return _buildFull(context);
+  }
+
+  Widget _buildCompact(BuildContext context) {
+    return Material(
+      color: AlongColors.surface0,
+      borderRadius: BorderRadius.circular(AlongRadius.md.x),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AlongSpace.s16,
+            vertical: AlongSpace.s12,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Along balance',
+                      style: AlongText.caption.copyWith(color: AlongColors.ink500),
+                    ),
+                    Text(
+                      formatMoney(balanceNaira),
+                      style: AlongText.numericL.copyWith(color: _balanceColor),
+                      softWrap: false,
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AlongSpace.s8,
+                  vertical: AlongSpace.s4,
+                ),
+                decoration: BoxDecoration(
+                  color: _standingColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+                ),
+                child: Text(
+                  standingLabel,
+                  style: AlongText.caption.copyWith(color: _standingColor),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFull(BuildContext context) {
     final showSettle = balanceNaira < 0 || state == BalanceCardState.paused;
 
     return Container(
@@ -52,7 +124,7 @@ class BalanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Ledger balance', style: AlongText.caption.copyWith(color: AlongColors.ink500)),
+          Text('Along balance', style: AlongText.caption.copyWith(color: AlongColors.ink500)),
           const SizedBox(height: AlongSpace.s4),
           Text(
             formatMoney(balanceNaira),
@@ -67,7 +139,7 @@ class BalanceCard extends StatelessWidget {
           ),
           const SizedBox(height: AlongSpace.s4),
           Text(
-            'Threshold: ${formatMoney(thresholdNaira)}',
+            'Matching pauses below ${formatMoney(thresholdNaira)}',
             style: AlongText.caption.copyWith(color: AlongColors.ink500),
             softWrap: false,
             overflow: TextOverflow.visible,

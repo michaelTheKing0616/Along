@@ -14,7 +14,12 @@ import 'package:mobile_driver/features/routes/presentation/draw_route_controller
 import 'package:mobile_driver/features/routes/presentation/draw_route_screen.dart';
 import 'package:mobile_driver/features/routes/presentation/fast_route_setup_screen.dart';
 import 'package:mobile_driver/features/routes/presentation/routes_list_screen.dart';
+import 'package:along_data/along_data.dart';
 import 'package:mobile_driver/features/shell/presentation/driver_shell_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/guarantor_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/settle_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/standing_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/manifest_screen.dart';
@@ -117,15 +122,29 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/earnings',
-                builder: (context, state) => const EarningsStubScreen(),
+                path: AppRoutes.earnings,
+                builder: (context, state) => const EarningsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'settle',
+                    builder: (context, state) => const SettleScreen(),
+                  ),
+                  GoRoute(
+                    path: 'standing',
+                    builder: (context, state) => const StandingScreen(),
+                  ),
+                  GoRoute(
+                    path: 'guarantor',
+                    builder: (context, state) => const GuarantorScreen(),
+                  ),
+                ],
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/account',
+                path: AppRoutes.account,
                 builder: (context, state) => const AccountStubScreen(),
               ),
             ],

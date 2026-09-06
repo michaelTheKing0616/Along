@@ -383,4 +383,19 @@ class DomainMappers {
       ),
     );
   }
+
+  static DriverLedgerEntry ledgerEntryFromJson(Map<String, dynamic> json) {
+    return DriverLedgerEntry(
+      id: json['id'] as String,
+      entryType: json['entry_type'] as String,
+      amount: moneyFromDto(dto.Money.fromJson(json['amount'] as Map<String, dynamic>)),
+      balanceAfter: moneyFromDto(
+        dto.Money.fromJson(json['balance_after'] as Map<String, dynamic>),
+      ),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      memo: json['memo'] as String?,
+      tripId: json['trip_id'] as String?,
+      destinationLabel: json['destination_label'] as String?,
+    );
+  }
 }

@@ -54,6 +54,10 @@ final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
   );
 });
 
+final ledgerRepositoryProvider = Provider<LedgerRepository>((ref) {
+  return LedgerRepository(ref.watch(alongSupabaseProvider));
+});
+
 final negotiationRepositoryProvider = Provider<NegotiationRepository>((ref) {
   return NegotiationRepository(ref.watch(alongSupabaseProvider));
 });

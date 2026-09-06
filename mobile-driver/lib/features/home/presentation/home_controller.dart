@@ -8,6 +8,7 @@ import 'package:along_map/along_map.dart' as map_geo;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/home/domain/ambient_demand_cell_mapper.dart';
+import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 
 enum RoamingDirection { onRoute, none }
 
@@ -164,6 +165,11 @@ class DriverHomeController extends Notifier<DriverHomeState> {
       isVerified: profile.isVerified,
       ledgerBlocked: profile.isLedgerBlocked,
       cityId: profile.cityId,
+    );
+    await ref.read(driverLedgerControllerProvider.notifier).refresh();
+    final ledger = ref.read(driverLedgerControllerProvider);
+    state = state.copyWith(
+      ledgerBlocked: profile.isLedgerBlocked || ledger.isLedgerBlocked,
     );
   }
 

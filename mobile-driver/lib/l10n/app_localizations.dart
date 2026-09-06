@@ -1041,6 +1041,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SOS will connect in a future release'**
   String get sosPlaceholder;
+
+  /// No description provided for @homeLedgerBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching paused'**
+  String get homeLedgerBlockedTitle;
+
+  /// No description provided for @homeLedgerBlockedBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {amount}'**
+  String homeLedgerBlockedBalance(String amount);
+
+  /// No description provided for @homeLedgerBlockedThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Block limit {amount}'**
+  String homeLedgerBlockedThreshold(String amount);
+
+  /// No description provided for @settleCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle'**
+  String get settleCta;
+
+  /// No description provided for @settleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle balance'**
+  String get settleTitle;
+
+  /// No description provided for @settleCurrentBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance: {amount}'**
+  String settleCurrentBalance(String amount);
+
+  /// No description provided for @settleAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount to pay'**
+  String get settleAmountLabel;
+
+  /// No description provided for @settleChannelBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get settleChannelBank;
+
+  /// No description provided for @settleChannelUssd.
+  ///
+  /// In en, this message translates to:
+  /// **'USSD'**
+  String get settleChannelUssd;
+
+  /// No description provided for @settleChannelCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get settleChannelCard;
+
+  /// No description provided for @settleChannelAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay an agent'**
+  String get settleChannelAgent;
+
+  /// No description provided for @settleAgentCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent code'**
+  String get settleAgentCodeTitle;
+
+  /// No description provided for @settleAgentExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {time}'**
+  String settleAgentExpires(String time);
+
+  /// No description provided for @settleNearbyAgentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby agents'**
+  String get settleNearbyAgentsTitle;
+
+  /// No description provided for @settleNearbyAgentDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} m away'**
+  String settleNearbyAgentDistance(int distance);
+
+  /// No description provided for @settleDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get settleDone;
+
+  /// No description provided for @earningsLedgerSection.
+  ///
+  /// In en, this message translates to:
+  /// **'ALONG BALANCE'**
+  String get earningsLedgerSection;
+
+  /// No description provided for @earningsTripsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'TRIPS'**
+  String get earningsTripsSection;
+
+  /// No description provided for @earningsLedgerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No ledger entries yet'**
+  String get earningsLedgerEmpty;
+
+  /// No description provided for @earningsTripsCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash you collected directly — not part of your Along balance'**
+  String get earningsTripsCaption;
+
+  /// No description provided for @earningsTripsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed cash trips today'**
+  String get earningsTripsEmpty;
+
+  /// No description provided for @earningsTripsTodaySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} trips today · {amount} collected'**
+  String earningsTripsTodaySummary(int count, String amount);
+
+  /// No description provided for @standingLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Standing'**
+  String get standingLink;
+
+  /// No description provided for @standingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your standing'**
+  String get standingTitle;
+
+  /// No description provided for @standingBalanceAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance at transition: {amount}'**
+  String standingBalanceAt(String amount);
+
+  /// No description provided for @standingBlockThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching pauses below {amount}'**
+  String standingBlockThreshold(String amount);
+
+  /// No description provided for @standingGraceDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Grace deadline: {date}'**
+  String standingGraceDeadline(String date);
+
+  /// No description provided for @standingRestoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle above the warn threshold to restore good standing'**
+  String get standingRestoreHint;
+
+  /// No description provided for @standingHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HISTORY'**
+  String get standingHistoryTitle;
+
+  /// No description provided for @standingHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No standing changes yet'**
+  String get standingHistoryEmpty;
+
+  /// No description provided for @guarantorLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a guarantor'**
+  String get guarantorLink;
+
+  /// No description provided for @guarantorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guarantor'**
+  String get guarantorTitle;
+
+  /// No description provided for @guarantorExplainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Your guarantor is notified if your balance stays unsettled after the grace period. Nothing is ever deducted from them.'**
+  String get guarantorExplainer;
+
+  /// No description provided for @guarantorTypeDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Fellow driver'**
+  String get guarantorTypeDriver;
+
+  /// No description provided for @guarantorTypeOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle owner'**
+  String get guarantorTypeOwner;
+
+  /// No description provided for @guarantorNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get guarantorNameLabel;
+
+  /// No description provided for @guarantorPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get guarantorPhoneLabel;
+
+  /// No description provided for @guarantorSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Add guarantor'**
+  String get guarantorSubmit;
+
+  /// No description provided for @guarantorSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Guarantor added — they will receive an acknowledgement link'**
+  String get guarantorSuccess;
+
+  /// No description provided for @extendTripTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend trip'**
+  String get extendTripTitle;
+
+  /// No description provided for @extendTripSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to now?'**
+  String get extendTripSearchHint;
+
+  /// No description provided for @extendTripDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Continuing to {destination}'**
+  String extendTripDestination(String destination);
+
+  /// No description provided for @extendTripPropose.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose to rider'**
+  String get extendTripPropose;
+
+  /// No description provided for @incomingExtensionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension request'**
+  String get incomingExtensionTitle;
+
+  /// No description provided for @incomingExtensionDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get incomingExtensionDecline;
+
+  /// No description provided for @incomingExtensionAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get incomingExtensionAccept;
+
+  /// No description provided for @incomingRiderExtensionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider proposes continuing to {destination} for +{delta}'**
+  String incomingRiderExtensionBody(String destination, String delta);
+
+  /// No description provided for @tripCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip complete'**
+  String get tripCompleteTitle;
+
+  /// No description provided for @tripCompleteFareLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare {amount} — rider pays you in cash'**
+  String tripCompleteFareLine(String amount);
+
+  /// No description provided for @tripCompleteAlongFeeLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Along fee {amount} — posted to your balance'**
+  String tripCompleteAlongFeeLine(String amount);
+
+  /// No description provided for @tripCompleteNewBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'New balance {amount}'**
+  String tripCompleteNewBalance(String amount);
+
+  /// No description provided for @tripCompleteCashQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm cash received?'**
+  String get tripCompleteCashQuestion;
+
+  /// No description provided for @tripCompleteYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get tripCompleteYes;
+
+  /// No description provided for @tripCompleteDifferent.
+  ///
+  /// In en, this message translates to:
+  /// **'Different amount'**
+  String get tripCompleteDifferent;
+
+  /// No description provided for @tripCompleteDifferentPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'How much did you receive?'**
+  String get tripCompleteDifferentPrompt;
+
+  /// No description provided for @tripCompleteRateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate your rider'**
+  String get tripCompleteRateTitle;
+
+  /// No description provided for @tripCompleteDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get tripCompleteDone;
 }
 
 class _AppLocalizationsDelegate

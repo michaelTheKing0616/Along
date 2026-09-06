@@ -17,6 +17,11 @@ class FakeAlongSupabase implements AlongSupabase {
     Map<String, dynamic>? suggestedRoute,
     List<Map<String, dynamic>>? routeProfiles,
     List<Map<String, dynamic>>? placesSearchResults,
+    this.driverBalanceResponse,
+    List<Map<String, dynamic>>? driverLedgerEntries,
+    List<Map<String, dynamic>>? tripExtensionRows,
+    List<Map<String, dynamic>>? settlementRows,
+    List<Map<String, dynamic>>? nearbySettlementAgents,
   })  : cities = cities ?? defaultTestCities(),
         modes = modes ?? defaultTestModes(),
         countryConfig = countryConfig ?? defaultTestCountry(),
@@ -24,7 +29,12 @@ class FakeAlongSupabase implements AlongSupabase {
         verifications = verifications ?? [],
         suggestedRoute = suggestedRoute,
         routeProfiles = routeProfiles ?? [],
-        placesSearchResults = placesSearchResults ?? [] {
+        placesSearchResults = placesSearchResults ?? [],
+        driverLedgerEntries = driverLedgerEntries ?? [],
+        tripExtensionRows = tripExtensionRows ?? [],
+        settlementRows = settlementRows ?? [],
+        nearbySettlementAgents = nearbySettlementAgents ??
+            defaultNearbySettlementAgents() {
     if (signedInUser != null) {
       _user = signedInUser;
     }
@@ -50,13 +60,54 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(String tripId)? onStartTrip;
   void Function(String tripId)? onCompleteTrip;
   void Function(Map<String, dynamic> params)? onTripLocationSample;
+  void Function(Map<String, dynamic> params)? onConfirmFare;
+  void Function(Map<String, dynamic> params)? onRateTrip;
+  void Function(Map<String, dynamic> params)? onProposeExtension;
+  void Function(Map<String, dynamic> params)? onRespondExtension;
   void Function(String tripId)? onMarkBoarded;
+
+  static Map<String, dynamic> defaultDriverBalanceResponse() => {
+        'balance': {'amount': '0.00', 'currency': 'NGN'},
+        'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
+        'standing': 'good_standing',
+        'grace_deadline': null,
+        'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
+      };
+
+  static Map<String, dynamic> ledgerBlockedDriverBalanceResponse() => {
+        'balance': {'amount': '-5200.00', 'currency': 'NGN'},
+        'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
+        'standing': 'matching_paused',
+        'grace_deadline': null,
+        'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
+      };
+
+  int confirmFareInvokeCount = 0;
+  int respondExtensionInvokeCount = 0;
 
   List<Map<String, dynamic>> manifestEntries = [];
   final Map<String, String> tripStatuses = {};
   List<Map<String, dynamic>> routeProfiles;
   Map<String, dynamic>? suggestedRoute;
   List<Map<String, dynamic>> placesSearchResults;
+  Map<String, dynamic>? driverBalanceResponse;
+  List<Map<String, dynamic>> driverLedgerEntries;
+  List<Map<String, dynamic>> tripExtensionRows;
+  List<Map<String, dynamic>> settlementRows;
+  List<Map<String, dynamic>> nearbySettlementAgents;
+
+  static List<Map<String, dynamic>> defaultNearbySettlementAgents() => [
+        {
+          'id': 'agent-zaria-near',
+          'business_name': 'Zaria POS',
+          'distance_m': 120,
+        },
+        {
+          'id': 'agent-zaria-far',
+          'business_name': 'Zaria Far POS',
+          'distance_m': 8500,
+        },
+      ];
 
   User? _user;
   String? _storedVehicleId;
@@ -175,7 +226,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (fn == 'respond_to_trip') {
       onRespondToTrip?.call(params ?? {});
-      return _sampleTripView(
+      return sampleTripView(
         tripId: params?['p_trip_id'] as String? ?? 'trip-1',
         status: params?['p_action'] == 'accept' ? 'accepted' : 'declined',
       );
@@ -183,7 +234,7 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'trip_snapshot') {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
       final status = tripStatuses[tripId] ?? 'accepted';
-      return _sampleTripView(tripId: tripId, status: status);
+      return sampleTripView(tripId: tripId, status: status);
     }
     if (fn == 'driver_manifest') {
       if (manifestEntries.isNotEmpty) return manifestEntries;
@@ -196,20 +247,20 @@ class FakeAlongSupabase implements AlongSupabase {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
       onMarkBoarded?.call(tripId);
       tripStatuses[tripId] = 'boarded';
-      return _sampleTripView(tripId: tripId, status: 'boarded');
+      return sampleTripView(tripId: tripId, status: 'boarded');
     }
     if (fn == 'start_trip') {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
       onStartTrip?.call(tripId);
       tripStatuses[tripId] = 'in_transit';
-      return _sampleTripView(tripId: tripId, status: 'in_transit');
+      return sampleTripView(tripId: tripId, status: 'in_transit');
     }
     if (fn == 'complete_trip') {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
       onCompleteTrip?.call(tripId);
       tripStatuses[tripId] = 'completed';
       return {
-        'trip': _sampleTripView(tripId: tripId, status: 'completed'),
+        'trip': sampleTripView(tripId: tripId, status: 'completed'),
         'commission': {'amount': '34.00', 'currency': 'NGN'},
         'fare': {'amount': '450.00', 'currency': 'NGN'},
       };
@@ -217,6 +268,88 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'trip_location_sample') {
       onTripLocationSample?.call(params ?? {});
       return {'boarded_auto': false};
+    }
+    if (fn == 'driver_balance') {
+      return driverBalanceResponse ?? defaultDriverBalanceResponse();
+    }
+    if (fn == 'driver_ledger') {
+      return {
+        'entries': driverLedgerEntries.isNotEmpty
+            ? driverLedgerEntries
+            : [
+                {
+                  'id': '1',
+                  'entry_type': 'cash_commission_debit',
+                  'amount': {'amount': '-34.00', 'currency': 'NGN'},
+                  'balance_after': {'amount': '-1234.00', 'currency': 'NGN'},
+                  'created_at': '2026-09-06T10:00:00Z',
+                  'memo': null,
+                  'trip_id': 'trip-1',
+                  'destination_label': 'Area 1',
+                },
+                {
+                  'id': '2',
+                  'entry_type': 'digital_settlement_credit',
+                  'amount': {'amount': '5000.00', 'currency': 'NGN'},
+                  'balance_after': {'amount': '0.00', 'currency': 'NGN'},
+                  'created_at': '2026-09-05T10:00:00Z',
+                  'memo': 'Paystack settlement',
+                  'trip_id': null,
+                  'destination_label': null,
+                },
+              ],
+        'meta': {'next_cursor': null},
+      };
+    }
+    if (fn == 'my_standing_history') {
+      return [
+        {
+          'from_standing': 'warned',
+          'to_standing': 'matching_paused',
+          'actor_type': 'system',
+          'reason': 'Balance below block threshold',
+          'balance_at': '-5200.00',
+          'created_at': '2026-09-06T09:00:00Z',
+        },
+      ];
+    }
+    if (fn == 'create_agent_code') {
+      return {
+        'agent_code': 'ABC123',
+        'expires_at': '2026-09-06T11:00:00Z',
+      };
+    }
+    if (fn == 'nearby_settlement_agents') {
+      return nearbySettlementAgents;
+    }
+    if (fn == 'register_guarantor') {
+      return 'guarantor-id';
+    }
+    if (fn == 'confirm_fare') {
+      confirmFareInvokeCount++;
+      onConfirmFare?.call(params ?? {});
+      return null;
+    }
+    if (fn == 'rate_trip') {
+      onRateTrip?.call(params ?? {});
+      return null;
+    }
+    if (fn == 'propose_extension') {
+      onProposeExtension?.call(params ?? {});
+      return {
+        'extension_id': 'ext-1',
+        'fare_delta': {'amount': '150.00', 'currency': 'NGN'},
+        'new_total': {'amount': '600.00', 'currency': 'NGN'},
+        'tier': 1,
+        'unconfirmed': false,
+      };
+    }
+    if (fn == 'respond_extension') {
+      respondExtensionInvokeCount++;
+      onRespondExtension?.call(params ?? {});
+      return {
+        'trip': sampleTripView(tripId: 'trip-1', status: 'in_transit'),
+      };
     }
     return {};
   }
@@ -248,7 +381,7 @@ class FakeAlongSupabase implements AlongSupabase {
     };
   }
 
-  static Map<String, dynamic> _sampleTripView({
+  static Map<String, dynamic> sampleTripView({
     required String tripId,
     required String status,
     bool loadFlagged = false,
@@ -318,7 +451,7 @@ class FakeAlongSupabase implements AlongSupabase {
     return {
       'type': 'trip_request',
       'expires_at': '2026-09-05T14:00:00Z',
-      'trip': _sampleTripView(
+      'trip': sampleTripView(
         tripId: tripId,
         status: 'requested',
         loadFlagged: loadFlagged,
@@ -342,6 +475,15 @@ class FakeAlongSupabase implements AlongSupabase {
       return {
         'data': {
           'results': placesSearchResults,
+        },
+      };
+    }
+    if (slug == 'settlement/initiate') {
+      return {
+        'data': {
+          'settlement_id': 'settlement-1',
+          'expires_at': '2026-09-06T12:00:00Z',
+          'ussd_code': '*737#',
         },
       };
     }
@@ -552,6 +694,39 @@ class FakeAlongSupabase implements AlongSupabase {
           'standing': 'good_standing',
         },
       ];
+    }
+    if (table == 'settlements') {
+      if (settlementRows.isNotEmpty) return settlementRows;
+      return [
+        {
+          'id': 'settlement-1',
+          'status': 'confirmed',
+          'amount': 5200,
+          'currency': 'NGN',
+        },
+      ];
+    }
+    if (table == 'trips') {
+      return [
+        {
+          'id': 'trip-cash-1',
+          'status': 'completed',
+          'payment_method': 'cash',
+          'fare_shown': 450,
+          'ended_at': DateTime.now().toUtc().toIso8601String(),
+          'destination_label': 'Area 1 Park',
+        },
+      ];
+    }
+    if (table == 'trip_extensions') {
+      return tripExtensionRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
     }
     return [];
   }

@@ -11,6 +11,8 @@ import 'package:mobile_driver/features/incoming_request/presentation/incoming_re
 import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
 import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_sheet.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
+import 'package:mobile_driver/features/ledger/presentation/widgets/ledger_blocked_banner.dart';
 import 'package:mobile_driver/features/trip/presentation/manifest_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
@@ -29,6 +31,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(driverHomeControllerProvider);
+    final ledger = ref.watch(driverLedgerControllerProvider);
     final incoming = ref.watch(incomingRequestNotifierProvider);
     final pricing = ref.watch(driverPricingNotifierProvider);
     final config = ref.watch(appConfigProvider);
@@ -115,12 +118,23 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _CompactBalanceStrip(
-                      onTap: () {},
+                    BalanceCard(
+                      key: const Key('home_balance_strip'),
+                      variant: BalanceCardVariant.compact,
+                      state: ledger.cardState,
+                      balanceNaira: ledger.balance.minorUnits ~/ 100,
+                      thresholdNaira: ledger.blockThreshold.minorUnits ~/ 100,
+                      standingLabel: ledger.standingLabel,
+                      onTap: () => context.go(AppRoutes.earnings),
                     ),
-                    if (state.ledgerBlocked) ...[
+                    if (state.ledgerBlocked || ledger.isLedgerBlocked) ...[
                       const SizedBox(height: AlongSpace.s8),
-                      _LedgerBlockedBanner(l10n: l10n),
+                      LedgerBlockedBanner(
+                        balance: ledger.balance,
+                        blockThreshold: ledger.blockThreshold,
+                        l10n: l10n,
+                        onSettle: () => context.push(AppRoutes.settle),
+                      ),
                     ],
                     if (!state.isVerified) ...[
                       const SizedBox(height: AlongSpace.s8),
@@ -287,90 +301,6 @@ final driverHomeOfflineStyleProvider = FutureProvider<String>((ref) async {
   final config = await AlongMap.bootstrapOffline(cacheDirectory: dir);
   return config.styleJson;
 });
-
-class _CompactBalanceStrip extends StatelessWidget {
-  const _CompactBalanceStrip({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AlongColors.surface0,
-      borderRadius: BorderRadius.circular(AlongRadius.md.x),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AlongSpace.s16,
-            vertical: AlongSpace.s12,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Ledger balance',
-                      style: AlongText.caption.copyWith(
-                        color: AlongColors.ink500,
-                      ),
-                    ),
-                    Text(
-                      formatMoney(0),
-                      style: AlongText.numericL.copyWith(
-                        color: AlongColors.ink900,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AlongSpace.s8,
-                  vertical: AlongSpace.s4,
-                ),
-                decoration: BoxDecoration(
-                  color: AlongColors.semanticSuccessFill,
-                  borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-                ),
-                child: Text(
-                  'Good standing',
-                  style: AlongText.caption.copyWith(
-                    color: AlongColors.semanticSuccess,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LedgerBlockedBanner extends StatelessWidget {
-  const _LedgerBlockedBanner({required this.l10n});
-
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AlongSpace.s12),
-      decoration: BoxDecoration(
-        color: AlongColors.semanticDangerFill,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-      ),
-      child: Text(
-        l10n.homeLedgerBlockedBanner,
-        style: AlongText.body.copyWith(color: AlongColors.semanticDanger),
-      ),
-    );
-  }
-}
 
 class _InfoBanner extends StatelessWidget {
   const _InfoBanner({required this.message});

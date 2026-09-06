@@ -310,5 +310,110 @@
       "alight": {"type": "String"}
     }
   },
-  "sosPlaceholder": "SOS will connect in a future release"
+  "sosPlaceholder": "SOS will connect in a future release",
+  "homeLedgerBlockedTitle": "Matching paused",
+  "homeLedgerBlockedBalance": "Balance {amount}",
+  "@homeLedgerBlockedBalance": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "homeLedgerBlockedThreshold": "Block limit {amount}",
+  "@homeLedgerBlockedThreshold": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "settleCta": "Settle",
+  "settleTitle": "Settle balance",
+  "settleCurrentBalance": "Current balance: {amount}",
+  "@settleCurrentBalance": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "settleAmountLabel": "Amount to pay",
+  "settleChannelBank": "Bank transfer",
+  "settleChannelUssd": "USSD",
+  "settleChannelCard": "Card",
+  "settleChannelAgent": "Pay an agent",
+  "settleAgentCodeTitle": "Your agent code",
+  "settleAgentExpires": "Expires {time}",
+  "@settleAgentExpires": {
+    "placeholders": { "time": {"type": "String"} }
+  },
+  "settleNearbyAgentsTitle": "Nearby agents",
+  "settleNearbyAgentDistance": "{distance} m away",
+  "@settleNearbyAgentDistance": {
+    "placeholders": { "distance": {"type": "int"} }
+  },
+  "settleDone": "Done",
+  "earningsLedgerSection": "ALONG BALANCE",
+  "earningsTripsSection": "TRIPS",
+  "earningsLedgerEmpty": "No ledger entries yet",
+  "earningsTripsCaption": "Cash you collected directly — not part of your Along balance",
+  "earningsTripsEmpty": "No completed cash trips today",
+  "earningsTripsTodaySummary": "{count} trips today · {amount} collected",
+  "@earningsTripsTodaySummary": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "amount": {"type": "String"}
+    }
+  },
+  "standingLink": "Standing",
+  "standingTitle": "Your standing",
+  "standingBalanceAt": "Balance at transition: {amount}",
+  "@standingBalanceAt": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "standingBlockThreshold": "Matching pauses below {amount}",
+  "@standingBlockThreshold": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "standingGraceDeadline": "Grace deadline: {date}",
+  "@standingGraceDeadline": {
+    "placeholders": { "date": {"type": "String"} }
+  },
+  "standingRestoreHint": "Settle above the warn threshold to restore good standing",
+  "standingHistoryTitle": "HISTORY",
+  "standingHistoryEmpty": "No standing changes yet",
+  "guarantorLink": "Add a guarantor",
+  "guarantorTitle": "Guarantor",
+  "guarantorExplainer": "Your guarantor is notified if your balance stays unsettled after the grace period. Nothing is ever deducted from them.",
+  "guarantorTypeDriver": "Fellow driver",
+  "guarantorTypeOwner": "Vehicle owner",
+  "guarantorNameLabel": "Full name",
+  "guarantorPhoneLabel": "Phone number",
+  "guarantorSubmit": "Add guarantor",
+  "guarantorSuccess": "Guarantor added — they will receive an acknowledgement link",
+  "extendTripTitle": "Extend trip",
+  "extendTripSearchHint": "Where to now?",
+  "extendTripDestination": "Continuing to {destination}",
+  "@extendTripDestination": {
+    "placeholders": { "destination": {"type": "String"} }
+  },
+  "extendTripPropose": "Propose to rider",
+  "incomingExtensionTitle": "Extension request",
+  "incomingExtensionDecline": "Decline",
+  "incomingExtensionAccept": "Accept",
+  "incomingRiderExtensionBody": "Rider proposes continuing to {destination} for +{delta}",
+  "@incomingRiderExtensionBody": {
+    "placeholders": {
+      "destination": {"type": "String"},
+      "delta": {"type": "String"}
+    }
+  },
+  "tripCompleteTitle": "Trip complete",
+  "tripCompleteFareLine": "Fare {amount} — rider pays you in cash",
+  "@tripCompleteFareLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "tripCompleteAlongFeeLine": "Along fee {amount} — posted to your balance",
+  "@tripCompleteAlongFeeLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "tripCompleteNewBalance": "New balance {amount}",
+  "@tripCompleteNewBalance": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "tripCompleteCashQuestion": "Confirm cash received?",
+  "tripCompleteYes": "Yes",
+  "tripCompleteDifferent": "Different amount",
+  "tripCompleteDifferentPrompt": "How much did you receive?",
+  "tripCompleteRateTitle": "Rate your rider",
+  "tripCompleteDone": "Done"
 }

@@ -1,0 +1,159 @@
+import 'package:along_core/along_core.dart';
+import 'package:along_data/along_data.dart' hide Money;
+import 'package:along_design/along_design.dart' hide formatMoney;
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
+import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/routing/routes.dart';
+
+/// D-19 Earnings & balance — Along balance + Trips sections (doc 06).
+class EarningsScreen extends ConsumerWidget {
+  const EarningsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final ledger = ref.watch(driverLedgerControllerProvider);
+    final entriesAsync = ref.watch(earningsLedgerPageProvider);
+    final cashTripsAsync = ref.watch(earningsCashTripsProvider);
+
+    return Scaffold(
+      key: const Key('earnings_screen'),
+      appBar: AppBar(
+        title: Text(l10n.navEarnings),
+        backgroundColor: AlongColors.surface0,
+        elevation: 0,
+        actions: [
+          TextButton(
+            onPressed: () => context.push(AppRoutes.standing),
+            child: Text(l10n.standingLink),
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await ref.read(driverLedgerControllerProvider.notifier).refresh();
+          ref.invalidate(earningsLedgerPageProvider);
+          ref.invalidate(earningsCashTripsProvider);
+        },
+        child: ListView(
+          padding: const EdgeInsets.all(AlongSpace.s16),
+          children: [
+            BalanceCard(
+              state: ledger.cardState,
+              balanceNaira: ledger.balance.minorUnits ~/ 100,
+              thresholdNaira: ledger.blockThreshold.minorUnits ~/ 100,
+              standingLabel: ledger.standingLabel,
+              onSettle: () => context.push(AppRoutes.settle),
+            ),
+            const SizedBox(height: AlongSpace.s24),
+            Text(l10n.earningsLedgerSection, style: AlongText.overline),
+            const SizedBox(height: AlongSpace.s8),
+            entriesAsync.when(
+              data: (page) {
+                if (page.entries.isEmpty) {
+                  return Text(
+                    l10n.earningsLedgerEmpty,
+                    style: AlongText.body.copyWith(color: AlongColors.ink500),
+                  );
+                }
+                return Column(
+                  key: const Key('earnings_ledger_list'),
+                  children: [
+                    for (final entry in page.entries)
+                      LedgerRow(
+                        key: Key('ledger_row_${entry.id}'),
+                        label: ledgerEntryLabel(
+                          entry.entryType,
+                          destinationLabel: entry.destinationLabel,
+                          memo: entry.memo,
+                        ),
+                        amount: entry.amount,
+                        balanceAfter: entry.balanceAfter,
+                        kind: _kindFor(entry.entryType),
+                      ),
+                  ],
+                );
+              },
+              loading: () => const AlongSkeleton(variant: SkeletonVariant.line),
+              error: (_, __) => Text(l10n.errorGeneric),
+            ),
+            const SizedBox(height: AlongSpace.s24),
+            Text(l10n.earningsTripsSection, style: AlongText.overline),
+            const SizedBox(height: AlongSpace.s4),
+            Text(
+              l10n.earningsTripsCaption,
+              style: AlongText.caption.copyWith(color: AlongColors.ink500),
+            ),
+            const SizedBox(height: AlongSpace.s8),
+            cashTripsAsync.when(
+              data: (trips) {
+                if (trips.isEmpty) {
+                  return Text(
+                    l10n.earningsTripsEmpty,
+                    style: AlongText.body.copyWith(color: AlongColors.ink500),
+                  );
+                }
+                final total = trips.fold<Money>(
+                  Money.zero(),
+                  (sum, trip) => sum + trip.fare,
+                );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.earningsTripsTodaySummary(
+                        trips.length,
+                        formatMoney(total),
+                      ),
+                      style: AlongText.bodyStrong,
+                    ),
+                    const SizedBox(height: AlongSpace.s8),
+                    for (final trip in trips)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                trip.destinationLabel,
+                                style: AlongText.body,
+                              ),
+                            ),
+                            Text(
+                              formatMoney(trip.fare),
+                              style: AlongText.numericM,
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+              },
+              loading: () => const AlongSkeleton(variant: SkeletonVariant.line),
+              error: (_, __) => Text(l10n.errorGeneric),
+            ),
+            const SizedBox(height: AlongSpace.s16),
+            AlongButton(
+              label: l10n.guarantorLink,
+              variant: AlongButtonVariant.secondary,
+              onPressed: () => context.push(AppRoutes.guarantor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  LedgerRowKind _kindFor(String entryType) => switch (entryType) {
+        'cash_commission_debit' || 'deposit_drawdown' || 'payout_debit' =>
+          LedgerRowKind.debit,
+        'digital_settlement_credit' || 'onboarding_deposit' =>
+          LedgerRowKind.credit,
+        'manual_adjustment' => LedgerRowKind.adjustment,
+        _ => LedgerRowKind.settlement,
+      };
+}
