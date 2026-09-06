@@ -48,11 +48,17 @@ echo "Seeding E2E field reconciliation queue..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-field-reconciliation.sql"
 echo "Seeding E2E verification queue..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-verification-queue.sql"
+echo "Seeding E2E fare corrections queue..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-fare-corrections.sql"
 chmod +x "$ADMIN/e2e/seed-verification-storage.sh"
 "$ADMIN/e2e/seed-verification-storage.sh"
 
 echo "Running Playwright E2E..."
 cd "$ADMIN"
+# E2E always targets local Supabase (overrides .env.local remote project).
+export NEXT_PUBLIC_SUPABASE_URL="http://127.0.0.1:54321"
+export NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
+export DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 if [ -f "$ADMIN/.env.local" ]; then
   set -a
   # shellcheck disable=SC1091
