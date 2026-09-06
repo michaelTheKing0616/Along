@@ -868,3 +868,19 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Reviewer verdict: PASS — independently re-ran Playwright 2/2. digital_enabled unchanged. No QR/CRM.
 - Rework count: 0
 - Notes/escalations: Merged 5328abb. Live-device: deferred to P1-G-01. Next: P4-A-08 (subaccounts). P4-E-02 remains a human legal stop after A-08/A-09.
+
+## [Phase 4 / Decision] P4-A-08 money path locked
+- Status: PASS
+- Assigned: 2026-09-06
+- Worker report summary: Owner continue: start P4-A-08 then P4-A-09; stop and escalate at P4-E-02; do not flip payments.digital_enabled.
+- Reviewer verdict: n/a (owner decision)
+- Rework count: 0
+- Notes/escalations: Split at source (ADR-0010). Persist payout_subaccount_code + payout_bank_last4 only. set_payout_bank requires OTP re-auth. Driver without subaccount → digital option hidden. Split amounts equal fare − commission / commission to the minor unit. Live-device deferred to P1-G-01. P1-G-01 still blocks Phase 7 only.
+
+## [Phase 4 / P4-A-08] Paystack subaccounts
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Next migration 00046. Do not flip payments.digital_enabled. Live-device: deferred to P1-G-01.
