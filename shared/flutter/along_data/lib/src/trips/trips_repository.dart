@@ -173,6 +173,207 @@ class TripsRepository {
     }
   }
 
+  Future<void> confirmFare({
+    required String tripId,
+    required String outcome,
+    Money? paidAmount,
+  }) async {
+    try {
+      await _gateway.rpc(
+        'confirm_fare',
+        params: dto.ConfirmFareRequest(
+          p_trip_id: tripId,
+          p_outcome: outcome,
+          p_paid_amount:
+              paidAmount != null ? DomainMappers.moneyToDto(paidAmount) : null,
+        ).toJson(),
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<void> rateTrip({
+    required String tripId,
+    required int score,
+    required List<String> tags,
+    String? comment,
+  }) async {
+    try {
+      await _gateway.rpc(
+        'rate_trip',
+        params: dto.RateTripRequest(
+          p_trip_id: tripId,
+          p_score: score,
+          p_tags: tags,
+          p_comment: comment,
+        ).toJson(),
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<ProposeExtensionResult> proposeExtension({
+    required String tripId,
+    required Map<String, dynamic> newAlight,
+  }) async {
+    try {
+      final raw = await _gateway.rpc(
+        'propose_extension',
+        params: {
+          'p_trip_id': tripId,
+          'p_new_alight': newAlight,
+        },
+      );
+      return DomainMappers.proposeExtensionFromJson(
+        raw as Map<String, dynamic>,
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<TripSummary?> respondExtension({
+    required String extensionId,
+    required String response,
+  }) async {
+    try {
+      final raw = await _gateway.rpc(
+        'respond_extension',
+        params: {
+          'p_extension_id': extensionId,
+          'p_response': response,
+        },
+      );
+      final map = raw as Map<String, dynamic>;
+      final tripJson = map['trip'];
+      if (tripJson is! Map<String, dynamic>) return null;
+      final view = dto.TripView.fromJson(tripJson);
+      final summary = DomainMappers.tripFromDto(view, raw: tripJson);
+      await _cacheTrip(view);
+      await _persistNaMePairing(summary);
+      return summary;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<TripExtensionProposal?> resolvePendingExtension(
+    TripSummary summary,
+  ) async {
+    final fromView = summary.pendingExtension;
+    if (fromView != null && fromView.isFromDriver) return fromView;
+    return pendingExtensionFromTable(summary.tripId);
+  }
+
+  Future<TripExtensionProposal?> pendingExtensionFromTable(String tripId) async {
+    try {
+      final rows = await _gateway.selectRows(
+        'trip_extensions',
+        filters: {'trip_id': tripId, 'status': 'proposed'},
+      );
+      if (rows.isEmpty) return null;
+      final row = rows.first;
+      if (row['proposed_by'] == 'rider') return null;
+      final stageId = row['new_alighting_stage_id'] as String?;
+      var destinationName = 'New destination';
+      if (stageId != null) {
+        final stages = await _gateway.selectRows(
+          'route_stages',
+          filters: {'id': stageId},
+        );
+        if (stages.isNotEmpty) {
+          destinationName = stages.first['name'] as String? ?? destinationName;
+        }
+      }
+      return DomainMappers.extensionProposalFromRow(
+        row,
+        destinationName: destinationName,
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<List<TripHistoryEntry>> completedTrips({int limit = 50}) async {
+    try {
+      final rows = await _gateway.selectRows('trips');
+      final entries = rows
+          .where((row) => row['status'] == 'completed')
+          .map(DomainMappers.historyEntryFromTripRow)
+          .toList()
+        ..sort((a, b) => b.completedAt.compareTo(a.completedAt));
+      if (entries.length > limit) {
+        return entries.sublist(0, limit);
+      }
+      return entries;
+    } catch (e) {
+      final cached = await _completedTripsFromCache(limit: limit);
+      if (cached.isNotEmpty) return cached;
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<TripHistoryEntry?> tripHistoryDetail(String tripId) async {
+    try {
+      final rows = await _gateway.selectRows(
+        'trips',
+        filters: {'id': tripId},
+      );
+      if (rows.isEmpty) {
+        return _historyFromCache(tripId);
+      }
+      return DomainMappers.historyEntryFromTripRow(rows.first);
+    } catch (e) {
+      return _historyFromCache(tripId);
+    }
+  }
+
+  Future<List<TripHistoryEntry>> _completedTripsFromCache({int limit = 50}) async {
+    final rows = await _db.select(_db.tripCache).get();
+    final entries = <TripHistoryEntry>[];
+    for (final row in rows) {
+      final map = jsonDecode(row.payloadJson) as Map<String, dynamic>;
+      if (map['status'] != 'completed') continue;
+      final view = dto.TripView.fromJson(map);
+      final summary = DomainMappers.tripFromDto(view, raw: map);
+      entries.add(
+        TripHistoryEntry(
+          tripId: summary.tripId,
+          completedAt: _endedAtFromTripJson(map) ?? row.updatedAt,
+          boardName: summary.board.name,
+          alightName: summary.alight.name,
+          modeCode: summary.modeCode,
+          modeLabel: summary.modeLabel,
+          status: summary.status,
+          totalFare: summary.totalFare,
+          driverName: summary.driver.displayName,
+          plateNumber: summary.vehicle.plateNumber,
+          receipt: TripReceipt(
+            fare: summary.totalFare,
+            total: summary.totalFare,
+          ),
+        ),
+      );
+    }
+    entries.sort((a, b) => b.completedAt.compareTo(a.completedAt));
+    if (entries.length > limit) return entries.sublist(0, limit);
+    return entries;
+  }
+
+  TripHistoryEntry? _historyFromCache(String tripId) {
+    // Sync read not available — callers use async path above.
+    return null;
+  }
+
+  DateTime? _endedAtFromTripJson(Map<String, dynamic> json) {
+    final timestamps = json['timestamps'];
+    if (timestamps is! Map<String, dynamic>) return null;
+    final ended = timestamps['ended_at'] as String?;
+    return ended != null ? DateTime.parse(ended) : null;
+  }
+
   Future<dto.TripLocationSampleResponse> tripLocationSample({
     required String tripId,
     required List<dto.LocationSamplePoint> points,

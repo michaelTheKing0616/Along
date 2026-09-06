@@ -21,6 +21,9 @@ class FakeAlongSupabase implements AlongSupabase {
     this.walkingDirectionsResponse,
     this.journeyRows = const [],
     this.journeyTransferWalkRows = const [],
+    this.tripRows = const [],
+    this.tripExtensionRows = const [],
+    this.routeStageRows = const [],
     FakeNegotiationEngine? negotiationEngine,
   }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
@@ -42,6 +45,9 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? walkingDirectionsResponse;
   List<Map<String, dynamic>> journeyRows;
   List<Map<String, dynamic>> journeyTransferWalkRows;
+  List<Map<String, dynamic>> tripRows;
+  List<Map<String, dynamic>> tripExtensionRows;
+  List<Map<String, dynamic>> routeStageRows;
 
   final FakeNegotiationEngine negotiationEngine;
 
@@ -49,6 +55,14 @@ class FakeAlongSupabase implements AlongSupabase {
   int requestTripInvokeCount = 0;
   int tripSnapshotCallCount = 0;
   int markBoardedInvokeCount = 0;
+  int confirmFareInvokeCount = 0;
+  int rateTripInvokeCount = 0;
+  int proposeExtensionInvokeCount = 0;
+  int respondExtensionInvokeCount = 0;
+  Map<String, dynamic>? lastConfirmFareParams;
+  Map<String, dynamic>? lastRateTripParams;
+  Map<String, dynamic>? lastProposeExtensionParams;
+  Map<String, dynamic>? lastRespondExtensionParams;
   List<Map<String, dynamic>> tripSnapshotSequence = const [];
   Map<String, dynamic>? lastRequestTripParams;
 
@@ -150,6 +164,41 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'hail_roaming') {
       return requestTripResponse ?? {};
     }
+    if (fn == 'confirm_fare') {
+      confirmFareInvokeCount++;
+      lastConfirmFareParams = params;
+      return {};
+    }
+    if (fn == 'rate_trip') {
+      rateTripInvokeCount++;
+      lastRateTripParams = params;
+      return {};
+    }
+    if (fn == 'propose_extension') {
+      proposeExtensionInvokeCount++;
+      lastProposeExtensionParams = params;
+      return {
+        'extension_id': 'ext-test-1',
+        'fare_delta': {'amount': '150.00', 'currency': 'NGN'},
+        'new_total': {'amount': '600.00', 'currency': 'NGN'},
+        'tier': 1,
+        'unconfirmed': false,
+      };
+    }
+    if (fn == 'respond_extension') {
+      respondExtensionInvokeCount++;
+      lastRespondExtensionParams = params;
+      final base = requestTripResponse ?? {};
+      return {
+        'extension_id': params?['p_extension_id'],
+        'status': params?['p_response'],
+        if (params?['p_response'] == 'accept')
+          'trip': {
+            ...base,
+            'status': 'in_transit',
+          },
+      };
+    }
     return {};
   }
 
@@ -220,6 +269,36 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (table == 'journey_transfer_walks') {
       return journeyTransferWalkRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
+    }
+    if (table == 'trips') {
+      return tripRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
+    }
+    if (table == 'trip_extensions') {
+      return tripExtensionRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
+    }
+    if (table == 'route_stages') {
+      return routeStageRows
           .where((row) {
             for (final entry in filters.entries) {
               if (row[entry.key] != entry.value) return false;
@@ -325,6 +404,24 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_type': 'global',
         'scope_id': '*',
         'value': '600',
+      },
+      {
+        'key': 'payments.digital_enabled',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': 'false',
+      },
+      {
+        'key': 'rating.tags',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': [
+          'safe_driving',
+          'fair_fare',
+          'clean_vehicle',
+          'polite',
+          'on_time',
+        ],
       },
     ];
 

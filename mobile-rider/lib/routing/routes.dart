@@ -18,4 +18,6 @@ abstract final class AppRoutes {
   static const meetVehicle = '/meet-vehicle';
   static const naMe = '/na-me';
   static const activeTrip = '/active-trip';
+  static const tripDetail = '/trip-detail';
+  static const payDriver = '/pay-driver';
 }

@@ -608,5 +608,118 @@
   "reportPlaceholder": "Report incident — coming in Phase 5",
   "@reportPlaceholder": {
     "description": "R-24 placeholder snackbar"
+  },
+  "tripCompleteTitle": "Trip complete",
+  "@tripCompleteTitle": {
+    "description": "R-17 sheet title"
+  },
+  "tripCompletePaidQuestion": "Did you pay {amount}?",
+  "@tripCompletePaidQuestion": {
+    "description": "R-17 Tier 1/2 fare confirm",
+    "placeholders": {
+      "amount": { "type": "String", "example": "₦450" }
+    }
+  },
+  "tripCompleteTier3Question": "What did you pay?",
+  "@tripCompleteTier3Question": {
+    "description": "R-17 Tier 3 fare confirm (FM33)"
+  },
+  "tripCompleteYes": "Yes",
+  "@tripCompleteYes": {
+    "description": "R-17 one-tap as_shown confirm"
+  },
+  "tripCompleteDifferent": "Different amount",
+  "@tripCompleteDifferent": {
+    "description": "R-17 alternate fare path"
+  },
+  "tripCompleteDifferentPrompt": "Pick the amount you paid",
+  "@tripCompleteDifferentPrompt": {
+    "description": "R-17 different-amount chips heading"
+  },
+  "tripCompleteRateTitle": "Rate your trip",
+  "@tripCompleteRateTitle": {
+    "description": "R-17 rating step heading"
+  },
+  "extendTripTitle": "Extend trip",
+  "@extendTripTitle": {
+    "description": "R-15 sheet title"
+  },
+  "extendTripSearchHint": "Where to now?",
+  "@extendTripSearchHint": {
+    "description": "R-15 destination search"
+  },
+  "extendTripDestination": "Continuing to {destination}",
+  "@extendTripDestination": {
+    "description": "R-15 selected destination label",
+    "placeholders": {
+      "destination": { "type": "String", "example": "Wuse" }
+    }
+  },
+  "extendTripSend": "Send to driver",
+  "@extendTripSend": {
+    "description": "R-15 propose extension CTA"
+  },
+  "incomingExtensionTitle": "Extension request",
+  "@incomingExtensionTitle": {
+    "description": "R-15 driver proposal sheet title"
+  },
+  "incomingExtensionBody": "Driver proposes continuing to {destination} for +{delta}",
+  "@incomingExtensionBody": {
+    "description": "R-15 driver proposal copy",
+    "placeholders": {
+      "destination": { "type": "String", "example": "Wuse" },
+      "delta": { "type": "String", "example": "₦150" }
+    }
+  },
+  "incomingExtensionAccept": "Accept",
+  "@incomingExtensionAccept": {
+    "description": "R-15 one-tap accept"
+  },
+  "incomingExtensionDecline": "Decline",
+  "@incomingExtensionDecline": {
+    "description": "R-15 decline extension"
+  },
+  "payDriverTitle": "Pay driver",
+  "@payDriverTitle": {
+    "description": "R-27 sheet title"
+  },
+  "payDriverCta": "Pay {amount}",
+  "@payDriverCta": {
+    "description": "R-27 primary pay button",
+    "placeholders": {
+      "amount": { "type": "String", "example": "₦450" }
+    }
+  },
+  "payDriverAmountLocked": "Amount locked to this trip",
+  "@payDriverAmountLocked": {
+    "description": "R-27 locked amount hint (TS-UI-04)"
+  },
+  "payDriverMethodSaved": "Visa ···4242",
+  "@payDriverMethodSaved": {
+    "description": "R-27 default payment method row"
+  },
+  "payDriverPending": "Payment initiation — deferred to P1-G-01",
+  "@payDriverPending": {
+    "description": "R-27 pending state placeholder"
+  },
+  "tripsEmpty": "No completed trips yet.",
+  "@tripsEmpty": {
+    "description": "R-22 empty history"
+  },
+  "tripDetailTitle": "Trip details",
+  "@tripDetailTitle": {
+    "description": "R-22 detail screen title"
+  },
+  "tripDetailMissing": "Trip not found",
+  "@tripDetailMissing": {
+    "description": "R-22 missing trip detail"
+  },
+  "tripDetailShareReceipt": "Share receipt",
+  "@tripDetailShareReceipt": {
+    "description": "R-22 text receipt share"
+  },
+  "tripDetailReceiptCopied": "Receipt copied to clipboard",
+  "@tripDetailReceiptCopied": {
+    "description": "R-22 receipt share acknowledgement"
   }
 }

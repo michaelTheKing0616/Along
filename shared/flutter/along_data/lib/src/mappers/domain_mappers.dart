@@ -83,10 +83,17 @@ class DomainMappers {
         message: 'Unknown trip status: ${view.status}',
       );
     }
-    final extension = raw?['extension'];
-    final etaMinutes = extension is Map<String, dynamic>
-        ? (extension['eta_minutes'] as num?)?.toInt()
-        : null;
+    final extension = raw?['extension'] ?? view.extension;
+    int? etaMinutes;
+    TripExtensionProposal? pendingExtension;
+    if (extension is Map<String, dynamic>) {
+      if (extension.containsKey('extension_id')) {
+        pendingExtension =
+            extensionProposalFromView(extension, view.trip_id);
+      } else {
+        etaMinutes = (extension['eta_minutes'] as num?)?.toInt();
+      }
+    }
     return TripSummary(
       tripId: view.trip_id,
       journeyId: view.journey_id,
@@ -107,6 +114,7 @@ class DomainMappers {
       modeCode: view.mode.code,
       modeLabel: view.mode.label,
       etaMinutes: etaMinutes,
+      pendingExtension: pendingExtension,
       dispatchAttempt: _dispatchAttemptFromTripJson(view),
       isRoamingHail: _isRoamingHailFromTripJson(view),
     );
@@ -229,6 +237,149 @@ class DomainMappers {
       ),
       fare: moneyFromDto(
         dto.Money.fromJson(json['fare'] as Map<String, dynamic>),
+      ),
+    );
+  }
+
+  static TripReceipt receiptFromCompleteTripJson(Map<String, dynamic> json) {
+    final currency =
+        (json['fare'] as Map<String, dynamic>?)?['currency'] as String? ?? 'NGN';
+    final fare = moneyFromDto(
+      dto.Money.fromJson(json['fare'] as Map<String, dynamic>),
+    );
+    Money? surcharge;
+    final surchargeJson = json['surcharge'];
+    if (surchargeJson is Map<String, dynamic>) {
+      surcharge = moneyFromDto(dto.Money.fromJson(surchargeJson));
+    }
+    Money? commission;
+    final commissionJson = json['commission'];
+    if (commissionJson is Map<String, dynamic>) {
+      commission = moneyFromDto(dto.Money.fromJson(commissionJson));
+    }
+    final totalJson = json['total'];
+    final total = totalJson is Map<String, dynamic>
+        ? moneyFromDto(dto.Money.fromJson(totalJson))
+        : fare + (surcharge ?? Money.zero(currency: currency));
+    return TripReceipt(
+      fare: fare,
+      surcharge: surcharge,
+      commission: commission,
+      total: total,
+    );
+  }
+
+  static ProposeExtensionResult proposeExtensionFromJson(
+    Map<String, dynamic> json,
+  ) {
+    return ProposeExtensionResult(
+      extensionId: json['extension_id'] as String,
+      fareDelta: moneyFromDto(
+        dto.Money.fromJson(json['fare_delta'] as Map<String, dynamic>),
+      ),
+      newTotal: moneyFromDto(
+        dto.Money.fromJson(json['new_total'] as Map<String, dynamic>),
+      ),
+      tier: FareTier.fromInt((json['tier'] as num).toInt()),
+      unconfirmed: json['unconfirmed'] as bool,
+    );
+  }
+
+  static TripExtensionProposal? extensionProposalFromView(
+    Map<String, dynamic> json,
+    String tripId,
+  ) {
+    final extensionId = json['extension_id'] as String?;
+    if (extensionId == null) return null;
+    if (json['status'] != 'proposed') return null;
+    final proposedBy = json['proposed_by'] as String? ?? 'driver';
+    if (proposedBy != 'driver') return null;
+
+    final destinationName = json['destination_name'] as String? ??
+        json['new_alight_name'] as String? ??
+        'New destination';
+
+    final fareDeltaJson = json['fare_delta'];
+    if (fareDeltaJson == null) return null;
+
+    Money fareDelta;
+    String currency = json['currency'] as String? ?? 'NGN';
+    if (fareDeltaJson is Map<String, dynamic>) {
+      fareDelta = moneyFromDto(dto.Money.fromJson(fareDeltaJson));
+      currency = fareDelta.currency;
+    } else {
+      fareDelta = Money.parse(fareDeltaJson.toString(), currency: currency);
+    }
+
+    return TripExtensionProposal(
+      extensionId: extensionId,
+      tripId: tripId,
+      proposedBy: proposedBy,
+      destinationName: destinationName,
+      fareDelta: fareDelta,
+      currency: currency,
+    );
+  }
+
+  static TripExtensionProposal? extensionProposalFromRow(
+    Map<String, dynamic> row, {
+    String destinationName = 'New destination',
+  }) {
+    if (row['status'] != 'proposed') return null;
+    final delta = row['fare_delta'];
+    if (delta == null) return null;
+    final currency = row['currency'] as String? ?? 'NGN';
+    return TripExtensionProposal(
+      extensionId: row['id'] as String,
+      tripId: row['trip_id'] as String,
+      proposedBy: row['proposed_by'] as String,
+      destinationName: destinationName,
+      fareDelta: Money.parse(delta.toString(), currency: currency),
+      currency: currency,
+    );
+  }
+
+  static TripHistoryEntry historyEntryFromTripRow(Map<String, dynamic> row) {
+    final status = TripStatus.tryParse(row['status'] as String?) ??
+        TripStatus.completed;
+    final currency = row['fare_currency'] as String? ?? 'NGN';
+    final fareShown = row['fare_shown'];
+    final surcharge = row['load_surcharge_amount'];
+    final commission = row['commission_amount'];
+    final fare = fareShown != null
+        ? Money.parse(fareShown.toString(), currency: currency)
+        : Money.zero(currency: currency);
+    final surchargeMoney = surcharge != null &&
+            num.tryParse(surcharge.toString()) != null &&
+            num.parse(surcharge.toString()) > 0
+        ? Money.parse(surcharge.toString(), currency: currency)
+        : null;
+    final commissionMoney = commission != null &&
+            num.tryParse(commission.toString()) != null &&
+            num.parse(commission.toString()) > 0
+        ? Money.parse(commission.toString(), currency: currency)
+        : null;
+    final total = fare +
+        (surchargeMoney ?? Money.zero(currency: currency));
+    final endedAt = row['ended_at'] as String?;
+    return TripHistoryEntry(
+      tripId: row['id'] as String,
+      completedAt: endedAt != null
+          ? DateTime.parse(endedAt)
+          : DateTime.now().toUtc(),
+      boardName: row['boarding_name'] as String? ?? 'Pickup',
+      alightName: row['alighting_name'] as String? ?? 'Drop-off',
+      modeCode: row['mode_code'] as String? ?? 'car',
+      modeLabel: row['mode_label'] as String? ?? 'Car',
+      status: status,
+      totalFare: total,
+      driverName: row['driver_name'] as String?,
+      plateNumber: row['plate_number'] as String?,
+      receipt: TripReceipt(
+        fare: fare,
+        surcharge: surchargeMoney,
+        commission: commissionMoney,
+        total: total,
       ),
     );
   }

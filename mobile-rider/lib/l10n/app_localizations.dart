@@ -830,6 +830,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report incident — coming in Phase 5'**
   String get reportPlaceholder;
+
+  /// R-17 sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Trip complete'**
+  String get tripCompleteTitle;
+
+  /// R-17 Tier 1/2 fare confirm
+  ///
+  /// In en, this message translates to:
+  /// **'Did you pay {amount}?'**
+  String tripCompletePaidQuestion(String amount);
+
+  /// R-17 Tier 3 fare confirm (FM33)
+  ///
+  /// In en, this message translates to:
+  /// **'What did you pay?'**
+  String get tripCompleteTier3Question;
+
+  /// R-17 one-tap as_shown confirm
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get tripCompleteYes;
+
+  /// R-17 alternate fare path
+  ///
+  /// In en, this message translates to:
+  /// **'Different amount'**
+  String get tripCompleteDifferent;
+
+  /// R-17 different-amount chips heading
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the amount you paid'**
+  String get tripCompleteDifferentPrompt;
+
+  /// R-17 rating step heading
+  ///
+  /// In en, this message translates to:
+  /// **'Rate your trip'**
+  String get tripCompleteRateTitle;
+
+  /// R-15 sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Extend trip'**
+  String get extendTripTitle;
+
+  /// R-15 destination search
+  ///
+  /// In en, this message translates to:
+  /// **'Where to now?'**
+  String get extendTripSearchHint;
+
+  /// R-15 selected destination label
+  ///
+  /// In en, this message translates to:
+  /// **'Continuing to {destination}'**
+  String extendTripDestination(String destination);
+
+  /// R-15 propose extension CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Send to driver'**
+  String get extendTripSend;
+
+  /// R-15 driver proposal sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Extension request'**
+  String get incomingExtensionTitle;
+
+  /// R-15 driver proposal copy
+  ///
+  /// In en, this message translates to:
+  /// **'Driver proposes continuing to {destination} for +{delta}'**
+  String incomingExtensionBody(String destination, String delta);
+
+  /// R-15 one-tap accept
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get incomingExtensionAccept;
+
+  /// R-15 decline extension
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get incomingExtensionDecline;
+
+  /// R-27 sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Pay driver'**
+  String get payDriverTitle;
+
+  /// R-27 primary pay button
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {amount}'**
+  String payDriverCta(String amount);
+
+  /// R-27 locked amount hint (TS-UI-04)
+  ///
+  /// In en, this message translates to:
+  /// **'Amount locked to this trip'**
+  String get payDriverAmountLocked;
+
+  /// R-27 default payment method row
+  ///
+  /// In en, this message translates to:
+  /// **'Visa ···4242'**
+  String get payDriverMethodSaved;
+
+  /// R-27 pending state placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Payment initiation — deferred to P1-G-01'**
+  String get payDriverPending;
+
+  /// R-22 empty history
+  ///
+  /// In en, this message translates to:
+  /// **'No completed trips yet.'**
+  String get tripsEmpty;
+
+  /// R-22 detail screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Trip details'**
+  String get tripDetailTitle;
+
+  /// R-22 missing trip detail
+  ///
+  /// In en, this message translates to:
+  /// **'Trip not found'**
+  String get tripDetailMissing;
+
+  /// R-22 text receipt share
+  ///
+  /// In en, this message translates to:
+  /// **'Share receipt'**
+  String get tripDetailShareReceipt;
+
+  /// R-22 receipt share acknowledgement
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt copied to clipboard'**
+  String get tripDetailReceiptCopied;
 }
 
 class _AppLocalizationsDelegate
