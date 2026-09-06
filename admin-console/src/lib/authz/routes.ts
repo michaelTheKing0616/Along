@@ -36,12 +36,19 @@ const PUBLIC_PATHS = new Set(['/sign-in', '/mfa', '/unauthorized']);
 /** Settlement-agent surface (P4-E-01) — not admin console. */
 export const AGENT_PATH = '/agent';
 
+/** W-04 anonymous web pay (P4-D-02) — no auth. */
+export function isPayPath(pathname: string): boolean {
+  return pathname === '/p' || pathname.startsWith('/p/');
+}
+
 export function isAgentPath(pathname: string): boolean {
   return pathname === AGENT_PATH || pathname.startsWith(`${AGENT_PATH}/`);
 }
 
 export function isPublicPath(pathname: string): boolean {
-  return PUBLIC_PATHS.has(pathname);
+  if (PUBLIC_PATHS.has(pathname)) return true;
+  if (isPayPath(pathname)) return true;
+  return false;
 }
 
 /** Extract console segment from /{city}/{segment}/... */
