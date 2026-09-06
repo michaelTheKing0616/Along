@@ -1,7 +1,11 @@
 import type {
+  CreateSubaccountParams,
+  CreateSubaccountResult,
   PaymentProvider,
   PayoutTransferParams,
   PayoutTransferResult,
+  ResolveAccountNameParams,
+  ResolveAccountNameResult,
   SettlementInitiateParams,
   SettlementInitiateResult,
   TripPaymentInitiateParams,
@@ -30,6 +34,23 @@ type PaystackTransferResponse = {
     reference?: string;
     transfer_code?: string;
     status?: string;
+  };
+};
+
+type PaystackResolveResponse = {
+  status?: boolean;
+  message?: string;
+  data?: {
+    account_name?: string;
+    account_number?: string;
+  };
+};
+
+type PaystackSubaccountResponse = {
+  status?: boolean;
+  message?: string;
+  data?: {
+    subaccount_code?: string;
   };
 };
 
@@ -205,6 +226,53 @@ export function createPaystackProvider(
         transferCode: payload.data.transfer_code,
         status: transferStatus,
       };
+    },
+
+    async resolveAccountName(
+      params: ResolveAccountNameParams,
+    ): Promise<ResolveAccountNameResult> {
+      const res = await fetchImpl('https://api.paystack.co/bank/resolve', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          account_number: params.accountNumber,
+          bank_code: params.bankCode,
+        }),
+      });
+
+      const payload = (await res.json()) as PaystackResolveResponse;
+      if (!res.ok || !payload.status || !payload.data?.account_name) {
+        throw new Error(payload.message ?? 'Paystack bank resolve failed');
+      }
+
+      return { accountName: payload.data.account_name };
+    },
+
+    async createSubaccount(params: CreateSubaccountParams): Promise<CreateSubaccountResult> {
+      const res = await fetchImpl('https://api.paystack.co/subaccount', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          business_name: params.businessName,
+          settlement_bank: params.bankCode,
+          account_number: params.accountNumber,
+          percentage_charge: 0,
+          primary_contact_email: params.contactEmail,
+        }),
+      });
+
+      const payload = (await res.json()) as PaystackSubaccountResponse;
+      if (!res.ok || !payload.status || !payload.data?.subaccount_code) {
+        throw new Error(payload.message ?? 'Paystack subaccount create failed');
+      }
+
+      return { subaccountCode: payload.data.subaccount_code };
     },
   };
 }
