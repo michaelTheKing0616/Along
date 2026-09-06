@@ -854,9 +854,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged e6e3c94. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-D-01] Admin integrity + finance
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00045 admin_review_flag; A-10/11/13; TS-INTEG-06 6/6; Playwright dual-control 1 passed (Node 22). Safety cannot transition standing.
+- Reviewer verdict: PASS WITH NOTES — TS-INTEG-06 independently 6/6; FM13 holds; Playwright ledger-count flaky on reused DB (fresh reset via check_playwright.sh).
+- Rework count: 0
+- Notes/escalations: Merged 18964f2. Live-device map: deferred to P1-G-01.
+
+## [Phase 4 / P4-E-01] Agent settlement page
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: A-10/11/13. Next migration 00045 if admin_review_flag missing. TS-INTEG-06 + Playwright dual control. No auto action (FM13). QR/stickers stub OK (P4-D-02). Live-device: deferred to P1-G-01.
+- Notes/escalations: confirm_agent_settlement UI. No admin_role=agent — gate on settlement_agents.profile_id. Playwright: redeem + replay rejected. Live-device: deferred to P1-G-01.
