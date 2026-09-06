@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:along_core/along_core.dart';
-import 'package:along_data/along_data.dart';
+import 'package:along_data/along_data.dart' hide Money;
 import 'package:along_design/along_design.dart' hide formatMoney;
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +24,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
   String? _activeSettlementId;
   String? _agentCode;
   String? _agentExpiresAt;
+  List<NearbySettlementAgent> _nearbyAgents = const [];
   String? _statusMessage;
   String? _channelDetail;
   bool _busy = false;
@@ -55,7 +56,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
 
   Money _parseAmount() {
     final parsed = double.tryParse(_amountController.text.trim()) ?? 0;
-    return Money.parse(parsed.toStringAsFixed(2));
+    return Money.parse(parsed.toStringAsFixed(2), currency: 'NGN');
   }
 
   Future<void> _initiateChannel(String channel) async {
@@ -64,6 +65,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
       _statusMessage = null;
       _channelDetail = null;
       _agentCode = null;
+      _nearbyAgents = const [];
     });
     try {
       final amount = _parseAmount();
@@ -74,9 +76,11 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
       final repo = ref.read(ledgerRepositoryProvider);
       if (channel == 'agent') {
         final code = await repo.createAgentCode(amount: amount);
+        final agents = await repo.nearbySettlementAgents();
         setState(() {
           _agentCode = code.agent_code;
           _agentExpiresAt = code.expires_at;
+          _nearbyAgents = agents;
           _statusMessage = 'Show this code to an Along agent within 15 minutes';
         });
         return;
@@ -197,6 +201,22 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
                 l10n.settleAgentExpires(_agentExpiresAt!),
                 style: AlongText.caption.copyWith(color: AlongColors.ink500),
               ),
+            if (_nearbyAgents.isNotEmpty) ...[
+              const SizedBox(height: AlongSpace.s16),
+              Text(l10n.settleNearbyAgentsTitle, style: AlongText.bodyStrong),
+              const SizedBox(height: AlongSpace.s8),
+              ..._nearbyAgents.map(
+                (agent) => ListTile(
+                  key: Key('settle_nearby_agent_${agent.id}'),
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(agent.businessName, style: AlongText.bodyStrong),
+                  trailing: Text(
+                    l10n.settleNearbyAgentDistance(agent.distanceM),
+                    style: AlongText.caption.copyWith(color: AlongColors.ink500),
+                  ),
+                ),
+              ),
+            ],
           ],
           if (_channelDetail != null) ...[
             const SizedBox(height: AlongSpace.s16),

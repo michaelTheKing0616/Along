@@ -1120,6 +1120,18 @@ abstract class AppLocalizations {
   /// **'Expires {time}'**
   String settleAgentExpires(String time);
 
+  /// No description provided for @settleNearbyAgentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby agents'**
+  String get settleNearbyAgentsTitle;
+
+  /// No description provided for @settleNearbyAgentDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} m away'**
+  String settleNearbyAgentDistance(int distance);
+
   /// No description provided for @settleDone.
   ///
   /// In en, this message translates to:

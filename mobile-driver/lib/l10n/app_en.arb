@@ -336,6 +336,11 @@
   "@settleAgentExpires": {
     "placeholders": { "time": {"type": "String"} }
   },
+  "settleNearbyAgentsTitle": "Nearby agents",
+  "settleNearbyAgentDistance": "{distance} m away",
+  "@settleNearbyAgentDistance": {
+    "placeholders": { "distance": {"type": "int"} }
+  },
   "settleDone": "Done",
   "earningsLedgerSection": "ALONG BALANCE",
   "earningsTripsSection": "TRIPS",

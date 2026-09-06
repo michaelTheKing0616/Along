@@ -11,6 +11,7 @@ import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/ledger/presentation/widgets/ledger_blocked_banner.dart';
 import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
+import 'package:mobile_driver/features/ledger/presentation/settle_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
@@ -249,6 +250,37 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(fake.respondExtensionInvokeCount, 1);
+    });
+  });
+
+  group('D-20 nearby agents', () {
+    testWidgets('shows city-bound agent list under agent code', (tester) async {
+      final fake = FakeAlongSupabase();
+      final container = _ledgerContainer(fake);
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const SettleScreen(),
+        ),
+      );
+      await tester.binding.setSurfaceSize(const Size(800, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await container.read(driverLedgerControllerProvider.notifier).refresh();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.tap(find.byKey(const Key('settle_agent')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byKey(const Key('settle_agent_code')), findsOneWidget);
+      expect(find.text('ABC123'), findsOneWidget);
+      expect(find.text('Nearby agents'), findsOneWidget);
+      expect(find.text('Zaria POS'), findsOneWidget);
+      expect(find.text('Zaria Far POS'), findsOneWidget);
+      expect(find.text('Other POS'), findsNothing);
+      expect(find.text('120 m away'), findsOneWidget);
     });
   });
 }

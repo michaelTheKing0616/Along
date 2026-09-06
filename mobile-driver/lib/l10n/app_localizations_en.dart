@@ -592,6 +592,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get settleNearbyAgentsTitle => 'Nearby agents';
+
+  @override
+  String settleNearbyAgentDistance(int distance) {
+    return '$distance m away';
+  }
+
+  @override
   String get settleDone => 'Done';
 
   @override

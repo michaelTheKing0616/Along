@@ -21,6 +21,7 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Map<String, dynamic>>? driverLedgerEntries,
     List<Map<String, dynamic>>? tripExtensionRows,
     List<Map<String, dynamic>>? settlementRows,
+    List<Map<String, dynamic>>? nearbySettlementAgents,
   })  : cities = cities ?? defaultTestCities(),
         modes = modes ?? defaultTestModes(),
         countryConfig = countryConfig ?? defaultTestCountry(),
@@ -31,7 +32,9 @@ class FakeAlongSupabase implements AlongSupabase {
         placesSearchResults = placesSearchResults ?? [],
         driverLedgerEntries = driverLedgerEntries ?? [],
         tripExtensionRows = tripExtensionRows ?? [],
-        settlementRows = settlementRows ?? [] {
+        settlementRows = settlementRows ?? [],
+        nearbySettlementAgents = nearbySettlementAgents ??
+            defaultNearbySettlementAgents() {
     if (signedInUser != null) {
       _user = signedInUser;
     }
@@ -75,6 +78,20 @@ class FakeAlongSupabase implements AlongSupabase {
   List<Map<String, dynamic>> driverLedgerEntries;
   List<Map<String, dynamic>> tripExtensionRows;
   List<Map<String, dynamic>> settlementRows;
+  List<Map<String, dynamic>> nearbySettlementAgents;
+
+  static List<Map<String, dynamic>> defaultNearbySettlementAgents() => [
+        {
+          'id': 'agent-zaria-near',
+          'business_name': 'Zaria POS',
+          'distance_m': 120,
+        },
+        {
+          'id': 'agent-zaria-far',
+          'business_name': 'Zaria Far POS',
+          'distance_m': 8500,
+        },
+      ];
 
   User? _user;
   String? _storedVehicleId;
@@ -292,6 +309,9 @@ class FakeAlongSupabase implements AlongSupabase {
         'agent_code': 'ABC123',
         'expires_at': '2026-09-06T11:00:00Z',
       };
+    }
+    if (fn == 'nearby_settlement_agents') {
+      return nearbySettlementAgents;
     }
     if (fn == 'register_guarantor') {
       return 'guarantor-id';

@@ -17,6 +17,7 @@ export 'src/geo/distance.dart';
 export 'src/models/candidate.dart';
 export 'src/models/complete_trip_result.dart';
 export 'src/models/coverage_gap.dart';
+export 'src/models/nearby_settlement_agent.dart';
 export 'src/models/driver_ledger_entry.dart';
 export 'src/models/driver_manifest_entry.dart';
 export 'src/models/fare_quote.dart';

@@ -128,13 +128,20 @@ class LedgerRepository {
     }
   }
 
-  Future<List<Map<String, dynamic>>> settlementAgents({String? cityId}) async {
+  Future<List<NearbySettlementAgent>> nearbySettlementAgents({
+    GeoPoint? location,
+  }) async {
     try {
-      if (cityId == null) return const [];
-      return _gateway.selectRows(
-        'settlement_agents',
-        filters: {'city_id': cityId, 'active': true},
-      );
+      final params = <String, dynamic>{};
+      if (location != null) {
+        params['p_location'] = {'lat': location.lat, 'lng': location.lng};
+      }
+      final raw = await _gateway.rpc('nearby_settlement_agents', params: params);
+      final rows = raw as List<dynamic>? ?? [];
+      return rows
+          .whereType<Map<String, dynamic>>()
+          .map(NearbySettlementAgent.fromJson)
+          .toList(growable: false);
     } catch (e) {
       throw mapSupabaseError(e);
     }
