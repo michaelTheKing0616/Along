@@ -660,9 +660,9 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: New test reused TS-PLAN-09 id (collision with p95). Merged ebd7e29.
 
 ## [Phase 2 / P2-B-01] Multi-leg rider UI
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-05
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: R-07/14/19 + TTS ADR-0020; 7 widget tests + TS-UI-01 pass. Literal 3s poll in ActiveJourneyMonitor.
+- Reviewer verdict: FAIL
 - Rework count: 0
-- Notes/escalations: R-07/14/19. Design batch 2 components already exist (P2-E-01).
+- Notes/escalations: Must-fix: poll interval from app_config; arrived radius reuse boarding.colocation_radius_m (do not invent wayfinding.arrived_radius_m). Rework 1 of 2.
