@@ -20,6 +20,7 @@ export const ROUTE_ALLOWLIST: Record<string, readonly AdminRole[]> = {
   deploy: ['superadmin', 'ops_lead'],
   config: ['superadmin', 'ops_lead'],
   integrity: ['superadmin', 'ops_lead', 'safety'],
+  drivers: ['superadmin', 'ops_lead', 'safety', 'finance'],
   safety: ['superadmin', 'ops_lead', 'safety'],
   finance: ['superadmin', 'finance'],
   intelligence: ['superadmin', 'ops_lead', 'analyst'],

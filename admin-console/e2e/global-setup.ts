@@ -17,6 +17,7 @@ export const E2E_CITY = 'abuja';
 export const TEST_USERS = [
   { email: 'e2e-superadmin@along.local', role: 'superadmin', requiresMfa: true },
   { email: 'e2e-finance@along.local', role: 'finance', requiresMfa: true },
+  { email: 'e2e-finance2@along.local', role: 'finance', requiresMfa: true },
   { email: 'e2e-verifier@along.local', role: 'verifier', requiresMfa: false },
   { email: 'e2e-analyst@along.local', role: 'analyst', requiresMfa: false },
   { email: 'e2e-ops-agent@along.local', role: 'ops_agent', requiresMfa: false },
