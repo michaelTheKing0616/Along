@@ -652,9 +652,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: Partial trip_transition (boarded/in_transit/completed) for journey advance — P3-A-01 must not duplicate. journey.* keys not in doc 02 §2.3. Merged b8092f9.
 
 ## [Phase 2 / P2-A-05] Speed-profile hook
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Migration 00027 empty segment_speed_profiles + planner calibrateInVehicleS; 5/5 Deno unit tests (600s→1200s).
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: New test reused TS-PLAN-09 id (collision with p95). Merged ebd7e29.
+
+## [Phase 2 / P2-B-01] Multi-leg rider UI
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Size S. Table created now, populated in P7.
+- Notes/escalations: R-07/14/19. Design batch 2 components already exist (P2-E-01).
