@@ -945,11 +945,171 @@ abstract class AppLocalizations {
   /// **'Visa ···4242'**
   String get payDriverMethodSaved;
 
-  /// R-27 pending state placeholder
+  /// R-27 pending transfer/USSD state
   ///
   /// In en, this message translates to:
-  /// **'Payment initiation — deferred to P1-G-01'**
+  /// **'Complete payment in your bank app'**
   String get payDriverPending;
+
+  /// R-27 default method when transfer preferred
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get payDriverMethodTransfer;
+
+  /// R-27 USSD payment method row
+  ///
+  /// In en, this message translates to:
+  /// **'USSD'**
+  String get payDriverMethodUssd;
+
+  /// R-27 link to R-32
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get payDriverChangeMethod;
+
+  /// R-27 cash-only driver state
+  ///
+  /// In en, this message translates to:
+  /// **'{name} accepts cash only'**
+  String payDriverCashOnly(String name);
+
+  /// R-27 inactive driver code
+  ///
+  /// In en, this message translates to:
+  /// **'This code is no longer active'**
+  String get payDriverInactive;
+
+  /// R-27 sticker-swap warning banner
+  ///
+  /// In en, this message translates to:
+  /// **'Your active trip is with another driver'**
+  String get payDriverDifferentDriver;
+
+  /// R-27 explicit confirm for different_driver
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t my trip\'s driver — pay anyway'**
+  String get payDriverConfirmOther;
+
+  /// R-27 failed state
+  ///
+  /// In en, this message translates to:
+  /// **'Payment failed'**
+  String get payDriverFailed;
+
+  /// R-27 retry after failure
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get payDriverRetry;
+
+  /// R-27 success heading
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get payDriverSuccessTitle;
+
+  /// R-27 itemised success (FM3)
+  ///
+  /// In en, this message translates to:
+  /// **'{driverAmount} to {name} · {feeAmount} Along fee'**
+  String payDriverSuccessItemised(
+    String driverAmount,
+    String name,
+    String feeAmount,
+  );
+
+  /// R-27 unattributed success opt-in
+  ///
+  /// In en, this message translates to:
+  /// **'Add this trip to your history?'**
+  String get payDriverHistoryOptIn;
+
+  /// R-31 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Scan to pay'**
+  String get scanToPayTitle;
+
+  /// R-31 typed code fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Enter code instead'**
+  String get scanEnterCode;
+
+  /// R-31 typed entry heading
+  ///
+  /// In en, this message translates to:
+  /// **'Enter driver code'**
+  String get scanEnterCodePrompt;
+
+  /// R-31 code field hint
+  ///
+  /// In en, this message translates to:
+  /// **'8-character code'**
+  String get scanCodeHint;
+
+  /// R-31 typed code submit
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get scanCodeSubmit;
+
+  /// R-31 return to scanner
+  ///
+  /// In en, this message translates to:
+  /// **'Back to camera'**
+  String get scanBackToCamera;
+
+  /// R-31 reject non-Along payloads
+  ///
+  /// In en, this message translates to:
+  /// **'Not an Along code'**
+  String get scanNotAlong;
+
+  /// R-32 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods'**
+  String get payMethodsTitle;
+
+  /// R-32 default badge
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get payMethodsDefault;
+
+  /// R-32 set default action
+  ///
+  /// In en, this message translates to:
+  /// **'Set as default'**
+  String get payMethodsSetDefault;
+
+  /// R-32 remove method
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get payMethodsRemove;
+
+  /// R-32 add method CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Add card'**
+  String get payMethodsAdd;
+
+  /// R-32 transfer preference
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with transfer by default'**
+  String get payMethodsTransferDefault;
+
+  /// R-13 scan to pay entry
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get activeTripScan;
 
   /// R-22 empty history
   ///

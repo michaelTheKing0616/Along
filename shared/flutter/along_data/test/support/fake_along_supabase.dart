@@ -54,6 +54,8 @@ class FakeAlongSupabase implements AlongSupabase {
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
+    AlongHttpMethod method = AlongHttpMethod.post,
+    Map<String, String>? queryParameters,
   }) async {
     final b = body ?? {};
     functionCalls.add((slug, b));

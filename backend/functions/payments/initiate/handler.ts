@@ -277,7 +277,7 @@ export async function handlePaymentInitiate(
     if (existingPaid?.id) {
       return errorResponse('CONFLICT', 'Trip already paid', 409, {
         request_id: rid,
-      });
+      }, { payment_id: existingPaid.id as string });
     }
   }
 

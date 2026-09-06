@@ -244,6 +244,38 @@ select throws_like(
   'TS-QR-04: token for different driver → FORBIDDEN'
 );
 
+select throws_like(
+  $$ select verify_payment_token(
+    encode(convert_to(
+      _payment_token_payload(
+        '0f700000-0000-4000-8000-000000000060'::uuid,
+        '0f200000-0000-4000-8000-000000000060'::uuid,
+        85000::bigint,
+        (extract(epoch from now()) - 120)::bigint
+      ),
+      'UTF8'
+    ), 'base64') || '.' || encode(
+      extensions.hmac(
+        convert_to(
+          _payment_token_payload(
+            '0f700000-0000-4000-8000-000000000060'::uuid,
+            '0f200000-0000-4000-8000-000000000060'::uuid,
+            85000::bigint,
+            (extract(epoch from now()) - 120)::bigint
+          ),
+          'UTF8'
+        ),
+        convert_to(payment_token_hmac_key(), 'UTF8'),
+        'sha256'
+      ),
+      'base64'
+    ),
+    '0a000000-0000-4000-8000-000000000001'::uuid
+  ) $$,
+  '%CANDIDATE_EXPIRED%',
+  'TS-QR-04: expired HMAC token → CANDIDATE_EXPIRED'
+);
+
 -- TS-QR-05: split math + set_accepts_digital / no subaccount guards (SQL side)
 select is(
   round(850.00 * 0.05, 2),

@@ -41,6 +41,7 @@ class DomainMappers {
         rating: (json['rating'] as num?)?.toDouble() ?? 0,
         tripCount: (json['trips_completed'] as num?)?.toInt() ?? 0,
         photoUrl: json['photo_url'] as String?,
+        driverQrCode: json['driver_code'] as String?,
       );
 
   static VehiclePreview vehicleFromDto(Map<String, dynamic> json) =>

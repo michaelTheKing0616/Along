@@ -24,6 +24,10 @@ class FakeAlongSupabase implements AlongSupabase {
     this.tripRows = const [],
     this.tripExtensionRows = const [],
     this.routeStageRows = const [],
+    this.qrResolveResponse,
+    this.qrResolveByCode = const {},
+    this.paymentMethods = const [],
+    this.paymentInitiateImmediateSuccess = true,
     FakeNegotiationEngine? negotiationEngine,
   }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
@@ -48,6 +52,10 @@ class FakeAlongSupabase implements AlongSupabase {
   List<Map<String, dynamic>> tripRows;
   List<Map<String, dynamic>> tripExtensionRows;
   List<Map<String, dynamic>> routeStageRows;
+  Map<String, dynamic>? qrResolveResponse;
+  Map<String, Map<String, dynamic>> qrResolveByCode;
+  List<Map<String, dynamic>> paymentMethods;
+  bool paymentInitiateImmediateSuccess;
 
   final FakeNegotiationEngine negotiationEngine;
 
@@ -59,6 +67,9 @@ class FakeAlongSupabase implements AlongSupabase {
   int rateTripInvokeCount = 0;
   int proposeExtensionInvokeCount = 0;
   int respondExtensionInvokeCount = 0;
+  int qrResolveInvokeCount = 0;
+  int paymentInitiateInvokeCount = 0;
+  Map<String, dynamic>? lastPaymentInitiateBody;
   Map<String, dynamic>? lastConfirmFareParams;
   Map<String, dynamic>? lastRateTripParams;
   Map<String, dynamic>? lastProposeExtensionParams;
@@ -206,7 +217,71 @@ class FakeAlongSupabase implements AlongSupabase {
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
+    AlongHttpMethod method = AlongHttpMethod.post,
+    Map<String, String>? queryParameters,
   }) async {
+    if (slug.startsWith('qr/resolve/')) {
+      qrResolveInvokeCount++;
+      final code = slug.split('/').last;
+      final payload = qrResolveByCode[code] ?? qrResolveResponse ?? sampleQrResolveMatchedTrip(code: code);
+      return {'data': payload};
+    }
+    if (slug == 'payments/initiate') {
+      paymentInitiateInvokeCount++;
+      lastPaymentInitiateBody = body;
+      final amount = (body?['amount'] as num?)?.toDouble() ?? 850.0;
+      final commission = (amount * 0.05 * 100).round() / 100;
+      final driverAmount = amount - commission;
+      return {
+        'data': {
+          'payment_id': 'pay-test-001',
+          'amount': amount,
+          'commission_amount': commission,
+          'driver_amount': driverAmount,
+          'expires_at': DateTime.now().add(const Duration(minutes: 30)).toIso8601String(),
+          if (paymentInitiateImmediateSuccess) 'status': 'succeeded',
+        },
+      };
+    }
+    if (slug == 'payments/methods') {
+      if (body?['action'] == 'add') {
+        paymentMethods = [
+          ...paymentMethods,
+          {
+            'id': 'pm-${paymentMethods.length + 1}',
+            'brand': body?['brand'] ?? 'Visa',
+            'last4': body?['last4'] ?? '4242',
+            'is_default': body?['set_default'] ?? true,
+          },
+        ];
+      } else if (body?['action'] == 'remove') {
+        paymentMethods = paymentMethods
+            .where((m) => m['id'] != body?['payment_method_id'])
+            .toList(growable: false);
+      } else if (body?['action'] == 'default') {
+        paymentMethods = paymentMethods
+            .map(
+              (m) => {
+                ...m,
+                'is_default': m['id'] == body?['payment_method_id'],
+              },
+            )
+            .toList(growable: false);
+      }
+      return {'data': {'methods': paymentMethods}};
+    }
+    if (slug.startsWith('payments/receipt/')) {
+      return {
+        'data': {
+          'payment_id': slug.split('/').last,
+          'amount': 850.0,
+          'commission_amount': 42.5,
+          'driver_amount': 807.5,
+          'driver_first_name': 'Musa',
+          'currency': 'NGN',
+        },
+      };
+    }
     if (slug == 'places-search') {
       return {
         'data': {
@@ -422,6 +497,44 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
           'polite',
           'on_time',
         ],
+      },
+    ];
+
+/// Compact qr/resolve fixture for matched-trip scan (≤ 2 KB — TS-UI-06 2G gate).
+Map<String, dynamic> sampleQrResolveMatchedTrip({
+  String code = 'TEST0301',
+  String tripId = 'trip-accepted-1',
+  double amount = 850.0,
+  String? warning,
+}) =>
+    {
+      'driver': {
+        'first_name': 'Musa',
+        'plate': 'ABC-123-XY',
+        'mode': {'code': 'keke', 'label': 'Keke'},
+        'accepts_digital': true,
+        'active': true,
+      },
+      'context': {
+        'trip_id': tripId,
+        'amount': {'amount': amount.toStringAsFixed(2), 'currency': 'NGN'},
+        'label': 'Trip fare',
+        'locked': true,
+      },
+      'suggested_amounts': [],
+      'currency': 'NGN',
+      if (warning != null) 'warning': warning,
+    };
+
+Map<String, dynamic> sampleQrResolveDifferentDriver({String code = 'TEST0301'}) =>
+    sampleQrResolveMatchedTrip(code: code, warning: 'different_driver');
+
+List<Map<String, dynamic>> sampleSavedPaymentMethods() => [
+      {
+        'id': 'pm-default-1',
+        'brand': 'Visa',
+        'last4': '4242',
+        'is_default': true,
       },
     ];
 

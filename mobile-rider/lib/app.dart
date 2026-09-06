@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,6 +29,10 @@ class AlongRiderApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) => PaymentDeepLinkListener(
+        router: router,
+        child: child ?? const SizedBox.shrink(),
+      ),
     );
   }
 }

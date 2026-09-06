@@ -698,9 +698,121 @@
   "@payDriverMethodSaved": {
     "description": "R-27 default payment method row"
   },
-  "payDriverPending": "Payment initiation — deferred to P1-G-01",
+  "payDriverPending": "Complete payment in your bank app",
   "@payDriverPending": {
-    "description": "R-27 pending state placeholder"
+    "description": "R-27 pending transfer/USSD state"
+  },
+  "payDriverMethodTransfer": "Bank transfer",
+  "@payDriverMethodTransfer": {
+    "description": "R-27 default method when transfer preferred"
+  },
+  "payDriverMethodUssd": "USSD",
+  "@payDriverMethodUssd": {
+    "description": "R-27 USSD payment method row"
+  },
+  "payDriverChangeMethod": "Change",
+  "@payDriverChangeMethod": {
+    "description": "R-27 link to R-32"
+  },
+  "payDriverCashOnly": "{name} accepts cash only",
+  "@payDriverCashOnly": {
+    "description": "R-27 cash-only driver state",
+    "placeholders": {
+      "name": { "type": "String", "example": "Musa" }
+    }
+  },
+  "payDriverInactive": "This code is no longer active",
+  "@payDriverInactive": {
+    "description": "R-27 inactive driver code"
+  },
+  "payDriverDifferentDriver": "Your active trip is with another driver",
+  "@payDriverDifferentDriver": {
+    "description": "R-27 sticker-swap warning banner"
+  },
+  "payDriverConfirmOther": "This isn't my trip's driver — pay anyway",
+  "@payDriverConfirmOther": {
+    "description": "R-27 explicit confirm for different_driver"
+  },
+  "payDriverFailed": "Payment failed",
+  "@payDriverFailed": {
+    "description": "R-27 failed state"
+  },
+  "payDriverRetry": "Try again",
+  "@payDriverRetry": {
+    "description": "R-27 retry after failure"
+  },
+  "payDriverSuccessTitle": "Paid",
+  "@payDriverSuccessTitle": {
+    "description": "R-27 success heading"
+  },
+  "payDriverSuccessItemised": "{driverAmount} to {name} · {feeAmount} Along fee",
+  "@payDriverSuccessItemised": {
+    "description": "R-27 itemised success (FM3)",
+    "placeholders": {
+      "driverAmount": { "type": "String", "example": "₦416" },
+      "name": { "type": "String", "example": "Musa" },
+      "feeAmount": { "type": "String", "example": "₦34" }
+    }
+  },
+  "payDriverHistoryOptIn": "Add this trip to your history?",
+  "@payDriverHistoryOptIn": {
+    "description": "R-27 unattributed success opt-in"
+  },
+  "scanToPayTitle": "Scan to pay",
+  "@scanToPayTitle": {
+    "description": "R-31 screen title"
+  },
+  "scanEnterCode": "Enter code instead",
+  "@scanEnterCode": {
+    "description": "R-31 typed code fallback"
+  },
+  "scanEnterCodePrompt": "Enter driver code",
+  "@scanEnterCodePrompt": {
+    "description": "R-31 typed entry heading"
+  },
+  "scanCodeHint": "8-character code",
+  "@scanCodeHint": {
+    "description": "R-31 code field hint"
+  },
+  "scanCodeSubmit": "Continue",
+  "@scanCodeSubmit": {
+    "description": "R-31 typed code submit"
+  },
+  "scanBackToCamera": "Back to camera",
+  "@scanBackToCamera": {
+    "description": "R-31 return to scanner"
+  },
+  "scanNotAlong": "Not an Along code",
+  "@scanNotAlong": {
+    "description": "R-31 reject non-Along payloads"
+  },
+  "payMethodsTitle": "Payment methods",
+  "@payMethodsTitle": {
+    "description": "R-32 screen title"
+  },
+  "payMethodsDefault": "Default",
+  "@payMethodsDefault": {
+    "description": "R-32 default badge"
+  },
+  "payMethodsSetDefault": "Set as default",
+  "@payMethodsSetDefault": {
+    "description": "R-32 set default action"
+  },
+  "payMethodsRemove": "Remove",
+  "@payMethodsRemove": {
+    "description": "R-32 remove method"
+  },
+  "payMethodsAdd": "Add card",
+  "@payMethodsAdd": {
+    "description": "R-32 add method CTA"
+  },
+  "payMethodsTransferDefault": "Pay with transfer by default",
+  "@payMethodsTransferDefault": {
+    "description": "R-32 transfer preference"
+  },
+  "activeTripScan": "Scan",
+  "@activeTripScan": {
+    "description": "R-13 scan to pay entry"
   },
   "tripsEmpty": "No completed trips yet.",
   "@tripsEmpty": {

@@ -490,7 +490,95 @@ class AppLocalizationsEn extends AppLocalizations {
   String get payDriverMethodSaved => 'Visa ···4242';
 
   @override
-  String get payDriverPending => 'Payment initiation — deferred to P1-G-01';
+  String get payDriverPending => 'Complete payment in your bank app';
+
+  @override
+  String get payDriverMethodTransfer => 'Bank transfer';
+
+  @override
+  String get payDriverMethodUssd => 'USSD';
+
+  @override
+  String get payDriverChangeMethod => 'Change';
+
+  @override
+  String payDriverCashOnly(String name) {
+    return '$name accepts cash only';
+  }
+
+  @override
+  String get payDriverInactive => 'This code is no longer active';
+
+  @override
+  String get payDriverDifferentDriver =>
+      'Your active trip is with another driver';
+
+  @override
+  String get payDriverConfirmOther =>
+      'This isn\'t my trip\'s driver — pay anyway';
+
+  @override
+  String get payDriverFailed => 'Payment failed';
+
+  @override
+  String get payDriverRetry => 'Try again';
+
+  @override
+  String get payDriverSuccessTitle => 'Paid';
+
+  @override
+  String payDriverSuccessItemised(
+    String driverAmount,
+    String name,
+    String feeAmount,
+  ) {
+    return '$driverAmount to $name · $feeAmount Along fee';
+  }
+
+  @override
+  String get payDriverHistoryOptIn => 'Add this trip to your history?';
+
+  @override
+  String get scanToPayTitle => 'Scan to pay';
+
+  @override
+  String get scanEnterCode => 'Enter code instead';
+
+  @override
+  String get scanEnterCodePrompt => 'Enter driver code';
+
+  @override
+  String get scanCodeHint => '8-character code';
+
+  @override
+  String get scanCodeSubmit => 'Continue';
+
+  @override
+  String get scanBackToCamera => 'Back to camera';
+
+  @override
+  String get scanNotAlong => 'Not an Along code';
+
+  @override
+  String get payMethodsTitle => 'Payment methods';
+
+  @override
+  String get payMethodsDefault => 'Default';
+
+  @override
+  String get payMethodsSetDefault => 'Set as default';
+
+  @override
+  String get payMethodsRemove => 'Remove';
+
+  @override
+  String get payMethodsAdd => 'Add card';
+
+  @override
+  String get payMethodsTransferDefault => 'Pay with transfer by default';
+
+  @override
+  String get activeTripScan => 'Scan';
 
   @override
   String get tripsEmpty => 'No completed trips yet.';

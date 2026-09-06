@@ -14,6 +14,7 @@ Pin app-layer Flutter dependencies introduced by `mobile-rider` (shell, routing,
 | `sentry_flutter` | **8.14.2** | `mobile-rider` |
 | `flutter_svg` | **2.0.17** | `mobile-rider` (logo from `along_design`) |
 | `patrol` | **3.14.1** | `mobile-rider` (dev / integration_test) |
+| `app_links` | **6.4.1** | `mobile-rider` (universal links R-27 cold/warm, P4-B-02) |
 
 ## Alternatives
 
