@@ -39,6 +39,7 @@ export interface AdminReviewFlagRequest {
   p_flag_id: string;
   action: "clear" | "action";
   note?: string;
+  p_standing_transition_id?: number;
 }
 
 /** admin.json → AdminTransitionStandingRequest */

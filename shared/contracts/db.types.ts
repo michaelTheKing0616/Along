@@ -109,6 +109,48 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_role: string | null
+          after: Json | null
+          before: Json | null
+          created_at: string
+          id: number
+          ip: unknown
+          target_id: string
+          target_type: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_role?: string | null
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          id?: number
+          ip?: unknown
+          target_id: string
+          target_type: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_role?: string | null
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          id?: number
+          ip?: unknown
+          target_id?: string
+          target_type?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       cities: {
         Row: {
           boundary: unknown
@@ -259,6 +301,64 @@ export type Database = {
           },
         ]
       }
+      coverage_gap_reports: {
+        Row: {
+          ambient_vehicle_count: number
+          city_id: string | null
+          id: string
+          nearest_known_stage_distance_m: number | null
+          nearest_known_stage_id: string | null
+          rider_id: string | null
+          searched_at: string
+          searched_destination: unknown
+          searched_location: unknown
+        }
+        Insert: {
+          ambient_vehicle_count?: number
+          city_id?: string | null
+          id?: string
+          nearest_known_stage_distance_m?: number | null
+          nearest_known_stage_id?: string | null
+          rider_id?: string | null
+          searched_at?: string
+          searched_destination?: unknown
+          searched_location: unknown
+        }
+        Update: {
+          ambient_vehicle_count?: number
+          city_id?: string | null
+          id?: string
+          nearest_known_stage_distance_m?: number | null
+          nearest_known_stage_id?: string | null
+          rider_id?: string | null
+          searched_at?: string
+          searched_destination?: unknown
+          searched_location?: unknown
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coverage_gap_reports_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coverage_gap_reports_nearest_known_stage_id_fkey"
+            columns: ["nearest_known_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coverage_gap_reports_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       data_sources: {
         Row: {
           actor_profile_id: string | null
@@ -303,6 +403,13 @@ export type Database = {
             columns: ["field_submission_id"]
             isOneToOne: false
             referencedRelation: "field_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_sources_trip_fk"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
             referencedColumns: ["id"]
           },
         ]
@@ -397,6 +504,600 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_ledger_entries: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          created_by_id: string | null
+          created_by_type: Database["public"]["Enums"]["ledger_actor"]
+          currency: string
+          driver_id: string
+          entry_type: Database["public"]["Enums"]["ledger_entry_type"]
+          id: number
+          idempotency_key: string
+          memo: string | null
+          settlement_id: string | null
+          trip_extension_id: string | null
+          trip_id: string | null
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          created_by_id?: string | null
+          created_by_type: Database["public"]["Enums"]["ledger_actor"]
+          currency: string
+          driver_id: string
+          entry_type: Database["public"]["Enums"]["ledger_entry_type"]
+          id?: number
+          idempotency_key: string
+          memo?: string | null
+          settlement_id?: string | null
+          trip_extension_id?: string | null
+          trip_id?: string | null
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          created_by_id?: string | null
+          created_by_type?: Database["public"]["Enums"]["ledger_actor"]
+          currency?: string
+          driver_id?: string
+          entry_type?: Database["public"]["Enums"]["ledger_entry_type"]
+          id?: number
+          idempotency_key?: string
+          memo?: string | null
+          settlement_id?: string | null
+          trip_extension_id?: string | null
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dle_settlement_fk"
+            columns: ["settlement_id"]
+            isOneToOne: false
+            referencedRelation: "settlements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_ledger_entries_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_ledger_entries_trip_extension_id_fkey"
+            columns: ["trip_extension_id"]
+            isOneToOne: false
+            referencedRelation: "trip_extensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_ledger_entries_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_payouts: {
+        Row: {
+          amount: number
+          confirmed_at: string | null
+          created_at: string
+          currency: string
+          driver_id: string
+          id: string
+          initiated_by: string
+          ledger_entry_id: number | null
+          provider_reference: string
+          recipient_subaccount_code: string
+          status: Database["public"]["Enums"]["driver_payout_status"]
+        }
+        Insert: {
+          amount: number
+          confirmed_at?: string | null
+          created_at?: string
+          currency: string
+          driver_id: string
+          id?: string
+          initiated_by: string
+          ledger_entry_id?: number | null
+          provider_reference: string
+          recipient_subaccount_code: string
+          status?: Database["public"]["Enums"]["driver_payout_status"]
+        }
+        Update: {
+          amount?: number
+          confirmed_at?: string | null
+          created_at?: string
+          currency?: string
+          driver_id?: string
+          id?: string
+          initiated_by?: string
+          ledger_entry_id?: number | null
+          provider_reference?: string
+          recipient_subaccount_code?: string
+          status?: Database["public"]["Enums"]["driver_payout_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_payouts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_payouts_initiated_by_fkey"
+            columns: ["initiated_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_payouts_ledger_entry_id_fkey"
+            columns: ["ledger_entry_id"]
+            isOneToOne: false
+            referencedRelation: "driver_ledger_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_presence: {
+        Row: {
+          accuracy_m: number | null
+          current_location: unknown
+          declared_route_leg_id: string | null
+          declared_route_profile_id: string | null
+          driver_id: string
+          heading: number | null
+          last_ping_at: string
+          nearest_stage_id: string | null
+          park_id: string | null
+          seats_available: number
+          session_id: string
+          speed_mps: number | null
+          started_at: string
+          status: Database["public"]["Enums"]["presence_status"]
+          updated_at: string
+          vehicle_id: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          current_location: unknown
+          declared_route_leg_id?: string | null
+          declared_route_profile_id?: string | null
+          driver_id: string
+          heading?: number | null
+          last_ping_at?: string
+          nearest_stage_id?: string | null
+          park_id?: string | null
+          seats_available: number
+          session_id?: string
+          speed_mps?: number | null
+          started_at?: string
+          status: Database["public"]["Enums"]["presence_status"]
+          updated_at?: string
+          vehicle_id: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          current_location?: unknown
+          declared_route_leg_id?: string | null
+          declared_route_profile_id?: string | null
+          driver_id?: string
+          heading?: number | null
+          last_ping_at?: string
+          nearest_stage_id?: string | null
+          park_id?: string | null
+          seats_available?: number
+          session_id?: string
+          speed_mps?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["presence_status"]
+          updated_at?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_presence_declared_route_leg_id_fkey"
+            columns: ["declared_route_leg_id"]
+            isOneToOne: false
+            referencedRelation: "route_legs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_presence_declared_route_profile_id_fkey"
+            columns: ["declared_route_profile_id"]
+            isOneToOne: false
+            referencedRelation: "driver_route_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_presence_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: true
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_presence_nearest_stage_id_fkey"
+            columns: ["nearest_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_presence_park_id_fkey"
+            columns: ["park_id"]
+            isOneToOne: false
+            referencedRelation: "parks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_presence_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_presence_history: {
+        Row: {
+          downsampled: boolean
+          driver_id: string
+          heading: number | null
+          id: number
+          location: unknown
+          session_id: string
+          speed_mps: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Insert: {
+          downsampled?: boolean
+          driver_id: string
+          heading?: number | null
+          id?: number
+          location: unknown
+          session_id: string
+          speed_mps?: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Update: {
+          downsampled?: boolean
+          driver_id?: string
+          heading?: number | null
+          id?: number
+          location?: unknown
+          session_id?: string
+          speed_mps?: number | null
+          status?: Database["public"]["Enums"]["presence_status"]
+          ts?: string
+        }
+        Relationships: []
+      }
+      driver_presence_history_y2026_m09: {
+        Row: {
+          downsampled: boolean
+          driver_id: string
+          heading: number | null
+          id: number
+          location: unknown
+          session_id: string
+          speed_mps: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Insert: {
+          downsampled?: boolean
+          driver_id: string
+          heading?: number | null
+          id?: number
+          location: unknown
+          session_id: string
+          speed_mps?: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Update: {
+          downsampled?: boolean
+          driver_id?: string
+          heading?: number | null
+          id?: number
+          location?: unknown
+          session_id?: string
+          speed_mps?: number | null
+          status?: Database["public"]["Enums"]["presence_status"]
+          ts?: string
+        }
+        Relationships: []
+      }
+      driver_presence_history_y2026_m10: {
+        Row: {
+          downsampled: boolean
+          driver_id: string
+          heading: number | null
+          id: number
+          location: unknown
+          session_id: string
+          speed_mps: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Insert: {
+          downsampled?: boolean
+          driver_id: string
+          heading?: number | null
+          id?: number
+          location: unknown
+          session_id: string
+          speed_mps?: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Update: {
+          downsampled?: boolean
+          driver_id?: string
+          heading?: number | null
+          id?: number
+          location?: unknown
+          session_id?: string
+          speed_mps?: number | null
+          status?: Database["public"]["Enums"]["presence_status"]
+          ts?: string
+        }
+        Relationships: []
+      }
+      driver_presence_history_y2026_m11: {
+        Row: {
+          downsampled: boolean
+          driver_id: string
+          heading: number | null
+          id: number
+          location: unknown
+          session_id: string
+          speed_mps: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Insert: {
+          downsampled?: boolean
+          driver_id: string
+          heading?: number | null
+          id?: number
+          location: unknown
+          session_id: string
+          speed_mps?: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Update: {
+          downsampled?: boolean
+          driver_id?: string
+          heading?: number | null
+          id?: number
+          location?: unknown
+          session_id?: string
+          speed_mps?: number | null
+          status?: Database["public"]["Enums"]["presence_status"]
+          ts?: string
+        }
+        Relationships: []
+      }
+      driver_risk_scores: {
+        Row: {
+          actioned_flags: number
+          cancel_after_match_rate: number
+          cancels_after_match: number
+          cash_cancels_after_match: number
+          computed_at: string
+          driver_id: string
+          open_flags: number
+          trips_matched: number
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          actioned_flags: number
+          cancel_after_match_rate: number
+          cancels_after_match: number
+          cash_cancels_after_match: number
+          computed_at?: string
+          driver_id: string
+          open_flags: number
+          trips_matched: number
+          window_end: string
+          window_start: string
+        }
+        Update: {
+          actioned_flags?: number
+          cancel_after_match_rate?: number
+          cancels_after_match?: number
+          cash_cancels_after_match?: number
+          computed_at?: string
+          driver_id?: string
+          open_flags?: number
+          trips_matched?: number
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_risk_scores_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_route_profiles: {
+        Row: {
+          active: boolean
+          created_at: string
+          driver_id: string
+          id: string
+          load_surcharge_amount: number | null
+          load_surcharge_currency: string | null
+          mode_code: string
+          name: string | null
+          route_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          driver_id: string
+          id?: string
+          load_surcharge_amount?: number | null
+          load_surcharge_currency?: string | null
+          mode_code: string
+          name?: string | null
+          route_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          driver_id?: string
+          id?: string
+          load_surcharge_amount?: number | null
+          load_surcharge_currency?: string | null
+          mode_code?: string
+          name?: string | null
+          route_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_route_profiles_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_route_profiles_mode_code_fkey"
+            columns: ["mode_code"]
+            isOneToOne: false
+            referencedRelation: "mode_config"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "driver_route_profiles_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_route_stops: {
+        Row: {
+          created_at: string
+          currency: string
+          custom_label: string | null
+          custom_location: unknown
+          id: string
+          price_to_end: number
+          profile_id: string
+          route_stage_id: string | null
+          sequence: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency: string
+          custom_label?: string | null
+          custom_location?: unknown
+          id?: string
+          price_to_end: number
+          profile_id: string
+          route_stage_id?: string | null
+          sequence: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          custom_label?: string | null
+          custom_location?: unknown
+          id?: string
+          price_to_end?: number
+          profile_id?: string
+          route_stage_id?: string | null
+          sequence?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_route_stops_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "driver_route_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_route_stops_route_stage_id_fkey"
+            columns: ["route_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_standing_transitions: {
+        Row: {
+          actor_id: string | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          balance_at: number | null
+          created_at: string
+          driver_id: string
+          from_standing: Database["public"]["Enums"]["driver_standing"] | null
+          id: number
+          reason: string
+          to_standing: Database["public"]["Enums"]["driver_standing"]
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          balance_at?: number | null
+          created_at?: string
+          driver_id: string
+          from_standing?: Database["public"]["Enums"]["driver_standing"] | null
+          id?: number
+          reason: string
+          to_standing: Database["public"]["Enums"]["driver_standing"]
+        }
+        Update: {
+          actor_id?: string | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          balance_at?: number | null
+          created_at?: string
+          driver_id?: string
+          from_standing?: Database["public"]["Enums"]["driver_standing"] | null
+          id?: number
+          reason?: string
+          to_standing?: Database["public"]["Enums"]["driver_standing"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_standing_transitions_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
         ]
@@ -729,6 +1430,13 @@ export type Database = {
             referencedRelation: "route_stages"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fc_trip_fk"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
         ]
       }
       fare_quotes: {
@@ -801,6 +1509,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "fare_quotes_driver_route_profile_fk"
+            columns: ["driver_route_profile_id"]
+            isOneToOne: false
+            referencedRelation: "driver_route_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "fare_quotes_from_stage_id_fkey"
             columns: ["from_stage_id"]
             isOneToOne: false
@@ -813,6 +1528,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "mode_config"
             referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "fare_quotes_negotiation_fk"
+            columns: ["negotiation_id"]
+            isOneToOne: false
+            referencedRelation: "price_negotiations"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "fare_quotes_rider_id_fkey"
@@ -1074,6 +1796,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "gc_trip_fk"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "graph_confirmations_confirmer_profile_id_fkey"
             columns: ["confirmer_profile_id"]
             isOneToOne: false
@@ -1133,6 +1862,183 @@ export type Database = {
           },
         ]
       }
+      guarantors: {
+        Row: {
+          acknowledged_at: string | null
+          created_at: string
+          driver_id: string
+          guarantor_name: string
+          guarantor_phone_e164: string
+          guarantor_profile_id: string | null
+          guarantor_type: Database["public"]["Enums"]["guarantor_type"]
+          id: string
+          last_notified_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          created_at?: string
+          driver_id: string
+          guarantor_name: string
+          guarantor_phone_e164: string
+          guarantor_profile_id?: string | null
+          guarantor_type: Database["public"]["Enums"]["guarantor_type"]
+          id?: string
+          last_notified_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          created_at?: string
+          driver_id?: string
+          guarantor_name?: string
+          guarantor_phone_e164?: string
+          guarantor_profile_id?: string | null
+          guarantor_type?: Database["public"]["Enums"]["guarantor_type"]
+          id?: string
+          last_notified_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guarantors_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guarantors_guarantor_profile_id_fkey"
+            columns: ["guarantor_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_transfer_walks: {
+        Row: {
+          after_trip_sequence: number
+          directions: Json
+          from_location: unknown
+          id: string
+          journey_id: string
+          prefetched_at: string
+          to_location: unknown
+        }
+        Insert: {
+          after_trip_sequence: number
+          directions: Json
+          from_location: unknown
+          id?: string
+          journey_id: string
+          prefetched_at?: string
+          to_location: unknown
+        }
+        Update: {
+          after_trip_sequence?: number
+          directions?: Json
+          from_location?: unknown
+          id?: string
+          journey_id?: string
+          prefetched_at?: string
+          to_location?: unknown
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_transfer_walks_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journeys: {
+        Row: {
+          city_id: string
+          completed_at: string | null
+          created_at: string
+          current_trip_sequence: number
+          destination: unknown
+          destination_label: string | null
+          id: string
+          itinerary_stop_id: string | null
+          load_flagged: boolean
+          load_note: string | null
+          load_size: Database["public"]["Enums"]["load_size"] | null
+          origin: unknown
+          plan_snapshot: Json
+          planner_query_id: string | null
+          rider_id: string
+          status: Database["public"]["Enums"]["journey_status"]
+          updated_at: string
+          women_only: boolean
+        }
+        Insert: {
+          city_id: string
+          completed_at?: string | null
+          created_at?: string
+          current_trip_sequence?: number
+          destination: unknown
+          destination_label?: string | null
+          id?: string
+          itinerary_stop_id?: string | null
+          load_flagged?: boolean
+          load_note?: string | null
+          load_size?: Database["public"]["Enums"]["load_size"] | null
+          origin: unknown
+          plan_snapshot: Json
+          planner_query_id?: string | null
+          rider_id: string
+          status?: Database["public"]["Enums"]["journey_status"]
+          updated_at?: string
+          women_only?: boolean
+        }
+        Update: {
+          city_id?: string
+          completed_at?: string | null
+          created_at?: string
+          current_trip_sequence?: number
+          destination?: unknown
+          destination_label?: string | null
+          id?: string
+          itinerary_stop_id?: string | null
+          load_flagged?: boolean
+          load_note?: string | null
+          load_size?: Database["public"]["Enums"]["load_size"] | null
+          origin?: unknown
+          plan_snapshot?: Json
+          planner_query_id?: string | null
+          rider_id?: string
+          status?: Database["public"]["Enums"]["journey_status"]
+          updated_at?: string
+          women_only?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journeys_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journeys_planner_query_id_fkey"
+            columns: ["planner_query_id"]
+            isOneToOne: false
+            referencedRelation: "planner_queries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journeys_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mode_config: {
         Row: {
           active: boolean
@@ -1180,6 +2086,47 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          channels: string[]
+          created_at: string
+          id: string
+          payload: Json
+          profile_id: string
+          read_at: string | null
+          sent_at: string | null
+          type: string
+        }
+        Insert: {
+          channels?: string[]
+          created_at?: string
+          id?: string
+          payload: Json
+          profile_id: string
+          read_at?: string | null
+          sent_at?: string | null
+          type: string
+        }
+        Update: {
+          channels?: string[]
+          created_at?: string
+          id?: string
+          payload?: Json
+          profile_id?: string
+          read_at?: string | null
+          sent_at?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       parks: {
         Row: {
@@ -1251,6 +2198,361 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          channel: string
+          commission_amount: number
+          confirmed_at: string | null
+          created_at: string
+          currency: string
+          driver_amount: number
+          driver_id: string
+          fee_bearer: string
+          id: string
+          method: string
+          payer_phone_e164: string | null
+          provider: string
+          provider_fee: number | null
+          provider_reference: string
+          rider_id: string | null
+          source: string
+          status: string
+          trip_id: string | null
+        }
+        Insert: {
+          amount: number
+          channel: string
+          commission_amount: number
+          confirmed_at?: string | null
+          created_at?: string
+          currency: string
+          driver_amount: number
+          driver_id: string
+          fee_bearer: string
+          id?: string
+          method: string
+          payer_phone_e164?: string | null
+          provider?: string
+          provider_fee?: number | null
+          provider_reference: string
+          rider_id?: string | null
+          source: string
+          status: string
+          trip_id?: string | null
+        }
+        Update: {
+          amount?: number
+          channel?: string
+          commission_amount?: number
+          confirmed_at?: string | null
+          created_at?: string
+          currency?: string
+          driver_amount?: number
+          driver_id?: string
+          fee_bearer?: string
+          id?: string
+          method?: string
+          payer_phone_e164?: string | null
+          provider?: string
+          provider_fee?: number | null
+          provider_reference?: string
+          rider_id?: string | null
+          source?: string
+          status?: string
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pending_ledger_adjustments: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          currency: string
+          driver_id: string
+          id: string
+          ledger_entry_id: number | null
+          memo: string
+          requested_by: string
+          status: Database["public"]["Enums"]["ledger_adjustment_status"]
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          currency: string
+          driver_id: string
+          id?: string
+          ledger_entry_id?: number | null
+          memo: string
+          requested_by: string
+          status?: Database["public"]["Enums"]["ledger_adjustment_status"]
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          driver_id?: string
+          id?: string
+          ledger_entry_id?: number | null
+          memo?: string
+          requested_by?: string
+          status?: Database["public"]["Enums"]["ledger_adjustment_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_ledger_adjustments_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_ledger_adjustments_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_ledger_adjustments_ledger_entry_id_fkey"
+            columns: ["ledger_entry_id"]
+            isOneToOne: false
+            referencedRelation: "driver_ledger_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_ledger_adjustments_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planner_queries: {
+        Row: {
+          candidate_count: number
+          candidates: Json
+          chosen_candidate_id: string | null
+          city_id: string | null
+          created_at: string
+          degraded: boolean
+          destination: unknown
+          direct_count: number
+          filters: Json
+          id: string
+          latency_ms: number | null
+          origin: unknown
+          rider_id: string | null
+        }
+        Insert: {
+          candidate_count: number
+          candidates?: Json
+          chosen_candidate_id?: string | null
+          city_id?: string | null
+          created_at?: string
+          degraded?: boolean
+          destination: unknown
+          direct_count: number
+          filters?: Json
+          id?: string
+          latency_ms?: number | null
+          origin: unknown
+          rider_id?: string | null
+        }
+        Update: {
+          candidate_count?: number
+          candidates?: Json
+          chosen_candidate_id?: string | null
+          city_id?: string | null
+          created_at?: string
+          degraded?: boolean
+          destination?: unknown
+          direct_count?: number
+          filters?: Json
+          id?: string
+          latency_ms?: number | null
+          origin?: unknown
+          rider_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planner_queries_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planner_queries_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_negotiation_rounds: {
+        Row: {
+          amount: number
+          id: string
+          negotiation_id: string
+          proposed_at: string
+          proposed_by: Database["public"]["Enums"]["actor_type"]
+          responded_at: string | null
+          response: string | null
+          round_number: number
+        }
+        Insert: {
+          amount: number
+          id?: string
+          negotiation_id: string
+          proposed_at?: string
+          proposed_by: Database["public"]["Enums"]["actor_type"]
+          responded_at?: string | null
+          response?: string | null
+          round_number: number
+        }
+        Update: {
+          amount?: number
+          id?: string
+          negotiation_id?: string
+          proposed_at?: string
+          proposed_by?: Database["public"]["Enums"]["actor_type"]
+          responded_at?: string | null
+          response?: string | null
+          round_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_negotiation_rounds_negotiation_id_fkey"
+            columns: ["negotiation_id"]
+            isOneToOne: false
+            referencedRelation: "price_negotiations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_negotiations: {
+        Row: {
+          agreed_amount: number | null
+          anchor_amount: number
+          anchor_quote_id: string | null
+          candidate_ref: Json
+          context: Database["public"]["Enums"]["negotiation_context"]
+          created_at: string
+          currency: string
+          driver_id: string
+          eta_band: Database["public"]["Enums"]["eta_band"] | null
+          expires_at: string
+          id: string
+          pickup_radius_m: number | null
+          resolved_at: string | null
+          resulting_trip_id: string | null
+          rider_id: string
+          round_cap: number
+          round_timeout_s: number
+          status: Database["public"]["Enums"]["negotiation_status"]
+        }
+        Insert: {
+          agreed_amount?: number | null
+          anchor_amount: number
+          anchor_quote_id?: string | null
+          candidate_ref: Json
+          context: Database["public"]["Enums"]["negotiation_context"]
+          created_at?: string
+          currency: string
+          driver_id: string
+          eta_band?: Database["public"]["Enums"]["eta_band"] | null
+          expires_at: string
+          id?: string
+          pickup_radius_m?: number | null
+          resolved_at?: string | null
+          resulting_trip_id?: string | null
+          rider_id: string
+          round_cap: number
+          round_timeout_s: number
+          status?: Database["public"]["Enums"]["negotiation_status"]
+        }
+        Update: {
+          agreed_amount?: number | null
+          anchor_amount?: number
+          anchor_quote_id?: string | null
+          candidate_ref?: Json
+          context?: Database["public"]["Enums"]["negotiation_context"]
+          created_at?: string
+          currency?: string
+          driver_id?: string
+          eta_band?: Database["public"]["Enums"]["eta_band"] | null
+          expires_at?: string
+          id?: string
+          pickup_radius_m?: number | null
+          resolved_at?: string | null
+          resulting_trip_id?: string | null
+          rider_id?: string
+          round_cap?: number
+          round_timeout_s?: number
+          status?: Database["public"]["Enums"]["negotiation_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_negotiations_anchor_quote_id_fkey"
+            columns: ["anchor_quote_id"]
+            isOneToOne: false
+            referencedRelation: "fare_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_negotiations_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_negotiations_resulting_trip_id_fkey"
+            columns: ["resulting_trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_negotiations_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_path: string | null
@@ -1283,6 +2585,64 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      ratings: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          ratee_profile_id: string
+          rater_profile_id: string
+          rater_role: string
+          score: number
+          tags: string[]
+          trip_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          ratee_profile_id: string
+          rater_profile_id: string
+          rater_role: string
+          score: number
+          tags?: string[]
+          trip_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          ratee_profile_id?: string
+          rater_profile_id?: string
+          rater_role?: string
+          score?: number
+          tags?: string[]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_ratee_profile_id_fkey"
+            columns: ["ratee_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ratings_rater_profile_id_fkey"
+            columns: ["rater_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ratings_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       riders: {
         Row: {
@@ -1353,6 +2713,7 @@ export type Database = {
           mode_code: string
           operating_hours: Json | null
           route_id: string
+          segment_keys: string[]
           source_id: string
           to_stage_id: string
           updated_at: string
@@ -1375,6 +2736,7 @@ export type Database = {
           mode_code: string
           operating_hours?: Json | null
           route_id: string
+          segment_keys?: string[]
           source_id: string
           to_stage_id: string
           updated_at?: string
@@ -1397,6 +2759,7 @@ export type Database = {
           mode_code?: string
           operating_hours?: Json | null
           route_id?: string
+          segment_keys?: string[]
           source_id?: string
           to_stage_id?: string
           updated_at?: string
@@ -1694,6 +3057,165 @@ export type Database = {
           },
         ]
       }
+      segment_speed_profiles: {
+        Row: {
+          city_id: string
+          dow_bucket: number
+          hour_bucket: number
+          median_speed_mps: number
+          p85_speed_mps: number | null
+          sample_count: number
+          segment_key: string
+          updated_at: string
+        }
+        Insert: {
+          city_id: string
+          dow_bucket: number
+          hour_bucket: number
+          median_speed_mps: number
+          p85_speed_mps?: number | null
+          sample_count: number
+          segment_key: string
+          updated_at?: string
+        }
+        Update: {
+          city_id?: string
+          dow_bucket?: number
+          hour_bucket?: number
+          median_speed_mps?: number
+          p85_speed_mps?: number | null
+          sample_count?: number
+          segment_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "segment_speed_profiles_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settlement_agents: {
+        Row: {
+          active: boolean
+          business_name: string
+          city_id: string
+          created_at: string
+          id: string
+          location: unknown
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          business_name: string
+          city_id: string
+          created_at?: string
+          id?: string
+          location?: unknown
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          business_name?: string
+          city_id?: string
+          created_at?: string
+          id?: string
+          location?: unknown
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_agents_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_agents_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settlements: {
+        Row: {
+          agent_code: string | null
+          agent_id: string | null
+          amount: number
+          channel: Database["public"]["Enums"]["settlement_channel"]
+          confirmed_at: string | null
+          created_at: string
+          currency: string
+          driver_id: string
+          expires_at: string | null
+          id: string
+          ledger_entry_id: number | null
+          provider_reference: string | null
+          status: Database["public"]["Enums"]["settlement_status"]
+        }
+        Insert: {
+          agent_code?: string | null
+          agent_id?: string | null
+          amount: number
+          channel: Database["public"]["Enums"]["settlement_channel"]
+          confirmed_at?: string | null
+          created_at?: string
+          currency: string
+          driver_id: string
+          expires_at?: string | null
+          id?: string
+          ledger_entry_id?: number | null
+          provider_reference?: string | null
+          status?: Database["public"]["Enums"]["settlement_status"]
+        }
+        Update: {
+          agent_code?: string | null
+          agent_id?: string | null
+          amount?: number
+          channel?: Database["public"]["Enums"]["settlement_channel"]
+          confirmed_at?: string | null
+          created_at?: string
+          currency?: string
+          driver_id?: string
+          expires_at?: string | null
+          id?: string
+          ledger_entry_id?: number | null
+          provider_reference?: string | null
+          status?: Database["public"]["Enums"]["settlement_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlements_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "settlement_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlements_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlements_ledger_entry_id_fkey"
+            columns: ["ledger_entry_id"]
+            isOneToOne: false
+            referencedRelation: "driver_ledger_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       spatial_ref_sys: {
         Row: {
           auth_name: string | null
@@ -1760,6 +3282,621 @@ export type Database = {
             columns: ["stage_id"]
             isOneToOne: false
             referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trip_dispatch_context: {
+        Row: {
+          ambient_cell: string
+          created_at: string
+          destination: unknown
+          hail_source: string
+          mode_code: string
+          origin: unknown
+          tried_driver_ids: string[]
+          trip_id: string
+        }
+        Insert: {
+          ambient_cell: string
+          created_at?: string
+          destination: unknown
+          hail_source?: string
+          mode_code: string
+          origin: unknown
+          tried_driver_ids?: string[]
+          trip_id: string
+        }
+        Update: {
+          ambient_cell?: string
+          created_at?: string
+          destination?: unknown
+          hail_source?: string
+          mode_code?: string
+          origin?: unknown
+          tried_driver_ids?: string[]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_dispatch_context_mode_code_fkey"
+            columns: ["mode_code"]
+            isOneToOne: false
+            referencedRelation: "mode_config"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "trip_dispatch_context_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trip_events: {
+        Row: {
+          actor_id: string | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          created_at: string
+          from_status: Database["public"]["Enums"]["trip_status"] | null
+          id: number
+          meta: Json | null
+          reason: string | null
+          to_status: Database["public"]["Enums"]["trip_status"]
+          trip_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["trip_status"] | null
+          id?: number
+          meta?: Json | null
+          reason?: string | null
+          to_status: Database["public"]["Enums"]["trip_status"]
+          trip_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["trip_status"] | null
+          id?: number
+          meta?: Json | null
+          reason?: string | null
+          to_status?: Database["public"]["Enums"]["trip_status"]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_events_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trip_extensions: {
+        Row: {
+          commission_delta: number | null
+          currency: string
+          expires_at: string
+          fare_delta: number
+          fare_quote_id: string | null
+          id: string
+          ledger_entry_id: number | null
+          new_alighting_location: unknown
+          new_alighting_stage_id: string | null
+          previous_alighting_location: unknown
+          previous_alighting_stage_id: string | null
+          proposed_at: string
+          proposed_by: Database["public"]["Enums"]["actor_type"]
+          responded_at: string | null
+          status: string
+          trip_id: string
+        }
+        Insert: {
+          commission_delta?: number | null
+          currency: string
+          expires_at: string
+          fare_delta: number
+          fare_quote_id?: string | null
+          id?: string
+          ledger_entry_id?: number | null
+          new_alighting_location?: unknown
+          new_alighting_stage_id?: string | null
+          previous_alighting_location?: unknown
+          previous_alighting_stage_id?: string | null
+          proposed_at?: string
+          proposed_by: Database["public"]["Enums"]["actor_type"]
+          responded_at?: string | null
+          status?: string
+          trip_id: string
+        }
+        Update: {
+          commission_delta?: number | null
+          currency?: string
+          expires_at?: string
+          fare_delta?: number
+          fare_quote_id?: string | null
+          id?: string
+          ledger_entry_id?: number | null
+          new_alighting_location?: unknown
+          new_alighting_stage_id?: string | null
+          previous_alighting_location?: unknown
+          previous_alighting_stage_id?: string | null
+          proposed_at?: string
+          proposed_by?: Database["public"]["Enums"]["actor_type"]
+          responded_at?: string | null
+          status?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "te_ledger_fk"
+            columns: ["ledger_entry_id"]
+            isOneToOne: false
+            referencedRelation: "driver_ledger_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_extensions_fare_quote_id_fkey"
+            columns: ["fare_quote_id"]
+            isOneToOne: false
+            referencedRelation: "fare_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_extensions_new_alighting_stage_id_fkey"
+            columns: ["new_alighting_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_extensions_previous_alighting_stage_id_fkey"
+            columns: ["previous_alighting_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_extensions_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trip_location_samples: {
+        Row: {
+          accuracy_m: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading: number | null
+          id: number
+          location: unknown
+          speed_mps: number | null
+          trip_id: string
+          ts: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location: unknown
+          speed_mps?: number | null
+          trip_id: string
+          ts: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location?: unknown
+          speed_mps?: number | null
+          trip_id?: string
+          ts?: string
+        }
+        Relationships: []
+      }
+      trip_location_samples_y2026_m09: {
+        Row: {
+          accuracy_m: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading: number | null
+          id: number
+          location: unknown
+          speed_mps: number | null
+          trip_id: string
+          ts: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location: unknown
+          speed_mps?: number | null
+          trip_id: string
+          ts: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location?: unknown
+          speed_mps?: number | null
+          trip_id?: string
+          ts?: string
+        }
+        Relationships: []
+      }
+      trip_location_samples_y2026_m10: {
+        Row: {
+          accuracy_m: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading: number | null
+          id: number
+          location: unknown
+          speed_mps: number | null
+          trip_id: string
+          ts: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location: unknown
+          speed_mps?: number | null
+          trip_id: string
+          ts: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location?: unknown
+          speed_mps?: number | null
+          trip_id?: string
+          ts?: string
+        }
+        Relationships: []
+      }
+      trip_location_samples_y2026_m11: {
+        Row: {
+          accuracy_m: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading: number | null
+          id: number
+          location: unknown
+          speed_mps: number | null
+          trip_id: string
+          ts: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location: unknown
+          speed_mps?: number | null
+          trip_id: string
+          ts: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location?: unknown
+          speed_mps?: number | null
+          trip_id?: string
+          ts?: string
+        }
+        Relationships: []
+      }
+      trip_reconciliation_flags: {
+        Row: {
+          corroborating_rider_count: number
+          created_at: string
+          driver_id: string
+          evidence: Json
+          flag_type: Database["public"]["Enums"]["flag_type"]
+          id: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          rider_trace_quality: Database["public"]["Enums"]["trace_quality"]
+          score: number
+          standing_transition_id: number | null
+          status: Database["public"]["Enums"]["flag_status"]
+          trip_id: string
+        }
+        Insert: {
+          corroborating_rider_count?: number
+          created_at?: string
+          driver_id: string
+          evidence: Json
+          flag_type: Database["public"]["Enums"]["flag_type"]
+          id?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rider_trace_quality: Database["public"]["Enums"]["trace_quality"]
+          score: number
+          standing_transition_id?: number | null
+          status?: Database["public"]["Enums"]["flag_status"]
+          trip_id: string
+        }
+        Update: {
+          corroborating_rider_count?: number
+          created_at?: string
+          driver_id?: string
+          evidence?: Json
+          flag_type?: Database["public"]["Enums"]["flag_type"]
+          id?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rider_trace_quality?: Database["public"]["Enums"]["trace_quality"]
+          score?: number
+          standing_transition_id?: number | null
+          status?: Database["public"]["Enums"]["flag_status"]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_reconciliation_flags_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_reconciliation_flags_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_reconciliation_flags_standing_transition_id_fkey"
+            columns: ["standing_transition_id"]
+            isOneToOne: false
+            referencedRelation: "driver_standing_transitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_reconciliation_flags_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trips: {
+        Row: {
+          accepted_at: string | null
+          alighting_location: unknown
+          alighting_stage_id: string | null
+          boarded_at: string | null
+          boarded_via: string | null
+          boarding_location: unknown
+          boarding_stage_id: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          commission_amount: number | null
+          commission_rate: number
+          created_at: string
+          decline_reason: string | null
+          dispatch_attempt: number
+          driver_id: string | null
+          driver_live_path: unknown
+          driver_route_profile_id: string | null
+          ended_at: string | null
+          expires_at: string
+          fare_currency: string
+          fare_quote_id: string
+          fare_reported_paid: number | null
+          fare_shown: number
+          fare_tier: number
+          id: string
+          id_signal_color: string
+          id_signal_shape: string
+          journey_id: string
+          journey_sequence: number
+          load_flagged: boolean
+          load_note: string | null
+          load_size: Database["public"]["Enums"]["load_size"] | null
+          load_surcharge_amount: number
+          meta: Json
+          mode_code: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          requested_at: string
+          rider_id: string
+          rider_live_path: unknown
+          route_id: string | null
+          route_leg_ids: string[]
+          started_at: string | null
+          status: Database["public"]["Enums"]["trip_status"]
+          updated_at: string
+          vehicle_id: string | null
+          women_only: boolean
+        }
+        Insert: {
+          accepted_at?: string | null
+          alighting_location?: unknown
+          alighting_stage_id?: string | null
+          boarded_at?: string | null
+          boarded_via?: string | null
+          boarding_location?: unknown
+          boarding_stage_id?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          commission_amount?: number | null
+          commission_rate: number
+          created_at?: string
+          decline_reason?: string | null
+          dispatch_attempt?: number
+          driver_id?: string | null
+          driver_live_path?: unknown
+          driver_route_profile_id?: string | null
+          ended_at?: string | null
+          expires_at: string
+          fare_currency: string
+          fare_quote_id: string
+          fare_reported_paid?: number | null
+          fare_shown: number
+          fare_tier: number
+          id?: string
+          id_signal_color: string
+          id_signal_shape: string
+          journey_id: string
+          journey_sequence?: number
+          load_flagged?: boolean
+          load_note?: string | null
+          load_size?: Database["public"]["Enums"]["load_size"] | null
+          load_surcharge_amount?: number
+          meta?: Json
+          mode_code: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          requested_at?: string
+          rider_id: string
+          rider_live_path?: unknown
+          route_id?: string | null
+          route_leg_ids?: string[]
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["trip_status"]
+          updated_at?: string
+          vehicle_id?: string | null
+          women_only?: boolean
+        }
+        Update: {
+          accepted_at?: string | null
+          alighting_location?: unknown
+          alighting_stage_id?: string | null
+          boarded_at?: string | null
+          boarded_via?: string | null
+          boarding_location?: unknown
+          boarding_stage_id?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          created_at?: string
+          decline_reason?: string | null
+          dispatch_attempt?: number
+          driver_id?: string | null
+          driver_live_path?: unknown
+          driver_route_profile_id?: string | null
+          ended_at?: string | null
+          expires_at?: string
+          fare_currency?: string
+          fare_quote_id?: string
+          fare_reported_paid?: number | null
+          fare_shown?: number
+          fare_tier?: number
+          id?: string
+          id_signal_color?: string
+          id_signal_shape?: string
+          journey_id?: string
+          journey_sequence?: number
+          load_flagged?: boolean
+          load_note?: string | null
+          load_size?: Database["public"]["Enums"]["load_size"] | null
+          load_surcharge_amount?: number
+          meta?: Json
+          mode_code?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          requested_at?: string
+          rider_id?: string
+          rider_live_path?: unknown
+          route_id?: string | null
+          route_leg_ids?: string[]
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["trip_status"]
+          updated_at?: string
+          vehicle_id?: string | null
+          women_only?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trips_alighting_stage_id_fkey"
+            columns: ["alighting_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_boarding_stage_id_fkey"
+            columns: ["boarding_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_driver_route_profile_id_fkey"
+            columns: ["driver_route_profile_id"]
+            isOneToOne: false
+            referencedRelation: "driver_route_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_fare_quote_id_fkey"
+            columns: ["fare_quote_id"]
+            isOneToOne: false
+            referencedRelation: "fare_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_mode_code_fkey"
+            columns: ["mode_code"]
+            isOneToOne: false
+            referencedRelation: "mode_config"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "trips_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
             referencedColumns: ["id"]
           },
         ]
@@ -1839,6 +3976,51 @@ export type Database = {
       }
     }
     Views: {
+      driver_balances: {
+        Row: {
+          as_of: string | null
+          balance: number | null
+          currency: string | null
+          driver_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_ledger_entries_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_route_stop_location: {
+        Row: {
+          currency: string | null
+          custom_label: string | null
+          id: string | null
+          location: unknown
+          price_to_end: number | null
+          profile_id: string | null
+          route_stage_id: string | null
+          sequence: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_route_stops_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "driver_route_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_route_stops_route_stage_id_fkey"
+            columns: ["route_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       geography_columns: {
         Row: {
           coord_dimension: number | null
@@ -1878,6 +4060,27 @@ export type Database = {
           f_table_schema?: unknown
           srid?: number | null
           type?: string | null
+        }
+        Relationships: []
+      }
+      my_verifications_v: {
+        Row: {
+          document_type: string | null
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["doc_status"] | null
+          submitted_at: string | null
+        }
+        Insert: {
+          document_type?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["doc_status"] | null
+          submitted_at?: string | null
+        }
+        Update: {
+          document_type?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["doc_status"] | null
+          submitted_at?: string | null
         }
         Relationships: []
       }
@@ -1922,16 +4125,182 @@ export type Database = {
       }
     }
     Functions: {
+      _advance_journey_on_trip_complete: {
+        Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: undefined
+      }
+      _candidate_token_payload: {
+        Args: { p_driver_id: string; p_exp: number; p_session_id: string }
+        Returns: string
+      }
       _cleanup: { Args: never; Returns: boolean }
       _contract_on: { Args: { "": string }; Returns: unknown }
       _currtest: { Args: never; Returns: number }
       _db_privs: { Args: never; Returns: unknown[] }
+      _driver_declared_source: {
+        Args: { p_driver_id: string }
+        Returns: string
+      }
+      _extension_parse_endpoint: {
+        Args: { p_value: Json }
+        Returns: {
+          point: unknown
+          stage_id: string
+        }[]
+      }
+      _extension_trip_actor: {
+        Args: { p_trip_id: string; p_uid: string }
+        Returns: Database["public"]["Enums"]["actor_type"]
+      }
       _extensions: { Args: never; Returns: unknown[] }
+      _fare_correction_resolve_target: {
+        Args: { p_fc: Database["public"]["Tables"]["fare_corrections"]["Row"] }
+        Returns: {
+          target_id: string
+          target_type: string
+        }[]
+      }
       _field_payload_point: { Args: { p_payload: Json }; Returns: unknown }
+      _find_plan_leg: {
+        Args: {
+          p_candidate_id: string
+          p_leg_index: number
+          p_rider_id: string
+        }
+        Returns: Record<string, unknown>
+      }
       _get: { Args: { "": string }; Returns: number }
       _get_latest: { Args: { "": string }; Returns: number[] }
       _get_note: { Args: { "": string }; Returns: string }
       _is_verbose: { Args: never; Returns: boolean }
+      _journey_plan_leg: {
+        Args: { p_journey_id: string; p_leg_index: number }
+        Returns: Json
+      }
+      _journey_planned_leg_count: {
+        Args: { p_journey_id: string }
+        Returns: number
+      }
+      _latest_trip_sample: {
+        Args: {
+          p_actor_type: Database["public"]["Enums"]["actor_type"]
+          p_trip_id: string
+        }
+        Returns: {
+          accuracy_m: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading: number | null
+          id: number
+          location: unknown
+          speed_mps: number | null
+          trip_id: string
+          ts: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "trip_location_samples"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      _materialize_trip_paths: {
+        Args: { p_trip_id: string }
+        Returns: undefined
+      }
+      _mode_ref: { Args: { p_mode_code: string }; Returns: Json }
+      _na_me_label: {
+        Args: { p_color_token: string; p_locale?: string; p_shape: string }
+        Returns: string
+      }
+      _na_me_token_label: { Args: { p_token: string }; Returns: string }
+      _negotiation_actor_role: {
+        Args: { p_negotiation_id: string; p_user_id: string }
+        Returns: Database["public"]["Enums"]["actor_type"]
+      }
+      _negotiation_build_view: {
+        Args: { p_negotiation_id: string }
+        Returns: Json
+      }
+      _negotiation_chip_steps: {
+        Args: { p_city_id: string }
+        Returns: number[]
+      }
+      _negotiation_create_trip: {
+        Args: {
+          p_acceptor: Database["public"]["Enums"]["actor_type"]
+          p_agreed_amount: number
+          p_negotiation: Database["public"]["Tables"]["price_negotiations"]["Row"]
+          p_quote_id: string
+        }
+        Returns: string
+      }
+      _negotiation_lapse: {
+        Args: { p_negotiation_id: string; p_reason?: string }
+        Returns: undefined
+      }
+      _negotiation_last_round: {
+        Args: { p_negotiation_id: string }
+        Returns: {
+          amount: number
+          id: string
+          negotiation_id: string
+          proposed_at: string
+          proposed_by: Database["public"]["Enums"]["actor_type"]
+          responded_at: string | null
+          response: string | null
+          round_number: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "price_negotiation_rounds"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      _negotiation_parse_endpoint: {
+        Args: { p_value: Json }
+        Returns: {
+          point: unknown
+          stage_id: string
+        }[]
+      }
+      _negotiation_post_fare_correction: {
+        Args: {
+          p_agreed_amount: number
+          p_negotiation: Database["public"]["Tables"]["price_negotiations"]["Row"]
+          p_trip_id: string
+        }
+        Returns: undefined
+      }
+      _negotiation_pricing_source: { Args: never; Returns: string }
+      _negotiation_roaming_params: {
+        Args: {
+          p_city_id: string
+          p_driver_id: string
+          p_rider_location: unknown
+        }
+        Returns: {
+          eta_band: Database["public"]["Enums"]["eta_band"]
+          expires_at: string
+          open_distance_m: number
+          pickup_radius_m: number
+          round_cap: number
+          round_timeout_s: number
+        }[]
+      }
+      _negotiation_round_count: {
+        Args: { p_negotiation_id: string }
+        Returns: number
+      }
+      _parked_supply_bucket: { Args: { p_count: number }; Returns: string }
+      _pick_next_roaming_driver: {
+        Args: { p_trip_id: string }
+        Returns: {
+          driver_id: string
+          profile_id: string
+          vehicle_id: string
+        }[]
+      }
       _planner_build_itinerary: {
         Args: {
           p_city_id: string
@@ -1942,6 +4311,29 @@ export type Database = {
         }
         Returns: Json
       }
+      _planner_in_vehicle_s: {
+        Args: {
+          p_from_stage_id: string
+          p_route_id: string
+          p_to_stage_id: string
+        }
+        Returns: number
+      }
+      _planner_search_paths: {
+        Args: {
+          p_city_id: string
+          p_destination_park_id: string
+          p_k: number
+          p_origin_park_id: string
+        }
+        Returns: {
+          cost: number
+          route_path: string[]
+          stage_path: string[]
+          transfer_count: number
+        }[]
+      }
+      _planner_stage_point: { Args: { p_stage_id: string }; Returns: unknown }
       _planner_stages_at_park: {
         Args: { p_city_id: string; p_park_id: string }
         Returns: {
@@ -1950,6 +4342,16 @@ export type Database = {
           stage_id: string
         }[]
       }
+      _planner_wait_s: {
+        Args: {
+          p_city_id: string
+          p_from_stage_id: string
+          p_route_id: string
+          p_to_stage_id: string
+        }
+        Returns: number
+      }
+      _point_from_json: { Args: { p_loc: Json }; Returns: unknown }
       _postgis_deprecate: {
         Args: { newname: string; oldname: string; version: string }
         Returns: undefined
@@ -1971,6 +4373,53 @@ export type Database = {
       _prokind: { Args: { p_oid: unknown }; Returns: unknown }
       _query: { Args: { "": string }; Returns: string }
       _refine_vol: { Args: { "": string }; Returns: string }
+      _resolve_roaming_presence: {
+        Args: {
+          p_city_id: string
+          p_destination?: unknown
+          p_driver_id: string
+          p_session_id: string
+          p_women_only?: boolean
+        }
+        Returns: {
+          ambient_cell: string
+          current_location: unknown
+          driver_id: string
+          mode_code: string
+          profile_id: string
+          vehicle_id: string
+        }[]
+      }
+      _resolve_trip_driver: {
+        Args: {
+          p_candidate: Json
+          p_city_id: string
+          p_leg: Json
+          p_source: string
+        }
+        Returns: {
+          driver_id: string
+          profile_id: string
+          vehicle_id: string
+        }[]
+      }
+      _rider_fare_confirm_source: { Args: never; Returns: string }
+      _route_leg_ids_between: {
+        Args: {
+          p_from_stage_id: string
+          p_route_id: string
+          p_to_stage_id: string
+        }
+        Returns: string[]
+      }
+      _route_leg_segment_keys: {
+        Args: {
+          p_from_stage_id: string
+          p_route_id: string
+          p_to_stage_id: string
+        }
+        Returns: string[]
+      }
       _st_3dintersects: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: boolean
@@ -2045,6 +4494,20 @@ export type Database = {
       _table_privs: { Args: never; Returns: unknown[] }
       _temptypes: { Args: { "": string }; Returns: string }
       _todo: { Args: never; Returns: string }
+      _trip_boarding_point: {
+        Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: unknown
+      }
+      _trip_planned_in_vehicle_s: {
+        Args: { p_trip_id: string }
+        Returns: number
+      }
+      _validate_load_flag: {
+        Args: { p_city_id: string; p_load: Json; p_mode_code: string }
+        Returns: undefined
+      }
+      abandon_stale_journeys: { Args: never; Returns: number }
+      acknowledge_guarantor: { Args: { p_token: string }; Returns: Json }
       addauth: { Args: { "": string }; Returns: boolean }
       addgeometrycolumn:
         | {
@@ -2083,27 +4546,34 @@ export type Database = {
             }
             Returns: string
           }
-      admin_can_access_city: { Args: { p_city: string }; Returns: boolean }
+      admin_approve_adjustment: {
+        Args: { p_request_id: string }
+        Returns: Json
+      }
       admin_approve_verification: {
         Args: { p_verification_id: string; p_women_only_eligible?: boolean }
         Returns: Json
       }
-      admin_reject_verification: {
-        Args: { p_verification_id: string; p_reason: string }
+      admin_can_access_city: { Args: { p_city: string }; Returns: boolean }
+      admin_check_identity_duplicate: {
+        Args: { p_verification_id: string }
         Returns: Json
       }
       admin_log_view_document: {
         Args: { p_verification_id: string }
         Returns: Json
       }
-      admin_check_identity_duplicate: {
-        Args: { p_verification_id: string }
+      admin_manual_ledger_adjustment: {
+        Args: { p_amount: number; p_driver_id: string; p_memo: string }
         Returns: Json
       }
-      admin_review_fare_correction: {
-        Args: { id: string; action: string; note?: string }
+      admin_notify_guarantor: { Args: { p_driver_id: string }; Returns: Json }
+      admin_payout_positive_balance: {
+        Args: { p_driver_id: string }
         Returns: Json
       }
+      admin_presence_fanout: { Args: { p_city_id: string }; Returns: Json }
+      admin_presence_snapshot: { Args: { p_city_id: string }; Returns: Json }
       admin_publish_field_entity: {
         Args: { p_reconciliation_id: string }
         Returns: Json
@@ -2138,6 +4608,123 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_reject_verification: {
+        Args: { p_reason: string; p_verification_id: string }
+        Returns: Json
+      }
+      admin_review_fare_correction: {
+        Args: { action: string; id: string; note?: string }
+        Returns: Json
+      }
+      admin_review_flag: {
+        Args: {
+          p_action: string
+          p_flag_id: string
+          p_note?: string
+          p_standing_transition_id?: number
+        }
+        Returns: Json
+      }
+      admin_transition_standing: {
+        Args: { p_driver_id: string; p_reason: string; p_to: string }
+        Returns: Json
+      }
+      admin_upsert_settlement_agent: {
+        Args: {
+          p_active?: boolean
+          p_agent_phone: string
+          p_business_name: string
+          p_city_id: string
+          p_id: string
+          p_lat?: number
+          p_lng?: number
+        }
+        Returns: Json
+      }
+      along_geohash: {
+        Args: { p: unknown; p_precision: number }
+        Returns: string
+      }
+      ambient_count_bucket: { Args: { p_count: number }; Returns: string }
+      ambient_demand: {
+        Args: { p_lat: number; p_lng: number; p_radius_m: number }
+        Returns: Json
+      }
+      ambient_vehicles: {
+        Args: {
+          p_dest_lat?: number
+          p_dest_lng?: number
+          p_lat: number
+          p_lng: number
+          p_radius_m: number
+        }
+        Returns: Json
+      }
+      angle_diff: { Args: { h1: number; h2: number }; Returns: number }
+      apply_paystack_charge_success: {
+        Args: { p_amount: number; p_metadata?: Json; p_reference: string }
+        Returns: {
+          amount: number
+          balance_after: number
+          created_at: string
+          created_by_id: string | null
+          created_by_type: Database["public"]["Enums"]["ledger_actor"]
+          currency: string
+          driver_id: string
+          entry_type: Database["public"]["Enums"]["ledger_entry_type"]
+          id: number
+          idempotency_key: string
+          memo: string | null
+          settlement_id: string | null
+          trip_extension_id: string | null
+          trip_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "driver_ledger_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      apply_paystack_transfer_success: {
+        Args: { p_amount: number; p_metadata?: Json; p_reference: string }
+        Returns: {
+          amount: number
+          balance_after: number
+          created_at: string
+          created_by_id: string | null
+          created_by_type: Database["public"]["Enums"]["ledger_actor"]
+          currency: string
+          driver_id: string
+          entry_type: Database["public"]["Enums"]["ledger_entry_type"]
+          id: number
+          idempotency_key: string
+          memo: string | null
+          settlement_id: string | null
+          trip_extension_id: string | null
+          trip_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "driver_ledger_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      apply_threshold_policy: { Args: never; Returns: undefined }
+      audit_row_target_id: { Args: { p_row: Json }; Returns: string }
+      auto_boarding_check: { Args: { p_trip_id: string }; Returns: boolean }
+      auto_in_transit_check: { Args: { p_trip_id: string }; Returns: boolean }
+      bearing_deg: { Args: { a: unknown; b: unknown }; Returns: number }
+      build_trip_view: {
+        Args: { p_trip_id: string; p_viewer_id?: string }
+        Returns: Json
+      }
+      cancel_trip: {
+        Args: { p_reason?: string; p_trip_id: string }
+        Returns: Json
+      }
+      candidate_token_hmac_key: { Args: never; Returns: string }
       cfg: {
         Args: { p_city?: string; p_corridor?: string; p_key: string }
         Returns: Json
@@ -2145,6 +4732,10 @@ export type Database = {
       cfg_num: {
         Args: { p_city?: string; p_corridor?: string; p_key: string }
         Returns: number
+      }
+      city_for_lat_lng: {
+        Args: { p_lat: number; p_lng: number }
+        Returns: string
       }
       city_for_point: { Args: { p: unknown }; Returns: string }
       col_is_null:
@@ -2183,11 +4774,37 @@ export type Database = {
             }
             Returns: string
           }
+      complete_trip: {
+        Args: { p_alighting?: Json; p_trip_id: string }
+        Returns: Json
+      }
       compute_field_variance: {
         Args: { p_submission_a: string; p_submission_b: string }
         Returns: Json
       }
+      compute_identity_hash: {
+        Args: { p_document_type: string; p_normalized_id: string }
+        Returns: string
+      }
+      compute_risk_scores: { Args: never; Returns: undefined }
       compute_trust_weights: { Args: never; Returns: undefined }
+      config_default: {
+        Args: {
+          p_key: string
+          p_scope_id?: string
+          p_scope_type?: Database["public"]["Enums"]["config_scope"]
+          p_value: Json
+        }
+        Returns: undefined
+      }
+      confirm_agent_settlement: {
+        Args: { p_agent_code: string; p_amount: number }
+        Returns: Json
+      }
+      confirm_fare: {
+        Args: { p_outcome: string; p_paid_amount?: number; p_trip_id: string }
+        Returns: Json
+      }
       confirm_graph_value: {
         Args: {
           p_confirmer_profile_id?: string
@@ -2203,7 +4820,9 @@ export type Database = {
         Args: { p_city_id?: string; p_profile_id: string; p_role: string }
         Returns: number
       }
+      create_agent_code: { Args: { p_amount: number }; Returns: Json }
       current_profile_id: { Args: never; Returns: string }
+      deactivate_route_profile: { Args: { p_id: string }; Returns: undefined }
       decay_confidence: { Args: never; Returns: undefined }
       diag:
         | {
@@ -2220,10 +4839,25 @@ export type Database = {
           }
       diag_test_name: { Args: { "": string }; Returns: string }
       disablelongtransactions: { Args: never; Returns: string }
+      dispatch_cascade_step: {
+        Args: {
+          p_declining_driver_id?: string
+          p_reason?: string
+          p_trip_id: string
+        }
+        Returns: Json
+      }
       distance_m: { Args: { a: unknown; b: unknown }; Returns: number }
       do_tap:
         | { Args: never; Returns: string[] }
         | { Args: { "": string }; Returns: string[] }
+      driver_balance: { Args: never; Returns: Json }
+      driver_is_matchable: { Args: { p_driver_id: string }; Returns: boolean }
+      driver_ledger: {
+        Args: { p_cursor?: string; p_limit?: number }
+        Returns: Json
+      }
+      driver_manifest: { Args: never; Returns: Json }
       dropgeometrycolumn:
         | {
             Args: {
@@ -2255,7 +4889,9 @@ export type Database = {
         | { Args: { schema_name: string; table_name: string }; Returns: string }
         | { Args: { table_name: string }; Returns: string }
       enablelongtransactions: { Args: never; Returns: string }
+      ensure_partitions: { Args: never; Returns: undefined }
       equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      expire_requests: { Args: never; Returns: number }
       fail:
         | { Args: never; Returns: string }
         | { Args: { "": string }; Returns: string }
@@ -2278,6 +4914,19 @@ export type Database = {
         Returns: number
       }
       finish: { Args: { exception_on_failure?: boolean }; Returns: string[] }
+      generate_driver_code: { Args: never; Returns: string }
+      generate_na_me_pairing: {
+        Args: { p_city_id: string; p_driver_id: string; p_rider_id: string }
+        Returns: {
+          color_token: string
+          label: string
+          shape: string
+        }[]
+      }
+      geohash_centroid: {
+        Args: { p_geohash: string; p_precision: number }
+        Returns: unknown
+      }
       geometry: { Args: { "": string }; Returns: unknown }
       geometry_above: {
         Args: { geom1: unknown; geom2: unknown }
@@ -2381,17 +5030,109 @@ export type Database = {
         Args: { p_target_id: string; p_target_type: string }
         Returns: string
       }
+      hail_roaming: {
+        Args: {
+          p_candidate_token: string
+          p_client_ref: string
+          p_destination: Json
+          p_load?: Json
+          p_women_only: boolean
+        }
+        Returns: Json
+      }
       has_admin_role: { Args: { roles: string[] }; Returns: boolean }
       has_unique: { Args: { "": string }; Returns: string }
+      heading_sector_counts: { Args: { p_sectors: number[] }; Returns: Json }
+      identity_hash_pepper: { Args: never; Returns: string }
       in_todo: { Args: never; Returns: boolean }
       infer_confirmer_role: { Args: { p_profile_id: string }; Returns: string }
+      insert_planner_query: {
+        Args: {
+          p_candidate_count: number
+          p_candidates: Json
+          p_city_id: string
+          p_degraded: boolean
+          p_dest_lat: number
+          p_dest_lng: number
+          p_direct_count: number
+          p_filters: Json
+          p_id: string
+          p_latency_ms: number
+          p_origin_lat: number
+          p_origin_lng: number
+          p_rider_id: string
+        }
+        Returns: string
+      }
       is_admin: { Args: never; Returns: boolean }
       is_empty: { Args: { "": string }; Returns: string }
       isnt_empty: { Args: { "": string }; Returns: string }
+      ledger_post: {
+        Args: {
+          p_actor_id?: string
+          p_actor_type?: Database["public"]["Enums"]["ledger_actor"]
+          p_amount: number
+          p_currency: string
+          p_driver_id: string
+          p_entry_type: Database["public"]["Enums"]["ledger_entry_type"]
+          p_idempotency_key?: string
+          p_memo?: string
+          p_refs?: Json
+        }
+        Returns: {
+          amount: number
+          balance_after: number
+          created_at: string
+          created_by_id: string | null
+          created_by_type: Database["public"]["Enums"]["ledger_actor"]
+          currency: string
+          driver_id: string
+          entry_type: Database["public"]["Enums"]["ledger_entry_type"]
+          id: number
+          idempotency_key: string
+          memo: string | null
+          settlement_id: string | null
+          trip_extension_id: string | null
+          trip_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "driver_ledger_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       lives_ok: { Args: { "": string }; Returns: string }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      mark_boarded: { Args: { p_trip_id: string }; Returns: Json }
+      mark_no_show: { Args: { p_trip_id: string }; Returns: Json }
+      my_route_profiles: { Args: never; Returns: Json }
+      my_standing_history: { Args: never; Returns: Json }
+      my_verifications: { Args: never; Returns: Json }
+      nearby_settlement_agents: { Args: { p_location?: Json }; Returns: Json }
+      negotiation_clock_tick: { Args: never; Returns: Json }
+      negotiation_round: {
+        Args: { p_action: string; p_amount?: number; p_negotiation_id: string }
+        Returns: Json
+      }
+      negotiation_split: { Args: { p_negotiation_id: string }; Returns: Json }
       no_plan: { Args: never; Returns: boolean[] }
+      normalize_identity_id: {
+        Args: { p_document_type: string; p_raw: string }
+        Returns: string
+      }
       num_failed: { Args: never; Returns: number }
+      open_negotiation: {
+        Args: {
+          p_candidate_token?: string
+          p_client_ref: string
+          p_context: Database["public"]["Enums"]["negotiation_context"]
+          p_driver_id?: string
+          p_from: Json
+          p_to: Json
+        }
+        Returns: Json
+      }
       os_name: { Args: never; Returns: string }
       pass:
         | { Args: never; Returns: string }
@@ -2399,13 +5140,65 @@ export type Database = {
       pg_version: { Args: never; Returns: string }
       pg_version_num: { Args: never; Returns: number }
       pgtap_version: { Args: never; Returns: number }
+      places_search_graph: {
+        Args: {
+          p_city_id: string
+          p_limit: number
+          p_min_similarity: number
+          p_near_lat: number
+          p_near_lng: number
+          p_q: string
+          p_radius_m: number
+        }
+        Returns: {
+          area: string
+          distance_m: number
+          id: string
+          kind: string
+          lat: number
+          lng: number
+          name: string
+          rank_score: number
+        }[]
+      }
       planner_decompose: {
         Args: {
           p_city_id?: string
           p_destination_park_id: string
           p_origin_park_id: string
         }
-        Returns: Json
+        Returns: Json[]
+      }
+      planner_decompose_latlng: {
+        Args: {
+          p_city_id: string
+          p_dest_lat: number
+          p_dest_lng: number
+          p_filters?: Json
+          p_origin_lat: number
+          p_origin_lng: number
+        }
+        Returns: Json[]
+      }
+      planner_direct_candidates: {
+        Args: {
+          p_city_id: string
+          p_destination: unknown
+          p_filters?: Json
+          p_origin: unknown
+        }
+        Returns: Json[]
+      }
+      planner_direct_candidates_latlng: {
+        Args: {
+          p_city_id: string
+          p_dest_lat: number
+          p_dest_lng: number
+          p_filters?: Json
+          p_origin_lat: number
+          p_origin_lng: number
+        }
+        Returns: Json[]
       }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
@@ -2447,10 +5240,137 @@ export type Database = {
       }
       postgis_version: { Args: never; Returns: string }
       postgis_wagyu_version: { Args: never; Returns: string }
+      presence_fanout_targets: {
+        Args: never
+        Returns: {
+          centroid_lat: number
+          centroid_lng: number
+          city_id: string
+          city_slug: string
+          geohash5: string
+          radius_m: number
+        }[]
+      }
+      presence_is_fresh: {
+        Args: { p_city_id: string; p_last_ping_at: string }
+        Returns: boolean
+      }
+      presence_ping: {
+        Args: {
+          p_accuracy_m: number
+          p_heading: number
+          p_location: Json
+          p_seats_available?: number
+          p_speed_mps: number
+        }
+        Returns: Json
+      }
+      presence_plausible: {
+        Args: {
+          p_city_id: string
+          p_declared_route_leg_id: string
+          p_declared_route_profile_id: string
+          p_destination: unknown
+          p_heading: number
+          p_location: unknown
+          p_nearest_stage_id: string
+          p_speed_mps: number
+        }
+        Returns: boolean
+      }
+      presence_retention: { Args: never; Returns: undefined }
+      presence_stale: { Args: never; Returns: undefined }
       promote_candidates: { Args: never; Returns: undefined }
+      propose_extension: {
+        Args: { p_new_alight: Json; p_trip_id: string }
+        Returns: Json
+      }
+      rate_trip: {
+        Args: {
+          p_comment?: string
+          p_score: number
+          p_tags?: string[]
+          p_trip_id: string
+        }
+        Returns: Json
+      }
+      realtime_admin_city: {
+        Args: { p_topic: string; p_user_id: string }
+        Returns: boolean
+      }
+      realtime_ambient_topic: { Args: { p_topic: string }; Returns: boolean }
+      realtime_driver_self: {
+        Args: { p_topic: string; p_user_id: string }
+        Returns: boolean
+      }
+      realtime_negotiation_party: {
+        Args: { p_topic: string; p_user_id: string }
+        Returns: boolean
+      }
+      realtime_trip_party: {
+        Args: { p_topic: string; p_user_id: string }
+        Returns: boolean
+      }
+      reconcile_cancelled_trips: { Args: never; Returns: undefined }
       reconcile_field_submission: {
         Args: { p_submission_id: string }
         Returns: string
+      }
+      record_coverage_gap: {
+        Args: {
+          p_city_id: string
+          p_destination: unknown
+          p_origin: unknown
+          p_rider_id: string
+        }
+        Returns: Json
+      }
+      record_coverage_gap_latlng: {
+        Args: {
+          p_city_id: string
+          p_dest_lat: number
+          p_dest_lng: number
+          p_origin_lat: number
+          p_origin_lng: number
+          p_rider_id: string
+        }
+        Returns: Json
+      }
+      register_device_token: {
+        Args: { p_app: string; p_platform: string; p_token: string }
+        Returns: undefined
+      }
+      register_guarantor: {
+        Args: {
+          p_guarantor_type: Database["public"]["Enums"]["guarantor_type"]
+          p_name: string
+          p_phone_e164: string
+          p_profile_id?: string
+        }
+        Returns: string
+      }
+      register_vehicle: {
+        Args: {
+          p_color?: string
+          p_make_model?: string
+          p_mode_code: string
+          p_owner_is_me: boolean
+          p_owner_name?: string
+          p_owner_phone?: string
+          p_plate_number: string
+          p_seat_capacity: number
+        }
+        Returns: Json
+      }
+      request_trip: {
+        Args: {
+          p_candidate_id: string
+          p_client_ref: string
+          p_leg_index: number
+          p_load?: Json
+          p_women_only: boolean
+        }
+        Returns: Json
       }
       resolve_fare: {
         Args: {
@@ -2474,15 +5394,69 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      respond_extension: {
+        Args: { p_extension_id: string; p_response: string }
+        Returns: Json
+      }
+      respond_to_trip: {
+        Args: { p_action: string; p_decline_reason?: string; p_trip_id: string }
+        Returns: Json
+      }
+      rider_trip_broadcast_payload: {
+        Args: { p_event_type: string; p_message?: string; p_trip_id: string }
+        Returns: Json
+      }
       rider_trust_weight: {
         Args: { p_city_id?: string; p_rider_id: string }
         Returns: number
       }
+      round_to_minor: {
+        Args: { p_amount: number; p_city_id: string }
+        Returns: number
+      }
+      route_leg_segment_keys: {
+        Args: {
+          p_from_stage_id: string
+          p_route_id: string
+          p_to_stage_id: string
+        }
+        Returns: string[]
+      }
       runtests:
         | { Args: never; Returns: string[] }
         | { Args: { "": string }; Returns: string[] }
+      sector8: { Args: { p_bearing: number }; Returns: number }
+      segment_speed_profiles_lookup: {
+        Args: {
+          p_city_id: string
+          p_dow_bucket: number
+          p_hour_bucket: number
+          p_segment_keys: string[]
+        }
+        Returns: {
+          median_speed_mps: number
+          sample_count: number
+          segment_key: string
+        }[]
+      }
+      set_presence: {
+        Args: {
+          p_declared_route_leg_id?: string
+          p_declared_route_profile_id?: string
+          p_heading?: number
+          p_location: Json
+          p_park_id?: string
+          p_seats_available: number
+          p_status: string
+        }
+        Returns: Json
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      sign_candidate_token: {
+        Args: { p_city_id: string; p_driver_id: string; p_session_id: string }
+        Returns: string
+      }
       skip:
         | { Args: { "": string }; Returns: string }
         | { Args: { how_many: number; why: string }; Returns: string }
@@ -3071,6 +6045,34 @@ export type Database = {
         Args: { geom: unknown; move: number; wrap: number }
         Returns: unknown
       }
+      stage_points: {
+        Args: { p_stage_ids: string[] }
+        Returns: {
+          id: string
+          lat: number
+          lng: number
+          name: string
+        }[]
+      }
+      start_trip: { Args: { p_trip_id: string }; Returns: Json }
+      store_transfer_walk_prefetch: {
+        Args: { p_directions: Json; p_trip_id: string }
+        Returns: undefined
+      }
+      submit_verification: {
+        Args: {
+          p_client_ocr_hint?: string
+          p_document_type: string
+          p_storage_path: string
+          p_vehicle_id?: string
+        }
+        Returns: Json
+      }
+      suggest_known_route: { Args: never; Returns: Json }
+      suggested_stop_price: {
+        Args: { p_location: Json; p_profile_id: string; p_sequence: number }
+        Returns: number
+      }
       throws_ok: { Args: { "": string }; Returns: string }
       todo:
         | { Args: { how_many: number }; Returns: boolean[] }
@@ -3081,6 +6083,50 @@ export type Database = {
       todo_start:
         | { Args: never; Returns: boolean[] }
         | { Args: { "": string }; Returns: boolean[] }
+      transfer_prefetch_context: { Args: { p_trip_id: string }; Returns: Json }
+      transition_standing: {
+        Args: {
+          p_actor_id: string
+          p_actor_type: Database["public"]["Enums"]["actor_type"]
+          p_driver_id: string
+          p_reason: string
+          p_to_standing: Database["public"]["Enums"]["driver_standing"]
+        }
+        Returns: {
+          actor_id: string | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          balance_at: number | null
+          created_at: string
+          driver_id: string
+          from_standing: Database["public"]["Enums"]["driver_standing"] | null
+          id: number
+          reason: string
+          to_standing: Database["public"]["Enums"]["driver_standing"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "driver_standing_transitions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      trip_location_sample: {
+        Args: { p_points: Json; p_trip_id: string }
+        Returns: Json
+      }
+      trip_payable_total: { Args: { p_trip_id: string }; Returns: number }
+      trip_snapshot: { Args: { p_trip_id: string }; Returns: Json }
+      trip_transition: {
+        Args: {
+          p_actor_id?: string
+          p_actor_type: Database["public"]["Enums"]["actor_type"]
+          p_meta?: Json
+          p_reason?: string
+          p_to_status: Database["public"]["Enums"]["trip_status"]
+          p_trip_id: string
+        }
+        Returns: undefined
+      }
       unlockrows: { Args: { "": string }; Returns: number }
       updategeometrysrid: {
         Args: {
@@ -3092,12 +6138,33 @@ export type Database = {
         }
         Returns: string
       }
+      upsert_route_profile: { Args: { p_profile: Json }; Returns: Json }
+      verification_doc_type_allowed: {
+        Args: { p_country_code: string; p_document_type: string }
+        Returns: boolean
+      }
+      verification_required_doc_types: {
+        Args: { p_country_code: string }
+        Returns: string[]
+      }
+      verification_storage_path_valid: {
+        Args: { p_storage_path: string; p_user_id: string }
+        Returns: boolean
+      }
+      verify_candidate_token: {
+        Args: { p_city_id?: string; p_token: string }
+        Returns: {
+          driver_id: string
+          session_id: string
+        }[]
+      }
       weighted_median_fare: {
         Args: { p_fares: number[]; p_weights: number[] }
         Returns: number
       }
     }
     Enums: {
+      actor_type: "rider" | "driver" | "system" | "admin"
       admin_role:
         | "superadmin"
         | "ops_lead"
@@ -3113,13 +6180,53 @@ export type Database = {
       config_scope: "global" | "country" | "city" | "corridor"
       correction_status: "pending" | "approved" | "rejected" | "auto_merged"
       doc_status: "pending" | "approved" | "rejected" | "expired"
+      driver_payout_status: "pending" | "confirmed" | "failed"
       driver_standing:
         | "good_standing"
         | "warned"
         | "matching_paused"
         | "deactivated"
         | "guarantor_referred"
+      eta_band: "none" | "single" | "full"
+      flag_status: "open" | "cleared" | "actioned"
+      flag_type:
+        | "premature_conversion"
+        | "undeclared_extension"
+        | "route_deviation"
+        | "profile_price_mismatch"
       graph_verification: "candidate" | "crowd_verified" | "field_verified"
+      guarantor_type: "fellow_driver" | "vehicle_owner"
+      journey_status:
+        | "planning"
+        | "active"
+        | "transfer"
+        | "completed"
+        | "abandoned"
+      ledger_actor: "system" | "admin" | "agent" | "payment_webhook"
+      ledger_adjustment_status: "pending" | "approved" | "rejected"
+      ledger_entry_type:
+        | "cash_commission_debit"
+        | "digital_settlement_credit"
+        | "onboarding_deposit"
+        | "deposit_drawdown"
+        | "payout_debit"
+        | "manual_adjustment"
+      load_size: "small" | "medium" | "large"
+      negotiation_context: "park" | "roaming" | "extension" | "load_surcharge"
+      negotiation_status: "open" | "agreed" | "lapsed" | "declined"
+      payment_method: "cash" | "digital"
+      presence_status:
+        | "offline"
+        | "at_park"
+        | "roaming_available"
+        | "roaming_full"
+      settlement_channel:
+        | "paystack_transfer"
+        | "paystack_ussd"
+        | "paystack_card"
+        | "agent_cash"
+        | "bank_manual"
+      settlement_status: "pending" | "confirmed" | "failed" | "expired"
       source_type:
         | "field_agent"
         | "driver_declared"
@@ -3130,6 +6237,18 @@ export type Database = {
         | "pricing_negotiation"
         | "admin"
         | "import"
+      trace_quality: "none" | "partial" | "good"
+      trip_status:
+        | "requested"
+        | "accepted"
+        | "boarded"
+        | "in_transit"
+        | "completed"
+        | "declined"
+        | "expired"
+        | "cancelled_by_rider"
+        | "cancelled_by_driver"
+        | "no_show"
       verified_status:
         | "unverified"
         | "pending"
@@ -3149,6 +6268,7 @@ export type Database = {
         confidence: number | null
         components: Json | null
         unconfirmed: boolean | null
+        load_surcharge_pending: boolean | null
       }
       geometry_dump: {
         path: number[] | null
@@ -3286,6 +6406,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      actor_type: ["rider", "driver", "system", "admin"],
       admin_role: [
         "superadmin",
         "ops_lead",
@@ -3302,6 +6423,7 @@ export const Constants = {
       config_scope: ["global", "country", "city", "corridor"],
       correction_status: ["pending", "approved", "rejected", "auto_merged"],
       doc_status: ["pending", "approved", "rejected", "expired"],
+      driver_payout_status: ["pending", "confirmed", "failed"],
       driver_standing: [
         "good_standing",
         "warned",
@@ -3309,7 +6431,51 @@ export const Constants = {
         "deactivated",
         "guarantor_referred",
       ],
+      eta_band: ["none", "single", "full"],
+      flag_status: ["open", "cleared", "actioned"],
+      flag_type: [
+        "premature_conversion",
+        "undeclared_extension",
+        "route_deviation",
+        "profile_price_mismatch",
+      ],
       graph_verification: ["candidate", "crowd_verified", "field_verified"],
+      guarantor_type: ["fellow_driver", "vehicle_owner"],
+      journey_status: [
+        "planning",
+        "active",
+        "transfer",
+        "completed",
+        "abandoned",
+      ],
+      ledger_actor: ["system", "admin", "agent", "payment_webhook"],
+      ledger_adjustment_status: ["pending", "approved", "rejected"],
+      ledger_entry_type: [
+        "cash_commission_debit",
+        "digital_settlement_credit",
+        "onboarding_deposit",
+        "deposit_drawdown",
+        "payout_debit",
+        "manual_adjustment",
+      ],
+      load_size: ["small", "medium", "large"],
+      negotiation_context: ["park", "roaming", "extension", "load_surcharge"],
+      negotiation_status: ["open", "agreed", "lapsed", "declined"],
+      payment_method: ["cash", "digital"],
+      presence_status: [
+        "offline",
+        "at_park",
+        "roaming_available",
+        "roaming_full",
+      ],
+      settlement_channel: [
+        "paystack_transfer",
+        "paystack_ussd",
+        "paystack_card",
+        "agent_cash",
+        "bank_manual",
+      ],
+      settlement_status: ["pending", "confirmed", "failed", "expired"],
       source_type: [
         "field_agent",
         "driver_declared",
@@ -3320,6 +6486,19 @@ export const Constants = {
         "pricing_negotiation",
         "admin",
         "import",
+      ],
+      trace_quality: ["none", "partial", "good"],
+      trip_status: [
+        "requested",
+        "accepted",
+        "boarded",
+        "in_transit",
+        "completed",
+        "declined",
+        "expired",
+        "cancelled_by_rider",
+        "cancelled_by_driver",
+        "no_show",
       ],
       verified_status: [
         "unverified",

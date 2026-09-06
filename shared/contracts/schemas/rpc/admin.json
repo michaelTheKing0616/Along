@@ -65,7 +65,8 @@
       "properties": {
         "p_flag_id": { "$ref": "../common.json#/$defs/Uuid" },
         "action": { "type": "string", "enum": ["clear", "action"] },
-        "note": { "type": "string" }
+        "note": { "type": "string" },
+        "p_standing_transition_id": { "type": "integer" }
       }
     },
     "AdminTransitionStandingRequest": {

@@ -50,6 +50,8 @@ echo "Seeding E2E verification queue..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-verification-queue.sql"
 echo "Seeding E2E fare corrections queue..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-fare-corrections.sql"
+echo "Seeding E2E finance dual-control fixture..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-finance-dual-control.sql"
 chmod +x "$ADMIN/e2e/seed-verification-storage.sh"
 "$ADMIN/e2e/seed-verification-storage.sh"
 
