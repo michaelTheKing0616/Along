@@ -862,9 +862,9 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 18964f2. Live-device map: deferred to P1-G-01.
 
 ## [Phase 4 / P4-E-01] Agent settlement page
-- Status: IN PROGRESS
+- Status: PASS
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: /agent page gated on settlement_agents.profile_id; confirm_agent_settlement; Playwright redeem + replay + admin forbidden 2/2.
+- Reviewer verdict: PASS — independently re-ran Playwright 2/2. digital_enabled unchanged. No QR/CRM.
 - Rework count: 0
-- Notes/escalations: confirm_agent_settlement UI. No admin_role=agent — gate on settlement_agents.profile_id. Playwright: redeem + replay rejected. Live-device: deferred to P1-G-01.
+- Notes/escalations: Merged 5328abb. Live-device: deferred to P1-G-01. Next: P4-A-08 (subaccounts). P4-E-02 remains a human legal stop after A-08/A-09.
