@@ -33,6 +33,13 @@ export const ROUTE_ALLOWLIST: Record<string, readonly AdminRole[]> = {
 
 const PUBLIC_PATHS = new Set(['/sign-in', '/mfa', '/unauthorized']);
 
+/** Settlement-agent surface (P4-E-01) — not admin console. */
+export const AGENT_PATH = '/agent';
+
+export function isAgentPath(pathname: string): boolean {
+  return pathname === AGENT_PATH || pathname.startsWith(`${AGENT_PATH}/`);
+}
+
 export function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.has(pathname);
 }

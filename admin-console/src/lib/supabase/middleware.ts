@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Database } from '@along/contracts/db.types';
 import {
   getConsoleSegment,
+  isAgentPath,
   isPublicPath,
   isRoleAllowedForSegment,
 } from '@/lib/authz/routes';
@@ -44,6 +45,10 @@ export async function updateSession(request: NextRequest) {
     url.pathname = '/sign-in';
     url.searchParams.set('next', pathname);
     return NextResponse.redirect(url);
+  }
+
+  if (isAgentPath(pathname)) {
+    return supabaseResponse;
   }
 
   const { data: isAdminUser } = await supabase.rpc('is_admin');
