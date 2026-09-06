@@ -117,7 +117,9 @@ with required_global as (
     'payments.qr_resolve_rate_per_min',
     'payments.unattributed_lookback_hours',
     'payments.dynamic_qr_ttl_s',
-    'rating.tags'
+    'rating.tags',
+    'settlement.agent_code_ttl_min',
+    'settlement.initiate_ttl_min'
   ]) as key
 ),
 missing_global as (

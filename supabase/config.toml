@@ -76,3 +76,4 @@ max_header_length = 4096
 
 [functions]
 # Edge Functions source: backend/functions (symlinked from supabase/functions)
+# webhooks/paystack: verify_jwt=false at deploy/serve (--no-verify-jwt); nested slug not valid in [functions.*] keys
