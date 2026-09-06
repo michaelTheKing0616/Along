@@ -57,12 +57,12 @@ export async function handlePaystackWebhook(
   }
 
   const parsed = paystackEventSchema.safeParse(parsedBody);
-  if (parsed.success && parsed.data.event === 'charge.success') {
+  if (parsed.success) {
     const reference = parsed.data.data.reference;
     const amountKobo = parsed.data.data.amount ?? 0;
     const metadata = parsed.data.data.metadata ?? {};
 
-    if (reference) {
+    if (reference && parsed.data.event === 'charge.success') {
       const { error } = await deps.service.rpc('apply_paystack_charge_success', {
         p_reference: reference,
         p_amount: amountKobo / 100,
@@ -70,6 +70,17 @@ export async function handlePaystackWebhook(
       });
       if (error) {
         console.error(JSON.stringify({ event: 'paystack_webhook_ledger_error', message: error.message }));
+      }
+    }
+
+    if (reference && parsed.data.event === 'transfer.success') {
+      const { error } = await deps.service.rpc('apply_paystack_transfer_success', {
+        p_reference: reference,
+        p_amount: amountKobo / 100,
+        p_metadata: metadata,
+      });
+      if (error) {
+        console.error(JSON.stringify({ event: 'paystack_transfer_webhook_error', message: error.message }));
       }
     }
   }

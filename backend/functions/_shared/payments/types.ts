@@ -40,7 +40,23 @@ export type TripPaymentInitiateResult = {
   expiresAt: string;
 };
 
+export type PayoutTransferParams = {
+  payoutId: string;
+  amount: number;
+  currency: string;
+  recipientCode: string;
+  reference: string;
+  reason?: string;
+};
+
+export type PayoutTransferResult = {
+  providerReference: string;
+  transferCode?: string;
+  status: 'pending' | 'success' | 'failed';
+};
+
 export interface PaymentProvider {
   initiateSettlement(params: SettlementInitiateParams): Promise<SettlementInitiateResult>;
   initiateTripPayment(params: TripPaymentInitiateParams): Promise<TripPaymentInitiateResult>;
+  initiatePayoutTransfer(params: PayoutTransferParams): Promise<PayoutTransferResult>;
 }

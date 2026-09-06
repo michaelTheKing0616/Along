@@ -1,5 +1,7 @@
 import type {
   PaymentProvider,
+  PayoutTransferParams,
+  PayoutTransferResult,
   SettlementInitiateParams,
   SettlementInitiateResult,
   TripPaymentInitiateParams,
@@ -18,6 +20,16 @@ type PaystackInitResponse = {
     account_number?: string;
     account_name?: string;
     bank?: { name?: string };
+  };
+};
+
+type PaystackTransferResponse = {
+  status?: boolean;
+  message?: string;
+  data?: {
+    reference?: string;
+    transfer_code?: string;
+    status?: string;
   };
 };
 
@@ -155,6 +167,44 @@ export function createPaystackProvider(
       }
 
       return result;
+    },
+
+    async initiatePayoutTransfer(
+      params: PayoutTransferParams,
+    ): Promise<PayoutTransferResult> {
+      const amountKobo = Math.round(params.amount * 100);
+
+      const res = await fetchImpl('https://api.paystack.co/transfer', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          source: 'balance',
+          amount: amountKobo,
+          currency: params.currency,
+          reference: params.reference,
+          recipient: params.recipientCode,
+          reason: params.reason ?? 'Along driver balance payout',
+          metadata: {
+            payout_id: params.payoutId,
+          },
+        }),
+      });
+
+      const payload = (await res.json()) as PaystackTransferResponse;
+      if (!res.ok || !payload.status || !payload.data?.reference) {
+        throw new Error(payload.message ?? 'Paystack transfer failed');
+      }
+
+      const transferStatus = payload.data.status === 'success' ? 'success' : 'pending';
+
+      return {
+        providerReference: payload.data.reference ?? params.reference,
+        transferCode: payload.data.transfer_code,
+        status: transferStatus,
+      };
     },
   };
 }

@@ -1,6 +1,8 @@
 export type {
   PaymentProvider,
   PaymentMethodPref,
+  PayoutTransferParams,
+  PayoutTransferResult,
   SettlementChannel,
   SettlementInitiateParams,
   SettlementInitiateResult,
