@@ -822,9 +822,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged 433bcf8. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-A-06] Reconciliation + risk scores
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00041 — reconcile_cancelled_trips, undeclared_extension, compute_risk_scores, driver_risk_scores. TS-INTEG-01..05 9/9 PASS. FM13: flags do not change standing.
+- Reviewer verdict: PASS WITH NOTES — independently re-ran TS-INTEG-01..05 + TS-LEDGER-07. Score formula matches §13. TS-INTEG-06 correctly deferred.
+- Rework count: 0
+- Notes/escalations: Merged 58af5e0. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-A-07] Dual-control adjustments + payouts
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00041. trip_reconciliation_flags schema already exists (00037). Flags MUST NOT call transition_standing (FM13). TS-INTEG-06 is P4-D-01.
+- Notes/escalations: Next migration 00042. ledger.dual_control_threshold already 20000. Admin UI is P4-D-01 — SQL + RPCs only. Do not flip digital_enabled.
