@@ -15,13 +15,6 @@ Deno.serve(async (req) => {
     return errorResponse('VALIDATION', 'Method not allowed', 405, { request_id: rid });
   }
 
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
-    return errorResponse('UNAUTHENTICATED', 'Missing authorization header', 401, {
-      request_id: rid,
-    });
-  }
-
   let body: unknown;
   try {
     body = await req.json();
@@ -34,8 +27,17 @@ Deno.serve(async (req) => {
     return errorResponse('VALIDATION', parsed.error.message, 400, { request_id: rid });
   }
 
+  if (parsed.data.channel !== 'web') {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return errorResponse('UNAUTHENTICATED', 'Missing authorization header', 401, {
+        request_id: rid,
+      });
+    }
+  }
+
   try {
-    return await handlePaymentInitiateDefault(parsed.data, authHeader);
+    return await handlePaymentInitiateDefault(parsed.data, req.headers.get('Authorization'));
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal error';
     return errorResponse('VALIDATION', message, 500, { request_id: rid });

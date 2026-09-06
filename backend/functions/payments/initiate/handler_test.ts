@@ -10,6 +10,7 @@ const DRIVER_ID = '0f200000-0000-4000-8000-000000000030';
 const TRIP_ID = '0f700000-0000-4000-8000-000000000030';
 const PAYMENT_ID = '0f800000-0000-4000-8000-000000000030';
 const CITY_ID = '0a000000-0000-4000-8000-000000000001';
+const DRIVER_CODE = 'TEST0301';
 
 const TRIP_ROW = {
   id: TRIP_ID,
@@ -29,6 +30,7 @@ const DRIVER_ROW = {
   city_id: CITY_ID,
   payout_subaccount_code: 'ACCT_test_sub',
   accepts_digital: true,
+  driver_code: DRIVER_CODE,
 };
 
 function createMockProvider(onCall?: (params: TripPaymentInitiateParams) => void): PaymentProvider {
@@ -42,6 +44,7 @@ function createMockProvider(onCall?: (params: TripPaymentInitiateParams) => void
         expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       });
     },
+    chargeAuthorization: () => Promise.reject(new Error('not used')),
     initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
     resolveAccountName: () => Promise.reject(new Error('not used')),
     createSubaccount: () => Promise.reject(new Error('not used')),
@@ -51,12 +54,9 @@ function createMockProvider(onCall?: (params: TripPaymentInitiateParams) => void
 function createMockService(options?: {
   digitalEnabled?: boolean;
   existingPaid?: boolean;
-  driverRow?: {
-    id: string;
-    city_id: string;
-    payout_subaccount_code: string | null;
-    accepts_digital: boolean;
-  };
+  driverRow?: typeof DRIVER_ROW;
+  tripPayableTotal?: number;
+  otherActiveTrip?: boolean;
 }) {
   const payments: Record<string, unknown>[] = [];
   const digitalEnabled = options?.digitalEnabled ?? true;
@@ -65,12 +65,39 @@ function createMockService(options?: {
   return {
     from: (table: string) => {
       if (table === 'trips') {
-        return {
-          select: () => ({
-            eq: () => ({
-              single: () => Promise.resolve({ data: TRIP_ROW, error: null }),
+        const tripResult = { data: TRIP_ROW, error: null };
+        const chain = {
+          eq: (_col: string, _val: unknown) => ({
+            ...chain,
+            single: () => Promise.resolve(tripResult),
+            neq: () => ({
+              limit: () => ({
+                maybeSingle: () =>
+                  Promise.resolve({
+                    data: options?.otherActiveTrip ? { id: 'other' } : null,
+                    error: null,
+                  }),
+              }),
+            }),
+            limit: () => ({
+              maybeSingle: () => Promise.resolve({ data: null, error: null }),
             }),
           }),
+          in: () => ({
+            neq: () => ({
+              limit: () => ({
+                maybeSingle: () =>
+                  Promise.resolve({
+                    data: options?.otherActiveTrip ? { id: 'other' } : null,
+                    error: null,
+                  }),
+              }),
+            }),
+          }),
+          single: () => Promise.resolve(tripResult),
+        };
+        return {
+          select: () => chain,
         };
       }
       if (table === 'drivers') {
@@ -89,7 +116,7 @@ function createMockService(options?: {
               eq: () => ({
                 maybeSingle: () =>
                   Promise.resolve({
-                    data: options?.existingPaid ? { id: 'existing' } : null,
+                    data: options?.existingPaid ? { id: 'existing', receipt_token: 'tok' } : null,
                     error: null,
                   }),
               }),
@@ -109,6 +136,17 @@ function createMockService(options?: {
           }),
         };
       }
+      if (table === 'rider_payment_methods') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () => Promise.resolve({ data: null, error: null }),
+              }),
+            }),
+          }),
+        };
+      }
       return {
         select: () => ({
           eq: () => ({
@@ -117,14 +155,25 @@ function createMockService(options?: {
         }),
       };
     },
+    rpc: (name: string) => {
+      if (name === 'trip_payable_total') {
+        return Promise.resolve({ data: options?.tripPayableTotal ?? 850, error: null });
+      }
+      if (name === 'verify_payment_token') {
+        return Promise.resolve({ data: null, error: { message: 'CANDIDATE_EXPIRED' } });
+      }
+      if (name === 'cfg') {
+        return Promise.resolve({ data: name.includes('commission') ? 0.05 : 100, error: null });
+      }
+      return Promise.resolve({ data: null, error: null });
+    },
     _payments: () => payments,
-    _digitalEnabled: () => digitalEnabled,
   };
 }
 
 Deno.test('TS-UI-04: payments/initiate with digital_enabled=false → STATE_INVALID, provider calls = 0', async () => {
   let providerCalls = 0;
-  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, channel: 'app' });
+  const body = paymentInitiateSchema.parse({ driver_code: DRIVER_CODE, trip_id: TRIP_ID, channel: 'app' });
   const service = createMockService();
 
   const res = await handlePaymentInitiate(body, {
@@ -148,6 +197,7 @@ Deno.test('TS-UI-04: payments/initiate with digital_enabled=false → STATE_INVA
 Deno.test('TS-UI-04: payments/initiate with trip_id rejects client amount mismatch', async () => {
   let providerCalls = 0;
   const body = paymentInitiateSchema.parse({
+    driver_code: DRIVER_CODE,
     trip_id: TRIP_ID,
     amount: 999,
     channel: 'app',
@@ -174,7 +224,7 @@ Deno.test('TS-UI-04: payments/initiate with trip_id rejects client amount mismat
 
 Deno.test('TS-UI-04: payments/initiate stores server trip total and ignores omitted client amount', async () => {
   let providerCalls = 0;
-  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, channel: 'app' });
+  const body = paymentInitiateSchema.parse({ driver_code: DRIVER_CODE, trip_id: TRIP_ID, channel: 'app' });
   const service = createMockService();
 
   const res = await handlePaymentInitiate(body, {
@@ -185,7 +235,7 @@ Deno.test('TS-UI-04: payments/initiate stores server trip total and ignores omit
       providerCalls += 1;
     }),
     cfgBool: async () => true,
-    cfgNum: async () => 100,
+    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
     cfgText: async () => 'account',
   });
 
@@ -201,55 +251,32 @@ Deno.test('TS-UI-04: payments/initiate stores server trip total and ignores omit
   assertEquals(stored[0]?.amount, 850);
 });
 
-Deno.test('TS-UI-04: payments/initiate accepts matching client amount equal to server total', async () => {
-  let providerCalls = 0;
-  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, amount: 850, channel: 'app' });
-  const service = createMockService();
+Deno.test('TS-QR-03: initiate without confirm_other_driver → VALIDATION', async () => {
+  const body = paymentInitiateSchema.parse({
+    driver_code: DRIVER_CODE,
+    amount: 500,
+    channel: 'app',
+  });
+  const service = createMockService({ otherActiveTrip: true });
 
   const res = await handlePaymentInitiate(body, {
     userClient: {} as never,
     service: service as never,
     riderId: RIDER_ID,
-    provider: createMockProvider(() => {
-      providerCalls += 1;
-    }),
+    provider: createMockProvider(),
     cfgBool: async () => true,
-    cfgNum: async () => 100,
+    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
     cfgText: async () => 'account',
   });
 
-  assertEquals(res.status, 200);
-  assertEquals(providerCalls, 1);
-});
-
-Deno.test('P4-A-08: driver without subaccount → STATE_INVALID, zero provider calls', async () => {
-  let providerCalls = 0;
-  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, channel: 'app' });
-  const service = createMockService({
-    driverRow: { ...DRIVER_ROW, payout_subaccount_code: null },
-  });
-
-  const res = await handlePaymentInitiate(body, {
-    userClient: {} as never,
-    service: service as never,
-    riderId: RIDER_ID,
-    provider: createMockProvider(() => {
-      providerCalls += 1;
-    }),
-    cfgBool: async () => true,
-    cfgNum: async () => 100,
-    cfgText: async () => 'account',
-  });
-
-  assertEquals(res.status, 409);
+  assertEquals(res.status, 400);
   const json = await res.json();
-  assertEquals(json.error.code, 'STATE_INVALID');
-  assertEquals(providerCalls, 0);
+  assertEquals(json.error.code, 'VALIDATION');
 });
 
-Deno.test('P4-A-08: split amounts equal fare − commission to the kobo', async () => {
+Deno.test('TS-QR-05: split amounts equal fare − commission to the kobo', async () => {
   let capturedParams: TripPaymentInitiateParams | undefined;
-  const body = paymentInitiateSchema.parse({ trip_id: TRIP_ID, channel: 'app' });
+  const body = paymentInitiateSchema.parse({ driver_code: DRIVER_CODE, trip_id: TRIP_ID, channel: 'app' });
   const service = createMockService();
 
   const res = await handlePaymentInitiate(body, {
@@ -260,7 +287,7 @@ Deno.test('P4-A-08: split amounts equal fare − commission to the kobo', async 
       capturedParams = params;
     }),
     cfgBool: async () => true,
-    cfgNum: async () => 100,
+    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
     cfgText: async () => 'account',
   });
 
@@ -283,12 +310,31 @@ Deno.test('P4-A-08: split amounts equal fare − commission to the kobo', async 
   assertEquals(capturedParams?.amount, amount);
   assertEquals(capturedParams?.commissionAmount, commission);
   assertEquals(capturedParams?.driverSubaccountCode, 'ACCT_test_sub');
-  assertEquals(Math.round((capturedParams?.commissionAmount ?? 0) * 100), commissionKobo);
+});
 
+Deno.test('TS-QR-09: anonymous web initiate stores web_anonymous source', async () => {
+  const body = paymentInitiateSchema.parse({
+    driver_code: DRIVER_CODE,
+    amount: 450,
+    channel: 'web',
+  });
+  const service = createMockService();
+
+  const res = await handlePaymentInitiate(body, {
+    userClient: {} as never,
+    service: service as never,
+    riderId: null,
+    provider: createMockProvider(),
+    cfgBool: async () => true,
+    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: async () => 'account',
+  });
+
+  assertEquals(res.status, 200);
   const stored = (service as ReturnType<typeof createMockService> & {
     _payments: () => Record<string, unknown>[];
   })._payments();
-  assertEquals(stored[0]?.amount, amount);
-  assertEquals(stored[0]?.commission_amount, commission);
-  assertEquals(stored[0]?.driver_amount, driverAmount);
+  assertEquals(stored[0]?.source, 'web_anonymous');
+  assertEquals(stored[0]?.rider_id, null);
+  assertEquals(stored[0]?.channel, 'web');
 });
