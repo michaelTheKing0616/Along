@@ -1,3 +1,4 @@
+import 'package:along_core/along_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,9 @@ import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/transfer/presentation/transfer_screen.dart';
 import 'package:mobile_rider/features/pricing/presentation/pricing_sheet_screen.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
+import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/meet_vehicle_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
@@ -114,6 +118,27 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final args = state.extra as WayfindingRouteArgs;
           return WayfindingScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.meetVehicle,
+        builder: (context, state) {
+          final trip = state.extra as TripSummary;
+          return MeetVehicleScreen(trip: trip);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.naMe,
+        builder: (context, state) {
+          final args = state.extra as NaMeRouteArgs;
+          return NaMeScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.activeTrip,
+        builder: (context, state) {
+          final trip = state.extra as TripSummary;
+          return ActiveTripScreen(trip: trip);
         },
       ),
     ],

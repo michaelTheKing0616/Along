@@ -61,6 +61,9 @@ class _RequestingScreenState extends ConsumerState<RequestingScreen>
       if (next.cancelled && prev?.cancelled != true) {
         _returnToOptions();
       }
+      if (next.accepted && prev?.accepted != true) {
+        context.go(AppRoutes.meetVehicle, extra: next.trip);
+      }
     });
 
     final modeLabel = _modeFromTrip(widget.trip);

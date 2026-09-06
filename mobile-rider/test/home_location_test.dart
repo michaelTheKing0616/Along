@@ -154,6 +154,7 @@ class _ConfigurableFakeSupabase extends FakeAlongSupabase {
         'cells': ambientCells,
       };
     }
-    return super.rpc(fn, params: params);
+    final result = await super.rpc(fn, params: params);
+    return result as Map<String, dynamic>;
   }
 }

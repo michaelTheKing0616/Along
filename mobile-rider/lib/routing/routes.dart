@@ -15,4 +15,7 @@ abstract final class AppRoutes {
   static const requesting = '/requesting';
   static const transfer = '/transfer';
   static const wayfinding = '/wayfinding';
+  static const meetVehicle = '/meet-vehicle';
+  static const naMe = '/na-me';
+  static const activeTrip = '/active-trip';
 }

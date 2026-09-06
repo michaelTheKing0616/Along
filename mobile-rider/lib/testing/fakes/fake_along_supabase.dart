@@ -47,6 +47,9 @@ class FakeAlongSupabase implements AlongSupabase {
 
   int planTripInvokeCount = 0;
   int requestTripInvokeCount = 0;
+  int tripSnapshotCallCount = 0;
+  int markBoardedInvokeCount = 0;
+  List<Map<String, dynamic>> tripSnapshotSequence = const [];
   Map<String, dynamic>? lastRequestTripParams;
 
   User? _user;
@@ -116,7 +119,21 @@ class FakeAlongSupabase implements AlongSupabase {
       return requestTripResponse ?? {};
     }
     if (fn == 'trip_snapshot') {
+      tripSnapshotCallCount++;
+      if (tripSnapshotSequence.isNotEmpty) {
+        final index = tripSnapshotCallCount - 1;
+        final clamped = index.clamp(0, tripSnapshotSequence.length - 1);
+        return tripSnapshotSequence[clamped];
+      }
       return requestTripResponse ?? {};
+    }
+    if (fn == 'mark_boarded') {
+      markBoardedInvokeCount++;
+      final base = requestTripResponse ?? {};
+      return {
+        ...base,
+        'status': 'boarded',
+      };
     }
     if (fn == 'cancel_trip') {
       return {};
@@ -272,6 +289,42 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_type': 'global',
         'scope_id': '*',
         'value': '25',
+      },
+      {
+        'key': 'realtime.heartbeat_stale_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '15',
+      },
+      {
+        'key': 'realtime.live_paused_after_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '30',
+      },
+      {
+        'key': 'presence.offline_after_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '180',
+      },
+      {
+        'key': 'motion.naMe.strobe_ms',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '250',
+      },
+      {
+        'key': 'motion.naMe.cycle_duration_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '8',
+      },
+      {
+        'key': 'sos.hold_duration_ms',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '600',
       },
     ];
 

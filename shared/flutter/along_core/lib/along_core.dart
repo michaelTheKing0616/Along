@@ -21,6 +21,8 @@ export 'src/models/load_warning.dart';
 export 'src/models/itinerary.dart';
 export 'src/models/journey.dart';
 export 'src/models/na_me_pairing.dart';
+export 'src/models/na_me_visual.dart';
+export 'src/models/trip_live.dart';
 export 'src/models/plan_metrics.dart';
 export 'src/models/plan_result.dart';
 export 'src/models/transfer_context.dart';

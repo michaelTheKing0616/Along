@@ -1,3 +1,6 @@
+import 'package:along_core/along_core.dart';
+import 'package:along_data/along_data.dart';
+
 /// Sample `plan-trip` payload for rider widget tests (P1-B-03).
 Map<String, dynamic> samplePlanTripResponse({
   String candidateId = 'cand-direct-1',
@@ -289,3 +292,45 @@ Map<String, dynamic> sampleRequestTripResponse({
       'expires_at': expiresAt,
       'timestamps': {},
     };
+
+/// Sample accepted trip with live driver position (P3-B-01).
+Map<String, dynamic> sampleAcceptedTripResponse({
+  String tripId = 'trip-accepted-1',
+  String status = 'accepted',
+  int? heading,
+  DateTime? liveAsOf,
+}) {
+  final asOf = (liveAsOf ?? DateTime.utc(2026, 9, 5, 15, 0)).toIso8601String();
+  return {
+    ...sampleRequestTripResponse(tripId: tripId),
+    'status': status,
+    'driver': {
+      'display_name': 'Musa',
+      'rating': 4.8,
+      'trips_completed': 320,
+    },
+    'vehicle': {
+      'plate_number': 'ABC-123-XY',
+      'color': 'Silver',
+      'make_model': 'Toyota Corolla',
+      'seat_capacity': 4,
+    },
+    'extension': {'eta_minutes': 2},
+    'live': {
+      'as_of': asOf,
+      'driver': {
+        'lat': 9.012,
+        'lng': 7.401,
+        'heading': heading ?? 45,
+        'speed_mps': 8.5,
+        'ts': asOf,
+      },
+    },
+  };
+}
+
+/// Builds a [TripSummary] from fixture JSON for widget tests.
+TripSummary tripSummaryFromFixture(Map<String, dynamic> json) {
+  final view = TripView.fromJson(json);
+  return DomainMappers.tripFromDto(view, raw: json);
+}

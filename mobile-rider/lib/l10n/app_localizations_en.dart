@@ -195,7 +195,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pricingDeclined => 'Offer declined';
 
   @override
-  String pricingDriverOffer(String amount) => 'Driver offered $amount';
+  String pricingDriverOffer(String amount) {
+    return 'Driver offered $amount';
+  }
 
   @override
   String get hailSearchTitle => 'Where are you going?';
@@ -365,4 +367,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wayfindingNoSteps => 'No steps available';
+
+  @override
+  String meetVehicleArrivingIn(int minutes) {
+    return 'Arriving in ~$minutes min';
+  }
+
+  @override
+  String meetVehicleWalkTo(int minutes, String park) {
+    return 'Walk $minutes min to $park';
+  }
+
+  @override
+  String meetVehicleNaMeHint(String label) {
+    return 'Show this to your driver — $label';
+  }
+
+  @override
+  String get meetVehicleDriverSignalLost => 'Driver signal lost';
+
+  @override
+  String get meetVehicleLivePaused => 'Live updates paused';
+
+  @override
+  String get meetVehicleShare => 'Share trip';
+
+  @override
+  String get meetVehicleCancel => 'Cancel';
+
+  @override
+  String get meetVehicleBoarded => 'I\'ve boarded';
+
+  @override
+  String activeTripStatus(int minutes, String fare) {
+    return 'In transit · ETA $minutes min · $fare Standard fare';
+  }
+
+  @override
+  String get activeTripExtend => 'Extend';
+
+  @override
+  String get activeTripShare => 'Share';
+
+  @override
+  String get activeTripReport => 'Report';
+
+  @override
+  String get sharePlaceholder => 'Share trip — coming in Phase 5';
+
+  @override
+  String get sosPlaceholder => 'SOS — coming in Phase 5';
+
+  @override
+  String get extendPlaceholder => 'Extend trip — coming in Phase 5';
+
+  @override
+  String get reportPlaceholder => 'Report incident — coming in Phase 5';
 }

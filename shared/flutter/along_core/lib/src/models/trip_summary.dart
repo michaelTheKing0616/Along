@@ -1,6 +1,7 @@
 import 'package:along_core/src/enums/trip_status.dart';
 import 'package:along_core/src/models/fare_quote.dart';
 import 'package:along_core/src/models/na_me_pairing.dart';
+import 'package:along_core/src/models/trip_live.dart';
 import 'package:along_core/src/models/trip_load.dart';
 import 'package:along_core/src/models/trip_party.dart';
 import 'package:along_core/src/models/trip_stop.dart';
@@ -28,6 +29,21 @@ class TripSummary {
     this.womenOnly = false,
     this.dispatchAttempt = 1,
     this.isRoamingHail = false,
+    this.driver = const DriverPreview(
+      displayName: '',
+      rating: 0,
+      tripCount: 0,
+    ),
+    this.vehicle = const VehiclePreview(
+      plateNumber: '',
+      color: '',
+      makeModel: '',
+      seatCapacity: 4,
+    ),
+    this.live,
+    this.modeCode = 'car',
+    this.modeLabel = 'Car',
+    this.etaMinutes,
   });
 
   final String tripId;
@@ -45,6 +61,12 @@ class TripSummary {
   final bool womenOnly;
   final int dispatchAttempt;
   final bool isRoamingHail;
+  final DriverPreview driver;
+  final VehiclePreview vehicle;
+  final TripLiveSnapshot? live;
+  final String modeCode;
+  final String modeLabel;
+  final int? etaMinutes;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||

@@ -17,8 +17,8 @@ class TripsRepository {
   Future<TripSummary> requestTrip(dto.RequestTripRequest request) async {
     try {
       final raw = await _gateway.rpc('request_trip', params: request.toJson());
-      final view = dto.TripView.fromJson(raw);
-      final summary = DomainMappers.tripFromDto(view);
+      final view = dto.TripView.fromJson(raw as Map<String, dynamic>);
+      final summary = DomainMappers.tripFromDto(view, raw: raw);
       await _cacheTrip(view);
       await _persistNaMePairing(summary);
       return summary;
@@ -33,9 +33,12 @@ class TripsRepository {
         'trip_snapshot',
         params: dto.TripSnapshotRequest(p_trip_id: tripId).toJson(),
       );
-      final view = dto.TripView.fromJson(raw);
+      final map = raw as Map<String, dynamic>;
+      final view = dto.TripView.fromJson(map);
       await _cacheTrip(view);
-      return DomainMappers.tripFromDto(view);
+      final summary = DomainMappers.tripFromDto(view, raw: map);
+      await _persistNaMePairing(summary);
+      return summary;
     } catch (e) {
       throw mapSupabaseError(e);
     }
@@ -68,7 +71,7 @@ class TripsRepository {
         ).toJson(),
       );
       final view = dto.TripView.fromJson(raw as Map<String, dynamic>);
-      final summary = DomainMappers.tripFromDto(view);
+      final summary = DomainMappers.tripFromDto(view, raw: raw);
       await _cacheTrip(view);
       await _persistNaMePairing(summary);
       return summary;
@@ -81,10 +84,36 @@ class TripsRepository {
     final rows = await _db.select(_db.tripCache).get();
     for (final row in rows) {
       final map = jsonDecode(row.payloadJson) as Map<String, dynamic>;
-      final summary = DomainMappers.tripFromDto(dto.TripView.fromJson(map));
+      final view = dto.TripView.fromJson(map);
+      final summary = DomainMappers.tripFromDto(view, raw: map);
       if (summary.isActive) return summary;
     }
     return null;
+  }
+
+  Future<NaMePairing?> cachedNaMePairing(String tripId) async {
+    final rows = await (_db.select(_db.kvStore)
+          ..where((t) => t.key.equals('na_me:$tripId')))
+        .get();
+    if (rows.isEmpty) return null;
+    return NaMePairing.fromJson(
+      jsonDecode(rows.first.value) as Map<String, dynamic>,
+    );
+  }
+
+  Future<TripSummary> markBoarded(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'mark_boarded',
+        params: dto.TripSnapshotRequest(p_trip_id: tripId).toJson(),
+      );
+      final map = raw as Map<String, dynamic>;
+      final view = dto.TripView.fromJson(map);
+      await _cacheTrip(view);
+      return DomainMappers.tripFromDto(view, raw: map);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
   }
 
   Future<void> _cacheTrip(dto.TripView view) async {
