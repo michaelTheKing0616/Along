@@ -75,6 +75,8 @@ function cfgValue(key: string): unknown {
     'planner.default_wait_s': '300',
     'planner.direct_viability_factor': '1.5',
     'planner.direct_viability_slack_s': '300',
+    'planner.baseline_speed_mps': '8.33',
+    'planner.speed_profile_min_samples': '8',
     'planner.recommended_weights': '{"fare":0.4,"time":0.4,"strenuous":0.2}',
     'planner.strenuous_weights': '{"transfer":1,"walk_per_100m":0.25,"mode":0.5}',
     'load.warn_capacities':
@@ -146,6 +148,10 @@ function createMockServiceClient(
           });
         case 'insert_planner_query':
           return Promise.resolve({ data: null, error: null });
+        case 'route_leg_segment_keys':
+          return Promise.resolve({ data: [], error: null });
+        case 'segment_speed_profiles_lookup':
+          return Promise.resolve({ data: [], error: null });
         default:
           return Promise.resolve({
             data: null,
@@ -297,6 +303,8 @@ const cfg = {
   defaultWaitS: 300,
   directViabilityFactor: 1.5,
   directViabilitySlackS: 300,
+  baselineSpeedMps: 8.33,
+  speedProfileMinSamples: 8,
   recommendedWeights: { fare: 0.4, time: 0.4, strenuous: 0.2 },
   strenuousWeights: { transfer: 1, walk_per_100m: 0.25, mode: 0.5 },
   warnCapacities: {

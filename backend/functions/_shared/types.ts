@@ -88,6 +88,8 @@ export type PlannerCfg = {
   defaultWaitS: number;
   directViabilityFactor: number;
   directViabilitySlackS: number;
+  baselineSpeedMps: number;
+  speedProfileMinSamples: number;
   recommendedWeights: { fare: number; time: number; strenuous: number };
   strenuousWeights: { transfer: number; walk_per_100m: number; mode: number };
   warnCapacities: Record<string, string[]>;
@@ -101,6 +103,7 @@ export type RawDirectCandidate = {
   alight_stage_id: string;
   mode_code: string;
   route_leg_ids: string[];
+  segment_keys?: string[];
   in_vehicle_time_estimate_s: number;
   avg_wait_time_estimate_s: number;
   supply: Record<string, unknown>;
