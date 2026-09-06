@@ -684,9 +684,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: Merged 3f47c9a.
 
 ## [Phase 2 / P2-D-01] Admin fare corrections queue
-- Status: IN PROGRESS
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-05
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: A-06 /corrections + admin_review_fare_correction; Playwright A-06 1/1 (approve → confirmation + crowd_verified).
+- Reviewer verdict: PASS WITH NOTES
 - Rework count: 0
-- Notes/escalations: Playwright approve → confirmation + possible promotion. Skipped Playwright is FAIL.
+- Notes/escalations: check_playwright.sh still loses to .env.local remote URLs if sourced after local exports. Merged 651663e.
+
+## [Phase 2 / Gate] NOT OPEN — P2-E-02 still BLOCKED
+**Date:** 2026-09-05
+All other Phase 2 implementation tasks are PASS / PASS WITH NOTES. Phase 2 gate Reviewer not spawned: P2-E-02 is automated (not a human row) and is not PASS. Phase 3 not started. P1-G-01 remains the hard gate before Phase 3 once E-02 is PASS and corridor evidence is attached.
+
+Remaining before Phase 2 gate can run:
+- P2-E-02 — booted Android emulator + PATROL_HAS_EMULATOR=true; full Xcode.app or git remote + gh for ios-compile. Plumbing on `task/p2-e-02` @ eeabf0a (unmerged).
+**Escalations:** none besides the two toolchain items already recorded.
