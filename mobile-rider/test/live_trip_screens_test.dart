@@ -547,6 +547,41 @@ void main() {
       expect(fakeSupabase.respondExtensionInvokeCount, 1);
       expect(fakeSupabase.lastRespondExtensionParams?['p_response'], 'accept');
     });
+
+    test('resolvePendingExtension prefers TripView.extension over table poll',
+        () async {
+      final trip = tripSummaryFromFixture(sampleTripWithPendingExtension());
+      final proposal = await container
+          .read(tripsRepositoryProvider)
+          .resolvePendingExtension(trip);
+
+      expect(proposal?.extensionId, 'ext-view-1');
+      expect(proposal?.destinationName, 'Wuse Market');
+    });
+
+    testWidgets('extend sheet embeds R-06 destination search', (tester) async {
+      final trip = tripSummaryFromFixture(
+        sampleAcceptedTripResponse(status: 'in_transit'),
+      );
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: Builder(
+            builder: (context) => AlongButton(
+              label: 'Extend',
+              onPressed: () => ExtendTripSheet.show(context, trip: trip),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Extend'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('destination_search_field')), findsOneWidget);
+      expect(find.byKey(const Key('extend_place_Wuse Market')), findsNothing);
+    });
   });
 
   group('R-22 trips history', () {

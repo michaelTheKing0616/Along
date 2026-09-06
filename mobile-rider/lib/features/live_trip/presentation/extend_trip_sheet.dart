@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
+import 'package:mobile_rider/features/search/presentation/destination_search_panel.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
-/// R-15 Extend trip — rider-initiated search/stage pick + driver proposal accept.
+/// R-15 Extend trip — rider-initiated R-06 search + driver proposal accept.
 class ExtendTripSheet extends ConsumerStatefulWidget {
   const ExtendTripSheet({
     super.key,
@@ -36,28 +37,22 @@ class ExtendTripSheet extends ConsumerStatefulWidget {
 }
 
 class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
-  final _controller = TextEditingController();
   ProposeExtensionResult? _preview;
   String? _destinationName;
   Map<String, dynamic>? _newAlight;
   bool _busy = false;
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _previewExtension(String name, Map<String, dynamic> alight) async {
+  Future<void> _previewExtension(DestinationPick pick) async {
     setState(() {
       _busy = true;
-      _destinationName = name;
-      _newAlight = alight;
+      _destinationName = pick.name;
+      _newAlight = pick.toNewAlightPayload();
+      _preview = null;
     });
     try {
       final result = await ref.read(tripsRepositoryProvider).proposeExtension(
             tripId: widget.trip.tripId,
-            newAlight: alight,
+            newAlight: _newAlight!,
           );
       if (mounted) setState(() => _preview = result);
     } finally {
@@ -73,7 +68,6 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final places = ref.watch(_extendPlacesProvider);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -83,21 +77,10 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SearchField(
-              variant: SearchFieldVariant.full,
+            DestinationSearchPanel(
+              embedded: true,
               hint: l10n.extendTripSearchHint,
-              controller: _controller,
-              onChanged: (_) => setState(() => _preview = null),
-            ),
-            const SizedBox(height: AlongSpace.s12),
-            ...places.map(
-              (place) => ListTile(
-                key: Key('extend_place_${place.name}'),
-                title: Text(place.name),
-                onTap: _busy
-                    ? null
-                    : () => _previewExtension(place.name, place.alight),
-              ),
+              onDestinationSelected: _busy ? (_) {} : _previewExtension,
             ),
             if (_preview != null) ...[
               const SizedBox(height: AlongSpace.s16),
@@ -131,36 +114,6 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
     );
   }
 }
-
-class _ExtendPlace {
-  const _ExtendPlace({required this.name, required this.alight});
-
-  final String name;
-  final Map<String, dynamic> alight;
-}
-
-final _extendPlacesProvider = Provider<List<_ExtendPlace>>((ref) {
-  return const [
-    _ExtendPlace(
-      name: 'Wuse Market',
-      alight: {
-        'stage_id': 's-wuse',
-        'name': 'Wuse Market',
-        'lat': 9.07,
-        'lng': 7.48,
-      },
-    ),
-    _ExtendPlace(
-      name: 'Area 1 Park',
-      alight: {
-        'stage_id': 's-area1',
-        'name': 'Area 1 Park',
-        'lat': 9.05,
-        'lng': 7.45,
-      },
-    ),
-  ];
-});
 
 /// Incoming driver extension proposal — 1-tap accept (R-15).
 class IncomingExtensionSheet extends ConsumerWidget {

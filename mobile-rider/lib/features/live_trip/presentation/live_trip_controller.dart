@@ -111,10 +111,11 @@ class LiveTripController extends FamilyNotifier<LiveTripState, LiveTripArgs> {
     try {
       final repo = ref.read(tripsRepositoryProvider);
       final summary = await repo.tripSnapshot(arg.tripId);
-      final pendingExtension = summary.status == TripStatus.inTransit ||
-              summary.status == TripStatus.boarded
-          ? await repo.pendingExtension(arg.tripId)
-          : null;
+      TripExtensionProposal? pendingExtension;
+      if (summary.status == TripStatus.inTransit ||
+          summary.status == TripStatus.boarded) {
+        pendingExtension = await repo.resolvePendingExtension(summary);
+      }
       final now = ref.read(clockProvider).now();
       final LiveTripConfig config =
           _config ?? await ref.read(liveTripConfigProvider.future);

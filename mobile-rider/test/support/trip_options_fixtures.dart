@@ -329,6 +329,22 @@ Map<String, dynamic> sampleAcceptedTripResponse({
   };
 }
 
+/// Trip snapshot with a driver-initiated pending extension (TripView.extension).
+Map<String, dynamic> sampleTripWithPendingExtension({
+  String tripId = 'trip-accepted-1',
+}) {
+  return {
+    ...sampleAcceptedTripResponse(tripId: tripId, status: 'in_transit'),
+    'extension': {
+      'extension_id': 'ext-view-1',
+      'status': 'proposed',
+      'proposed_by': 'driver',
+      'destination_name': 'Wuse Market',
+      'fare_delta': {'amount': '150.00', 'currency': 'NGN'},
+    },
+  };
+}
+
 /// Builds a [TripSummary] from fixture JSON for widget tests.
 TripSummary tripSummaryFromFixture(Map<String, dynamic> json) {
   final view = TripView.fromJson(json);

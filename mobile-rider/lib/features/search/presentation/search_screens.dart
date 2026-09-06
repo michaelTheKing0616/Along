@@ -4,43 +4,21 @@ import 'package:along_data/along_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
+import 'package:mobile_rider/features/search/presentation/destination_search_panel.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 
 /// R-06 Destination search (doc 06).
-class DestinationSearchScreen extends ConsumerStatefulWidget {
+class DestinationSearchScreen extends ConsumerWidget {
   const DestinationSearchScreen({super.key});
 
   @override
-  ConsumerState<DestinationSearchScreen> createState() =>
-      _DestinationSearchScreenState();
-}
-
-class _DestinationSearchScreenState
-    extends ConsumerState<DestinationSearchScreen> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final state = ref.watch(searchControllerProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final hail = ref.watch(hailIntentProvider);
 
@@ -54,69 +32,16 @@ class _DestinationSearchScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchField(
-              variant: SearchFieldVariant.full,
-              hint: l10n.homeSearchHint,
-              controller: _controller,
-              onChanged: ref.read(searchControllerProvider.notifier).onQueryChanged,
-            ),
-            const SizedBox(height: AlongSpace.s16),
-            Text(l10n.searchRecentsTitle, style: AlongText.bodyStrong),
-            const SizedBox(height: AlongSpace.s8),
-            ...state.recents.map(
-              (recent) => ListTile(
-                key: Key('recent_${recent.label}'),
-                leading: const Icon(Icons.history_rounded),
-                title: Text(recent.label),
-                onTap: () {
-                  _startTripPlan(ref, recent.label, recent.location);
+            Expanded(
+              child: DestinationSearchPanel(
+                onDestinationSelected: (pick) {
+                  _startTripPlan(ref, pick.name, pick.location);
                   if (context.mounted) {
                     _afterDestinationSelected(context, ref);
                   }
                 },
               ),
             ),
-            if (state.isOffline)
-              Padding(
-                padding: const EdgeInsets.only(top: AlongSpace.s8),
-                child: Text(
-                  l10n.searchOfflineHint,
-                  style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                ),
-              ),
-            if (!state.isOffline && state.query.length >= 2) ...[
-              const SizedBox(height: AlongSpace.s16),
-              Text(l10n.searchResultsTitle, style: AlongText.bodyStrong),
-              const SizedBox(height: AlongSpace.s8),
-              if (state.isSearching) const LinearProgressIndicator(),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: state.results.length,
-                  itemBuilder: (context, index) {
-                    final result = state.results[index];
-                    return ListTile(
-                      key: Key('result_${result.name}'),
-                      title: Text(result.name),
-                      subtitle: Text(
-                        l10n.searchResultSubtitle(
-                          result.area,
-                          result.distanceM.round(),
-                        ),
-                      ),
-                      onTap: () async {
-                        await ref
-                            .read(searchControllerProvider.notifier)
-                            .selectPlace(result);
-                        _startTripPlan(ref, result.name, result.location);
-                        if (context.mounted) {
-                          _afterDestinationSelected(context, ref);
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
             TextButton(
               key: const Key('search_choose_on_map'),
               onPressed: () => context.push(AppRoutes.adjustPickup),

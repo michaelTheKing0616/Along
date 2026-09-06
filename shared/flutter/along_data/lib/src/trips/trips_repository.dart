@@ -259,7 +259,15 @@ class TripsRepository {
     }
   }
 
-  Future<TripExtensionProposal?> pendingExtension(String tripId) async {
+  Future<TripExtensionProposal?> resolvePendingExtension(
+    TripSummary summary,
+  ) async {
+    final fromView = summary.pendingExtension;
+    if (fromView != null && fromView.isFromDriver) return fromView;
+    return pendingExtensionFromTable(summary.tripId);
+  }
+
+  Future<TripExtensionProposal?> pendingExtensionFromTable(String tripId) async {
     try {
       final rows = await _gateway.selectRows(
         'trip_extensions',

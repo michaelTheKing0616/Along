@@ -83,10 +83,17 @@ class DomainMappers {
         message: 'Unknown trip status: ${view.status}',
       );
     }
-    final extension = raw?['extension'];
-    final etaMinutes = extension is Map<String, dynamic>
-        ? (extension['eta_minutes'] as num?)?.toInt()
-        : null;
+    final extension = raw?['extension'] ?? view.extension;
+    int? etaMinutes;
+    TripExtensionProposal? pendingExtension;
+    if (extension is Map<String, dynamic>) {
+      if (extension.containsKey('extension_id')) {
+        pendingExtension =
+            extensionProposalFromView(extension, view.trip_id);
+      } else {
+        etaMinutes = (extension['eta_minutes'] as num?)?.toInt();
+      }
+    }
     return TripSummary(
       tripId: view.trip_id,
       journeyId: view.journey_id,
@@ -107,6 +114,7 @@ class DomainMappers {
       modeCode: view.mode.code,
       modeLabel: view.mode.label,
       etaMinutes: etaMinutes,
+      pendingExtension: pendingExtension,
       dispatchAttempt: _dispatchAttemptFromTripJson(view),
       isRoamingHail: _isRoamingHailFromTripJson(view),
     );
@@ -274,6 +282,42 @@ class DomainMappers {
       ),
       tier: FareTier.fromInt((json['tier'] as num).toInt()),
       unconfirmed: json['unconfirmed'] as bool,
+    );
+  }
+
+  static TripExtensionProposal? extensionProposalFromView(
+    Map<String, dynamic> json,
+    String tripId,
+  ) {
+    final extensionId = json['extension_id'] as String?;
+    if (extensionId == null) return null;
+    if (json['status'] != 'proposed') return null;
+    final proposedBy = json['proposed_by'] as String? ?? 'driver';
+    if (proposedBy != 'driver') return null;
+
+    final destinationName = json['destination_name'] as String? ??
+        json['new_alight_name'] as String? ??
+        'New destination';
+
+    final fareDeltaJson = json['fare_delta'];
+    if (fareDeltaJson == null) return null;
+
+    Money fareDelta;
+    String currency = json['currency'] as String? ?? 'NGN';
+    if (fareDeltaJson is Map<String, dynamic>) {
+      fareDelta = moneyFromDto(dto.Money.fromJson(fareDeltaJson));
+      currency = fareDelta.currency;
+    } else {
+      fareDelta = Money.parse(fareDeltaJson.toString(), currency: currency);
+    }
+
+    return TripExtensionProposal(
+      extensionId: extensionId,
+      tripId: tripId,
+      proposedBy: proposedBy,
+      destinationName: destinationName,
+      fareDelta: fareDelta,
+      currency: currency,
     );
   }
 
