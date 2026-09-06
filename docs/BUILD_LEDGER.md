@@ -936,9 +936,25 @@ P1-G-01 still blocks Phase 7 only.
 - Notes/escalations: Flag stays false. Cash-only / flag-gated UI only. No production QR stickers. No real rider charge. Do not flip digital_enabled until counsel memo as P4-E-02 PASS AND P1-G-01 PASS. Do not start Phase 7 until P1-G-01 PASS.
 
 ## [Phase 4 / P4-B-02] Rider pay / scan / methods
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: R-27 states + R-31 typed/fake scan + R-32 methods + app_links. Flutter 20/20, Deno initiate 7/7. digital_enabled unchanged. A-09 CONFLICT payment_id absorbed.
+- Reviewer verdict: PASS WITH NOTES — TS-UI-06 MET. Notes: Save receipt missing; R-26→R-32 unlinked; no keypad Other; deep-link untested; live camera stub.
+- Rework count: 0
+- Notes/escalations: Merged 9a9aaf2. Live-device camera: deferred to P1-G-01. Follow-ups: Save receipt / R-26 link / Other keypad absorb into P5-B-01 account or later polish.
+
+## [Phase 4 / P4-A-09 follow-up] Initiate CONFLICT + expired token tests
+- Status: PASS
+- Assigned: 2026-09-06
+- Worker report summary: Absorbed in P4-B-02 — CONFLICT returns payment_id; expired HMAC pgTAP added.
+- Reviewer verdict: covered under P4-B-02 PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Closed by 9a9aaf2.
+
+## [Phase 4 / P4-C-02] Driver QR / payment request
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Flag-gated / cash-only UI. Absorb A-09 follow-ups (CONFLICT payment_id + expired token). Live-device: deferred to P1-G-01. Do not flip digital_enabled.
+- Notes/escalations: Flag-gated. No production stickers. No real rider charge. Do not flip digital_enabled. Live-device: deferred to P1-G-01.
