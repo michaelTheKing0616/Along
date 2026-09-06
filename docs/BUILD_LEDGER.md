@@ -744,9 +744,17 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 - Notes/escalations: TS-CFG-02.sql missing motion.naMe.* / sos.hold_duration_ms (in app_config_keys + 00034). Map placeholder. Merged 94b8565.
 
 ## [Phase 3 / P3-C-01] Driver manifest + active trip
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: D-15/D-16 + shared NaMeFullscreen + TripLocationPublisher; 5/5 driver widget tests. Live deferred to P1-G-01.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Manifest missing drop-off/fare/no-show rows. Location publisher untested. Merged 01a1a1c.
+
+## [Phase 3 / P3-E-01] Realtime/presence load test v1
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Live/Na Me offline observation deferred to P1-G-01. Widget/unit tests are the gate.
+- Notes/escalations: k6 on staging or honest OPEN QUESTION if secrets missing. Do not print secrets. Do not start Phase 4.
