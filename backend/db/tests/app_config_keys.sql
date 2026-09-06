@@ -23,6 +23,8 @@ with required_global as (
     'planner.dest_radius_m',
     'planner.direct_viability_factor',
     'planner.direct_viability_slack_s',
+    'planner.baseline_speed_mps',
+    'planner.speed_profile_min_samples',
     'planner.recommended_weights',
     'planner.strenuous_weights',
     'planner.heading_tolerance_deg',

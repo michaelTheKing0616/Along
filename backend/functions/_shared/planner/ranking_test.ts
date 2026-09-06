@@ -23,6 +23,8 @@ const cfg = {
   defaultWaitS: 300,
   directViabilityFactor: 1.5,
   directViabilitySlackS: 300,
+  baselineSpeedMps: 8.33,
+  speedProfileMinSamples: 8,
   recommendedWeights: { fare: 0.4, time: 0.4, strenuous: 0.2 },
   strenuousWeights: { transfer: 1, walk_per_100m: 0.25, mode: 0.5 },
   warnCapacities: {

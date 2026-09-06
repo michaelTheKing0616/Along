@@ -42,6 +42,8 @@ export async function loadPlannerCfg(
     'planner.default_wait_s',
     'planner.direct_viability_factor',
     'planner.direct_viability_slack_s',
+    'planner.baseline_speed_mps',
+    'planner.speed_profile_min_samples',
     'planner.recommended_weights',
     'planner.strenuous_weights',
     'load.warn_capacities',
@@ -58,13 +60,15 @@ export async function loadPlannerCfg(
     defaultWaitS: parseNum(values[3], 300),
     directViabilityFactor: parseNum(values[4], 1.5),
     directViabilitySlackS: parseNum(values[5], 300),
-    recommendedWeights: parseJson(values[6], { fare: 0.4, time: 0.4, strenuous: 0.2 }),
-    strenuousWeights: parseJson(values[7], {
+    baselineSpeedMps: parseNum(values[6], 8.33),
+    speedProfileMinSamples: parseNum(values[7], 8),
+    recommendedWeights: parseJson(values[8], { fare: 0.4, time: 0.4, strenuous: 0.2 }),
+    strenuousWeights: parseJson(values[9], {
       transfer: 1,
       walk_per_100m: 0.25,
       mode: 0.5,
     }),
-    warnCapacities: parseJson(values[8], {
+    warnCapacities: parseJson(values[10], {
       small: ['none'],
       medium: ['none', 'small'],
       large: ['none', 'small', 'medium'],

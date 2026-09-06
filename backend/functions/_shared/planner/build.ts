@@ -2,6 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { fallbackWalkDistanceM, walkSeconds } from '../geo.ts';
 import type { OsrmClient } from '../osrm.ts';
 import { computeMetrics, loadWarning, parkedWaitS } from './ranking.ts';
+import { calibrateInVehicleWithProfiles, resolveSegmentKeys } from './speed_profile.ts';
 import type {
   Fare,
   FareComponent,
@@ -36,6 +37,7 @@ export type RawMultiLegItinerary = {
     to_stage_id: string;
     route_leg_ids?: string[];
     in_vehicle_time_estimate_s?: number;
+    segment_keys?: string[];
     avg_wait_time_estimate_s?: number;
     fare?: { amount: number; currency: string };
   }>;
@@ -147,6 +149,17 @@ export async function buildDirectCandidates(input: {
       if (route.degraded) degraded = true;
       inVehicleS = Math.round(route.durationS * input.plannerCfg.sharedVehicleFactor);
     }
+    inVehicleS = await calibrateInVehicleWithProfiles(input.service, {
+      cityId: input.cityId,
+      baseInVehicleS: inVehicleS,
+      segmentKeys: await resolveSegmentKeys(input.service, {
+        routeId: raw.route_id,
+        fromStageId: raw.board_stage_id,
+        toStageId: raw.alight_stage_id,
+        segmentKeys: raw.segment_keys,
+      }),
+      cfg: input.plannerCfg,
+    });
 
     let waitS = raw.avg_wait_time_estimate_s ?? input.plannerCfg.defaultWaitS;
     if (raw.source === 'parked') {
@@ -348,7 +361,18 @@ export async function buildMultiLegCandidates(input: {
       currency = fareRes.currency;
       totalFareAmount += Number(fareRes.amount);
 
-      const inVehicleS = rawLeg.in_vehicle_time_estimate_s ?? 0;
+      let inVehicleS = rawLeg.in_vehicle_time_estimate_s ?? 0;
+      inVehicleS = await calibrateInVehicleWithProfiles(input.service, {
+        cityId: input.cityId,
+        baseInVehicleS: inVehicleS,
+        segmentKeys: await resolveSegmentKeys(input.service, {
+          routeId: rawLeg.route_id,
+          fromStageId: rawLeg.from_stage_id,
+          toStageId: rawLeg.to_stage_id,
+          segmentKeys: rawLeg.segment_keys,
+        }),
+        cfg: input.plannerCfg,
+      });
       const waitS = rawLeg.avg_wait_time_estimate_s ?? input.plannerCfg.defaultWaitS;
       totalInVehicleS += inVehicleS;
       totalWaitS += waitS;
