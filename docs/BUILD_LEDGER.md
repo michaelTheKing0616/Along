@@ -628,9 +628,17 @@ Answers (from spec / doc 11 — criteria not lowered):
 Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depends on P2-E-02 PASS.
 
 ## [Phase 2 / P2-A-02] Negotiation tables + RPCs + clock
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Migration 00024 RPCs + negotiation-clock Edge + Broadcast authz; pgTAP 26/26 TS-NEG-01..06; Deno clock test PASS.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Used registered key negotiation.roaming.pickup_radius_m (not doc 02's shorter name). Radius lapse needs rider_location lat/lng. Merged 4c5bfc5.
+
+## [Phase 2 / P2-A-03] Roaming hail + dispatch cascade
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Unblocks P2-A-03, P2-B-02, P2-C-01, P2-D-01.
+- Notes/escalations: Unblocks P2-B-02 and P2-C-01 (with A-02).
