@@ -3,6 +3,9 @@ import 'dart:typed_data';
 import 'package:along_core/along_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// HTTP verb for Edge function calls.
+enum AlongHttpMethod { get, post }
+
 /// Testable gateway over Supabase RPC and Edge HTTP calls.
 abstract class AlongSupabase {
   Future<dynamic> rpc(
@@ -13,6 +16,8 @@ abstract class AlongSupabase {
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
+    AlongHttpMethod method = AlongHttpMethod.post,
+    Map<String, String>? queryParameters,
   });
 
   /// Reads rows from a Supabase table (e.g. `app_config`).
@@ -79,8 +84,15 @@ class SupabaseAlongGateway implements AlongSupabase {
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
+    AlongHttpMethod method = AlongHttpMethod.post,
+    Map<String, String>? queryParameters,
   }) async {
-    final result = await _client.functions.invoke(slug, body: body ?? {});
+    final result = await _client.functions.invoke(
+      slug,
+      body: method == AlongHttpMethod.post ? (body ?? {}) : null,
+      method: method == AlongHttpMethod.get ? HttpMethod.get : HttpMethod.post,
+      queryParameters: queryParameters,
+    );
     final data = result.data;
     if (data is Map<String, dynamic>) return data;
     if (data == null) return {};

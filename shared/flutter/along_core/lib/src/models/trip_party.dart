@@ -18,12 +18,14 @@ class DriverPreview {
     required this.rating,
     required this.tripCount,
     this.photoUrl,
+    this.driverQrCode,
   });
 
   final String displayName;
   final double rating;
   final int tripCount;
   final String? photoUrl;
+  final String? driverQrCode;
 }
 
 /// Vehicle summary on Tier B trip screens (doc 03 §5 TripView.vehicle).
