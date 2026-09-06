@@ -698,3 +698,15 @@ All other Phase 2 implementation tasks are PASS / PASS WITH NOTES. Phase 2 gate 
 Remaining before Phase 2 gate can run:
 - P2-E-02 — booted Android emulator + PATROL_HAS_EMULATOR=true; full Xcode.app or git remote + gh for ios-compile. Plumbing on `task/p2-e-02` @ eeabf0a (unmerged).
 **Escalations:** none besides the two toolchain items already recorded.
+
+---
+
+## [Phase 2 / Gate] PASS WITH DEFERRED EVIDENCE — Phase 3 implementation authorised
+**Date:** 2026-09-06
+Product-owner: leave emulator / real-device / Xcode testing; keep building.
+
+1. **P2-E-02** closed: Playwright A-04 already PASS (14/14). Patrol OTP and ios-compile **move into P1-G-01**. Do not re-block the loop on them. Merge Podfile-only commits from `task/p2-e-02` if they compile-check cleanly as files; do not claim `ios-compile` green.
+2. **Phase 2 gate** = PASS WITH DEFERRED EVIDENCE. Spec §7 live transfer/sort/Pricing exit rides with P1-G-01.
+3. **Phase 3 implementation is OPEN** (P3-A-01 first). The previous "Phase 3 must not start" line is amended: Phase 3 *code* may land; the **Phase 3 gate Reviewer and all Phase 4 tasks stay closed until P1-G-01 is PASS** (corridor + Redmi + Patrol OTP + ios-compile).
+4. P3-B-01 / P3-C-01 acceptance still names live/airplane Na Me — Workers write the code and unit/widget tests; they record "live observation deferred to P1-G-01" instead of failing the task for lack of a device.
+**Escalations:** none.
