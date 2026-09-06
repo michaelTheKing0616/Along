@@ -908,3 +908,21 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Reviewer verdict: n/a
 - Rework count: 0
 - Notes/escalations: STOP. Confirm no-funds-held posture under CBN rules with split payments; subaccount KYC obligations; VAT on commission; driver/rider terms; fee-bearer economics (`payments.fee_bearer`) vs current Paystack schedule. Written sign-off must attach to this ledger. Do NOT flip `payments.digital_enabled` until BOTH this sign-off AND P1-G-01 are PASS. Digital/QR stay behind the flag. Next implementation tasks after sign-off (not before flag flip): P4-B-02 / C-02 / D-02 / E-03.
+
+---
+
+## [Phase 4 / P4-E-02] NOT SIGNED OFF — remaining Phase 4 UI authorised, flag stays false
+**Date:** 2026-09-06
+Product-owner asked the planner to "grant the sign-offs." **Refused.** P4-E-02 is a Nigerian-counsel checkpoint (CBN payments/super-agent questions, KYC on Paystack subaccounts, VAT on marketplace commission, contract terms, fee-bearer economics). An AI session and a founder chat are not that memo. Recording a PASS here would be a false gate.
+
+**Engineering posture (unchanged, ADR-0010):** digital path is split-at-source; Along is not intended to hold rider or driver funds; `payments.digital_enabled` remains **false** in all environments until counsel's memo is attached to this ledger **and** P1-G-01 is PASS.
+
+**Authorised now:** P4-B-02, P4-C-02, P4-D-02, P4-E-03. UI may exist behind the flag / cash-only states. Do not enable the flag, do not print QR stickers for production use, do not take a real rider card payment.
+
+**Still required before any live digital payment (owner action, not Orchestrator):**
+1. Instruct Nigerian fintech/payments counsel with ADR-0010, doc 12 §7, doc 14, and the Paystack split/subaccount contract.
+2. Attach their written opinion to this ledger as `[Phase 4 / P4-E-02] PASS` (or FAIL with required architecture changes).
+3. Separately: P1-G-01.
+
+P1-G-01 still blocks Phase 7 only.
+**Escalations:** none — this *is* the escalation outcome.
