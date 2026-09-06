@@ -84,6 +84,10 @@ Map<String, dynamic> samplePlanTripResponse({
             'total_fare_minor': 45000,
             'total_time_s': 1500,
             'transfer_count': 0,
+            'total_walking_distance_m': 240,
+            'strenuousness_score': 0.2,
+            'recommended_score': 1.0,
+            'explain': {'fare': 0.4, 'time': 0.4, 'strenuous': 0.2},
           },
         },
       ],
@@ -97,6 +101,140 @@ Map<String, dynamic> samplePlanTripResponse({
     },
   };
 }
+
+/// Multi-leg `plan-trip` payload for P2-B-01 widget tests.
+Map<String, dynamic> sampleMultiLegPlanTripResponse({
+  String candidateId = 'cand-multi-1',
+}) {
+  return {
+    'data': {
+      'query_id': 'query-multi',
+      'city_id': 'b1000000-0000-4000-8000-000000000001',
+      'degraded': false,
+      'candidates': [
+        {
+          'candidate_id': 'cand-direct-slow',
+          'kind': 'direct',
+          'source': 'parked',
+          'viable_direct': false,
+          'legs': [
+            _leg(
+              legIndex: 0,
+              mode: 'car',
+              board: 'Lugbe Park',
+              alight: 'Area 1 Park',
+              fare: '900.00',
+            ),
+          ],
+          'transfers': [],
+          'metrics': _metrics(fareMinor: 90000, timeS: 3600, transfers: 0),
+        },
+        {
+          'candidate_id': candidateId,
+          'kind': 'multi_leg',
+          'source': 'graph',
+          'viable_direct': true,
+          'legs': [
+            _leg(
+              legIndex: 0,
+              mode: 'car',
+              board: 'Lugbe Park',
+              alight: 'Berger Park',
+              fare: '320.00',
+            ),
+            _leg(
+              legIndex: 1,
+              mode: 'keke',
+              board: 'Berger Park',
+              alight: 'Area 1 Park',
+              fare: '80.00',
+            ),
+          ],
+          'transfers': [
+            {
+              'park_name': 'Berger Park',
+              'walk_m': 180,
+              'transfer_s': 180,
+            },
+          ],
+          'metrics': _metrics(
+            fareMinor: 40000,
+            timeS: 1800,
+            transfers: 1,
+            explain: {'fare': 0.5, 'time': 0.3, 'strenuous': 0.2},
+          ),
+        },
+      ],
+      'sort_orders': {
+        'recommended': [candidateId],
+        'cheapest': [candidateId, 'cand-direct-slow'],
+        'fastest': ['cand-direct-slow', candidateId],
+        'least_strenuous': [candidateId, 'cand-direct-slow'],
+      },
+      'coverage_gap': null,
+    },
+  };
+}
+
+Map<String, dynamic> _leg({
+  required int legIndex,
+  required String mode,
+  required String board,
+  required String alight,
+  required String fare,
+}) =>
+    {
+      'leg_index': legIndex,
+      'mode': {
+        'code': mode,
+        'label': mode,
+        'icon_key': mode,
+        'color_token': 'modeKeke',
+      },
+      'board': {
+        'stage_id': 's-$board',
+        'name': board,
+        'location': {'lat': 9.01, 'lng': 7.40},
+        'walk_m': 240,
+        'walk_s': 240,
+        'wayfinding_available': true,
+      },
+      'alight': {
+        'stage_id': 's-$alight',
+        'name': alight,
+        'location': {'lat': 9.05, 'lng': 7.45},
+      },
+      'route_id': 'route-$legIndex',
+      'route_leg_ids': ['leg-$legIndex'],
+      'in_vehicle_s': 600,
+      'wait_s': 120,
+      'fare': {
+        'total': {'amount': fare, 'currency': 'NGN'},
+        'tier': 1,
+        'confidence': 0.95,
+        'unconfirmed': false,
+        'quote_id': 'quote-$legIndex',
+        'expires_at': '2026-09-05T16:00:00Z',
+      },
+      'supply': {'kind': 'parked', 'vehicles_bucket': '2-3'},
+      'load_warning': null,
+    };
+
+Map<String, dynamic> _metrics({
+  required int fareMinor,
+  required int timeS,
+  required int transfers,
+  Map<String, double>? explain,
+}) =>
+    {
+      'total_fare_minor': fareMinor,
+      'total_time_s': timeS,
+      'transfer_count': transfers,
+      'total_walking_distance_m': 420,
+      'strenuousness_score': 0.35,
+      'recommended_score': 1.0,
+      'explain': explain ?? {'fare': 0.4, 'time': 0.4, 'strenuous': 0.2},
+    };
 
 /// Sample `request_trip` RPC payload.
 Map<String, dynamic> sampleRequestTripResponse({

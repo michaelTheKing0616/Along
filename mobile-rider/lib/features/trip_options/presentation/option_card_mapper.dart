@@ -35,8 +35,11 @@ class OptionCardMapper {
       return '$walkMin min walk · ~$waitMin min wait · direct';
     }
     if (candidate.transferCount > 0) {
-      return '$walkMin min walk · ${candidate.transferCount} transfer'
-          '${candidate.transferCount == 1 ? '' : 's'}';
+      final transferLabel = candidate.transfers.isNotEmpty
+          ? '1 transfer at ${candidate.transfers.first.parkName}'
+          : '${candidate.transferCount} transfer'
+              '${candidate.transferCount == 1 ? '' : 's'}';
+      return '$walkMin min walk · $transferLabel';
     }
     return '$walkMin min walk · ~$waitMin min wait';
   }

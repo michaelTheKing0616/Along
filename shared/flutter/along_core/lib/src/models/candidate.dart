@@ -1,6 +1,7 @@
 import 'package:along_core/src/enums/transport_mode.dart';
 import 'package:along_core/src/models/fare_quote.dart';
 import 'package:along_core/src/models/load_warning.dart';
+import 'package:along_core/src/models/plan_metrics.dart';
 
 /// A single leg within a planner candidate.
 class PlanCandidateLeg {
@@ -40,6 +41,8 @@ class PlanCandidate {
     required this.totalFareMinorUnits,
     required this.totalTimeSeconds,
     required this.transferCount,
+    this.metrics,
+    this.transfers = const [],
   });
 
   final String candidateId;
@@ -50,6 +53,8 @@ class PlanCandidate {
   final int totalFareMinorUnits;
   final int totalTimeSeconds;
   final int transferCount;
+  final PlanMetrics? metrics;
+  final List<PlanTransfer> transfers;
 
   bool get isDirect => kind == 'direct';
   bool get isMultiLeg => kind == 'multi_leg';

@@ -18,6 +18,9 @@ class FakeAlongSupabase implements AlongSupabase {
     this.planTripResponse,
     this.planTripDelay = Duration.zero,
     this.requestTripResponse,
+    this.walkingDirectionsResponse,
+    this.journeyRows = const [],
+    this.journeyTransferWalkRows = const [],
   });
 
   final String otpCode;
@@ -35,9 +38,13 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? planTripResponse;
   Duration planTripDelay;
   Map<String, dynamic>? requestTripResponse;
+  Map<String, dynamic>? walkingDirectionsResponse;
+  List<Map<String, dynamic>> journeyRows;
+  List<Map<String, dynamic>> journeyTransferWalkRows;
 
   int planTripInvokeCount = 0;
   int requestTripInvokeCount = 0;
+  Map<String, dynamic>? lastRequestTripParams;
 
   User? _user;
   final _controller = StreamController<AuthState>.broadcast();
@@ -102,6 +109,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (fn == 'request_trip') {
       requestTripInvokeCount++;
+      lastRequestTripParams = params;
       return requestTripResponse ?? {};
     }
     if (fn == 'trip_snapshot') {
@@ -132,13 +140,29 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       return planTripResponse ?? {'data': {'candidates': []}};
     }
+    if (slug == 'walking-directions') {
+      return walkingDirectionsResponse ??
+          {
+            'data': sampleWalkingDirectionsPayload(),
+          };
+    }
     return {};
   }
+
+  @override
+  Future<void> uploadStorageObject({
+    required String bucket,
+    required String path,
+    required List<int> bytes,
+    String contentType = 'image/jpeg',
+  }) async {}
 
   @override
   Future<List<Map<String, dynamic>>> selectRows(
     String table, {
     Map<String, Object?> filters = const {},
+    String? inColumn,
+    List<Object?>? inValues,
   }) async {
     if (table == 'cities') {
       final id = filters['id'];
@@ -151,6 +175,26 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (table == 'mode_config') {
       return modeConfigRows;
+    }
+    if (table == 'journeys') {
+      return journeyRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
+    }
+    if (table == 'journey_transfer_walks') {
+      return journeyTransferWalkRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
     }
     if (table != 'app_config') return [];
     final key = filters['key'];
@@ -201,6 +245,18 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_type': 'global',
         'scope_id': '*',
         'value': '60',
+      },
+      {
+        'key': 'client.trip_poll_interval_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '3',
+      },
+      {
+        'key': 'boarding.colocation_radius_m',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '25',
       },
     ];
 
@@ -275,4 +331,30 @@ Map<String, dynamic> sampleAmbientCell({
       'heading_sectors': [0, 1, 0, 0, 0, 0, 0, 0],
       'serves_destination': true,
       'eta_band_s': 180,
+    };
+
+/// Sample walking-directions payload for R-19 widget tests.
+Map<String, dynamic> sampleWalkingDirectionsPayload() => {
+      'distance_m': 240,
+      'duration_s': 180,
+      'steps': [
+        {
+          'instruction': 'Walk north on Airport Road',
+          'distance_m': 120,
+          'maneuver': 'continue',
+        },
+        {
+          'instruction': 'Turn right toward Berger Park',
+          'distance_m': 120,
+          'maneuver': 'turn-right',
+        },
+      ],
+      'polyline': [
+        {'lat': 9.0765, 'lng': 7.3986},
+        {'lat': 9.0770, 'lng': 7.3990},
+      ],
+      'tts_script': [
+        'Walk north on Airport Road for 120 metres',
+        'Turn right toward Berger Park for 120 metres',
+      ],
     };

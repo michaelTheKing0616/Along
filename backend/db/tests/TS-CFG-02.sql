@@ -70,6 +70,7 @@ with required_global as (
     'clustering.min_distinct_drivers',
     'clustering.min_distinct_days',
     'clustering.window_days',
+    'client.trip_poll_interval_s',
     'name.colors',
     'name.shapes',
     'share.link_ttl_hours',

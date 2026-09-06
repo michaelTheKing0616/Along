@@ -9,6 +9,7 @@ export 'src/database/along_database.dart';
 export 'src/database/pending_action_queue.dart';
 export 'src/driver/driver_repository.dart';
 export 'src/mappers/domain_mappers.dart';
+export 'src/journeys/journey_repository.dart';
 export 'src/places/places_repository.dart';
 export 'src/planner/planner_repository.dart';
 export 'src/presence/presence_repository.dart';
@@ -17,5 +18,6 @@ export 'src/supabase/along_supabase.dart';
 export 'src/supabase/error_mapper.dart';
 export 'src/trips/trips_repository.dart';
 export 'src/verification/verification_repository.dart';
+export 'src/wayfinding/walking_directions_repository.dart';
 
 const String alongDataVersion = '0.0.1';

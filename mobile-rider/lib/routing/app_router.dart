@@ -10,15 +10,18 @@ import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_rider/features/search/presentation/search_screens.dart';
 import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
+import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
+import 'package:mobile_rider/features/transfer/presentation/transfer_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
+import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
   final shellNavigatorKey = GlobalKey<NavigatorState>();
 
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.launch,
     routes: [
@@ -90,6 +93,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
+      GoRoute(
+        path: AppRoutes.transfer,
+        builder: (context, state) {
+          final args = state.extra as TransferRouteArgs;
+          return TransferScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.wayfinding,
+        builder: (context, state) {
+          final args = state.extra as WayfindingRouteArgs;
+          return WayfindingScreen(args: args);
+        },
+      ),
     ],
     redirect: (context, state) {
       final location = state.matchedLocation;
@@ -128,4 +145,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
   );
+
+  ref.listen(activeJourneyMonitorProvider, (previous, next) {
+    final args = next.transferNavigation;
+    if (args == null) return;
+    if (previous?.transferNavigation == args) return;
+    if (router.state.matchedLocation == AppRoutes.transfer) return;
+    router.push(AppRoutes.transfer, extra: args);
+  });
+
+  return router;
 });

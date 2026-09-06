@@ -554,6 +554,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thanks — we logged your report'**
   String get coverageGapThanks;
+
+  /// R-07 recommended explain popover trigger
+  ///
+  /// In en, this message translates to:
+  /// **'Why?'**
+  String get tripOptionsWhy;
+
+  /// R-07 explain popover title
+  ///
+  /// In en, this message translates to:
+  /// **'Why recommended'**
+  String get tripOptionsWhyTitle;
+
+  /// R-07 explain bar label — fare
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get tripOptionsWhyFare;
+
+  /// R-07 explain bar label — time
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get tripOptionsWhyTime;
+
+  /// R-07 explain bar label — effort
+  ///
+  /// In en, this message translates to:
+  /// **'Effort'**
+  String get tripOptionsWhyEffort;
+
+  /// R-07 multi-leg expand
+  ///
+  /// In en, this message translates to:
+  /// **'Show legs'**
+  String get tripOptionsShowLegs;
+
+  /// R-07 multi-leg collapse
+  ///
+  /// In en, this message translates to:
+  /// **'Hide legs'**
+  String get tripOptionsHideLegs;
+
+  /// R-07 per-leg request CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Request leg {leg} · {fare}'**
+  String tripOptionsRequestLeg(int leg, String fare);
+
+  /// R-14 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Next leg'**
+  String get transferTitle;
+
+  /// R-14 next leg card heading
+  ///
+  /// In en, this message translates to:
+  /// **'Next leg'**
+  String get transferNextLegTitle;
+
+  /// R-14 live supply line
+  ///
+  /// In en, this message translates to:
+  /// **'{bucket} loading'**
+  String transferSupply(String bucket);
+
+  /// R-14 one-tap next leg request
+  ///
+  /// In en, this message translates to:
+  /// **'Request next leg'**
+  String get transferRequestNextLeg;
+
+  /// R-14 tertiary replan CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Change plan'**
+  String get transferChangePlan;
+
+  /// R-14 waiting for prefetched walk
+  ///
+  /// In en, this message translates to:
+  /// **'Loading walking directions…'**
+  String get transferWalkLoading;
+
+  /// R-19 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Walking directions'**
+  String get wayfindingTitle;
+
+  /// R-19 mode segment
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get wayfindingModeText;
+
+  /// R-19 mode segment
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get wayfindingModeMap;
+
+  /// R-19 mode segment
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get wayfindingModeAudio;
+
+  /// R-19 audio play
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get wayfindingPlay;
+
+  /// R-19 audio pause
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get wayfindingPause;
+
+  /// R-19 auto-arrival label
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get wayfindingArrived;
+
+  /// R-19 OSRM degraded banner
+  ///
+  /// In en, this message translates to:
+  /// **'Directions may be approximate'**
+  String get wayfindingDegraded;
+
+  /// R-19 map mode placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Route with {count} points'**
+  String wayfindingMapHint(int count);
+
+  /// R-19 empty steps fallback
+  ///
+  /// In en, this message translates to:
+  /// **'No steps available'**
+  String get wayfindingNoSteps;
 }
 
 class _AppLocalizationsDelegate

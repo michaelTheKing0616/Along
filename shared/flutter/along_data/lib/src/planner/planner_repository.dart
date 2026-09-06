@@ -98,7 +98,43 @@ class PlannerRepository {
           legs.fold(0, (sum, l) => sum + l.fare.total.minorUnits),
       totalTimeSeconds: (metrics['total_time_s'] as num?)?.toInt() ?? 0,
       transferCount: (metrics['transfer_count'] as num?)?.toInt() ?? 0,
+      metrics: _mapMetrics(metrics),
+      transfers: _mapTransfers(json['transfers']),
     );
+  }
+
+  PlanMetrics? _mapMetrics(Map<String, dynamic> metrics) {
+    if (metrics.isEmpty) return null;
+    final explainRaw = metrics['explain'] as Map<String, dynamic>? ?? {};
+    return PlanMetrics(
+      totalWalkingDistanceM:
+          (metrics['total_walking_distance_m'] as num?)?.toInt() ?? 0,
+      strenuousnessScore:
+          (metrics['strenuousness_score'] as num?)?.toDouble() ?? 0,
+      recommendedScore:
+          (metrics['recommended_score'] as num?)?.toDouble() ?? 0,
+      explain: PlanExplain(
+        fare: (explainRaw['fare'] as num?)?.toDouble() ?? 0,
+        time: (explainRaw['time'] as num?)?.toDouble() ?? 0,
+        strenuous: (explainRaw['strenuous'] as num?)?.toDouble() ?? 0,
+      ),
+    );
+  }
+
+  List<PlanTransfer> _mapTransfers(Object? raw) {
+    if (raw is! List) return const [];
+    return raw
+        .whereType<Map<String, dynamic>>()
+        .map(
+          (t) => PlanTransfer(
+            parkName: t['park_name'] as String? ?? '',
+            walkMeters: (t['walk_m'] as num?)?.toInt() ?? 0,
+            transferSeconds: (t['transfer_s'] as num?)?.toInt() ??
+                (t['transfer_time_s'] as num?)?.toInt() ??
+                0,
+          ),
+        )
+        .toList(growable: false);
   }
 
   LoadWarning? _mapLoadWarning(Object? raw) {
