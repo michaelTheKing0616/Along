@@ -668,9 +668,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: R-19 map mode is a placeholder (follow-up). Merged fccb2e2.
 
 ## [Phase 2 / P2-B-02] Along Pricing sheet + hail-from-cell
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: R-16 wired to negotiation RPCs; hail R-05→R-06→R-07→R-16; 8 widget tests. Rework: hail skip-to-pricing removed.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Terminal states tested via setTerminalForTest. Merged 024af3a.
+
+## [Phase 2 / P2-C-01] Driver negotiation + roaming D-14
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Patrol emulator blocked — widget tests required; skip is FAIL for behavior.
+- Notes/escalations: Driver never sees rider identity pre-request beyond Tier B.
