@@ -720,9 +720,17 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 - Notes/escalations: New boarding.* keys not yet in doc 02 §2.3. Merged e097b7c.
 
 ## [Phase 3 / P3-A-02] Presence retention + stale hardening
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migration 00032 presence_retention + stale broadcast; TS-PRES-02 3/3; retention fixture 5/5.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: stale_job_interval_s and realtime.* keys registered but not all wired. Merged 5800694.
+
+## [Phase 3 / P3-A-03] Realtime location channel hardening
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Unblocks P3-E-01. Next migration 00032.
+- Notes/escalations: Next migration 00033 if needed. Unblocks nothing in Phase 3 except later admin map (P6).
