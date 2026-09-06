@@ -36,6 +36,8 @@ export default async function DriverDetailPage({ params }: PageProps) {
       rating,
       rating_count,
       driver_code,
+      payout_subaccount_code,
+      accepts_digital,
       city_id,
       profiles ( display_name, phone_e164 )
     `
@@ -64,6 +66,8 @@ export default async function DriverDetailPage({ params }: PageProps) {
     { data: transitionRows },
     { data: flagRows },
     { data: guarantorRows },
+    { data: paymentRows },
+    { data: stickerRows },
   ] = await Promise.all([
     supabase.from('driver_balances').select('balance').eq('driver_id', driverId).maybeSingle(),
     supabase
@@ -91,6 +95,19 @@ export default async function DriverDetailPage({ params }: PageProps) {
       .eq('driver_id', driverId)
       .order('created_at', { ascending: false })
       .limit(1),
+    supabase
+      .from('payments')
+      .select('id, amount, currency, source, status, trip_id, created_at')
+      .eq('driver_id', driverId)
+      .in('source', ['qr_static', 'qr_dynamic', 'web_anonymous'])
+      .order('created_at', { ascending: false })
+      .limit(50),
+    supabase
+      .from('qr_sticker_requests')
+      .select('id, driver_code, reason, status, created_at')
+      .eq('driver_id', driverId)
+      .order('created_at', { ascending: false })
+      .limit(20),
   ]);
 
   const flags: IntegrityFlagRow[] = (flagRows ?? []).map((row) => ({
@@ -120,6 +137,8 @@ export default async function DriverDetailPage({ params }: PageProps) {
     rating: driverRow.rating != null ? Number(driverRow.rating) : null,
     rating_count: driverRow.rating_count,
     driver_code: driverRow.driver_code,
+    payout_subaccount_code: driverRow.payout_subaccount_code,
+    accepts_digital: driverRow.accepts_digital,
     balance: Number(balanceRow?.balance ?? 0),
     currency: 'NGN',
     ledger: (ledgerRows ?? []).map((e) => ({
@@ -140,6 +159,22 @@ export default async function DriverDetailPage({ params }: PageProps) {
     })),
     flags,
     guarantor: guarantorRows?.[0] ?? null,
+    qrPayments: (paymentRows ?? []).map((p) => ({
+      id: p.id,
+      amount: Number(p.amount),
+      currency: p.currency,
+      source: p.source,
+      status: p.status,
+      trip_id: p.trip_id,
+      created_at: p.created_at,
+    })),
+    stickerRequests: (stickerRows ?? []).map((s) => ({
+      id: s.id,
+      driver_code: s.driver_code,
+      reason: s.reason,
+      status: s.status,
+      created_at: s.created_at,
+    })),
   };
 
   return (
