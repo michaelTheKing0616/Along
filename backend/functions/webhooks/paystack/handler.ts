@@ -1,8 +1,10 @@
 import { z } from 'zod';
 import { jsonResponse } from '../../_shared/http.ts';
+import { createPaymentNotifyDeps, notifyPaymentReceived } from '../../_shared/payment_notify.ts';
 import { verifyPaystackSignature } from '../../_shared/payments/mod.ts';
 import { createServiceClient } from '../../_shared/supabase.ts';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { PaymentNotifyDeps } from '../../_shared/payment_notify.ts';
 
 export const paystackEventSchema = z.object({
   event: z.string(),
@@ -17,6 +19,7 @@ export type PaystackWebhookDeps = {
   service: SupabaseClient;
   paystackSecret: string;
   verifySignature: typeof verifyPaystackSignature;
+  notify?: PaymentNotifyDeps;
 };
 
 async function storeWebhookRaw(
@@ -63,6 +66,7 @@ export async function handlePaystackWebhook(
     const metadata = parsed.data.data.metadata ?? {};
 
     if (reference && parsed.data.event === 'charge.success') {
+      const paymentId = typeof metadata.payment_id === 'string' ? metadata.payment_id : null;
       const { error } = await deps.service.rpc('apply_paystack_charge_success', {
         p_reference: reference,
         p_amount: amountKobo / 100,
@@ -70,6 +74,13 @@ export async function handlePaystackWebhook(
       });
       if (error) {
         console.error(JSON.stringify({ event: 'paystack_webhook_ledger_error', message: error.message }));
+      } else if (paymentId && deps.notify) {
+        try {
+          await notifyPaymentReceived(deps.notify, paymentId);
+        } catch (notifyErr) {
+          const message = notifyErr instanceof Error ? notifyErr.message : 'notify failed';
+          console.error(JSON.stringify({ event: 'payment_received_notify_error', message }));
+        }
       }
     }
 
@@ -97,5 +108,6 @@ export function handlePaystackWebhookDefault(req: Request): Promise<Response> {
     service: createServiceClient(),
     paystackSecret: secret,
     verifySignature: verifyPaystackSignature,
+    notify: createPaymentNotifyDeps(createServiceClient()),
   });
 }

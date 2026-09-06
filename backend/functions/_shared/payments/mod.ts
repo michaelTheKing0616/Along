@@ -12,6 +12,8 @@ export type {
   SettlementInitiateResult,
   TripPaymentInitiateParams,
   TripPaymentInitiateResult,
+  ChargeAuthorizationParams,
+  ChargeAuthorizationResult,
 } from './types.ts';
 export { createPaystackProvider } from './paystack_adapter.ts';
 export { verifyPaystackSignature } from './paystack_verify.ts';

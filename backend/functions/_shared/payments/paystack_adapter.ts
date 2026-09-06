@@ -1,4 +1,6 @@
 import type {
+  ChargeAuthorizationParams,
+  ChargeAuthorizationResult,
   CreateSubaccountParams,
   CreateSubaccountResult,
   PaymentProvider,
@@ -136,6 +138,51 @@ export function createPaystackProvider(
       }
 
       return result;
+    },
+
+    async chargeAuthorization(
+      params: ChargeAuthorizationParams,
+    ): Promise<ChargeAuthorizationResult> {
+      const amountKobo = Math.round(params.amount * 100);
+      const commissionKobo = Math.round(params.commissionAmount * 100);
+      const reference = `pay_${params.paymentId.replace(/-/g, '').slice(0, 20)}_${Date.now()}`;
+
+      const res = await fetchImpl('https://api.paystack.co/transaction/charge_authorization', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: params.riderEmail ?? `${params.paymentId}@riders.along.ng`,
+          amount: amountKobo,
+          authorization_code: params.authorizationCode,
+          reference,
+          currency: params.currency,
+          subaccount: params.driverSubaccountCode,
+          transaction_charge: commissionKobo,
+          bearer: params.feeBearer,
+          metadata: {
+            payment_id: params.paymentId,
+          },
+        }),
+      });
+
+      const payload = (await res.json()) as PaystackInitResponse & {
+        data?: { status?: string; reference?: string };
+      };
+      if (!res.ok || !payload.status || !payload.data?.reference) {
+        throw new Error(payload.message ?? 'Paystack charge authorization failed');
+      }
+
+      const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+      const succeeded = payload.data.status === 'success';
+
+      return {
+        providerReference: payload.data.reference,
+        expiresAt,
+        status: succeeded ? 'succeeded' : 'pending',
+      };
     },
 
     async initiateSettlement(params: SettlementInitiateParams): Promise<SettlementInitiateResult> {

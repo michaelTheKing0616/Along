@@ -38,7 +38,21 @@ export type TripPaymentInitiateResult = {
   ussdCode?: string;
   bankAccount?: Record<string, unknown>;
   expiresAt: string;
+  status?: 'pending' | 'succeeded';
 };
+
+export type ChargeAuthorizationParams = {
+  paymentId: string;
+  amount: number;
+  commissionAmount: number;
+  currency: string;
+  authorizationCode: string;
+  driverSubaccountCode: string;
+  feeBearer: 'account' | 'subaccount';
+  riderEmail?: string;
+};
+
+export type ChargeAuthorizationResult = TripPaymentInitiateResult;
 
 export type PayoutTransferParams = {
   payoutId: string;
@@ -78,6 +92,7 @@ export type CreateSubaccountResult = {
 export interface PaymentProvider {
   initiateSettlement(params: SettlementInitiateParams): Promise<SettlementInitiateResult>;
   initiateTripPayment(params: TripPaymentInitiateParams): Promise<TripPaymentInitiateResult>;
+  chargeAuthorization(params: ChargeAuthorizationParams): Promise<ChargeAuthorizationResult>;
   initiatePayoutTransfer(params: PayoutTransferParams): Promise<PayoutTransferResult>;
   resolveAccountName(params: ResolveAccountNameParams): Promise<ResolveAccountNameResult>;
   createSubaccount(params: CreateSubaccountParams): Promise<CreateSubaccountResult>;
