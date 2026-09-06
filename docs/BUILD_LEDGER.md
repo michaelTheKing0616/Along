@@ -780,3 +780,11 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
    - P4-E-02 remains a human stop when reached — that is law, not a device.
 4. Phase 4–6 implementation tasks: unit/pgTAP/widget/Playwright-against-local are enough; live-device clauses in acceptance are noted "deferred to P1-G-01", not FAIL.
 **Escalations:** none.
+
+## [Phase 4 / P4-A-01] Ledger + commission posting
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Next migration 00036. Extends driver_is_matchable with balance. complete_trip already stubs commission_amount (00031).
