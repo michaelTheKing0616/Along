@@ -12,6 +12,7 @@ import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/meet_vehicle_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
+import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -142,6 +143,59 @@ void main() {
           .markBoarded();
 
       expect(fakeSupabase.markBoardedInvokeCount, 1);
+      _stopLiveTripPoll(container, trip);
+    });
+
+    testWidgets('wayfinding CTA pushes AppRoutes.wayfinding', (tester) async {
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => MeetVehicleScreen(trip: trip),
+          ),
+          GoRoute(
+            path: AppRoutes.wayfinding,
+            builder: (context, state) => WayfindingScreen(
+              args: state.extra as WayfindingRouteArgs,
+            ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byKey(const Key('meet_vehicle_wayfinding')), findsOneWidget);
+      expect(trip.board.location, isNotNull);
+
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('meet_vehicle_wayfinding')),
+        120,
+      );
+      await tester.tap(find.byKey(const Key('meet_vehicle_wayfinding')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(WayfindingScreen), findsOneWidget);
+
+      for (var i = 0; i < 30; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+        if (find.text('Walk north on Airport Road').evaluate().isNotEmpty) {
+          break;
+        }
+      }
+      expect(find.text('Walk north on Airport Road'), findsOneWidget);
+
       _stopLiveTripPoll(container, trip);
     });
   });

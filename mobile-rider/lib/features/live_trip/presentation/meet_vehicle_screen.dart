@@ -9,8 +9,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/live_trip/domain/na_me_chip_mapper.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
+import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
+import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
@@ -144,9 +146,7 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                       key: const Key('meet_vehicle_wayfinding'),
                       label: l10n.wayfindingTitle,
                       variant: AlongButtonVariant.secondary,
-                      onPressed: () {
-                        // R-19 standalone wayfinding — embedded panel deferred for map height.
-                      },
+                      onPressed: () => _openWayfinding(context, trip, l10n),
                     ),
                   ],
                   const SizedBox(height: AlongSpace.s16),
@@ -195,6 +195,35 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
           ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _openWayfinding(
+    BuildContext context,
+    TripSummary trip,
+    AppLocalizations l10n,
+  ) {
+    final destination = trip.board.location;
+    if (destination == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.wayfindingNoSteps)),
+      );
+      return;
+    }
+
+    final userLocation = trip.live?.rider?.point ??
+        ref.read(homeControllerProvider).userLocation;
+    final origin = userLocation ?? destination;
+
+    context.push(
+      AppRoutes.wayfinding,
+      extra: WayfindingRouteArgs(
+        from: origin,
+        to: destination,
+        userLocation: userLocation,
+        cacheTripId: trip.tripId,
+        destinationLabel: trip.board.name,
       ),
     );
   }

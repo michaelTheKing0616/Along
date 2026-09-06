@@ -58,6 +58,7 @@ class DomainMappers {
 
   static TripBoardStop boardFromDto(dto.BoardStop board) => TripBoardStop(
         name: board.name,
+        location: GeoPoint(lat: board.location.lat, lng: board.location.lng),
         walkM: board.walk_m,
         walkS: board.walk_s,
       );
