@@ -752,9 +752,16 @@ Product-owner: leave emulator / real-device / Xcode testing; keep building.
 - Notes/escalations: Manifest missing drop-off/fare/no-show rows. Location publisher untested. Merged 01a1a1c.
 
 ## [Phase 3 / P3-E-01] Realtime/presence load test v1
-- Status: IN PROGRESS
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: k6 local pilot 10+10+5 VUs; ping p95 59.7 ms; fan-out p95 59.2 ms. Results in backend/load/results/.
+- Reviewer verdict: PASS WITH NOTES
 - Rework count: 0
-- Notes/escalations: k6 on staging or honest OPEN QUESTION if secrets missing. Do not print secrets. Do not start Phase 4.
+- Notes/escalations: cells E2E latency not measured; presence-fanout ok check 0/13. Staging 5k waived. Merged b930227.
+
+## [Phase 3 / Gate] NOT OPEN — waiting on P1-G-01
+**Date:** 2026-09-06
+All Phase 3 implementation tasks are PASS / PASS WITH NOTES. Phase 3 gate Reviewer **not spawned** (owner hard gate). Phase 4 **not started**.
+
+To open the Phase 3 gate and Phase 4, attach P1-G-01 evidence (corridor + Redmi + Patrol OTP + ios-compile) and say continue.
+**Escalations:** none.
