@@ -183,6 +183,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Along Pricing arrives in a later phase';
 
   @override
+  String get pricingTitle => 'Along Pricing';
+
+  @override
+  String get pricingLapsed => 'No agreement — try another vehicle';
+
+  @override
+  String get pricingOutOfRange => 'Vehicle has passed';
+
+  @override
+  String get pricingDeclined => 'Offer declined';
+
+  @override
+  String pricingDriverOffer(String amount) => 'Driver offered $amount';
+
+  @override
+  String get hailSearchTitle => 'Where are you going?';
+
+  @override
   String get requestUndoMessage => 'Requesting…';
 
   @override

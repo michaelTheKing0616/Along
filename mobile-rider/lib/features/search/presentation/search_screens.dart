@@ -9,6 +9,8 @@ import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:mobile_rider/routing/routes.dart';
+import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
+import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 
@@ -41,10 +43,11 @@ class _DestinationSearchScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(searchControllerProvider);
     final l10n = AppLocalizations.of(context);
+    final hail = ref.watch(hailIntentProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.searchTitle),
+        title: Text(hail != null ? l10n.hailSearchTitle : l10n.searchTitle),
         leading: BackButton(onPressed: () => context.pop()),
       ),
       body: Padding(
@@ -68,7 +71,9 @@ class _DestinationSearchScreenState
                 title: Text(recent.label),
                 onTap: () {
                   _startTripPlan(ref, recent.label, recent.location);
-                  context.push(AppRoutes.tripOptions);
+                  if (context.mounted) {
+                    _afterDestinationSelected(context, ref);
+                  }
                 },
               ),
             ),
@@ -105,7 +110,7 @@ class _DestinationSearchScreenState
                             .selectPlace(result);
                         _startTripPlan(ref, result.name, result.location);
                         if (context.mounted) {
-                          context.push(AppRoutes.tripOptions);
+                          _afterDestinationSelected(context, ref);
                         }
                       },
                     );
@@ -218,6 +223,7 @@ class AdjustPickupScreen extends ConsumerWidget {
 
 void _startTripPlan(WidgetRef ref, String label, GeoPoint destination) {
   final home = ref.read(homeControllerProvider);
+  final hail = ref.read(hailIntentProvider);
   final origin = home.userLocation ??
       GeoPoint(
         lat: AbujaMapConstants.centerLat,
@@ -228,6 +234,29 @@ void _startTripPlan(WidgetRef ref, String label, GeoPoint destination) {
           origin: origin,
           destination: destination,
           destinationLabel: label,
+          hailIntent: hail,
         ),
       );
+}
+
+void _afterDestinationSelected(BuildContext context, WidgetRef ref) {
+  final session = ref.read(tripPlanSessionProvider);
+  if (session?.isHail == true) {
+    final hail = session!.hailIntent!;
+    context.push(
+      AppRoutes.pricing,
+      extra: PricingRouteArgs(
+        context: 'roaming',
+        from: session.origin,
+        to: session.destination,
+        clientRef: 'hail-${hail.candidateToken}-${DateTime.now().microsecondsSinceEpoch}',
+        destinationLabel: session.destinationLabel,
+        candidateToken: hail.candidateToken,
+        hailIntent: hail,
+      ),
+    );
+    ref.read(hailIntentProvider.notifier).state = null;
+    return;
+  }
+  context.push(AppRoutes.tripOptions);
 }

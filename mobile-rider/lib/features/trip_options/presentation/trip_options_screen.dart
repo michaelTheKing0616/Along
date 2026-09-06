@@ -13,6 +13,7 @@ import 'package:mobile_rider/features/trip_options/presentation/explain_popover.
 import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.dart';
 import 'package:mobile_rider/features/trip_options/presentation/multi_leg_option_card.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
+import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -296,7 +297,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
               : null,
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
           onRequest: isTier3
-              ? () => _showAgreePricePlaceholder(l10n)
+              ? () => _openPricingForTier3(candidate, state)
               : () => ref
                   .read(tripOptionsControllerProvider.notifier)
                   .requestCandidate(candidate),
@@ -323,11 +324,18 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
     );
   }
 
-  void _showAgreePricePlaceholder(AppLocalizations l10n) {
-    showAlongToast(
-      context,
-      message: l10n.tripOptionsAgreePricePlaceholder,
-      variant: AlongToastVariant.info,
+  void _openPricingForTier3(PlanCandidate candidate, TripOptionsState state) {
+    final session = state.session;
+    if (session == null) return;
+    context.push(
+      AppRoutes.pricing,
+      extra: PricingRouteArgs(
+        context: 'park',
+        from: session.origin,
+        to: session.destination,
+        clientRef: 'park-${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
+        destinationLabel: session.destinationLabel,
+      ),
     );
   }
 

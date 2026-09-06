@@ -380,6 +380,7 @@ class AmbientCell {
   final List<int> heading_sectors;
   final bool serves_destination;
   final int eta_band_s;
+  final String? candidate_token;
 
   const AmbientCell({
     required this.cell,
@@ -389,6 +390,7 @@ class AmbientCell {
     required this.heading_sectors,
     required this.serves_destination,
     required this.eta_band_s,
+    this.candidate_token,
   });
 
   factory AmbientCell.fromJson(Map<String, dynamic> json) {
@@ -400,6 +402,7 @@ class AmbientCell {
       heading_sectors: (json["heading_sectors"] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
       serves_destination: json["serves_destination"] as bool,
       eta_band_s: (json["eta_band_s"] as num).toInt(),
+      candidate_token: json["candidate_token"] as String?,
     );
   }
 
@@ -411,6 +414,7 @@ class AmbientCell {
     "heading_sectors": heading_sectors,
     "serves_destination": serves_destination,
     "eta_band_s": eta_band_s,
+    "candidate_token": candidate_token,
   };
 }
 

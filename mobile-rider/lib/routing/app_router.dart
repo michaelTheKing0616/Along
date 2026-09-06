@@ -12,6 +12,8 @@ import 'package:mobile_rider/features/search/presentation/search_screens.dart';
 import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
 import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/transfer/presentation/transfer_screen.dart';
+import 'package:mobile_rider/features/pricing/presentation/pricing_sheet_screen.dart';
+import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
@@ -82,6 +84,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.tripOptions,
         builder: (context, state) => const TripOptionsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.pricing,
+        builder: (context, state) {
+          final args = state.extra as PricingRouteArgs;
+          return PricingSheetScreen(args: args);
+        },
       ),
       GoRoute(
         path: AppRoutes.requesting,

@@ -405,6 +405,24 @@ abstract class AppLocalizations {
   /// **'Along Pricing arrives in a later phase'**
   String get tripOptionsAgreePricePlaceholder;
 
+  /// R-16 screen title
+  String get pricingTitle;
+
+  /// R-16 lapsed terminal state
+  String get pricingLapsed;
+
+  /// R-16 roaming out-of-range terminal state
+  String get pricingOutOfRange;
+
+  /// R-16 declined/skipped terminal state
+  String get pricingDeclined;
+
+  /// R-16 inline driver response
+  String pricingDriverOffer(String amount);
+
+  /// Destination pick after hail-from-cell tap
+  String get hailSearchTitle;
+
   /// R-07 undo toast while commit window is open
   ///
   /// In en, this message translates to:

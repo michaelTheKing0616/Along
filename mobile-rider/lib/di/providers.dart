@@ -10,6 +10,7 @@ import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
+import 'package:mobile_rider/testing/fakes/fake_negotiation_channel.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Runtime configuration (flavour, Supabase URL, Sentry DSN).
@@ -56,6 +57,16 @@ final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
   return TripsRepository(
     ref.watch(alongSupabaseProvider),
     ref.watch(alongDatabaseProvider),
+  );
+});
+
+final negotiationRepositoryProvider = Provider<NegotiationRepository>((ref) {
+  return NegotiationRepository(ref.watch(alongSupabaseProvider));
+});
+
+final negotiationChannelProvider = Provider<NegotiationChannel>((ref) {
+  throw UnimplementedError(
+    'negotiationChannelProvider must be overridden at startup',
   );
 });
 
@@ -112,6 +123,7 @@ List<Override> buildProviderOverrides({
   required AppConfig config,
   required AlongSupabase supabase,
   required AmbientChannel ambientChannel,
+  NegotiationChannel? negotiationChannel,
   AlongDatabase? database,
   OnboardingPreferences? onboardingPreferences,
   LocationStreamSource? locationStreamSource,
@@ -123,6 +135,9 @@ List<Override> buildProviderOverrides({
     appConfigProvider.overrideWithValue(config),
     alongSupabaseProvider.overrideWithValue(supabase),
     ambientChannelProvider.overrideWithValue(ambientChannel),
+    negotiationChannelProvider.overrideWithValue(
+      negotiationChannel ?? FakeNegotiationChannel(),
+    ),
     alongDatabaseProvider.overrideWithValue(
       database ?? AlongDatabase.memory(),
     ),
