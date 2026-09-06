@@ -10,7 +10,10 @@ import 'package:mobile_driver/features/incoming_request/presentation/incoming_re
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_sheet.dart';
 import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
 import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_sheet.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile_driver/features/trip/presentation/manifest_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/routing/routes.dart';
 
 /// D-08 Home — presence control + demand awareness (doc 06).
 class DriverHomeScreen extends ConsumerStatefulWidget {
@@ -139,6 +142,11 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
               top: 140,
               child: _DemandLabelsCard(labels: state.demandLabels),
             ),
+          Positioned(
+            left: AlongSpace.s16,
+            top: 120,
+            child: _ManifestEntryChip(l10n: l10n),
+          ),
           Positioned(
             left: AlongSpace.s16,
             right: AlongSpace.s16,
@@ -405,6 +413,27 @@ class _DemandLabelsCard extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ManifestEntryChip extends ConsumerWidget {
+  const _ManifestEntryChip({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final manifest = ref.watch(manifestControllerProvider);
+    if (manifest.entries.isEmpty) return const SizedBox.shrink();
+
+    return SafeArea(
+      bottom: false,
+      child: ActionChip(
+        key: const Key('home_manifest_chip'),
+        label: Text(l10n.manifestOpen(manifest.entries.length)),
+        onPressed: () => context.push(AppRoutes.manifest),
       ),
     );
   }

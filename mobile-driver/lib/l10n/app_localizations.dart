@@ -827,12 +827,21 @@ abstract class AppLocalizations {
   String get incomingRequestPickup;
 
   /// No description provided for @incomingRequestRoamingPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider location'**
   String get incomingRequestRoamingPickup;
 
   /// No description provided for @incomingRequestRoamingPickupMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'Cell hail — meet at pin'**
   String get incomingRequestRoamingPickupMeta;
 
   /// No description provided for @incomingRequestCascade.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry {attempt} of {max}'**
   String incomingRequestCascade(int attempt, int max);
 
   /// No description provided for @incomingRequestDropoff.
@@ -944,19 +953,94 @@ abstract class AppLocalizations {
   String get fareTierEstimate;
 
   /// No description provided for @pricingRiderOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider offered {amount}'**
   String pricingRiderOffer(String amount);
 
   /// No description provided for @pricingLapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'No agreement — rider may choose another vehicle'**
   String get pricingLapsed;
 
   /// No description provided for @pricingOutOfRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle has passed — negotiation closed'**
   String get pricingOutOfRange;
 
   /// No description provided for @pricingDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'You declined this fare'**
   String get pricingDeclined;
 
   /// No description provided for @pricingDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to map'**
   String get pricingDismiss;
+
+  /// No description provided for @manifestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active trips'**
+  String get manifestTitle;
+
+  /// No description provided for @manifestEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No accepted riders yet'**
+  String get manifestEmpty;
+
+  /// No description provided for @manifestBoarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Boarding: {stage}'**
+  String manifestBoarding(String stage);
+
+  /// No description provided for @manifestStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String manifestStatus(String status);
+
+  /// No description provided for @manifestMarkBoarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Boarded'**
+  String get manifestMarkBoarded;
+
+  /// No description provided for @manifestOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Active trips ({count})'**
+  String manifestOpen(int count);
+
+  /// No description provided for @activeTripStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start trip'**
+  String get activeTripStart;
+
+  /// No description provided for @activeTripComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete trip'**
+  String get activeTripComplete;
+
+  /// No description provided for @activeTripBoardAlight.
+  ///
+  /// In en, this message translates to:
+  /// **'{board} → {alight}'**
+  String activeTripBoardAlight(String board, String alight);
+
+  /// No description provided for @sosPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'SOS will connect in a future release'**
+  String get sosPlaceholder;
 }
 
 class _AppLocalizationsDelegate

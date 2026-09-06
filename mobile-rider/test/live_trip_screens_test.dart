@@ -245,12 +245,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.byKey(const Key('na_me_strobing')), findsOneWidget);
-
-      container
-          .read(naMeControllerFamilyProvider(
-            const NaMeRouteArgs(tripId: 'trip-offline-1'),
-          ).notifier)
-          .stopStrobe();
     });
   });
 

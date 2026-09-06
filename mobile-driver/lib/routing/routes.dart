@@ -12,4 +12,7 @@ abstract final class AppRoutes {
   static const routesTab = '/routes';
   static const routeFastSetup = '/routes/fast-setup';
   static const routeDraw = '/routes/draw';
+  static const manifest = '/manifest';
+  static const activeTrip = '/trip/active';
+  static const naMe = '/trip/na-me';
 }

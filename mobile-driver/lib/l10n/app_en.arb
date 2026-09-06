@@ -279,5 +279,36 @@
   "pricingLapsed": "No agreement — rider may choose another vehicle",
   "pricingOutOfRange": "Vehicle has passed — negotiation closed",
   "pricingDeclined": "You declined this fare",
-  "pricingDismiss": "Back to map"
+  "pricingDismiss": "Back to map",
+  "manifestTitle": "Active trips",
+  "manifestEmpty": "No accepted riders yet",
+  "manifestBoarding": "Boarding: {stage}",
+  "@manifestBoarding": {
+    "placeholders": {
+      "stage": {"type": "String"}
+    }
+  },
+  "manifestStatus": "Status: {status}",
+  "@manifestStatus": {
+    "placeholders": {
+      "status": {"type": "String"}
+    }
+  },
+  "manifestMarkBoarded": "Boarded",
+  "manifestOpen": "Active trips ({count})",
+  "@manifestOpen": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "activeTripStart": "Start trip",
+  "activeTripComplete": "Complete trip",
+  "activeTripBoardAlight": "{board} → {alight}",
+  "@activeTripBoardAlight": {
+    "placeholders": {
+      "board": {"type": "String"},
+      "alight": {"type": "String"}
+    }
+  },
+  "sosPlaceholder": "SOS will connect in a future release"
 }

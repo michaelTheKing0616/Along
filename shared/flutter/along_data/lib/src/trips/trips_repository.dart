@@ -110,7 +110,84 @@ class TripsRepository {
       final map = raw as Map<String, dynamic>;
       final view = dto.TripView.fromJson(map);
       await _cacheTrip(view);
-      return DomainMappers.tripFromDto(view, raw: map);
+      final summary = DomainMappers.tripFromDto(view, raw: map);
+      await _persistNaMePairing(summary);
+      return summary;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<List<DriverManifestEntry>> driverManifest() async {
+    try {
+      final raw = await _gateway.rpc('driver_manifest');
+      final rows = raw as List<dynamic>? ?? [];
+      final entries = <DriverManifestEntry>[];
+      for (final row in rows) {
+        if (row is! Map<String, dynamic>) continue;
+        final entry = DomainMappers.manifestEntryFromJson(row);
+        entries.add(entry);
+        await _db.into(_db.kvStore).insertOnConflictUpdate(
+          KvStoreCompanion.insert(
+            key: 'na_me:${entry.tripId}',
+            value: jsonEncode(entry.naMe.toJson()),
+          ),
+        );
+      }
+      return entries;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<TripSummary> startTrip(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'start_trip',
+        params: dto.TripSnapshotRequest(p_trip_id: tripId).toJson(),
+      );
+      final map = raw as Map<String, dynamic>;
+      final view = dto.TripView.fromJson(map);
+      await _cacheTrip(view);
+      final summary = DomainMappers.tripFromDto(view, raw: map);
+      await _persistNaMePairing(summary);
+      return summary;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<CompleteTripResult> completeTrip(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'complete_trip',
+        params: dto.TripSnapshotRequest(p_trip_id: tripId).toJson(),
+      );
+      final map = raw as Map<String, dynamic>;
+      final result = DomainMappers.completeTripFromJson(map);
+      await _cacheTrip(dto.TripView.fromJson(map['trip'] as Map<String, dynamic>));
+      await _persistNaMePairing(result.trip);
+      return result;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<dto.TripLocationSampleResponse> tripLocationSample({
+    required String tripId,
+    required List<dto.LocationSamplePoint> points,
+  }) async {
+    try {
+      final raw = await _gateway.rpc(
+        'trip_location_sample',
+        params: dto.TripLocationSampleRequest(
+          p_trip_id: tripId,
+          p_points: points,
+        ).toJson(),
+      );
+      return dto.TripLocationSampleResponse.fromJson(
+        raw as Map<String, dynamic>,
+      );
     } catch (e) {
       throw mapSupabaseError(e);
     }

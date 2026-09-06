@@ -505,4 +505,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pricingDismiss => 'Back to map';
+
+  @override
+  String get manifestTitle => 'Active trips';
+
+  @override
+  String get manifestEmpty => 'No accepted riders yet';
+
+  @override
+  String manifestBoarding(String stage) {
+    return 'Boarding: $stage';
+  }
+
+  @override
+  String manifestStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get manifestMarkBoarded => 'Boarded';
+
+  @override
+  String manifestOpen(int count) {
+    return 'Active trips ($count)';
+  }
+
+  @override
+  String get activeTripStart => 'Start trip';
+
+  @override
+  String get activeTripComplete => 'Complete trip';
+
+  @override
+  String activeTripBoardAlight(String board, String alight) {
+    return '$board → $alight';
+  }
+
+  @override
+  String get sosPlaceholder => 'SOS will connect in a future release';
 }
