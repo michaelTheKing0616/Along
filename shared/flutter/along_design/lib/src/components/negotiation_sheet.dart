@@ -87,22 +87,26 @@ class NegotiationSheet extends StatelessWidget {
           if (variant != NegotiationSheetVariant.roamingNone) ...[
             const SizedBox(height: AlongSpace.s16),
             if (variant == NegotiationSheetVariant.roamingSingle)
-              Text(
-                'One counter-offer allowed',
-                style: AlongText.caption.copyWith(color: AlongColors.ink500),
-              )
-            else if (!_atCap) ...[
-              Text(
-                'Round $roundNumber of $roundCap',
-                style: AlongText.caption.copyWith(color: AlongColors.ink500),
-              ),
+            Text(
+              'One counter-offer allowed',
+              style: AlongText.caption.copyWith(color: AlongColors.ink500),
+            )
+          else if (!_atCap) ...[
+            Text(
+              'Round $roundNumber of $roundCap',
+              style: AlongText.caption.copyWith(color: AlongColors.ink500),
+            ),
+            const SizedBox(height: AlongSpace.s12),
+          ],
+          if (variant == NegotiationSheetVariant.roamingSingle || !_atCap) ...[
+            if (variant != NegotiationSheetVariant.roamingSingle)
               const SizedBox(height: AlongSpace.s12),
-              _ChipStepRow(
-                chipSteps: chipSteps,
-                onChipStep: onChipStep,
-              ),
-            ],
-            if (_atCap && splitNaira != null) ...[
+            _ChipStepRow(
+              chipSteps: chipSteps,
+              onChipStep: onChipStep,
+            ),
+          ],
+          if (_atCap && splitNaira != null) ...[
               const SizedBox(height: AlongSpace.s12),
               AlongButton(
                 label: 'Split the difference → ${formatMoney(splitNaira!)}',

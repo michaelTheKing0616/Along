@@ -256,6 +256,35 @@
   "@tripOptionsAgreePricePlaceholder": {
     "description": "R-07 Tier 3 toast — negotiation is P2"
   },
+  "pricingTitle": "Along Pricing",
+  "@pricingTitle": {
+    "description": "R-16 screen title"
+  },
+  "pricingLapsed": "No agreement — try another vehicle",
+  "@pricingLapsed": {
+    "description": "R-16 lapsed terminal state"
+  },
+  "pricingOutOfRange": "Vehicle has passed",
+  "@pricingOutOfRange": {
+    "description": "R-16 roaming out-of-range terminal state"
+  },
+  "pricingDeclined": "Offer declined",
+  "@pricingDeclined": {
+    "description": "R-16 declined/skipped terminal state"
+  },
+  "pricingDriverOffer": "Driver offered {amount}",
+  "@pricingDriverOffer": {
+    "description": "R-16 inline driver response",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "hailSearchTitle": "Where are you going?",
+  "@hailSearchTitle": {
+    "description": "Destination pick after hail-from-cell tap"
+  },
   "requestUndoMessage": "Requesting…",
   "@requestUndoMessage": {
     "description": "R-07 undo toast while commit window is open"

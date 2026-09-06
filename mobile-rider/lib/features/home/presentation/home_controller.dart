@@ -77,6 +77,8 @@ class NearbyAmbientRow {
     required this.headingLabel,
     required this.etaMinutes,
     required this.modeCode,
+    this.candidateToken,
+    this.etaBandSeconds,
   });
 
   final String modeLabelKey;
@@ -84,6 +86,8 @@ class NearbyAmbientRow {
   final String headingLabel;
   final int etaMinutes;
   final String modeCode;
+  final String? candidateToken;
+  final int? etaBandSeconds;
 }
 
 final homeControllerProvider =
@@ -276,6 +280,8 @@ class HomeController extends Notifier<HomeState> {
           ),
           etaMinutes: (cell.eta_band_s / 60).ceil(),
           modeCode: cell.mode.code,
+          candidateToken: cell.candidate_token,
+          etaBandSeconds: cell.eta_band_s,
         ),
     ];
 

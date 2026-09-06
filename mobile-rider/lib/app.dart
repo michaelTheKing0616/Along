@@ -47,6 +47,7 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
       config: config,
       supabase: supabase,
       ambientChannel: SupabaseAmbientChannel(Supabase.instance.client),
+      negotiationChannel: SupabaseNegotiationChannel(Supabase.instance.client),
       database: await AlongDatabase.open(fileName: 'rider.db'),
     ),
   );

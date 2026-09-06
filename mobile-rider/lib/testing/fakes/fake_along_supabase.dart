@@ -21,7 +21,8 @@ class FakeAlongSupabase implements AlongSupabase {
     this.walkingDirectionsResponse,
     this.journeyRows = const [],
     this.journeyTransferWalkRows = const [],
-  });
+    FakeNegotiationEngine? negotiationEngine,
+  }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
   final String otpCode;
   void Function(String phone)? onRequestOtp;
@@ -41,6 +42,8 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? walkingDirectionsResponse;
   List<Map<String, dynamic>> journeyRows;
   List<Map<String, dynamic>> journeyTransferWalkRows;
+
+  final FakeNegotiationEngine negotiationEngine;
 
   int planTripInvokeCount = 0;
   int requestTripInvokeCount = 0;
@@ -117,6 +120,18 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (fn == 'cancel_trip') {
       return {};
+    }
+    if (fn == 'open_negotiation') {
+      return negotiationEngine.open(params ?? {});
+    }
+    if (fn == 'negotiation_round') {
+      return negotiationEngine.round(params ?? {});
+    }
+    if (fn == 'negotiation_split') {
+      return negotiationEngine.split(params ?? {});
+    }
+    if (fn == 'hail_roaming') {
+      return requestTripResponse ?? {};
     }
     return {};
   }
@@ -317,6 +332,8 @@ List<Map<String, dynamic>> defaultModeConfigRows() => [
 Map<String, dynamic> sampleAmbientCell({
   String countBucket = '3-5',
   String modeCode = 'keke',
+  int etaBandS = 180,
+  String candidateToken = 'tok-test-1',
 }) =>
     {
       'cell': 's0k8tz',
@@ -330,8 +347,243 @@ Map<String, dynamic> sampleAmbientCell({
       'count_bucket': countBucket,
       'heading_sectors': [0, 1, 0, 0, 0, 0, 0, 0],
       'serves_destination': true,
-      'eta_band_s': 180,
+      'eta_band_s': etaBandS,
+      'candidate_token': candidateToken,
     };
+
+/// In-memory negotiation state machine for widget tests.
+class FakeNegotiationEngine {
+  FakeNegotiationEngine({
+    this.chipSteps = const [100, 50, 50, 100],
+    this.defaultRoundCap = 4,
+    this.roundTimeoutS = 20,
+    this.expiresAt = '2026-09-05T16:01:00Z',
+  });
+
+  List<int> chipSteps;
+  final int defaultRoundCap;
+  final int roundTimeoutS;
+  String expiresAt;
+
+  final Map<String, _FakeNegotiation> _sessions = {};
+  int _seq = 0;
+
+  Map<String, dynamic> open(Map<String, dynamic> params) {
+    final id = 'neg-${++_seq}';
+    final context = params['p_context'] as String? ?? 'park';
+    final etaBand = _etaBandForContext(context, params);
+    final roundCap = _roundCapForBand(context, etaBand);
+    final session = _FakeNegotiation(
+      id: id,
+      context: context,
+      anchor: 600,
+      amount: 600,
+      roundCap: roundCap,
+      roundTimeoutS: roundTimeoutS,
+      etaBand: etaBand,
+      expiresAt: expiresAt,
+      proposedBy: 'rider',
+      round: 1,
+      riderAmount: 600,
+    );
+    _sessions[id] = session;
+    return session.openPayload(chipSteps);
+  }
+
+  Map<String, dynamic> round(Map<String, dynamic> params) {
+    final id = params['p_negotiation_id'] as String;
+    final action = params['p_action'] as String;
+    final session = _sessions[id];
+    if (session == null) throw StateError('unknown negotiation');
+
+    if (action == 'decline') {
+      session.status = 'declined';
+      return session.viewPayload(chipSteps);
+    }
+
+    if (action == 'accept') {
+      session.status = 'agreed';
+      session.trip = _sampleTrip();
+      return session.viewPayload(chipSteps);
+    }
+
+    final amountMap = params['p_amount'] as Map<String, dynamic>?;
+    final amount = amountMap == null
+        ? session.amount
+        : double.parse(amountMap['amount'] as String).round();
+    session.round++;
+    session.amount = amount;
+    session.proposedBy = 'rider';
+    session.riderAmount = amount;
+
+    if (session.round >= session.roundCap) {
+      session.driverAmount = amount + 50;
+      session.amount = session.driverAmount!;
+      session.proposedBy = 'driver';
+    } else {
+      session.driverAmount = amount - 25;
+      session.amount = session.driverAmount!;
+      session.proposedBy = 'driver';
+    }
+
+    return session.viewPayload(chipSteps);
+  }
+
+  Map<String, dynamic> split(Map<String, dynamic> params) {
+    final id = params['p_negotiation_id'] as String;
+    final session = _sessions[id];
+    if (session == null) throw StateError('unknown negotiation');
+    final mid = ((session.riderAmount + (session.driverAmount ?? session.amount)) / 2)
+        .round();
+    session.round++;
+    session.amount = mid;
+    session.proposedBy = 'system';
+    return session.viewPayload(chipSteps);
+  }
+
+  void lapse(String id) {
+    final session = _sessions[id];
+    if (session == null) return;
+    session.status = 'lapsed';
+  }
+
+  String _etaBandForContext(String context, Map<String, dynamic> params) {
+    if (context != 'roaming') return 'full';
+    final token = params['p_candidate_token'] as String? ?? '';
+    if (token.contains('none')) return 'none';
+    if (token.contains('single')) return 'single';
+    return 'full';
+  }
+
+  int _roundCapForBand(String context, String etaBand) {
+    if (context == 'roaming') {
+      return switch (etaBand) {
+        'none' => 0,
+        'single' => 1,
+        _ => 3,
+      };
+    }
+    return defaultRoundCap;
+  }
+
+  Map<String, dynamic> _sampleTrip() => {
+        'trip_id': 'trip-neg-1',
+        'journey_id': 'journey-1',
+        'journey_sequence': 1,
+        'status': 'requested',
+        'mode': {
+          'code': 'keke',
+          'label': 'Keke',
+          'icon_key': 'keke',
+          'color_token': 'modeKeke',
+        },
+        'rider': {},
+        'driver': {},
+        'vehicle': {},
+        'board': {
+          'stage_id': 's-lugbe',
+          'name': 'Lugbe Park',
+          'location': {'lat': 9.01, 'lng': 7.40},
+          'walk_m': 240,
+          'walk_s': 240,
+          'wayfinding_available': true,
+        },
+        'alight': {
+          'stage_id': 's-area1',
+          'name': 'Area 1 Park',
+          'location': {'lat': 9.05, 'lng': 7.45},
+        },
+        'route_leg_ids': ['leg-1'],
+        'fare': {
+          'total': {'amount': '575.00', 'currency': 'NGN'},
+          'tier': 3,
+          'confidence': 0.5,
+          'unconfirmed': false,
+          'components': [],
+          'quote_id': 'quote-neg',
+          'expires_at': '2026-09-05T16:05:00Z',
+        },
+        'load': {'flagged': false},
+        'women_only': false,
+        'na_me': {
+          'color_token': 'green',
+          'shape': 'diamond',
+          'label': 'Green Diamond',
+        },
+        'live_channel': 'trip:trip-neg-1',
+        'expires_at': '2026-09-05T16:05:00Z',
+        'timestamps': {},
+      };
+}
+
+class _FakeNegotiation {
+  _FakeNegotiation({
+    required this.id,
+    required this.context,
+    required this.anchor,
+    required this.amount,
+    required this.roundCap,
+    required this.roundTimeoutS,
+    required this.etaBand,
+    required this.expiresAt,
+    required this.proposedBy,
+    required this.round,
+    required this.riderAmount,
+    this.driverAmount,
+    this.status = 'open',
+    this.trip,
+  });
+
+  final String id;
+  final String context;
+  final int anchor;
+  int amount;
+  final int roundCap;
+  final int roundTimeoutS;
+  final String etaBand;
+  String expiresAt;
+  String proposedBy;
+  int round;
+  int riderAmount;
+  int? driverAmount;
+  String status;
+  Map<String, dynamic>? trip;
+
+  Map<String, dynamic> openPayload(List<int> chipSteps) => {
+        'negotiation_id': id,
+        'anchor': {'amount': anchor.toStringAsFixed(2), 'currency': 'NGN'},
+        'chip_steps': [
+          for (final s in chipSteps)
+            {'amount': s.toStringAsFixed(2), 'currency': 'NGN'},
+        ],
+        'round_cap': roundCap,
+        'round_timeout_s': roundTimeoutS,
+        'eta_band': etaBand,
+        'expires_at': expiresAt,
+      };
+
+  Map<String, dynamic> viewPayload(List<int> chipSteps) => {
+        'negotiation_id': id,
+        'status': status,
+        'context': context,
+        'anchor': {'amount': anchor.toStringAsFixed(2), 'currency': 'NGN'},
+        'agreed_amount': status == 'agreed'
+            ? {'amount': amount.toStringAsFixed(2), 'currency': 'NGN'}
+            : null,
+        'round_cap': roundCap,
+        'round_timeout_s': roundTimeoutS,
+        'eta_band': etaBand,
+        'expires_at': expiresAt,
+        'round': round,
+        'amount': {'amount': amount.toStringAsFixed(2), 'currency': 'NGN'},
+        'proposed_by': proposedBy,
+        'chip_steps': [
+          for (final s in chipSteps)
+            {'amount': s.toStringAsFixed(2), 'currency': 'NGN'},
+        ],
+        'trip': trip,
+      };
+}
 
 /// Sample walking-directions payload for R-19 widget tests.
 Map<String, dynamic> sampleWalkingDirectionsPayload() => {

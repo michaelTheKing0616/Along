@@ -12,6 +12,8 @@ import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/home/presentation/widgets/home_bottom_sheet.dart';
 import 'package:mobile_rider/features/home/presentation/widgets/location_denied_banner.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
+import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 /// R-05 Home — ambient clusters, peek sheet, recents (doc 06).
@@ -91,13 +93,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: _expandedNearby && state.nearbyRows.isNotEmpty
                 ? HomeNearbySheet(
                     rows: state.nearbyRows,
-                    onRowTap: (_) => context.push(AppRoutes.tripOptions),
+                    onRowTap: (row) => _onNearbyRowTap(row),
                   )
                 : HomePeekSheet(
                     state: state,
                     onSearchTap: () => context.push(AppRoutes.search),
                     onRecentTap: (_) => context.push(AppRoutes.tripOptions),
-                    onNearbyTap: (_) {},
+                    onNearbyTap: _onNearbyRowTap,
                   ),
           ),
           if (state.nearbyRows.isNotEmpty)
@@ -147,6 +149,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _recenter(GeoPoint location) async {
     _layerController?.setPuck(location);
     await ref.read(homeControllerProvider.notifier).refreshAmbientOnce();
+  }
+
+  void _onNearbyRowTap(NearbyAmbientRow row) {
+    final token = row.candidateToken;
+    if (token == null) {
+      context.push(AppRoutes.search);
+      return;
+    }
+    ref.read(hailIntentProvider.notifier).state = HailIntent(
+      candidateToken: token,
+      modeCode: row.modeCode,
+      etaBandSeconds: row.etaBandSeconds ?? row.etaMinutes * 60,
+    );
+    context.push(AppRoutes.search);
   }
 }
 

@@ -1,4 +1,6 @@
 import 'package:along_core/along_core.dart';
+import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
+import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 
 /// Active trip-planning context passed from search → R-07 (P1-B-03).
 class TripPlanSession {
@@ -6,11 +8,15 @@ class TripPlanSession {
     required this.origin,
     required this.destination,
     required this.destinationLabel,
+    this.hailIntent,
   });
 
   final GeoPoint origin;
   final GeoPoint destination;
   final String destinationLabel;
+  final HailIntent? hailIntent;
+
+  bool get isHail => hailIntent != null;
 }
 
 /// Rider load flag persisted for the current planning session / day.
