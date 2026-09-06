@@ -2208,6 +2208,7 @@ export type Database = {
           currency: string
           driver_amount: number
           driver_id: string
+          expires_at: string | null
           fee_bearer: string
           id: string
           method: string
@@ -2215,6 +2216,7 @@ export type Database = {
           provider: string
           provider_fee: number | null
           provider_reference: string
+          receipt_token: string | null
           rider_id: string | null
           source: string
           status: string
@@ -2229,6 +2231,7 @@ export type Database = {
           currency: string
           driver_amount: number
           driver_id: string
+          expires_at?: string | null
           fee_bearer: string
           id?: string
           method: string
@@ -2236,6 +2239,7 @@ export type Database = {
           provider?: string
           provider_fee?: number | null
           provider_reference: string
+          receipt_token?: string | null
           rider_id?: string | null
           source: string
           status: string
@@ -2250,6 +2254,7 @@ export type Database = {
           currency?: string
           driver_amount?: number
           driver_id?: string
+          expires_at?: string | null
           fee_bearer?: string
           id?: string
           method?: string
@@ -2257,6 +2262,7 @@ export type Database = {
           provider?: string
           provider_fee?: number | null
           provider_reference?: string
+          receipt_token?: string | null
           rider_id?: string | null
           source?: string
           status?: string
@@ -2589,6 +2595,41 @@ export type Database = {
         }
         Relationships: []
       }
+      qr_sticker_requests: {
+        Row: {
+          created_at: string
+          driver_code: string
+          driver_id: string
+          id: string
+          reason: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          driver_code: string
+          driver_id: string
+          id?: string
+          reason: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          driver_code?: string
+          driver_id?: string
+          id?: string
+          reason?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_sticker_requests_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ratings: {
         Row: {
           comment: string | null
@@ -2643,6 +2684,56 @@ export type Database = {
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rider_payment_methods: {
+        Row: {
+          authorization_code: string
+          bank: string | null
+          brand: string | null
+          created_at: string
+          exp_month: number | null
+          exp_year: number | null
+          id: string
+          is_default: boolean
+          last4: string | null
+          provider: string
+          rider_id: string
+        }
+        Insert: {
+          authorization_code: string
+          bank?: string | null
+          brand?: string | null
+          created_at?: string
+          exp_month?: number | null
+          exp_year?: number | null
+          id?: string
+          is_default?: boolean
+          last4?: string | null
+          provider?: string
+          rider_id: string
+        }
+        Update: {
+          authorization_code?: string
+          bank?: string | null
+          brand?: string | null
+          created_at?: string
+          exp_month?: number | null
+          exp_year?: number | null
+          id?: string
+          is_default?: boolean
+          last4?: string | null
+          provider?: string
+          rider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rider_payment_methods_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
             referencedColumns: ["id"]
           },
         ]
@@ -4155,6 +4246,53 @@ export type Database = {
         }
         Relationships: []
       }
+      rider_payment_methods_safe: {
+        Row: {
+          bank: string | null
+          brand: string | null
+          created_at: string | null
+          exp_month: number | null
+          exp_year: number | null
+          id: string | null
+          is_default: boolean | null
+          last4: string | null
+          provider: string | null
+          rider_id: string | null
+        }
+        Insert: {
+          bank?: string | null
+          brand?: string | null
+          created_at?: string | null
+          exp_month?: number | null
+          exp_year?: number | null
+          id?: string | null
+          is_default?: boolean | null
+          last4?: string | null
+          provider?: string | null
+          rider_id?: string | null
+        }
+        Update: {
+          bank?: string | null
+          brand?: string | null
+          created_at?: string | null
+          exp_month?: number | null
+          exp_year?: number | null
+          id?: string | null
+          is_default?: boolean | null
+          last4?: string | null
+          provider?: string | null
+          rider_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rider_payment_methods_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tap_funky: {
         Row: {
           args: string | null
@@ -4343,6 +4481,15 @@ export type Database = {
         Returns: number
       }
       _parked_supply_bucket: { Args: { p_count: number }; Returns: string }
+      _payment_token_payload: {
+        Args: {
+          p_amount_kobo: number
+          p_driver_id: string
+          p_exp: number
+          p_trip_id: string
+        }
+        Returns: string
+      }
       _pick_next_roaming_driver: {
         Args: { p_trip_id: string }
         Returns: {
@@ -4784,6 +4931,10 @@ export type Database = {
         Args: { p_city?: string; p_corridor?: string; p_key: string }
         Returns: number
       }
+      check_qr_resolve_rate: {
+        Args: { p_ip: string; p_limit?: number }
+        Returns: boolean
+      }
       city_for_lat_lng: {
         Args: { p_lat: number; p_lng: number }
         Returns: string
@@ -4872,6 +5023,7 @@ export type Database = {
         Returns: number
       }
       create_agent_code: { Args: { p_amount: number }; Returns: Json }
+      create_payment_request: { Args: { p_trip_id: string }; Returns: Json }
       current_profile_id: { Args: never; Returns: string }
       deactivate_route_profile: { Args: { p_id: string }; Returns: undefined }
       decay_confidence: { Args: never; Returns: undefined }
@@ -4942,6 +5094,7 @@ export type Database = {
       enablelongtransactions: { Args: never; Returns: string }
       ensure_partitions: { Args: never; Returns: undefined }
       equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      expire_payments: { Args: never; Returns: number }
       expire_requests: { Args: never; Returns: number }
       fail:
         | { Args: never; Returns: string }
@@ -5188,6 +5341,11 @@ export type Database = {
       pass:
         | { Args: never; Returns: string }
         | { Args: { "": string }; Returns: string }
+      payment_receipt_payload: {
+        Args: { p_payment_id: string; p_receipt_token?: string }
+        Returns: Json
+      }
+      payment_token_hmac_key: { Args: never; Returns: string }
       persist_driver_payout_bank: {
         Args: { p_bank_last4: string; p_subaccount_code: string }
         Returns: Json
@@ -5340,6 +5498,7 @@ export type Database = {
         Args: { p_new_alight: Json; p_trip_id: string }
         Returns: Json
       }
+      qr_suggested_amounts: { Args: { p_driver_id: string }; Returns: Json }
       rate_trip: {
         Args: {
           p_comment?: string
@@ -5422,6 +5581,10 @@ export type Database = {
         }
         Returns: Json
       }
+      remove_rider_payment_method: {
+        Args: { p_payment_method_id: string }
+        Returns: undefined
+      }
       request_trip: {
         Args: {
           p_candidate_id: string
@@ -5454,6 +5617,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      resolve_qr_driver: {
+        Args: { p_driver_code: string; p_rider_id?: string; p_token?: string }
+        Returns: Json
+      }
       respond_extension: {
         Args: { p_extension_id: string; p_response: string }
         Returns: Json
@@ -5470,6 +5637,7 @@ export type Database = {
         Args: { p_city_id?: string; p_rider_id: string }
         Returns: number
       }
+      rotate_driver_code: { Args: never; Returns: Json }
       round_to_minor: {
         Args: { p_amount: number; p_city_id: string }
         Returns: number
@@ -5499,6 +5667,11 @@ export type Database = {
           segment_key: string
         }[]
       }
+      set_accepts_digital: { Args: { p_enabled: boolean }; Returns: Json }
+      set_default_rider_payment_method: {
+        Args: { p_payment_method_id: string }
+        Returns: undefined
+      }
       set_presence: {
         Args: {
           p_declared_route_leg_id?: string
@@ -5515,6 +5688,15 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
       sign_candidate_token: {
         Args: { p_city_id: string; p_driver_id: string; p_session_id: string }
+        Returns: string
+      }
+      sign_payment_token: {
+        Args: {
+          p_amount: number
+          p_city_id: string
+          p_driver_id: string
+          p_trip_id: string
+        }
         Returns: string
       }
       skip:
@@ -6198,6 +6380,18 @@ export type Database = {
         }
         Returns: string
       }
+      upsert_rider_payment_method: {
+        Args: {
+          p_authorization_code: string
+          p_bank?: string
+          p_brand?: string
+          p_exp_month?: number
+          p_exp_year?: number
+          p_last4?: string
+          p_set_default?: boolean
+        }
+        Returns: string
+      }
       upsert_route_profile: { Args: { p_profile: Json }; Returns: Json }
       verification_doc_type_allowed: {
         Args: { p_country_code: string; p_document_type: string }
@@ -6216,6 +6410,14 @@ export type Database = {
         Returns: {
           driver_id: string
           session_id: string
+        }[]
+      }
+      verify_payment_token: {
+        Args: { p_city_id?: string; p_token: string }
+        Returns: {
+          amount: number
+          driver_id: string
+          trip_id: string
         }[]
       }
       weighted_median_fare: {
