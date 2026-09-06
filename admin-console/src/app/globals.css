@@ -188,6 +188,46 @@ input {
   color: #047857;
 }
 
+/* Agent settlement surface (P4-E-01) */
+.agent-shell {
+  max-width: 32rem;
+}
+
+.agent-brand {
+  color: var(--color-ink-900);
+  letter-spacing: -0.02em;
+}
+
+.agent-header {
+  border-bottom: 3px solid var(--color-brand-yellow);
+  padding-bottom: var(--space-4);
+}
+
+.agent-card {
+  border-top: 4px solid var(--color-brand-yellow);
+}
+
+.btn-agent {
+  background: var(--color-brand-yellow);
+  color: var(--color-brand-yellow-on);
+  font-weight: 600;
+  min-height: var(--size-touch-min);
+}
+
+.btn-agent:hover:not(:disabled) {
+  background: var(--color-brand-yellow-pressed);
+}
+
+.btn-agent:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.agent-success-banner {
+  background: var(--color-brand-yellow-tint);
+  border-color: var(--color-brand-yellow);
+}
+
 .verification-doc-panel {
   flex: 1;
   min-width: 280px;

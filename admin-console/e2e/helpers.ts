@@ -23,8 +23,8 @@ async function completeMfaIfNeeded(page: Page, email: string) {
   await page.getByRole('button', { name: 'Verify' }).click();
 }
 
-function consolePathPattern(): RegExp {
-  return /^\/(?:[^/]+\/)?(?:dashboard|finance|admins|verification|corrections|integrity|drivers|safety|audit|field|graph|deploy|unauthorized)(?:\/|$)/;
+function authPathPattern(): RegExp {
+  return /^\/(?:agent|mfa|(?:[^/]+\/)?(?:dashboard|finance|admins|verification|corrections|integrity|drivers|safety|audit|field|graph|deploy|unauthorized)(?:\/|$))/;
 }
 
 export async function signInAs(page: Page, email: string, options?: { landing?: string }) {
@@ -37,13 +37,18 @@ export async function signInAs(page: Page, email: string, options?: { landing?: 
 
   await page.waitForURL((url) => {
     const path = new URL(url).pathname;
-    return path === '/mfa' || consolePathPattern().test(path);
+    return path === '/mfa' || authPathPattern().test(path);
   });
   await completeMfaIfNeeded(page, email);
 
   if (!page.url().includes('/unauthorized')) {
     await expect(page).toHaveURL(new RegExp(`${landing.replace(/\//g, '\\/')}(?:/)?$`));
   }
+}
+
+export async function signInAsAgent(page: Page, email: string) {
+  await signInAs(page, email, { landing: '/agent' });
+  await expect(page.getByTestId('agent-settlement-form')).toBeVisible({ timeout: 15_000 });
 }
 
 export async function signOut(page: Page) {

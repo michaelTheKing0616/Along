@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getAllowedRolesForSegment,
   getConsoleSegment,
+  isAgentPath,
   isPublicPath,
   ROUTE_ALLOWLIST,
 } from './routes.js';
@@ -11,6 +12,12 @@ describe('authz routes', () => {
     expect(isPublicPath('/sign-in')).toBe(true);
     expect(isPublicPath('/mfa')).toBe(true);
     expect(isPublicPath('/abuja/dashboard')).toBe(false);
+    expect(isPublicPath('/agent')).toBe(false);
+  });
+
+  it('detects agent surface path', () => {
+    expect(isAgentPath('/agent')).toBe(true);
+    expect(isAgentPath('/abuja/dashboard')).toBe(false);
   });
 
   it('extracts console segment from city routes', () => {
