@@ -85,6 +85,30 @@ export async function handlePresenceFanout(
     published += 1;
   }
 
+  const adminCities = new Map<string, string>();
+  for (const target of filtered) {
+    adminCities.set(target.city_id, target.city_slug);
+  }
+
+  for (const [cityId, citySlug] of adminCities) {
+    const { data: adminPayload, error: adminError } = await deps.service.rpc(
+      'admin_presence_fanout',
+      { p_city_id: cityId },
+    );
+    if (adminError) {
+      throw new Error(adminError.message);
+    }
+    if (adminPayload) {
+      await deps.realtime.send({
+        topic: `admin:${citySlug}`,
+        event: 'presence',
+        payload: adminPayload,
+        private: true,
+      });
+      published += 1;
+    }
+  }
+
   return jsonResponse({
     data: {
       published,
