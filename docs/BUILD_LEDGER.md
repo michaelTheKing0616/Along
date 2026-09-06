@@ -846,9 +846,17 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Merged cb9579c. Live-device: deferred to P1-G-01.
 
 ## [Phase 4 / P4-C-01] Driver earnings / settle / standing
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: Migrations 00043/00044, D-08 banner (TS-UI-05), D-17–22, LedgerRow, nearby agents. Rework: Money import + fake defaults. mobile-driver 37/37.
+- Reviewer verdict: PASS WITH NOTES (recheck) — prior FAIL items gone; full suite 37/37; unused_import warning on standing_screen.
+- Rework count: 1 / 2
+- Notes/escalations: Merged e6e3c94. Live-device: deferred to P1-G-01.
+
+## [Phase 4 / P4-D-01] Admin integrity + finance
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
-- Worker report summary: Migrations 00043/00044, D-08–D-22 UI, ledger_ui_test 6/6. Nearby agents RPC added.
-- Reviewer verdict: FAIL — standing_screen.dart ambiguous Money import (D-21 does not compile); FakeAlongSupabase defaults matching_paused so home/incoming tests fail. ledger_ui_test and TS-LEDGER-11 independently PASS.
-- Rework count: 1 / 2
-- Notes/escalations: Live-device: deferred to P1-G-01. Rework: hide Money on along_data import; fake default good_standing / non-blocked; full mobile-driver suite green.
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: A-10/11/13. Next migration 00045 if admin_review_flag missing. TS-INTEG-06 + Playwright dual control. No auto action (FM13). QR/stickers stub OK (P4-D-02). Live-device: deferred to P1-G-01.
