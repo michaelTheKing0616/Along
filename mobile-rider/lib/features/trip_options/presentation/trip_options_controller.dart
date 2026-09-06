@@ -4,6 +4,7 @@ import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
 
@@ -21,6 +22,7 @@ class TripOptionsState {
     this.errorMessage,
     this.expandedCandidateId,
     this.pendingRequestCandidateId,
+    this.pendingRequestLegIndex = 0,
     this.activeTrip,
     this.isRoamingSource = false,
   });
@@ -34,6 +36,7 @@ class TripOptionsState {
   final String? errorMessage;
   final String? expandedCandidateId;
   final String? pendingRequestCandidateId;
+  final int pendingRequestLegIndex;
   final TripSummary? activeTrip;
   final bool isRoamingSource;
 
@@ -53,6 +56,7 @@ class TripOptionsState {
     String? errorMessage,
     String? expandedCandidateId,
     String? pendingRequestCandidateId,
+    int? pendingRequestLegIndex,
     TripSummary? activeTrip,
     bool? isRoamingSource,
     bool clearError = false,
@@ -72,6 +76,8 @@ class TripOptionsState {
       pendingRequestCandidateId: clearPending
           ? null
           : (pendingRequestCandidateId ?? this.pendingRequestCandidateId),
+      pendingRequestLegIndex:
+          pendingRequestLegIndex ?? this.pendingRequestLegIndex,
       activeTrip: clearActiveTrip ? null : (activeTrip ?? this.activeTrip),
       isRoamingSource: isRoamingSource ?? this.isRoamingSource,
     );
@@ -109,7 +115,11 @@ class TripOptionsController extends Notifier<TripOptionsState> {
     });
     final session = ref.read(tripPlanSessionProvider);
     if (session != null) {
-      Future.microtask(() => _loadPlan(session));
+      Future.microtask(() async {
+        final sort = await ref.read(riderPrefsStoreProvider).savedSort();
+        state = state.copyWith(sort: sort);
+        await _loadPlan(session);
+      });
     }
     return TripOptionsState(session: session);
   }
@@ -178,6 +188,7 @@ class TripOptionsController extends Notifier<TripOptionsState> {
 
   void setSort(SortCriterion sort) {
     state = state.copyWith(sort: sort);
+    unawaited(ref.read(riderPrefsStoreProvider).setSavedSort(sort));
   }
 
   void toggleExpanded(String candidateId) {
@@ -193,14 +204,17 @@ class TripOptionsController extends Notifier<TripOptionsState> {
   }
 
   /// One-tap request with undo window (TS-UI-01, doc 06 Part C).
-  void requestCandidate(PlanCandidate candidate) {
+  void requestCandidate(PlanCandidate candidate, {int legIndex = 0}) {
     if (state.pendingRequestCandidateId != null) return;
 
-    final hasTier3 = candidate.legs.any((l) => l.fare.unconfirmed);
-    if (hasTier3) return;
+    if (legIndex < 0 || legIndex >= candidate.legs.length) return;
+
+    final leg = candidate.legs[legIndex];
+    if (leg.fare.unconfirmed) return;
 
     state = state.copyWith(
       pendingRequestCandidateId: candidate.candidateId,
+      pendingRequestLegIndex: legIndex,
       isRoamingSource: candidate.source == 'roaming',
     );
   }
@@ -240,7 +254,7 @@ class TripOptionsController extends Notifier<TripOptionsState> {
       final summary = await trips.requestTrip(
         RequestTripRequest(
           p_candidate_id: candidate.candidateId,
-          p_leg_index: 0,
+          p_leg_index: state.pendingRequestLegIndex,
           p_load: loadFlag,
           p_women_only: false,
           p_client_ref: '${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',

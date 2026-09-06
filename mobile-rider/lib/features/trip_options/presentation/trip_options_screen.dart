@@ -9,9 +9,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/trip_options/domain/load_capacity_warning.dart';
 import 'package:mobile_rider/features/trip_options/presentation/coverage_gap_view.dart';
+import 'package:mobile_rider/features/trip_options/presentation/explain_popover.dart';
 import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.dart';
+import 'package:mobile_rider/features/trip_options/presentation/multi_leg_option_card.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
+import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
@@ -141,7 +144,19 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           gap: state.plan!.coverageGap!,
           reportThanks: _coverageReportThanks,
           onWalkThere: () {
-            // R-19 wayfinding arrives later — honest no-op for now.
+            final gap = state.plan!.coverageGap!;
+            final nearest = gap.nearestStage;
+            context.push(
+              AppRoutes.wayfinding,
+              extra: WayfindingRouteArgs(
+                from: state.session?.origin ??
+                    const GeoPoint(lat: 9.0765, lng: 7.3986),
+                to: nearest.location,
+                cityId: state.plan?.cityId,
+                destinationLabel: nearest.name,
+                cacheTripId: 'coverage-${gap.reportId}',
+              ),
+            );
           },
           onTellUs: () {
             setState(() => _coverageReportThanks = true);
@@ -199,13 +214,40 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
               final candidate = candidates[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: AlongSpace.s12),
-                child: _buildOptionCard(
-                  context,
-                  candidate,
-                  recommended: candidate.candidateId == recommendedId,
-                  state: state,
-                  l10n: l10n,
-                ),
+                child: candidate.isMultiLeg
+                    ? MultiLegOptionCard(
+                        candidate: candidate,
+                        recommended: candidate.candidateId == recommendedId,
+                        expanded:
+                            state.expandedCandidateId == candidate.candidateId,
+                        onToggleExpanded: () => ref
+                            .read(tripOptionsControllerProvider.notifier)
+                            .toggleExpanded(candidate.candidateId),
+                        onRequestLeg: (legIndex) => ref
+                            .read(tripOptionsControllerProvider.notifier)
+                            .requestCandidate(candidate, legIndex: legIndex),
+                        onWhy: candidate.candidateId == recommendedId &&
+                                candidate.metrics != null
+                            ? () => showExplainPopover(
+                                  context,
+                                  explain: candidate.metrics!.explain,
+                                )
+                            : null,
+                        loadWarning: OptionCardMapper.hasLoadCapacityWarning(
+                          candidate,
+                          state.load,
+                        )
+                            ? l10n.loadFlagCapacityWarning
+                            : null,
+                        l10n: l10n,
+                      )
+                    : _buildOptionCard(
+                        context,
+                        candidate,
+                        recommended: candidate.candidateId == recommendedId,
+                        state: state,
+                        l10n: l10n,
+                      ),
               );
             },
           ),
@@ -224,43 +266,60 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
   }) {
     final leg = candidate.legs.first;
     final isTier3 = leg.fare.unconfirmed;
-    final fareNaira = candidate.totalFareMinorUnits;
     final loadWarning = OptionCardMapper.hasLoadCapacityWarning(
       candidate,
       state.load,
     );
 
-    return OptionCard(
-      key: Key('option_card_${candidate.candidateId}'),
-      variant: candidate.isMultiLeg
-          ? OptionCardVariant.multiLeg
-          : OptionCardVariant.direct,
-      recommended: recommended,
-      mode: OptionCardMapper.mapMode(leg.mode),
-      secondaryMode: candidate.legs.length > 1
-          ? OptionCardMapper.mapMode(candidate.legs[1].mode)
-          : null,
-      boardLabel: leg.boardName,
-      alightLabel: leg.alightName,
-      meta: OptionCardMapper.metaForCandidate(candidate),
-      fareNaira: fareNaira,
-      tier: OptionCardMapper.mapFareTier(
-        leg.fare.tier,
-        unconfirmed: leg.fare.unconfirmed,
-      ),
-      visualState: loadWarning
-          ? OptionCardVisualState.warning
-          : OptionCardVisualState.normal,
-      loadWarning: loadWarning ? l10n.loadFlagCapacityWarning : null,
-      unavailableReason: !candidate.viableDirect
-          ? l10n.tripOptionsSlowerDirectCaption
-          : null,
-      requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
-      onRequest: isTier3
-          ? () => _showAgreePricePlaceholder(l10n)
-          : () => ref
-              .read(tripOptionsControllerProvider.notifier)
-              .requestCandidate(candidate),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OptionCard(
+          key: Key('option_card_${candidate.candidateId}'),
+          variant: OptionCardVariant.direct,
+          recommended: recommended,
+          mode: OptionCardMapper.mapMode(leg.mode),
+          boardLabel: leg.boardName,
+          alightLabel: leg.alightName,
+          meta: OptionCardMapper.metaForCandidate(candidate),
+          fareNaira: candidate.totalFareMinorUnits,
+          tier: OptionCardMapper.mapFareTier(
+            leg.fare.tier,
+            unconfirmed: leg.fare.unconfirmed,
+          ),
+          visualState: loadWarning
+              ? OptionCardVisualState.warning
+              : OptionCardVisualState.normal,
+          loadWarning: loadWarning ? l10n.loadFlagCapacityWarning : null,
+          unavailableReason: !candidate.viableDirect
+              ? l10n.tripOptionsSlowerDirectCaption
+              : null,
+          requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
+          onRequest: isTier3
+              ? () => _showAgreePricePlaceholder(l10n)
+              : () => ref
+                  .read(tripOptionsControllerProvider.notifier)
+                  .requestCandidate(candidate),
+        ),
+        if (recommended && candidate.metrics != null)
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AlongSpace.s16,
+              bottom: AlongSpace.s8,
+            ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                key: Key('why_${candidate.candidateId}'),
+                onPressed: () => showExplainPopover(
+                  context,
+                  explain: candidate.metrics!.explain,
+                ),
+                child: Text(l10n.tripOptionsWhy),
+              ),
+            ),
+          ),
+      ],
     );
   }
 

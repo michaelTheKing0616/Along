@@ -395,5 +395,111 @@
   "coverageGapThanks": "Thanks — we logged your report",
   "@coverageGapThanks": {
     "description": "R-18 report acknowledgement"
+  },
+  "tripOptionsWhy": "Why?",
+  "@tripOptionsWhy": {
+    "description": "R-07 recommended explain popover trigger"
+  },
+  "tripOptionsWhyTitle": "Why recommended",
+  "@tripOptionsWhyTitle": {
+    "description": "R-07 explain popover title"
+  },
+  "tripOptionsWhyFare": "Fare",
+  "@tripOptionsWhyFare": {
+    "description": "R-07 explain bar label — fare"
+  },
+  "tripOptionsWhyTime": "Time",
+  "@tripOptionsWhyTime": {
+    "description": "R-07 explain bar label — time"
+  },
+  "tripOptionsWhyEffort": "Effort",
+  "@tripOptionsWhyEffort": {
+    "description": "R-07 explain bar label — effort"
+  },
+  "tripOptionsShowLegs": "Show legs",
+  "@tripOptionsShowLegs": {
+    "description": "R-07 multi-leg expand"
+  },
+  "tripOptionsHideLegs": "Hide legs",
+  "@tripOptionsHideLegs": {
+    "description": "R-07 multi-leg collapse"
+  },
+  "tripOptionsRequestLeg": "Request leg {leg} · {fare}",
+  "@tripOptionsRequestLeg": {
+    "description": "R-07 per-leg request CTA",
+    "placeholders": {
+      "leg": { "type": "int", "example": "2" },
+      "fare": { "type": "String", "example": "₦80" }
+    }
+  },
+  "transferTitle": "Next leg",
+  "@transferTitle": {
+    "description": "R-14 screen title"
+  },
+  "transferNextLegTitle": "Next leg",
+  "@transferNextLegTitle": {
+    "description": "R-14 next leg card heading"
+  },
+  "transferSupply": "{bucket} loading",
+  "@transferSupply": {
+    "description": "R-14 live supply line",
+    "placeholders": {
+      "bucket": { "type": "String", "example": "2–3 buses" }
+    }
+  },
+  "transferRequestNextLeg": "Request next leg",
+  "@transferRequestNextLeg": {
+    "description": "R-14 one-tap next leg request"
+  },
+  "transferChangePlan": "Change plan",
+  "@transferChangePlan": {
+    "description": "R-14 tertiary replan CTA"
+  },
+  "transferWalkLoading": "Loading walking directions…",
+  "@transferWalkLoading": {
+    "description": "R-14 waiting for prefetched walk"
+  },
+  "wayfindingTitle": "Walking directions",
+  "@wayfindingTitle": {
+    "description": "R-19 screen title"
+  },
+  "wayfindingModeText": "Text",
+  "@wayfindingModeText": {
+    "description": "R-19 mode segment"
+  },
+  "wayfindingModeMap": "Map",
+  "@wayfindingModeMap": {
+    "description": "R-19 mode segment"
+  },
+  "wayfindingModeAudio": "Audio",
+  "@wayfindingModeAudio": {
+    "description": "R-19 mode segment"
+  },
+  "wayfindingPlay": "Play",
+  "@wayfindingPlay": {
+    "description": "R-19 audio play"
+  },
+  "wayfindingPause": "Pause",
+  "@wayfindingPause": {
+    "description": "R-19 audio pause"
+  },
+  "wayfindingArrived": "Arrived",
+  "@wayfindingArrived": {
+    "description": "R-19 auto-arrival label"
+  },
+  "wayfindingDegraded": "Directions may be approximate",
+  "@wayfindingDegraded": {
+    "description": "R-19 OSRM degraded banner"
+  },
+  "wayfindingMapHint": "Route with {count} points",
+  "@wayfindingMapHint": {
+    "description": "R-19 map mode placeholder",
+    "placeholders": {
+      "count": { "type": "int", "example": "12" }
+    }
+  },
+  "wayfindingNoSteps": "No steps available",
+  "@wayfindingNoSteps": {
+    "description": "R-19 empty steps fallback"
   }
 }

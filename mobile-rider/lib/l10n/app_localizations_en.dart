@@ -269,4 +269,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coverageGapThanks => 'Thanks — we logged your report';
+
+  @override
+  String get tripOptionsWhy => 'Why?';
+
+  @override
+  String get tripOptionsWhyTitle => 'Why recommended';
+
+  @override
+  String get tripOptionsWhyFare => 'Fare';
+
+  @override
+  String get tripOptionsWhyTime => 'Time';
+
+  @override
+  String get tripOptionsWhyEffort => 'Effort';
+
+  @override
+  String get tripOptionsShowLegs => 'Show legs';
+
+  @override
+  String get tripOptionsHideLegs => 'Hide legs';
+
+  @override
+  String tripOptionsRequestLeg(int leg, String fare) {
+    return 'Request leg $leg · $fare';
+  }
+
+  @override
+  String get transferTitle => 'Next leg';
+
+  @override
+  String get transferNextLegTitle => 'Next leg';
+
+  @override
+  String transferSupply(String bucket) {
+    return '$bucket loading';
+  }
+
+  @override
+  String get transferRequestNextLeg => 'Request next leg';
+
+  @override
+  String get transferChangePlan => 'Change plan';
+
+  @override
+  String get transferWalkLoading => 'Loading walking directions…';
+
+  @override
+  String get wayfindingTitle => 'Walking directions';
+
+  @override
+  String get wayfindingModeText => 'Text';
+
+  @override
+  String get wayfindingModeMap => 'Map';
+
+  @override
+  String get wayfindingModeAudio => 'Audio';
+
+  @override
+  String get wayfindingPlay => 'Play';
+
+  @override
+  String get wayfindingPause => 'Pause';
+
+  @override
+  String get wayfindingArrived => 'Arrived';
+
+  @override
+  String get wayfindingDegraded => 'Directions may be approximate';
+
+  @override
+  String wayfindingMapHint(int count) {
+    return 'Route with $count points';
+  }
+
+  @override
+  String get wayfindingNoSteps => 'No steps available';
 }

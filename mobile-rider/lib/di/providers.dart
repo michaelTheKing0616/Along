@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
+import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
+import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Runtime configuration (flavour, Supabase URL, Sentry DSN).
@@ -57,6 +59,29 @@ final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
   );
 });
 
+final walkingDirectionsRepositoryProvider =
+    Provider<WalkingDirectionsRepository>((ref) {
+  return WalkingDirectionsRepository(
+    ref.watch(alongSupabaseProvider),
+    ref.watch(alongDatabaseProvider),
+  );
+});
+
+final journeyRepositoryProvider = Provider<JourneyRepository>((ref) {
+  return JourneyRepository(
+    ref.watch(alongSupabaseProvider),
+    ref.watch(walkingDirectionsRepositoryProvider),
+  );
+});
+
+final riderPrefsStoreProvider = Provider<RiderPrefsStore>((ref) {
+  return RiderPrefsStore(ref.watch(alongDatabaseProvider));
+});
+
+final wayfindingTtsProvider = Provider<WayfindingTts>((ref) {
+  return FlutterWayfindingTts();
+});
+
 final ambientChannelProvider = Provider<AmbientChannel>((ref) {
   throw UnimplementedError(
     'ambientChannelProvider must be overridden at startup',
@@ -92,6 +117,7 @@ List<Override> buildProviderOverrides({
   LocationStreamSource? locationStreamSource,
   RecentPlacesReader? recentPlacesStore,
   Clock? clock,
+  WayfindingTts? wayfindingTts,
 }) {
   return [
     appConfigProvider.overrideWithValue(config),
@@ -107,5 +133,7 @@ List<Override> buildProviderOverrides({
     if (recentPlacesStore != null)
       recentPlacesStoreProvider.overrideWithValue(recentPlacesStore),
     if (clock != null) clockProvider.overrideWithValue(clock),
+    if (wayfindingTts != null)
+      wayfindingTtsProvider.overrideWithValue(wayfindingTts),
   ];
 }
