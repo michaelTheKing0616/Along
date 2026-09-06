@@ -219,6 +219,15 @@
     }
   },
   "incomingRequestPickup": "Pickup",
+  "incomingRequestRoamingPickup": "Rider location",
+  "incomingRequestRoamingPickupMeta": "Cell hail — meet at pin",
+  "incomingRequestCascade": "Retry {attempt} of {max}",
+  "@incomingRequestCascade": {
+    "placeholders": {
+      "attempt": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
   "incomingRequestDropoff": "Drop-off",
   "incomingRequestPickupMeta": "{distance} m · {eta} min",
   "@incomingRequestPickupMeta": {
@@ -260,5 +269,15 @@
   "fareTierStandard": "Standard fare",
   "fareTierCommunity": "Community fare",
   "fareTierProfile": "Driver price",
-  "fareTierEstimate": "Estimate — agree price"
+  "fareTierEstimate": "Estimate — agree price",
+  "pricingRiderOffer": "Rider offered {amount}",
+  "@pricingRiderOffer": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "pricingLapsed": "No agreement — rider may choose another vehicle",
+  "pricingOutOfRange": "Vehicle has passed — negotiation closed",
+  "pricingDeclined": "You declined this fare",
+  "pricingDismiss": "Back to map"
 }

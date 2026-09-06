@@ -19,6 +19,7 @@ class IncomingRequestState {
     this.isResponding = false,
     this.showDeclineReasons = false,
     this.errorMessage,
+    this.maxCascade = 3,
   });
 
   final TripSummary trip;
@@ -28,6 +29,7 @@ class IncomingRequestState {
   final bool isResponding;
   final bool showDeclineReasons;
   final String? errorMessage;
+  final int maxCascade;
 
   Money get alongFee => computeAlongCommission(trip.totalFare, commissionRate);
 
@@ -39,6 +41,7 @@ class IncomingRequestState {
     bool? isResponding,
     bool? showDeclineReasons,
     String? errorMessage,
+    int? maxCascade,
     bool clearError = false,
   }) {
     return IncomingRequestState(
@@ -49,6 +52,7 @@ class IncomingRequestState {
       isResponding: isResponding ?? this.isResponding,
       showDeclineReasons: showDeclineReasons ?? this.showDeclineReasons,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      maxCascade: maxCascade ?? this.maxCascade,
     );
   }
 }
@@ -136,6 +140,8 @@ class IncomingRequestNotifier extends Notifier<IncomingRequestState?> {
     );
     final requestTtlS =
         (await configRepo.configNum('dispatch.request_ttl_s')).round();
+    final maxCascade =
+        (await configRepo.configNum('dispatch.max_cascade')).round();
 
     _startCountdown(trip.expiresAt, requestTtlS);
 
@@ -144,6 +150,7 @@ class IncomingRequestNotifier extends Notifier<IncomingRequestState?> {
       commissionRate: commissionRate,
       requestTtlS: requestTtlS,
       remainingSeconds: _secondsRemaining(trip.expiresAt),
+      maxCascade: maxCascade,
     );
   }
 

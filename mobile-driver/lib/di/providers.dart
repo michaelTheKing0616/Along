@@ -9,8 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
+import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
 import 'package:mobile_driver/testing/fakes/fake_driver_channel.dart';
+import 'package:mobile_driver/testing/fakes/fake_negotiation_channel.dart';
 import 'package:path_provider/path_provider.dart';
 
 final appConfigProvider = Provider<AppConfig>((ref) {
@@ -49,6 +51,16 @@ final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
   return TripsRepository(
     ref.watch(alongSupabaseProvider),
     ref.watch(alongDatabaseProvider),
+  );
+});
+
+final negotiationRepositoryProvider = Provider<NegotiationRepository>((ref) {
+  return NegotiationRepository(ref.watch(alongSupabaseProvider));
+});
+
+final negotiationChannelProvider = Provider<NegotiationChannel>((ref) {
+  throw UnimplementedError(
+    'negotiationChannelProvider must be overridden at startup',
   );
 });
 
@@ -151,6 +163,7 @@ List<Override> buildProviderOverrides({
   Clock? clock,
   DriverChannel? driverChannel,
   PushService? pushService,
+  NegotiationChannel? negotiationChannel,
 }) {
   return [
     appConfigProvider.overrideWithValue(config),
@@ -160,6 +173,9 @@ List<Override> buildProviderOverrides({
     ),
     driverChannelProvider.overrideWithValue(
       driverChannel ?? FakeDriverChannel(),
+    ),
+    negotiationChannelProvider.overrideWithValue(
+      negotiationChannel ?? FakeNegotiationChannel(),
     ),
     pushServiceProvider.overrideWithValue(
       pushService ?? StubPushService(),

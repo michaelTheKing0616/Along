@@ -50,6 +50,7 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
         supabase: supabase,
         database: await AlongDatabase.open(fileName: 'driver.db'),
         driverChannel: SupabaseDriverChannel(Supabase.instance.client),
+        negotiationChannel: SupabaseNegotiationChannel(Supabase.instance.client),
         pushService: StubPushService(),
       ),
       driverForegroundNotifierProvider.overrideWithValue(

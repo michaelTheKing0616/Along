@@ -26,6 +26,8 @@ class TripSummary {
     this.alight = const TripAlightStop(name: ''),
     this.load = const TripLoadInfo(flagged: false),
     this.womenOnly = false,
+    this.dispatchAttempt = 1,
+    this.isRoamingHail = false,
   });
 
   final String tripId;
@@ -41,6 +43,8 @@ class TripSummary {
   final TripAlightStop alight;
   final TripLoadInfo load;
   final bool womenOnly;
+  final int dispatchAttempt;
+  final bool isRoamingHail;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||

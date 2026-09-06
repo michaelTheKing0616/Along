@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart' hide FareTier, formatMoney;
+import 'package:along_design/src/utils/fare_tier.dart' as design_fare;
 import 'package:flutter/material.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
@@ -43,6 +44,29 @@ class IncomingRequestSheet extends StatelessWidget {
                     l10n.incomingRequestTitle,
                     style: AlongText.heading2,
                   ),
+                  if (state.trip.dispatchAttempt > 1) ...[
+                    const SizedBox(width: AlongSpace.s8),
+                    Container(
+                      key: const Key('incoming_request_cascade_badge'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AlongSpace.s8,
+                        vertical: AlongSpace.s4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AlongColors.semanticInfoTint,
+                        borderRadius: BorderRadius.circular(AlongRadius.xs.x),
+                      ),
+                      child: Text(
+                        l10n.incomingRequestCascade(
+                          state.trip.dispatchAttempt,
+                          state.maxCascade,
+                        ),
+                        style: AlongText.caption.copyWith(
+                          color: AlongColors.semanticInfo,
+                        ),
+                      ),
+                    ),
+                  ],
                   const Spacer(),
                   SizedBox(
                     width: 48,
@@ -90,14 +114,18 @@ class IncomingRequestSheet extends StatelessWidget {
               const SizedBox(height: AlongSpace.s16),
               _LocationRow(
                 icon: Icons.trip_origin,
-                label: l10n.incomingRequestPickup,
+                label: state.trip.isRoamingHail
+                    ? l10n.incomingRequestRoamingPickup
+                    : l10n.incomingRequestPickup,
                 value: trip.board.name,
                 meta: trip.board.walkM > 0 || trip.board.walkS > 0
                     ? l10n.incomingRequestPickupMeta(
                         trip.board.walkM,
                         (trip.board.walkS / 60).ceil().clamp(1, 999),
                       )
-                    : null,
+                    : state.trip.isRoamingHail
+                        ? l10n.incomingRequestRoamingPickupMeta
+                        : null,
               ),
               const SizedBox(height: AlongSpace.s8),
               _LocationRow(
@@ -128,12 +156,24 @@ class IncomingRequestSheet extends StatelessWidget {
                 ),
               ],
               const SizedBox(height: AlongSpace.s16),
-              Text(
-                l10n.incomingRequestFareLine(
-                  formatMoney(trip.totalFare),
-                  _fareTierLabel(l10n, trip.fare.tier),
-                ),
-                style: AlongText.body,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.incomingRequestFareLine(
+                        formatMoney(trip.totalFare),
+                        _fareTierLabel(l10n, trip.fare.tier),
+                      ),
+                      style: AlongText.body,
+                    ),
+                  ),
+                  if (trip.fare.unconfirmed)
+                    TierPill(
+                      key: const Key('incoming_request_estimate_pill'),
+                      tier: _designTier(trip.fare.tier),
+                    ),
+                ],
               ),
               const SizedBox(height: AlongSpace.s4),
               Text(
@@ -205,6 +245,13 @@ class IncomingRequestSheet extends StatelessWidget {
         FareTier.summedLegs => l10n.fareTierCommunity,
         FareTier.driverProfile => l10n.fareTierProfile,
         FareTier.unconfirmed => l10n.fareTierEstimate,
+      };
+
+  design_fare.FareTier _designTier(FareTier tier) => switch (tier) {
+        FareTier.throughFare => design_fare.FareTier.verified,
+        FareTier.summedLegs => design_fare.FareTier.crowd,
+        FareTier.driverProfile => design_fare.FareTier.candidate,
+        FareTier.unconfirmed => design_fare.FareTier.estimate,
       };
 }
 

@@ -417,6 +417,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get incomingRequestPickup => 'Pickup';
 
   @override
+  String get incomingRequestRoamingPickup => 'Rider location';
+
+  @override
+  String get incomingRequestRoamingPickupMeta => 'Cell hail — meet at pin';
+
+  @override
+  String incomingRequestCascade(int attempt, int max) {
+    return 'Retry $attempt of $max';
+  }
+
+  @override
   String get incomingRequestDropoff => 'Drop-off';
 
   @override
@@ -477,4 +488,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fareTierEstimate => 'Estimate — agree price';
+
+  @override
+  String pricingRiderOffer(String amount) {
+    return 'Rider offered $amount';
+  }
+
+  @override
+  String get pricingLapsed => 'No agreement — rider may choose another vehicle';
+
+  @override
+  String get pricingOutOfRange => 'Vehicle has passed — negotiation closed';
+
+  @override
+  String get pricingDeclined => 'You declined this fare';
+
+  @override
+  String get pricingDismiss => 'Back to map';
 }
