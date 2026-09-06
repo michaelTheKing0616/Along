@@ -16,6 +16,7 @@ with required_global as (
     'ledger.onboarding_deposit',
     'dispatch.request_ttl_s',
     'dispatch.max_cascade',
+    'dispatch.candidate_token_ttl_s',
     'planner.max_legs',
     'planner.max_candidates',
     'planner.walk_radius_m',
