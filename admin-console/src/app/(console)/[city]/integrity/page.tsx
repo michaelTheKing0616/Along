@@ -2,8 +2,10 @@ import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { sortFlagsByScore } from '@/lib/integrity/format';
 import type { IntegrityFlagRow } from '@/lib/integrity/types';
-import { createClient } from '@/lib/supabase/server';
+import { checkAdminRole, createClient } from '@/lib/supabase/server';
 import { IntegrityQueue } from './integrity-queue';
+
+const ACTION_FLAG_ROLES = ['superadmin', 'ops_lead', 'finance'] as const;
 
 interface PageProps {
   params: Promise<{ city: string }>;
@@ -109,6 +111,7 @@ export default async function IntegrityPage({ params }: PageProps) {
   const city = await getCityBySlug(citySlug);
   const queue = city ? await loadIntegrityQueue(city.id) : [];
   const selectedId = queue.find((r) => r.status === 'open')?.id ?? queue[0]?.id ?? null;
+  const canActionFlag = await checkAdminRole(ACTION_FLAG_ROLES);
 
   return (
     <>
@@ -125,7 +128,12 @@ export default async function IntegrityPage({ params }: PageProps) {
         </div>
       ) : null}
       <ConsoleNav city={citySlug} />
-      <IntegrityQueue citySlug={citySlug} initialRows={queue} initialSelectedId={selectedId} />
+      <IntegrityQueue
+        citySlug={citySlug}
+        initialRows={queue}
+        initialSelectedId={selectedId}
+        canActionFlag={canActionFlag}
+      />
     </>
   );
 }

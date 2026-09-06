@@ -11,12 +11,14 @@ interface IntegrityQueueProps {
   citySlug: string;
   initialRows: IntegrityFlagRow[];
   initialSelectedId: string | null;
+  canActionFlag: boolean;
 }
 
 export function IntegrityQueue({
   citySlug,
   initialRows,
   initialSelectedId,
+  canActionFlag,
 }: IntegrityQueueProps) {
   const [rows, setRows] = useState(initialRows);
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
@@ -197,20 +199,32 @@ export function IntegrityQueue({
                     >
                       Clear
                     </button>
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      disabled={pending}
-                      data-testid="action-flag"
-                      onClick={() => {
-                        setShowStandingDialog(true);
-                        setReason(
-                          `Integrity review — ${flagTypeLabel(selected.flag_type)} (score ${scorePct(selected.score)})`
-                        );
-                      }}
-                    >
-                      Action
-                    </button>
+                    {canActionFlag ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={pending}
+                        data-testid="action-flag"
+                        onClick={() => {
+                          setShowStandingDialog(true);
+                          setReason(
+                            `Integrity review — ${flagTypeLabel(selected.flag_type)} (score ${scorePct(selected.score)})`
+                          );
+                        }}
+                      >
+                        Action
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        disabled
+                        data-testid="action-flag"
+                        title="Standing action requires ops lead or finance role"
+                      >
+                        Action
+                      </button>
+                    )}
                     <div className="field" style={{ marginBottom: 0 }}>
                       <label htmlFor="integrity-note">Note</label>
                       <input
@@ -223,7 +237,7 @@ export function IntegrityQueue({
                     </div>
                   </div>
 
-                  {showStandingDialog ? (
+                  {canActionFlag && showStandingDialog ? (
                     <div
                       className="card"
                       data-testid="standing-dialog"
