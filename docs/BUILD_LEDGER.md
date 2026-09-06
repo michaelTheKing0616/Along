@@ -636,9 +636,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: Used registered key negotiation.roaming.pickup_radius_m (not doc 02's shorter name). Radius lapse needs rider_location lat/lng. Merged 4c5bfc5.
 
 ## [Phase 2 / P2-A-03] Roaming hail + dispatch cascade
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Migration 00025 HMAC tokens + hail_roaming + dispatch cascade; TS-DISC-05 4/4; TS-DISC-06 7/7; Deno 3/3.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Restrict sign_candidate_token to service_role in a follow-up. Merged 4652fbb.
+
+## [Phase 2 / P2-A-04] Journeys multi-trip
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Unblocks P2-B-02 and P2-C-01 (with A-02).
+- Notes/escalations: Unblocks P2-B-01 (with A-01 + A-07).
