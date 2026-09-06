@@ -662,7 +662,7 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 ## [Phase 2 / P2-B-01] Multi-leg rider UI
 - Status: FAIL
 - Assigned: 2026-09-05
-- Worker report summary: R-07/14/19 + TTS ADR-0020; 7 widget tests + TS-UI-01 pass. Literal 3s poll in ActiveJourneyMonitor.
-- Reviewer verdict: FAIL
-- Rework count: 0
-- Notes/escalations: Must-fix: poll interval from app_config; arrived radius reuse boarding.colocation_radius_m (do not invent wayfinding.arrived_radius_m). Rework 1 of 2.
+- Worker report summary: Rework 1 closed poll/radius. ADR-0016 lists still missing client.trip_poll_interval_s.
+- Reviewer verdict: FAIL (re-review)
+- Rework count: 1
+- Notes/escalations: Must-fix: add client.trip_poll_interval_s to TS-CFG-02.sql and app_config_keys.sql. Rework 2 of 2.
