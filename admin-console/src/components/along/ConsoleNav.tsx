@@ -10,6 +10,7 @@ const LINKS = [
   { segment: 'graph', label: 'Graph editor' },
   { segment: 'deploy', label: 'City playbook' },
   { segment: 'verification', label: 'Verification' },
+  { segment: 'corrections', label: 'Fare corrections' },
   { segment: 'finance', label: 'Finance' },
   { segment: 'safety', label: 'Safety' },
   { segment: 'audit', label: 'Audit' },

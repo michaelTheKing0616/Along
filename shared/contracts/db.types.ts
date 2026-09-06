@@ -2100,6 +2100,10 @@ export type Database = {
         Args: { p_verification_id: string }
         Returns: Json
       }
+      admin_review_fare_correction: {
+        Args: { id: string; action: string; note?: string }
+        Returns: Json
+      }
       admin_publish_field_entity: {
         Args: { p_reconciliation_id: string }
         Returns: Json
