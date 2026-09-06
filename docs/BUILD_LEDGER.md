@@ -926,3 +926,19 @@ Product-owner asked the planner to "grant the sign-offs." **Refused.** P4-E-02 i
 
 P1-G-01 still blocks Phase 7 only.
 **Escalations:** none — this *is* the escalation outcome.
+
+## [Phase 4 / Decision] Continue remaining Phase 4 UI; E-02 still refused
+- Status: PASS
+- Assigned: 2026-09-06
+- Worker report summary: Owner continue through B-02 → C-02 → D-02 → E-03 then Phase 4 code gate then Phase 5. P4-E-02 remains NOT PASS.
+- Reviewer verdict: n/a (owner decision)
+- Rework count: 0
+- Notes/escalations: Flag stays false. Cash-only / flag-gated UI only. No production QR stickers. No real rider charge. Do not flip digital_enabled until counsel memo as P4-E-02 PASS AND P1-G-01 PASS. Do not start Phase 7 until P1-G-01 PASS.
+
+## [Phase 4 / P4-B-02] Rider pay / scan / methods
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Flag-gated / cash-only UI. Absorb A-09 follow-ups (CONFLICT payment_id + expired token). Live-device: deferred to P1-G-01. Do not flip digital_enabled.
