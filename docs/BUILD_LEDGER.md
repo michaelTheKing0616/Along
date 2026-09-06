@@ -644,9 +644,17 @@ Phase 2 continues with tasks that do not depend on P2-E-02. P1-G-01 still depend
 - Notes/escalations: Restrict sign_candidate_token to service_role in a follow-up. Merged 4652fbb.
 
 ## [Phase 2 / P2-A-04] Journeys multi-trip
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-05
+- Worker report summary: Migration 00026 journey SM + transfer-prefetch Edge; TS-TRIP-07 5/5; Deno 2/2.
+- Reviewer verdict: PASS WITH NOTES
+- Rework count: 0
+- Notes/escalations: Partial trip_transition (boarded/in_transit/completed) for journey advance — P3-A-01 must not duplicate. journey.* keys not in doc 02 §2.3. Merged b8092f9.
+
+## [Phase 2 / P2-A-05] Speed-profile hook
 - Status: IN PROGRESS
 - Assigned: 2026-09-05
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Unblocks P2-B-01 (with A-01 + A-07).
+- Notes/escalations: Size S. Table created now, populated in P7.
