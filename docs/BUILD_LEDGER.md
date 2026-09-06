@@ -878,9 +878,9 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 - Notes/escalations: Split at source (ADR-0010). Persist payout_subaccount_code + payout_bank_last4 only. set_payout_bank requires OTP re-auth. Driver without subaccount → digital option hidden. Split amounts equal fare − commission / commission to the minor unit. Live-device deferred to P1-G-01. P1-G-01 still blocks Phase 7 only.
 
 ## [Phase 4 / P4-A-08] Paystack subaccounts
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: Next migration 00046. Do not flip payments.digital_enabled. Live-device: deferred to P1-G-01.
+- Worker report summary: payouts/set-bank + persist last4/subaccount; split kobo tests; reconcile_split_settlements. Deno 14/14, pgTAP 9/9. digital_enabled unchanged.
+- Reviewer verdict: FAIL — acceptance MET; `shared/contracts/db.types.ts` corrupted with Supabase CLI stdout (`Connecting to db 5432` + upgrade banner). Typecheck broken.
+- Rework count: 1 / 2
+- Notes/escalations: Minimal fix: regenerate `db.types.ts` cleanly. Live-device: deferred to P1-G-01. Do not flip digital_enabled.
