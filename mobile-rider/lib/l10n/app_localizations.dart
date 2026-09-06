@@ -406,21 +406,39 @@ abstract class AppLocalizations {
   String get tripOptionsAgreePricePlaceholder;
 
   /// R-16 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Along Pricing'**
   String get pricingTitle;
 
   /// R-16 lapsed terminal state
+  ///
+  /// In en, this message translates to:
+  /// **'No agreement — try another vehicle'**
   String get pricingLapsed;
 
   /// R-16 roaming out-of-range terminal state
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle has passed'**
   String get pricingOutOfRange;
 
   /// R-16 declined/skipped terminal state
+  ///
+  /// In en, this message translates to:
+  /// **'Offer declined'**
   String get pricingDeclined;
 
   /// R-16 inline driver response
+  ///
+  /// In en, this message translates to:
+  /// **'Driver offered {amount}'**
   String pricingDriverOffer(String amount);
 
   /// Destination pick after hail-from-cell tap
+  ///
+  /// In en, this message translates to:
+  /// **'Where are you going?'**
   String get hailSearchTitle;
 
   /// R-07 undo toast while commit window is open
@@ -716,6 +734,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No steps available'**
   String get wayfindingNoSteps;
+
+  /// R-11 driver ETA line
+  ///
+  /// In en, this message translates to:
+  /// **'Arriving in ~{minutes} min'**
+  String meetVehicleArrivingIn(int minutes);
+
+  /// R-11 walk-to-boarding line
+  ///
+  /// In en, this message translates to:
+  /// **'Walk {minutes} min to {park}'**
+  String meetVehicleWalkTo(int minutes, String park);
+
+  /// R-11 Na Me chip caption
+  ///
+  /// In en, this message translates to:
+  /// **'Show this to your driver — {label}'**
+  String meetVehicleNaMeHint(String label);
+
+  /// R-11 driver offline > threshold
+  ///
+  /// In en, this message translates to:
+  /// **'Driver signal lost'**
+  String get meetVehicleDriverSignalLost;
+
+  /// R-11 realtime heartbeat stale
+  ///
+  /// In en, this message translates to:
+  /// **'Live updates paused'**
+  String get meetVehicleLivePaused;
+
+  /// R-11 share placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Share trip'**
+  String get meetVehicleShare;
+
+  /// R-11 cancel when driver offline
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get meetVehicleCancel;
+
+  /// R-11 manual boarding override
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve boarded'**
+  String get meetVehicleBoarded;
+
+  /// R-13 sheet peek line
+  ///
+  /// In en, this message translates to:
+  /// **'In transit · ETA {minutes} min · {fare} Standard fare'**
+  String activeTripStatus(int minutes, String fare);
+
+  /// R-13 extend placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Extend'**
+  String get activeTripExtend;
+
+  /// R-13 share placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get activeTripShare;
+
+  /// R-13 report placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get activeTripReport;
+
+  /// R-25 placeholder snackbar
+  ///
+  /// In en, this message translates to:
+  /// **'Share trip — coming in Phase 5'**
+  String get sharePlaceholder;
+
+  /// R-23 placeholder snackbar
+  ///
+  /// In en, this message translates to:
+  /// **'SOS — coming in Phase 5'**
+  String get sosPlaceholder;
+
+  /// R-15 placeholder snackbar
+  ///
+  /// In en, this message translates to:
+  /// **'Extend trip — coming in Phase 5'**
+  String get extendPlaceholder;
+
+  /// R-24 placeholder snackbar
+  ///
+  /// In en, this message translates to:
+  /// **'Report incident — coming in Phase 5'**
+  String get reportPlaceholder;
 }
 
 class _AppLocalizationsDelegate

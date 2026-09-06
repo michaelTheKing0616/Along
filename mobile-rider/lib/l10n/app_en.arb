@@ -530,5 +530,83 @@
   "wayfindingNoSteps": "No steps available",
   "@wayfindingNoSteps": {
     "description": "R-19 empty steps fallback"
+  },
+  "meetVehicleArrivingIn": "Arriving in ~{minutes} min",
+  "@meetVehicleArrivingIn": {
+    "description": "R-11 driver ETA line",
+    "placeholders": {
+      "minutes": { "type": "int", "example": "2" }
+    }
+  },
+  "meetVehicleWalkTo": "Walk {minutes} min to {park}",
+  "@meetVehicleWalkTo": {
+    "description": "R-11 walk-to-boarding line",
+    "placeholders": {
+      "minutes": { "type": "int", "example": "3" },
+      "park": { "type": "String", "example": "Lugbe Park" }
+    }
+  },
+  "meetVehicleNaMeHint": "Show this to your driver — {label}",
+  "@meetVehicleNaMeHint": {
+    "description": "R-11 Na Me chip caption",
+    "placeholders": {
+      "label": { "type": "String", "example": "GREEN DIAMOND" }
+    }
+  },
+  "meetVehicleDriverSignalLost": "Driver signal lost",
+  "@meetVehicleDriverSignalLost": {
+    "description": "R-11 driver offline > threshold"
+  },
+  "meetVehicleLivePaused": "Live updates paused",
+  "@meetVehicleLivePaused": {
+    "description": "R-11 realtime heartbeat stale"
+  },
+  "meetVehicleShare": "Share trip",
+  "@meetVehicleShare": {
+    "description": "R-11 share placeholder"
+  },
+  "meetVehicleCancel": "Cancel",
+  "@meetVehicleCancel": {
+    "description": "R-11 cancel when driver offline"
+  },
+  "meetVehicleBoarded": "I've boarded",
+  "@meetVehicleBoarded": {
+    "description": "R-11 manual boarding override"
+  },
+  "activeTripStatus": "In transit · ETA {minutes} min · {fare} Standard fare",
+  "@activeTripStatus": {
+    "description": "R-13 sheet peek line",
+    "placeholders": {
+      "minutes": { "type": "int", "example": "14" },
+      "fare": { "type": "String", "example": "₦450" }
+    }
+  },
+  "activeTripExtend": "Extend",
+  "@activeTripExtend": {
+    "description": "R-13 extend placeholder"
+  },
+  "activeTripShare": "Share",
+  "@activeTripShare": {
+    "description": "R-13 share placeholder"
+  },
+  "activeTripReport": "Report",
+  "@activeTripReport": {
+    "description": "R-13 report placeholder"
+  },
+  "sharePlaceholder": "Share trip — coming in Phase 5",
+  "@sharePlaceholder": {
+    "description": "R-25 placeholder snackbar"
+  },
+  "sosPlaceholder": "SOS — coming in Phase 5",
+  "@sosPlaceholder": {
+    "description": "R-23 placeholder snackbar"
+  },
+  "extendPlaceholder": "Extend trip — coming in Phase 5",
+  "@extendPlaceholder": {
+    "description": "R-15 placeholder snackbar"
+  },
+  "reportPlaceholder": "Report incident — coming in Phase 5",
+  "@reportPlaceholder": {
+    "description": "R-24 placeholder snackbar"
   }
 }

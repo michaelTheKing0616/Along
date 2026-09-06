@@ -36,8 +36,29 @@ class DomainMappers {
         tripCount: (json['trip_count'] as num?)?.toInt() ?? 0,
       );
 
+  static DriverPreview driverFromDto(Map<String, dynamic> json) => DriverPreview(
+        displayName: json['display_name'] as String? ?? '',
+        rating: (json['rating'] as num?)?.toDouble() ?? 0,
+        tripCount: (json['trips_completed'] as num?)?.toInt() ?? 0,
+        photoUrl: json['photo_url'] as String?,
+      );
+
+  static VehiclePreview vehicleFromDto(Map<String, dynamic> json) =>
+      VehiclePreview(
+        plateNumber: json['plate_number'] as String? ?? '',
+        color: json['color'] as String? ?? '',
+        makeModel: json['make_model'] as String? ?? '',
+        seatCapacity: (json['seat_capacity'] as num?)?.toInt() ?? 4,
+      );
+
+  static TripLiveSnapshot? liveFromJson(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    return TripLiveSnapshot.fromJson(json);
+  }
+
   static TripBoardStop boardFromDto(dto.BoardStop board) => TripBoardStop(
         name: board.name,
+        location: GeoPoint(lat: board.location.lat, lng: board.location.lng),
         walkM: board.walk_m,
         walkS: board.walk_s,
       );
@@ -51,7 +72,10 @@ class DomainMappers {
         note: load.note,
       );
 
-  static TripSummary tripFromDto(dto.TripView view) {
+  static TripSummary tripFromDto(
+    dto.TripView view, {
+    Map<String, dynamic>? raw,
+  }) {
     final status = TripStatus.tryParse(view.status);
     if (status == null) {
       throw AlongException(
@@ -59,6 +83,10 @@ class DomainMappers {
         message: 'Unknown trip status: ${view.status}',
       );
     }
+    final extension = raw?['extension'];
+    final etaMinutes = extension is Map<String, dynamic>
+        ? (extension['eta_minutes'] as num?)?.toInt()
+        : null;
     return TripSummary(
       tripId: view.trip_id,
       journeyId: view.journey_id,
@@ -69,10 +97,16 @@ class DomainMappers {
       liveChannel: view.live_channel,
       expiresAt: DateTime.parse(view.expires_at),
       rider: riderFromDto(view.rider),
+      driver: driverFromDto(view.driver),
+      vehicle: vehicleFromDto(view.vehicle),
       board: boardFromDto(view.board),
       alight: alightFromDto(view.alight),
       load: loadFromDto(view.load),
       womenOnly: view.women_only,
+      live: liveFromJson(raw?['live']),
+      modeCode: view.mode.code,
+      modeLabel: view.mode.label,
+      etaMinutes: etaMinutes,
       dispatchAttempt: _dispatchAttemptFromTripJson(view),
       isRoamingHail: _isRoamingHailFromTripJson(view),
     );
