@@ -20,4 +20,6 @@ abstract final class AppRoutes {
   static const manifest = '/manifest';
   static const activeTrip = '/trip/active';
   static const naMe = '/trip/na-me';
+  static const myQr = '/account/my-qr';
+  static const paymentRequest = '/trip/payment-request';
 }

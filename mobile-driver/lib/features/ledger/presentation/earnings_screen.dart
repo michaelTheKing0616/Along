@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/payments/data/payments_providers.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
@@ -19,6 +20,7 @@ class EarningsScreen extends ConsumerWidget {
     final ledger = ref.watch(driverLedgerControllerProvider);
     final entriesAsync = ref.watch(earningsLedgerPageProvider);
     final cashTripsAsync = ref.watch(earningsCashTripsProvider);
+    final digitalPaymentsAsync = ref.watch(driverDigitalPaymentsProvider);
 
     return Scaffold(
       key: const Key('earnings_screen'),
@@ -38,6 +40,7 @@ class EarningsScreen extends ConsumerWidget {
           await ref.read(driverLedgerControllerProvider.notifier).refresh();
           ref.invalidate(earningsLedgerPageProvider);
           ref.invalidate(earningsCashTripsProvider);
+          ref.invalidate(driverDigitalPaymentsProvider);
         },
         child: ListView(
           padding: const EdgeInsets.all(AlongSpace.s16),
@@ -125,6 +128,49 @@ class EarningsScreen extends ConsumerWidget {
                             ),
                             Text(
                               formatMoney(trip.fare),
+                              style: AlongText.numericM,
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+              },
+              loading: () => const AlongSkeleton(variant: SkeletonVariant.line),
+              error: (_, __) => Text(l10n.errorGeneric),
+            ),
+            const SizedBox(height: AlongSpace.s24),
+            Text(l10n.earningsDigitalSection, style: AlongText.overline),
+            const SizedBox(height: AlongSpace.s4),
+            Text(
+              l10n.earningsDigitalCaption,
+              style: AlongText.caption.copyWith(color: AlongColors.ink500),
+            ),
+            const SizedBox(height: AlongSpace.s8),
+            digitalPaymentsAsync.when(
+              data: (payments) {
+                if (payments.isEmpty) {
+                  return Text(
+                    l10n.earningsDigitalEmpty,
+                    style: AlongText.body.copyWith(color: AlongColors.ink500),
+                  );
+                }
+                return Column(
+                  key: const Key('earnings_digital_list'),
+                  children: [
+                    for (final payment in payments.take(20))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                l10n.earningsDigitalRow(payment.source),
+                                style: AlongText.body,
+                              ),
+                            ),
+                            Text(
+                              formatMoney(payment.driverAmount),
                               style: AlongText.numericM,
                             ),
                           ],

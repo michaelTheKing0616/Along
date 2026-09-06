@@ -46,6 +46,7 @@ class TripSummary {
     this.modeLabel = 'Car',
     this.etaMinutes,
     this.pendingExtension,
+    this.paymentMethod,
   });
 
   final String tripId;
@@ -70,6 +71,7 @@ class TripSummary {
   final String modeLabel;
   final int? etaMinutes;
   final TripExtensionProposal? pendingExtension;
+  final String? paymentMethod;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||

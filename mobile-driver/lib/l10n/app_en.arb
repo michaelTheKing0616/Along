@@ -415,5 +415,69 @@
   "tripCompleteDifferent": "Different amount",
   "tripCompleteDifferentPrompt": "How much did you receive?",
   "tripCompleteRateTitle": "Rate your rider",
-  "tripCompleteDone": "Done"
+  "tripCompleteDone": "Done",
+  "requestPayment": "Request payment",
+  "tripCompleteDigitalLine": "Paid digitally · {amount} sent to your bank",
+  "@tripCompleteDigitalLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "tripCompleteDigitalFeeLine": "Along fee {amount} already deducted",
+  "@tripCompleteDigitalFeeLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "myQrTitle": "My QR code",
+  "myQrAccountSubtitle": "Share your code for digital payments",
+  "myQrDigitalDisabledBanner": "Digital payments are not live yet — your QR is for setup and testing only.",
+  "myQrPayoutPrompt": "Set up payout bank",
+  "myQrPayoutHint": "Add your bank account so riders can pay you digitally. Along never holds your money.",
+  "myQrSetupPayout": "Set up payout bank",
+  "myQrPayoutComingSoon": "Payout setup opens from Account once digital payments go live.",
+  "myQrShare": "Share as image",
+  "myQrOrderSticker": "Order printed sticker",
+  "myQrStickerStatus": "Sticker request: {status}",
+  "@myQrStickerStatus": {
+    "placeholders": { "status": {"type": "String"} }
+  },
+  "myQrVerifySticker": "Verify my sticker",
+  "myQrVerifyMatch": "Sticker matches your code and plate",
+  "myQrVerifyMismatch": "This sticker does not match your account",
+  "myQrVerifyInvalid": "Not a valid Along QR code",
+  "myQrVerifyTimeout": "Scan timed out — try again",
+  "myQrPauseDigital": "Pause digital payments",
+  "myQrPauseDigitalHint": "Riders will see cash only while paused",
+  "myQrPausedBanner": "Digital payments are paused — riders see cash only",
+  "myQrRotate": "Rotate code",
+  "myQrRotateConfirmTitle": "Rotate QR code?",
+  "myQrRotateConfirmBody": "Your current stickers will stop working. Ops will need to print new ones.",
+  "myQrRotateCancel": "Cancel",
+  "myQrRotateConfirm": "Rotate",
+  "paymentRequestTitle": "Payment request",
+  "paymentRequestForRider": "For {riderName}",
+  "@paymentRequestForRider": {
+    "placeholders": { "riderName": {"type": "String"} }
+  },
+  "paymentRequestCountdown": "Expires in {seconds}s",
+  "@paymentRequestCountdown": {
+    "placeholders": { "seconds": {"type": "int"} }
+  },
+  "paymentRequestWaiting": "Waiting for payment…",
+  "paymentRequestPaidLine": "Paid {amount} ✓",
+  "@paymentRequestPaidLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "paymentRequestBankLine": "{amount} to your bank",
+  "@paymentRequestBankLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "paymentRequestDone": "Done",
+  "paymentRequestExpired": "This QR has expired — create a new one",
+  "paymentRequestDigitalDisabled": "Digital payments are not enabled yet",
+  "paymentRequestTokenError": "Could not verify payment QR — try again",
+  "earningsDigitalSection": "DIGITAL PAYMENTS RECEIVED",
+  "earningsDigitalCaption": "Paid straight to your bank — not part of your Along balance",
+  "earningsDigitalEmpty": "No digital payments yet",
+  "earningsDigitalRow": "Digital · {source}",
+  "@earningsDigitalRow": {
+    "placeholders": { "source": {"type": "String"} }
+  }
 }

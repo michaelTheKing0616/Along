@@ -118,6 +118,7 @@ class DomainMappers {
       pendingExtension: pendingExtension,
       dispatchAttempt: _dispatchAttemptFromTripJson(view),
       isRoamingHail: _isRoamingHailFromTripJson(view),
+      paymentMethod: view.payment_method ?? raw?['payment_method'] as String?,
     );
   }
 

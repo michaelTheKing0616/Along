@@ -6,6 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
+import 'package:mobile_driver/features/payments/data/payments_providers.dart';
+import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
+import 'package:mobile_driver/features/payments/presentation/payment_request_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
@@ -32,9 +35,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
       if (next.completeResult != null &&
           previous?.completeResult == null &&
           context.mounted) {
+        final paidDigitally = next.digitalPayment != null ||
+            next.completeResult!.trip.paymentMethod == 'digital';
         TripCompleteSheet.show(
           context,
           result: next.completeResult!,
+          paidDigitally: paidDigitally,
+          driverAmountReceived: next.digitalPayment?.driverAmount,
           onFinished: () {
             if (context.mounted) context.pop();
           },
@@ -47,6 +54,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     final controller =
         ref.read(activeTripControllerFamilyProvider(args).notifier);
     final appConfig = ref.watch(appConfigProvider);
+    final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider);
 
     final trip = state.trip;
     final entry = state.entry;
@@ -183,6 +191,29 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                   : () => controller.startTrip(),
                             ),
                           if (status == TripStatus.inTransit) ...[
+                            digitalEnabled.maybeWhen(
+                              data: (enabled) {
+                                if (!enabled) return const SizedBox.shrink();
+                                return Column(
+                                  children: [
+                                    AlongButton(
+                                      key: const Key('active_trip_request_payment'),
+                                      label: l10n.requestPayment,
+                                      variant: AlongButtonVariant.secondary,
+                                      onPressed: () => context.push(
+                                        AppRoutes.paymentRequest,
+                                        extra: PaymentRequestArgs(
+                                          tripId: args.tripId,
+                                          riderName: riderName,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: AlongSpace.s8),
+                                  ],
+                                );
+                              },
+                              orElse: () => const SizedBox.shrink(),
+                            ),
                             AlongButton(
                               key: const Key('active_trip_extend'),
                               label: l10n.extendTripTitle,

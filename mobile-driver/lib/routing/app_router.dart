@@ -15,6 +15,10 @@ import 'package:mobile_driver/features/routes/presentation/draw_route_screen.dar
 import 'package:mobile_driver/features/routes/presentation/fast_route_setup_screen.dart';
 import 'package:mobile_driver/features/routes/presentation/routes_list_screen.dart';
 import 'package:along_data/along_data.dart';
+import 'package:mobile_driver/features/account/presentation/account_screen.dart';
+import 'package:mobile_driver/features/payments/presentation/my_qr_screen.dart';
+import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
+import 'package:mobile_driver/features/payments/presentation/payment_request_screen.dart';
 import 'package:mobile_driver/features/shell/presentation/driver_shell_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/guarantor_screen.dart';
@@ -146,6 +150,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: AppRoutes.account,
                 builder: (context, state) => const AccountStubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'my-qr',
+                    builder: (context, state) => const MyQrScreen(),
+                  ),
+                ],
               ),
             ],
           ),
