@@ -848,7 +848,7 @@ Product-owner: unblock Phase 4; continue deferring P1-G-01 (emulator / device / 
 ## [Phase 4 / P4-C-01] Driver earnings / settle / standing
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: D-17–22 + D-08 blocked banner (TS-UI-05). Next migration 00043 if driver_balance / driver_ledger RPCs are missing. Labels human, never enum names. Live-device: deferred to P1-G-01. Do not flip digital_enabled. QR (D-25/26) is P4-C-02.
+- Worker report summary: Migrations 00043/00044, D-08–D-22 UI, ledger_ui_test 6/6. Nearby agents RPC added.
+- Reviewer verdict: FAIL — standing_screen.dart ambiguous Money import (D-21 does not compile); FakeAlongSupabase defaults matching_paused so home/incoming tests fail. ledger_ui_test and TS-LEDGER-11 independently PASS.
+- Rework count: 1 / 2
+- Notes/escalations: Live-device: deferred to P1-G-01. Rework: hide Money on along_data import; fake default good_standing / non-blocked; full mobile-driver suite green.
