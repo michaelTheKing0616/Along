@@ -9,6 +9,7 @@ import { STANDING_OPTIONS } from '@/lib/integrity/types';
 import {
   notifyGuarantor,
   postManualAdjustment,
+  rotateDriverCode,
   transitionDriverStanding,
 } from './actions';
 
@@ -47,12 +48,34 @@ export interface DriverDetailData {
   rating: number | null;
   rating_count: number;
   driver_code: string | null;
+  payout_subaccount_code: string | null;
+  accepts_digital: boolean;
   balance: number;
   currency: string;
   ledger: LedgerEntryRow[];
   transitions: StandingTransitionRow[];
   flags: IntegrityFlagRow[];
   guarantor: GuarantorRow | null;
+  qrPayments: QrPaymentRow[];
+  stickerRequests: StickerRequestRow[];
+}
+
+export interface QrPaymentRow {
+  id: string;
+  amount: number;
+  currency: string;
+  source: string;
+  status: string;
+  trip_id: string | null;
+  created_at: string;
+}
+
+export interface StickerRequestRow {
+  id: string;
+  driver_code: string;
+  reason: string;
+  status: string;
+  created_at: string;
 }
 
 type Tab = 'overview' | 'ledger' | 'standing' | 'flags' | 'guarantor' | 'payments';
@@ -346,10 +369,107 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
       ) : null}
 
       {tab === 'payments' ? (
-        <div className="card" data-testid="driver-payments-stub">
-          <p style={{ color: 'var(--color-text-muted)' }}>
-            QR payments, driver code rotation, and sticker requests — coming with P4-D-02.
-          </p>
+        <div data-testid="driver-payments">
+          <dl
+            className="card"
+            style={{
+              margin: 0,
+              marginBottom: 'var(--space-4)',
+              display: 'grid',
+              gridTemplateColumns: 'max-content 1fr',
+              gap: 'var(--space-2) var(--space-4)',
+              fontSize: '0.875rem',
+            }}
+          >
+            <dt style={{ color: 'var(--color-text-muted)' }}>Driver code</dt>
+            <dd style={{ margin: 0 }} data-testid="driver-payments-code">
+              {driver.driver_code ?? '—'}
+            </dd>
+            <dt style={{ color: 'var(--color-text-muted)' }}>Subaccount</dt>
+            <dd style={{ margin: 0 }} data-testid="driver-payments-subaccount">
+              {driver.payout_subaccount_code ? 'Active' : 'Not configured'}
+            </dd>
+            <dt style={{ color: 'var(--color-text-muted)' }}>Digital acceptance</dt>
+            <dd style={{ margin: 0 }} data-testid="driver-payments-digital">
+              {driver.accepts_digital && driver.payout_subaccount_code
+                ? 'Accepting QR / digital'
+                : 'Cash only / paused'}
+            </dd>
+          </dl>
+
+          <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
+            <h3 style={{ marginTop: 0 }}>Rotate code</h3>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+              Invalidates printed stickers and creates a reprint request.
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={pending || !driver.driver_code}
+              data-testid="rotate-driver-code"
+              onClick={() => runAction(() => rotateDriverCode(citySlug, driver.id))}
+            >
+              Rotate driver code
+            </button>
+          </div>
+
+          <section style={{ marginBottom: 'var(--space-6)' }}>
+            <h3>QR payments received</h3>
+            {driver.qrPayments.length === 0 ? (
+              <p style={{ color: 'var(--color-text-muted)' }}>No QR payments yet.</p>
+            ) : (
+              <table className="data-table" data-testid="driver-qr-payments">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Trip</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {driver.qrPayments.map((row) => (
+                    <tr key={row.id}>
+                      <td>{new Date(row.created_at).toLocaleString()}</td>
+                      <td>{formatMoney(row.amount, row.currency)}</td>
+                      <td>{row.source}</td>
+                      <td>{row.status}</td>
+                      <td>{row.trip_id ? 'Attributed' : 'Unattributed'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+
+          <section>
+            <h3>Sticker requests</h3>
+            {driver.stickerRequests.length === 0 ? (
+              <p style={{ color: 'var(--color-text-muted)' }}>No sticker requests.</p>
+            ) : (
+              <table className="data-table" data-testid="driver-sticker-requests">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Code</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {driver.stickerRequests.map((row) => (
+                    <tr key={row.id}>
+                      <td>{new Date(row.created_at).toLocaleString()}</td>
+                      <td>{row.driver_code}</td>
+                      <td>{row.reason}</td>
+                      <td>{row.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
         </div>
       ) : null}
     </div>

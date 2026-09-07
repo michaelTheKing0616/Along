@@ -41,3 +41,32 @@ export interface PayoutRow {
   created_at: string;
   confirmed_at: string | null;
 }
+
+export interface QrPaymentFinanceRow {
+  id: string;
+  driver_id: string;
+  driver_code: string | null;
+  amount: number;
+  currency: string;
+  source: string;
+  status: string;
+  trip_id: string | null;
+  commission_amount: number;
+  provider_fee: number | null;
+  fee_bearer: string;
+  created_at: string;
+}
+
+export interface FeeBearerReport {
+  fee_bearer: string;
+  payment_count: number;
+  commission_total: number;
+  provider_fee_total: number;
+}
+
+export interface StickerBatchDriver {
+  id: string;
+  driver_code: string;
+  plate: string | null;
+  pay_url: string;
+}

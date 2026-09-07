@@ -13,12 +13,12 @@ values (
 
 insert into auth.users (id, aud, role, phone) values
   ('b0000000-0000-4000-8000-000000000106', 'authenticated', 'authenticated', '+2348000000106'),
-  ('d1000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', '+2348000000201')
+  ('d1000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', '+2348000000299')
 on conflict (id) do nothing;
 
 insert into profiles (id, phone_e164, display_name) values
   ('b0000000-0000-4000-8000-000000000106', '+2348000000106', 'Finance Two'),
-  ('d1000000-0000-4000-8000-000000000001', '+2348000000201', 'E2E Finance Driver')
+  ('d1000000-0000-4000-8000-000000000001', '+2348000000299', 'E2E Finance Driver')
 on conflict (id) do update set display_name = excluded.display_name;
 
 insert into admin_users (id, role, deployment_id) values

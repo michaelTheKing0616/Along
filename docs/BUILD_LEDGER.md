@@ -960,9 +960,29 @@ P1-G-01 still blocks Phase 7 only.
 - Notes/escalations: Merged 5c99872. Live-device camera: deferred to P1-G-01. No production stickers printed.
 
 ## [Phase 4 / P4-D-02] W-04 web pay + admin QR ops
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-06
-- Worker report summary: W-04 /p/[code], A-11/A-13, STAGING PDF, ADR-0021. Vitest PDF PASS. Playwright not independently green.
-- Reviewer verdict: FAIL — check_playwright.sh 23/23 failed. W-04: PostgREST schema cache miss on resolve_qr_driver. Admin sign-in: Invalid email or password after stop/start. Flag still false. Paystack mocked in spec.
+- Worker report summary: W-04 /p/[code], A-11/A-13, STAGING PDF, ADR-0021. Rework: PostgREST reload, local env after .env.local, pdfkit, driver_vehicles RLS.
+- Reviewer verdict: PASS WITH NOTES (recheck) — W-04 #20–23 PASS independently; 22/23 overall. Note: verification.spec.ts heading collision (pre-existing). Flag still false. Paystack mocked.
 - Rework count: 1 / 2
-- Notes/escalations: Minimal fix: reload PostgREST after db reset; keep local Supabase env after .env.local so e2e users authenticate. Do not flip digital_enabled.
+- Notes/escalations: Merged (this commit). Live-device: deferred to P1-G-01. Do not print production stickers. Do not flip digital_enabled.
+
+---
+
+## [Planning] Spec §4.1.2/4.1.3 wait-decision + FM41–43 — parked for after P4-D-02
+**Date:** 2026-09-07
+Product-owner: coarse pre-accept approach band + post-accept walking-route ETA / one-tap release / rider no-show review.
+
+**Do not fold into in-flight P4-D-02 (W-04 / A-11 / A-13).** Finish that task, merge, then issue:
+- **P3-A-04** wait-decision backend (TS-DISC-07, TS-WAIT-01..05)
+- **P3-C-02** D-14 band + D-16 ETA/Release
+
+Critical implementation split (Workers will get this wrong if they only read "trips row = Tier B"):
+- `requested` → driver sees `approach_band` only (FM42). A trips row exists; GPS still withheld.
+- `accepted` → walking-route `wait.walk_eta_s` (FM41), not haversine.
+- `release_match` → `released_before_arrival`, excluded from `reconcile_cancelled_trips` (not `cancel_trip`).
+- Missing GPS → `approach=unknown`, never stalled.
+- FM43 = admin flag only.
+
+Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_pickup_radius_m`, `rider.no_show_*`.
+**Escalations:** none.

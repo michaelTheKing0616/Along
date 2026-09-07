@@ -71,3 +71,27 @@ export async function notifyGuarantor(
   revalidatePath(`/${citySlug}/drivers/${driverId}`);
   return { ok: true, message: 'Guarantor notification sent.' };
 }
+
+export async function rotateDriverCode(
+  citySlug: string,
+  driverId: string
+): Promise<DriverActionResult> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc(
+    'admin_rotate_driver_code' as 'admin_manual_ledger_adjustment',
+    { p_driver_id: driverId } as { p_driver_id: string; p_amount: number; p_memo: string }
+  );
+
+  if (error) return { ok: false, error: error.message };
+
+  const body = data as { driver_code?: string } | null;
+  revalidatePath(`/${citySlug}/drivers/${driverId}`);
+  revalidatePath(`/${citySlug}/finance`);
+
+  return {
+    ok: true,
+    message: body?.driver_code
+      ? `Code rotated to ${body.driver_code}. Sticker reprint requested.`
+      : 'Driver code rotated.',
+  };
+}

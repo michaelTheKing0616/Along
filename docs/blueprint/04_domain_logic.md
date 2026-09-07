@@ -317,6 +317,7 @@ requested  → expired               system (clock)          ; roaming cascade a
 requested  → cancelled_by_rider    rider
 accepted   → boarded               system(auto) | rider | driver
 accepted   → cancelled_by_rider    rider  (reconciliation-relevant: no)
+accepted   → released_before_arrival  driver via `release_match` only; rider never entered pickup radius; **not** reconciliation-relevant
 accepted   → cancelled_by_driver   driver (reconciliation-relevant: yes, §4.4.2 candidate for premature_conversion)
 accepted   → no_show               driver, after cfg.dispatch.no_show_after_s at pickup
 boarded    → in_transit            system(auto) | driver
@@ -325,7 +326,7 @@ boarded    → cancelled_by_rider    rider
 in_transit → completed             driver ; posts commission (cash) ; materialises paths ; journey advance
 in_transit → cancelled_by_driver   driver (reconciliation: yes — strongest signal)
 in_transit → cancelled_by_rider    rider  (reconciliation: driver trace still checked for undeclared completion)
-terminal: completed, declined, expired, cancelled_*, no_show
+terminal: completed, declined, expired, cancelled_*, no_show, released_before_arrival
 ```
 Implementation rules: the function sets `along.in_transition=on` so the guard trigger permits the status write; writes `trip_events`; sets timestamp columns; any other path raises `ALONG:STATE_INVALID`. Completion inside the same transaction: `commission_amount` computed; if `payment_method='cash'` → `ledger_post(cash_commission_debit, -commission_amount, idempotency 'trip:{id}:commission')`; if `payment_method='digital'` (a succeeded `payments` row already exists) → no ledger entry, commission was collected at source. **Late digital payment** (webhook after completion, doc 14 §4.3): the webhook handler sets `payment_method='digital'` and posts `ledger_post(digital_settlement_credit, +commission_amount, 'trip:{id}:digital_offset')` so the earlier cash debit nets to zero — never delete or edit the debit (append-only); `driver_live_path`/`rider_live_path` = `ST_MakeLine(samples ordered by ts)`; `journeys.current_trip_sequence++` or `journeys.status='completed'`; `riders.trip_count++`.
 
@@ -340,6 +341,16 @@ active   → completed   last trip completed
 any      → abandoned   rider cancels journey or 60 min without activity
 ```
 Wayfinding for the transfer walk is issued at `active→transfer` (pre-fetched when trip k is `in_transit` with ETA ≤ 5 min).
+
+### 10.5 Wait / approach (spec §4.1.2–4.1.3)
+
+`approach_band(walk_s)`: if `walk_s < cfg.disclosure.approach_band_s[0]` → `under_2`; elif `< [1]` → `m2_5`; else `over_5`. `walk_s` from Edge `walking-directions` (OSRM foot) between rider last-known point (or pickup pin) and driver last-known point. **Never return `walk_s` on a `requested` TripView.**
+
+After accept, `refresh_wait(trip)` (on each rider/driver sample, throttled 10 s): `walk_eta_s` = same OSRM foot duration; `approach` = `unknown` if rider samples in `wait.stalled_window_s` < 2; `stalled` if progress toward vehicle `< wait.stalled_progress_m`; else `approaching`. Broadcast `{type:wait,...}` on `trip:{id}`. Fixture for FM41: two points 80 m apart with a blocked canal in the extract → straight-line ~80 m, foot route > 8 min; driver UI must show the foot figure.
+
+`release_match`: `accepted` only; reject if any rider sample within `wait.release_pickup_radius_m`; status `released_before_arrival`.
+
+`rider_no_show_review` (nightly): riders with ≥ `rider.no_show_review_count` of `{no_show, released_before_arrival}` in `rider.no_show_window_days` → flag `rider_no_show_pattern` (admin only, FM43).
 
 ---
 
@@ -388,7 +399,7 @@ Flags from §13 never call `transition_standing` (FM13).
 
 ## 13. Cash-integrity reconciliation — §4.4.2 (pg_cron `reconcile_cancelled_trips`)
 
-Input: trips with `status ∈ {cancelled_by_driver}` from `accepted|boarded|in_transit`, or `cancelled_by_rider` from `in_transit`, ended in the last 24 h, not yet flagged.
+Input: trips with `status ∈ {cancelled_by_driver}` from `accepted|boarded|in_transit`, or `cancelled_by_rider` from `in_transit`, ended in the last 24 h, not yet flagged. **`released_before_arrival` is never a candidate** (spec §4.1.3).
 
 ```
 for t in candidates:

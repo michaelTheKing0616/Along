@@ -11,6 +11,7 @@ describe('authz routes', () => {
   it('marks auth paths as public', () => {
     expect(isPublicPath('/sign-in')).toBe(true);
     expect(isPublicPath('/mfa')).toBe(true);
+    expect(isPublicPath('/p/W04TEST1')).toBe(true);
     expect(isPublicPath('/abuja/dashboard')).toBe(false);
     expect(isPublicPath('/agent')).toBe(false);
   });

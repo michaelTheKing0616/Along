@@ -149,11 +149,11 @@ Global rules for every mobile screen: safe-area aware; back gesture always works
 
 **D-13 Price keypad** — Large numeric keypad with currency, suggested chips (e.g., ₦300 · ₦350 · ₦400), `Set`. 1–3 taps.
 
-**D-14 Incoming request** — Full-screen sheet over map (map dimmed): header "New request" + countdown ring (`expires_at`); rider line (name · rating · trips); pickup row (stage name + distance/ETA to driver); drop-off row; **Load row** when flagged ("Medium load — 1 bag, needs boot") (FM35); women-only badge if applicable; fare block: "Rider pays ₦450 · Standard fare" and beneath in `caption` "Along fee ₦34 (7.5%) — added to your balance at completion" (FM3); seats after accept; `Decline` (secondary, 40%) `Accept` (yellow, 60%) both 56. Decline opens reason chips incl. "No room for load" (1 extra tap). Data: Broadcast `driver:{id}` + FCM; `respond_to_trip`. Stitch ref: `driver_request_high_impact` for proportions, `driver_incoming_request_final_quality_pass` for rows.
+**D-14 Incoming request** — Full-screen sheet over map (map dimmed — **no rider pin**): header "New request" + countdown ring (`expires_at`); rider line (name · rating · trips); pickup row: stage **name** + **`approach_band` only** ("under 2 min" / "2–5 min" / "5+ min") — never metres, never a walking line (FM42); drop-off row (label, not coordinate); **Load row** when flagged ("Medium load — 1 bag, needs boot") (FM35); women-only badge if applicable; fare block: "Rider pays ₦450 · Standard fare" and beneath in `caption` "Along fee ₦34 (7.5%) — added to your balance at completion" (FM3); seats after accept; `Decline` (secondary, 40%) `Accept` (yellow, 60%) both 56. Decline opens reason chips incl. "No room for load" (1 extra tap). Data: Broadcast `driver:{id}` + FCM; `respond_to_trip`. Stitch ref: `driver_request_high_impact` for proportions, `driver_incoming_request_final_quality_pass` for rows.
 
 **D-15 Manifest / active trips** — List of accepted/boarded riders with `NaMeChip`, boarding stage, drop-off, fare; per row: "Boarded" (manual, 1) when not auto, "No-show" after timer; tap → D-16.
 
-**D-16 Active trip (driver)** — Map with route; sheet: rider name, boarding/alighting, `NaMeChip` + Na Me button (until boarded), fare + Along fee lines, `Start trip` (boarded→in_transit, if not auto), `Complete trip` (primary), Extend (D-17), Report, SOS hold top-right. Completion (1) → D-18.
+**D-16 Active trip (driver)** — Map with route + **rider walking polyline** (Tier B, after accept, until boarded); sheet: rider name, boarding/alighting, live **walking-route ETA** (`wait.walk_eta_s`, updating) with optional stalled caption "not moving closer" when `approach='stalled'` (never when `unknown` — missing GPS); `NaMeChip` + Na Me button (until boarded); fare + Along fee lines; **`Release` (secondary, 1 tap)** visible only while `accepted` and rider has not entered pickup radius → `release_match` (not a fraud cancel); `Start trip` (boarded→in_transit, if not auto), `Complete trip` (primary), Extend (D-17), Report, SOS hold top-right. Completion (1) → D-18.
 
 **D-17 Extend trip (driver)** — Search destination → `FareHero` "+₦150" → `Propose to rider` (1); rider's response toast. Rider-initiated arrives as sheet Accept/Decline (1).
 
@@ -199,7 +199,7 @@ Global: left sidebar (role-filtered), top bar (city selector scoped to `admin_ca
 
 **A-09 Config** — `app_config` editor by key with scope tabs (global/country/city/corridor), JSON-schema-validated inputs, effective-value preview per city, diff + reason required, history.
 
-**A-10 Integrity review** — Flags queue (score desc, filters by type/city/driver); detail: side-by-side driver & rider traces on map with destination radius circle, event timeline (accepted → cancelled with timestamps), evidence JSON rendered as bullets, corroborating riders count with links, driver risk summary (30 d); actions: Clear · Action → opens Standing dialog (A-11) — never automatic. Stitch ref: `admin_fraud_review_final_quality_pass`.
+**A-10 Integrity review** — Flags queue (score desc, filters by type/city/driver/**rider**); detail: side-by-side driver & rider traces on map with destination radius circle, event timeline (accepted → cancelled with timestamps), evidence JSON rendered as bullets, corroborating riders count with links, driver risk summary (30 d); **`rider_no_show_pattern` rows are review-only (FM43) — Clear / note, never standing or auto-ban**. Actions: Clear · Action → opens Standing dialog (A-11) for *driver* flags only — never automatic. Stitch ref: `admin_fraud_review_final_quality_pass`.
 
 **A-11 Driver detail** — Header (name, phone masked, city, verified, standing, rating); tabs: Overview, Ledger (entries + balance + manual adjustment form with dual control), Standing (ladder visual + transition form with reason), Trips, Flags, Routes, Documents, Guarantor (notify button → runbook), **Payments** (driver code, subaccount status, QR payments received, rotate code, sticker request status), Audit.
 
@@ -246,6 +246,7 @@ Global: left sidebar (role-filtered), top bar (city selector scoped to `admin_ca
 | Negotiation counter | 1 (chip) + 1 (offer) | R-16 |
 | Boarding | 0 (auto) / 1 manual | R-11/D-15 |
 | Flag load | 1–2 | R-09 |
+| Release match (wait not worth it) | 1 | D-16 |
 | Pay driver digitally (in-app trip, saved method) | 1 | R-17 → R-27 |
 | Pay by QR (app, matched trip, saved method) | scan + 1 | R-31/OS camera → R-27 |
 | Pay by QR (app, no matched trip) | scan + 2 (chip, pay) | R-27 |
