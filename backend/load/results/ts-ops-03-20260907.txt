@@ -1,0 +1,724 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: realtime_full.js
+        output: -
+
+     scenarios: (100.00%) 3 scenarios, 71 max VUs, 2m45s max duration (incl. graceful stop):
+              * trip_subscribers: 50 looping VUs for 2m0s (exec: tripSubscribe, startTime: 5s, gracefulStop: 30s)
+              * fanout_pump: 0.10 iterations/s for 2m0s (maxVUs: 1, exec: pumpFanout, startTime: 10s, gracefulStop: 30s)
+              * trip_broadcast_pump: 5.00 iterations/s for 2m0s (maxVUs: 5-20, exec: pumpTripBroadcast, startTime: 15s, gracefulStop: 30s)
+
+
+running (0m01.0s), 00/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers    • [   0% ] waiting  4.0s
+fanout_pump         • [   0% ] waiting  09.0s
+trip_broadcast_pump • [   0% ] waiting  14.0s
+
+running (0m02.0s), 00/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers    • [   0% ] waiting  3.0s
+fanout_pump         • [   0% ] waiting  08.0s
+trip_broadcast_pump • [   0% ] waiting  13.0s
+
+running (0m03.0s), 00/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers    • [   0% ] waiting  2.0s
+fanout_pump         • [   0% ] waiting  07.0s
+trip_broadcast_pump • [   0% ] waiting  12.0s
+
+running (0m04.0s), 00/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers    • [   0% ] waiting  1.0s
+fanout_pump         • [   0% ] waiting  06.0s
+trip_broadcast_pump • [   0% ] waiting  11.0s
+
+running (0m05.0s), 00/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers    • [   0% ] waiting  0.0s
+fanout_pump         • [   0% ] waiting  05.0s
+trip_broadcast_pump • [   0% ] waiting  10.0s
+
+running (0m06.0s), 50/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers      [   1% ] 50 VUs   0m01.0s/2m0s
+fanout_pump         • [   0% ] waiting  04.0s
+trip_broadcast_pump • [   0% ] waiting  09.0s
+
+running (0m07.0s), 50/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers      [   2% ] 50 VUs   0m02.0s/2m0s
+fanout_pump         • [   0% ] waiting  03.0s
+trip_broadcast_pump • [   0% ] waiting  08.0s
+
+running (0m08.0s), 50/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers      [   2% ] 50 VUs   0m03.0s/2m0s
+fanout_pump         • [   0% ] waiting  02.0s
+trip_broadcast_pump • [   0% ] waiting  07.0s
+
+running (0m09.0s), 50/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers      [   3% ] 50 VUs   0m04.0s/2m0s
+fanout_pump         • [   0% ] waiting  01.0s
+trip_broadcast_pump • [   0% ] waiting  06.0s
+
+running (0m10.0s), 50/56 VUs, 0 complete and 0 interrupted iterations
+trip_subscribers      [   4% ] 50 VUs   0m05.0s/2m0s
+fanout_pump         • [   0% ] waiting  00.0s
+trip_broadcast_pump • [   0% ] waiting  05.0s
+
+running (0m11.0s), 50/56 VUs, 1 complete and 0 interrupted iterations
+trip_subscribers      [   5% ] 50 VUs   0m06.0s/2m0s 
+fanout_pump           [   1% ] 0/1 VUs  0m01.0s/2m0s  0.10 iters/s
+trip_broadcast_pump • [   0% ] waiting  04.0s        
+
+running (0m12.0s), 50/56 VUs, 1 complete and 0 interrupted iterations
+trip_subscribers      [   6% ] 50 VUs   0m07.0s/2m0s 
+fanout_pump           [   2% ] 0/1 VUs  0m02.0s/2m0s  0.10 iters/s
+trip_broadcast_pump • [   0% ] waiting  03.0s        
+
+running (0m13.0s), 50/56 VUs, 1 complete and 0 interrupted iterations
+trip_subscribers      [   7% ] 50 VUs   0m08.0s/2m0s 
+fanout_pump           [   2% ] 0/1 VUs  0m03.0s/2m0s  0.10 iters/s
+trip_broadcast_pump • [   0% ] waiting  02.0s        
+
+running (0m14.0s), 50/56 VUs, 1 complete and 0 interrupted iterations
+trip_subscribers      [   7% ] 50 VUs   0m09.0s/2m0s 
+fanout_pump           [   3% ] 0/1 VUs  0m04.0s/2m0s  0.10 iters/s
+trip_broadcast_pump • [   0% ] waiting  01.0s        
+
+running (0m15.0s), 50/56 VUs, 1 complete and 0 interrupted iterations
+trip_subscribers      [   8% ] 50 VUs   0m10.0s/2m0s 
+fanout_pump           [   4% ] 0/1 VUs  0m05.0s/2m0s  0.10 iters/s
+trip_broadcast_pump • [   0% ] waiting  00.0s        
+
+running (0m16.0s), 50/56 VUs, 6 complete and 0 interrupted iterations
+trip_subscribers      [   9% ] 50 VUs     0m11.0s/2m0s 
+fanout_pump           [   5% ] 0/1 VUs    0m06.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   1% ] 00/05 VUs  0m01.0s/2m0s  5.00 iters/s
+
+running (0m17.0s), 50/56 VUs, 11 complete and 0 interrupted iterations
+trip_subscribers      [  10% ] 50 VUs     0m12.0s/2m0s 
+fanout_pump           [   6% ] 0/1 VUs    0m07.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   2% ] 00/05 VUs  0m02.0s/2m0s  5.00 iters/s
+
+running (0m18.0s), 50/56 VUs, 16 complete and 0 interrupted iterations
+trip_subscribers      [  11% ] 50 VUs     0m13.0s/2m0s 
+fanout_pump           [   7% ] 0/1 VUs    0m08.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   2% ] 00/05 VUs  0m03.0s/2m0s  5.00 iters/s
+
+running (0m19.0s), 50/56 VUs, 21 complete and 0 interrupted iterations
+trip_subscribers      [  12% ] 50 VUs     0m14.0s/2m0s 
+fanout_pump           [   7% ] 0/1 VUs    0m09.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   3% ] 00/05 VUs  0m04.0s/2m0s  5.00 iters/s
+
+running (0m20.0s), 50/56 VUs, 26 complete and 0 interrupted iterations
+trip_subscribers      [  12% ] 50 VUs     0m15.0s/2m0s 
+fanout_pump           [   8% ] 0/1 VUs    0m10.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   4% ] 00/05 VUs  0m05.0s/2m0s  5.00 iters/s
+
+running (0m21.0s), 50/56 VUs, 32 complete and 0 interrupted iterations
+trip_subscribers      [  13% ] 50 VUs     0m16.0s/2m0s 
+fanout_pump           [   9% ] 0/1 VUs    0m11.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   5% ] 00/05 VUs  0m06.0s/2m0s  5.00 iters/s
+
+running (0m22.0s), 50/56 VUs, 37 complete and 0 interrupted iterations
+trip_subscribers      [  14% ] 50 VUs     0m17.0s/2m0s 
+fanout_pump           [  10% ] 0/1 VUs    0m12.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   6% ] 00/05 VUs  0m07.0s/2m0s  5.00 iters/s
+
+running (0m23.0s), 50/56 VUs, 42 complete and 0 interrupted iterations
+trip_subscribers      [  15% ] 50 VUs     0m18.0s/2m0s 
+fanout_pump           [  11% ] 0/1 VUs    0m13.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   7% ] 00/05 VUs  0m08.0s/2m0s  5.00 iters/s
+
+running (0m24.0s), 50/56 VUs, 47 complete and 0 interrupted iterations
+trip_subscribers      [  16% ] 50 VUs     0m19.0s/2m0s 
+fanout_pump           [  12% ] 0/1 VUs    0m14.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   7% ] 00/05 VUs  0m09.0s/2m0s  5.00 iters/s
+
+running (0m25.0s), 50/56 VUs, 52 complete and 0 interrupted iterations
+trip_subscribers      [  17% ] 50 VUs     0m20.0s/2m0s 
+fanout_pump           [  12% ] 0/1 VUs    0m15.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   8% ] 00/05 VUs  0m10.0s/2m0s  5.00 iters/s
+
+running (0m26.0s), 50/56 VUs, 57 complete and 0 interrupted iterations
+trip_subscribers      [  17% ] 50 VUs     0m21.0s/2m0s 
+fanout_pump           [  13% ] 0/1 VUs    0m16.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [   9% ] 00/05 VUs  0m11.0s/2m0s  5.00 iters/s
+
+running (0m27.0s), 50/56 VUs, 62 complete and 0 interrupted iterations
+trip_subscribers      [  18% ] 50 VUs     0m22.0s/2m0s 
+fanout_pump           [  14% ] 0/1 VUs    0m17.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  10% ] 00/05 VUs  0m12.0s/2m0s  5.00 iters/s
+
+running (0m28.0s), 50/56 VUs, 67 complete and 0 interrupted iterations
+trip_subscribers      [  19% ] 50 VUs     0m23.0s/2m0s 
+fanout_pump           [  15% ] 0/1 VUs    0m18.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  11% ] 00/05 VUs  0m13.0s/2m0s  5.00 iters/s
+
+running (0m29.0s), 50/56 VUs, 72 complete and 0 interrupted iterations
+trip_subscribers      [  20% ] 50 VUs     0m24.0s/2m0s 
+fanout_pump           [  16% ] 0/1 VUs    0m19.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  12% ] 00/05 VUs  0m14.0s/2m0s  5.00 iters/s
+
+running (0m30.0s), 50/56 VUs, 77 complete and 0 interrupted iterations
+trip_subscribers      [  21% ] 50 VUs     0m25.0s/2m0s 
+fanout_pump           [  17% ] 0/1 VUs    0m20.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  12% ] 00/05 VUs  0m15.0s/2m0s  5.00 iters/s
+
+running (0m31.0s), 50/56 VUs, 83 complete and 0 interrupted iterations
+trip_subscribers      [  22% ] 50 VUs     0m26.0s/2m0s 
+fanout_pump           [  17% ] 0/1 VUs    0m21.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  13% ] 00/05 VUs  0m16.0s/2m0s  5.00 iters/s
+
+running (0m32.0s), 50/56 VUs, 88 complete and 0 interrupted iterations
+trip_subscribers      [  22% ] 50 VUs     0m27.0s/2m0s 
+fanout_pump           [  18% ] 0/1 VUs    0m22.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  14% ] 00/05 VUs  0m17.0s/2m0s  5.00 iters/s
+
+running (0m33.0s), 50/56 VUs, 93 complete and 0 interrupted iterations
+trip_subscribers      [  23% ] 50 VUs     0m28.0s/2m0s 
+fanout_pump           [  19% ] 0/1 VUs    0m23.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  15% ] 00/05 VUs  0m18.0s/2m0s  5.00 iters/s
+
+running (0m34.0s), 50/56 VUs, 98 complete and 0 interrupted iterations
+trip_subscribers      [  24% ] 50 VUs     0m29.0s/2m0s 
+fanout_pump           [  20% ] 0/1 VUs    0m24.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  16% ] 00/05 VUs  0m19.0s/2m0s  5.00 iters/s
+
+running (0m35.0s), 50/56 VUs, 103 complete and 0 interrupted iterations
+trip_subscribers      [  25% ] 50 VUs     0m30.0s/2m0s 
+fanout_pump           [  21% ] 0/1 VUs    0m25.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  17% ] 00/05 VUs  0m20.0s/2m0s  5.00 iters/s
+
+running (0m36.0s), 50/56 VUs, 108 complete and 0 interrupted iterations
+trip_subscribers      [  26% ] 50 VUs     0m31.0s/2m0s 
+fanout_pump           [  22% ] 0/1 VUs    0m26.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  17% ] 00/05 VUs  0m21.0s/2m0s  5.00 iters/s
+
+running (0m37.0s), 50/56 VUs, 113 complete and 0 interrupted iterations
+trip_subscribers      [  27% ] 50 VUs     0m32.0s/2m0s 
+fanout_pump           [  22% ] 0/1 VUs    0m27.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  18% ] 00/05 VUs  0m22.0s/2m0s  5.00 iters/s
+
+running (0m38.0s), 50/56 VUs, 118 complete and 0 interrupted iterations
+trip_subscribers      [  27% ] 50 VUs     0m33.0s/2m0s 
+fanout_pump           [  23% ] 0/1 VUs    0m28.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  19% ] 00/05 VUs  0m23.0s/2m0s  5.00 iters/s
+
+running (0m39.0s), 50/56 VUs, 123 complete and 0 interrupted iterations
+trip_subscribers      [  28% ] 50 VUs     0m34.0s/2m0s 
+fanout_pump           [  24% ] 0/1 VUs    0m29.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  20% ] 00/05 VUs  0m24.0s/2m0s  5.00 iters/s
+
+running (0m40.0s), 50/56 VUs, 128 complete and 0 interrupted iterations
+trip_subscribers      [  29% ] 50 VUs     0m35.0s/2m0s 
+fanout_pump           [  25% ] 0/1 VUs    0m30.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  21% ] 00/05 VUs  0m25.0s/2m0s  5.00 iters/s
+
+running (0m41.0s), 50/56 VUs, 134 complete and 0 interrupted iterations
+trip_subscribers      [  30% ] 50 VUs     0m36.0s/2m0s 
+fanout_pump           [  26% ] 0/1 VUs    0m31.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  22% ] 00/05 VUs  0m26.0s/2m0s  5.00 iters/s
+
+running (0m42.0s), 50/56 VUs, 139 complete and 0 interrupted iterations
+trip_subscribers      [  31% ] 50 VUs     0m37.0s/2m0s 
+fanout_pump           [  27% ] 0/1 VUs    0m32.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  22% ] 00/05 VUs  0m27.0s/2m0s  5.00 iters/s
+
+running (0m43.0s), 50/56 VUs, 144 complete and 0 interrupted iterations
+trip_subscribers      [  32% ] 50 VUs     0m38.0s/2m0s 
+fanout_pump           [  27% ] 0/1 VUs    0m33.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  23% ] 00/05 VUs  0m28.0s/2m0s  5.00 iters/s
+
+running (0m44.0s), 50/56 VUs, 149 complete and 0 interrupted iterations
+trip_subscribers      [  32% ] 50 VUs     0m39.0s/2m0s 
+fanout_pump           [  28% ] 0/1 VUs    0m34.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  24% ] 00/05 VUs  0m29.0s/2m0s  5.00 iters/s
+
+running (0m45.0s), 50/56 VUs, 154 complete and 0 interrupted iterations
+trip_subscribers      [  33% ] 50 VUs     0m40.0s/2m0s 
+fanout_pump           [  29% ] 0/1 VUs    0m35.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  25% ] 00/05 VUs  0m30.0s/2m0s  5.00 iters/s
+
+running (0m46.0s), 50/56 VUs, 159 complete and 0 interrupted iterations
+trip_subscribers      [  34% ] 50 VUs     0m41.0s/2m0s 
+fanout_pump           [  30% ] 0/1 VUs    0m36.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  26% ] 00/05 VUs  0m31.0s/2m0s  5.00 iters/s
+
+running (0m47.0s), 50/56 VUs, 164 complete and 0 interrupted iterations
+trip_subscribers      [  35% ] 50 VUs     0m42.0s/2m0s 
+fanout_pump           [  31% ] 0/1 VUs    0m37.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  27% ] 00/05 VUs  0m32.0s/2m0s  5.00 iters/s
+
+running (0m48.0s), 50/56 VUs, 169 complete and 0 interrupted iterations
+trip_subscribers      [  36% ] 50 VUs     0m43.0s/2m0s 
+fanout_pump           [  32% ] 0/1 VUs    0m38.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  27% ] 00/05 VUs  0m33.0s/2m0s  5.00 iters/s
+
+running (0m49.0s), 50/56 VUs, 174 complete and 0 interrupted iterations
+trip_subscribers      [  37% ] 50 VUs     0m44.0s/2m0s 
+fanout_pump           [  32% ] 0/1 VUs    0m39.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  28% ] 00/05 VUs  0m34.0s/2m0s  5.00 iters/s
+
+running (0m50.0s), 50/56 VUs, 179 complete and 0 interrupted iterations
+trip_subscribers      [  37% ] 50 VUs     0m45.0s/2m0s 
+fanout_pump           [  33% ] 0/1 VUs    0m40.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  29% ] 00/05 VUs  0m35.0s/2m0s  5.00 iters/s
+
+running (0m51.0s), 50/56 VUs, 185 complete and 0 interrupted iterations
+trip_subscribers      [  38% ] 50 VUs     0m46.0s/2m0s 
+fanout_pump           [  34% ] 0/1 VUs    0m41.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  30% ] 00/05 VUs  0m36.0s/2m0s  5.00 iters/s
+
+running (0m52.0s), 50/56 VUs, 190 complete and 0 interrupted iterations
+trip_subscribers      [  39% ] 50 VUs     0m47.0s/2m0s 
+fanout_pump           [  35% ] 0/1 VUs    0m42.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  31% ] 00/05 VUs  0m37.0s/2m0s  5.00 iters/s
+
+running (0m53.0s), 50/56 VUs, 195 complete and 0 interrupted iterations
+trip_subscribers      [  40% ] 50 VUs     0m48.0s/2m0s 
+fanout_pump           [  36% ] 0/1 VUs    0m43.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  32% ] 00/05 VUs  0m38.0s/2m0s  5.00 iters/s
+
+running (0m54.0s), 50/56 VUs, 200 complete and 0 interrupted iterations
+trip_subscribers      [  41% ] 50 VUs     0m49.0s/2m0s 
+fanout_pump           [  37% ] 0/1 VUs    0m44.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  32% ] 00/05 VUs  0m39.0s/2m0s  5.00 iters/s
+
+running (0m55.0s), 50/56 VUs, 205 complete and 0 interrupted iterations
+trip_subscribers      [  42% ] 50 VUs     0m50.0s/2m0s 
+fanout_pump           [  37% ] 0/1 VUs    0m45.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  33% ] 00/05 VUs  0m40.0s/2m0s  5.00 iters/s
+
+running (0m56.0s), 50/56 VUs, 210 complete and 0 interrupted iterations
+trip_subscribers      [  42% ] 50 VUs     0m51.0s/2m0s 
+fanout_pump           [  38% ] 0/1 VUs    0m46.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  34% ] 00/05 VUs  0m41.0s/2m0s  5.00 iters/s
+
+running (0m57.0s), 50/56 VUs, 215 complete and 0 interrupted iterations
+trip_subscribers      [  43% ] 50 VUs     0m52.0s/2m0s 
+fanout_pump           [  39% ] 0/1 VUs    0m47.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  35% ] 00/05 VUs  0m42.0s/2m0s  5.00 iters/s
+
+running (0m58.0s), 50/56 VUs, 220 complete and 0 interrupted iterations
+trip_subscribers      [  44% ] 50 VUs     0m53.0s/2m0s 
+fanout_pump           [  40% ] 0/1 VUs    0m48.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  36% ] 00/05 VUs  0m43.0s/2m0s  5.00 iters/s
+
+running (0m59.0s), 50/56 VUs, 225 complete and 0 interrupted iterations
+trip_subscribers      [  45% ] 50 VUs     0m54.0s/2m0s 
+fanout_pump           [  41% ] 0/1 VUs    0m49.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  37% ] 00/05 VUs  0m44.0s/2m0s  5.00 iters/s
+
+running (1m00.0s), 50/56 VUs, 230 complete and 0 interrupted iterations
+trip_subscribers      [  46% ] 50 VUs     0m55.0s/2m0s 
+fanout_pump           [  42% ] 0/1 VUs    0m50.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  37% ] 00/05 VUs  0m45.0s/2m0s  5.00 iters/s
+
+running (1m01.0s), 50/56 VUs, 236 complete and 0 interrupted iterations
+trip_subscribers      [  47% ] 50 VUs     0m56.0s/2m0s 
+fanout_pump           [  42% ] 0/1 VUs    0m51.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  38% ] 00/05 VUs  0m46.0s/2m0s  5.00 iters/s
+
+running (1m02.0s), 50/56 VUs, 241 complete and 0 interrupted iterations
+trip_subscribers      [  47% ] 50 VUs     0m57.0s/2m0s 
+fanout_pump           [  43% ] 0/1 VUs    0m52.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  39% ] 00/05 VUs  0m47.0s/2m0s  5.00 iters/s
+
+running (1m03.0s), 50/56 VUs, 246 complete and 0 interrupted iterations
+trip_subscribers      [  48% ] 50 VUs     0m58.0s/2m0s 
+fanout_pump           [  44% ] 0/1 VUs    0m53.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  40% ] 00/05 VUs  0m48.0s/2m0s  5.00 iters/s
+
+running (1m04.0s), 50/56 VUs, 251 complete and 0 interrupted iterations
+trip_subscribers      [  49% ] 50 VUs     0m59.0s/2m0s 
+fanout_pump           [  45% ] 0/1 VUs    0m54.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  41% ] 00/05 VUs  0m49.0s/2m0s  5.00 iters/s
+
+running (1m05.0s), 50/56 VUs, 256 complete and 0 interrupted iterations
+trip_subscribers      [  50% ] 50 VUs     1m00.0s/2m0s 
+fanout_pump           [  46% ] 0/1 VUs    0m55.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  42% ] 00/05 VUs  0m50.0s/2m0s  5.00 iters/s
+
+running (1m06.0s), 50/56 VUs, 261 complete and 0 interrupted iterations
+trip_subscribers      [  51% ] 50 VUs     1m01.0s/2m0s 
+fanout_pump           [  47% ] 0/1 VUs    0m56.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  42% ] 00/05 VUs  0m51.0s/2m0s  5.00 iters/s
+
+running (1m07.0s), 50/56 VUs, 266 complete and 0 interrupted iterations
+trip_subscribers      [  52% ] 50 VUs     1m02.0s/2m0s 
+fanout_pump           [  47% ] 0/1 VUs    0m57.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  43% ] 00/05 VUs  0m52.0s/2m0s  5.00 iters/s
+
+running (1m08.0s), 50/56 VUs, 271 complete and 0 interrupted iterations
+trip_subscribers      [  52% ] 50 VUs     1m03.0s/2m0s 
+fanout_pump           [  48% ] 0/1 VUs    0m58.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  44% ] 00/05 VUs  0m53.0s/2m0s  5.00 iters/s
+
+running (1m09.0s), 50/56 VUs, 276 complete and 0 interrupted iterations
+trip_subscribers      [  53% ] 50 VUs     1m04.0s/2m0s 
+fanout_pump           [  49% ] 0/1 VUs    0m59.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  45% ] 00/05 VUs  0m54.0s/2m0s  5.00 iters/s
+
+running (1m10.0s), 50/56 VUs, 281 complete and 0 interrupted iterations
+trip_subscribers      [  54% ] 50 VUs     1m05.0s/2m0s 
+fanout_pump           [  50% ] 0/1 VUs    1m00.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  46% ] 00/05 VUs  0m55.0s/2m0s  5.00 iters/s
+
+running (1m11.0s), 50/56 VUs, 287 complete and 0 interrupted iterations
+trip_subscribers      [  55% ] 50 VUs     1m06.0s/2m0s 
+fanout_pump           [  51% ] 0/1 VUs    1m01.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  47% ] 00/05 VUs  0m56.0s/2m0s  5.00 iters/s
+
+running (1m12.0s), 50/56 VUs, 342 complete and 0 interrupted iterations
+trip_subscribers      [  56% ] 50 VUs     1m07.0s/2m0s 
+fanout_pump           [  52% ] 0/1 VUs    1m02.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  47% ] 00/05 VUs  0m57.0s/2m0s  5.00 iters/s
+
+running (1m13.0s), 50/56 VUs, 347 complete and 0 interrupted iterations
+trip_subscribers      [  57% ] 50 VUs     1m08.0s/2m0s 
+fanout_pump           [  52% ] 0/1 VUs    1m03.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  48% ] 00/05 VUs  0m58.0s/2m0s  5.00 iters/s
+
+running (1m14.0s), 50/56 VUs, 352 complete and 0 interrupted iterations
+trip_subscribers      [  57% ] 50 VUs     1m09.0s/2m0s 
+fanout_pump           [  53% ] 0/1 VUs    1m04.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  49% ] 00/05 VUs  0m59.0s/2m0s  5.00 iters/s
+
+running (1m15.0s), 50/56 VUs, 357 complete and 0 interrupted iterations
+trip_subscribers      [  58% ] 50 VUs     1m10.0s/2m0s 
+fanout_pump           [  54% ] 0/1 VUs    1m05.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  50% ] 00/05 VUs  1m00.0s/2m0s  5.00 iters/s
+
+running (1m16.0s), 50/56 VUs, 362 complete and 0 interrupted iterations
+trip_subscribers      [  59% ] 50 VUs     1m11.0s/2m0s 
+fanout_pump           [  55% ] 0/1 VUs    1m06.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  51% ] 00/05 VUs  1m01.0s/2m0s  5.00 iters/s
+
+running (1m17.0s), 50/56 VUs, 367 complete and 0 interrupted iterations
+trip_subscribers      [  60% ] 50 VUs     1m12.0s/2m0s 
+fanout_pump           [  56% ] 0/1 VUs    1m07.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  52% ] 00/05 VUs  1m02.0s/2m0s  5.00 iters/s
+
+running (1m18.0s), 50/56 VUs, 372 complete and 0 interrupted iterations
+trip_subscribers      [  61% ] 50 VUs     1m13.0s/2m0s 
+fanout_pump           [  57% ] 0/1 VUs    1m08.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  52% ] 00/05 VUs  1m03.0s/2m0s  5.00 iters/s
+
+running (1m19.0s), 50/56 VUs, 377 complete and 0 interrupted iterations
+trip_subscribers      [  62% ] 50 VUs     1m14.0s/2m0s 
+fanout_pump           [  57% ] 0/1 VUs    1m09.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  53% ] 00/05 VUs  1m04.0s/2m0s  5.00 iters/s
+
+running (1m20.0s), 50/56 VUs, 382 complete and 0 interrupted iterations
+trip_subscribers      [  62% ] 50 VUs     1m15.0s/2m0s 
+fanout_pump           [  58% ] 0/1 VUs    1m10.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  54% ] 00/05 VUs  1m05.0s/2m0s  5.00 iters/s
+
+running (1m21.0s), 50/56 VUs, 388 complete and 0 interrupted iterations
+trip_subscribers      [  63% ] 50 VUs     1m16.0s/2m0s 
+fanout_pump           [  59% ] 0/1 VUs    1m11.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  55% ] 00/05 VUs  1m06.0s/2m0s  5.00 iters/s
+
+running (1m22.0s), 50/56 VUs, 393 complete and 0 interrupted iterations
+trip_subscribers      [  64% ] 50 VUs     1m17.0s/2m0s 
+fanout_pump           [  60% ] 0/1 VUs    1m12.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  56% ] 00/05 VUs  1m07.0s/2m0s  5.00 iters/s
+
+running (1m23.0s), 50/56 VUs, 398 complete and 0 interrupted iterations
+trip_subscribers      [  65% ] 50 VUs     1m18.0s/2m0s 
+fanout_pump           [  61% ] 0/1 VUs    1m13.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  57% ] 00/05 VUs  1m08.0s/2m0s  5.00 iters/s
+
+running (1m24.0s), 50/56 VUs, 403 complete and 0 interrupted iterations
+trip_subscribers      [  66% ] 50 VUs     1m19.0s/2m0s 
+fanout_pump           [  62% ] 0/1 VUs    1m14.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  57% ] 00/05 VUs  1m09.0s/2m0s  5.00 iters/s
+
+running (1m25.0s), 50/56 VUs, 408 complete and 0 interrupted iterations
+trip_subscribers      [  67% ] 50 VUs     1m20.0s/2m0s 
+fanout_pump           [  62% ] 0/1 VUs    1m15.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  58% ] 00/05 VUs  1m10.0s/2m0s  5.00 iters/s
+
+running (1m26.0s), 50/56 VUs, 413 complete and 0 interrupted iterations
+trip_subscribers      [  67% ] 50 VUs     1m21.0s/2m0s 
+fanout_pump           [  63% ] 0/1 VUs    1m16.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  59% ] 00/05 VUs  1m11.0s/2m0s  5.00 iters/s
+
+running (1m27.0s), 50/56 VUs, 418 complete and 0 interrupted iterations
+trip_subscribers      [  68% ] 50 VUs     1m22.0s/2m0s 
+fanout_pump           [  64% ] 0/1 VUs    1m17.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  60% ] 00/05 VUs  1m12.0s/2m0s  5.00 iters/s
+
+running (1m28.0s), 50/56 VUs, 423 complete and 0 interrupted iterations
+trip_subscribers      [  69% ] 50 VUs     1m23.0s/2m0s 
+fanout_pump           [  65% ] 0/1 VUs    1m18.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  61% ] 00/05 VUs  1m13.0s/2m0s  5.00 iters/s
+
+running (1m29.0s), 50/56 VUs, 428 complete and 0 interrupted iterations
+trip_subscribers      [  70% ] 50 VUs     1m24.0s/2m0s 
+fanout_pump           [  66% ] 0/1 VUs    1m19.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  62% ] 00/05 VUs  1m14.0s/2m0s  5.00 iters/s
+
+running (1m30.0s), 50/56 VUs, 433 complete and 0 interrupted iterations
+trip_subscribers      [  71% ] 50 VUs     1m25.0s/2m0s 
+fanout_pump           [  67% ] 0/1 VUs    1m20.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  62% ] 00/05 VUs  1m15.0s/2m0s  5.00 iters/s
+
+running (1m31.0s), 50/56 VUs, 439 complete and 0 interrupted iterations
+trip_subscribers      [  72% ] 50 VUs     1m26.0s/2m0s 
+fanout_pump           [  67% ] 0/1 VUs    1m21.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  63% ] 00/05 VUs  1m16.0s/2m0s  5.00 iters/s
+
+running (1m32.0s), 50/56 VUs, 444 complete and 0 interrupted iterations
+trip_subscribers      [  72% ] 50 VUs     1m27.0s/2m0s 
+fanout_pump           [  68% ] 0/1 VUs    1m22.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  64% ] 00/05 VUs  1m17.0s/2m0s  5.00 iters/s
+
+running (1m33.0s), 50/56 VUs, 449 complete and 0 interrupted iterations
+trip_subscribers      [  73% ] 50 VUs     1m28.0s/2m0s 
+fanout_pump           [  69% ] 0/1 VUs    1m23.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  65% ] 00/05 VUs  1m18.0s/2m0s  5.00 iters/s
+
+running (1m34.0s), 50/56 VUs, 454 complete and 0 interrupted iterations
+trip_subscribers      [  74% ] 50 VUs     1m29.0s/2m0s 
+fanout_pump           [  70% ] 0/1 VUs    1m24.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  66% ] 00/05 VUs  1m19.0s/2m0s  5.00 iters/s
+
+running (1m35.0s), 50/56 VUs, 459 complete and 0 interrupted iterations
+trip_subscribers      [  75% ] 50 VUs     1m30.0s/2m0s 
+fanout_pump           [  71% ] 0/1 VUs    1m25.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  67% ] 00/05 VUs  1m20.0s/2m0s  5.00 iters/s
+
+running (1m36.0s), 50/56 VUs, 464 complete and 0 interrupted iterations
+trip_subscribers      [  76% ] 50 VUs     1m31.0s/2m0s 
+fanout_pump           [  72% ] 0/1 VUs    1m26.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  67% ] 00/05 VUs  1m21.0s/2m0s  5.00 iters/s
+
+running (1m37.0s), 50/56 VUs, 469 complete and 0 interrupted iterations
+trip_subscribers      [  77% ] 50 VUs     1m32.0s/2m0s 
+fanout_pump           [  72% ] 0/1 VUs    1m27.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  68% ] 00/05 VUs  1m22.0s/2m0s  5.00 iters/s
+
+running (1m38.0s), 50/56 VUs, 474 complete and 0 interrupted iterations
+trip_subscribers      [  77% ] 50 VUs     1m33.0s/2m0s 
+fanout_pump           [  73% ] 0/1 VUs    1m28.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  69% ] 00/05 VUs  1m23.0s/2m0s  5.00 iters/s
+
+running (1m39.0s), 50/56 VUs, 479 complete and 0 interrupted iterations
+trip_subscribers      [  78% ] 50 VUs     1m34.0s/2m0s 
+fanout_pump           [  74% ] 0/1 VUs    1m29.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  70% ] 00/05 VUs  1m24.0s/2m0s  5.00 iters/s
+
+running (1m40.0s), 50/56 VUs, 484 complete and 0 interrupted iterations
+trip_subscribers      [  79% ] 50 VUs     1m35.0s/2m0s 
+fanout_pump           [  75% ] 0/1 VUs    1m30.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  71% ] 00/05 VUs  1m25.0s/2m0s  5.00 iters/s
+
+running (1m41.0s), 50/56 VUs, 490 complete and 0 interrupted iterations
+trip_subscribers      [  80% ] 50 VUs     1m36.0s/2m0s 
+fanout_pump           [  76% ] 0/1 VUs    1m31.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  72% ] 00/05 VUs  1m26.0s/2m0s  5.00 iters/s
+
+running (1m42.0s), 50/56 VUs, 495 complete and 0 interrupted iterations
+trip_subscribers      [  81% ] 50 VUs     1m37.0s/2m0s 
+fanout_pump           [  77% ] 0/1 VUs    1m32.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  72% ] 00/05 VUs  1m27.0s/2m0s  5.00 iters/s
+
+running (1m43.0s), 50/56 VUs, 500 complete and 0 interrupted iterations
+trip_subscribers      [  82% ] 50 VUs     1m38.0s/2m0s 
+fanout_pump           [  77% ] 0/1 VUs    1m33.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  73% ] 00/05 VUs  1m28.0s/2m0s  5.00 iters/s
+
+running (1m44.0s), 50/56 VUs, 505 complete and 0 interrupted iterations
+trip_subscribers      [  82% ] 50 VUs     1m39.0s/2m0s 
+fanout_pump           [  78% ] 0/1 VUs    1m34.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  74% ] 00/05 VUs  1m29.0s/2m0s  5.00 iters/s
+
+running (1m45.0s), 50/56 VUs, 510 complete and 0 interrupted iterations
+trip_subscribers      [  83% ] 50 VUs     1m40.0s/2m0s 
+fanout_pump           [  79% ] 0/1 VUs    1m35.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  75% ] 00/05 VUs  1m30.0s/2m0s  5.00 iters/s
+
+running (1m46.0s), 50/56 VUs, 515 complete and 0 interrupted iterations
+trip_subscribers      [  84% ] 50 VUs     1m41.0s/2m0s 
+fanout_pump           [  80% ] 0/1 VUs    1m36.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  76% ] 00/05 VUs  1m31.0s/2m0s  5.00 iters/s
+
+running (1m47.0s), 50/56 VUs, 520 complete and 0 interrupted iterations
+trip_subscribers      [  85% ] 50 VUs     1m42.0s/2m0s 
+fanout_pump           [  81% ] 0/1 VUs    1m37.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  77% ] 00/05 VUs  1m32.0s/2m0s  5.00 iters/s
+
+running (1m48.0s), 50/56 VUs, 525 complete and 0 interrupted iterations
+trip_subscribers      [  86% ] 50 VUs     1m43.0s/2m0s 
+fanout_pump           [  82% ] 0/1 VUs    1m38.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  77% ] 00/05 VUs  1m33.0s/2m0s  5.00 iters/s
+
+running (1m49.0s), 50/56 VUs, 530 complete and 0 interrupted iterations
+trip_subscribers      [  87% ] 50 VUs     1m44.0s/2m0s 
+fanout_pump           [  82% ] 0/1 VUs    1m39.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  78% ] 00/05 VUs  1m34.0s/2m0s  5.00 iters/s
+
+running (1m50.0s), 50/56 VUs, 535 complete and 0 interrupted iterations
+trip_subscribers      [  87% ] 50 VUs     1m45.0s/2m0s 
+fanout_pump           [  83% ] 0/1 VUs    1m40.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  79% ] 00/05 VUs  1m35.0s/2m0s  5.00 iters/s
+
+running (1m51.0s), 50/56 VUs, 541 complete and 0 interrupted iterations
+trip_subscribers      [  88% ] 50 VUs     1m46.0s/2m0s 
+fanout_pump           [  84% ] 0/1 VUs    1m41.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  80% ] 00/05 VUs  1m36.0s/2m0s  5.00 iters/s
+
+running (1m52.0s), 50/56 VUs, 546 complete and 0 interrupted iterations
+trip_subscribers      [  89% ] 50 VUs     1m47.0s/2m0s 
+fanout_pump           [  85% ] 0/1 VUs    1m42.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  81% ] 00/05 VUs  1m37.0s/2m0s  5.00 iters/s
+
+running (1m53.0s), 50/56 VUs, 551 complete and 0 interrupted iterations
+trip_subscribers      [  90% ] 50 VUs     1m48.0s/2m0s 
+fanout_pump           [  86% ] 0/1 VUs    1m43.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  82% ] 00/05 VUs  1m38.0s/2m0s  5.00 iters/s
+
+running (1m54.0s), 50/56 VUs, 556 complete and 0 interrupted iterations
+trip_subscribers      [  91% ] 50 VUs     1m49.0s/2m0s 
+fanout_pump           [  87% ] 0/1 VUs    1m44.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  82% ] 00/05 VUs  1m39.0s/2m0s  5.00 iters/s
+
+running (1m55.0s), 50/56 VUs, 561 complete and 0 interrupted iterations
+trip_subscribers      [  92% ] 50 VUs     1m50.0s/2m0s 
+fanout_pump           [  87% ] 0/1 VUs    1m45.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  83% ] 00/05 VUs  1m40.0s/2m0s  5.00 iters/s
+
+running (1m56.0s), 50/56 VUs, 566 complete and 0 interrupted iterations
+trip_subscribers      [  92% ] 50 VUs     1m51.0s/2m0s 
+fanout_pump           [  88% ] 0/1 VUs    1m46.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  84% ] 00/05 VUs  1m41.0s/2m0s  5.00 iters/s
+
+running (1m57.0s), 50/56 VUs, 571 complete and 0 interrupted iterations
+trip_subscribers      [  93% ] 50 VUs     1m52.0s/2m0s 
+fanout_pump           [  89% ] 0/1 VUs    1m47.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  85% ] 00/05 VUs  1m42.0s/2m0s  5.00 iters/s
+
+running (1m58.0s), 50/56 VUs, 576 complete and 0 interrupted iterations
+trip_subscribers      [  94% ] 50 VUs     1m53.0s/2m0s 
+fanout_pump           [  90% ] 0/1 VUs    1m48.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  86% ] 00/05 VUs  1m43.0s/2m0s  5.00 iters/s
+
+running (1m59.0s), 50/56 VUs, 581 complete and 0 interrupted iterations
+trip_subscribers      [  95% ] 50 VUs     1m54.0s/2m0s 
+fanout_pump           [  91% ] 0/1 VUs    1m49.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  87% ] 00/05 VUs  1m44.0s/2m0s  5.00 iters/s
+
+running (2m00.0s), 50/56 VUs, 586 complete and 0 interrupted iterations
+trip_subscribers      [  96% ] 50 VUs     1m55.0s/2m0s 
+fanout_pump           [  92% ] 0/1 VUs    1m50.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  87% ] 00/05 VUs  1m45.0s/2m0s  5.00 iters/s
+
+running (2m01.0s), 50/56 VUs, 592 complete and 0 interrupted iterations
+trip_subscribers      [  97% ] 50 VUs     1m56.0s/2m0s 
+fanout_pump           [  92% ] 0/1 VUs    1m51.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  88% ] 00/05 VUs  1m46.0s/2m0s  5.00 iters/s
+
+running (2m02.0s), 50/56 VUs, 597 complete and 0 interrupted iterations
+trip_subscribers      [  97% ] 50 VUs     1m57.0s/2m0s 
+fanout_pump           [  93% ] 0/1 VUs    1m52.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  89% ] 00/05 VUs  1m47.0s/2m0s  5.00 iters/s
+
+running (2m03.0s), 50/56 VUs, 602 complete and 0 interrupted iterations
+trip_subscribers      [  98% ] 50 VUs     1m58.0s/2m0s 
+fanout_pump           [  94% ] 0/1 VUs    1m53.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  90% ] 00/05 VUs  1m48.0s/2m0s  5.00 iters/s
+
+running (2m04.0s), 50/56 VUs, 607 complete and 0 interrupted iterations
+trip_subscribers      [  99% ] 50 VUs     1m59.0s/2m0s 
+fanout_pump           [  95% ] 0/1 VUs    1m54.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  91% ] 00/05 VUs  1m49.0s/2m0s  5.00 iters/s
+
+running (2m05.0s), 50/56 VUs, 612 complete and 0 interrupted iterations
+trip_subscribers      [ 100% ] 50 VUs     2m00.0s/2m0s 
+fanout_pump           [  96% ] 0/1 VUs    1m55.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  92% ] 00/05 VUs  1m50.0s/2m0s  5.00 iters/s
+
+running (2m06.0s), 50/56 VUs, 617 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump           [  97% ] 0/1 VUs    1m56.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  92% ] 00/05 VUs  1m51.0s/2m0s  5.00 iters/s
+
+running (2m07.0s), 50/56 VUs, 622 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump           [  97% ] 0/1 VUs    1m57.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  93% ] 00/05 VUs  1m52.0s/2m0s  5.00 iters/s
+
+running (2m08.0s), 50/56 VUs, 627 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump           [  98% ] 0/1 VUs    1m58.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  94% ] 00/05 VUs  1m53.0s/2m0s  5.00 iters/s
+
+running (2m09.0s), 50/56 VUs, 632 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump           [  99% ] 0/1 VUs    1m59.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  95% ] 00/05 VUs  1m54.0s/2m0s  5.00 iters/s
+
+running (2m10.0s), 50/56 VUs, 637 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump           [ 100% ] 0/1 VUs    2m00.0s/2m0s  0.10 iters/s
+trip_broadcast_pump   [  96% ] 00/05 VUs  1m55.0s/2m0s  5.00 iters/s
+
+running (2m11.0s), 50/56 VUs, 643 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s          0.10 iters/s
+trip_broadcast_pump   [  97% ] 00/05 VUs  1m56.0s/2m0s  5.00 iters/s
+
+running (2m12.0s), 50/56 VUs, 648 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s          0.10 iters/s
+trip_broadcast_pump   [  97% ] 00/05 VUs  1m57.0s/2m0s  5.00 iters/s
+
+running (2m13.0s), 50/56 VUs, 653 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s          0.10 iters/s
+trip_broadcast_pump   [  98% ] 00/05 VUs  1m58.0s/2m0s  5.00 iters/s
+
+running (2m14.0s), 50/56 VUs, 658 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s          0.10 iters/s
+trip_broadcast_pump   [  99% ] 00/05 VUs  1m59.0s/2m0s  5.00 iters/s
+
+running (2m15.0s), 50/56 VUs, 663 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s         
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s          0.10 iters/s
+trip_broadcast_pump   [ 100% ] 00/05 VUs  2m00.0s/2m0s  5.00 iters/s
+
+running (2m16.0s), 50/56 VUs, 664 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s 
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s  0.10 iters/s
+trip_broadcast_pump ✓ [ 100% ] 00/05 VUs  2m0s  5.00 iters/s
+
+running (2m17.0s), 50/56 VUs, 664 complete and 0 interrupted iterations
+trip_subscribers    ↓ [ 100% ] 50 VUs     2m0s 
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s  0.10 iters/s
+trip_broadcast_pump ✓ [ 100% ] 00/05 VUs  2m0s  5.00 iters/s
+
+=== TS-OPS-03 trip:* realtime scale (k6) ===
+target_trip_subscriber_vus=50 trip_broadcast_rate=5/s
+duration=2m scale_factor=10
+http_req_receiving: p95=0.12
+realtime_message_latency_ms: p95=0.00
+http_req_duration: p95=20.18
+http_req_blocked: p95=0.05
+http_req_waiting: p95=20.08
+ws_connecting: p95=85.98
+http_req_duration{expected_response:true}: p95=20.18
+http_req_sending: p95=0.13
+ws_session_duration: p95=66127.63
+ambient_fanout_latency_ms: p95=82.60
+http_req_connecting: p95=0.00
+iteration_duration: p95=66107.39
+http_req_tls_handshaking: p95=0.00
+
+running (2m17.2s), 00/56 VUs, 714 complete and 0 interrupted iterations
+trip_subscribers    ✓ [ 100% ] 50 VUs     2m0s 
+fanout_pump         ✓ [ 100% ] 0/1 VUs    2m0s  0.10 iters/s
+trip_broadcast_pump ✓ [ 100% ] 00/05 VUs  2m0s  5.00 iters/s

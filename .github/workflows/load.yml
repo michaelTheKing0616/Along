@@ -1,0 +1,93 @@
+name: load
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  load-scaled-local:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.115.0
+
+      - name: Install k6
+        run: |
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C0CFC7328068
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update && sudo apt-get install -y k6
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Start Supabase local stack
+        run: supabase start
+
+      - name: Apply migrations and Zaria-Test seed
+        run: supabase db reset --yes
+
+      - name: Serve plan-trip Edge Function (background)
+        run: |
+          nohup supabase functions serve plan-trip --no-verify-jwt > /tmp/edge-plan-trip.log 2>&1 &
+          sleep 8
+
+      - name: Run scaled local load proof (TS-OPS-02/03)
+        run: |
+          chmod +x backend/load/scripts/run_scaled_local.sh
+          DURATION=1m PLAN_TRIP_RATE=10 PRESENCE_PING_RATE=50 TRIP_SUBSCRIBER_VUS=25 SCALE_FACTOR=20 \
+            backend/load/scripts/run_scaled_local.sh
+
+      - name: Upload load results artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-results
+          path: backend/load/results/
+
+  # Full-city staging run — manual dispatch only; requires repository secrets.
+  load-fullcity-staging:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C0CFC7328068
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update && sudo apt-get install -y k6
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Run full-city load (staging secrets required)
+        env:
+          SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+          JWT_SECRET: ${{ secrets.STAGING_JWT_SECRET }}
+          DB_URL: ${{ secrets.STAGING_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_URL" ]; then
+            echo "Staging secrets not configured — skipping full-city run"
+            exit 0
+          fi
+          chmod +x backend/load/scripts/run_fullcity.sh
+          backend/load/scripts/run_fullcity.sh
+
+      - name: Upload full-city results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-fullcity-results
+          path: backend/load/results/

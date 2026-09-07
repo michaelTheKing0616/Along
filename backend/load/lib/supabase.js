@@ -102,6 +102,53 @@ export function triggerPresenceFanoutDirect(baseUrl, serviceKey, cityId) {
   };
 }
 
+/** POST /functions/v1/{slug} with bearer JWT. */
+export function invokeEdgeFunction(functionsUrl, anonKey, jwt, slug, body) {
+  const url = `${functionsUrl.replace(/\/$/, '')}/${slug}`;
+  return http.post(url, JSON.stringify(body), {
+    headers: {
+      apikey: anonKey,
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    tags: { rpc: slug, name: slug },
+  });
+}
+
+/**
+ * Service-role trip loc broadcast for TS-OPS-03 latency measurement.
+ * Embeds sent_at_ms (load-test only) so subscribers can compute delivery latency.
+ */
+export function broadcastTripLocTest(baseUrl, serviceKey, tripId, sentAtMs) {
+  const root = baseUrl.replace(/\/$/, '');
+  const lat = 11.061 + (sentAtMs % 1000) * 0.00001;
+  const lng = 7.701 + (sentAtMs % 1000) * 0.00001;
+  return http.post(
+    `${root}/realtime/v1/api/broadcast`,
+    JSON.stringify({
+      messages: [{
+        topic: `trip:${tripId}`,
+        event: 'loc',
+        payload: {
+          type: 'loc',
+          actor: 'driver',
+          lat,
+          lng,
+          heading: 90,
+          speed_mps: 4.5,
+          ts: new Date(sentAtMs).toISOString(),
+          sent_at_ms: sentAtMs,
+        },
+        private: true,
+      }],
+    }),
+    {
+      headers: serviceHeaders(baseUrl, serviceKey),
+      tags: { rpc: 'trip-loc-broadcast', name: 'trip-loc-broadcast' },
+    },
+  );
+}
+
 /** Build Supabase Realtime WebSocket URL (Broadcast private channels). */
 export function realtimeWsUrl(baseUrl, anonKey) {
   const wsBase = baseUrl.replace(/^http/, 'ws');

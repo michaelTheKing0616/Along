@@ -2,7 +2,7 @@
 
 External binary — **not** an npm dependency (doc 10 §1, doc 09 §2 `load.yml`).
 
-Budgets enforced from `docs/blueprint/01_architecture.md` §7 via `thresholds.js` (mirrors `app_config` defaults: `presence.fanout_interval_s=10`, ping p95 ≤ 300 ms, ambient fan-out ≤ 10 s, trip message p95 ≤ 1 s).
+Budgets enforced from `docs/blueprint/01_architecture.md` §7 via `thresholds.js` (mirrors `app_config` defaults: `presence.fanout_interval_s=10`, ping p95 ≤ 300 ms, plan-trip p95 ≤ 800 ms, ambient fan-out ≤ 10 s, trip message p95 ≤ 1 s).
 
 ## Install k6
 
@@ -24,31 +24,24 @@ sudo apt-get update && sudo apt-get install k6
 Requires local Supabase (`supabase start`) and Deno (for JWT minting). Does **not** read `env/staging.json`.
 
 ```bash
-# From repo root
 chmod +x backend/load/scripts/run_pilot.sh
 backend/load/scripts/run_pilot.sh
 ```
 
-Optional env overrides:
+## Scaled local proof (P7-E-02)
 
-| Variable | Default | Meaning |
-|---|---|---|
-| `DURATION` | `2m` | k6 scenario duration |
-| `DRIVER_VUS` | `10` | concurrent `presence_ping` drivers |
-| `AMBIENT_SUBSCRIBER_VUS` | `10` | concurrent `ambient:{city}:{geohash5}` subscribers |
-| `TRIP_SUBSCRIBER_VUS` | `5` | concurrent `trip:{id}` subscribers (pilot scale) |
-| `FANOUT_MODE` | `direct` (local) / `edge` (staging) | `direct` calls RPC+broadcast REST; `edge` hits `presence-fanout` function |
-| `LOAD_RESULTS_DIR` | `results` | k6 JSON summary directory (relative to `backend/load/`) |
+When the laptop cannot sustain full-city VUs, run at 1/10 scale and document the scale factor:
 
-Outputs:
+```bash
+chmod +x backend/load/scripts/run_scaled_local.sh
+backend/load/scripts/run_scaled_local.sh
+```
 
-- `backend/load/results/pilot-<label>.txt` — human-readable k6 summary (safe to commit)
-- `backend/load/results/pilot-<label>.json` — full metrics JSON
-- `backend/load/.tokens.json` — **gitignored** pilot JWTs; never commit
+Defaults: 20 rps plan-trip + 100 pings/s + 50 trip subscribers for 2 min (scale factor 10×). Results land in `backend/load/results/p7-e-02-<label>.md` plus per-scenario `.txt`/`.json`.
 
-Seed fixture: `backend/db/seed/seed_test_scenarios/load_presence.sql` (10 drivers, 5 riders, 3 active trips on Zaria-Test).
+Requires `supabase functions serve plan-trip` (or deployed Edge) for TS-OPS-02 plan-trip calls to succeed locally.
 
-## Staging / full TS-OPS-03 (5k subscribers)
+## Full-city (staging / CI)
 
 Set env vars from your secret store (never commit):
 
@@ -56,19 +49,38 @@ Set env vars from your secret store (never commit):
 export SUPABASE_URL=https://<project-ref>.supabase.co
 export SUPABASE_ANON_KEY=<anon-key>
 export SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
-export SUPABASE_FUNCTIONS_URL="${SUPABASE_URL}/functions/v1"
-# Apply staging seed + mint tokens with JWT_SECRET from staging dashboard
-JWT_SECRET=<staging-jwt-secret> DB_URL=<staging-db-url> deno run backend/load/scripts/mint_tokens.ts
-export LOAD_TOKENS_FILE=backend/load/.tokens.json
-k6 run -e SUPABASE_URL -e SUPABASE_ANON_KEY -e SUPABASE_SERVICE_ROLE_KEY \
-  -e SUPABASE_FUNCTIONS_URL -e LOAD_TOKENS_FILE \
-  -e DRIVER_VUS=100 -e AMBIENT_SUBSCRIBER_VUS=500 -e TRIP_SUBSCRIBER_VUS=5000 \
-  -e DURATION=10m backend/load/presence_pilot.js
+export JWT_SECRET=<staging-jwt-secret>
+export DB_URL=<staging-db-url>
+chmod +x backend/load/scripts/run_fullcity.sh
+backend/load/scripts/run_fullcity.sh
 ```
 
-Full 5k `trip:*` subscribers is **TS-OPS-03** target scale (Phase 7 nightly). P3-E-01 pilot validates scripts + budgets at reduced concurrency.
+Full-city targets (TS-OPS-02/03): 200 rps `plan-trip` + 1,000 presence pings/s for 10 min; 5,000 concurrent `trip:*` subscribers with message p95 ≤ 1 s.
 
-## Fan-out tuning
+## Optional env overrides
+
+| Variable | Pilot default | Full-city default | Meaning |
+|---|---|---|---|
+| `DURATION` | `2m` | `10m` | k6 scenario duration |
+| `PLAN_TRIP_RATE` | — | `200` | TS-OPS-02 plan-trip requests/s |
+| `PRESENCE_PING_RATE` | — | `1000` | TS-OPS-02 presence_ping/s |
+| `TRIP_SUBSCRIBER_VUS` | `5` | `5000` | TS-OPS-03 concurrent WS subscribers |
+| `TRIP_BROADCAST_RATE` | — | `10` | trip loc broadcasts/s (latency pump) |
+| `DRIVER_VUS` | `10` | — | pilot presence_ping VUs |
+| `FANOUT_MODE` | `direct` (local) / `edge` (staging) | `edge` | fan-out via Edge or REST fallback |
+| `SCALE_FACTOR` | `10` (scaled local) | `1` | documented extrapolation to full city |
+| `LOAD_RESULTS_DIR` | `results` | `results` | k6 JSON summary directory |
+
+Outputs (safe to commit):
+
+- `backend/load/results/ts-ops-02-<label>.txt` / `.json`
+- `backend/load/results/ts-ops-03-<label>.txt` / `.json`
+- `backend/load/results/p7-e-02-<label>.md` — scaled run summary
+- `backend/load/.tokens.json` — **gitignored** JWTs; never commit
+
+Seed fixture: `backend/db/seed/seed_test_scenarios/load_fullcity.sql` (100 drivers, 50 riders, 50 active trips on Zaria-Test).
+
+## Fan-out / Realtime tuning
 
 Only adjust via existing `app_config` keys (migrations / ADR-0016 — no hand-edited prod):
 
@@ -78,13 +90,15 @@ Only adjust via existing `app_config` keys (migrations / ADR-0016 — no hand-ed
 | `presence.fanout_radius_m` | `3000` | cell publish radius |
 | `realtime.max_payload_bytes` | `512` | broadcast payload cap |
 | `presence.ping_min_interval_s` | `2` | server-side ping throttle |
+| `realtime.trip_subscriber_target` | `5000` | TS-OPS-03 reference (migration 00066) |
+| `planner.query_log_retention_days` | `7` | curb `planner_queries` bloat during load windows |
 
-After k6, if ambient fan-out p95 exceeds 10 s, reduce `presence.fanout_interval_s` for the target city/deployment via `app_config` override (not code).
+Supabase Realtime dashboard (staging/prod, documented in migration 00066): max concurrent connections ≥ 6000; max messages/s ≥ 2000.
 
 ## Scenarios
 
 | Script | TS-ID | What it exercises |
 |---|---|---|
-| `presence_pilot.js` | TS-OPS-03 (pilot) | `presence_ping` RPC load + `ambient:*` / `trip:*` Realtime subscribers + `presence-fanout` Edge Function |
-
-Phase 7 adds `plan_trip_mix.js` for **TS-OPS-02** (200 rps plan-trip + 1k pings/s).
+| `presence_pilot.js` | TS-OPS-03 (pilot) | P3-E-01: `presence_ping` + `ambient:*` / `trip:*` at reduced VUs |
+| `plan_trip_mix.js` | TS-OPS-02 | 200 rps `plan-trip` mixed with 1k presence pings/s |
+| `realtime_full.js` | TS-OPS-03 | 5k `trip:*` subscribers + loc broadcast latency pump |
