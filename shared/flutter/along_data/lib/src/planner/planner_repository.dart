@@ -1,25 +1,85 @@
 import 'package:along_core/along_core.dart';
+import 'package:along_data/src/cache/plan_cache_key.dart';
+import 'package:along_data/src/cache/plan_cache_store.dart';
 import 'package:along_data/src/mappers/domain_mappers.dart';
 import 'package:along_data/src/supabase/along_supabase.dart';
 import 'package:along_data/src/supabase/error_mapper.dart';
 
 /// Calls the `plan-trip` Edge function and maps to [PlanResult].
 class PlannerRepository {
-  PlannerRepository(this._gateway);
+  PlannerRepository(this._gateway, {PlanCacheStore? planCache})
+      : _planCache = planCache;
 
   final AlongSupabase _gateway;
+  final PlanCacheStore? _planCache;
 
-  Future<PlanResult> planTrip({
+  Future<PlanTripOutcome> planTrip({
     required Map<String, dynamic> requestBody,
+    bool allowStaleRead = true,
   }) async {
+    final cacheKey = _planCache == null ? null : _cacheKeyForRequest(requestBody);
+
     try {
       final envelope =
           await _gateway.invokeFunction('plan-trip', body: requestBody);
       final data = envelope['data'] as Map<String, dynamic>? ?? envelope;
-      return planResultFromData(data);
+      if (cacheKey != null) {
+        await _planCache!.write(cacheKey: cacheKey, planTripPayload: data);
+      }
+      return PlanTripOutcome(
+        result: planResultFromData(data),
+        fromCache: false,
+      );
     } catch (e) {
-      throw mapSupabaseError(e);
+      if (!allowStaleRead || cacheKey == null || _planCache == null) {
+        throw mapSupabaseError(e);
+      }
+      final cached = await _planCache!.readPayload(cacheKey);
+      if (cached == null) throw mapSupabaseError(e);
+      final row = await _planCache!.read(cacheKey);
+      return PlanTripOutcome(
+        result: planResultFromData(cached),
+        fromCache: true,
+        cachedAt: row?.cachedAt,
+      );
     }
+  }
+
+  /// Reads a cached plan without hitting the network.
+  Future<PlanTripOutcome?> readCachedPlan({
+    required Map<String, dynamic> requestBody,
+  }) async {
+    if (_planCache == null) return null;
+    final cacheKey = _cacheKeyForRequest(requestBody);
+    if (cacheKey == null) return null;
+    final cached = await _planCache!.readPayload(cacheKey);
+    if (cached == null) return null;
+    final row = await _planCache!.read(cacheKey);
+    return PlanTripOutcome(
+      result: planResultFromData(cached),
+      fromCache: true,
+      cachedAt: row?.cachedAt,
+    );
+  }
+
+  String? _cacheKeyForRequest(Map<String, dynamic> body) {
+    final origin = body['origin'];
+    final destination = body['destination'];
+    if (origin is! Map || destination is! Map) return null;
+    final filters = body['filters'];
+    return planCacheKey(
+      origin: GeoPoint(
+        lat: (origin['lat'] as num).toDouble(),
+        lng: (origin['lng'] as num).toDouble(),
+      ),
+      destination: GeoPoint(
+        lat: (destination['lat'] as num).toDouble(),
+        lng: (destination['lng'] as num).toDouble(),
+      ),
+      filters: filters is Map<String, dynamic>
+          ? filters
+          : (filters as Map?)?.cast<String, dynamic>() ?? const {},
+    );
   }
 
   /// Shared mapper for plan-trip and itinerary prepared_plan payloads.
@@ -157,4 +217,16 @@ class PlannerRepository {
         'least_strenuous' => SortCriterion.leastStrenuous,
         _ => null,
       };
+}
+
+class PlanTripOutcome {
+  const PlanTripOutcome({
+    required this.result,
+    required this.fromCache,
+    this.cachedAt,
+  });
+
+  final PlanResult result;
+  final bool fromCache;
+  final DateTime? cachedAt;
 }

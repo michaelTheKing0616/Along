@@ -24,6 +24,7 @@ class AlongMap extends StatefulWidget {
     this.onMapClick,
     this.gestureRecognizers,
     this.myLocationEnabled = false,
+    this.maxZoom,
   });
 
   /// Remote style URL (`${TILES_BASE}/styles/along-light.json`). Ignored when
@@ -40,6 +41,7 @@ class AlongMap extends StatefulWidget {
   final OnMapClickCallback? onMapClick;
   final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
   final bool myLocationEnabled;
+  final double? maxZoom;
 
   /// Creates an [AlongMap] configured for offline Abuja fixture tiles.
   static Future<AlongMapOfflineConfig> bootstrapOffline({
@@ -79,6 +81,10 @@ class _AlongMapState extends State<AlongMap> {
       initialCameraPosition:
           widget.initialCameraPosition ?? MapCamera.abujaDefault(),
       myLocationEnabled: widget.myLocationEnabled,
+      minMaxZoomPreference: MinMaxZoomPreference(
+        0,
+        widget.maxZoom ?? 22,
+      ),
       gestureRecognizers: widget.gestureRecognizers,
       onMapClick: widget.onMapClick,
       onMapCreated: (controller) {

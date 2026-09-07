@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_map/along_map.dart';
 import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,6 +12,7 @@ import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/app_router.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AlongRiderApp extends ConsumerWidget {
@@ -47,6 +51,9 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
     anonKey: config.supabaseAnonKey,
   );
 
+  final mapDir = await getApplicationDocumentsDirectory();
+  final mapCacheDir = Directory('${mapDir.path}/map_cache');
+
   return ProviderContainer(
     overrides: buildProviderOverrides(
       config: config,
@@ -54,6 +61,10 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
       ambientChannel: SupabaseAmbientChannel(Supabase.instance.client),
       negotiationChannel: SupabaseNegotiationChannel(Supabase.instance.client),
       database: await AlongDatabase.open(fileName: 'rider.db'),
+      networkProbe: RiderNetworkProbe(),
+      corridorTilePrecache: CorridorTilePrecacheService(
+        cacheDirectory: mapCacheDir,
+      ),
     ),
   );
 }

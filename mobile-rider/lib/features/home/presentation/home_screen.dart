@@ -1,4 +1,5 @@
 import 'package:along_core/along_core.dart';
+import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/home/presentation/widgets/home_bottom_sheet.dart';
 import 'package:mobile_rider/features/home/presentation/widgets/location_denied_banner.dart';
+import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
@@ -32,6 +34,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(homeControllerProvider);
     final config = ref.watch(appConfigProvider);
+    final lowData = ref.watch(lowDataModeProvider).maybeWhen(
+          data: (mode) => mode,
+          orElse: () => LowDataMode.disabled(),
+        );
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
@@ -49,6 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         orElse: () => null,
                       )
                   : null,
+              maxZoom: lowData.enabled ? lowData.maxTileZoom.toDouble() : null,
               initialCameraPosition: MapCamera.abujaDefault(),
               myLocationEnabled: state.locationGranted,
               onLayerControllerReady: (controller) {

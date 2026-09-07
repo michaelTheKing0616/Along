@@ -17,6 +17,7 @@ class FakeAlongSupabase implements AlongSupabase {
     this.citySlug = 'abuja',
     this.planTripResponse,
     this.planTripDelay = Duration.zero,
+    this.planTripError,
     this.requestTripResponse,
     this.walkingDirectionsResponse,
     this.journeyRows = const [],
@@ -53,6 +54,7 @@ class FakeAlongSupabase implements AlongSupabase {
   String? citySlug;
   Map<String, dynamic>? planTripResponse;
   Duration planTripDelay;
+  Object? planTripError;
   Map<String, dynamic>? requestTripResponse;
   Map<String, dynamic>? walkingDirectionsResponse;
   List<Map<String, dynamic>> journeyRows;
@@ -427,6 +429,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (slug == 'plan-trip') {
       planTripInvokeCount++;
+      if (planTripError != null) throw planTripError!;
       if (planTripDelay > Duration.zero) {
         await Future<void>.delayed(planTripDelay);
       }
@@ -648,6 +651,18 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_type': 'global',
         'scope_id': '*',
         'value': '3',
+      },
+      {
+        'key': 'client.low_data_tile_max_zoom',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '15',
+      },
+      {
+        'key': 'client.ambient_poll_interval_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '30',
       },
       {
         'key': 'boarding.colocation_radius_m',

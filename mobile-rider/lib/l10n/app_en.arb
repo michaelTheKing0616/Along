@@ -180,9 +180,13 @@
   "@searchResultsTitle": {
     "description": "R-06 autocomplete results"
   },
-  "searchOfflineHint": "Offline — showing recents only",
+  "searchOfflineHint": "Offline — search uses cached places",
   "@searchOfflineHint": {
     "description": "R-06 offline state"
+  },
+  "cachedOptionsStaleBadge": "Cached · may be outdated",
+  "@cachedOptionsStaleBadge": {
+    "description": "Offline/stale plan or search results badge (doc 07 §4)"
   },
   "searchResultSubtitle": "{area} · {distanceM} m away",
   "@searchResultSubtitle": {

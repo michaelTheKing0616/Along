@@ -16,6 +16,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  along_realtime:
+    dependency: "direct main"
+    description:
+      path: "../along_realtime"
+      relative: true
+    source: path
+    version: "0.0.1"
   analyzer:
     dependency: transitive
     description:
