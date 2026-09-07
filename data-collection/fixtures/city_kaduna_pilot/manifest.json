@@ -1,0 +1,20 @@
+{
+  "city": {
+    "name": "Kaduna-Pilot",
+    "slug": "kaduna-pilot",
+    "country_code": "NG",
+    "state_region": "Kaduna (pilot fixture — not live ops)",
+    "status": "alpha",
+    "centroid": { "lat": 10.510, "lng": 7.417 }
+  },
+  "corridor": {
+    "name": "Pilot Corridor Kawo–Malali",
+    "slug": "kawo-malali"
+  },
+  "config_overrides": {
+    "commission.rate": 0.06,
+    "graph.snap_radius_m": 45,
+    "graph.stage_merge_radius_m": 35
+  },
+  "description": "Fictional Kaduna metro pilot for P9-E-01. Real coordinates near Kaduna; fictional park names. Data/config only — not a live production city."
+}

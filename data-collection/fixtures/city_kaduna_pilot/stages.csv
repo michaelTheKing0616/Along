@@ -1,0 +1,9 @@
+route_name,sequence,stage_name,lat,lng,is_official_park
+Kawo–Malali Car Route,1,Pilot Park Kawo Terminal,10.528,7.438,true
+Kawo–Malali Car Route,2,Pilot Junction Independence Way,10.529,7.444,false
+Kawo–Malali Car Route,3,Pilot Junction Umaru Musa,10.530,7.451,false
+Kawo–Malali Car Route,4,Pilot Park Malali Gate,10.532,7.458,true
+Kawo–Malali Keke Route,1,Pilot Park Kawo Terminal,10.528,7.438,true
+Kawo–Malali Keke Route,2,Pilot Junction Independence Way,10.529,7.444,false
+Kawo–Malali Keke Route,3,Pilot Junction Umaru Musa,10.530,7.451,false
+Kawo–Malali Keke Route,4,Pilot Park Malali Gate,10.532,7.458,true
