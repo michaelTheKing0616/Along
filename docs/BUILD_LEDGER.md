@@ -1714,3 +1714,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 9: grep audit; second city via tooling; city switching; restore drill. Live PagerDuty DEFERRED. Do not flip digital_enabled. Then chain Phase 10.
+
+## [Phase 9 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master ecb403e)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — pgTAP city/switch/admin/ops + Flutter city-switch; Kaduna-Pilot via tooling; digital_enabled false. Deferred: live PagerDuty, prod scratch restore. Hygiene: city_kaduna_pilot vitest allowlist must include test/ paths (P10-A-01 first item).
+- Rework count: 0
+- Notes/escalations: Residuals: P1-G-01, P4-E-02, P8-E-01 stay BLOCKED — human. Do not flip digital_enabled. Chaining Phase 10 from P10-A-01.
+
+## [Phase 10 / P10-A-01] Tenancy, verification provider, currency
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P9-A-01 PASS. Attach 02 §2.1, §3, 12. AC: second tenant dry run; cross-tenant leakage tests. Also fix city_kaduna_pilot.test.ts allowlist for test/ paths. Do not flip digital_enabled.
