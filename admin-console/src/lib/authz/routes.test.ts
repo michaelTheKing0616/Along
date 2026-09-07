@@ -34,6 +34,11 @@ describe('authz routes', () => {
   it('restricts finance and admins routes', () => {
     expect(getAllowedRolesForSegment('finance')).toEqual(['superadmin', 'finance']);
     expect(getAllowedRolesForSegment('admins')).toEqual(['superadmin']);
+    expect(getAllowedRolesForSegment('intelligence')).toEqual([
+      'superadmin',
+      'ops_lead',
+      'analyst',
+    ]);
     expect(getAllowedRolesForSegment('live')).toEqual([
       'superadmin',
       'ops_lead',
