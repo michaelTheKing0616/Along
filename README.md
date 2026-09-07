@@ -26,7 +26,9 @@ mobile-rider/  mobile-driver/  backend/{db,functions,routing,jobs}/  admin-conso
 - `docs/adr/` — architecture decision records.
 - `docs/runbooks/` — operational procedures.
 - `docs/design/` — Stitch reference screenshots (layout intent only), the two original Stitch design docs, brand logos.
-- `docs/BUILD_LEDGER.md` — append-only build history (Orchestrator only).
+- `docs/BUILD_LEDGER.md` — append-only build history (Orchestrator only); archive guide in `docs/BUILD_LEDGER_ARCHIVE.md`.
+- `docs/CONFIG_REFERENCE.md` — `app_config` keys, defaults, and env file templates.
+- `docs/adr/INDEX.md` — architecture decision record index.
 
 ## Starting the build
 
@@ -38,4 +40,40 @@ That session becomes the Orchestrator: it spawns a fresh Worker subagent per tas
 
 ## Status
 
-Planning complete; no application code yet. Phase 0 begins with task `P0-E-01` (repo bootstrap) in `docs/blueprint/11_task_breakdown.md`.
+**Phases 0–11 complete; Phase 12 (docs & ops hardening) in progress.** The repo contains the full stack: Postgres migrations + Edge Functions, Flutter rider/driver apps, Next.js admin console, routing compose, and CI workflows. Pin versions in [ADR-0013](docs/adr/0013-pinned-versions-and-region.md).
+
+| Layer | Location |
+|---|---|
+| Database & RPC | `backend/db/`, `supabase/` |
+| Edge Functions | `backend/functions/` |
+| Admin console | `admin-console/` |
+| Mobile apps | `mobile-rider/`, `mobile-driver/`, `shared/flutter/` |
+| Config reference | `docs/CONFIG_REFERENCE.md` |
+| Runbooks | `docs/runbooks/` |
+| Build history | `docs/BUILD_LEDGER.md` (append-only — see [archive guide](docs/BUILD_LEDGER_ARCHIVE.md)) |
+
+## Local stack
+
+Prerequisites: **Docker Desktop**, **Node.js 22**, **pnpm 9** ([ADR-0013](docs/adr/0013-pinned-versions-and-region.md)). For mobile: **Flutter 3.47.2** via [FVM](https://fvm.app) (`.fvmrc`).
+
+Copy env templates only — never commit real secrets:
+
+- Admin: `admin-console/.env.example` → `admin-console/.env.local`
+- Mobile staging template: `env/staging.example.json` (fill from your Supabase project dashboard)
+
+From the repo root:
+
+1. `pnpm install` — workspace deps + pinned Supabase CLI
+2. `pnpm supabase start` — local Postgres (:54322), API (:54321), Studio (:54323)
+3. `pnpm supabase db reset` — apply migrations + `seed_core` (first run or after schema pull)
+4. `pnpm supabase status` — confirm URLs; DB is `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
+5. `cp admin-console/.env.example admin-console/.env.local` — local admin keys (demo values in example)
+6. `pnpm --filter @along/admin-console dev` — admin console at http://localhost:3000
+7. `dart pub global activate melos` — once per machine (Flutter workspace)
+8. `melos bootstrap` — link shared Flutter packages
+9. `cd mobile-rider && flutter run --dart-define-from-file=env/dev.json` — rider app (repeat for `mobile-driver/`)
+10. *(Optional)* `docker compose -f backend/routing/docker-compose.yml up -d` — local OSRM for planner smokes
+
+Verify: `psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -c "select cfg('payments.digital_enabled');"` → `false`.
+
+More detail: [blueprint 09 — Infra & DevOps](docs/blueprint/09_infra_devops.md) · [config reference](docs/CONFIG_REFERENCE.md) · [dry-run evidence](docs/reports/p12-e-01-fresh-engineer.md)
