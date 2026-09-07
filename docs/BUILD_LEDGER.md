@@ -1186,3 +1186,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: PASS WITH NOTES — SOS pipeline MET (raise_sos→notify sos; admin_ack_sos→sos_ack Deno 2/2). Share-token TS-SOS-02 6/6. Incidents RLS authorization MET (finance/non-reporter blocked). Rider+driver 2G widget gates PASS. FM23 day_planner 9/9 rider tests. Women-only TS-PLAN-07 5/5. Flag still false. Notes: TS-SOS-01 7/9 (count 2 vs 1 from leftover E2E incident row, not auth bypass); Playwright safety-board / W-01 not run (admin-console down).
 - Rework count: 0
 - Notes/escalations: Residuals: **P4-E-02** human counsel — never PASS; **P1-G-01** live-device/corridor/2G field — deferred, not a code-gate fail. Do not flip payments.digital_enabled. Do not start Phase 7. Next implementation when resumed: **P6-D-01**. Not started this session.
+
+## [Phase 6 / Decision] Continue — open Phase 6 implementation then code gate
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner: open Phase 6 from P6-D-01; finish remaining Phase 6 tasks; run Phase 6 code gate; then stop. Do not open Phase 7. Do not re-implement Phase 5. Do not grant P4-E-02. Do not flip payments.digital_enabled. Do not absorb Phase 5 residuals.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Issuing P6-D-01. After E-01 merge, spawn Phase 6 code gate Reviewer against master. Next after this session if gate PASS / PASS WITH DEFERRED EVIDENCE: escalate — Phase 7 stays CLOSED until P1-G-01 PASS.
+
+## [Phase 6 / P6-D-01] A-02 Ops dashboard + A-15 Corridor analytics
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P4-A-06 PASS. admin_corridor_analytics missing — implement here, bounded/paginated, conversion metric review-not-punish (FM13). No live map (P6-D-02).
