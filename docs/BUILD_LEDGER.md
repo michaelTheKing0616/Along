@@ -1906,3 +1906,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 12: README local stack; config ref; store artifacts; W-03. Live store / legal counsel DEFERRED. Do not flip digital_enabled. After this gate: STOP. No further tasks.
+
+## [Phase 12 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master d3ac493)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — README 10-step stack; CONFIG_REFERENCE + SQL confirm digital_enabled false; W-03 public; store artifacts + rollout runbook; human rows P1-G-01/P4-E-02/P8-E-01 remain BLOCKED. Deferred: live store submission, counsel sign-off, full greenfield dry-run, Playwright legal E2E.
+- Rework count: 0
+- Notes/escalations: BUILD COMPLETE (code). Orchestrator STOP. Residuals are human-only. Do not flip digital_enabled. Do not start any work after this gate.
