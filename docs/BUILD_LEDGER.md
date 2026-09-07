@@ -1650,3 +1650,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-E-01 PASS. Attach 01 §8, 10 TS-CFG-01. AC: grep report attached. Fix findings. Do not flip digital_enabled.
+
+## [Phase 9 / P9-A-01] City/currency hardcode audit
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Grep report + 28 FIXED; migration 00073 city_admin scope; TS-CITY-ADMIN-01 4/4 after rework.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: 12 DEFERRED hardcodes for P9-B-01 (PhoneField default, unauthorized /abuja link, etc.).
+- Rework count: 1
+- Notes/escalations: Merged cc092ea. Next: P9-E-01. Do not flip digital_enabled.
+
+## [Phase 9 / P9-E-01] Second Nigerian city via tooling
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P9-A-01 PASS. Attach 13, runbooks. AC: zero bespoke code. Document deltas as tooling fixes. Do not flip digital_enabled.
