@@ -34,6 +34,12 @@ describe('authz routes', () => {
   it('restricts finance and admins routes', () => {
     expect(getAllowedRolesForSegment('finance')).toEqual(['superadmin', 'finance']);
     expect(getAllowedRolesForSegment('admins')).toEqual(['superadmin']);
+    expect(getAllowedRolesForSegment('live')).toEqual([
+      'superadmin',
+      'ops_lead',
+      'ops_agent',
+      'safety',
+    ]);
     expect(ROUTE_ALLOWLIST.dashboard).toContain('verifier');
   });
 });

@@ -298,3 +298,121 @@ input {
 .tree-button:hover {
   color: var(--color-primary);
 }
+
+.live-map-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: var(--space-4);
+  min-height: 70vh;
+}
+
+.live-map-controls {
+  align-self: start;
+}
+
+.live-map-controls-title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.125rem;
+}
+
+.live-map-controls-subtitle {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.live-map-layer-list {
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.live-map-layer-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+}
+
+.live-map-route-filters {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  margin: 0 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+}
+
+.live-map-route-filters legend {
+  font-weight: 600;
+  padding: 0 var(--space-1);
+}
+
+.live-map-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.live-map-error {
+  margin: var(--space-3) 0 0;
+  color: var(--color-danger);
+  font-size: 0.875rem;
+}
+
+.live-map-main {
+  position: relative;
+  min-height: 70vh;
+}
+
+.live-map-canvas {
+  width: 100%;
+  min-height: 70vh;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.live-map-loading {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-map-side-panel {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: min(320px, calc(100% - 2 * var(--space-4)));
+  z-index: 2;
+}
+
+.live-map-side-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.live-map-side-panel-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.live-map-side-panel-body p {
+  margin: 0 0 var(--space-2);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .live-map-shell {
+    grid-template-columns: 1fr;
+  }
+}
