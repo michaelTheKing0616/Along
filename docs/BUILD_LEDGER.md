@@ -1354,3 +1354,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: FAIL — RPC apply path proven (8 graph rows). TS-CORRIDOR-01 broken (test_set_jwt missing). CLI 403 FORBIDDEN with service-role (has_admin_role).
 - Rework count: 1
 - Notes/escalations: Rework 1/2 — fix pgTAP JWT/seed; fix CLI auth. Nothing else. Do not flip digital_enabled.
+
+## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: Rework 1 — TS-CORRIDOR-01 self-seed + audit_coverage JWT; Option B service_role grant. CLI dry-run creates: 20. pgTAP claimed 6/6.
+- Reviewer verdict: FAIL — prior fails fixed, but current_user IN (postgres, supabase_admin) inside SECURITY DEFINER makes has_admin_role dead; anon PostgREST can dry-run and apply corridor imports.
+- Rework count: 2
+- Notes/escalations: MAX_REWORK hit. Branch left: task/p7-e-01. Exact remaining fix: remove current_user postgres/supabase_admin clauses from both guards in 00060; keep service_role setting + has_admin_role. Verify anon 403, service-role 200, superadmin apply, TS-CORRIDOR-01 on fresh db reset.
+
+## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
+- Status: BLOCKED — needs human
+- Assigned: 2026-09-07
+- Worker report summary: Tooling (A-08 + CLI + RPC + data-only fixture) is designed correctly. Auth guard regression blocks merge.
+- Reviewer verdict: FAIL at MAX_REWORK. See prior entry for the exact 00060 guard fix.
+- Rework count: 2
+- Notes/escalations: Grant a third rework (same branch, Reviewer fix only) or rewrite the service-role path without SECURITY DEFINER current_user. Do not merge as-is. Do not flip digital_enabled. P7-A-01 does not depend on this task and can start after a human grant; P9-A-01 depends on P7-E-01 PASS. Session STOP per AUTOPILOT §6 MAX_REWORK.
