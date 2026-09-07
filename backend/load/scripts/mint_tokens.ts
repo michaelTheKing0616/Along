@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write --allow-env
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-env --allow-run
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 
 type Fixture = {
@@ -66,31 +66,23 @@ async function main() {
 
   const dbUrl = Deno.env.get('DB_URL') ??
     'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
+  const driverCount = Number(Deno.env.get('LOAD_DRIVER_COUNT') ?? '10');
+  const riderCount = Number(Deno.env.get('LOAD_RIDER_COUNT') ?? '5');
+  const tripLimit = Number(Deno.env.get('LOAD_TRIP_LIMIT') ?? '50');
 
   const proc = new Deno.Command('psql', {
     args: [dbUrl, '-At', '-c', `
       select coalesce(
-        (select id::text from trips
-         where rider_id = '0e200000-0000-4000-8000-000000000001'
-         order by created_at desc limit 1),
-        ''
-      );
-      select coalesce(
-        (select id::text from trips
-         where rider_id = '0e200000-0000-4000-8000-000000000002'
-         order by created_at desc limit 1),
-        ''
-      );
-      select coalesce(
-        (select id::text from trips
-         where rider_id = '0e200000-0000-4000-8000-000000000003'
-         order by created_at desc limit 1),
-        ''
-      );
-      select coalesce(
         (select geohash5 from presence_fanout_targets() limit 1),
         's6hg7'
       );
+      select t.id::text
+      from trips t
+      join journeys j on j.id = t.journey_id
+      where t.status in ('accepted', 'boarded', 'in_transit')
+        and j.city_id = '0a000000-0000-4000-8000-000000000001'
+      order by t.created_at desc
+      limit ${tripLimit};
     `],
     stdout: 'piped',
     stderr: 'inherit',
@@ -98,28 +90,45 @@ async function main() {
   const { code, stdout } = await proc.output();
   if (code !== 0) Deno.exit(code);
   const lines = new TextDecoder().decode(stdout).trim().split('\n').filter(Boolean);
-  const tripIds = lines.slice(0, 3);
-  const geohash5 = lines[3] || 's6hg7';
+  const geohash5 = lines[0] || 's6hg5';
+  const tripIds = lines.slice(1);
 
   const drivers = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= driverCount; i++) {
     const id = driverId(i);
     drivers.push({ id, jwt: await mintUserToken(id, jwtSecret) });
   }
 
   const riders = [];
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= riderCount; i++) {
     const id = riderId(i);
     riders.push({ id, jwt: await mintUserToken(id, jwtSecret) });
   }
 
   const trips = [];
-  for (let i = 0; i < tripIds.length; i++) {
-    trips.push({
-      id: tripIds[i],
-      rider_jwt: riders[i].jwt,
-      driver_jwt: drivers[i].jwt,
+  if (tripIds.length > 0) {
+    const tripMetaProc = new Deno.Command('psql', {
+      args: [dbUrl, '-At', '-F', ',', '-c', `
+        select id::text, rider_id::text, driver_id::text
+        from trips
+        where id = any(array[${tripIds.map((id) => `'${id}'`).join(',')}]::uuid[])
+        order by created_at desc;
+      `],
+      stdout: 'piped',
+      stderr: 'inherit',
     });
+    const tripMetaOut = await tripMetaProc.output();
+    if (tripMetaOut.code !== 0) Deno.exit(tripMetaOut.code);
+    const tripLines = new TextDecoder().decode(tripMetaOut.stdout).trim().split('\n').filter(Boolean);
+    const driverJwtById = new Map(drivers.map((d) => [d.id, d.jwt]));
+    const riderJwtById = new Map(riders.map((r) => [r.id, r.jwt]));
+    for (const line of tripLines) {
+      const [id, riderIdVal, driverIdVal] = line.split(',');
+      const riderJwt = riderJwtById.get(riderIdVal);
+      const driverJwt = driverJwtById.get(driverIdVal);
+      if (!id || !riderJwt || !driverJwt) continue;
+      trips.push({ id, rider_jwt: riderJwt, driver_jwt: driverJwt });
+    }
   }
 
   const fixture: Fixture = {
@@ -133,7 +142,9 @@ async function main() {
 
   const outPath = `${ROOT}/.tokens.json`;
   await Deno.writeTextFile(outPath, JSON.stringify(fixture, null, 2));
-  console.error(`Wrote ${drivers.length} driver + ${riders.length} rider tokens (${trips.length} trips) → ${outPath}`);
+  console.error(
+    `Wrote ${drivers.length} driver + ${riders.length} rider tokens (${trips.length} trips) → ${outPath}`,
+  );
 }
 
 main();

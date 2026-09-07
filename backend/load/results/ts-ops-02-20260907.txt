@@ -1,0 +1,556 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: plan_trip_mix.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 2400 max VUs, 2m35s max duration (incl. graceful stop):
+              * plan_trip_rps: 20.00 iterations/s for 2m0s (maxVUs: 20-400, exec: planTripOnce, gracefulStop: 30s)
+              * presence_ping_rps: 100.00 iterations/s for 2m0s (maxVUs: 20-2000, exec: presencePingOnce, startTime: 5s, gracefulStop: 30s)
+
+
+running (0m01.0s), 0020/0040 VUs, 0 complete and 0 interrupted iterations
+plan_trip_rps       [   1% ] 020/020 VUs  0m01.0s/2m0s  20.00 iters/s
+presence_ping_rps • [   0% ] waiting      4.0s         
+
+running (0m02.0s), 0030/0050 VUs, 0 complete and 0 interrupted iterations
+plan_trip_rps       [   2% ] 030/030 VUs  0m02.0s/2m0s  20.00 iters/s
+presence_ping_rps • [   0% ] waiting      3.0s         
+
+running (0m03.0s), 0040/0060 VUs, 0 complete and 0 interrupted iterations
+plan_trip_rps       [   2% ] 040/040 VUs  0m03.0s/2m0s  20.00 iters/s
+presence_ping_rps • [   0% ] waiting      2.0s         
+
+running (0m04.0s), 0048/0070 VUs, 2 complete and 0 interrupted iterations
+plan_trip_rps       [   3% ] 048/050 VUs  0m04.0s/2m0s  20.00 iters/s
+presence_ping_rps • [   0% ] waiting      1.0s         
+
+running (0m05.0s), 0054/0076 VUs, 10 complete and 0 interrupted iterations
+plan_trip_rps       [   4% ] 054/056 VUs  0m05.0s/2m0s  20.00 iters/s
+presence_ping_rps • [   0% ] waiting      0.0s         
+
+running (0m06.0s), 0068/0084 VUs, 107 complete and 0 interrupted iterations
+plan_trip_rps       [   5% ] 063/064 VUs    0m06.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   1% ] 0005/0020 VUs  0m01.0s/2m0s  100.00 iters/s
+
+running (0m07.0s), 0074/0090 VUs, 215 complete and 0 interrupted iterations
+plan_trip_rps       [   6% ] 069/070 VUs    0m07.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   2% ] 0005/0020 VUs  0m02.0s/2m0s  100.00 iters/s
+
+running (0m08.0s), 0078/0094 VUs, 327 complete and 0 interrupted iterations
+plan_trip_rps       [   7% ] 073/074 VUs    0m08.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   2% ] 0005/0020 VUs  0m03.0s/2m0s  100.00 iters/s
+
+running (0m09.0s), 0082/0098 VUs, 439 complete and 0 interrupted iterations
+plan_trip_rps       [   7% ] 077/078 VUs    0m09.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   3% ] 0005/0020 VUs  0m04.0s/2m0s  100.00 iters/s
+
+running (0m10.0s), 0085/0101 VUs, 553 complete and 0 interrupted iterations
+plan_trip_rps       [   8% ] 080/081 VUs    0m10.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   4% ] 0005/0020 VUs  0m05.0s/2m0s  100.00 iters/s
+
+running (0m11.0s), 0088/0105 VUs, 666 complete and 0 interrupted iterations
+plan_trip_rps       [   9% ] 083/085 VUs    0m11.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   5% ] 0005/0020 VUs  0m06.0s/2m0s  100.00 iters/s
+
+running (0m12.0s), 0092/0108 VUs, 779 complete and 0 interrupted iterations
+plan_trip_rps       [  10% ] 087/088 VUs    0m12.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   6% ] 0005/0020 VUs  0m07.0s/2m0s  100.00 iters/s
+
+running (0m13.0s), 0095/0111 VUs, 893 complete and 0 interrupted iterations
+plan_trip_rps       [  11% ] 090/091 VUs    0m13.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   7% ] 0005/0020 VUs  0m08.0s/2m0s  100.00 iters/s
+
+running (0m14.0s), 0099/0114 VUs, 1006 complete and 0 interrupted iterations
+plan_trip_rps       [  12% ] 094/094 VUs    0m14.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   7% ] 0005/0020 VUs  0m09.0s/2m0s  100.00 iters/s
+
+running (0m15.0s), 0102/0117 VUs, 1120 complete and 0 interrupted iterations
+plan_trip_rps       [  12% ] 097/097 VUs    0m15.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   8% ] 0005/0020 VUs  0m10.0s/2m0s  100.00 iters/s
+
+running (0m16.0s), 0104/0120 VUs, 1235 complete and 0 interrupted iterations
+plan_trip_rps       [  13% ] 099/100 VUs    0m16.0s/2m0s  20.00 iters/s
+presence_ping_rps   [   9% ] 0005/0020 VUs  0m11.0s/2m0s  100.00 iters/s
+
+running (0m17.0s), 0108/0124 VUs, 1347 complete and 0 interrupted iterations
+plan_trip_rps       [  14% ] 103/104 VUs    0m17.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  10% ] 0005/0020 VUs  0m12.0s/2m0s  100.00 iters/s
+
+running (0m18.0s), 0112/0129 VUs, 1458 complete and 0 interrupted iterations
+plan_trip_rps       [  15% ] 107/109 VUs    0m18.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  11% ] 0005/0020 VUs  0m13.0s/2m0s  100.00 iters/s
+
+running (0m19.0s), 0116/0132 VUs, 1571 complete and 0 interrupted iterations
+plan_trip_rps       [  16% ] 111/112 VUs    0m19.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  12% ] 0005/0020 VUs  0m14.0s/2m0s  100.00 iters/s
+
+running (0m20.0s), 0119/0135 VUs, 1685 complete and 0 interrupted iterations
+plan_trip_rps       [  17% ] 114/115 VUs    0m20.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  12% ] 0005/0020 VUs  0m15.0s/2m0s  100.00 iters/s
+
+running (0m21.0s), 0123/0138 VUs, 1798 complete and 0 interrupted iterations
+plan_trip_rps       [  17% ] 118/118 VUs    0m21.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  13% ] 0005/0020 VUs  0m16.0s/2m0s  100.00 iters/s
+
+running (0m22.0s), 0126/0142 VUs, 1911 complete and 0 interrupted iterations
+plan_trip_rps       [  18% ] 121/122 VUs    0m22.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  14% ] 0005/0020 VUs  0m17.0s/2m0s  100.00 iters/s
+
+running (0m23.0s), 0130/0145 VUs, 2024 complete and 0 interrupted iterations
+plan_trip_rps       [  19% ] 125/125 VUs    0m23.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  15% ] 0005/0020 VUs  0m18.0s/2m0s  100.00 iters/s
+
+running (0m24.0s), 0132/0149 VUs, 2138 complete and 0 interrupted iterations
+plan_trip_rps       [  20% ] 127/129 VUs    0m24.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  16% ] 0005/0020 VUs  0m19.0s/2m0s  100.00 iters/s
+
+running (0m25.0s), 0136/0152 VUs, 2251 complete and 0 interrupted iterations
+plan_trip_rps       [  21% ] 131/132 VUs    0m25.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  17% ] 0005/0020 VUs  0m20.0s/2m0s  100.00 iters/s
+
+running (0m26.0s), 0139/0155 VUs, 2365 complete and 0 interrupted iterations
+plan_trip_rps       [  22% ] 134/135 VUs    0m26.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  17% ] 0005/0020 VUs  0m21.0s/2m0s  100.00 iters/s
+
+running (0m27.0s), 0143/0158 VUs, 2478 complete and 0 interrupted iterations
+plan_trip_rps       [  22% ] 138/138 VUs    0m27.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  18% ] 0005/0020 VUs  0m22.0s/2m0s  100.00 iters/s
+
+running (0m28.0s), 0145/0162 VUs, 2592 complete and 0 interrupted iterations
+plan_trip_rps       [  23% ] 140/142 VUs    0m28.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  19% ] 0005/0020 VUs  0m23.0s/2m0s  100.00 iters/s
+
+running (0m29.0s), 0150/0166 VUs, 2703 complete and 0 interrupted iterations
+plan_trip_rps       [  24% ] 145/146 VUs    0m29.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  20% ] 0005/0020 VUs  0m24.0s/2m0s  100.00 iters/s
+
+running (0m30.0s), 0153/0170 VUs, 2816 complete and 0 interrupted iterations
+plan_trip_rps       [  25% ] 148/150 VUs    0m30.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  21% ] 0005/0020 VUs  0m25.0s/2m0s  100.00 iters/s
+
+running (0m31.0s), 0157/0173 VUs, 2929 complete and 0 interrupted iterations
+plan_trip_rps       [  26% ] 152/153 VUs    0m31.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  22% ] 0005/0020 VUs  0m26.0s/2m0s  100.00 iters/s
+
+running (0m32.0s), 0161/0176 VUs, 3042 complete and 0 interrupted iterations
+plan_trip_rps       [  27% ] 156/156 VUs    0m32.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  22% ] 0005/0020 VUs  0m27.0s/2m0s  100.00 iters/s
+
+running (0m33.0s), 0165/0180 VUs, 3154 complete and 0 interrupted iterations
+plan_trip_rps       [  27% ] 160/160 VUs    0m33.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  23% ] 0005/0020 VUs  0m28.0s/2m0s  100.00 iters/s
+
+running (0m34.0s), 0167/0184 VUs, 3268 complete and 0 interrupted iterations
+plan_trip_rps       [  28% ] 162/164 VUs    0m34.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  24% ] 0005/0020 VUs  0m29.0s/2m0s  100.00 iters/s
+
+running (0m35.0s), 0170/0187 VUs, 3382 complete and 0 interrupted iterations
+plan_trip_rps       [  29% ] 165/167 VUs    0m35.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  25% ] 0005/0020 VUs  0m30.0s/2m0s  100.00 iters/s
+
+running (0m36.0s), 0173/0188 VUs, 3498 complete and 0 interrupted iterations
+plan_trip_rps       [  30% ] 168/168 VUs    0m36.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  26% ] 0005/0020 VUs  0m31.0s/2m0s  100.00 iters/s
+
+running (0m37.0s), 0173/0190 VUs, 3616 complete and 0 interrupted iterations
+plan_trip_rps       [  31% ] 168/170 VUs    0m37.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  27% ] 0005/0020 VUs  0m32.0s/2m0s  100.00 iters/s
+
+running (0m38.0s), 0175/0192 VUs, 3732 complete and 0 interrupted iterations
+plan_trip_rps       [  32% ] 170/172 VUs    0m38.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  27% ] 0005/0020 VUs  0m33.0s/2m0s  100.00 iters/s
+
+running (0m39.0s), 0177/0194 VUs, 3848 complete and 0 interrupted iterations
+plan_trip_rps       [  32% ] 172/174 VUs    0m39.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  28% ] 0005/0020 VUs  0m34.0s/2m0s  100.00 iters/s
+
+running (0m40.0s), 0179/0196 VUs, 3964 complete and 0 interrupted iterations
+plan_trip_rps       [  33% ] 174/176 VUs    0m40.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  29% ] 0005/0020 VUs  0m35.0s/2m0s  100.00 iters/s
+
+running (0m41.0s), 0180/0198 VUs, 4081 complete and 0 interrupted iterations
+plan_trip_rps       [  34% ] 175/178 VUs    0m41.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  30% ] 0005/0020 VUs  0m36.0s/2m0s  100.00 iters/s
+
+running (0m42.0s), 0183/0199 VUs, 4197 complete and 0 interrupted iterations
+plan_trip_rps       [  35% ] 178/179 VUs    0m42.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  31% ] 0005/0020 VUs  0m37.0s/2m0s  100.00 iters/s
+
+running (0m43.0s), 0184/0201 VUs, 4314 complete and 0 interrupted iterations
+plan_trip_rps       [  36% ] 179/181 VUs    0m43.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  32% ] 0005/0020 VUs  0m38.0s/2m0s  100.00 iters/s
+
+running (0m44.0s), 0186/0203 VUs, 4430 complete and 0 interrupted iterations
+plan_trip_rps       [  37% ] 181/183 VUs    0m44.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  32% ] 0005/0020 VUs  0m39.0s/2m0s  100.00 iters/s
+
+running (0m45.0s), 0188/0204 VUs, 4547 complete and 0 interrupted iterations
+plan_trip_rps       [  37% ] 183/184 VUs    0m45.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  33% ] 0005/0020 VUs  0m40.0s/2m0s  100.00 iters/s
+
+running (0m46.0s), 0188/0205 VUs, 4666 complete and 0 interrupted iterations
+plan_trip_rps       [  38% ] 183/185 VUs    0m46.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  34% ] 0005/0020 VUs  0m41.0s/2m0s  100.00 iters/s
+
+running (0m47.0s), 0189/0206 VUs, 4784 complete and 0 interrupted iterations
+plan_trip_rps       [  39% ] 184/186 VUs    0m47.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  35% ] 0005/0020 VUs  0m42.0s/2m0s  100.00 iters/s
+
+running (0m48.0s), 0191/0207 VUs, 4901 complete and 0 interrupted iterations
+plan_trip_rps       [  40% ] 186/187 VUs    0m48.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  36% ] 0005/0020 VUs  0m43.0s/2m0s  100.00 iters/s
+
+running (0m49.0s), 0191/0208 VUs, 5020 complete and 0 interrupted iterations
+plan_trip_rps       [  41% ] 186/188 VUs    0m49.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  37% ] 0005/0020 VUs  0m44.0s/2m0s  100.00 iters/s
+
+running (0m50.0s), 0193/0209 VUs, 5137 complete and 0 interrupted iterations
+plan_trip_rps       [  42% ] 188/189 VUs    0m50.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  37% ] 0005/0020 VUs  0m45.0s/2m0s  100.00 iters/s
+
+running (0m51.0s), 0193/0210 VUs, 5256 complete and 0 interrupted iterations
+plan_trip_rps       [  42% ] 188/190 VUs    0m51.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  38% ] 0005/0020 VUs  0m46.0s/2m0s  100.00 iters/s
+
+running (0m52.0s), 0193/0211 VUs, 5375 complete and 0 interrupted iterations
+plan_trip_rps       [  43% ] 188/191 VUs    0m52.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  39% ] 0005/0020 VUs  0m47.0s/2m0s  100.00 iters/s
+
+running (0m53.0s), 0195/0212 VUs, 5492 complete and 0 interrupted iterations
+plan_trip_rps       [  44% ] 190/192 VUs    0m53.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  40% ] 0005/0020 VUs  0m48.0s/2m0s  100.00 iters/s
+
+running (0m54.0s), 0197/0212 VUs, 5610 complete and 0 interrupted iterations
+plan_trip_rps       [  45% ] 192/192 VUs    0m54.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  41% ] 0005/0020 VUs  0m49.0s/2m0s  100.00 iters/s
+
+running (0m55.0s), 0199/0213 VUs, 5727 complete and 0 interrupted iterations
+plan_trip_rps       [  46% ] 192/193 VUs    0m55.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  42% ] 0007/0020 VUs  0m50.0s/2m0s  100.00 iters/s
+
+running (0m56.0s), 0196/0214 VUs, 5849 complete and 0 interrupted iterations
+plan_trip_rps       [  47% ] 191/194 VUs    0m56.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  42% ] 0005/0020 VUs  0m51.0s/2m0s  100.00 iters/s
+
+running (0m57.0s), 0197/0214 VUs, 5968 complete and 0 interrupted iterations
+plan_trip_rps       [  47% ] 192/194 VUs    0m57.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  43% ] 0005/0020 VUs  0m52.0s/2m0s  100.00 iters/s
+
+running (0m58.0s), 0197/0215 VUs, 6087 complete and 0 interrupted iterations
+plan_trip_rps       [  48% ] 192/195 VUs    0m58.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  44% ] 0005/0020 VUs  0m53.0s/2m0s  100.00 iters/s
+
+running (0m59.0s), 0199/0215 VUs, 6205 complete and 0 interrupted iterations
+plan_trip_rps       [  49% ] 194/195 VUs    0m59.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  45% ] 0005/0020 VUs  0m54.0s/2m0s  100.00 iters/s
+
+running (1m00.0s), 0198/0216 VUs, 6325 complete and 0 interrupted iterations
+plan_trip_rps       [  50% ] 193/196 VUs    1m00.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  46% ] 0005/0020 VUs  0m55.0s/2m0s  100.00 iters/s
+
+running (1m01.0s), 0199/0216 VUs, 6444 complete and 0 interrupted iterations
+plan_trip_rps       [  51% ] 194/196 VUs    1m01.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  47% ] 0005/0020 VUs  0m56.0s/2m0s  100.00 iters/s
+
+running (1m02.0s), 0199/0217 VUs, 6563 complete and 0 interrupted iterations
+plan_trip_rps       [  52% ] 194/197 VUs    1m02.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  47% ] 0005/0020 VUs  0m57.0s/2m0s  100.00 iters/s
+
+running (1m03.0s), 0201/0217 VUs, 6681 complete and 0 interrupted iterations
+plan_trip_rps       [  52% ] 196/197 VUs    1m03.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  48% ] 0005/0020 VUs  0m58.0s/2m0s  100.00 iters/s
+
+running (1m04.0s), 0201/0217 VUs, 6801 complete and 0 interrupted iterations
+plan_trip_rps       [  53% ] 196/197 VUs    1m04.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  49% ] 0005/0020 VUs  0m59.0s/2m0s  100.00 iters/s
+
+running (1m05.0s), 0201/0218 VUs, 6920 complete and 0 interrupted iterations
+plan_trip_rps       [  54% ] 196/198 VUs    1m05.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  50% ] 0005/0020 VUs  1m00.0s/2m0s  100.00 iters/s
+
+running (1m06.0s), 0201/0218 VUs, 7040 complete and 0 interrupted iterations
+plan_trip_rps       [  55% ] 196/198 VUs    1m06.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  51% ] 0005/0020 VUs  1m01.0s/2m0s  100.00 iters/s
+
+running (1m07.0s), 0201/0218 VUs, 7160 complete and 0 interrupted iterations
+plan_trip_rps       [  56% ] 196/198 VUs    1m07.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  52% ] 0005/0020 VUs  1m02.0s/2m0s  100.00 iters/s
+
+running (1m08.0s), 0202/0219 VUs, 7278 complete and 0 interrupted iterations
+plan_trip_rps       [  57% ] 197/199 VUs    1m08.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  52% ] 0005/0020 VUs  1m03.0s/2m0s  100.00 iters/s
+
+running (1m09.0s), 0201/0219 VUs, 7399 complete and 0 interrupted iterations
+plan_trip_rps       [  57% ] 196/199 VUs    1m09.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  53% ] 0005/0020 VUs  1m04.0s/2m0s  100.00 iters/s
+
+running (1m10.0s), 0203/0219 VUs, 7517 complete and 0 interrupted iterations
+plan_trip_rps       [  58% ] 198/199 VUs    1m10.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  54% ] 0005/0020 VUs  1m05.0s/2m0s  100.00 iters/s
+
+running (1m11.0s), 0203/0219 VUs, 7637 complete and 0 interrupted iterations
+plan_trip_rps       [  59% ] 198/199 VUs    1m11.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  55% ] 0005/0020 VUs  1m06.0s/2m0s  100.00 iters/s
+
+running (1m12.0s), 0203/0219 VUs, 7757 complete and 0 interrupted iterations
+plan_trip_rps       [  60% ] 198/199 VUs    1m12.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  56% ] 0005/0020 VUs  1m07.0s/2m0s  100.00 iters/s
+
+running (1m13.0s), 0202/0220 VUs, 7877 complete and 0 interrupted iterations
+plan_trip_rps       [  61% ] 197/200 VUs    1m13.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  57% ] 0005/0020 VUs  1m08.0s/2m0s  100.00 iters/s
+
+running (1m14.0s), 0202/0220 VUs, 7997 complete and 0 interrupted iterations
+plan_trip_rps       [  62% ] 197/200 VUs    1m14.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  57% ] 0005/0020 VUs  1m09.0s/2m0s  100.00 iters/s
+
+running (1m15.0s), 0203/0220 VUs, 8116 complete and 0 interrupted iterations
+plan_trip_rps       [  62% ] 198/200 VUs    1m15.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  58% ] 0005/0020 VUs  1m10.0s/2m0s  100.00 iters/s
+
+running (1m16.0s), 0204/0220 VUs, 8235 complete and 0 interrupted iterations
+plan_trip_rps       [  63% ] 199/200 VUs    1m16.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  59% ] 0005/0020 VUs  1m11.0s/2m0s  100.00 iters/s
+
+running (1m17.0s), 0204/0220 VUs, 8355 complete and 0 interrupted iterations
+plan_trip_rps       [  64% ] 199/200 VUs    1m17.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  60% ] 0005/0020 VUs  1m12.0s/2m0s  100.00 iters/s
+
+running (1m18.0s), 0203/0221 VUs, 8475 complete and 0 interrupted iterations
+plan_trip_rps       [  65% ] 198/201 VUs    1m18.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  61% ] 0005/0020 VUs  1m13.0s/2m0s  100.00 iters/s
+
+running (1m19.0s), 0204/0221 VUs, 8594 complete and 0 interrupted iterations
+plan_trip_rps       [  66% ] 199/201 VUs    1m19.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  62% ] 0005/0020 VUs  1m14.0s/2m0s  100.00 iters/s
+
+running (1m20.0s), 0204/0221 VUs, 8714 complete and 0 interrupted iterations
+plan_trip_rps       [  67% ] 199/201 VUs    1m20.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  62% ] 0005/0020 VUs  1m15.0s/2m0s  100.00 iters/s
+
+running (1m21.0s), 0203/0221 VUs, 8835 complete and 0 interrupted iterations
+plan_trip_rps       [  67% ] 198/201 VUs    1m21.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  63% ] 0005/0020 VUs  1m16.0s/2m0s  100.00 iters/s
+
+running (1m22.0s), 0203/0221 VUs, 8955 complete and 0 interrupted iterations
+plan_trip_rps       [  68% ] 198/201 VUs    1m22.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  64% ] 0005/0020 VUs  1m17.0s/2m0s  100.00 iters/s
+
+running (1m23.0s), 0204/0221 VUs, 9074 complete and 0 interrupted iterations
+plan_trip_rps       [  69% ] 199/201 VUs    1m23.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  65% ] 0005/0020 VUs  1m18.0s/2m0s  100.00 iters/s
+
+running (1m24.0s), 0204/0221 VUs, 9194 complete and 0 interrupted iterations
+plan_trip_rps       [  70% ] 199/201 VUs    1m24.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  66% ] 0005/0020 VUs  1m19.0s/2m0s  100.00 iters/s
+
+running (1m25.0s), 0205/0221 VUs, 9313 complete and 0 interrupted iterations
+plan_trip_rps       [  71% ] 200/201 VUs    1m25.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  67% ] 0005/0020 VUs  1m20.0s/2m0s  100.00 iters/s
+
+running (1m26.0s), 0204/0221 VUs, 9434 complete and 0 interrupted iterations
+plan_trip_rps       [  72% ] 199/201 VUs    1m26.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  67% ] 0005/0020 VUs  1m21.0s/2m0s  100.00 iters/s
+
+running (1m27.0s), 0204/0221 VUs, 9554 complete and 0 interrupted iterations
+plan_trip_rps       [  72% ] 199/201 VUs    1m27.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  68% ] 0005/0020 VUs  1m22.0s/2m0s  100.00 iters/s
+
+running (1m28.0s), 0204/0222 VUs, 9673 complete and 0 interrupted iterations
+plan_trip_rps       [  73% ] 199/202 VUs    1m28.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  69% ] 0005/0020 VUs  1m23.0s/2m0s  100.00 iters/s
+
+running (1m29.0s), 0205/0222 VUs, 9792 complete and 0 interrupted iterations
+plan_trip_rps       [  74% ] 200/202 VUs    1m29.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  70% ] 0005/0020 VUs  1m24.0s/2m0s  100.00 iters/s
+
+running (1m30.0s), 0205/0222 VUs, 9912 complete and 0 interrupted iterations
+plan_trip_rps       [  75% ] 200/202 VUs    1m30.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  71% ] 0005/0020 VUs  1m25.0s/2m0s  100.00 iters/s
+
+running (1m31.0s), 0204/0222 VUs, 10033 complete and 0 interrupted iterations
+plan_trip_rps       [  76% ] 199/202 VUs    1m31.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  72% ] 0005/0020 VUs  1m26.0s/2m0s  100.00 iters/s
+
+running (1m32.0s), 0204/0222 VUs, 10153 complete and 0 interrupted iterations
+plan_trip_rps       [  77% ] 199/202 VUs    1m32.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  72% ] 0005/0020 VUs  1m27.0s/2m0s  100.00 iters/s
+
+running (1m33.0s), 0205/0222 VUs, 10272 complete and 0 interrupted iterations
+plan_trip_rps       [  77% ] 200/202 VUs    1m33.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  73% ] 0005/0020 VUs  1m28.0s/2m0s  100.00 iters/s
+
+running (1m34.0s), 0204/0222 VUs, 10393 complete and 0 interrupted iterations
+plan_trip_rps       [  78% ] 199/202 VUs    1m34.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  74% ] 0005/0020 VUs  1m29.0s/2m0s  100.00 iters/s
+
+running (1m35.0s), 0205/0222 VUs, 10512 complete and 0 interrupted iterations
+plan_trip_rps       [  79% ] 200/202 VUs    1m35.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  75% ] 0005/0020 VUs  1m30.0s/2m0s  100.00 iters/s
+
+running (1m36.0s), 0204/0222 VUs, 10633 complete and 0 interrupted iterations
+plan_trip_rps       [  80% ] 199/202 VUs    1m36.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  76% ] 0005/0020 VUs  1m31.0s/2m0s  100.00 iters/s
+
+running (1m37.0s), 0204/0222 VUs, 10753 complete and 0 interrupted iterations
+plan_trip_rps       [  81% ] 199/202 VUs    1m37.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  77% ] 0005/0020 VUs  1m32.0s/2m0s  100.00 iters/s
+
+running (1m38.0s), 0205/0222 VUs, 10872 complete and 0 interrupted iterations
+plan_trip_rps       [  82% ] 200/202 VUs    1m38.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  77% ] 0005/0020 VUs  1m33.0s/2m0s  100.00 iters/s
+
+running (1m39.0s), 0205/0222 VUs, 10992 complete and 0 interrupted iterations
+plan_trip_rps       [  82% ] 200/202 VUs    1m39.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  78% ] 0005/0020 VUs  1m34.0s/2m0s  100.00 iters/s
+
+running (1m40.0s), 0206/0222 VUs, 11111 complete and 0 interrupted iterations
+plan_trip_rps       [  83% ] 201/202 VUs    1m40.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  79% ] 0005/0020 VUs  1m35.0s/2m0s  100.00 iters/s
+
+running (1m41.0s), 0206/0222 VUs, 11231 complete and 0 interrupted iterations
+plan_trip_rps       [  84% ] 201/202 VUs    1m41.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  80% ] 0005/0020 VUs  1m36.0s/2m0s  100.00 iters/s
+
+running (1m42.0s), 0206/0222 VUs, 11351 complete and 0 interrupted iterations
+plan_trip_rps       [  85% ] 201/202 VUs    1m42.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  81% ] 0005/0020 VUs  1m37.0s/2m0s  100.00 iters/s
+
+running (1m43.0s), 0205/0222 VUs, 11472 complete and 0 interrupted iterations
+plan_trip_rps       [  86% ] 200/202 VUs    1m43.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  82% ] 0005/0020 VUs  1m38.0s/2m0s  100.00 iters/s
+
+running (1m44.0s), 0205/0222 VUs, 11592 complete and 0 interrupted iterations
+plan_trip_rps       [  87% ] 200/202 VUs    1m44.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  82% ] 0005/0020 VUs  1m39.0s/2m0s  100.00 iters/s
+
+running (1m45.0s), 0206/0222 VUs, 11711 complete and 0 interrupted iterations
+plan_trip_rps       [  87% ] 201/202 VUs    1m45.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  83% ] 0005/0020 VUs  1m40.0s/2m0s  100.00 iters/s
+
+running (1m46.0s), 0206/0222 VUs, 11831 complete and 0 interrupted iterations
+plan_trip_rps       [  88% ] 201/202 VUs    1m46.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  84% ] 0005/0020 VUs  1m41.0s/2m0s  100.00 iters/s
+
+running (1m47.0s), 0205/0222 VUs, 11952 complete and 0 interrupted iterations
+plan_trip_rps       [  89% ] 200/202 VUs    1m47.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  85% ] 0005/0020 VUs  1m42.0s/2m0s  100.00 iters/s
+
+running (1m48.0s), 0206/0222 VUs, 12071 complete and 0 interrupted iterations
+plan_trip_rps       [  90% ] 201/202 VUs    1m48.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  86% ] 0005/0020 VUs  1m43.0s/2m0s  100.00 iters/s
+
+running (1m49.0s), 0205/0222 VUs, 12192 complete and 0 interrupted iterations
+plan_trip_rps       [  91% ] 200/202 VUs    1m49.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  87% ] 0005/0020 VUs  1m44.0s/2m0s  100.00 iters/s
+
+running (1m50.0s), 0205/0222 VUs, 12312 complete and 0 interrupted iterations
+plan_trip_rps       [  92% ] 200/202 VUs    1m50.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  87% ] 0005/0020 VUs  1m45.0s/2m0s  100.00 iters/s
+
+running (1m51.0s), 0206/0222 VUs, 12431 complete and 0 interrupted iterations
+plan_trip_rps       [  92% ] 201/202 VUs    1m51.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  88% ] 0005/0020 VUs  1m46.0s/2m0s  100.00 iters/s
+
+running (1m52.0s), 0206/0222 VUs, 12551 complete and 0 interrupted iterations
+plan_trip_rps       [  93% ] 201/202 VUs    1m52.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  89% ] 0005/0020 VUs  1m47.0s/2m0s  100.00 iters/s
+
+running (1m53.0s), 0205/0222 VUs, 12672 complete and 0 interrupted iterations
+plan_trip_rps       [  94% ] 200/202 VUs    1m53.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  90% ] 0005/0020 VUs  1m48.0s/2m0s  100.00 iters/s
+
+running (1m54.0s), 0206/0222 VUs, 12791 complete and 0 interrupted iterations
+plan_trip_rps       [  95% ] 201/202 VUs    1m54.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  91% ] 0005/0020 VUs  1m49.0s/2m0s  100.00 iters/s
+
+running (1m55.0s), 0206/0222 VUs, 12911 complete and 0 interrupted iterations
+plan_trip_rps       [  96% ] 201/202 VUs    1m55.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  92% ] 0005/0020 VUs  1m50.0s/2m0s  100.00 iters/s
+
+running (1m56.0s), 0206/0222 VUs, 13031 complete and 0 interrupted iterations
+plan_trip_rps       [  97% ] 201/202 VUs    1m56.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  92% ] 0005/0020 VUs  1m51.0s/2m0s  100.00 iters/s
+
+running (1m57.0s), 0206/0222 VUs, 13151 complete and 0 interrupted iterations
+plan_trip_rps       [  97% ] 201/202 VUs    1m57.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  93% ] 0005/0020 VUs  1m52.0s/2m0s  100.00 iters/s
+
+running (1m58.0s), 0205/0222 VUs, 13272 complete and 0 interrupted iterations
+plan_trip_rps       [  98% ] 200/202 VUs    1m58.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  94% ] 0005/0020 VUs  1m53.0s/2m0s  100.00 iters/s
+
+running (1m59.0s), 0205/0222 VUs, 13392 complete and 0 interrupted iterations
+plan_trip_rps       [  99% ] 200/202 VUs    1m59.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  95% ] 0005/0020 VUs  1m54.0s/2m0s  100.00 iters/s
+
+running (2m00.0s), 0205/0222 VUs, 13512 complete and 0 interrupted iterations
+plan_trip_rps       [ 100% ] 200/202 VUs    2m00.0s/2m0s  20.00 iters/s
+presence_ping_rps   [  96% ] 0005/0020 VUs  1m55.0s/2m0s  100.00 iters/s
+
+running (2m01.0s), 0186/0222 VUs, 13632 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s          20.00 iters/s
+presence_ping_rps   [  97% ] 0005/0020 VUs  1m56.0s/2m0s  100.00 iters/s
+
+running (2m02.0s), 0166/0222 VUs, 13752 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s          20.00 iters/s
+presence_ping_rps   [  97% ] 0005/0020 VUs  1m57.0s/2m0s  100.00 iters/s
+
+running (2m03.0s), 0146/0222 VUs, 13872 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s          20.00 iters/s
+presence_ping_rps   [  98% ] 0005/0020 VUs  1m58.0s/2m0s  100.00 iters/s
+
+running (2m04.0s), 0127/0222 VUs, 13991 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s          20.00 iters/s
+presence_ping_rps   [  99% ] 0005/0020 VUs  1m59.0s/2m0s  100.00 iters/s
+
+running (2m05.0s), 0106/0222 VUs, 14112 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s          20.00 iters/s
+presence_ping_rps   [ 100% ] 0005/0020 VUs  2m00.0s/2m0s  100.00 iters/s
+
+running (2m06.0s), 0082/0222 VUs, 14137 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s  20.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0020 VUs  2m0s  100.00 iters/s
+
+running (2m07.0s), 0061/0222 VUs, 14158 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s  20.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0020 VUs  2m0s  100.00 iters/s
+
+running (2m08.0s), 0042/0222 VUs, 14177 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s  20.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0020 VUs  2m0s  100.00 iters/s
+
+running (2m09.0s), 0022/0222 VUs, 14197 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s  20.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0020 VUs  2m0s  100.00 iters/s
+
+running (2m10.0s), 0002/0222 VUs, 14217 complete and 0 interrupted iterations
+plan_trip_rps     ↓ [ 100% ] 201/202 VUs    2m0s  20.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0020 VUs  2m0s  100.00 iters/s
+
+=== TS-OPS-02 plan-trip + presence mix (k6) ===
+target_plan_trip_rps=20 target_presence_ping_rps=100
+duration=2m scale_factor=10
+http_req_waiting: p95=10044.32
+plan_trip_latency_ms: p95=10073.43
+presence_ping_latency_ms: p95=2.67
+http_req_duration{expected_response:true}: p95=2.67
+http_req_tls_handshaking: p95=0.00
+http_req_duration: p95=10044.42
+http_req_receiving: p95=0.08
+http_req_connecting: p95=0.00
+http_req_blocked: p95=0.01
+http_req_sending: p95=0.04
+iteration_duration: p95=10044.58
+
+running (2m10.1s), 0000/0222 VUs, 14219 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/202 VUs    2m0s  20.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0020 VUs  2m0s  100.00 iters/s
+time="2026-09-07T16:48:47+01:00" level=error msg="thresholds on metrics 'checks, http_req_failed{rpc:plan-trip}, plan_trip_latency_ms' have been crossed"
