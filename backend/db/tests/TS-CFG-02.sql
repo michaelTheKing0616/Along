@@ -92,6 +92,8 @@ with required_global as (
     'motion.naMe.strobe_ms',
     'motion.naMe.cycle_duration_s',
     'sos.hold_duration_ms',
+    'sos.ack_sla_s',
+    'sos.escalate_sla_s',
     'name.colors',
     'name.shapes',
     'share.link_ttl_hours',

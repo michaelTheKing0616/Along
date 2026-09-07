@@ -18,6 +18,10 @@ export const notifyRequestSchema = z.discriminatedUnion('kind', [
     kind: z.literal('sos'),
     sos_id: z.string().uuid(),
   }),
+  z.object({
+    kind: z.literal('sos_ack'),
+    sos_id: z.string().uuid(),
+  }),
 ]);
 
 export type NotifyRequest = z.infer<typeof notifyRequestSchema>;
@@ -115,6 +119,57 @@ async function notifySafetyOnCall(
   }
 
   return { fcm_sent: fcmSent, sms_sent: smsSent };
+}
+
+type SosAlertRow = {
+  id: string;
+  raised_by: string;
+  raised_role: string;
+};
+
+async function notifyRaiserSosAck(
+  deps: NotifyDeps,
+  sosId: string,
+): Promise<{ fcm_sent: number }> {
+  const { data: sosRow, error: sosError } = await deps.service
+    .from('sos_alerts')
+    .select('id, raised_by, raised_role')
+    .eq('id', sosId)
+    .single();
+
+  if (sosError || !sosRow) {
+    throw new Error('NOT_FOUND');
+  }
+
+  const sos = sosRow as SosAlertRow;
+  const app = sos.raised_role === 'driver' ? 'driver' : 'rider';
+
+  const { data: tokens, error: tokenError } = await deps.service
+    .from('device_tokens')
+    .select('token, platform')
+    .eq('profile_id', sos.raised_by)
+    .eq('app', app);
+
+  if (tokenError) {
+    throw new Error(tokenError.message);
+  }
+
+  let fcmSent = 0;
+  for (const row of (tokens ?? []) as DeviceTokenRow[]) {
+    await deps.fcm.sendDataMessage({
+      token: row.token,
+      data: {
+        type: 'sos_ack',
+        sos_id: sosId,
+      },
+      ttlSeconds: 300,
+      collapseKey: `sos_ack_${sosId}`,
+      priority: 'high',
+    });
+    fcmSent += 1;
+  }
+
+  return { fcm_sent: fcmSent };
 }
 
 async function tripDriverId(
@@ -229,6 +284,19 @@ export async function handleNotify(
         sos_id: body.sos_id,
         fcm_sent: delivery.fcm_sent,
         sms_sent: delivery.sms_sent,
+      },
+      meta: { request_id: rid },
+    });
+  }
+
+  if (body.kind === 'sos_ack') {
+    const delivery = await notifyRaiserSosAck(deps, body.sos_id);
+
+    return jsonResponse({
+      data: {
+        kind: body.kind,
+        sos_id: body.sos_id,
+        fcm_sent: delivery.fcm_sent,
       },
       meta: { request_id: rid },
     });

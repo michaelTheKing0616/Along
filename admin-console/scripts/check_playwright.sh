@@ -56,6 +56,8 @@ echo "Seeding E2E agent settlement fixture..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-agent-settlement.sql"
 echo "Seeding E2E W-04 pay fixture..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-w04-pay.sql"
+echo "Seeding E2E safety board fixture..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-safety-board.sql"
 chmod +x "$ADMIN/e2e/seed-verification-storage.sh"
 "$ADMIN/e2e/seed-verification-storage.sh"
 

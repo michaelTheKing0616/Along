@@ -100,6 +100,8 @@ with required_global as (
     'motion.naMe.strobe_ms',
     'motion.naMe.cycle_duration_s',
     'sos.hold_duration_ms',
+    'sos.ack_sla_s',
+    'sos.escalate_sla_s',
     'share.link_ttl_hours',
     'otp.rate_limit_per_hour',
     'auth.payout_reauth_window_s',
