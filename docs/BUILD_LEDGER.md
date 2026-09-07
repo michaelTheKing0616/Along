@@ -1363,6 +1363,14 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Rework count: 2
 - Notes/escalations: MAX_REWORK hit. Branch left: task/p7-e-01. Exact remaining fix: remove current_user postgres/supabase_admin clauses from both guards in 00060; keep service_role setting + has_admin_role. Verify anon 403, service-role 200, superadmin apply, TS-CORRIDOR-01 on fresh db reset.
 
+## [Phase 7 / Decision] Grant P7-E-01 rework 3; do not halt the remaining build
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner grants one more rework on task/p7-e-01. Autopilot MAX_REWORK raised to 6; exact-fix FAILs auto-retry; PHASE_LIMIT unlimited through Phase 12.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Fix only the 00060 SECURITY DEFINER guards (remove current_user postgres/supabase_admin; keep service_role + has_admin_role). Then resume the 7–12 chain. Do not stop again for this class of Reviewer FAIL.
+
 ## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
 - Status: BLOCKED — needs human
 - Assigned: 2026-09-07

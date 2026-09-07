@@ -6,7 +6,7 @@ Paste **everything below the line** into a fresh Cursor Agent chat opened at the
 
 The session you paste into becomes the **Orchestrator**. It never writes application code; it spawns a fresh subagent for every Worker task and another for every Review, keeps `docs/BUILD_LEDGER.md`, merges passing branches, and stops only for the human decisions listed in §6.
 
-Knobs (edit before pasting if you want): `PHASE_LIMIT = unlimited` (chain after each code gate; 2026-09-07 owner) · `MAX_REWORK = 2` · `PARALLELISM = 1` · `STOP_AFTER_TASKS = unlimited`.
+Knobs (edit before pasting if you want): `PHASE_LIMIT = unlimited` · `MAX_REWORK = 6` · `PARALLELISM = 1` · `STOP_AFTER_TASKS = unlimited`.
 
 ---
 
@@ -95,7 +95,7 @@ Your FINAL MESSAGE: VERDICT: PASS | PASS WITH NOTES | FAIL, then an itemised lis
 ## 5. Act on the verdict
 
 - **PASS / PASS WITH NOTES:** `git checkout master && git merge --no-ff task/<id> -m "P<phase>: <id> <title> (reviewed: PASS)"`; if NOTES exist, add them to the ledger entry as follow-ups (and, if they are real defects, create a `BLOCKED — follow-up` ledger line naming the task that should absorb them). Append the ledger entry (spec §2.2 format) and commit `docs/BUILD_LEDGER.md` on master. Delete the task branch.
-- **FAIL:** append a ledger entry with `Status: FAIL`, `Rework count: n`. If `n < MAX_REWORK`, re-spawn the Worker (fresh subagent, same brief) with the Reviewer's itemised findings appended under "REVIEWER FINDINGS TO FIX — fix exactly these, nothing else". Then a fresh Reviewer. If `n == MAX_REWORK`, mark `BLOCKED — needs human`, leave the branch, escalate (§6), continue with other tasks.
+- **FAIL:** append a ledger entry with `Status: FAIL`, `Rework count: n`. If `n < MAX_REWORK`, re-spawn the Worker (fresh subagent, same brief) with the Reviewer's itemised findings appended under "REVIEWER FINDINGS TO FIX — fix exactly these, nothing else". Then a fresh Reviewer. If `n == MAX_REWORK` **and** the Reviewer named an exact, file-level fix, grant one more Worker (do not ask the human). Only mark `BLOCKED — needs human` if that extra pass still FAILs or the Reviewer did not name a concrete fix.
 - **Phase gate:** when every non-human task in the phase is `PASS`, spawn one final Reviewer whose only brief is the phase's *gate* and *exit criteria* from spec §7 plus the phase's TS-* list, against `master`. Record the verdict in the ledger as `[Phase N / Gate]`. If `PHASE_LIMIT` is "current phase only", then **stop** and report to the human (§7). Otherwise (unlimited / owner-authorised chain), immediately issue the first implementation task of the next phase (spec §0.1) — do not wait for another "continue".
 - **Deferred evidence:** device/emulator/Xcode/corridor/load/Patrol/legal evidence may be deferred. Record `[Phase N / Gate] PASS WITH DEFERRED EVIDENCE`, list residual IDs, and continue implementation. **2026-09-07 owner decision:** **P1-G-01**, **P4-E-02**, and **P8-E-01** do **not** block later-phase *code*. Never invent a PASS for those human rows. Never flip the shipped default of `cfg payments.digital_enabled` (stays **false**; tests may enable it locally). Never print production QR stickers or charge a real rider. Phases 7–12 *code* gates may be PASS WITH DEFERRED EVIDENCE the same way Phases 3–6 were. Do not invent a PASS for skipped Patrol/Playwright/device runs. Code defects at a gate are not evidence — task them immediately.
 
@@ -114,14 +114,15 @@ Ledger entry format (append-only, never edit earlier entries):
 ## 6. When to stop and ask the human (and only then)
 
 Stop the loop, write what you need under `Notes/escalations`, and end your turn when:
-1. A task hits `MAX_REWORK` failures.
+1. A task still FAILs after `MAX_REWORK` plus the one extra exact-fix pass in §5 — and only then.
 2. A Worker or Reviewer identifies a **blueprint gap or a spec contradiction** (the blueprint is fixed by the human/planner, not by you or a Worker).
-3. A task requires a **secret, paid account, real device, production credential, or money** (Paystack live keys, Apple/Google developer accounts, VMs, domain DNS). Staging/sandbox items the repo already documents are fine.
-4. The **phase gate** is reached.
+3. A task requires a **live secret, paid production account, or real money** you cannot stub (Paystack *live* keys, charging a real rider). Staging/sandbox, local k6, emulator-optional Patrol, and `ios-compile --no-codesign` are not stop reasons — implement, defer field evidence, continue.
+4. The **phase gate** is reached **and** `PHASE_LIMIT` is "current phase only". If `PHASE_LIMIT` is unlimited, record the gate and start the next phase immediately.
 5. `STOP_AFTER_TASKS` is reached.
 6. Any action would be **destructive or irreversible** (force-push, history rewrite, dropping data, deleting branches other than merged task branches).
+7. Phase 12's code gate has been recorded.
 
-Never stop for anything else — not for "shall I continue?", not for long sessions. Never answer an escalation yourself by lowering a criterion.
+Never stop for P1-G-01 / P4-E-02 / P8-E-01, deferred device evidence, "shall I continue?", or a Reviewer FAIL that already names the exact fix. Never answer an escalation yourself by lowering a criterion. Never invent a PASS for a human legal/evidence row.
 
 ## 7. Report format when you stop
 
