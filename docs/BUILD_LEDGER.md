@@ -1698,3 +1698,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-E-02 PASS. Attach 09 §3, §8. AC: drill executed and recorded. Local dump/restore + TS-OPS-01 required. Live scratch-project / PagerDuty DEFERRED (not FAIL). Do not flip digital_enabled.
+
+## [Phase 9 / P9-E-02] Observability & backups
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Local schema-clone restore drill; TS-OPS-01; check_ledger_invariant nightly; observability catalog 8/8 alerts.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Local drill independently re-run. Live PagerDuty / prod scratch-project DEFERRED.
+- Rework count: 0
+- Notes/escalations: Merged 39ea4c1. All Phase 9 implementation tasks PASS. Issuing Phase 9 code gate. Do not flip digital_enabled.
+
+## [Phase 9 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 9: grep audit; second city via tooling; city switching; restore drill. Live PagerDuty DEFERRED. Do not flip digital_enabled. Then chain Phase 10.
