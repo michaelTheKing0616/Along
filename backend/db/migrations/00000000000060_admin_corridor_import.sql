@@ -44,6 +44,16 @@ declare
   v_existing int;
   v_route_name text;
 begin
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
+    raise exception 'FORBIDDEN' using errcode = '42501';
+  end if;
+
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and not admin_can_access_city(p_city_id) then
+    raise exception 'FORBIDDEN' using errcode = '42501';
+  end if;
+
   if v_corridor_slug = '' or v_corridor_name = '' then
     raise exception 'VALIDATION: corridor.name and corridor.slug are required' using errcode = 'P0001';
   end if;
@@ -231,6 +241,16 @@ declare
   v_route_name text;
   v_total_skipped int;
 begin
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
+    raise exception 'FORBIDDEN' using errcode = '42501';
+  end if;
+
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and not admin_can_access_city(p_city_id) then
+    raise exception 'FORBIDDEN' using errcode = '42501';
+  end if;
+
   select c.currency_code into v_currency
   from cities ci
   join countries c on c.code = ci.country_code
@@ -619,7 +639,11 @@ begin
 end;
 $$;
 
-grant execute on function _corridor_import_dry_run(uuid, jsonb) to authenticated;
-grant execute on function _corridor_import_apply(uuid, jsonb) to authenticated;
+revoke execute on function _corridor_import_dry_run(uuid, jsonb) from public;
+revoke execute on function _corridor_import_dry_run(uuid, jsonb) from anon;
+revoke execute on function _corridor_import_dry_run(uuid, jsonb) from authenticated;
+revoke execute on function _corridor_import_apply(uuid, jsonb) from public;
+revoke execute on function _corridor_import_apply(uuid, jsonb) from anon;
+revoke execute on function _corridor_import_apply(uuid, jsonb) from authenticated;
 grant execute on function admin_import_dry_run(uuid, text) to service_role;
 grant execute on function admin_import_apply(uuid, jsonb) to service_role;
