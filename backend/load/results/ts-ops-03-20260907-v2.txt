@@ -1,0 +1,12 @@
+=== TS-OPS-03 trip:* realtime scale (k6) — v2 after payload-parse fix ===
+target_trip_subscriber_vus=50 trip_broadcast_rate=5/s
+duration=1m scale_factor=10
+
+realtime_message_latency_ms: p95=12.00  (budget ≤ 1000 ms) PASS
+ambient_fanout_latency_ms: p95=85.60     (budget ≤ 10000 ms) PASS
+trip_broadcast_events: count=291
+ws_connecting: p95=85.98
+http_req_duration: p95=20.18
+
+k6 thresholds: all passed (exit 0)
+Notes: 50 concurrent trip:* subscribers at 1/100 full-city scale; loc latency measured via sent_at_ms in test pump payload. Full 5k run deferred to staging (run_fullcity.sh).
