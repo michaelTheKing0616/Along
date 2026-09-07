@@ -1314,3 +1314,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 6: admin writes audited actor+timestamp; analytics paginated/bounded; exit = ops can verify a driver, resolve a fare dispute, review an incident, pull a demand report without raw SQL. Live-device/corridor evidence deferred to P1-G-01 — do not FAIL for missing field screenshots. Do not start Phase 7.
+
+## [Phase 6 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master 8c1870b after P6-E-01)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — audit_coverage 6/6; coverage script 25 OK / 3 Phase 7 GAP; TS-ANALYTICS-01 11/11 bounded + diagnostic_only; TS-OPS-04 9/9 admin-only precise positions; exit screens/RPCs present. Flag global false / read-only. Deferred: human pilot dry-run sign-off; Playwright graph-config (admin-console down). Note: local Abuja city row payments.digital_enabled=true is E2E seed residue, not shipped default.
+- Rework count: 0
+- Notes/escalations: Residuals: **P4-E-02** human counsel — never PASS; **P1-G-01** live-device/corridor/2G field — deferred. Do not flip payments.digital_enabled. **Phase 7 stays CLOSED until P1-G-01 is PASS.** P7-E-01 is next in doc 11 but was not issued. Session STOP.
