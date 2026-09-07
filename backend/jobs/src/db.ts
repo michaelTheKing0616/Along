@@ -1,12 +1,32 @@
 import pg from 'pg';
 
-import type { JobsDb, JobRunRecord } from './map-match.js';
+import type { JobRunRecord } from './map-match.js';
 import type {
   MapMatchJobConfig,
   PendingTraceMatch,
   TraceActorType,
   TraceSample,
 } from './types.js';
+import type { SpeedProfileAggregate } from './segment-observations.js';
+import type { MatchedTraceForSpeed } from './segment-observations.js';
+import type { SpeedProfilesJobConfig } from './speed-profiles.js';
+
+export type JobsDb = {
+  beginJobRun(jobName: string, params?: Record<string, unknown>): Promise<JobRunRecord>;
+  finishJobRun(
+    jobRunId: string,
+    status: 'succeeded' | 'failed',
+    stats?: Record<string, unknown>,
+    error?: string,
+  ): Promise<void>;
+  loadMapMatchConfig(cityId?: string): Promise<MapMatchJobConfig>;
+  listPendingTraceMatches(minSamples: number): Promise<PendingTraceMatch[]>;
+  loadTraceSamples(tripId: string, actorType: TraceActorType): Promise<TraceSample[]>;
+  insertMatchedTrace(record: import('./types.js').MatchedTraceRecord): Promise<boolean>;
+  loadSpeedProfilesConfig(cityId?: string): Promise<SpeedProfilesJobConfig>;
+  listMatchedTracesForSpeedProfiles(minConfidence: number): Promise<MatchedTraceForSpeed[]>;
+  upsertSpeedProfiles(profiles: SpeedProfileAggregate[]): Promise<number>;
+};
 
 const { Pool } = pg;
 
@@ -166,6 +186,92 @@ export function createPgJobsDb(options?: PgJobsDbOptions): JobsDb {
         ],
       );
       return (rowCount ?? 0) > 0;
+    },
+
+    async loadSpeedProfilesConfig(cityId) {
+      const { rows } = await pool.query<{
+        min_samples: string;
+        min_confidence: string;
+      }>(
+        `select
+           cfg_num('jobs.speed_profile_min_samples', $1::uuid) as min_samples,
+           cfg_num('jobs.map_match_min_confidence', $1::uuid) as min_confidence`,
+        [cityId ?? null],
+      );
+      const row = rows[0];
+      return {
+        minSamples: Number(row?.min_samples ?? 8),
+        minConfidence: Number(row?.min_confidence ?? 0.6),
+        timeZone: process.env.JOBS_TIMEZONE ?? 'Africa/Lagos',
+      } satisfies SpeedProfilesJobConfig;
+    },
+
+    async listMatchedTracesForSpeedProfiles(minConfidence) {
+      const { rows } = await pool.query<{
+        city_id: string;
+        confidence: string;
+        osm_way_ids: string[];
+        match_meta: Record<string, unknown> | null;
+      }>(
+        `select
+           j.city_id,
+           mt.confidence::text,
+           coalesce(mt.osm_way_ids, '{}'::bigint[])::text[] as osm_way_ids,
+           mt.match_meta
+         from matched_traces mt
+         join trips t on t.id = mt.trip_id
+         join journeys j on j.id = t.journey_id
+         where mt.confidence >= $1
+           and (
+             mt.match_meta ? 'segment_observations'
+             or coalesce(array_length(mt.osm_way_ids, 1), 0) > 0
+           )`,
+        [minConfidence],
+      );
+
+      return rows.map((row) => ({
+        cityId: row.city_id,
+        confidence: Number(row.confidence),
+        osmWayIds: row.osm_way_ids.map((id) => Number(id)),
+        matchMeta: row.match_meta ?? {},
+      })) satisfies MatchedTraceForSpeed[];
+    },
+
+    async upsertSpeedProfiles(profiles) {
+      if (profiles.length === 0) return 0;
+
+      let upserted = 0;
+      for (const profile of profiles) {
+        const { rowCount } = await pool.query(
+          `insert into segment_speed_profiles (
+             segment_key,
+             city_id,
+             dow_bucket,
+             hour_bucket,
+             median_speed_mps,
+             p85_speed_mps,
+             sample_count,
+             updated_at
+           ) values ($1, $2, $3, $4, $5, $6, $7, now())
+           on conflict (segment_key, dow_bucket, hour_bucket) do update set
+             city_id = excluded.city_id,
+             median_speed_mps = excluded.median_speed_mps,
+             p85_speed_mps = excluded.p85_speed_mps,
+             sample_count = excluded.sample_count,
+             updated_at = now()`,
+          [
+            profile.segmentKey,
+            profile.cityId,
+            profile.dowBucket,
+            profile.hourBucket,
+            profile.medianSpeedMps,
+            profile.p85SpeedMps,
+            profile.sampleCount,
+          ],
+        );
+        upserted += rowCount ?? 0;
+      }
+      return upserted;
     },
   };
 }

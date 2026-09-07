@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { runMapMatchJob, type JobsDb } from './map-match.js';
+import { runMapMatchJob, type MapMatchJobsDb } from './map-match.js';
 import { proposeFromTraces } from './propose-from-traces.js';
+import { runSpeedProfilesJob } from './speed-profiles.js';
 import { JOBS_VERSION } from './index.js';
 import type { MatchedTraceRecord, TraceSample } from './types.js';
 
@@ -14,7 +15,7 @@ function sampleTrace(count: number): TraceSample[] {
   }));
 }
 
-function mockDb(overrides: Partial<JobsDb> = {}): JobsDb {
+function mockDb(overrides: Partial<MapMatchJobsDb> = {}): MapMatchJobsDb {
   return {
     beginJobRun: vi.fn(async () => ({
       id: 'job-1',
@@ -32,6 +33,25 @@ function mockDb(overrides: Partial<JobsDb> = {}): JobsDb {
     listPendingTraceMatches: vi.fn(async () => []),
     loadTraceSamples: vi.fn(async () => []),
     insertMatchedTrace: vi.fn(async () => true),
+    ...overrides,
+  };
+}
+
+function mockSpeedProfilesDb(overrides: Partial<Parameters<typeof runSpeedProfilesJob>[0]> = {}) {
+  return {
+    beginJobRun: vi.fn(async () => ({
+      id: 'job-sp-1',
+      jobName: 'speed-profiles',
+      status: 'running' as const,
+    })),
+    finishJobRun: vi.fn(async () => undefined),
+    loadSpeedProfilesConfig: vi.fn(async () => ({
+      minSamples: 8,
+      minConfidence: 0.6,
+      timeZone: 'UTC',
+    })),
+    listMatchedTracesForSpeedProfiles: vi.fn(async () => []),
+    upsertSpeedProfiles: vi.fn(async () => 0),
     ...overrides,
   };
 }
@@ -147,5 +167,32 @@ describe('map-match confidence filter', () => {
 
     expect(insertMatchedTrace).toHaveBeenCalledOnce();
     expect(stats.matched).toBe(1);
+  });
+});
+
+describe('speed-profiles job', () => {
+  it('aggregates matched_traces observations into segment_speed_profiles', async () => {
+    const upsertSpeedProfiles = vi.fn(async () => 2);
+    const db = mockSpeedProfilesDb({
+      listMatchedTracesForSpeedProfiles: vi.fn(async () => [{
+        cityId: 'city-1',
+        confidence: 0.9,
+        osmWayIds: [],
+        matchMeta: {
+          segment_observations: Array.from({ length: 8 }, (_, i) => ({
+            segment_key: '888:forward',
+            speed_mps: 5,
+            observed_at: `2026-09-08T10:${String(i).padStart(2, '0')}:00Z`,
+          })),
+        },
+      }]),
+      upsertSpeedProfiles,
+    });
+
+    const stats = await runSpeedProfilesJob(db);
+
+    expect(stats.observations_extracted).toBe(8);
+    expect(upsertSpeedProfiles).toHaveBeenCalledOnce();
+    expect(stats.profiles_upserted).toBe(2);
   });
 });
