@@ -1578,3 +1578,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P6-A-01 PASS. Attach 02 §13, 03 §11. AC: FM39/FM40 — no rider id path; API returns aggregates only. Do not flip digital_enabled.
+
+## [Phase 8 / P8-A-03] Operators, placements, API keys
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00070; operator/placement/api_key tables; FM39/FM40 RPCs + pgTAP 22/22.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: api_fetch_placement_stats and operator_driver_aggregates lack dedicated tests (close on P8-D-01).
+- Rework count: 0
+- Notes/escalations: Merged 0d19a63. Next: P8-D-01. Do not flip digital_enabled. Do not invent P8-E-01 PASS.
+
+## [Phase 8 / P8-D-01] Corporate/operator portals + A-19
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P8-A-01 + P8-A-03 PASS. Attach 06 B4, A-19. AC: exit-criterion flows via Playwright (write specs; admin-console-down is not FAIL). Do not flip digital_enabled. Do not invent P8-E-01 PASS.
