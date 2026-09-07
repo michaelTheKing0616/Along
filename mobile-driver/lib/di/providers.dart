@@ -61,6 +61,10 @@ final ledgerRepositoryProvider = Provider<LedgerRepository>((ref) {
   return LedgerRepository(ref.watch(alongSupabaseProvider));
 });
 
+final safetyRepositoryProvider = Provider<SafetyRepository>((ref) {
+  return SafetyRepository(ref.watch(alongSupabaseProvider));
+});
+
 final negotiationRepositoryProvider = Provider<NegotiationRepository>((ref) {
   return NegotiationRepository(ref.watch(alongSupabaseProvider));
 });
