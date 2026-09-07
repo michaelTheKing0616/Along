@@ -4,6 +4,7 @@ import {
   getConsoleSegment,
   isAgentPath,
   isPublicPath,
+  isWellKnownPath,
   ROUTE_ALLOWLIST,
 } from './routes.js';
 
@@ -12,6 +13,9 @@ describe('authz routes', () => {
     expect(isPublicPath('/sign-in')).toBe(true);
     expect(isPublicPath('/mfa')).toBe(true);
     expect(isPublicPath('/p/W04TEST1')).toBe(true);
+    expect(isPublicPath('/.well-known/apple-app-site-association')).toBe(true);
+    expect(isPublicPath('/.well-known/assetlinks.json')).toBe(true);
+    expect(isWellKnownPath('/.well-known/assetlinks.json')).toBe(true);
     expect(isPublicPath('/abuja/dashboard')).toBe(false);
     expect(isPublicPath('/agent')).toBe(false);
   });
