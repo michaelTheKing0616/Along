@@ -1026,3 +1026,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: PASS WITH NOTES — hard rules MET (grep-clean D-14; release_match never cancel_trip; stalled never when unknown; Release hidden after boarded). Notes: unused incomingRequestPickupMeta l10n; no widget tap on Release; wait Realtime not wired (trip_snapshot only).
 - Rework count: 0
 - Notes/escalations: Merged 1cc6f3e. Wait-decision backend+UI complete (P3-A-04 + P3-C-02). Phase 5 still blocked on Phase 4 gate compile FAIL. P4-E-02 remains human counsel.
+
+## [Phase 4 / Decision] Absorb gate compile break; re-run code gate; stop
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner: absorb the Phase 4 gate compile break (`payments_test.dart` duplicate `QrPayloadParser`), re-run the Phase 4 code gate, then stop. Phase 5 stays closed until that gate is PASS. Do not re-implement wait-decision. Do not grant P4-E-02. Do not flip `payments.digital_enabled`.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Issuing P4-GATE-01. Next after absorb+gate: if PASS / PASS WITH DEFERRED EVIDENCE → P5-A-01 on resume (not this session). If still FAIL → Reviewer's exact compile/test fix.
+
+## [Phase 4 / P4-GATE-01] Absorb rider payments_test QrPayloadParser clash
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Prefer along_core export; hide/remove local import in the test. Do not delete production parser without Reviewer-justified reason.
