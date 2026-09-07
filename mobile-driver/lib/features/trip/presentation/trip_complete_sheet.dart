@@ -8,6 +8,7 @@ import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/features/payments/data/payments_providers.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
+import 'package:mobile_driver/features/safety/domain/rating_config.dart';
 import 'package:mobile_driver/routing/routes.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
@@ -55,6 +56,7 @@ class TripCompleteSheet extends ConsumerStatefulWidget {
 class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   _CompleteStep _step = _CompleteStep.summary;
   int _rating = 5;
+  final Set<String> _tags = {};
   bool _busy = false;
 
   int get _fareNaira => widget.result.fare.minorUnits ~/ 100;
@@ -79,7 +81,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
       await ref.read(tripsRepositoryProvider).rateTrip(
             tripId: widget.result.trip.tripId,
             score: _rating,
-            tags: const [],
+            tags: _tags.toList(growable: false),
           );
       await ref.read(driverLedgerControllerProvider.notifier).refresh();
       if (mounted) {
@@ -221,6 +223,30 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                 rating: _rating,
                 onChanged: (value) => setState(() => _rating = value),
               ),
+              const SizedBox(height: AlongSpace.s12),
+              ref.watch(ratingTagsProvider).when(
+                    data: (tags) => Wrap(
+                      spacing: AlongSpace.s8,
+                      runSpacing: AlongSpace.s8,
+                      children: tags
+                          .map(
+                            (tag) => _TagChip(
+                              label: tag.replaceAll('_', ' '),
+                              selected: _tags.contains(tag),
+                              onTap: () => setState(() {
+                                if (_tags.contains(tag)) {
+                                  _tags.remove(tag);
+                                } else {
+                                  _tags.add(tag);
+                                }
+                              }),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
+                  ),
               const SizedBox(height: AlongSpace.s16),
               AlongButton(
                 key: const Key('trip_complete_done'),
@@ -291,6 +317,42 @@ class _StarRow extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+}
+
+class _TagChip extends StatelessWidget {
+  const _TagChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AlongColors.brandYellow : AlongColors.surface100,
+      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AlongSpace.s12,
+            vertical: AlongSpace.s8,
+          ),
+          child: Text(
+            label,
+            style: AlongText.label.copyWith(
+              color: selected ? AlongColors.brandYellowOn : AlongColors.ink700,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

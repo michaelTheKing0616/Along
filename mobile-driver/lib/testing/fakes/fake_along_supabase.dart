@@ -30,6 +30,8 @@ class FakeAlongSupabase implements AlongSupabase {
     this.publicOrigin,
     List<Map<String, dynamic>>? qrStickerRequests,
     List<Map<String, dynamic>>? digitalPayments,
+    this.raiseSosDelay = Duration.zero,
+    this.raiseSosResponse,
   })  : cities = cities ?? defaultTestCities(),
         modes = modes ?? defaultTestModes(),
         countryConfig = countryConfig ?? defaultTestCountry(),
@@ -104,6 +106,13 @@ class FakeAlongSupabase implements AlongSupabase {
 
   int confirmFareInvokeCount = 0;
   int respondExtensionInvokeCount = 0;
+  int raiseSosInvokeCount = 0;
+  int updateSosInvokeCount = 0;
+  int reportIncidentInvokeCount = 0;
+  Duration raiseSosDelay;
+  Map<String, dynamic>? raiseSosResponse;
+  Map<String, dynamic>? lastRaiseSosParams;
+  Map<String, dynamic>? lastReportIncidentParams;
 
   List<Map<String, dynamic>> manifestEntries = [];
   final Map<String, String> tripStatuses = {};
@@ -379,6 +388,27 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'rate_trip') {
       onRateTrip?.call(params ?? {});
       return null;
+    }
+    if (fn == 'raise_sos') {
+      raiseSosInvokeCount++;
+      lastRaiseSosParams = params;
+      if (raiseSosDelay > Duration.zero) {
+        await Future<void>.delayed(raiseSosDelay);
+      }
+      return raiseSosResponse ??
+          {
+            'sos_id': 'sos-test-001',
+            'emergency_number': '112',
+          };
+    }
+    if (fn == 'update_sos') {
+      updateSosInvokeCount++;
+      return {'sos_id': params?['p_sos_id'], 'status': 'false_alarm'};
+    }
+    if (fn == 'report_incident') {
+      reportIncidentInvokeCount++;
+      lastReportIncidentParams = params;
+      return {'incident_id': 'incident-test-001'};
     }
     if (fn == 'propose_extension') {
       onProposeExtension?.call(params ?? {});
@@ -795,6 +825,17 @@ class FakeAlongSupabase implements AlongSupabase {
           },
         ];
       }
+      if (key == 'rating.tags') {
+        return [
+          {
+            'key': key,
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value':
+                '["polite","on_time","rude","unsafe","fair_fare","overcharged"]',
+          },
+        ];
+      }
       if (key == 'payments.digital_enabled') {
         return [
           {
@@ -837,6 +878,16 @@ class FakeAlongSupabase implements AlongSupabase {
           'accepts_digital': acceptsDigital,
           'payout_subaccount_code':
               hasPayoutSubaccount ? 'ACCT_test_subaccount' : null,
+          'payout_bank_last4': hasPayoutSubaccount ? '1234' : null,
+        },
+      ];
+    }
+    if (table == 'profiles') {
+      return [
+        {
+          'id': _user?.id ?? 'test-driver-id',
+          'display_name': 'Musa Driver',
+          'phone_e164': '+2348000000001',
         },
       ];
     }

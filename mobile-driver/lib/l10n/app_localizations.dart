@@ -1072,11 +1072,311 @@ abstract class AppLocalizations {
   /// **'Release'**
   String get activeTripRelease;
 
-  /// No description provided for @sosPlaceholder.
+  /// No description provided for @activeTripReport.
   ///
   /// In en, this message translates to:
-  /// **'SOS will connect in a future release'**
-  String get sosPlaceholder;
+  /// **'Report'**
+  String get activeTripReport;
+
+  /// No description provided for @sosTeamAlerted.
+  ///
+  /// In en, this message translates to:
+  /// **'Along safety team alerted'**
+  String get sosTeamAlerted;
+
+  /// No description provided for @sosSharingDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re sharing your live location and trip details with our safety line'**
+  String get sosSharingDetails;
+
+  /// No description provided for @sosCallEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Call {number}'**
+  String sosCallEmergency(String number);
+
+  /// No description provided for @sosHoldToCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to cancel'**
+  String get sosHoldToCancel;
+
+  /// No description provided for @sosRaising.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerting safety team…'**
+  String get sosRaising;
+
+  /// No description provided for @sosRaiseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach safety line'**
+  String get sosRaiseFailed;
+
+  /// No description provided for @sosRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get sosRetry;
+
+  /// No description provided for @reportIncidentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report incident'**
+  String get reportIncidentTitle;
+
+  /// No description provided for @reportIncidentCategoryHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened?'**
+  String get reportIncidentCategoryHeading;
+
+  /// No description provided for @reportIncidentDescriptionHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us more'**
+  String get reportIncidentDescriptionHeading;
+
+  /// No description provided for @reportIncidentDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe what happened (optional details help)'**
+  String get reportIncidentDescriptionHint;
+
+  /// No description provided for @reportIncidentAttachPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach photo'**
+  String get reportIncidentAttachPhoto;
+
+  /// No description provided for @reportIncidentPhotoAttached.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo attached (stub)'**
+  String get reportIncidentPhotoAttached;
+
+  /// No description provided for @reportIncidentSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit report'**
+  String get reportIncidentSubmit;
+
+  /// No description provided for @reportIncidentPickCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a category'**
+  String get reportIncidentPickCategory;
+
+  /// No description provided for @reportIncidentDescriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a short description'**
+  String get reportIncidentDescriptionRequired;
+
+  /// No description provided for @reportIncidentSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted — our safety team will review it'**
+  String get reportIncidentSubmitted;
+
+  /// No description provided for @incidentCategorySafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety concern'**
+  String get incidentCategorySafety;
+
+  /// No description provided for @incidentCategoryFareDispute.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare dispute'**
+  String get incidentCategoryFareDispute;
+
+  /// No description provided for @incidentCategoryVehicleQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle quality'**
+  String get incidentCategoryVehicleQuality;
+
+  /// No description provided for @incidentCategoryDriverBehavior.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver behavior'**
+  String get incidentCategoryDriverBehavior;
+
+  /// No description provided for @incidentCategoryLostItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost item'**
+  String get incidentCategoryLostItem;
+
+  /// No description provided for @incidentCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get incidentCategoryOther;
+
+  /// No description provided for @accountProfileHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'PROFILE'**
+  String get accountProfileHeading;
+
+  /// No description provided for @accountProfileUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get accountProfileUnknown;
+
+  /// No description provided for @accountVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get accountVerified;
+
+  /// No description provided for @accountUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified'**
+  String get accountUnverified;
+
+  /// No description provided for @accountVehicleHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'VEHICLE'**
+  String get accountVehicleHeading;
+
+  /// No description provided for @accountVehicleActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Active vehicle'**
+  String get accountVehicleActiveHint;
+
+  /// No description provided for @accountVehicleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your vehicle'**
+  String get accountVehicleEmpty;
+
+  /// No description provided for @accountVehicleSwitchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support to switch active vehicle'**
+  String get accountVehicleSwitchHint;
+
+  /// No description provided for @accountDocumentsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'DOCUMENTS'**
+  String get accountDocumentsHeading;
+
+  /// No description provided for @accountDocumentsAllApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'All documents approved'**
+  String get accountDocumentsAllApproved;
+
+  /// No description provided for @accountDocumentsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents pending review'**
+  String get accountDocumentsPending;
+
+  /// No description provided for @accountDocumentsNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Some documents need attention'**
+  String get accountDocumentsNeedsAttention;
+
+  /// No description provided for @accountDocumentsIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents incomplete'**
+  String get accountDocumentsIncomplete;
+
+  /// No description provided for @accountDocumentsUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Document status unavailable'**
+  String get accountDocumentsUnknown;
+
+  /// No description provided for @accountPayoutHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'PAYOUT'**
+  String get accountPayoutHeading;
+
+  /// No description provided for @accountPayoutBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Payout bank'**
+  String get accountPayoutBank;
+
+  /// No description provided for @accountPayoutConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank ending {last4}'**
+  String accountPayoutConfigured(String last4);
+
+  /// No description provided for @accountPayoutNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your payout bank'**
+  String get accountPayoutNotConfigured;
+
+  /// No description provided for @accountPreferencesHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'PREFERENCES'**
+  String get accountPreferencesHeading;
+
+  /// No description provided for @accountLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get accountLanguage;
+
+  /// No description provided for @accountLanguageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get accountLanguageValue;
+
+  /// No description provided for @accountSafetyHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'SAFETY'**
+  String get accountSafetyHeading;
+
+  /// No description provided for @accountSafetyHowSos.
+  ///
+  /// In en, this message translates to:
+  /// **'How SOS works'**
+  String get accountSafetyHowSos;
+
+  /// No description provided for @accountSafetyHowSosBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold SOS during a trip to alert our safety team and share live location'**
+  String get accountSafetyHowSosBody;
+
+  /// No description provided for @accountHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & support'**
+  String get accountHelp;
+
+  /// No description provided for @accountLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get accountLegal;
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accountSignOut;
 
   /// No description provided for @homeLedgerBlockedTitle.
   ///

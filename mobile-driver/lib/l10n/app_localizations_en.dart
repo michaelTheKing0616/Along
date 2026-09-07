@@ -562,7 +562,166 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activeTripRelease => 'Release';
 
   @override
-  String get sosPlaceholder => 'SOS will connect in a future release';
+  String get activeTripReport => 'Report';
+
+  @override
+  String get sosTeamAlerted => 'Along safety team alerted';
+
+  @override
+  String get sosSharingDetails =>
+      'We\'re sharing your live location and trip details with our safety line';
+
+  @override
+  String sosCallEmergency(String number) {
+    return 'Call $number';
+  }
+
+  @override
+  String get sosHoldToCancel => 'Hold to cancel';
+
+  @override
+  String get sosRaising => 'Alerting safety team…';
+
+  @override
+  String get sosRaiseFailed => 'Could not reach safety line';
+
+  @override
+  String get sosRetry => 'Try again';
+
+  @override
+  String get reportIncidentTitle => 'Report incident';
+
+  @override
+  String get reportIncidentCategoryHeading => 'What happened?';
+
+  @override
+  String get reportIncidentDescriptionHeading => 'Tell us more';
+
+  @override
+  String get reportIncidentDescriptionHint =>
+      'Describe what happened (optional details help)';
+
+  @override
+  String get reportIncidentAttachPhoto => 'Attach photo';
+
+  @override
+  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
+
+  @override
+  String get reportIncidentSubmit => 'Submit report';
+
+  @override
+  String get reportIncidentPickCategory => 'Pick a category';
+
+  @override
+  String get reportIncidentDescriptionRequired => 'Add a short description';
+
+  @override
+  String get reportIncidentSubmitted =>
+      'Report submitted — our safety team will review it';
+
+  @override
+  String get incidentCategorySafety => 'Safety concern';
+
+  @override
+  String get incidentCategoryFareDispute => 'Fare dispute';
+
+  @override
+  String get incidentCategoryVehicleQuality => 'Vehicle quality';
+
+  @override
+  String get incidentCategoryDriverBehavior => 'Driver behavior';
+
+  @override
+  String get incidentCategoryLostItem => 'Lost item';
+
+  @override
+  String get incidentCategoryOther => 'Other';
+
+  @override
+  String get accountProfileHeading => 'PROFILE';
+
+  @override
+  String get accountProfileUnknown => 'Driver';
+
+  @override
+  String get accountVerified => 'Verified';
+
+  @override
+  String get accountUnverified => 'Unverified';
+
+  @override
+  String get accountVehicleHeading => 'VEHICLE';
+
+  @override
+  String get accountVehicleActiveHint => 'Active vehicle';
+
+  @override
+  String get accountVehicleEmpty => 'Add your vehicle';
+
+  @override
+  String get accountVehicleSwitchHint =>
+      'Contact support to switch active vehicle';
+
+  @override
+  String get accountDocumentsHeading => 'DOCUMENTS';
+
+  @override
+  String get accountDocumentsAllApproved => 'All documents approved';
+
+  @override
+  String get accountDocumentsPending => 'Documents pending review';
+
+  @override
+  String get accountDocumentsNeedsAttention => 'Some documents need attention';
+
+  @override
+  String get accountDocumentsIncomplete => 'Documents incomplete';
+
+  @override
+  String get accountDocumentsUnknown => 'Document status unavailable';
+
+  @override
+  String get accountPayoutHeading => 'PAYOUT';
+
+  @override
+  String get accountPayoutBank => 'Payout bank';
+
+  @override
+  String accountPayoutConfigured(String last4) {
+    return 'Bank ending $last4';
+  }
+
+  @override
+  String get accountPayoutNotConfigured => 'Set up your payout bank';
+
+  @override
+  String get accountPreferencesHeading => 'PREFERENCES';
+
+  @override
+  String get accountLanguage => 'Language';
+
+  @override
+  String get accountLanguageValue => 'English';
+
+  @override
+  String get accountSafetyHeading => 'SAFETY';
+
+  @override
+  String get accountSafetyHowSos => 'How SOS works';
+
+  @override
+  String get accountSafetyHowSosBody =>
+      'Hold SOS during a trip to alert our safety team and share live location';
+
+  @override
+  String get accountHelp => 'Help & support';
+
+  @override
+  String get accountLegal => 'Legal';
+
+  @override
+  String get accountSignOut => 'Sign out';
 
   @override
   String get homeLedgerBlockedTitle => 'Matching paused';

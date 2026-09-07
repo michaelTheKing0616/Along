@@ -13,6 +13,8 @@ import 'package:mobile_driver/features/trip/presentation/active_trip_controller.
 import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/na_me_screen.dart';
+import 'package:mobile_driver/features/safety/presentation/report_incident_screen.dart';
+import 'package:mobile_driver/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
 
@@ -64,6 +66,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     final boardName = trip?.board.name ?? entry?.board.name ?? '';
     final alightName = trip?.alight.name ?? '';
     final fare = trip?.totalFare;
+    final holdDuration = configAsync.maybeWhen(
+      data: (cfg) => cfg.sosHoldDurationMs,
+      orElse: () => const Duration(milliseconds: 600),
+    );
 
     return Scaffold(
       key: const Key('active_trip_screen'),
@@ -86,9 +92,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
               child: HoldButton(
                 key: const Key('active_trip_sos'),
                 type: HoldButtonType.sos,
+                holdDuration: holdDuration,
                 onFired: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.sosPlaceholder)),
+                  final activeTrip = trip;
+                  if (activeTrip == null) return;
+                  context.push(
+                    AppRoutes.sosActive,
+                    extra: SosActiveRouteArgs(trip: activeTrip),
                   );
                 },
               ),
@@ -274,6 +284,16 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                               ),
                             ),
                           ],
+                          const SizedBox(height: AlongSpace.s8),
+                          AlongButton(
+                            key: const Key('active_trip_report'),
+                            label: l10n.activeTripReport,
+                            variant: AlongButtonVariant.secondary,
+                            onPressed: () => context.push(
+                              AppRoutes.reportIncident,
+                              extra: args.tripId,
+                            ),
+                          ),
                         ],
                       ),
               ),
