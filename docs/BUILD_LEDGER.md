@@ -1042,3 +1042,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: PASS — 1 file, 2 deletions; analyze clean; 8/8 tests independently re-run. Production parser still present.
 - Rework count: 0
 - Notes/escalations: Merged 3b4a481. Re-running Phase 4 code gate on master. Phase 5 still closed until that gate is PASS.
+
+## [Phase 4 / Gate] Code gate re-run (implementation only)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer after P4-GATE-01 absorb)
+- Reviewer verdict: PASS WITH NOTES on implementation — prior compile FAIL fixed (`payments_test.dart` analyze clean, 8/8). Flag still false. Cash trip zero Paystack (Deno TS-UI-04 7/7; pgTAP cash complete_trip / cash-no-payment). TS-LEDGER-01..06 15/15. TS-LEDGER-06 park+roaming block. TS-INTEG-01..05 9/9. TS-TRIP-08 9/9. Split-at-source wired. Notes: TS-QR-01-12 plan(35)/ran 36 (all ok); pg_prove missing (psql used).
+- Rework count: 0
+- Notes/escalations: Residuals (not code defects): **P4-E-02** human counsel — never PASS; **P1-G-01** device/corridor; native App Link entitlements not in repo; camera stub; verification.spec.ts flake not re-run. Do not flip `payments.digital_enabled`. Do not start Phase 7. Next implementation task when resumed: **P5-A-01**. Not started this session.
