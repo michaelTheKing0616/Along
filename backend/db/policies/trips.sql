@@ -10,7 +10,7 @@ create policy trips_no_client_write
 
 create policy trips_select_admin
   on trips for select to authenticated
-  using (has_admin_role(ARRAY['superadmin'::text, 'safety'::text, 'ops_lead'::text, 'ops_agent'::text, 'finance'::text, 'analyst'::text]) AND admin_can_access_city(( SELECT j.city_id
+  using (has_admin_role(ARRAY['superadmin'::text, 'safety'::text, 'ops_lead'::text, 'ops_agent'::text, 'finance'::text, 'analyst'::text, 'city_admin'::text]) AND admin_can_access_city(( SELECT j.city_id
    FROM journeys j
   WHERE (j.id = trips.journey_id))));
 

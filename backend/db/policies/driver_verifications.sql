@@ -5,7 +5,9 @@
 
 create policy driver_verifications_select_admin
   on driver_verifications for select to authenticated
-  using (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'ops_agent'::text, 'superadmin'::text]));
+  using (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'ops_agent'::text, 'superadmin'::text]) AND (EXISTS ( SELECT 1
+   FROM drivers d
+  WHERE ((d.id = driver_verifications.driver_id) AND admin_can_access_city(d.city_id)))));
 
 create policy driver_verifications_select_own
   on driver_verifications for select to authenticated
@@ -13,5 +15,9 @@ create policy driver_verifications_select_own
 
 create policy driver_verifications_update_admin
   on driver_verifications for update to authenticated
-  using (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'superadmin'::text]))
-  with check (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'superadmin'::text]));
+  using (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'superadmin'::text]) AND (EXISTS ( SELECT 1
+   FROM drivers d
+  WHERE ((d.id = driver_verifications.driver_id) AND admin_can_access_city(d.city_id)))))
+  with check (has_admin_role(ARRAY['verifier'::text, 'ops_lead'::text, 'superadmin'::text]) AND (EXISTS ( SELECT 1
+   FROM drivers d
+  WHERE ((d.id = driver_verifications.driver_id) AND admin_can_access_city(d.city_id)))));
