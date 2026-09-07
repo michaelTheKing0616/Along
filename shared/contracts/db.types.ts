@@ -4822,6 +4822,7 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_rotate_driver_code: { Args: { p_driver_id: string }; Returns: Json }
       admin_transition_standing: {
         Args: { p_driver_id: string; p_reason: string; p_to: string }
         Returns: Json
@@ -4909,6 +4910,10 @@ export type Database = {
         }
       }
       apply_threshold_policy: { Args: never; Returns: undefined }
+      approach_band_from_walk_s: {
+        Args: { p_city_id: string; p_walk_s: number }
+        Returns: string
+      }
       assert_payout_reauth: { Args: { p_user_id?: string }; Returns: undefined }
       audit_row_target_id: { Args: { p_row: Json }; Returns: string }
       auto_boarding_check: { Args: { p_trip_id: string }; Returns: boolean }
@@ -4980,6 +4985,7 @@ export type Database = {
         Args: { p_alighting?: Json; p_trip_id: string }
         Returns: Json
       }
+      compute_approach_band: { Args: { p_trip_id: string }; Returns: string }
       compute_field_variance: {
         Args: { p_submission_a: string; p_submission_b: string }
         Returns: Json
@@ -5555,6 +5561,7 @@ export type Database = {
         Returns: Json
       }
       record_phone_reauth: { Args: never; Returns: string }
+      refresh_wait: { Args: { p_trip_id: string }; Returns: Json }
       register_device_token: {
         Args: { p_app: string; p_platform: string; p_token: string }
         Returns: undefined
@@ -5581,10 +5588,12 @@ export type Database = {
         }
         Returns: Json
       }
+      release_match: { Args: { p_trip_id: string }; Returns: Json }
       remove_rider_payment_method: {
         Args: { p_payment_method_id: string }
         Returns: undefined
       }
+      request_qr_sticker: { Args: never; Returns: Json }
       request_trip: {
         Args: {
           p_candidate_id: string
@@ -5629,6 +5638,7 @@ export type Database = {
         Args: { p_action: string; p_decline_reason?: string; p_trip_id: string }
         Returns: Json
       }
+      rider_no_show_review: { Args: never; Returns: undefined }
       rider_trip_broadcast_payload: {
         Args: { p_event_type: string; p_message?: string; p_trip_id: string }
         Returns: Json
@@ -6369,6 +6379,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      tripview_disclosure_violations: {
+        Args: { p_view: Json }
+        Returns: string[]
+      }
       unlockrows: { Args: { "": string }; Returns: number }
       updategeometrysrid: {
         Args: {
@@ -6456,6 +6470,7 @@ export type Database = {
         | "undeclared_extension"
         | "route_deviation"
         | "profile_price_mismatch"
+        | "rider_no_show_pattern"
       graph_verification: "candidate" | "crowd_verified" | "field_verified"
       guarantor_type: "fellow_driver" | "vehicle_owner"
       journey_status:
@@ -6511,6 +6526,7 @@ export type Database = {
         | "cancelled_by_rider"
         | "cancelled_by_driver"
         | "no_show"
+        | "released_before_arrival"
       verified_status:
         | "unverified"
         | "pending"
@@ -6700,6 +6716,7 @@ export const Constants = {
         "undeclared_extension",
         "route_deviation",
         "profile_price_mismatch",
+        "rider_no_show_pattern",
       ],
       graph_verification: ["candidate", "crowd_verified", "field_verified"],
       guarantor_type: ["fellow_driver", "vehicle_owner"],
@@ -6761,6 +6778,7 @@ export const Constants = {
         "cancelled_by_rider",
         "cancelled_by_driver",
         "no_show",
+        "released_before_arrival",
       ],
       verified_status: [
         "unverified",
