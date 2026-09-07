@@ -496,11 +496,15 @@ declare
   v_existing int;
   v_i int;
 begin
-  if not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and current_user not in ('postgres', 'supabase_admin')
+     and not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
 
-  if not admin_can_access_city(p_city_id) then
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and current_user not in ('postgres', 'supabase_admin')
+     and not admin_can_access_city(p_city_id) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
 
@@ -561,11 +565,15 @@ declare
   v_skipped int := 0;
   v_is_corridor boolean := false;
 begin
-  if not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and current_user not in ('postgres', 'supabase_admin')
+     and not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
 
-  if not admin_can_access_city(p_city_id) then
+  if coalesce(current_setting('role', true), '') <> 'service_role'
+     and current_user not in ('postgres', 'supabase_admin')
+     and not admin_can_access_city(p_city_id) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
 
@@ -617,3 +625,5 @@ $$;
 
 grant execute on function _corridor_import_dry_run(uuid, jsonb) to authenticated;
 grant execute on function _corridor_import_apply(uuid, jsonb) to authenticated;
+grant execute on function admin_import_dry_run(uuid, text) to service_role;
+grant execute on function admin_import_apply(uuid, jsonb) to service_role;

@@ -1,18 +1,24 @@
 -- TS-CORRIDOR-01: Corridor bundle import via admin_import_dry_run / admin_import_apply (P7-E-01)
--- Requires seed_core.sql + seed_testcity_fixture/00_zaria_test.sql
+create extension if not exists pgtap;
 
 begin;
+\ir ../seed/seed_testcity_fixture/00_zaria_test.sql
+
 select plan(6);
 
 \set zaria_city '0a000000-0000-4000-8000-000000000001'
 
 -- Simulate ops-agent admin (superadmin for local test)
-select test_set_jwt(
-  '0f000000-0000-4000-8000-000000000001'::uuid,
-  'superadmin',
-  null,
-  '0e000000-0000-4000-8000-000000000001'::uuid
-);
+insert into auth.users (id, aud, role, phone) values
+  ('0f000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', '+2348000000099')
+on conflict (id) do nothing;
+
+insert into admin_users (id, role, deployment_id) values
+  ('0f000000-0000-4000-8000-000000000001', 'superadmin', 'a0000000-0000-4000-8000-000000000001')
+on conflict (id) do nothing;
+
+select set_config('request.jwt.claim.sub', '0f000000-0000-4000-8000-000000000001', true);
+select set_config('request.jwt.claim.role', 'authenticated', true);
 
 select is(
   (
