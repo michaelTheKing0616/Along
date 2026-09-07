@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/app_router.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,10 +22,12 @@ class AlongRiderApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final brandingAsync = ref.watch(brandingOverridesProvider);
+    final branding = brandingAsync.valueOrNull ?? BrandingOverrides.empty;
 
     return MaterialApp.router(
       title: 'Along',
-      theme: alongTheme(),
+      theme: alongTheme(branding: branding),
       routerConfig: router,
       localizationsDelegates: const [
         AppLocalizations.delegate,

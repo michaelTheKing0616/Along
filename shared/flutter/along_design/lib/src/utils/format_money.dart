@@ -18,9 +18,23 @@ String _symbolForCurrency(String currency) => switch (currency) {
     };
 
 /// Convenience when a [Money] value is already available.
-String formatMoneyValue(Money money, {String? currencySymbol}) =>
+String formatMoneyValue(
+  Money money, {
+  String? currencySymbol,
+}) =>
     formatMoney(
       money.amount.round().toBigInt().toInt(),
       currency: money.currency,
+      currencySymbol: currencySymbol ?? _symbolForCurrency(money.currency),
+    );
+
+/// Formats a major-unit amount using [currencyCode] and optional [currencySymbol].
+String formatMoneyMajor(
+  int amountMajor, {
+  required String currencyCode,
+  String? currencySymbol,
+}) =>
+    formatMoneyValue(
+      Money.parse(amountMajor.toString(), currency: currencyCode),
       currencySymbol: currencySymbol,
     );

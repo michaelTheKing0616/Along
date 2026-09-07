@@ -8,6 +8,7 @@ import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/pricing/presentation/pricing_controller.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
@@ -95,7 +96,7 @@ class _PricingSheetScreenState extends ConsumerState<PricingSheetScreen> {
                 0,
               ),
               child: Text(
-                l10n.pricingDriverOffer(formatMoney(state.driverResponseNaira!)),
+                l10n.pricingDriverOffer(formatAppMoneyMajor(ref, state.driverResponseNaira!)),
                 style: AlongText.bodyStrong,
               ),
             ),

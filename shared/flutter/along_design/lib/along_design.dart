@@ -1,3 +1,4 @@
+export 'src/branding/branding_overrides.dart';
 export 'src/brand_assets.dart';
 export 'src/components/components.dart';
 export 'src/theme.dart';

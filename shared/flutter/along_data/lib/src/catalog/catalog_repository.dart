@@ -234,11 +234,6 @@ class CatalogRepository {
     }
   }
 
-  Future<String> currencyCodeForCity(String cityId) async {
-    final meta = await currencyMetaForCity(cityId);
-    return meta.currencyCode;
-  }
-
   Future<CityCurrencyMeta> currencyMetaForCity(String cityId) async {
     try {
       final cityRows = await _gateway.selectRows(
@@ -265,5 +260,40 @@ class CatalogRepository {
     } catch (e) {
       throw mapSupabaseError(e);
     }
+  }
+
+  Future<String> currencyCodeForCity(String cityId) async {
+    final meta = await currencyMetaForCity(cityId);
+    return meta.currencyCode;
+  }
+
+  /// `deployments.branding_config` for the tenant owning [countryCode].
+  Future<Map<String, dynamic>> brandingConfigForCountry(String countryCode) async {
+    try {
+      final countryRows = await _gateway.selectRows(
+        'countries',
+        filters: {'code': countryCode},
+      );
+      if (countryRows.isEmpty) return const {};
+      final deploymentId = countryRows.first['deployment_id'] as String?;
+      if (deploymentId == null) return const {};
+      final deploymentRows = await _gateway.selectRows(
+        'deployments',
+        filters: {'id': deploymentId},
+      );
+      if (deploymentRows.isEmpty) return const {};
+      final raw = deploymentRows.first['branding_config'];
+      if (raw is Map<String, dynamic>) return raw;
+      if (raw is Map) return raw.cast<String, dynamic>();
+      return const {};
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Branding for the first active country (pre-auth shell).
+  Future<Map<String, dynamic>> brandingConfigForDefaultCountry() async {
+    final country = await defaultActiveCountry();
+    return brandingConfigForCountry(country.code);
   }
 }

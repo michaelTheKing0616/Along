@@ -1,8 +1,9 @@
-import 'package:along_core/along_core.dart' show TripStatus, TripSummary, formatMoney;
-import 'package:along_design/along_design.dart' hide TransportMode, formatMoney;
+import 'package:along_core/along_core.dart' show TripStatus, TripSummary;
+import 'package:along_design/along_design.dart' hide TransportMode;
 import 'package:along_design/along_design.dart' as design show TransportMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/na_me_chip_mapper.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 import 'package:mobile_rider/features/live_trip/domain/live_trip_config.dart';
@@ -119,7 +120,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    l10n.activeTripStatus(eta, formatMoney(liveTrip.totalFare)),
+                    l10n.activeTripStatus(eta, formatAppMoney(ref, liveTrip.totalFare)),
                     style: AlongText.heading2,
                   ),
                   const SizedBox(height: AlongSpace.s12),
@@ -174,7 +175,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                         Expanded(
                           child: AlongButton(
                             key: const Key('active_trip_pay'),
-                            label: l10n.payDriverCta(formatMoney(liveTrip.totalFare)),
+                            label: l10n.payDriverCta(formatAppMoney(ref, liveTrip.totalFare)),
                             variant: AlongButtonVariant.yellow,
                             onPressed: () => PayDriverSheet.show(
                               context,

@@ -11,6 +11,7 @@ Future<void> pumpAlongGolden(
   double textScaleFactor = 1.0,
   Size surfaceSize = const Size(400, 200),
   Color backgroundColor = AlongColors.surface0,
+  BrandingOverrides branding = BrandingOverrides.empty,
 }) async {
   await tester.binding.setSurfaceSize(surfaceSize);
   addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -22,7 +23,7 @@ Future<void> pumpAlongGolden(
         size: surfaceSize,
       ),
       child: MaterialApp(
-        theme: alongTheme(),
+        theme: alongTheme(branding: branding),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           backgroundColor: backgroundColor,

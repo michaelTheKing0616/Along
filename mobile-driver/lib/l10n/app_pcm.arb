@@ -1,0 +1,12 @@
+{
+  "@@locale": "pcm",
+  "navHome": "Home",
+  "navRoutes": "Routes",
+  "navEarnings": "Earnings",
+  "navAccount": "Account",
+  "continueButton": "Continue",
+  "accountCityLabel": "Operating city",
+  "accountCityHint": "Map, parks and demand go use dis city",
+  "driverBrandingLine": "Drive with Along",
+  "settleCta": "Settle"
+}

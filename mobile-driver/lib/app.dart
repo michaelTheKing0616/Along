@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/tenant/tenant_providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,10 +19,12 @@ class AlongDriverApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final brandingAsync = ref.watch(brandingOverridesProvider);
+    final branding = brandingAsync.valueOrNull ?? BrandingOverrides.empty;
 
     return MaterialApp.router(
       title: 'Along Driver',
-      theme: alongTheme(),
+      theme: alongTheme(branding: branding),
       routerConfig: router,
       localizationsDelegates: const [
         AppLocalizations.delegate,
