@@ -12,7 +12,6 @@ class DayPlannerState {
     this.isPreparing = false,
     this.isMatching = false,
     this.errorMessage,
-    this.load = const LoadFlagState(),
   });
 
   final ItineraryStateView? itinerary;
@@ -20,7 +19,6 @@ class DayPlannerState {
   final bool isPreparing;
   final bool isMatching;
   final String? errorMessage;
-  final LoadFlagState load;
 
   DayPlannerState copyWith({
     ItineraryStateView? itinerary,
@@ -28,7 +26,6 @@ class DayPlannerState {
     bool? isPreparing,
     bool? isMatching,
     String? errorMessage,
-    LoadFlagState? load,
     bool clearError = false,
   }) {
     return DayPlannerState(
@@ -37,7 +34,6 @@ class DayPlannerState {
       isPreparing: isPreparing ?? this.isPreparing,
       isMatching: isMatching ?? this.isMatching,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      load: load ?? this.load,
     );
   }
 }
@@ -62,16 +58,7 @@ class DayPlannerController extends FamilyNotifier<DayPlannerState, String> {
     try {
       final repo = ref.read(itineraryRepositoryProvider);
       final view = await repo.itineraryState(state.itinerary?.itineraryId ?? _itineraryId);
-      state = state.copyWith(
-        itinerary: view,
-        isLoading: false,
-        load: LoadFlagState(
-          flagged: view.loadFlagged,
-          size: view.loadSize,
-          note: view.loadNote,
-          rememberForDay: view.loadFlagged,
-        ),
-      );
+      state = state.copyWith(itinerary: view, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
@@ -87,10 +74,6 @@ class DayPlannerController extends FamilyNotifier<DayPlannerState, String> {
     } catch (e) {
       state = state.copyWith(isPreparing: false, errorMessage: e.toString());
     }
-  }
-
-  void updateLoad(LoadFlagState load) {
-    state = state.copyWith(load: load);
   }
 
   Future<TripSummary?> matchNow() async {
@@ -122,7 +105,7 @@ class DayPlannerController extends FamilyNotifier<DayPlannerState, String> {
     tripOptions.loadPreparedPlan(
       session: session,
       plan: plan,
-      load: state.load.flagged ? state.load : const LoadFlagState(),
+      load: _loadFromItinerary(itinerary),
     );
     tripOptions.requestCandidate(candidate);
 
@@ -193,4 +176,14 @@ class DayPlannerController extends FamilyNotifier<DayPlannerState, String> {
       state = state.copyWith(errorMessage: e.toString());
     }
   }
+}
+
+LoadFlagState _loadFromItinerary(ItineraryStateView itinerary) {
+  if (!itinerary.loadFlagged) return const LoadFlagState();
+  return LoadFlagState(
+    flagged: true,
+    size: itinerary.loadSize,
+    note: itinerary.loadNote,
+    rememberForDay: true,
+  );
 }

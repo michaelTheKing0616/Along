@@ -7,6 +7,7 @@ import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/day_planner/presentation/day_planner_controller.dart';
 import 'package:mobile_rider/features/day_planner/presentation/day_planner_screen.dart';
 import 'package:mobile_rider/features/day_planner/presentation/itinerary_entry_controller.dart';
+import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
@@ -192,6 +193,123 @@ void main() {
       state = container.read(itineraryEntryControllerProvider);
       expect(state.createInvoked, isTrue);
       expect(fakeSupabase.createItineraryInvokeCount, 1);
+    });
+  });
+
+  group('P5-B-02 create_itinerary p_load', () {
+    late FakeAlongSupabase fakeSupabase;
+    late ProviderContainer container;
+
+    setUp(() {
+      fakeSupabase = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        itineraryStateResponse: sampleItineraryStateJson(),
+      );
+      container = _testContainer(fakeSupabase);
+    });
+
+    tearDown(() {
+      fakeSupabase.dispose();
+      container.dispose();
+    });
+
+    test('confirmAndCreate passes p_load when load flagged at create time', () async {
+      final controller = container.read(itineraryEntryControllerProvider.notifier);
+      controller.updateLoad(
+        const LoadFlagState(flagged: true, size: 'medium', rememberForDay: true),
+      );
+      controller.updateStopLabel(0, 'School');
+      controller.updateStopLabel(1, 'Work');
+
+      await controller.confirmAndCreate(
+        cityId: 'b1000000-0000-4000-8000-000000000001',
+      );
+
+      expect(fakeSupabase.createItineraryInvokeCount, 1);
+      final load = fakeSupabase.lastCreateItineraryParams?['p_load']
+          as Map<String, dynamic>?;
+      expect(load, isNotNull);
+      expect(load!['flagged'], isTrue);
+      expect(load['size'], 'medium');
+    });
+  });
+
+  group('P5-B-02 add stop via update_itinerary_stops', () {
+    late FakeAlongSupabase fakeSupabase;
+    late ProviderContainer container;
+
+    setUp(() {
+      fakeSupabase = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        itineraryStateResponse: sampleItineraryStateJson(),
+      );
+      container = _testContainer(fakeSupabase);
+    });
+
+    tearDown(() {
+      fakeSupabase.dispose();
+      container.dispose();
+    });
+
+    test('append stop calls update_itinerary_stops add op not create_itinerary',
+        () async {
+      final controller = container.read(itineraryEntryControllerProvider.notifier);
+      await controller.configureForExistingItinerary('itin-test-001');
+      controller.updateStopLabel(0, 'Market');
+
+      await controller.confirmAndCreate(
+        cityId: 'b1000000-0000-4000-8000-000000000001',
+      );
+
+      expect(fakeSupabase.createItineraryInvokeCount, 0);
+      expect(fakeSupabase.updateItineraryStopsInvokeCount, 1);
+      final ops = fakeSupabase.lastUpdateItineraryStopsParams?['p_ops']
+          as List<dynamic>?;
+      expect(ops, isNotNull);
+      expect(ops!.first['op'], 'add');
+      expect(ops.first['destination_description'], 'Market');
+      expect(ops.first['sequence'], 3);
+    });
+  });
+
+  group('P5-B-02 matchNow uses server load', () {
+    late FakeAlongSupabase fakeSupabase;
+    late ProviderContainer container;
+
+    setUp(() {
+      fakeSupabase = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        requestTripResponse: sampleRequestTripResponse(),
+        itineraryStateResponse: sampleItineraryStateJson(
+          withPreparedPlan: true,
+          loadFlagged: true,
+          loadSize: 'large',
+          loadNote: 'Boxes',
+        ),
+      );
+      container = _testContainer(fakeSupabase);
+    });
+
+    tearDown(() {
+      fakeSupabase.dispose();
+      container.dispose();
+    });
+
+    test('matchNow sends itinerary server load in request_trip p_load', () async {
+      await container
+          .read(dayPlannerControllerProvider('itin-test-001').notifier)
+          .refresh();
+
+      await container
+          .read(dayPlannerControllerProvider('itin-test-001').notifier)
+          .matchNow();
+
+      final load = fakeSupabase.lastRequestTripParams?['p_load']
+          as Map<String, dynamic>?;
+      expect(load, isNotNull);
+      expect(load!['flagged'], isTrue);
+      expect(load['size'], 'large');
+      expect(load['note'], 'Boxes');
     });
   });
 }

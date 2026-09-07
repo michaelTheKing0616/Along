@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/day_planner/presentation/day_planner_controller.dart';
-import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
-import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -39,23 +37,23 @@ class DayPlannerScreen extends ConsumerWidget {
                     SwitchListTile(
                       key: const Key('day_planner_load_toggle'),
                       title: Text(l10n.dayPlannerLoadToggle),
-                      value: state.load.flagged,
-                      onChanged: (value) {
-                        if (value) {
-                          showLoadFlagSheet(
-                            context,
-                            initial: state.load.copyWith(
-                              flagged: true,
-                              rememberForDay: true,
-                            ),
-                            warnCapacities: const {},
-                            modeLoadCapacity: null,
-                            onApply: controller.updateLoad,
-                          );
-                        } else {
-                          controller.updateLoad(const LoadFlagState());
-                        }
-                      },
+                      subtitle: itinerary.loadFlagged &&
+                              (itinerary.loadSize != null ||
+                                  itinerary.loadNote != null)
+                          ? Text(
+                              [
+                                if (itinerary.loadSize != null)
+                                  itinerary.loadSize!,
+                                if (itinerary.loadNote != null)
+                                  itinerary.loadNote!,
+                              ].join(' · '),
+                              style: AlongText.caption.copyWith(
+                                color: AlongColors.ink500,
+                              ),
+                            )
+                          : null,
+                      value: itinerary.loadFlagged,
+                      onChanged: null,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(AlongSpace.s16),

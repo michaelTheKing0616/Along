@@ -31,6 +31,9 @@ class ItineraryEntryState {
     this.load = const LoadFlagState(),
     this.parseInvoked = false,
     this.createInvoked = false,
+    this.existingItineraryId,
+    this.nextSequence = 1,
+    this.addInvoked = false,
   });
 
   final ItineraryEntryMode mode;
@@ -44,6 +47,11 @@ class ItineraryEntryState {
   final LoadFlagState load;
   final bool parseInvoked;
   final bool createInvoked;
+  final String? existingItineraryId;
+  final int nextSequence;
+  final bool addInvoked;
+
+  bool get isAddToExisting => existingItineraryId != null;
 
   ItineraryEntryState copyWith({
     ItineraryEntryMode? mode,
@@ -57,6 +65,9 @@ class ItineraryEntryState {
     LoadFlagState? load,
     bool? parseInvoked,
     bool? createInvoked,
+    String? existingItineraryId,
+    int? nextSequence,
+    bool? addInvoked,
     bool clearProposal = false,
     bool clearError = false,
   }) {
@@ -72,6 +83,9 @@ class ItineraryEntryState {
       load: load ?? this.load,
       parseInvoked: parseInvoked ?? this.parseInvoked,
       createInvoked: createInvoked ?? this.createInvoked,
+      existingItineraryId: existingItineraryId ?? this.existingItineraryId,
+      nextSequence: nextSequence ?? this.nextSequence,
+      addInvoked: addInvoked ?? this.addInvoked,
     );
   }
 }
@@ -94,6 +108,30 @@ class ItineraryEntryController extends Notifier<ItineraryEntryState> {
 
   void setMode(ItineraryEntryMode mode) {
     state = state.copyWith(mode: mode, clearProposal: true, clearError: true);
+  }
+
+  void updateLoad(LoadFlagState load) {
+    state = state.copyWith(load: load);
+  }
+
+  /// R-20 "Add stop" — append to an active itinerary via update_itinerary_stops.
+  Future<void> configureForExistingItinerary(String itineraryId) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final repo = ref.read(itineraryRepositoryProvider);
+      final view = await repo.itineraryState(itineraryId);
+      final maxSequence = view.stops.isEmpty
+          ? 0
+          : view.stops.map((s) => s.sequence).reduce((a, b) => a > b ? a : b);
+      state = state.copyWith(
+        existingItineraryId: itineraryId,
+        nextSequence: maxSequence + 1,
+        stops: [StructuredStopDraft(id: 'stop-add-1')],
+        isSaving: false,
+      );
+    } catch (e) {
+      state = state.copyWith(isSaving: false, errorMessage: e.toString());
+    }
   }
 
   void setNlText(String text) {
@@ -175,8 +213,12 @@ class ItineraryEntryController extends Notifier<ItineraryEntryState> {
     }
   }
 
-  /// Confirmed write — only after "Looks right" tap.
+  /// Confirmed write — only after "Looks right" tap (new itinerary).
   Future<ItineraryStateView?> confirmAndCreate({required String cityId}) async {
+    if (state.isAddToExisting) {
+      return confirmAndAddStops();
+    }
+
     state = state.copyWith(isSaving: true, clearError: true, createInvoked: true);
     try {
       final stopsPayload = _buildStopsPayload();
@@ -195,6 +237,43 @@ class ItineraryEntryController extends Notifier<ItineraryEntryState> {
           : {'flagged': false};
 
       final view = await repo.createItinerary(stops: stopsPayload, load: load);
+      state = state.copyWith(isSaving: false, clearProposal: true);
+      return view;
+    } catch (e) {
+      state = state.copyWith(isSaving: false, errorMessage: e.toString());
+      return null;
+    }
+  }
+
+  /// Append stops to an active itinerary (R-20 Add stop path).
+  Future<ItineraryStateView?> confirmAndAddStops() async {
+    final itineraryId = state.existingItineraryId;
+    if (itineraryId == null) return null;
+
+    state = state.copyWith(isSaving: true, clearError: true, addInvoked: true);
+    try {
+      final stopsPayload = _buildStopsPayload();
+      if (stopsPayload.isEmpty) {
+        state = state.copyWith(isSaving: false, errorMessage: 'No stops to save');
+        return null;
+      }
+
+      final ops = <Map<String, dynamic>>[];
+      for (var i = 0; i < stopsPayload.length; i++) {
+        final stop = stopsPayload[i];
+        ops.add({
+          'op': 'add',
+          'sequence': state.nextSequence + i,
+          'destination_description': stop['destination_description'],
+          if (stop.containsKey('location')) 'location': stop['location'],
+        });
+      }
+
+      final repo = ref.read(itineraryRepositoryProvider);
+      final view = await repo.updateItineraryStops(
+        itineraryId: itineraryId,
+        ops: ops,
+      );
       state = state.copyWith(isSaving: false, clearProposal: true);
       return view;
     } catch (e) {

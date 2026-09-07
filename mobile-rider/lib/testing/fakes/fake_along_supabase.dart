@@ -98,6 +98,8 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? lastRaiseSosParams;
   Map<String, dynamic>? lastReportIncidentParams;
   Map<String, dynamic>? lastUpdateRiderPrefsParams;
+  Map<String, dynamic>? lastCreateItineraryParams;
+  Map<String, dynamic>? lastUpdateItineraryStopsParams;
   Map<String, dynamic>? lastPaymentInitiateBody;
   Map<String, dynamic>? lastConfirmFareParams;
   Map<String, dynamic>? lastRateTripParams;
@@ -328,10 +330,12 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (fn == 'create_itinerary') {
       createItineraryInvokeCount++;
+      lastCreateItineraryParams = params;
       return itineraryStateResponse ?? sampleItineraryStateJson();
     }
     if (fn == 'update_itinerary_stops') {
       updateItineraryStopsInvokeCount++;
+      lastUpdateItineraryStopsParams = params;
       return itineraryStateResponse ?? sampleItineraryStateJson();
     }
     if (fn == 'itinerary_state') {
@@ -996,6 +1000,9 @@ Map<String, dynamic> sampleItineraryStateJson({
   String itineraryId = 'itin-test-001',
   String nextStopId = 'stop-2',
   bool withPreparedPlan = false,
+  bool loadFlagged = false,
+  String? loadSize,
+  String? loadNote,
 }) {
   final preparedPlan = {
     'query_id': 'query-itin-1',
@@ -1090,9 +1097,9 @@ Map<String, dynamic> sampleItineraryStateJson({
     'itinerary_id': itineraryId,
     'status': 'active',
     'plan_date': '2026-09-07',
-    'load_flagged': false,
-    'load_size': null,
-    'load_note': null,
+    'load_flagged': loadFlagged,
+    'load_size': loadSize,
+    'load_note': loadNote,
     'stops': [stop1, stop2],
     'next_pending_stop_id': nextStopId,
     'next_prepared_plan': withPreparedPlan ? preparedPlan : null,

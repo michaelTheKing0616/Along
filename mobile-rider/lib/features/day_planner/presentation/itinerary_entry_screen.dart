@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/day_planner/presentation/itinerary_entry_controller.dart';
+import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
+import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
@@ -23,6 +25,19 @@ class _ItineraryEntryScreenState extends ConsumerState<ItineraryEntryScreen> {
   final _nlController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    final existingId = widget.existingItineraryId;
+    if (existingId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(itineraryEntryControllerProvider.notifier)
+            .configureForExistingItinerary(existingId);
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _nlController.dispose();
     super.dispose();
@@ -39,12 +54,38 @@ class _ItineraryEntryScreenState extends ConsumerState<ItineraryEntryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.itineraryEntryTitle),
+        title: Text(
+          state.isAddToExisting
+              ? l10n.dayPlannerAddStop
+              : l10n.itineraryEntryTitle,
+        ),
         leading: BackButton(onPressed: () => context.pop()),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (!state.isAddToExisting)
+            SwitchListTile(
+              key: const Key('itinerary_entry_load_toggle'),
+              title: Text(l10n.dayPlannerLoadToggle),
+              value: state.load.flagged,
+              onChanged: (value) {
+                if (value) {
+                  showLoadFlagSheet(
+                    context,
+                    initial: state.load.copyWith(
+                      flagged: true,
+                      rememberForDay: true,
+                    ),
+                    warnCapacities: const {},
+                    modeLoadCapacity: null,
+                    onApply: controller.updateLoad,
+                  );
+                } else {
+                  controller.updateLoad(const LoadFlagState());
+                }
+              },
+            ),
           Padding(
             padding: const EdgeInsets.all(AlongSpace.s16),
             child: SegmentedButton<ItineraryEntryMode>(
@@ -98,20 +139,20 @@ class _ItineraryEntryScreenState extends ConsumerState<ItineraryEntryScreen> {
               state: state,
               onLooksRight: () async {
                 final view = await controller.confirmAndCreate(cityId: cityId);
-                if (view != null && context.mounted) {
-                  context.go(
-                    AppRoutes.dayPlanner,
-                    extra: view.itineraryId,
-                  );
+                if (view == null || !context.mounted) return;
+                if (widget.existingItineraryId != null) {
+                  context.pop();
+                } else {
+                  context.go(AppRoutes.dayPlanner, extra: view.itineraryId);
                 }
               },
               onSaveStructured: () async {
                 final view = await controller.confirmAndCreate(cityId: cityId);
-                if (view != null && context.mounted) {
-                  context.go(
-                    AppRoutes.dayPlanner,
-                    extra: view.itineraryId,
-                  );
+                if (view == null || !context.mounted) return;
+                if (widget.existingItineraryId != null) {
+                  context.pop();
+                } else {
+                  context.go(AppRoutes.dayPlanner, extra: view.itineraryId);
                 }
               },
             ),
@@ -331,7 +372,9 @@ class _BottomActions extends StatelessWidget {
     if (state.mode == ItineraryEntryMode.structured) {
       return AlongButton(
         key: const Key('itinerary_entry_save_structured'),
-        label: l10n.itineraryEntrySavePlan,
+        label: state.isAddToExisting
+            ? l10n.dayPlannerAddStop
+            : l10n.itineraryEntrySavePlan,
         visualState: state.isSaving
             ? AlongButtonVisualState.loading
             : AlongButtonVisualState.normal,
