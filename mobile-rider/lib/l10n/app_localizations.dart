@@ -220,6 +220,12 @@ abstract class AppLocalizations {
   /// **'Trips'**
   String get navTrips;
 
+  /// Disclosure label for contextual sponsored placement slots (P8-B-01, FM39)
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsored'**
+  String get sponsoredLabel;
+
   /// Bottom nav Account tab
   ///
   /// In en, this message translates to:

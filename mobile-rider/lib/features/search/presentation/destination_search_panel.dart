@@ -13,31 +13,43 @@ class DestinationPick {
   const DestinationPick({
     required this.name,
     required this.location,
-    this.stageId,
+    this.referenceId,
     this.kind = 'place',
   });
 
   final String name;
   final GeoPoint location;
-  final String? stageId;
+  final String? referenceId;
   final String kind;
 
   factory DestinationPick.fromPlace(PlaceResult place) => DestinationPick(
         name: place.name,
         location: place.location,
-        stageId: place.kind == 'stage' ? place.id : null,
+        referenceId: place.id,
         kind: place.kind,
       );
 
   factory DestinationPick.fromRecent(RecentPlace recent) => DestinationPick(
         name: recent.label,
         location: recent.location,
-        stageId: recent.kind == 'stage' ? recent.id : null,
+        referenceId: recent.id,
         kind: recent.kind,
       );
 
+  PlacementContext? toPlacementContext() {
+    final id = referenceId;
+    if (id == null || id.isEmpty) return null;
+    final type = switch (kind) {
+      'park' => PlacementContextType.park,
+      'stage' => PlacementContextType.destination,
+      _ => null,
+    };
+    if (type == null) return null;
+    return PlacementContext(type: type, targetReference: id);
+  }
+
   Map<String, dynamic> toNewAlightPayload() => {
-        if (stageId != null) 'stage_id': stageId,
+        if (referenceId != null && kind == 'stage') 'stage_id': referenceId,
         'lat': location.lat,
         'lng': location.lng,
         'name': name,
