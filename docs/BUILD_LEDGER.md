@@ -1060,9 +1060,17 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Issuing P5-A-01.
 
 ## [Phase 5 / P5-A-01] SOS, trip share, incidents RLS
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-07
-- Worker report summary: Migration 00051 SOS/shares/incidents + notify kind=sos. TS-SOS-01 9/9, TS-SOS-02 5/5, Deno SOS 1/1 (Worker). Acceptance MET; gate (a) FAIL.
-- Reviewer verdict: FAIL — hardcoded `st_distance(...) / 8.0` in `shared_trip_view`; must use `cfg_num('planner.baseline_speed_mps')`. RLS + share-token criteria MET.
+- Worker report summary: Migration 00051 SOS/shares/incidents + notify kind=sos. Rework 1: shared_trip_view ETA uses cfg planner.baseline_speed_mps. TS-SOS-01 9/9, TS-SOS-02 6/6, Deno SOS 1/1.
+- Reviewer verdict: PASS WITH NOTES — prior 8.0 FAIL fixed. RLS + hashed tokens + no SOS rate-limit MET. Notes: SMS log-provider path; incidental policy snapshot regen.
 - Rework count: 1
-- Notes/escalations: Rework 1/2 — replace 8.0 with cfg_num planner.baseline_speed_mps (floor 3, matching negotiation). Do not expand scope.
+- Notes/escalations: Merged 235c680. Next: P5-A-02.
+
+## [Phase 5 / P5-A-02] Women-only matching
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Next migration 00052. Planner TS-PLAN-07 and admin_approve women_only_eligible already exist — close request_trip + regulatory_flags gaps.
