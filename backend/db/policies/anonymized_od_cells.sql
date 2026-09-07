@@ -10,4 +10,4 @@ create policy anonymized_od_cells_no_client_write
 
 create policy anonymized_od_cells_select_admin
   on anonymized_od_cells for select to authenticated
-  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text, 'analyst'::text]) AND admin_can_access_city(city_id));
+  using (has_admin_role(ARRAY['superadmin'::text, 'finance'::text, 'ops_lead'::text, 'analyst'::text]) AND admin_can_access_city(city_id));

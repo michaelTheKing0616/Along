@@ -29,6 +29,8 @@ export const ROUTE_ALLOWLIST: Record<string, readonly AdminRole[]> = {
   admins: ['superadmin'],
   markets: ['superadmin', 'ops_lead'],
   revenue: ['superadmin', 'finance'],
+  corporate: ['superadmin', 'finance', 'corporate_admin'],
+  operator: ['superadmin', 'ops_lead', 'operator_viewer'],
 };
 
 const PUBLIC_PATHS = new Set(['/sign-in', '/mfa', '/unauthorized']);
