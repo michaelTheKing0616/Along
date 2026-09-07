@@ -1730,3 +1730,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P9-A-01 PASS. Attach 02 §2.1, §3, 12. AC: second tenant dry run; cross-tenant leakage tests. Also fix city_kaduna_pilot.test.ts allowlist for test/ paths. Do not flip digital_enabled.
+
+## [Phase 10 / P10-A-01] Tenancy, verification provider, currency
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00077 tenant RLS; VerifyMe stub; TS-TENANT-01 8/8; TS-REG-01 4/4; vitest allowlist 5/5.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Note: NULL deployment mapping still sees all catalog rows (pre-onboarding).
+- Rework count: 0
+- Notes/escalations: Merged 97e5737. Next: P10-D-01. Do not flip digital_enabled.
+
+## [Phase 10 / P10-D-01] A-18 Markets & portability
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P10-A-01 PASS. Attach 06 A-18. AC: Playwright add hypothetical country config without code. Write specs; admin-console-down is not FAIL. Do not flip digital_enabled.
