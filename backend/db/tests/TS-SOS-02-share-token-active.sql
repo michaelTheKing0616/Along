@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(5);
+select plan(6);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 
@@ -134,6 +134,22 @@ select ok(
 select ok(
   shared_trip_view(current_setting('test.sos02_token'))->'vehicle'->>'plate' = 'SHR-01',
   'TS-SOS-02: shared_trip_view exposes minimal vehicle plate only'
+);
+
+select set_config(
+  'test.sos02_eta_default',
+  shared_trip_view(current_setting('test.sos02_token'))->>'eta_s',
+  true
+);
+
+update app_config
+set value = '100'
+where key = 'planner.baseline_speed_mps' and scope_type = 'global' and scope_id = '*';
+
+select ok(
+  (shared_trip_view(current_setting('test.sos02_token'))->>'eta_s')::int
+    < (current_setting('test.sos02_eta_default')::int),
+  'TS-SOS-02: shared_trip_view eta_s uses planner.baseline_speed_mps config'
 );
 
 select set_config('request.jwt.claim.sub', '0e100000-0000-4000-8000-000000000011', true);

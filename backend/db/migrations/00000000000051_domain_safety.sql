@@ -651,7 +651,7 @@ begin
   );
 
   if v_alight is not null then
-    v_eta_s := greatest(0, (st_distance(v_loc, v_alight) / 8.0)::int);
+    v_eta_s := greatest(0, (st_distance(v_loc, v_alight) / greatest(cfg_num('planner.baseline_speed_mps', v_j.city_id), 3))::int);
   end if;
 
   return jsonb_build_object(
