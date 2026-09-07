@@ -1012,9 +1012,17 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: D-02 already merged `e5e2908`. Commits 1340bbc and 85abb67 are already ancestors of master (docs/spec only — no wait-ETA application code on the D-02 product branch). Cherry-pick skipped. Issuing P3-A-04.
 
 ## [Phase 3 / P3-A-04] Wait-decision backend
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00050 — approach_band, refresh_wait, release_match → released_before_arrival, rider_no_show_review. TS-DISC-07 6/6, TS-WAIT-01..05 9/9.
+- Reviewer verdict: PASS WITH NOTES — hard rules MET (grep-clean pre-accept; release_match never cancel_trip; OSRM foot; unknown≠stalled; FM43 review-only). Notes: wait null until first sample; parked request not separately tested.
+- Rework count: 0
+- Notes/escalations: Merged aed000b. Next: P3-C-02.
+
+## [Phase 3 / P3-C-02] D-14 band + D-16 ETA/Release
 - Status: IN PROGRESS
 - Assigned: 2026-09-07
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: requested ≠ accepted. Pre-accept TripView/FCM grep-clean of lat/lng and walk_eta_s. release_match must not call cancel_trip. Next migration 00050.
+- Notes/escalations: requested ≠ accepted. No rider pin / walk_eta on D-14. Release hidden after boarded. stalled copy absent when unknown.
