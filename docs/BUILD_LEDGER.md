@@ -1778,3 +1778,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P10-D-01 PASS. Attach runbooks. AC: gate artifact. Dry run a hypothetical country in review (config only). Do not flip digital_enabled.
+
+## [Phase 10 / P10-E-01] New country checklist
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: new_country_checklist.md + Ghana-Review dry-run via A-18 RPCs + import:city. digital_enabled false.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Human ops sign-off DEFERRED. Corridor dry-run creates=0 (city path verified).
+- Rework count: 0
+- Notes/escalations: Merged df0eb3e. All Phase 10 implementation tasks PASS. Issuing Phase 10 code gate. Do not flip digital_enabled.
+
+## [Phase 10 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 10: second tenant dry run; cross-tenant leakage; A-18; locale/branding; new country checklist. Playwright/device DEFERRED. Do not flip digital_enabled. Then chain Phase 11.
