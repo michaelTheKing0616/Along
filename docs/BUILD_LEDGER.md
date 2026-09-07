@@ -1402,3 +1402,27 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P2-A-01 PASS. Attach 07 §4, 03 §3. AC: cache hit ratio reported; correctness tests unchanged. TTL via app_config not literal 60. Do not redo planner. Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-01] graph-bundle + plan-trip cache
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: graph-bundle + plan-trip/places caches + cache-metrics. Deno 16/16. Cross-rider HIT returned first rider query_id (found in review).
+- Reviewer verdict: FAIL — cache HIT skips insert_planner_query; second rider request_trip CANDIDATE_EXPIRED.
+- Rework count: 1
+- Notes/escalations: Rehydrate on HIT: resolve_fare + insert_planner_query for current rider.
+
+## [Phase 7 / P7-A-01] graph-bundle + plan-trip cache
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Rehydrate on HIT; two-rider Deno test; cache.* keys in app_config_keys.sql. Deno 16/16.
+- Reviewer verdict: PASS WITH NOTES — prior fail closed. Notes: in-process TtlCache not Deno KV; quote_id stripped only after rehydrate.
+- Rework count: 1
+- Notes/escalations: Merged 985787b. Next: P7-A-02. Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-02] map-match job + FM27
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P3-A-01 PASS. Attach 04 §15, 09 §6. AC: FM27 test; confidence filter. Do not implement speed-profiles or route-inference (A-03/A-04). Do not flip digital_enabled.
