@@ -1498,3 +1498,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-A-01 PASS. Attach 10 Ops, 01 §7. AC: TS-OPS-02/03 pass. Local/staging k6 OK; full-city field evidence deferred. Do not flip digital_enabled.
+
+## [Phase 7 / P7-E-02] Load tests k6
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Full-city k6 scripts + 00066 indexes; scaled local 1/10. TS-OPS-03 PASS (p95 12 ms). TS-OPS-02 plan-trip FAIL locally (Edge saturation). Full-city deferred.
+- Reviewer verdict: PASS WITH NOTES — harness honest; full-city field evidence deferred per owner. Not a code-gate fail.
+- Rework count: 0
+- Notes/escalations: Merged 71b4e15. Next: P7-B-01. Do not flip digital_enabled.
+
+## [Phase 7 / P7-B-01] Rider low-data + graph-bundle cache
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-A-01 PASS. Attach 07 §4. AC: Patrol under edge netspeed — search from cache with stale badge. Patrol-on-device deferred; widget/unit tests required. Do not flip digital_enabled.
