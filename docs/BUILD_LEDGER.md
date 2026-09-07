@@ -1036,9 +1036,9 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Issuing P4-GATE-01. Next after absorb+gate: if PASS / PASS WITH DEFERRED EVIDENCE → P5-A-01 on resume (not this session). If still FAIL → Reviewer's exact compile/test fix.
 
 ## [Phase 4 / P4-GATE-01] Absorb rider payments_test QrPayloadParser clash
-- Status: IN PROGRESS
+- Status: PASS
 - Assigned: 2026-09-07
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: Removed local `qr_payload_parser.dart` import (and unused drift import) from `mobile-rider/test/payments_test.dart`. `QrPayloadParser` resolves via along_core. Production parser untouched. dart analyze clean; flutter test 8/8.
+- Reviewer verdict: PASS — 1 file, 2 deletions; analyze clean; 8/8 tests independently re-run. Production parser still present.
 - Rework count: 0
-- Notes/escalations: Prefer along_core export; hide/remove local import in the test. Do not delete production parser without Reviewer-justified reason.
+- Notes/escalations: Merged 3b4a481. Re-running Phase 4 code gate on master. Phase 5 still closed until that gate is PASS.
