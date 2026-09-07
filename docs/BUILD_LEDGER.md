@@ -1794,3 +1794,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 10: second tenant dry run; cross-tenant leakage; A-18; locale/branding; new country checklist. Playwright/device DEFERRED. Do not flip digital_enabled. Then chain Phase 11.
+
+## [Phase 10 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master 814e4b3)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — TS-TENANT-01 8/8, TS-REG-01 4/4, TS-VERIF-02 2/2; A-18 + GH dry-run; branding/locale artifacts; digital_enabled false. Deferred: Playwright, live VerifyMe, human A-18 sign-off.
+- Rework count: 0
+- Notes/escalations: Residuals: P1-G-01, P4-E-02, P8-E-01 stay BLOCKED — human. Do not flip digital_enabled. Chaining Phase 11 from P11-A-01.
+
+## [Phase 11 / P11-A-01] Authorization matrix
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Attach 02 §16, 12. AC: gate artifact generated from live policies vs doc 02 §16; discrepancies fixed. Do not flip digital_enabled.
