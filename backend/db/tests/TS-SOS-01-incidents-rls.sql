@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(8);
+select plan(9);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 
@@ -164,6 +164,17 @@ select ok(
     )::text
   ) <= 300,
   'TS-SOS-01: raise_sos response payload <= 300 B'
+);
+
+select ok(
+  octet_length(
+    jsonb_build_object(
+      'p_trip_id', '0e600000-0000-4000-8000-000000000001',
+      'p_location', jsonb_build_object('lat', 11.061, 'lng', 7.701),
+      'p_accuracy_m', 12.5
+    )::text
+  ) <= 300,
+  'TS-SOS-01: typical raise_sos request payload <= 300 B'
 );
 
 select * from finish();
