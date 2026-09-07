@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { cityForPoint, loadPlannerCfg } from '../_shared/cfg.ts';
+import { cityForPoint, loadCacheCfg, loadPlannerCfg } from '../_shared/cfg.ts';
+import {
+  filtersHash,
+  getPlanTripCache,
+  type TtlCache,
+} from '../_shared/edge_cache.ts';
+import { geohashEncode } from '../_shared/geohash.ts';
 import { errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
 import { createOsrmClient, type OsrmClient } from '../_shared/osrm.ts';
 import {
@@ -65,7 +71,19 @@ export type PlanTripDeps = {
   service?: ReturnType<typeof createServiceClient>;
   user?: ReturnType<typeof createUserClient>;
   osrm?: OsrmClient;
+  cache?: TtlCache<Record<string, unknown>> | false;
 };
+
+function planTripCacheKey(
+  cityId: string,
+  origin: Point,
+  destination: Point,
+  filters: PlanTripRequest['filters'],
+): string {
+  const originGh = geohashEncode(origin, 7);
+  const destGh = geohashEncode(destination, 7);
+  return `${cityId}:${originGh}:${destGh}:${filtersHash(filters)}`;
+}
 
 export async function handlePlanTrip(
   req: PlanTripRequest,
@@ -73,8 +91,7 @@ export async function handlePlanTrip(
   deps?: PlanTripDeps,
 ): Promise<Response> {
   const rid = requestId();
-  const started = performance.now();
-  let degraded = false;
+  const cache = deps?.cache === false ? null : (deps?.cache ?? getPlanTripCache());
 
   const userClient = deps?.user ?? createUserClient(authHeader);
   const service = deps?.service ?? createServiceClient();
@@ -86,15 +103,63 @@ export async function handlePlanTrip(
     });
   }
 
-  const riderId = authData.user.id;
   const { origin, destination, filters } = req;
-
   const cityId = await cityForPoint(service, origin.lat, origin.lng);
   if (!cityId) {
     return errorResponse('COVERAGE_GAP', 'Origin outside service area', 404, {
       request_id: rid,
     });
   }
+
+  const cacheCfg = await loadCacheCfg(service, cityId);
+  const cacheKey = planTripCacheKey(cityId, origin, destination, filters);
+
+  if (cache) {
+    const hit = cache.get(cacheKey) as Record<string, unknown> | undefined;
+    if (hit) {
+      console.log(JSON.stringify({ event: 'cache_hit', cache: 'plan_trip', key: cacheKey }));
+      return jsonResponse(
+        { data: hit, meta: { request_id: rid, degraded: Boolean(hit.degraded) } },
+        200,
+        {
+          'Access-Control-Allow-Origin': '*',
+          'X-Cache': 'HIT',
+        },
+      );
+    }
+  }
+
+  const response = await executePlanTrip(req, deps, {
+    rid,
+    riderId: authData.user.id,
+    cityId,
+  });
+  if (response.status !== 200 || !cache) {
+    return response;
+  }
+
+  const body = await response.clone().json();
+  if (body?.data) {
+    cache.set(cacheKey, body.data as Record<string, unknown>, cacheCfg.planTripTtlS * 1000);
+    console.log(JSON.stringify({ event: 'cache_miss', cache: 'plan_trip', key: cacheKey }));
+  }
+
+  const headers = new Headers(response.headers);
+  headers.set('X-Cache', 'MISS');
+  return new Response(response.body, { status: response.status, headers });
+}
+
+async function executePlanTrip(
+  req: PlanTripRequest,
+  deps: PlanTripDeps | undefined,
+  ctx: { rid: string; riderId: string; cityId: string },
+): Promise<Response> {
+  const { rid, riderId, cityId } = ctx;
+  const started = performance.now();
+  let degraded = false;
+
+  const service = deps?.service ?? createServiceClient();
+  const { origin, destination, filters } = req;
 
   const plannerCfg = await loadPlannerCfg(service, cityId);
   const osrm = deps?.osrm ?? createOsrmClient();

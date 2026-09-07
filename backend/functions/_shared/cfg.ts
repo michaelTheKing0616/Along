@@ -130,5 +130,41 @@ export async function loadDispatchCfg(
   return { requestTtlS: parseNum(ttl, 25) };
 }
 
+export type CacheCfg = {
+  planTripTtlS: number;
+  placesTtlS: number;
+  graphBundleTtlS: number;
+  graphBundleMaxParks: number;
+  graphBundleMaxStages: number;
+  graphBundleMaxLegs: number;
+};
+
+export async function loadCacheCfg(
+  client: SupabaseClient,
+  cityId: string | null = null,
+): Promise<CacheCfg> {
+  const keys = [
+    'cache.plan_trip_ttl_s',
+    'cache.places_ttl_s',
+    'cache.graph_bundle_ttl_s',
+    'cache.graph_bundle_max_parks',
+    'cache.graph_bundle_max_stages',
+    'cache.graph_bundle_max_legs',
+  ] as const;
+
+  const values = await Promise.all(
+    keys.map((k) => cfgValue(client, k, cityId)),
+  );
+
+  return {
+    planTripTtlS: parseNum(values[0], 60),
+    placesTtlS: parseNum(values[1], 86400),
+    graphBundleTtlS: parseNum(values[2], 3600),
+    graphBundleMaxParks: parseNum(values[3], 500),
+    graphBundleMaxStages: parseNum(values[4], 2000),
+    graphBundleMaxLegs: parseNum(values[5], 5000),
+  };
+}
+
 /** Unused export kept for cfg module completeness — satisfies lint for CfgRow. */
 export type { CfgRow };

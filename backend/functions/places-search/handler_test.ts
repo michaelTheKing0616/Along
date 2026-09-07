@@ -1,6 +1,8 @@
 import { assertEquals, assertExists } from 'jsr:@std/assert@1';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { PhotonClient } from '../_shared/photon.ts';
+import { TtlCache } from '../_shared/edge_cache.ts';
+import type { PlaceResult } from '../_shared/types.ts';
 import { handlePlacesSearch, type PlacesSearchRequest } from './handler.ts';
 
 const CITY_ID = 'b1000000-0000-4000-8000-000000000001';
@@ -16,6 +18,12 @@ const baseRequest: PlacesSearchRequest = {
 
 function placesCfgValue(key: string): unknown {
   const values: Record<string, unknown> = {
+    'cache.plan_trip_ttl_s': '60',
+    'cache.places_ttl_s': '86400',
+    'cache.graph_bundle_ttl_s': '3600',
+    'cache.graph_bundle_max_parks': '500',
+    'cache.graph_bundle_max_stages': '2000',
+    'cache.graph_bundle_max_legs': '5000',
     'places.search_radius_m': '5000',
     'places.trigram_min_similarity': '0.2',
     'places.photon_timeout_ms': '800',
@@ -100,6 +108,7 @@ Deno.test('places-search: parks and stages rank before Photon places', async () 
         { name: 'Wuse General Hospital', area: 'Abuja', lat: 9.076, lng: 7.491 },
         { name: 'Wuse Zone 5', area: 'Abuja', lat: 9.077, lng: 7.492 },
       ]),
+      cache: false as const,
     },
   );
 
@@ -125,6 +134,7 @@ Deno.test('places-search: graph-only results when limit filled by parks/stages',
       photon: mockPhotonClient([
         { name: 'Should Not Appear', area: 'Abuja', lat: 9.08, lng: 7.5 },
       ]),
+      cache: false as const,
     },
   );
 
@@ -132,4 +142,22 @@ Deno.test('places-search: graph-only results when limit filled by parks/stages',
   const body = await res.json();
   assertEquals(body.data.results.length, 2);
   assertEquals(body.data.results.every((r: { kind: string }) => r.kind !== 'place'), true);
+});
+
+Deno.test('places-search cache: second identical request is X-Cache HIT', async () => {
+  const cache = new TtlCache<{ results: PlaceResult[] }>(8);
+  const deps: Parameters<typeof handlePlacesSearch>[2] = {
+    service: createMockServiceClient(graphRows),
+    user: createMockUserClient(),
+    photon: mockPhotonClient([]),
+    cache,
+  };
+
+  const first = await handlePlacesSearch(baseRequest, 'Bearer test-token', deps);
+  assertEquals(first.headers.get('X-Cache'), 'MISS');
+
+  const second = await handlePlacesSearch(baseRequest, 'Bearer test-token', deps);
+  assertEquals(second.headers.get('X-Cache'), 'HIT');
+  const body = await second.json();
+  assertEquals(body.data.results.length, 2);
 });

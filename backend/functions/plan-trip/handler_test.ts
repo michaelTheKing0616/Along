@@ -2,6 +2,8 @@ import { assertEquals, assertExists } from 'jsr:@std/assert@1';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { OsrmClient } from '../_shared/osrm.ts';
 import { applyRanking, computeMetrics } from '../_shared/planner/ranking.ts';
+import { TtlCache } from '../_shared/edge_cache.ts';
+import { resetEdgeCachesForTests } from '../_shared/edge_cache.ts';
 import type { Metrics, ModeRow, PlanCandidate } from '../_shared/types.ts';
 import { handlePlanTrip, type PlanTripRequest } from './handler.ts';
 
@@ -69,6 +71,12 @@ const multiLegItinerary = {
 
 function cfgValue(key: string): unknown {
   const values: Record<string, unknown> = {
+    'cache.plan_trip_ttl_s': '60',
+    'cache.places_ttl_s': '86400',
+    'cache.graph_bundle_ttl_s': '3600',
+    'cache.graph_bundle_max_parks': '500',
+    'cache.graph_bundle_max_stages': '2000',
+    'cache.graph_bundle_max_legs': '5000',
     'planner.max_candidates': '12',
     'planner.walk_speed_mps': '1.25',
     'planner.shared_vehicle_factor': '1.25',
@@ -216,6 +224,7 @@ function mockDeps(direct: unknown[], multi: unknown[] = []) {
     service: createMockServiceClient(direct, multi),
     user: createMockUserClient(),
     osrm: mockOsrmClient(),
+    cache: false as const,
   };
 }
 
@@ -387,4 +396,27 @@ Deno.test('TS-PLAN-09 handler: candidate count respects max_candidates', async (
   );
   const body = await res.json();
   assertEquals(body.data.candidates.length <= 12, true);
+});
+
+Deno.test('plan-trip cache: second identical request is X-Cache HIT with same candidates', async () => {
+  resetEdgeCachesForTests();
+  const cache = new TtlCache<Record<string, unknown>>(8);
+  const deps = { ...mockDeps([parkedCandidate], [multiLegItinerary]), cache };
+
+  const first = await handlePlanTrip(baseRequest, 'Bearer test-token', deps);
+  assertEquals(first.headers.get('X-Cache'), 'MISS');
+  const firstBody = await first.json();
+
+  const second = await handlePlanTrip(baseRequest, 'Bearer test-token', deps);
+  assertEquals(second.headers.get('X-Cache'), 'HIT');
+  const secondBody = await second.json();
+
+  assertEquals(
+    secondBody.data.candidates.map((c: { candidate_id: string }) => c.candidate_id),
+    firstBody.data.candidates.map((c: { candidate_id: string }) => c.candidate_id),
+  );
+  assertEquals(
+    secondBody.data.sort_orders.recommended,
+    firstBody.data.sort_orders.recommended,
+  );
 });

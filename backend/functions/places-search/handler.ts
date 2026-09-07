@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { loadPlacesCfg } from '../_shared/cfg.ts';
+import { loadCacheCfg, loadPlacesCfg } from '../_shared/cfg.ts';
+import { getPlacesSearchCache, type TtlCache } from '../_shared/edge_cache.ts';
+import { geohashEncode } from '../_shared/geohash.ts';
 import { errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
 import { createPhotonClient, type PhotonClient } from '../_shared/photon.ts';
 import { createServiceClient, createUserClient } from '../_shared/supabase.ts';
@@ -33,7 +35,18 @@ export type PlacesSearchDeps = {
   service?: ReturnType<typeof createServiceClient>;
   user?: ReturnType<typeof createUserClient>;
   photon?: PhotonClient;
+  cache?: TtlCache<{ results: PlaceResult[] }> | false;
 };
+
+function placesCacheKey(
+  q: string,
+  near: { lat: number; lng: number },
+  cityId: string,
+  limit: number,
+): string {
+  const gh5 = geohashEncode(near, 5);
+  return `${cityId}:${gh5}:${q.trim().toLowerCase()}:${limit}`;
+}
 
 function mapGraphRow(row: GraphRow): PlaceResult {
   return {
@@ -65,6 +78,25 @@ export async function handlePlacesSearch(
   }
 
   const { q, near, city_id: cityId, limit } = req;
+  const cache = deps?.cache === false ? null : (deps?.cache ?? getPlacesSearchCache());
+  const cacheCfg = await loadCacheCfg(service, cityId);
+  const cacheKey = placesCacheKey(q, near, cityId, limit);
+
+  if (cache) {
+    const hit = cache.get(cacheKey);
+    if (hit) {
+      console.log(JSON.stringify({ event: 'cache_hit', cache: 'places_search', key: cacheKey }));
+      return jsonResponse(
+        { data: hit, meta: { request_id: rid } },
+        200,
+        {
+          'Access-Control-Allow-Origin': '*',
+          'X-Cache': 'HIT',
+        },
+      );
+    }
+  }
+
   const placesCfg = await loadPlacesCfg(service, cityId);
 
   const { data: graphRows, error: graphError } = await service.rpc('places_search_graph', {
@@ -94,13 +126,22 @@ export async function handlePlacesSearch(
   }
 
   const results = [...graphResults, ...photonResults].slice(0, limit);
+  const payload = { results };
+
+  if (cache) {
+    cache.set(cacheKey, payload, cacheCfg.placesTtlS * 1000);
+    console.log(JSON.stringify({ event: 'cache_miss', cache: 'places_search', key: cacheKey }));
+  }
 
   return jsonResponse(
     {
-      data: { results },
+      data: payload,
       meta: { request_id: rid, degraded: degraded || undefined },
     },
     200,
-    { 'Access-Control-Allow-Origin': '*' },
+    {
+      'Access-Control-Allow-Origin': '*',
+      'X-Cache': cache ? 'MISS' : 'BYPASS',
+    },
   );
 }
