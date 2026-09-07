@@ -2,10 +2,12 @@
 
 select config_default('jobs.map_match_min_samples', '10');
 select config_default('jobs.map_match_min_confidence', '0.6');
+select config_default('jobs.map_match_default_radius_m', '25');
 
 insert into app_config_keys (key, value_schema, description, allowed_scopes, read_only) values
   ('jobs.map_match_min_samples', '{"type":"number","minimum":3,"maximum":500}', 'Minimum trip_location_samples before OSRM Match runs', array['global','city']::config_scope[], false),
-  ('jobs.map_match_min_confidence', '{"type":"number","minimum":0,"maximum":1}', 'Minimum OSRM Match confidence to persist matched_traces', array['global','city']::config_scope[], false)
+  ('jobs.map_match_min_confidence', '{"type":"number","minimum":0,"maximum":1}', 'Minimum OSRM Match confidence to persist matched_traces', array['global','city']::config_scope[], false),
+  ('jobs.map_match_default_radius_m', '{"type":"number","minimum":1,"maximum":200}', 'OSRM Match search radius (m) when trip_location_samples.accuracy_m is null', array['global','city']::config_scope[], false)
 on conflict (key) do nothing;
 
 create table job_runs (

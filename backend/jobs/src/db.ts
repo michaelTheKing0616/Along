@@ -54,10 +54,12 @@ export function createPgJobsDb(options?: PgJobsDbOptions): JobsDb {
       const { rows } = await pool.query<{
         min_samples: string;
         min_confidence: string;
+        default_radius_m: string;
       }>(
         `select
            cfg_num('jobs.map_match_min_samples', $1::uuid) as min_samples,
-           cfg_num('jobs.map_match_min_confidence', $1::uuid) as min_confidence`,
+           cfg_num('jobs.map_match_min_confidence', $1::uuid) as min_confidence,
+           cfg_num('jobs.map_match_default_radius_m', $1::uuid) as default_radius_m`,
         [cityId ?? null],
       );
       const row = rows[0];
@@ -69,7 +71,7 @@ export function createPgJobsDb(options?: PgJobsDbOptions): JobsDb {
           process.env.OSRM_URL ??
           '',
         osrmTimeoutMs: Number(process.env.OSRM_TIMEOUT_MS ?? '8000'),
-        defaultRadiusM: 25,
+        defaultRadiusM: Number(row?.default_radius_m ?? 25),
       } satisfies MapMatchJobConfig;
     },
 

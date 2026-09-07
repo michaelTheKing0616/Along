@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(7);
+select plan(8);
 
 select ok(
   to_regclass('public.job_runs') is not null,
@@ -34,6 +34,12 @@ select is(
   cfg_num('jobs.map_match_min_confidence'),
   0.6::numeric,
   'jobs.map_match_min_confidence default is 0.6'
+);
+
+select is(
+  cfg_num('jobs.map_match_default_radius_m'),
+  25::numeric,
+  'jobs.map_match_default_radius_m default is 25'
 );
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
@@ -86,7 +92,7 @@ insert into trips (
   id, journey_id, journey_sequence, rider_id, driver_id, mode_code, route_id,
   boarding_stage_id, alighting_stage_id,
   fare_quote_id, fare_shown, fare_currency, fare_tier, commission_rate,
-  id_signal_color, id_signal_shape, status, ended_at
+  id_signal_color, id_signal_shape, status, expires_at, accepted_at, ended_at
 ) values (
   '0f340000-0000-4000-8000-000000000001',
   '0f320000-0000-4000-8000-000000000001',
@@ -105,6 +111,8 @@ insert into trips (
   'green',
   'diamond',
   'completed',
+  now() + interval '25 seconds',
+  now() - interval '10 minutes',
   now()
 ) on conflict (id) do nothing;
 

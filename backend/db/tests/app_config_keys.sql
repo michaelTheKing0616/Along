@@ -143,7 +143,8 @@ with required_global as (
     'cache.graph_bundle_max_stages',
     'cache.graph_bundle_max_legs',
     'jobs.map_match_min_samples',
-    'jobs.map_match_min_confidence'
+    'jobs.map_match_min_confidence',
+    'jobs.map_match_default_radius_m'
   ]) as key
 ),
 missing_global as (

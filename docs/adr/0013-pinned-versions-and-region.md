@@ -34,6 +34,7 @@ Pin all toolchain versions at repo bootstrap. Upgrading a **major** version requ
 | ESLint | **9.28.0** | `backend/jobs`, `admin-console` |
 | typescript-eslint | **8.33.0** | `backend/jobs`, `admin-console` |
 | Vitest | **3.2.1** | `backend/jobs`, `admin-console` |
+| pg (Node Postgres client) | **8.13.1** | `backend/jobs/package.json` |
 | Style Dictionary | **4.3.3** | `shared/design-tokens` token build |
 
 ### Deno (Edge Functions)
