@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "map-match": "node --experimental-strip-types src/index.ts map-match"
+    "map-match": "node --experimental-strip-types src/index.ts map-match",
+    "speed-profiles": "node --experimental-strip-types src/index.ts speed-profiles"
   },
   "dependencies": {
     "pg": "8.13.1"

@@ -12,7 +12,7 @@ export type JobRunRecord = {
   status: 'running' | 'succeeded' | 'failed';
 };
 
-export type JobsDb = {
+export type MapMatchJobsDb = {
   beginJobRun(jobName: string, params?: Record<string, unknown>): Promise<JobRunRecord>;
   finishJobRun(
     jobRunId: string,
@@ -35,7 +35,7 @@ export type MapMatchStats = {
 };
 
 export type MapMatchDeps = {
-  db: JobsDb;
+  db: MapMatchJobsDb;
   osrm: {
     carMatch(samples: TraceSample[], defaultRadiusM: number): Promise<{
       confidence: number;
