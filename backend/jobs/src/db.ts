@@ -10,6 +10,16 @@ import type {
 import type { SpeedProfileAggregate } from './segment-observations.js';
 import type { MatchedTraceForSpeed } from './segment-observations.js';
 import type { SpeedProfilesJobConfig } from './speed-profiles.js';
+import type {
+  GeometryCorrectionInsert,
+  GeometryCorrectionsJobConfig,
+} from './geometry-corrections.js';
+import type {
+  MatchedTraceForInference,
+  RouteInferenceCandidateInsert,
+  RouteInferenceJobConfig,
+} from './route-inference.js';
+import type { MatchedTraceForGeometry } from './geometry-corrections.js';
 
 export type JobsDb = {
   beginJobRun(jobName: string, params?: Record<string, unknown>): Promise<JobRunRecord>;
@@ -26,6 +36,12 @@ export type JobsDb = {
   loadSpeedProfilesConfig(cityId?: string): Promise<SpeedProfilesJobConfig>;
   listMatchedTracesForSpeedProfiles(minConfidence: number): Promise<MatchedTraceForSpeed[]>;
   upsertSpeedProfiles(profiles: SpeedProfileAggregate[]): Promise<number>;
+  loadRouteInferenceConfig(cityId?: string): Promise<RouteInferenceJobConfig>;
+  listMatchedTracesForInference(minConfidence: number): Promise<MatchedTraceForInference[]>;
+  insertRouteInferenceCandidates(candidates: RouteInferenceCandidateInsert[]): Promise<number>;
+  loadGeometryCorrectionsConfig(cityId?: string): Promise<GeometryCorrectionsJobConfig>;
+  listMatchedTracesForGeometryCorrections(): Promise<MatchedTraceForGeometry[]>;
+  insertRoadGeometryCorrections(corrections: GeometryCorrectionInsert[]): Promise<number>;
 };
 
 const { Pool } = pg;
@@ -272,6 +288,203 @@ export function createPgJobsDb(options?: PgJobsDbOptions): JobsDb {
         upserted += rowCount ?? 0;
       }
       return upserted;
+    },
+
+    async loadRouteInferenceConfig(cityId) {
+      const { rows } = await pool.query<{
+        min_trips: string;
+        frechet_m: string;
+        min_confidence: string;
+      }>(
+        `select
+           cfg_num('inference.min_trips', $1::uuid) as min_trips,
+           cfg_num('inference.frechet_m', $1::uuid) as frechet_m,
+           cfg_num('jobs.map_match_min_confidence', $1::uuid) as min_confidence`,
+        [cityId ?? null],
+      );
+      const row = rows[0];
+      return {
+        minTrips: Number(row?.min_trips ?? 20),
+        frechetM: Number(row?.frechet_m ?? 150),
+        minConfidence: Number(row?.min_confidence ?? 0.6),
+      } satisfies RouteInferenceJobConfig;
+    },
+
+    async listMatchedTracesForInference(minConfidence) {
+      const { rows } = await pool.query<{
+        trip_id: string;
+        city_id: string;
+        mode_code: string;
+        confidence: string;
+        geometry: import('./types.js').GeoJsonLineString;
+        match_meta: Record<string, unknown> | null;
+      }>(
+        `select
+           t.id as trip_id,
+           j.city_id,
+           t.mode_code,
+           mt.confidence::text,
+           st_asgeojson(mt.geometry)::jsonb as geometry,
+           mt.match_meta
+         from matched_traces mt
+         join trips t on t.id = mt.trip_id
+         join journeys j on j.id = t.journey_id
+         where mt.actor_type = 'driver'
+           and mt.confidence >= $1
+           and st_npoints(mt.geometry::geometry) >= 2`,
+        [minConfidence],
+      );
+
+      return rows.map((row) => ({
+        tripId: row.trip_id,
+        cityId: row.city_id,
+        modeCode: row.mode_code,
+        confidence: Number(row.confidence),
+        geometryGeoJson: row.geometry as import('./types.js').GeoJsonLineString,
+        matchMeta: row.match_meta ?? {},
+      })) satisfies MatchedTraceForInference[];
+    },
+
+    async insertRouteInferenceCandidates(candidates) {
+      if (candidates.length === 0) return 0;
+
+      let inserted = 0;
+      for (const candidate of candidates) {
+        const { rowCount } = await pool.query(
+          `insert into route_inference_candidates (
+             city_id,
+             mode_code,
+             geometry,
+             origin_cluster,
+             destination_cluster,
+             supporting_trip_count,
+             status
+           )
+           select
+             $1,
+             $2,
+             st_geogfromgeojson($3),
+             st_setsrid(st_makepoint($4, $5), 4326)::geography,
+             st_setsrid(st_makepoint($6, $7), 4326)::geography,
+             $8,
+             'new'
+           where not exists (
+             select 1
+             from route_inference_candidates ric
+             where ric.city_id = $1
+               and ric.mode_code = $2
+               and ric.status = 'new'
+               and st_dwithin(
+                 ric.origin_cluster,
+                 st_setsrid(st_makepoint($4, $5), 4326)::geography,
+                 cfg_num('inference.frechet_m', $1::uuid)
+               )
+               and st_dwithin(
+                 ric.destination_cluster,
+                 st_setsrid(st_makepoint($6, $7), 4326)::geography,
+                 cfg_num('inference.frechet_m', $1::uuid)
+               )
+           )`,
+          [
+            candidate.cityId,
+            candidate.modeCode,
+            JSON.stringify(candidate.geometryGeoJson),
+            candidate.originLng,
+            candidate.originLat,
+            candidate.destinationLng,
+            candidate.destinationLat,
+            candidate.supportingTripCount,
+          ],
+        );
+        inserted += rowCount ?? 0;
+      }
+      return inserted;
+    },
+
+    async loadGeometryCorrectionsConfig(cityId) {
+      const { rows } = await pool.query<{
+        min_supporting_traces: string;
+        cluster_m: string;
+        min_confidence: string;
+      }>(
+        `select
+           cfg_num('geometry.min_supporting_traces', $1::uuid) as min_supporting_traces,
+           cfg_num('geometry.cluster_m', $1::uuid) as cluster_m,
+           cfg_num('jobs.map_match_min_confidence', $1::uuid) as min_confidence`,
+        [cityId ?? null],
+      );
+      const row = rows[0];
+      return {
+        minSupportingTraces: Number(row?.min_supporting_traces ?? 15),
+        clusterM: Number(row?.cluster_m ?? 20),
+        minConfidence: Number(row?.min_confidence ?? 0.6),
+      } satisfies GeometryCorrectionsJobConfig;
+    },
+
+    async listMatchedTracesForGeometryCorrections() {
+      const { rows } = await pool.query<{
+        trip_id: string;
+        city_id: string;
+        confidence: string;
+        match_meta: Record<string, unknown> | null;
+      }>(
+        `select
+           t.id as trip_id,
+           j.city_id,
+           mt.confidence::text,
+           mt.match_meta
+         from matched_traces mt
+         join trips t on t.id = mt.trip_id
+         join journeys j on j.id = t.journey_id
+         where mt.actor_type = 'driver'
+           and mt.match_meta is not null`,
+      );
+
+      return rows.map((row) => ({
+        tripId: row.trip_id,
+        cityId: row.city_id,
+        confidence: Number(row.confidence),
+        matchMeta: row.match_meta ?? {},
+      })) satisfies MatchedTraceForGeometry[];
+    },
+
+    async insertRoadGeometryCorrections(corrections) {
+      if (corrections.length === 0) return 0;
+
+      let inserted = 0;
+      for (const correction of corrections) {
+        const { rowCount } = await pool.query(
+          `insert into road_geometry_corrections (
+             city_id,
+             geometry,
+             supporting_trace_count,
+             status
+           )
+           select
+             $1,
+             st_geogfromgeojson($2),
+             $3,
+             'candidate'
+           where not exists (
+             select 1
+             from road_geometry_corrections rgc
+             where rgc.city_id = $1
+               and rgc.status = 'candidate'
+               and st_dwithin(
+                 rgc.geometry,
+                 st_geogfromgeojson($2),
+                 cfg_num('geometry.cluster_m', $1::uuid)
+               )
+           )`,
+          [
+            correction.cityId,
+            JSON.stringify(correction.geometryGeoJson),
+            correction.supportingTraceCount,
+          ],
+        );
+        inserted += rowCount ?? 0;
+      }
+      return inserted;
     },
   };
 }

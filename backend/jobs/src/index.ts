@@ -8,6 +8,22 @@ export { runMapMatchJob } from './map-match.js';
 export type { MapMatchDeps, MapMatchStats, JobRunRecord } from './map-match.js';
 export { runSpeedProfilesJob } from './speed-profiles.js';
 export type { SpeedProfilesDb, SpeedProfilesStats } from './speed-profiles.js';
+export { runRouteInferenceJob, clusterTracesForRouteInference } from './route-inference.js';
+export type {
+  RouteInferenceDb,
+  RouteInferenceStats,
+  MatchedTraceForInference,
+} from './route-inference.js';
+export {
+  runGeometryCorrectionsJob,
+  extractLowConfidenceSegments,
+  clusterGeometryCorrections,
+} from './geometry-corrections.js';
+export type {
+  GeometryCorrectionsDb,
+  GeometryCorrectionsStats,
+} from './geometry-corrections.js';
+export { discreteFrechetM } from './frechet.js';
 export { proposeFromTraces } from './propose-from-traces.js';
 export type { ProposeFromTracesInput, RawTraceInput } from './propose-from-traces.js';
 export {
@@ -32,6 +48,8 @@ import { createOsrmMatchClient } from './osrm-match.js';
 import { createPgJobsDb } from './db.js';
 import { runMapMatchJob } from './map-match.js';
 import { runSpeedProfilesJob } from './speed-profiles.js';
+import { runRouteInferenceJob } from './route-inference.js';
+import { runGeometryCorrectionsJob } from './geometry-corrections.js';
 
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
   const command = argv[0];
@@ -47,6 +65,18 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   if (command === 'speed-profiles') {
     const stats = await runSpeedProfilesJob(db);
     console.log(JSON.stringify({ job: 'speed-profiles', stats }));
+    return;
+  }
+
+  if (command === 'route-inference') {
+    const stats = await runRouteInferenceJob(db);
+    console.log(JSON.stringify({ job: 'route-inference', stats }));
+    return;
+  }
+
+  if (command === 'geometry-corrections') {
+    const stats = await runGeometryCorrectionsJob(db);
+    console.log(JSON.stringify({ job: 'geometry-corrections', stats }));
     return;
   }
 
