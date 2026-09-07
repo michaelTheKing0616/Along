@@ -1068,9 +1068,17 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Merged 235c680. Next: P5-A-02.
 
 ## [Phase 5 / P5-A-02] Women-only matching
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00052 — request_trip/hail_roaming women_only eligibility + regulatory_flags gating. TS-PLAN-07-request-enforcement 5/5; planner TS-PLAN-07 ok 6–7 still pass.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET. Note: TS-PLAN-v2 TS-PLAN-01/02 decompose 3/8 FAIL is pre-existing (planner/decompose, not this diff).
+- Rework count: 0
+- Notes/escalations: Merged 3e80c97. Residual planner decompose failures are not P5-A-02. Next: P5-A-03.
+
+## [Phase 5 / P5-A-03] Day planner itineraries
 - Status: IN PROGRESS
 - Assigned: 2026-09-07
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00052. Planner TS-PLAN-07 and admin_approve women_only_eligible already exist — close request_trip + regulatory_flags gaps.
+- Notes/escalations: Next migration 00053. parse-itinerary never writes. FM23: never imply booked.
