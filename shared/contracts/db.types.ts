@@ -109,6 +109,30 @@ export type Database = {
         }
         Relationships: []
       }
+      app_config_keys: {
+        Row: {
+          allowed_scopes: Database["public"]["Enums"]["config_scope"][]
+          description: string | null
+          key: string
+          read_only: boolean
+          value_schema: Json
+        }
+        Insert: {
+          allowed_scopes?: Database["public"]["Enums"]["config_scope"][]
+          description?: string | null
+          key: string
+          read_only?: boolean
+          value_schema: Json
+        }
+        Update: {
+          allowed_scopes?: Database["public"]["Enums"]["config_scope"][]
+          description?: string | null
+          key?: string
+          read_only?: boolean
+          value_schema?: Json
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
@@ -5162,6 +5186,36 @@ export type Database = {
       admin_presence_fanout: { Args: { p_city_id: string }; Returns: Json }
       admin_active_trips_map: { Args: { p_city_id: string }; Returns: Json }
       admin_presence_snapshot: { Args: { p_city_id: string }; Returns: Json }
+      admin_import_apply: {
+        Args: { p_city_id: string; p_diff: Json }
+        Returns: Json
+      }
+      admin_import_dry_run: {
+        Args: { p_city_id: string; p_csv: string }
+        Returns: Json
+      }
+      admin_deactivate_graph_entity: {
+        Args: { p_id: string; p_reason?: string; p_type: string }
+        Returns: Json
+      }
+      admin_publish_graph_entity: {
+        Args: { p_payload: Json; p_type: string }
+        Returns: Json
+      }
+      admin_set_config: {
+        Args: {
+          p_key: string
+          p_reason?: string
+          p_scope_id: string
+          p_scope_type: Database["public"]["Enums"]["config_scope"]
+          p_value: Json
+        }
+        Returns: Json
+      }
+      admin_update_graph_entity: {
+        Args: { p_payload: Json; p_type: string }
+        Returns: Json
+      }
       admin_publish_field_entity: {
         Args: { p_reconciliation_id: string }
         Returns: Json

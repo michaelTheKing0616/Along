@@ -115,12 +115,13 @@
     },
     "AdminSetConfigRequest": {
       "type": "object",
-      "required": ["key", "scope_type", "scope_id", "value"],
+      "required": ["key", "scope_type", "scope_id", "value", "reason"],
       "properties": {
         "key": { "type": "string" },
         "scope_type": { "type": "string" },
-        "scope_id": { "$ref": "../common.json#/$defs/Uuid" },
-        "value": {}
+        "scope_id": { "type": "string" },
+        "value": {},
+        "reason": { "type": "string", "minLength": 1 }
       }
     },
     "AdminCorridorAnalyticsRequest": {
