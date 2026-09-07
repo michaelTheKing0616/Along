@@ -14,6 +14,10 @@ export const notifyRequestSchema = z.discriminatedUnion('kind', [
     kind: z.literal('trip_request'),
     trip_id: z.string().uuid(),
   }),
+  z.object({
+    kind: z.literal('sos'),
+    sos_id: z.string().uuid(),
+  }),
 ]);
 
 export type NotifyRequest = z.infer<typeof notifyRequestSchema>;
@@ -23,11 +27,95 @@ type DeviceTokenRow = {
   platform: string;
 };
 
+type SafetyAdminRow = {
+  id: string;
+  phone_e164: string | null;
+};
+
 export type NotifyDeps = {
   service: SupabaseClient;
   realtime: RealtimeBroadcastClient;
   fcm: FcmClient;
+  log?: (entry: Record<string, unknown>) => void;
 };
+
+function phoneSuffix(phone: string | null | undefined): string {
+  if (!phone) return '????';
+  const digits = phone.replace(/\D/g, '');
+  return digits.slice(-4) || '????';
+}
+
+async function smsProvider(service: SupabaseClient): Promise<string> {
+  const { data, error } = await service.rpc('cfg', { p_key: 'sms.provider', p_city: null });
+  if (error) throw new Error(error.message);
+  if (typeof data === 'string') return data.replace(/^"|"$/g, '');
+  return String(data ?? 'log');
+}
+
+async function notifySafetyOnCall(
+  deps: NotifyDeps,
+  sosId: string,
+): Promise<{ fcm_sent: number; sms_sent: number }> {
+  const { data: admins, error: adminError } = await deps.service
+    .from('admin_users')
+    .select('id, profiles!inner(phone_e164)')
+    .in('role', ['safety', 'ops_lead'])
+    .is('disabled_at', null);
+
+  if (adminError) {
+    throw new Error(adminError.message);
+  }
+
+  const adminRows = (admins ?? []) as Array<{ id: string; profiles: { phone_e164: string | null } | { phone_e164: string | null }[] }>;
+  const safetyAdmins: SafetyAdminRow[] = adminRows.map((row) => {
+    const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+    return { id: row.id, phone_e164: profile?.phone_e164 ?? null };
+  });
+
+  let fcmSent = 0;
+  for (const admin of safetyAdmins) {
+    const { data: tokens, error: tokenError } = await deps.service
+      .from('device_tokens')
+      .select('token, platform')
+      .eq('profile_id', admin.id);
+
+    if (tokenError) {
+      throw new Error(tokenError.message);
+    }
+
+    for (const row of (tokens ?? []) as DeviceTokenRow[]) {
+      await deps.fcm.sendDataMessage({
+        token: row.token,
+        data: {
+          type: 'sos',
+          sos_id: sosId,
+        },
+        ttlSeconds: 300,
+        collapseKey: `sos_${sosId}`,
+        priority: 'high',
+      });
+      fcmSent += 1;
+    }
+  }
+
+  const provider = await smsProvider(deps.service);
+  let smsSent = 0;
+  for (const admin of safetyAdmins) {
+    if (!admin.phone_e164) continue;
+    if (provider === 'log') {
+      deps.log?.({
+        event: 'sms_sos_log',
+        provider,
+        sos_id: sosId,
+        admin_id: admin.id,
+        phone_suffix: phoneSuffix(admin.phone_e164),
+      });
+      smsSent += 1;
+    }
+  }
+
+  return { fcm_sent: fcmSent, sms_sent: smsSent };
+}
 
 async function tripDriverId(
   service: SupabaseClient,
@@ -122,7 +210,31 @@ export async function handleNotify(
     });
   }
 
-  return jsonResponse({ data: { kind: body.kind }, meta: { request_id: rid } });
+  if (body.kind === 'sos') {
+    const { data: sosRow, error: sosError } = await deps.service
+      .from('sos_alerts')
+      .select('id')
+      .eq('id', body.sos_id)
+      .single();
+
+    if (sosError || !sosRow) {
+      throw new Error('NOT_FOUND');
+    }
+
+    const delivery = await notifySafetyOnCall(deps, body.sos_id);
+
+    return jsonResponse({
+      data: {
+        kind: body.kind,
+        sos_id: body.sos_id,
+        fcm_sent: delivery.fcm_sent,
+        sms_sent: delivery.sms_sent,
+      },
+      meta: { request_id: rid },
+    });
+  }
+
+  throw new Error(`Unsupported notify kind`);
 }
 
 export function handleNotifyDefault(body: NotifyRequest): Promise<Response> {

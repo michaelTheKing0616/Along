@@ -1916,6 +1916,79 @@ export type Database = {
           },
         ]
       }
+      incidents: {
+        Row: {
+          assigned_to: string | null
+          attachment_paths: string[]
+          description: string | null
+          id: string
+          reported_at: string
+          reported_by: string
+          reported_role: string
+          resolution_note: string | null
+          resolved_at: string | null
+          severity: number
+          status: Database["public"]["Enums"]["incident_status"]
+          trip_id: string | null
+          type: Database["public"]["Enums"]["incident_type"]
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          attachment_paths?: string[]
+          description?: string | null
+          id?: string
+          reported_at?: string
+          reported_by: string
+          reported_role: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          severity?: number
+          status?: Database["public"]["Enums"]["incident_status"]
+          trip_id?: string | null
+          type: Database["public"]["Enums"]["incident_type"]
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          attachment_paths?: string[]
+          description?: string | null
+          id?: string
+          reported_at?: string
+          reported_by?: string
+          reported_role?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          severity?: number
+          status?: Database["public"]["Enums"]["incident_status"]
+          trip_id?: string | null
+          type?: Database["public"]["Enums"]["incident_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_reported_by_fkey"
+            columns: ["reported_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journey_transfer_walks: {
         Row: {
           after_trip_sequence: number
@@ -3310,6 +3383,83 @@ export type Database = {
           },
         ]
       }
+      sos_alerts: {
+        Row: {
+          accuracy_m: number | null
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          created_at: string
+          id: string
+          journey_id: string | null
+          location: unknown
+          raised_by: string
+          raised_role: string
+          resolution_note: string | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["sos_status"]
+          trip_id: string | null
+        }
+        Insert: {
+          accuracy_m?: number | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          created_at?: string
+          id?: string
+          journey_id?: string | null
+          location: unknown
+          raised_by: string
+          raised_role: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["sos_status"]
+          trip_id?: string | null
+        }
+        Update: {
+          accuracy_m?: number | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          created_at?: string
+          id?: string
+          journey_id?: string | null
+          location?: unknown
+          raised_by?: string
+          raised_role?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["sos_status"]
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sos_alerts_acknowledged_by_fkey"
+            columns: ["acknowledged_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sos_alerts_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sos_alerts_raised_by_fkey"
+            columns: ["raised_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sos_alerts_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       spatial_ref_sys: {
         Row: {
           auth_name: string | null
@@ -3820,6 +3970,57 @@ export type Database = {
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trip_shares: {
+        Row: {
+          contact_name: string | null
+          contact_phone_e164: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          journey_id: string
+          revoked_at: string | null
+          rider_id: string
+          token_hash: string
+        }
+        Insert: {
+          contact_name?: string | null
+          contact_phone_e164?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          journey_id: string
+          revoked_at?: string | null
+          rider_id: string
+          token_hash: string
+        }
+        Update: {
+          contact_name?: string | null
+          contact_phone_e164?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          journey_id?: string
+          revoked_at?: string | null
+          rider_id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_shares_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_shares_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
             referencedColumns: ["id"]
           },
         ]
@@ -5030,6 +5231,14 @@ export type Database = {
       }
       create_agent_code: { Args: { p_amount: number }; Returns: Json }
       create_payment_request: { Args: { p_trip_id: string }; Returns: Json }
+      create_trip_share: {
+        Args: {
+          p_contact_name?: string
+          p_contact_phone?: string
+          p_journey_id: string
+        }
+        Returns: Json
+      }
       current_profile_id: { Args: never; Returns: string }
       deactivate_route_profile: { Args: { p_id: string }; Returns: undefined }
       decay_confidence: { Args: never; Returns: undefined }
@@ -5505,6 +5714,15 @@ export type Database = {
         Returns: Json
       }
       qr_suggested_amounts: { Args: { p_driver_id: string }; Returns: Json }
+      raise_sos: {
+        Args: {
+          p_accuracy_m?: number
+          p_journey_id?: string
+          p_location?: Json
+          p_trip_id?: string
+        }
+        Returns: Json
+      }
       rate_trip: {
         Args: {
           p_comment?: string
@@ -5593,6 +5811,15 @@ export type Database = {
         Args: { p_payment_method_id: string }
         Returns: undefined
       }
+      report_incident: {
+        Args: {
+          p_attachment_paths?: string[]
+          p_description?: string
+          p_trip_id?: string
+          p_type?: string
+        }
+        Returns: Json
+      }
       request_qr_sticker: { Args: never; Returns: Json }
       request_trip: {
         Args: {
@@ -5638,6 +5865,7 @@ export type Database = {
         Args: { p_action: string; p_decline_reason?: string; p_trip_id: string }
         Returns: Json
       }
+      revoke_trip_share: { Args: { p_share_id: string }; Returns: Json }
       rider_no_show_review: { Args: never; Returns: undefined }
       rider_trip_broadcast_payload: {
         Args: { p_event_type: string; p_message?: string; p_trip_id: string }
@@ -5694,6 +5922,7 @@ export type Database = {
         }
         Returns: Json
       }
+      shared_trip_view: { Args: { p_token: string }; Returns: Json }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       sign_candidate_token: {
@@ -6384,6 +6613,7 @@ export type Database = {
         Returns: string[]
       }
       unlockrows: { Args: { "": string }; Returns: number }
+      update_sos: { Args: { p_sos_id: string }; Returns: Json }
       updategeometrysrid: {
         Args: {
           catalogn_name: string
@@ -6473,6 +6703,15 @@ export type Database = {
         | "rider_no_show_pattern"
       graph_verification: "candidate" | "crowd_verified" | "field_verified"
       guarantor_type: "fellow_driver" | "vehicle_owner"
+      incident_status: "open" | "triaged" | "resolved" | "dismissed"
+      incident_type:
+        | "safety"
+        | "fare_dispute"
+        | "vehicle_quality"
+        | "driver_behavior"
+        | "rider_behavior"
+        | "lost_item"
+        | "other"
       journey_status:
         | "planning"
         | "active"
@@ -6504,6 +6743,7 @@ export type Database = {
         | "agent_cash"
         | "bank_manual"
       settlement_status: "pending" | "confirmed" | "failed" | "expired"
+      sos_status: "open" | "acknowledged" | "resolved" | "false_alarm"
       source_type:
         | "field_agent"
         | "driver_declared"
@@ -6720,6 +6960,16 @@ export const Constants = {
       ],
       graph_verification: ["candidate", "crowd_verified", "field_verified"],
       guarantor_type: ["fellow_driver", "vehicle_owner"],
+      incident_status: ["open", "triaged", "resolved", "dismissed"],
+      incident_type: [
+        "safety",
+        "fare_dispute",
+        "vehicle_quality",
+        "driver_behavior",
+        "rider_behavior",
+        "lost_item",
+        "other",
+      ],
       journey_status: [
         "planning",
         "active",
@@ -6755,6 +7005,7 @@ export const Constants = {
         "bank_manual",
       ],
       settlement_status: ["pending", "confirmed", "failed", "expired"],
+      sos_status: ["open", "acknowledged", "resolved", "false_alarm"],
       source_type: [
         "field_agent",
         "driver_declared",
