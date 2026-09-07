@@ -1378,3 +1378,27 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: FAIL at MAX_REWORK. See prior entry for the exact 00060 guard fix.
 - Rework count: 2
 - Notes/escalations: Grant a third rework (same branch, Reviewer fix only) or rewrite the service-role path without SECURITY DEFINER current_user. Do not merge as-is. Do not flip digital_enabled. P7-A-01 does not depend on this task and can start after a human grant; P9-A-01 depends on P7-E-01 PASS. Session STOP per AUTOPILOT §6 MAX_REWORK.
+
+## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: Rework 3 — removed current_user postgres bypass from wrappers. Anon wrappers 401; CLI 20 creates; TS-CORRIDOR-01 6/6.
+- Reviewer verdict: FAIL — wrappers guarded, but _corridor_import_* SECURITY DEFINER + PUBLIC EXECUTE still allowed anon apply.
+- Rework count: 3
+- Notes/escalations: Auto-retry (owner: exact-fix FAILs). Revoke PUBLIC/anon/authenticated on helpers; optional guards.
+
+## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Rework 4 — helpers postgres-only execute + defense-in-depth guards. Anon 401 / non-admin 403 on all four RPCs. CLI creates 20. TS-CORRIDOR-01 6/6.
+- Reviewer verdict: PASS WITH NOTES — prior security fail closed. Notes: wrapper PUBLIC grant still present (guards hold); full pgTAP not re-run this review.
+- Rework count: 4
+- Notes/escalations: Merged 8298579. Next: P7-A-01. Do not flip digital_enabled. Human ops sign-off on corridor runbook remains deferred.
+
+## [Phase 7 / P7-A-01] graph-bundle + plan-trip cache
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P2-A-01 PASS. Attach 07 §4, 03 §3. AC: cache hit ratio reported; correctness tests unchanged. TTL via app_config not literal 60. Do not redo planner. Do not flip digital_enabled.
