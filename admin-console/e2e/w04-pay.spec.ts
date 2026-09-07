@@ -1,8 +1,8 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { test, expect } from '@playwright/test';
-import pdf from 'pdf-parse/lib/pdf-parse.js';
 import { E2E_CITY } from './global-setup';
+import { extractPdfKitText } from './pdf-text';
 import { signInAs } from './helpers';
 
 const DATABASE_URL =
@@ -89,20 +89,32 @@ test.describe('A-13 sticker batch PDF', () => {
     await signInAs(page, FINANCE_USER, { landing: `/${E2E_CITY}/finance` });
     await page.getByTestId(`sticker-select-${DRIVER_CODE}`).check();
 
-    const exportResponsePromise = page.waitForResponse(
-      (res) => res.url().includes('/api/finance/sticker-batch') && res.status() === 200
-    );
-    await page.getByTestId('export-sticker-batch').click();
-    const exportResponse = await exportResponsePromise;
-    const pdfBytes = Buffer.from(await exportResponse.body());
-    const parsed = await pdf(pdfBytes);
+    let pdfBytes: Buffer | null = null;
+    await page.route('**/api/finance/sticker-batch', async (route) => {
+      if (route.request().method() !== 'POST') {
+        await route.continue();
+        return;
+      }
+      const response = await route.fetch();
+      pdfBytes = Buffer.from(await response.body());
+      await route.fulfill({ response });
+    });
 
-    expect(parsed.text).toContain(PLATE);
-    expect(parsed.text).toContain(DRIVER_CODE);
-    expect(parsed.text).toContain('STAGING');
-    expect(pdfBytes.length).toBeGreaterThan(500);
-    expect(pdfBytes.subarray(0, 4).toString()).toBe('%PDF');
-    expect(pdfBytes.toString('latin1')).toMatch(/\/Image|\/XObject/);
+    await page.getByTestId('export-sticker-batch').click();
+    await expect(page.getByText('Sticker batch PDF downloaded (preview).')).toBeVisible({
+      timeout: 15_000,
+    });
+
+    expect(pdfBytes).not.toBeNull();
+    const bytes = pdfBytes as Buffer;
+    const parsedText = extractPdfKitText(bytes);
+
+    expect(parsedText).toContain(PLATE);
+    expect(parsedText).toContain(DRIVER_CODE);
+    expect(parsedText).toContain('STAGING');
+    expect(bytes.length).toBeGreaterThan(500);
+    expect(bytes.subarray(0, 4).toString()).toBe('%PDF');
+    expect(bytes.toString('latin1')).toMatch(/\/Image|\/XObject/);
   });
 });
 

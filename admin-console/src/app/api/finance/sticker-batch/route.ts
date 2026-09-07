@@ -86,7 +86,7 @@ export async function POST(request: Request) {
 
   const pdf = await renderStickerBatchPdf(labels, origin);
 
-  return new NextResponse(pdf, {
+  return new NextResponse(new Uint8Array(pdf), {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',

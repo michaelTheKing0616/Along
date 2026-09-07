@@ -216,3 +216,29 @@ create policy qr_sticker_requests_select_admin
       select d.city_id from drivers d where d.id = driver_id
     ))
   );
+
+-- A-13 sticker batch PDF: finance joins driver_vehicles for plate labels
+drop policy if exists driver_vehicles_select_admin on driver_vehicles;
+create policy driver_vehicles_select_admin
+  on driver_vehicles for select to authenticated
+  using (
+    is_admin()
+    and exists (
+      select 1 from drivers d
+      where d.id = driver_vehicles.driver_id
+        and admin_can_access_city(d.city_id)
+    )
+  );
+
+-- A-13 sticker batch PDF: finance joins driver_vehicles for plate labels
+drop policy if exists driver_vehicles_select_admin on driver_vehicles;
+create policy driver_vehicles_select_admin
+  on driver_vehicles for select to authenticated
+  using (
+    is_admin()
+    and exists (
+      select 1 from drivers d
+      where d.id = driver_vehicles.driver_id
+        and admin_can_access_city(d.city_id)
+    )
+  );

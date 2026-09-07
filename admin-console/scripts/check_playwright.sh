@@ -59,18 +59,44 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-w04-pay.sql"
 chmod +x "$ADMIN/e2e/seed-verification-storage.sh"
 "$ADMIN/e2e/seed-verification-storage.sh"
 
+echo "Reloading PostgREST schema cache..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c "NOTIFY pgrst, 'reload schema';"
+sleep 2
+
+LOCAL_SUPABASE_URL="http://127.0.0.1:54321"
+LOCAL_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
+echo "Verifying resolve_qr_driver RPC via PostgREST..."
+RPC_OK=0
+for _ in $(seq 1 15); do
+  if curl -sf "${LOCAL_SUPABASE_URL}/rest/v1/rpc/resolve_qr_driver" \
+    -H "apikey: ${LOCAL_ANON_KEY}" \
+    -H "Authorization: Bearer ${LOCAL_ANON_KEY}" \
+    -H "Content-Type: application/json" \
+    -d '{"p_driver_code":"W04TEST1"}' \
+    | grep -q '"first_name"'; then
+    RPC_OK=1
+    break
+  fi
+  sleep 1
+done
+if [ "$RPC_OK" -ne 1 ]; then
+  echo "FAIL: resolve_qr_driver not available in PostgREST schema cache after reload."
+  exit 1
+fi
+echo "PostgREST resolve_qr_driver RPC OK."
+
 echo "Running Playwright E2E..."
 cd "$ADMIN"
-# E2E always targets local Supabase (overrides .env.local remote project).
-export NEXT_PUBLIC_SUPABASE_URL="http://127.0.0.1:54321"
-export NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
-export DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 if [ -f "$ADMIN/.env.local" ]; then
   set -a
   # shellcheck disable=SC1091
   source "$ADMIN/.env.local"
   set +a
 fi
+# E2E always targets local Supabase (overrides .env.local remote project).
+export NEXT_PUBLIC_SUPABASE_URL="$LOCAL_SUPABASE_URL"
+export NEXT_PUBLIC_SUPABASE_ANON_KEY="$LOCAL_ANON_KEY"
+export DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 pnpm build
 pnpm test:e2e:setup
 
