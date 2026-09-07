@@ -4,13 +4,6 @@ create extension if not exists pgtap;
 begin;
 select plan(4);
 
-insert into deployments (id, tenant_name)
-values ('f9000000-0000-4000-8000-000000000001', 'City Admin Scope Tenant');
-
-insert into countries (code, name, currency_code, currency_symbol, phone_prefix, timezone, deployment_id, active)
-values
-  ('NG', 'Nigeria', 'NGN', E'₦', '+234', 'Africa/Lagos', 'f9000000-0000-4000-8000-000000000001', true);
-
 insert into cities (id, country_code, name, slug, centroid, status)
 values
   (
@@ -33,13 +26,18 @@ values
 insert into auth.users (id, aud, role, phone) values
   ('f9200000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', '+2348000009001'),
   ('f9200000-0000-4000-8000-000000000002', 'authenticated', 'authenticated', '+2348000009002'),
-  ('f9200000-0000-4000-8000-000000000003', 'authenticated', 'authenticated', '+2348000009003');
+  ('f9200000-0000-4000-8000-000000000003', 'authenticated', 'authenticated', '+2348000009003'),
+  ('f9200000-0000-4000-8000-000000000010', 'authenticated', 'authenticated', '+2348000009010'),
+  ('f9200000-0000-4000-8000-000000000011', 'authenticated', 'authenticated', '+2348000009011');
 
 insert into profiles (id, phone_e164, display_name) values
   ('f9200000-0000-4000-8000-000000000002', '+2348000009002', 'Alpha Driver'),
   ('f9200000-0000-4000-8000-000000000003', '+2348000009003', 'Beta Driver'),
   ('f9200000-0000-4000-8000-000000000010', '+2348000009010', 'Alpha Rider'),
-  ('f9200000-0000-4000-8000-000000000011', '+2348000009011', 'Beta Rider');
+  ('f9200000-0000-4000-8000-000000000011', '+2348000009011', 'Beta Rider')
+on conflict (id) do update set
+  phone_e164 = excluded.phone_e164,
+  display_name = excluded.display_name;
 
 insert into riders (id) values
   ('f9200000-0000-4000-8000-000000000010'),
@@ -79,6 +77,7 @@ values
 
 select set_config('request.jwt.claim.sub', 'f9200000-0000-4000-8000-000000000001', true);
 select set_config('request.jwt.claim.role', 'authenticated', true);
+set local role authenticated;
 
 select is(
   (select count(*)::int from drivers where city_id = 'f9100000-0000-4000-8000-000000000001'),
@@ -104,5 +103,6 @@ select is(
   'city_admin cannot read journeys in another city'
 );
 
+reset role;
 select * from finish();
 rollback;

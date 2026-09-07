@@ -94,7 +94,7 @@
 ## city_admin RLS verification
 
 - **Migration:** `00000000000073_city_admin_scope_and_public_geo.sql`
-- **Test:** `backend/db/tests/TS-CITY-ADMIN-01-scope.sql`
+- **Test:** `backend/db/tests/TS-CITY-ADMIN-01-scope.sql` (CI-runnable: reuses seeded `NG`, `set local role authenticated` for RLS assertions)
 - **Proves:** `city_admin` with `city_scope=[Alpha]` reads Alpha drivers/journeys only; Beta rows return 0
 
 ## TS-CFG-01
