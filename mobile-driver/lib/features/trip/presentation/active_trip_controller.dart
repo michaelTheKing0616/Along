@@ -194,6 +194,19 @@ class ActiveTripController
     }
   }
 
+  Future<void> releaseMatch() async {
+    state = state.copyWith(isSubmitting: true, clearError: true);
+    try {
+      final summary =
+          await ref.read(tripsRepositoryProvider).releaseMatch(arg.tripId);
+      await _locationPublisher?.stop();
+      state = state.copyWith(trip: summary, isSubmitting: false, clearError: true);
+      await _syncLocationPublisher(summary.status);
+    } catch (e) {
+      state = state.copyWith(isSubmitting: false, errorMessage: e.toString());
+    }
+  }
+
   void stopLocationPublisher() {
     unawaited(_locationPublisher?.stop());
   }

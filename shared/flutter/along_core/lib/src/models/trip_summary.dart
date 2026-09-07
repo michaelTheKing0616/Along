@@ -1,3 +1,4 @@
+import 'package:along_core/src/enums/trip_approach_band.dart';
 import 'package:along_core/src/enums/trip_status.dart';
 import 'package:along_core/src/models/fare_quote.dart';
 import 'package:along_core/src/models/na_me_pairing.dart';
@@ -6,6 +7,7 @@ import 'package:along_core/src/models/trip_live.dart';
 import 'package:along_core/src/models/trip_load.dart';
 import 'package:along_core/src/models/trip_party.dart';
 import 'package:along_core/src/models/trip_stop.dart';
+import 'package:along_core/src/models/trip_wait.dart';
 import 'package:along_core/src/value/money.dart';
 
 /// Lightweight trip view for client state and offline cache.
@@ -47,6 +49,8 @@ class TripSummary {
     this.etaMinutes,
     this.pendingExtension,
     this.paymentMethod,
+    this.approachBand,
+    this.wait,
   });
 
   final String tripId;
@@ -72,6 +76,8 @@ class TripSummary {
   final int? etaMinutes;
   final TripExtensionProposal? pendingExtension;
   final String? paymentMethod;
+  final TripApproachBand? approachBand;
+  final TripWaitInfo? wait;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||

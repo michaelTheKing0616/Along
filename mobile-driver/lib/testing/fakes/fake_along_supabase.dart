@@ -83,6 +83,8 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(Map<String, dynamic> params)? onProposeExtension;
   void Function(Map<String, dynamic> params)? onRespondExtension;
   void Function(String tripId)? onMarkBoarded;
+  void Function(String tripId)? onReleaseMatch;
+  void Function(String tripId)? onCancelTrip;
 
   static Map<String, dynamic> defaultDriverBalanceResponse() => {
         'balance': {'amount': '0.00', 'currency': 'NGN'},
@@ -105,6 +107,7 @@ class FakeAlongSupabase implements AlongSupabase {
 
   List<Map<String, dynamic>> manifestEntries = [];
   final Map<String, String> tripStatuses = {};
+  final Map<String, Map<String, dynamic>> tripWaitById = {};
   List<Map<String, dynamic>> routeProfiles;
   Map<String, dynamic>? suggestedRoute;
   List<Map<String, dynamic>> placesSearchResults;
@@ -261,7 +264,23 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'trip_snapshot') {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
       final status = tripStatuses[tripId] ?? 'accepted';
-      return sampleTripView(tripId: tripId, status: status);
+      return sampleTripView(
+        tripId: tripId,
+        status: status,
+        wait: tripWaitById[tripId],
+      );
+    }
+    if (fn == 'release_match') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      onReleaseMatch?.call(tripId);
+      tripStatuses[tripId] = 'released_before_arrival';
+      return sampleTripView(tripId: tripId, status: 'released_before_arrival');
+    }
+    if (fn == 'cancel_trip') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      onCancelTrip?.call(tripId);
+      tripStatuses[tripId] = 'cancelled';
+      return sampleTripView(tripId: tripId, status: 'cancelled');
     }
     if (fn == 'driver_manifest') {
       if (manifestEntries.isNotEmpty) return manifestEntries;
@@ -451,7 +470,11 @@ class FakeAlongSupabase implements AlongSupabase {
     required String status,
     bool loadFlagged = false,
     String paymentMethod = 'cash',
+    String? approachBand,
+    Map<String, dynamic>? wait,
   }) {
+    final isRequested = status == 'requested';
+    final isAccepted = status == 'accepted';
     return {
       'trip_id': tripId,
       'journey_id': 'j1',
@@ -508,12 +531,22 @@ class FakeAlongSupabase implements AlongSupabase {
       'expires_at': '2026-09-05T14:00:00Z',
       'timestamps': {},
       'payment_method': paymentMethod,
+      if (isRequested)
+        'approach_band': approachBand ?? 'under_2',
+      if (isAccepted)
+        'wait': wait ??
+            {
+              'walk_eta_s': 180,
+              'approach': 'approaching',
+              'updated_at': '2026-09-05T13:30:00Z',
+            },
     };
   }
 
   Map<String, dynamic> sampleTripRequestEnvelope({
     String tripId = 'trip-1',
     bool loadFlagged = true,
+    String approachBand = 'under_2',
   }) {
     return {
       'type': 'trip_request',
@@ -522,6 +555,7 @@ class FakeAlongSupabase implements AlongSupabase {
         tripId: tripId,
         status: 'requested',
         loadFlagged: loadFlagged,
+        approachBand: approachBand,
       ),
     };
   }

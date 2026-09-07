@@ -14,6 +14,16 @@ export interface AdminRejectVerificationRequest {
   reason: string;
 }
 
+/** admin.json → AdminLogViewDocumentRequest */
+export interface AdminLogViewDocumentRequest {
+  p_verification_id: string;
+}
+
+/** admin.json → AdminCheckIdentityDuplicateRequest */
+export interface AdminCheckIdentityDuplicateRequest {
+  p_verification_id: string;
+}
+
 /** admin.json → AdminReviewFareCorrectionRequest */
 export interface AdminReviewFareCorrectionRequest {
   id: string;
@@ -126,6 +136,7 @@ export interface AmbientCell {
   heading_sectors: [number, number, number, number, number, number, number, number];
   serves_destination: boolean;
   eta_band_s: number;
+  candidate_token?: string;
 }
 
 /** ambient.json → AmbientVehiclesResponse */
@@ -151,6 +162,7 @@ export interface AmbientVehiclesResponse {
     heading_sectors: [number, number, number, number, number, number, number, number];
     serves_destination: boolean;
     eta_band_s: number;
+    candidate_token?: string;
   }[];
 }
 

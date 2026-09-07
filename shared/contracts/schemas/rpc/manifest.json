@@ -36,6 +36,7 @@
     { "name": "hail_roaming", "tier": "B", "request": "trips.json#/$defs/HailRoamingRequest", "response": "common.json#/$defs/TripView" },
     { "name": "respond_to_trip", "tier": "B", "request": "trips.json#/$defs/RespondToTripRequest", "response": "common.json#/$defs/TripView" },
     { "name": "cancel_trip", "tier": "B", "request": "trips.json#/$defs/CancelTripRequest", "response": "common.json#/$defs/TripView" },
+    { "name": "release_match", "tier": "B", "request": "trips.json#/$defs/TripSnapshotRequest", "response": "common.json#/$defs/TripView" },
     { "name": "open_negotiation", "tier": "B-pending", "request": "trips.json#/$defs/OpenNegotiationRequest", "response": "trips.json#/$defs/OpenNegotiationResponse" },
     { "name": "negotiation_round", "tier": "B-pending", "request": "trips.json#/$defs/NegotiationRoundRequest" },
     { "name": "negotiation_split", "tier": "B-pending", "request": "trips.json#/$defs/NegotiationSplitRequest" },

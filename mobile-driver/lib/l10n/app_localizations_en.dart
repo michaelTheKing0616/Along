@@ -457,6 +457,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get incomingRequestWomenOnly => 'Women-only match';
 
   @override
+  String get incomingRequestApproachBandUnder2 => 'under 2 min';
+
+  @override
+  String get incomingRequestApproachBandM2_5 => '2–5 min';
+
+  @override
+  String get incomingRequestApproachBandOver5 => '5+ min';
+
+  @override
   String get incomingRequestAccept => 'Accept';
 
   @override
@@ -540,6 +549,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String activeTripBoardAlight(String board, String alight) {
     return '$board → $alight';
   }
+
+  @override
+  String activeTripWalkEta(int minutes) {
+    return '$minutes min walk';
+  }
+
+  @override
+  String get activeTripStalledCaption => 'not moving closer';
+
+  @override
+  String get activeTripRelease => 'Release';
 
   @override
   String get sosPlaceholder => 'SOS will connect in a future release';

@@ -1,4 +1,4 @@
-import 'package:along_core/along_core.dart' show TripStatus, TripSummary, computeAlongCommission, formatMoney;
+import 'package:along_core/along_core.dart' show TripStatus, TripSummary, TripWaitApproach, computeAlongCommission, formatMoney;
 import 'package:along_design/along_design.dart' hide formatMoney;
 import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
@@ -117,6 +117,22 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             l10n.activeTripBoardAlight(boardName, alightName),
                             style: AlongText.body,
                           ),
+                          if (trip?.wait != null) ...[
+                            const SizedBox(height: AlongSpace.s8),
+                            Text(
+                              l10n.activeTripWalkEta(trip!.wait!.walkEtaMinutes),
+                              key: const Key('active_trip_walk_eta'),
+                              style: AlongText.numericM,
+                            ),
+                            if (trip.wait!.approach == TripWaitApproach.stalled)
+                              Text(
+                                l10n.activeTripStalledCaption,
+                                key: const Key('active_trip_stalled_caption'),
+                                style: AlongText.caption.copyWith(
+                                  color: AlongColors.semanticWarning,
+                                ),
+                              ),
+                          ],
                           if (naMe != null &&
                               (status == TripStatus.accepted ||
                                   status == TripStatus.boarded ||
@@ -166,6 +182,20 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             ),
                           ],
                           const SizedBox(height: AlongSpace.s16),
+                          if (status == TripStatus.accepted) ...[
+                            AlongButton(
+                              key: const Key('active_trip_release'),
+                              label: l10n.activeTripRelease,
+                              variant: AlongButtonVariant.secondary,
+                              visualState: state.isSubmitting
+                                  ? AlongButtonVisualState.loading
+                                  : AlongButtonVisualState.normal,
+                              onPressed: state.isSubmitting
+                                  ? null
+                                  : () => controller.releaseMatch(),
+                            ),
+                            const SizedBox(height: AlongSpace.s8),
+                          ],
                           if (status == TripStatus.accepted ||
                               status == TripStatus.transfer)
                             AlongButton(
