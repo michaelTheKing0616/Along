@@ -1458,3 +1458,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-A-02 PASS. Attach 04 §14–15. AC: TS-GRAPH-08; simulated undeclared corridor yields reviewable route candidate. FM27 matched traces only. Do not redo speed-profiles. Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-04] route-inference + geometry-corrections
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00064 candidate tables; route-inference + geometry-corrections jobs; cluster_candidate_parks + pg_cron. TS-GRAPH-08 7/7; TS-JOBS-03 8/8; vitest 19/19.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: jobs CLI-only (no cron); idle 0.5 m/s + UTM 32631 hardcoded in SQL.
+- Rework count: 0
+- Notes/escalations: Merged this commit. Next: P7-D-01. Do not flip digital_enabled.
+
+## [Phase 7 / P7-D-01] A-14 Intelligence review
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-A-04 PASS. Attach 06 A-14. AC: Promote creates candidate rows with provenance; audit. Implement the three Phase 7 GAP RPCs. Do not flip digital_enabled.
