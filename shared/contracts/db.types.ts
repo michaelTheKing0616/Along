@@ -1989,6 +1989,107 @@ export type Database = {
           },
         ]
       }
+      itineraries: {
+        Row: {
+          created_at: string
+          id: string
+          load_flagged: boolean
+          load_note: string | null
+          load_size: Database["public"]["Enums"]["load_size"] | null
+          plan_date: string
+          rider_id: string
+          status: Database["public"]["Enums"]["itinerary_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          load_flagged?: boolean
+          load_note?: string | null
+          load_size?: Database["public"]["Enums"]["load_size"] | null
+          plan_date?: string
+          rider_id: string
+          status?: Database["public"]["Enums"]["itinerary_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          load_flagged?: boolean
+          load_note?: string | null
+          load_size?: Database["public"]["Enums"]["load_size"] | null
+          plan_date?: string
+          rider_id?: string
+          status?: Database["public"]["Enums"]["itinerary_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itineraries_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_stops: {
+        Row: {
+          created_at: string
+          destination_description: string
+          destination_location: unknown
+          id: string
+          itinerary_id: string
+          linked_journey_id: string | null
+          prepared_plan: Json | null
+          sequence: number
+          status: Database["public"]["Enums"]["stop_status"]
+          target_time: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          destination_description: string
+          destination_location?: unknown
+          id?: string
+          itinerary_id: string
+          linked_journey_id?: string | null
+          prepared_plan?: Json | null
+          sequence: number
+          status?: Database["public"]["Enums"]["stop_status"]
+          target_time?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          destination_description?: string
+          destination_location?: unknown
+          id?: string
+          itinerary_id?: string
+          linked_journey_id?: string | null
+          prepared_plan?: Json | null
+          sequence?: number
+          status?: Database["public"]["Enums"]["stop_status"]
+          target_time?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_stops_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itinerary_stops_linked_journey_id_fkey"
+            columns: ["linked_journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journey_transfer_walks: {
         Row: {
           after_trip_sequence: number
@@ -2108,6 +2209,13 @@ export type Database = {
             columns: ["rider_id"]
             isOneToOne: false
             referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journeys_stop_fk"
+            columns: ["itinerary_stop_id"]
+            isOneToOne: false
+            referencedRelation: "itinerary_stops"
             referencedColumns: ["id"]
           },
         ]
@@ -4518,6 +4626,26 @@ export type Database = {
         Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
         Returns: undefined
       }
+      _assert_driver_women_only_eligible: {
+        Args: { p_driver_id: string; p_women_only: boolean }
+        Returns: undefined
+      }
+      _assert_women_only_regulatory: {
+        Args: { p_city_id: string; p_women_only: boolean }
+        Returns: undefined
+      }
+      _build_itinerary_prepared_plan: {
+        Args: {
+          p_city_id: string
+          p_dest_lat: number
+          p_dest_lng: number
+          p_filters?: Json
+          p_origin_lat: number
+          p_origin_lng: number
+          p_rider_id: string
+        }
+        Returns: Json
+      }
       _candidate_token_payload: {
         Args: { p_driver_id: string; p_exp: number; p_session_id: string }
         Returns: string
@@ -4558,10 +4686,45 @@ export type Database = {
         }
         Returns: Record<string, unknown>
       }
+      _geo_point_json: { Args: { p_point: unknown }; Returns: Json }
       _get: { Args: { "": string }; Returns: number }
       _get_latest: { Args: { "": string }; Returns: number[] }
       _get_note: { Args: { "": string }; Returns: string }
       _is_verbose: { Args: never; Returns: boolean }
+      _itinerary_next_pending_stop: {
+        Args: { p_after_sequence?: number; p_itinerary_id: string }
+        Returns: {
+          created_at: string
+          destination_description: string
+          destination_location: unknown
+          id: string
+          itinerary_id: string
+          linked_journey_id: string | null
+          prepared_plan: Json | null
+          sequence: number
+          status: Database["public"]["Enums"]["stop_status"]
+          target_time: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "itinerary_stops"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      _itinerary_origin_for_stop: {
+        Args: {
+          p_itinerary_id: string
+          p_stop: Database["public"]["Tables"]["itinerary_stops"]["Row"]
+        }
+        Returns: unknown
+      }
+      _itinerary_state_json: { Args: { p_itinerary_id: string }; Returns: Json }
+      _itinerary_stop_row_json: {
+        Args: { p_stop: Database["public"]["Tables"]["itinerary_stops"]["Row"] }
+        Returns: Json
+      }
       _journey_plan_leg: {
         Args: { p_journey_id: string; p_leg_index: number }
         Returns: Json
@@ -4788,19 +4951,34 @@ export type Database = {
           vehicle_id: string
         }[]
       }
-      _resolve_trip_driver: {
-        Args: {
-          p_candidate: Json
-          p_city_id: string
-          p_leg: Json
-          p_source: string
-        }
-        Returns: {
-          driver_id: string
-          profile_id: string
-          vehicle_id: string
-        }[]
-      }
+      _resolve_trip_driver:
+        | {
+            Args: {
+              p_candidate: Json
+              p_city_id: string
+              p_leg: Json
+              p_source: string
+            }
+            Returns: {
+              driver_id: string
+              profile_id: string
+              vehicle_id: string
+            }[]
+          }
+        | {
+            Args: {
+              p_candidate: Json
+              p_city_id: string
+              p_leg: Json
+              p_source: string
+              p_women_only?: boolean
+            }
+            Returns: {
+              driver_id: string
+              profile_id: string
+              vehicle_id: string
+            }[]
+          }
       _rider_fare_confirm_source: { Args: never; Returns: string }
       _route_leg_ids_between: {
         Args: {
@@ -5230,6 +5408,10 @@ export type Database = {
         Returns: number
       }
       create_agent_code: { Args: { p_amount: number }; Returns: Json }
+      create_itinerary: {
+        Args: { p_load?: Json; p_stops: Json }
+        Returns: Json
+      }
       create_payment_request: { Args: { p_trip_id: string }; Returns: Json }
       create_trip_share: {
         Args: {
@@ -5486,6 +5668,9 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       is_empty: { Args: { "": string }; Returns: string }
       isnt_empty: { Args: { "": string }; Returns: string }
+      itinerary_match_next: { Args: { p_itinerary_id: string }; Returns: Json }
+      itinerary_prepare_context: { Args: { p_trip_id: string }; Returns: Json }
+      itinerary_state: { Args: { p_itinerary_id: string }; Returns: Json }
       ledger_post: {
         Args: {
           p_actor_id?: string
@@ -6536,6 +6721,10 @@ export type Database = {
         }[]
       }
       start_trip: { Args: { p_trip_id: string }; Returns: Json }
+      store_itinerary_prepared_plan: {
+        Args: { p_prepared_plan: Json; p_stop_id: string }
+        Returns: undefined
+      }
       store_transfer_walk_prefetch: {
         Args: { p_directions: Json; p_trip_id: string }
         Returns: undefined
@@ -6613,6 +6802,10 @@ export type Database = {
         Returns: string[]
       }
       unlockrows: { Args: { "": string }; Returns: number }
+      update_itinerary_stops: {
+        Args: { p_itinerary_id: string; p_ops: Json }
+        Returns: Json
+      }
       update_sos: { Args: { p_sos_id: string }; Returns: Json }
       updategeometrysrid: {
         Args: {
@@ -6668,6 +6861,10 @@ export type Database = {
         Args: { p_fares: number[]; p_weights: number[] }
         Returns: number
       }
+      women_only_matching_enabled: {
+        Args: { p_city_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       actor_type: "rider" | "driver" | "system" | "admin"
@@ -6712,6 +6909,7 @@ export type Database = {
         | "rider_behavior"
         | "lost_item"
         | "other"
+      itinerary_status: "active" | "completed" | "abandoned"
       journey_status:
         | "planning"
         | "active"
@@ -6754,6 +6952,7 @@ export type Database = {
         | "pricing_negotiation"
         | "admin"
         | "import"
+      stop_status: "pending" | "in_progress" | "completed" | "skipped"
       trace_quality: "none" | "partial" | "good"
       trip_status:
         | "requested"
@@ -6970,6 +7169,7 @@ export const Constants = {
         "lost_item",
         "other",
       ],
+      itinerary_status: ["active", "completed", "abandoned"],
       journey_status: [
         "planning",
         "active",
@@ -7017,6 +7217,7 @@ export const Constants = {
         "admin",
         "import",
       ],
+      stop_status: ["pending", "in_progress", "completed", "skipped"],
       trace_quality: ["none", "partial", "good"],
       trip_status: [
         "requested",

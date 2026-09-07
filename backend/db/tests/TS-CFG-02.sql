@@ -113,6 +113,7 @@ with required_global as (
     'export.k',
     'geometry.min_supporting_traces',
     'inference.min_trips',
+    'itinerary.prepare_eta_s',
     'field.location_tol_m',
     'field.fare_tol_pct',
     'payments.digital_enabled',
