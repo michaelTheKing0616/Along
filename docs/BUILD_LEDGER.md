@@ -1020,9 +1020,9 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Merged aed000b. Next: P3-C-02.
 
 ## [Phase 3 / P3-C-02] D-14 band + D-16 ETA/Release
-- Status: IN PROGRESS
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-07
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
+- Worker report summary: D-14 approach_band labels only (FM42). D-16 walk_eta_s + stalled caption + one-tap release_match. Widget tests 16/16.
+- Reviewer verdict: PASS WITH NOTES — hard rules MET (grep-clean D-14; release_match never cancel_trip; stalled never when unknown; Release hidden after boarded). Notes: unused incomingRequestPickupMeta l10n; no widget tap on Release; wait Realtime not wired (trip_snapshot only).
 - Rework count: 0
-- Notes/escalations: requested ≠ accepted. No rider pin / walk_eta on D-14. Release hidden after boarded. stalled copy absent when unknown.
+- Notes/escalations: Merged 1cc6f3e. Wait-decision backend+UI complete (P3-A-04 + P3-C-02). Phase 5 still blocked on Phase 4 gate compile FAIL. P4-E-02 remains human counsel.
