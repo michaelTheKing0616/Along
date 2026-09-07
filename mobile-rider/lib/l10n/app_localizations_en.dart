@@ -752,4 +752,91 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignOut => 'Sign out';
+
+  @override
+  String get homePlanYourDay => 'Plan your day';
+
+  @override
+  String get dayPlannerTitle => 'Today\'s plan';
+
+  @override
+  String get dayPlannerEmpty => 'No stops in your plan yet';
+
+  @override
+  String get dayPlannerNotBookedHint =>
+      'Stops are planned — matching starts when you tap Match now. Nothing is reserved ahead of time.';
+
+  @override
+  String get dayPlannerLoadToggle => 'Load today';
+
+  @override
+  String get dayPlannerMatchNow => 'Match now';
+
+  @override
+  String get dayPlannerPrepare => 'Prepare';
+
+  @override
+  String get dayPlannerAddStop => 'Add stop';
+
+  @override
+  String get dayPlannerStopDone => 'Done';
+
+  @override
+  String dayPlannerStopInProgress(int minutes) =>
+      'In progress · ETA $minutes min';
+
+  @override
+  String get dayPlannerStopReady => 'Ready — tap Match now below';
+
+  @override
+  String get dayPlannerStopPrepareHint => 'Tap Prepare when you are ready';
+
+  @override
+  String get dayPlannerStopPending => 'Up next';
+
+  @override
+  String get dayPlannerStopSkipped => 'Skipped';
+
+  @override
+  String get itineraryEntryTitle => 'Plan your day';
+
+  @override
+  String get itineraryEntryStructured => 'Stops';
+
+  @override
+  String get itineraryEntryNaturalLanguage => 'Describe';
+
+  @override
+  String get itineraryEntryStopHint => 'Where to?';
+
+  @override
+  String get itineraryEntryAddRow => 'Add another stop';
+
+  @override
+  String get itineraryEntryDescribeDay => 'Describe your day';
+
+  @override
+  String get itineraryEntryNlHint =>
+      'e.g. drop kids at school, then work, then market';
+
+  @override
+  String get itineraryEntryMicTitle => 'Say your stops';
+
+  @override
+  String get itineraryEntryMicHint => 'Speak or type your stops…';
+
+  @override
+  String get itineraryEntryParse => 'Preview stops';
+
+  @override
+  String get itineraryEntryProposalTitle => 'We heard';
+
+  @override
+  String get itineraryEntryUnresolved => 'Needs a place name';
+
+  @override
+  String get itineraryEntryLooksRight => 'Looks right';
+
+  @override
+  String get itineraryEntrySavePlan => 'Save plan';
 }

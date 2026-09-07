@@ -1,6 +1,8 @@
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
+import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
@@ -36,6 +38,12 @@ class HomePeekSheet extends StatelessWidget {
                 hint: l10n.homeSearchHint,
               ),
             ),
+          ),
+          const SizedBox(height: AlongSpace.s12),
+          TextButton(
+            key: const Key('home_plan_day'),
+            onPressed: () => context.push(AppRoutes.itineraryEntry),
+            child: Text(l10n.homePlanYourDay),
           ),
           const SizedBox(height: AlongSpace.s12),
           if (state.recents.isNotEmpty)

@@ -53,6 +53,13 @@ final plannerRepositoryProvider = Provider<PlannerRepository>((ref) {
   return PlannerRepository(ref.watch(alongSupabaseProvider));
 });
 
+final itineraryRepositoryProvider = Provider<ItineraryRepository>((ref) {
+  return ItineraryRepository(
+    ref.watch(alongSupabaseProvider),
+    ref.watch(plannerRepositoryProvider),
+  );
+});
+
 final tripsRepositoryProvider = Provider<TripsRepository>((ref) {
   return TripsRepository(
     ref.watch(alongSupabaseProvider),

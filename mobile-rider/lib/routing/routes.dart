@@ -24,4 +24,6 @@ abstract final class AppRoutes {
   static const paymentMethods = '/payment-methods';
   static const sosActive = '/sos-active';
   static const reportIncident = '/report-incident';
+  static const dayPlanner = '/day-planner';
+  static const itineraryEntry = '/itinerary-entry';
 }

@@ -168,7 +168,7 @@ class TripOptionsController extends Notifier<TripOptionsState> {
           'modes': null,
         },
         'session_id': session.hashCode.toString(),
-        'itinerary_stop_id': null,
+        'itinerary_stop_id': session.itineraryStopId,
       };
       final plan = await planner.planTrip(requestBody: body);
       _skeletonTimer?.cancel();
@@ -288,6 +288,24 @@ class TripOptionsController extends Notifier<TripOptionsState> {
       session: preserved.session,
       clearActiveTrip: true,
       clearPending: true,
+    );
+  }
+
+  /// Loads a precomputed prepared_plan (itinerary Match now path).
+  void loadPreparedPlan({
+    required TripPlanSession session,
+    required PlanResult plan,
+    LoadFlagState? load,
+  }) {
+    state = state.copyWith(
+      session: session,
+      plan: plan,
+      load: load ?? state.load,
+      isLoading: false,
+      showSkeleton: false,
+      clearError: true,
+      clearPending: true,
+      clearActiveTrip: true,
     );
   }
 }

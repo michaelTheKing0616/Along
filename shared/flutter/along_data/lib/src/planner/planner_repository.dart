@@ -16,32 +16,37 @@ class PlannerRepository {
       final envelope =
           await _gateway.invokeFunction('plan-trip', body: requestBody);
       final data = envelope['data'] as Map<String, dynamic>? ?? envelope;
-      final candidatesJson = (data['candidates'] as List<dynamic>? ?? [])
-          .cast<Map<String, dynamic>>();
-      final sortOrdersRaw =
-          (data['sort_orders'] as Map<String, dynamic>? ?? {});
-
-      final candidates = candidatesJson.map(_mapCandidate).toList();
-      final sortOrders = <SortCriterion, List<String>>{};
-      for (final entry in sortOrdersRaw.entries) {
-        final criterion = _sortCriterion(entry.key);
-        if (criterion != null) {
-          sortOrders[criterion] =
-              (entry.value as List<dynamic>).cast<String>();
-        }
-      }
-
-      return PlanResult(
-        queryId: data['query_id'] as String? ?? '',
-        cityId: data['city_id'] as String? ?? '',
-        degraded: data['degraded'] as bool? ?? false,
-        candidates: candidates,
-        sortOrders: sortOrders,
-        coverageGap: _mapCoverageGap(data['coverage_gap']),
-      );
+      return planResultFromData(data);
     } catch (e) {
       throw mapSupabaseError(e);
     }
+  }
+
+  /// Shared mapper for plan-trip and itinerary prepared_plan payloads.
+  PlanResult planResultFromData(Map<String, dynamic> data) {
+    final candidatesJson = (data['candidates'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
+    final sortOrdersRaw =
+        (data['sort_orders'] as Map<String, dynamic>? ?? {});
+
+    final candidates = candidatesJson.map(_mapCandidate).toList();
+    final sortOrders = <SortCriterion, List<String>>{};
+    for (final entry in sortOrdersRaw.entries) {
+      final criterion = _sortCriterion(entry.key);
+      if (criterion != null) {
+        sortOrders[criterion] =
+            (entry.value as List<dynamic>).cast<String>();
+      }
+    }
+
+    return PlanResult(
+      queryId: data['query_id'] as String? ?? '',
+      cityId: data['city_id'] as String? ?? '',
+      degraded: data['degraded'] as bool? ?? false,
+      candidates: candidates,
+      sortOrders: sortOrders,
+      coverageGap: _mapCoverageGap(data['coverage_gap']),
+    );
   }
 
   CoverageGap? _mapCoverageGap(Object? raw) {

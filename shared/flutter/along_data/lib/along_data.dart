@@ -14,6 +14,7 @@ export 'src/negotiation/negotiation_view.dart';
 export 'src/payments/payment_models.dart';
 export 'src/payments/driver_qr_repository.dart';
 export 'src/payments/payments_repository.dart';
+export 'src/itinerary/itinerary_repository.dart';
 export 'src/journeys/journey_repository.dart';
 export 'src/ledger/ledger_repository.dart';
 export 'src/places/places_repository.dart';

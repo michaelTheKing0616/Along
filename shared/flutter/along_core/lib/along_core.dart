@@ -25,6 +25,7 @@ export 'src/models/fare_quote.dart';
 export 'src/models/geo_point.dart';
 export 'src/models/load_warning.dart';
 export 'src/models/itinerary.dart';
+export 'src/models/itinerary_state.dart';
 export 'src/models/journey.dart';
 export 'src/models/na_me_pairing.dart';
 export 'src/models/na_me_visual.dart';
