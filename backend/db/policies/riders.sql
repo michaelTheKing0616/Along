@@ -9,7 +9,9 @@ create policy riders_insert_own
 
 create policy riders_select_admin
   on riders for select to authenticated
-  using (is_admin());
+  using (is_admin() AND (((home_city_id IS NOT NULL) AND admin_can_access_city(home_city_id)) OR (EXISTS ( SELECT 1
+   FROM journeys j
+  WHERE ((j.rider_id = riders.id) AND admin_can_access_city(j.city_id))))));
 
 create policy riders_select_own
   on riders for select to authenticated

@@ -5,7 +5,7 @@
 
 create policy profiles_select_admin
   on profiles for select to authenticated
-  using (is_admin());
+  using (is_admin() AND admin_can_access_profile(id));
 
 create policy profiles_select_own
   on profiles for select to authenticated

@@ -17,7 +17,11 @@ create policy fare_quotes_no_client_update
 
 create policy fare_quotes_select_admin
   on fare_quotes for select to authenticated
-  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text, 'ops_agent'::text, 'finance'::text, 'analyst'::text]));
+  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text, 'ops_agent'::text, 'finance'::text, 'analyst'::text]) AND (((driver_id IS NOT NULL) AND (EXISTS ( SELECT 1
+   FROM drivers d
+  WHERE ((d.id = fare_quotes.driver_id) AND admin_can_access_city(d.city_id))))) OR ((rider_id IS NOT NULL) AND (EXISTS ( SELECT 1
+   FROM journeys j
+  WHERE ((j.rider_id = fare_quotes.rider_id) AND admin_can_access_city(j.city_id)))))));
 
 create policy fare_quotes_select_driver
   on fare_quotes for select to authenticated

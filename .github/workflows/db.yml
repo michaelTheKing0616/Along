@@ -39,5 +39,8 @@ jobs:
       - name: RLS policy snapshot check
         run: bash backend/db/scripts/check_policies_stale.sh
 
+      - name: Authorization matrix check
+        run: bash backend/db/scripts/check_authz_matrix.sh
+
       - name: Schema types contract check
         run: bash backend/db/scripts/check_schema_types.sh
