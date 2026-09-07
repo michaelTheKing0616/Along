@@ -1562,3 +1562,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-A-02 PASS. Attach 12 §1 T9, 02 §13. AC: re-identification tests pass (no singleton cells). k ≥ cfg. Do not flip digital_enabled.
+
+## [Phase 8 / P8-A-02] Anonymized export + k-anonymity
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00069 + anonymized-export job; export.k suppression; TS-EXPORT-01 8/8; vitest 26/26.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Note: db.types.ts stale (CI regen follow-up).
+- Rework count: 0
+- Notes/escalations: Merged this commit. Next: P8-A-03. Do not flip digital_enabled. Do not invent P8-E-01 PASS.
+
+## [Phase 8 / P8-A-03] Operators, placements, API keys
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P6-A-01 PASS. Attach 02 §13, 03 §11. AC: FM39/FM40 — no rider id path; API returns aggregates only. Do not flip digital_enabled.
