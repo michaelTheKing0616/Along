@@ -1076,9 +1076,17 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Merged 3e80c97. Residual planner decompose failures are not P5-A-02. Next: P5-A-03.
 
 ## [Phase 5 / P5-A-03] Day planner itineraries
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00053 itineraries/RPCs; parse-itinerary stub never writes; itinerary-prepare + match_next store prepared_plan. Deno 4/4, pgTAP 5/5. FM23 flags on payloads.
+- Reviewer verdict: PASS WITH NOTES — acceptance MET. Notes: parse is bounded stub not LLM; itinerary-prepare Edge has no Deno tests (SQL path covered).
+- Rework count: 0
+- Notes/escalations: Merged 5890db0. Next: P5-B-01.
+
+## [Phase 5 / P5-B-01] Rider SOS, report, share, account
 - Status: IN PROGRESS
 - Assigned: 2026-09-07
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Next migration 00053. parse-itinerary never writes. FM23: never imply booked.
+- Notes/escalations: Depends P5-A-01 and P5-A-02 (both PASS). Hold duration from cfg sos.hold_duration_ms. Do not flip digital_enabled.
