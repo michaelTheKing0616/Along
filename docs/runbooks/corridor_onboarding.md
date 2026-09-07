@@ -103,6 +103,7 @@ Field scouts: use standard ODK resubmit template when reconciliation rejected.
 | Engineering dry-run / test validation | **PASS** (2026-09-07) | `data-collection/scripts/corridor_config_only.test.ts`; `admin-console/src/lib/deploy/corridor-bundle.test.ts`; fixture `data-collection/fixtures/corridor_zaria_beta/` |
 
 ## Related
+- Runbook: `city_onboarding.md` (new city + first corridor)
 - Screens: **A-08** deploy, **A-05** graph, **A-07** field, **A-09** config, **A-02** dashboard, **A-03** live
 - RPCs: `admin_import_dry_run`, `admin_import_apply`, `admin_update_graph_entity`, `admin_reconcile_field_entity`, `admin_publish_field_entity`, `admin_set_config`
 - CLI: `data-collection/scripts/import_corridor.ts`
