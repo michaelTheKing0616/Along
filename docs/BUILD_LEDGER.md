@@ -1282,3 +1282,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P4-A-07 PASS. pgTAP: audit coverage = doc 02 §15 list. Run dump_policies.sh for app_config_keys. Do not redo A-16/A-17 UI.
+
+## [Phase 6 / P6-A-01] Audit coverage + admin_set_config validation
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00059 remaining audit_admin_write triggers; hardened _validate_config_value; pgTAP audit_coverage.sql 6/6; dump_policies including app_config_keys.sql; coverage 25 OK / 3 Phase 7 GAP.
+- Reviewer verdict: PASS WITH NOTES — 20/20 existing §15 tables have triggers; sponsored_placements/api_keys Phase 8 deferred (tables absent). payments.digital_enabled still false/read-only. Note: analytics SQL already in 00055 (P6-D-01), not this diff.
+- Rework count: 0
+- Notes/escalations: Merged ceca322. Next: P6-E-01. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 6 / P6-E-01] Pilot-day runbooks
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P5-D-01 PASS. Write corridor_onboarding, verification_review, fare_dispute, incident_response. Attach runbooks/README. AC: ops dry-run of a pilot day recorded. Do not write application code. Do not flip digital_enabled. Do not start Phase 7.
