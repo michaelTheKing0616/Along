@@ -14,6 +14,11 @@ import {
   directSignature,
   type RawMultiLegItinerary,
 } from '../_shared/planner/build.ts';
+import {
+  rehydratePlanTripCandidates,
+  toShareablePlanTripCache,
+  type ShareablePlanTripCache,
+} from '../_shared/planner/rehydrate.ts';
 import { applyRanking } from '../_shared/planner/ranking.ts';
 import { createServiceClient, createUserClient } from '../_shared/supabase.ts';
 import type {
@@ -115,17 +120,26 @@ export async function handlePlanTrip(
   const cacheKey = planTripCacheKey(cityId, origin, destination, filters);
 
   if (cache) {
-    const hit = cache.get(cacheKey) as Record<string, unknown> | undefined;
+    const hit = cache.get(cacheKey) as ShareablePlanTripCache | undefined;
     if (hit) {
       console.log(JSON.stringify({ event: 'cache_hit', cache: 'plan_trip', key: cacheKey }));
-      return jsonResponse(
-        { data: hit, meta: { request_id: rid, degraded: Boolean(hit.degraded) } },
-        200,
+      const rehydrated = await rehydratePlanTripFromCache(
+        hit,
         {
-          'Access-Control-Allow-Origin': '*',
-          'X-Cache': 'HIT',
+          riderId: authData.user.id,
+          cityId,
+          filters: req.filters,
+          origin: req.origin,
+          destination: req.destination,
+          service,
+          rid,
         },
       );
+      if (rehydrated) {
+        const headers = new Headers(rehydrated.headers);
+        headers.set('X-Cache', 'HIT');
+        return new Response(rehydrated.body, { status: rehydrated.status, headers });
+      }
     }
   }
 
@@ -140,13 +154,78 @@ export async function handlePlanTrip(
 
   const body = await response.clone().json();
   if (body?.data) {
-    cache.set(cacheKey, body.data as Record<string, unknown>, cacheCfg.planTripTtlS * 1000);
+    cache.set(
+      cacheKey,
+      toShareablePlanTripCache(body.data as Record<string, unknown>),
+      cacheCfg.planTripTtlS * 1000,
+    );
     console.log(JSON.stringify({ event: 'cache_miss', cache: 'plan_trip', key: cacheKey }));
   }
 
   const headers = new Headers(response.headers);
   headers.set('X-Cache', 'MISS');
   return new Response(response.body, { status: response.status, headers });
+}
+
+async function rehydratePlanTripFromCache(
+  cached: ShareablePlanTripCache,
+  ctx: {
+    riderId: string;
+    cityId: string;
+    filters: PlanTripRequest['filters'];
+    origin: Point;
+    destination: Point;
+    service: ReturnType<typeof createServiceClient>;
+    rid: string;
+  },
+): Promise<Response | null> {
+  const candidates = await rehydratePlanTripCandidates(
+    ctx.service,
+    cached,
+    ctx.riderId,
+    ctx.filters,
+  );
+  if (!candidates) return null;
+
+  const queryId = crypto.randomUUID();
+  const directCount = candidates.filter((c) => c.kind === 'direct').length;
+
+  const { error: insertError } = await ctx.service.rpc('insert_planner_query', {
+    p_id: queryId,
+    p_rider_id: ctx.riderId,
+    p_city_id: ctx.cityId,
+    p_origin_lat: ctx.origin.lat,
+    p_origin_lng: ctx.origin.lng,
+    p_dest_lat: ctx.destination.lat,
+    p_dest_lng: ctx.destination.lng,
+    p_filters: ctx.filters,
+    p_candidates: candidates,
+    p_candidate_count: candidates.length,
+    p_direct_count: directCount,
+    p_degraded: cached.degraded,
+    p_latency_ms: 0,
+  });
+  if (insertError) {
+    return errorResponse('VALIDATION', insertError.message, 500, {
+      request_id: ctx.rid,
+    });
+  }
+
+  return jsonResponse(
+    {
+      data: {
+        query_id: queryId,
+        city_id: cached.city_id,
+        degraded: cached.degraded,
+        candidates,
+        sort_orders: cached.sort_orders,
+        coverage_gap: cached.coverage_gap,
+      },
+      meta: { request_id: ctx.rid, degraded: cached.degraded },
+    },
+    200,
+    { 'Access-Control-Allow-Origin': '*' },
+  );
 }
 
 async function executePlanTrip(
