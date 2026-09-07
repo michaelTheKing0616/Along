@@ -9,12 +9,14 @@ class TripPlanSession {
     required this.destination,
     required this.destinationLabel,
     this.hailIntent,
+    this.itineraryStopId,
   });
 
   final GeoPoint origin;
   final GeoPoint destination;
   final String destinationLabel;
   final HailIntent? hailIntent;
+  final String? itineraryStopId;
 
   bool get isHail => hailIntent != null;
 }

@@ -975,5 +975,38 @@
   "accountSafetyHowSosBody": "Hold SOS during a trip to alert our safety team and share live location",
   "accountHelp": "Help & support",
   "accountLegal": "Legal",
-  "accountSignOut": "Sign out"
+  "accountSignOut": "Sign out",
+  "homePlanYourDay": "Plan your day",
+  "dayPlannerTitle": "Today's plan",
+  "dayPlannerEmpty": "No stops in your plan yet",
+  "dayPlannerNotBookedHint": "Stops are planned — matching starts when you tap Match now. Nothing is reserved ahead of time.",
+  "dayPlannerLoadToggle": "Load today",
+  "dayPlannerMatchNow": "Match now",
+  "dayPlannerPrepare": "Prepare",
+  "dayPlannerAddStop": "Add stop",
+  "dayPlannerStopDone": "Done",
+  "dayPlannerStopInProgress": "In progress · ETA {minutes} min",
+  "@dayPlannerStopInProgress": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "dayPlannerStopReady": "Ready — tap Match now below",
+  "dayPlannerStopPrepareHint": "Tap Prepare when you are ready",
+  "dayPlannerStopPending": "Up next",
+  "dayPlannerStopSkipped": "Skipped",
+  "itineraryEntryTitle": "Plan your day",
+  "itineraryEntryStructured": "Stops",
+  "itineraryEntryNaturalLanguage": "Describe",
+  "itineraryEntryStopHint": "Where to?",
+  "itineraryEntryAddRow": "Add another stop",
+  "itineraryEntryDescribeDay": "Describe your day",
+  "itineraryEntryNlHint": "e.g. drop kids at school, then work, then market",
+  "itineraryEntryMicTitle": "Say your stops",
+  "itineraryEntryMicHint": "Speak or type your stops…",
+  "itineraryEntryParse": "Preview stops",
+  "itineraryEntryProposalTitle": "We heard",
+  "itineraryEntryUnresolved": "Needs a place name",
+  "itineraryEntryLooksRight": "Looks right",
+  "itineraryEntrySavePlan": "Save plan"
 }

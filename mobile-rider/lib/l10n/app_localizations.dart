@@ -1434,6 +1434,35 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out'**
   String get accountSignOut;
+
+  String get homePlanYourDay;
+  String get dayPlannerTitle;
+  String get dayPlannerEmpty;
+  String get dayPlannerNotBookedHint;
+  String get dayPlannerLoadToggle;
+  String get dayPlannerMatchNow;
+  String get dayPlannerPrepare;
+  String get dayPlannerAddStop;
+  String get dayPlannerStopDone;
+  String dayPlannerStopInProgress(int minutes);
+  String get dayPlannerStopReady;
+  String get dayPlannerStopPrepareHint;
+  String get dayPlannerStopPending;
+  String get dayPlannerStopSkipped;
+  String get itineraryEntryTitle;
+  String get itineraryEntryStructured;
+  String get itineraryEntryNaturalLanguage;
+  String get itineraryEntryStopHint;
+  String get itineraryEntryAddRow;
+  String get itineraryEntryDescribeDay;
+  String get itineraryEntryNlHint;
+  String get itineraryEntryMicTitle;
+  String get itineraryEntryMicHint;
+  String get itineraryEntryParse;
+  String get itineraryEntryProposalTitle;
+  String get itineraryEntryUnresolved;
+  String get itineraryEntryLooksRight;
+  String get itineraryEntrySavePlan;
 }
 
 class _AppLocalizationsDelegate

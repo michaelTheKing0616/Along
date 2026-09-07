@@ -30,6 +30,8 @@ import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.da
 import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_methods_screen.dart';
 import 'package:mobile_rider/features/payments/presentation/scan_to_pay_screen.dart';
+import 'package:mobile_rider/features/day_planner/presentation/day_planner_screen.dart';
+import 'package:mobile_rider/features/day_planner/presentation/itinerary_entry_screen.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -201,6 +203,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final tripId = state.extra as String?;
           return ReportIncidentScreen(tripId: tripId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.dayPlanner,
+        builder: (context, state) {
+          final itineraryId = state.extra as String? ?? '';
+          return DayPlannerScreen(itineraryId: itineraryId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.itineraryEntry,
+        builder: (context, state) {
+          final existingId = state.extra as String?;
+          return ItineraryEntryScreen(existingItineraryId: existingId);
         },
       ),
     ],

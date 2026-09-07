@@ -38,6 +38,12 @@ class HomePeekSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AlongSpace.s12),
+          TextButton(
+            key: const Key('home_plan_day'),
+            onPressed: () => context.push(AppRoutes.itineraryEntry),
+            child: Text(l10n.homePlanYourDay),
+          ),
+          const SizedBox(height: AlongSpace.s12),
           if (state.recents.isNotEmpty)
             SizedBox(
               height: 36,
