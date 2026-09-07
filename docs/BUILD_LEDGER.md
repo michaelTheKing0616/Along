@@ -1426,3 +1426,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P3-A-01 PASS. Attach 04 §15, 09 §6. AC: FM27 test; confidence filter. Do not implement speed-profiles or route-inference (A-03/A-04). Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-02] map-match job + FM27
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00062 job_runs+matched_traces; map-match job; FM27 propose_from_traces; cfg keys; pg pinned ADR-0013. Vitest 7/7; TS-JOBS-01 8/8.
+- Reviewer verdict: PASS WITH NOTES — AC MET independently. Note: db.ts null-coalescing fallbacks duplicate cfg defaults.
+- Rework count: 1
+- Notes/escalations: Merged this commit. Next: P7-A-03. Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-03] speed-profiles + planner calibration
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-A-02 PASS. Attach 04 §15 speed-profiles, 04 §4 planner ETA. AC: measurable ETA improvement documented. Use matched_traces only (FM27). Do not implement route-inference (A-04). Do not flip digital_enabled.
