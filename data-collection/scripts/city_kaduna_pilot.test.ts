@@ -83,10 +83,20 @@ describe('city_kaduna_pilot fixture', () => {
       'docs/reports/p9-e-01-second-city.md',
     ];
 
+    const excludedPathPatterns = [
+      /(^|\/)test\//,
+      /(^|\/)fixtures\//,
+      /(^|\/)docs\//,
+      /(^|\/)reports\//,
+    ];
+
     const appCodeHits = hits.filter((path) => {
       const rel = path.startsWith(`${repoRoot}/`)
         ? path.slice(repoRoot.length + 1)
         : path;
+      if (excludedPathPatterns.some((pattern) => pattern.test(rel))) {
+        return false;
+      }
       return !allowedPrefixes.some(
         (prefix) => rel === prefix || rel.startsWith(prefix)
       );

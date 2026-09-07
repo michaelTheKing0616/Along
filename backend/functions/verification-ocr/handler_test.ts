@@ -57,10 +57,10 @@ async function runOcr(
       },
       updates,
     ),
-    ocrUpstream: (): Promise<OcrUpstreamResult> =>
+    ocrUpstream: (_path, _documentType, _providerName): Promise<OcrUpstreamResult> =>
       Promise.resolve({
         fields: upstreamFields,
-        provider: 'mock-verifyme',
+        provider: 'verifyme',
         provider_reference: 'mock-ref',
       }),
     computeHash: () => Promise.resolve('aabbccdd'.repeat(8)),

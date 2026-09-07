@@ -5,7 +5,7 @@
 
 create policy corridors_select_authenticated
   on corridors for select to authenticated
-  using (true);
+  using (city_in_user_deployment(city_id));
 
 create policy corridors_write_admin
   on corridors for all to authenticated

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 
 /// Monetary amount in major currency units (matches API `Money.amount` string).
@@ -11,9 +13,14 @@ class Money implements Comparable<Money> {
     return Money(Decimal.parse(amount), currency: currency);
   }
 
-  factory Money.fromMinorUnits(int minorUnits, {required String currency}) {
+  factory Money.fromMinorUnits(
+    int minorUnits, {
+    required String currency,
+    int minorUnitsExponent = 2,
+  }) {
+    final scale = Decimal.fromInt(pow(10, minorUnitsExponent).toInt());
     return Money(
-      (Decimal.fromInt(minorUnits) / Decimal.fromInt(100)).toDecimal(),
+      (Decimal.fromInt(minorUnits) / scale).toDecimal(),
       currency: currency,
     );
   }

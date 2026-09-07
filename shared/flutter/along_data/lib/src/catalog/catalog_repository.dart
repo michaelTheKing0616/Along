@@ -119,6 +119,7 @@ class CountryConfig {
     required this.phonePrefix,
     required this.currencyCode,
     required this.currencySymbol,
+    required this.currencyMinorUnits,
     required this.verificationSchema,
     required this.platePattern,
   });
@@ -127,8 +128,22 @@ class CountryConfig {
   final String phonePrefix;
   final String currencyCode;
   final String currencySymbol;
+  final int currencyMinorUnits;
   final List<VerificationDocType> verificationSchema;
   final String platePattern;
+}
+
+/// Currency display metadata resolved from `countries`.
+class CityCurrencyMeta {
+  const CityCurrencyMeta({
+    required this.currencyCode,
+    required this.currencySymbol,
+    required this.currencyMinorUnits,
+  });
+
+  final String currencyCode;
+  final String currencySymbol;
+  final int currencyMinorUnits;
 }
 
 /// Read-only catalog data for onboarding (cities, modes, country schema).
@@ -188,6 +203,7 @@ class CatalogRepository {
         phonePrefix: row['phone_prefix'] as String,
         currencyCode: row['currency_code'] as String,
         currencySymbol: row['currency_symbol'] as String,
+        currencyMinorUnits: (row['currency_minor_units'] as num?)?.toInt() ?? 2,
         verificationSchema: schemaJson
             .cast<Map<String, dynamic>>()
             .map(VerificationDocType.fromJson)
@@ -219,6 +235,11 @@ class CatalogRepository {
   }
 
   Future<String> currencyCodeForCity(String cityId) async {
+    final meta = await currencyMetaForCity(cityId);
+    return meta.currencyCode;
+  }
+
+  Future<CityCurrencyMeta> currencyMetaForCity(String cityId) async {
     try {
       final cityRows = await _gateway.selectRows(
         'cities',
@@ -235,7 +256,12 @@ class CatalogRepository {
       if (countryRows.isEmpty) {
         throw StateError('Country not found: $countryCode');
       }
-      return countryRows.first['currency_code'] as String;
+      final row = countryRows.first;
+      return CityCurrencyMeta(
+        currencyCode: row['currency_code'] as String,
+        currencySymbol: row['currency_symbol'] as String,
+        currencyMinorUnits: (row['currency_minor_units'] as num?)?.toInt() ?? 2,
+      );
     } catch (e) {
       throw mapSupabaseError(e);
     }
