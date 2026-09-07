@@ -148,7 +148,9 @@ with required_global as (
     'jobs.map_match_min_samples',
     'jobs.map_match_min_confidence',
     'jobs.map_match_default_radius_m',
-    'jobs.speed_profile_min_samples'
+    'jobs.speed_profile_min_samples',
+    'jobs.corporate_invoice_day',
+    'jobs.corporate_invoice_hour_utc'
   ]) as key
 ),
 missing_global as (
