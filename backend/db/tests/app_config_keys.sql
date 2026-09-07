@@ -131,7 +131,10 @@ with required_global as (
     'payments.initiate_ttl_s',
     'rating.tags',
     'settlement.agent_code_ttl_min',
-    'settlement.initiate_ttl_min'
+    'settlement.initiate_ttl_min',
+    'analytics.page_size',
+    'analytics.max_window_days',
+    'analytics.bucket_interval_s'
   ]) as key
 ),
 missing_global as (

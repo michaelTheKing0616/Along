@@ -5136,6 +5136,16 @@ export type Database = {
         Args: { p_verification_id: string }
         Returns: Json
       }
+      admin_corridor_analytics: {
+        Args: {
+          p_corridor_id: string
+          p_cursor?: string
+          p_from: string
+          p_limit?: number
+          p_to: string
+        }
+        Returns: Json
+      }
       admin_log_view_document: {
         Args: { p_verification_id: string }
         Returns: Json
