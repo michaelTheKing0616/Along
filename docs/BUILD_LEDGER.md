@@ -1242,3 +1242,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P0-D-02 PASS. Playwright required: graph edit → revision+audit; config change → audit with reason. Reuse MapLibre from P6-D-02. Do not redo live map.
+
+## [Phase 6 / P6-D-03] A-05 Graph editor + A-09 Config editor
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00057 graph/config RPCs; A-05 pending tray + MapLibre drag; A-09 schema+reason. Playwright graph-config 2/2.
+- Reviewer verdict: PASS WITH NOTES — AC MET independently. Notes: missing dump_policies snapshot for app_config_keys (absorb in P6-A-01); share.css/live-map-client compile wrappers.
+- Rework count: 0
+- Notes/escalations: Merged 765016f. Follow-up: P6-A-01 dump_policies app_config_keys.sql. Next: P6-D-04. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 6 / P6-D-04] A-16 Audit log + A-17 Admin users
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P0-D-01 PASS. AC: grep RPC list vs audited tables. Do not attach remaining audit triggers (P6-A-01). Do not redo graph/config editors.
