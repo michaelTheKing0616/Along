@@ -1858,3 +1858,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 11: authz matrix; no open critical/high; perf budgets. External pen test / device APK / full-city k6 DEFERRED. Do not flip digital_enabled. Then chain Phase 12.
+
+## [Phase 11 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master 6e516cc)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — Authz 0 DRIFT; TS-AUTHZ-01 14/14; security 0 critical/high; pen test DEFERRED; perf report honest (plan-trip local FAIL); digital_enabled false. Deferred: pen test, device/APK, full-city k6.
+- Rework count: 0
+- Notes/escalations: Residuals: P1-G-01, P4-E-02, P8-E-01 stay BLOCKED — human. Do not flip digital_enabled. Chaining Phase 12 from P12-E-01.
+
+## [Phase 12 / P12-E-01] README, config ref, deploy runbooks
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Attach 00, 09. AC: fresh engineer runs stack from docs only (recorded). Do not flip digital_enabled.
