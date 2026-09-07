@@ -89,11 +89,24 @@ function defaultCenter(staticData: LiveMapStaticPayload): { lat: number; lng: nu
   return { lat: 9.0765, lng: 7.3986 };
 }
 
+function pollIntervalMsFromCfg(value: unknown): number {
+  const seconds = typeof value === 'number' ? value : Number(value);
+  const resolvedSeconds = Number.isFinite(seconds) && seconds > 0 ? seconds : 5;
+  return resolvedSeconds * 1000;
+}
+
+async function loadLiveMapPollIntervalMs(cityId: string): Promise<number> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc('cfg', { p_key: 'ops.live_map_poll_s', p_city: cityId });
+  return pollIntervalMsFromCfg(data);
+}
+
 export default async function LiveMapPage({ params }: PageProps) {
   const { city: citySlug } = await params;
   const city = await getCityBySlug(citySlug);
   const staticData = city ? await loadStaticLayers(city.id) : emptyStatic();
   const center = defaultCenter(staticData);
+  const pollIntervalMs = city ? await loadLiveMapPollIntervalMs(city.id) : 0;
 
   return (
     <>
@@ -117,6 +130,7 @@ export default async function LiveMapPage({ params }: PageProps) {
           cityName={city.name}
           initialStatic={staticData}
           initialCenter={center}
+          pollIntervalMs={pollIntervalMs}
         />
       ) : null}
     </>

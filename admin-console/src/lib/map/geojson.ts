@@ -194,3 +194,45 @@ export function graphStatusColor(status: string): string {
   if (status === 'candidate') return 'var(--color-tier-candidate)';
   return 'var(--color-tier-estimate)';
 }
+
+/** Resolve a design-token CSS variable to a MapLibre-compatible color at runtime. */
+export function resolveCssToken(token: string): string {
+  const trimmed = token.trim();
+  const varMatch = /^var\((--[^,)]+)\)$/.exec(trimmed);
+  const property = varMatch?.[1] ?? (trimmed.startsWith('--') ? trimmed : null);
+  if (property && typeof document !== 'undefined') {
+    const resolved = getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+    if (resolved) return resolved;
+  }
+  return trimmed;
+}
+
+export function resolvedPresenceStatusColor(status: string): string {
+  return resolveCssToken(presenceStatusColor(status));
+}
+
+export function resolvedGraphStatusColor(status: string): string {
+  return resolveCssToken(graphStatusColor(status));
+}
+
+/** MapLibre paint colors resolved from design tokens (FM20). */
+export function buildLiveMapPaintColors() {
+  return {
+    routeFieldVerified: resolvedGraphStatusColor('field_verified'),
+    routeCrowdVerified: resolvedGraphStatusColor('crowd_verified'),
+    routeCandidate: resolvedGraphStatusColor('candidate'),
+    coverageGap: resolveCssToken('--color-semantic-danger-fill'),
+    park: resolvedPresenceStatusColor('at_park'),
+    stage: resolveCssToken('--color-semantic-info-fill'),
+    tripLink: resolveCssToken('--color-mode-minibus'),
+    tripRider: resolvedGraphStatusColor('crowd_verified'),
+    tripDriver: resolvedPresenceStatusColor('at_park'),
+    presenceAtPark: resolvedPresenceStatusColor('at_park'),
+    presenceRoamingAvailable: resolvedPresenceStatusColor('roaming_available'),
+    presenceRoamingFull: resolvedPresenceStatusColor('roaming_full'),
+    presenceDefault: resolvedPresenceStatusColor('offline'),
+    sosFill: resolveCssToken('--color-semantic-danger-fill'),
+    sosStroke: resolveCssToken('--color-semantic-danger-tint'),
+    strokeLight: resolveCssToken('--color-surface-0'),
+  };
+}

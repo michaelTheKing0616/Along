@@ -11,6 +11,7 @@ import {
 } from '@/lib/map/filters';
 import {
   activeTripsToGeoJson,
+  buildLiveMapPaintColors,
   coverageGapsToGeoJson,
   parksToGeoJson,
   presenceStatusColor,
@@ -59,6 +60,7 @@ interface AdminLiveMapProps {
   cityName: string;
   initialStatic: LiveMapStaticPayload;
   initialCenter: { lat: number; lng: number };
+  pollIntervalMs: number;
 }
 
 function ensureGeoJsonSource(map: maplibregl.Map, sourceId: string) {
@@ -78,6 +80,7 @@ export function AdminLiveMap({
   cityName,
   initialStatic,
   initialCenter,
+  pollIntervalMs,
 }: AdminLiveMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -125,9 +128,9 @@ export function AdminLiveMap({
 
   useEffect(() => {
     void refreshLive();
-    const timer = window.setInterval(() => void refreshLive(), 5000);
+    const timer = window.setInterval(() => void refreshLive(), pollIntervalMs);
     return () => window.clearInterval(timer);
-  }, [refreshLive]);
+  }, [pollIntervalMs, refreshLive]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setSosPulse((value) => (value + 1) % 2), 800);
@@ -158,6 +161,8 @@ export function AdminLiveMap({
         map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
         map.on('load', () => {
+          const colors = buildLiveMapPaintColors();
+
           ensureGeoJsonSource(map, SOURCE_IDS.routes);
           ensureGeoJsonSource(map, SOURCE_IDS.parks);
           ensureGeoJsonSource(map, SOURCE_IDS.stages);
@@ -176,10 +181,10 @@ export function AdminLiveMap({
                 'match',
                 ['get', 'verification_status'],
                 'field_verified',
-                '#15803D',
+                colors.routeFieldVerified,
                 'crowd_verified',
-                '#1D4ED8',
-                '#B45309',
+                colors.routeCrowdVerified,
+                colors.routeCandidate,
               ],
               'line-width': 3,
               'line-opacity': 0.85,
@@ -192,7 +197,7 @@ export function AdminLiveMap({
             source: SOURCE_IDS.coverageGaps,
             paint: {
               'circle-radius': ['get', 'heat_radius'],
-              'circle-color': '#DC2626',
+              'circle-color': colors.coverageGap,
               'circle-opacity': ['get', 'heat_opacity'],
             },
           });
@@ -203,9 +208,9 @@ export function AdminLiveMap({
             source: SOURCE_IDS.parks,
             paint: {
               'circle-radius': 7,
-              'circle-color': '#0F766E',
+              'circle-color': colors.park,
               'circle-stroke-width': 2,
-              'circle-stroke-color': '#FFFFFF',
+              'circle-stroke-color': colors.strokeLight,
             },
           });
 
@@ -215,9 +220,9 @@ export function AdminLiveMap({
             source: SOURCE_IDS.stages,
             paint: {
               'circle-radius': 5,
-              'circle-color': '#2563EB',
+              'circle-color': colors.stage,
               'circle-stroke-width': 1,
-              'circle-stroke-color': '#FFFFFF',
+              'circle-stroke-color': colors.strokeLight,
             },
           });
 
@@ -227,7 +232,7 @@ export function AdminLiveMap({
             source: SOURCE_IDS.trips,
             filter: ['==', ['get', 'kind'], 'trip_link'],
             paint: {
-              'line-color': '#7C3AED',
+              'line-color': colors.tripLink,
               'line-width': 2,
               'line-dasharray': [2, 2],
             },
@@ -240,7 +245,7 @@ export function AdminLiveMap({
             filter: ['==', ['get', 'kind'], 'trip_rider'],
             paint: {
               'circle-radius': 6,
-              'circle-color': '#1D4ED8',
+              'circle-color': colors.tripRider,
             },
           });
 
@@ -251,7 +256,7 @@ export function AdminLiveMap({
             filter: ['==', ['get', 'kind'], 'trip_driver'],
             paint: {
               'circle-radius': 6,
-              'circle-color': '#0F766E',
+              'circle-color': colors.tripDriver,
             },
           });
 
@@ -265,15 +270,15 @@ export function AdminLiveMap({
                 'match',
                 ['get', 'status'],
                 'at_park',
-                '#0F766E',
+                colors.presenceAtPark,
                 'roaming_available',
-                '#16A34A',
+                colors.presenceRoamingAvailable,
                 'roaming_full',
-                '#F59E0B',
-                '#6B6B6B',
+                colors.presenceRoamingFull,
+                colors.presenceDefault,
               ],
               'circle-stroke-width': 2,
-              'circle-stroke-color': '#FFFFFF',
+              'circle-stroke-color': colors.strokeLight,
             },
           });
 
@@ -283,10 +288,10 @@ export function AdminLiveMap({
             source: SOURCE_IDS.sos,
             paint: {
               'circle-radius': sosPulse ? 14 : 10,
-              'circle-color': '#DC2626',
+              'circle-color': colors.sosFill,
               'circle-opacity': sosPulse ? 0.95 : 0.55,
               'circle-stroke-width': 2,
-              'circle-stroke-color': '#FEE2E2',
+              'circle-stroke-color': colors.sosStroke,
             },
           });
 
@@ -441,7 +446,8 @@ export function AdminLiveMap({
           </label>
         </fieldset>
         <p className="live-map-meta">
-          Presence refreshes every 5 s via <code>admin_presence_snapshot</code> (Tier I).
+          Presence refreshes every {pollIntervalMs / 1000} s via{' '}
+          <code>admin_presence_snapshot</code> (Tier I).
         </p>
         {loadError ? (
           <p className="live-map-error" role="alert">

@@ -1,5 +1,7 @@
 -- P6-D-02: Admin live map (A-03) — active trip links; coverage-gap scope for ops roles.
 
+select config_default('ops.live_map_poll_s', '5');
+
 -- Ops agents and safety need city-scoped coverage gaps on the live map heat layer.
 drop policy if exists coverage_gap_reports_select_admin on coverage_gap_reports;
 create policy coverage_gap_reports_select_admin
