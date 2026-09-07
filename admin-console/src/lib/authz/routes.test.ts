@@ -50,6 +50,7 @@ describe('authz routes', () => {
       'operator_viewer',
     ]);
     expect(getAllowedRolesForSegment('revenue')).toEqual(['superadmin', 'finance']);
+    expect(getAllowedRolesForSegment('markets')).toEqual(['superadmin', 'ops_lead']);
     expect(getAllowedRolesForSegment('live')).toEqual([
       'superadmin',
       'ops_lead',
