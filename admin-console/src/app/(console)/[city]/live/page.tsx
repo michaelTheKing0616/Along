@@ -1,17 +1,9 @@
-import dynamic from 'next/dynamic';
 import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { parseLiveMapStaticPayload } from '@/lib/map/parse';
 import type { LiveMapStaticPayload } from '@/lib/map/types';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { createClient } from '@/lib/supabase/server';
-
-const AdminLiveMap = dynamic(
-  () => import('@/components/along/AdminLiveMap').then((mod) => mod.AdminLiveMap),
-  {
-    ssr: false,
-    loading: () => <div className="live-map-loading card">Loading live map…</div>,
-  }
-);
+import { LiveMapClient } from './live-map-client';
 
 interface PageProps {
   params: Promise<{ city: string }>;
@@ -124,7 +116,7 @@ export default async function LiveMapPage({ params }: PageProps) {
       ) : null}
       <ConsoleNav city={citySlug} />
       {city ? (
-        <AdminLiveMap
+        <LiveMapClient
           citySlug={citySlug}
           cityId={city.id}
           cityName={city.name}

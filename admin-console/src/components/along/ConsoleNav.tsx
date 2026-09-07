@@ -9,6 +9,7 @@ const LINKS = [
   { segment: 'live', label: 'Live map' },
   { segment: 'field', label: 'Field reconciliation' },
   { segment: 'graph', label: 'Graph editor' },
+  { segment: 'config', label: 'Config' },
   { segment: 'deploy', label: 'City playbook' },
   { segment: 'verification', label: 'Verification' },
   { segment: 'corrections', label: 'Fare corrections' },

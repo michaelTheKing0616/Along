@@ -5,13 +5,14 @@ export type CityRow = {
   name: string;
   slug: string;
   status: string;
+  country_code: string;
 };
 
 export async function getCityBySlug(slug: string): Promise<CityRow | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('cities')
-    .select('id, name, slug, status')
+    .select('id, name, slug, status, country_code')
     .eq('slug', slug)
     .maybeSingle();
 

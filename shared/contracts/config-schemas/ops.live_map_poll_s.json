@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "number",
+  "minimum": 3,
+  "maximum": 60,
+  "description": "Admin live map poll interval (seconds)"
+}

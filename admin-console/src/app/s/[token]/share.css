@@ -1,0 +1,5 @@
+.share-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-6);
+}

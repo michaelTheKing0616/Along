@@ -24,7 +24,7 @@ async function completeMfaIfNeeded(page: Page, email: string) {
 }
 
 function authPathPattern(): RegExp {
-  return /^\/(?:agent|mfa|(?:[^/]+\/)?(?:dashboard|finance|admins|verification|corrections|integrity|drivers|safety|audit|field|graph|deploy|unauthorized)(?:\/|$))/;
+  return /^\/(?:agent|mfa|(?:[^/]+\/)?(?:dashboard|finance|admins|verification|corrections|integrity|drivers|safety|audit|field|graph|config|deploy|unauthorized)(?:\/|$))/;
 }
 
 export async function signInAs(page: Page, email: string, options?: { landing?: string }) {
