@@ -1,0 +1,20 @@
+{
+  "city": {
+    "name": "Accra-Review",
+    "slug": "accra-review",
+    "country_code": "GH",
+    "state_region": "Greater Accra (review fixture — not live ops)",
+    "status": "alpha",
+    "centroid": { "lat": 5.603, "lng": -0.187 }
+  },
+  "corridor": {
+    "name": "Review Corridor Osu–Airport",
+    "slug": "osu-airport-review"
+  },
+  "config_overrides": {
+    "commission.rate": 0.05,
+    "graph.snap_radius_m": 45,
+    "graph.stage_merge_radius_m": 35
+  },
+  "description": "Fictional Accra metro review fixture for P10-E-01. Real coordinates near Accra; fictional park names. Data/config only — country active=false; digital_enabled stays false."
+}

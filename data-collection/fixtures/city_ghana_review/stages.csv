@@ -1,0 +1,9 @@
+route_name,sequence,stage_name,lat,lng,is_official_park
+Osu–Airport Car Route,1,Review Park Osu Circle,5.556,-0.182,true
+Osu–Airport Car Route,2,Review Junction Ring Road,5.572,-0.178,false
+Osu–Airport Car Route,3,Review Junction Liberation,5.588,-0.173,false
+Osu–Airport Car Route,4,Review Park Airport Junction,5.605,-0.167,true
+Osu–Airport Keke Route,1,Review Park Osu Circle,5.556,-0.182,true
+Osu–Airport Keke Route,2,Review Junction Ring Road,5.572,-0.178,false
+Osu–Airport Keke Route,3,Review Junction Liberation,5.588,-0.173,false
+Osu–Airport Keke Route,4,Review Park Airport Junction,5.605,-0.167,true
