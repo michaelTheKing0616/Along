@@ -1762,3 +1762,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Combined P10-B-01 / P10-C-01. Depends P10-A-01 PASS. Attach 07 §10, 05. AC: goldens per locale; white-label dry run screenshots. Token overrides only. Do not flip digital_enabled.
+
+## [Phase 10 / P10-B-01] Tenant branding + locale packs
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: branding_config token overrides; ha/yo/ig/pcm ARB scaffolds; goldens default vs tenant-B; Flutter 16/16.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: ig/pcm goldens missing (string tests only); formatMoney rollout partial.
+- Rework count: 0
+- Notes/escalations: Merged cc8e0e6. Combined P10-C-01. Next: P10-E-01. Do not flip digital_enabled.
+
+## [Phase 10 / P10-E-01] New country checklist
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P10-D-01 PASS. Attach runbooks. AC: gate artifact. Dry run a hypothetical country in review (config only). Do not flip digital_enabled.
