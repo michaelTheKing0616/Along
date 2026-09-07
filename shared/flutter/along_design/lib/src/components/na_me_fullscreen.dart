@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:along_design/src/components/na_me_mapper.dart';
+import 'package:along_design/src/components/na_me_shape_painter.dart';
 import 'package:along_design/src/tokens.g.dart';
 import 'package:along_design/src/utils/name_signal.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,10 @@ class DefaultNaMeEffects implements NaMeEffects {
   void hapticPulse() => HapticFeedback.heavyImpact();
 }
 
-/// Shared fullscreen Na Me signal (R-12 / D-16) — zero network.
+/// Snapshot states for golden tests (doc 05 §9 `NaMeScreen`).
+enum NaMeFullscreenVisualState { idle, strobeOn, strobeOff }
+
+/// Shared fullscreen Na Me signal (R-12 / D-16) — zero network, full-bleed.
 class NaMeFullscreen extends StatefulWidget {
   const NaMeFullscreen({
     super.key,
@@ -43,6 +47,7 @@ class NaMeFullscreen extends StatefulWidget {
     required this.effects,
     this.bearingDegrees,
     this.onClose,
+    this.visualState,
   });
 
   final String colorToken;
@@ -52,6 +57,9 @@ class NaMeFullscreen extends StatefulWidget {
   final NaMeEffects effects;
   final double? bearingDegrees;
   final VoidCallback? onClose;
+
+  /// When set, renders a static snapshot (goldens) instead of live strobe.
+  final NaMeFullscreenVisualState? visualState;
 
   @override
   State<NaMeFullscreen> createState() => _NaMeFullscreenState();
@@ -64,6 +72,17 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
   bool _isStrobing = false;
   bool _strobeOn = true;
   int _cycleRemainingMs = 0;
+
+  bool get _isPreview => widget.visualState != null;
+
+  bool get _effectiveStrobing =>
+      _isPreview ? widget.visualState != NaMeFullscreenVisualState.idle : _isStrobing;
+
+  bool get _effectiveStrobeOn => switch (widget.visualState) {
+        NaMeFullscreenVisualState.strobeOff => false,
+        NaMeFullscreenVisualState.strobeOn => true,
+        NaMeFullscreenVisualState.idle || null => _strobeOn,
+      };
 
   @override
   void dispose() {
@@ -80,11 +99,18 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
     _cycleEndTimer = null;
   }
 
-  void _triggerOnce() => _startStrobe(continuous: false);
+  void _triggerOnce() {
+    if (_isPreview) return;
+    _startStrobe(continuous: false);
+  }
 
-  void _triggerHoldStart() => _startStrobe(continuous: true);
+  void _triggerHoldStart() {
+    if (_isPreview) return;
+    _startStrobe(continuous: true);
+  }
 
   void _triggerHoldEnd() {
+    if (_isPreview) return;
     if (_cycleTimer == null) {
       _stopStrobe();
     }
@@ -140,116 +166,91 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
   Widget build(BuildContext context) {
     final colour = naMeColourFromToken(widget.colorToken);
     final shape = naMeShapeFromToken(widget.shapeToken);
-    final fill = _isStrobing && _strobeOn ? colour.color : AlongColors.ink900;
+    final fill = _effectiveStrobing && _effectiveStrobeOn
+        ? colour.color
+        : AlongColors.ink900;
+    final shapeColor = _effectiveStrobing && !_effectiveStrobeOn
+        ? AlongColors.ink900
+        : colour.color;
+    final topInset = MediaQuery.paddingOf(context).top;
 
     return Scaffold(
       backgroundColor: fill,
-      body: SafeArea(
-        child: GestureDetector(
-          key: const Key('na_me_fullscreen'),
-          onTap: _triggerOnce,
-          onLongPressStart: (_) => _triggerHoldStart(),
-          onLongPressEnd: (_) => _triggerHoldEnd(),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: AlongColors.surface0),
-                  onPressed: widget.onClose ?? () => Navigator.of(context).maybePop(),
-                ),
+      body: GestureDetector(
+        key: const Key('na_me_fullscreen'),
+        onTap: _triggerOnce,
+        onLongPressStart: _isPreview ? null : (_) => _triggerHoldStart(),
+        onLongPressEnd: _isPreview ? null : (_) => _triggerHoldEnd(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: topInset),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: AlongColors.surface0),
+                onPressed: widget.onClose ?? () => Navigator.of(context).maybePop(),
               ),
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.bearingDegrees != null)
-                        Transform.rotate(
-                          angle: widget.bearingDegrees! * math.pi / 180,
-                          child: const Icon(
-                            key: Key('na_me_compass_arrow'),
-                            Icons.navigation_rounded,
-                            color: AlongColors.surface0,
-                            size: 48,
-                          ),
-                        ),
-                      const SizedBox(height: AlongSpace.s24),
-                      CustomPaint(
-                        size: const Size.square(240),
-                        painter: _NaMeShapeLarge(
-                          shape: shape,
-                          color: _isStrobing && !_strobeOn
-                              ? AlongColors.ink900
-                              : colour.color,
-                        ),
-                      ),
-                      const SizedBox(height: AlongSpace.s16),
-                      Text(
-                        widget.label.toUpperCase(),
-                        key: const Key('na_me_label'),
-                        style: AlongText.displayL.copyWith(
+            ),
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.bearingDegrees != null)
+                      Transform.rotate(
+                        angle: widget.bearingDegrees! * math.pi / 180,
+                        child: const Icon(
+                          key: Key('na_me_compass_arrow'),
+                          Icons.navigation_rounded,
                           color: AlongColors.surface0,
+                          size: AlongSpace.s48,
                         ),
                       ),
-                      const SizedBox(height: AlongSpace.s8),
-                      Text(
-                        'Hold to strobe',
-                        style: AlongText.caption.copyWith(
-                          color: AlongColors.surface0.withValues(alpha: 0.8),
-                        ),
+                    const SizedBox(height: AlongSpace.s24),
+                    CustomPaint(
+                      size: const Size.square(240),
+                      painter: NaMeShapePainter(
+                        shape: shape,
+                        color: shapeColor,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: AlongSpace.s16),
+                    Text(
+                      widget.label.toUpperCase(),
+                      key: const Key('na_me_label'),
+                      style: AlongText.displayL.copyWith(
+                        color: AlongColors.surface0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AlongSpace.s8),
+                    Text(
+                      'Hold to strobe',
+                      style: AlongText.caption.copyWith(
+                        color: AlongColors.surface0.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              if (_isStrobing)
-                Padding(
-                  padding: const EdgeInsets.all(AlongSpace.s16),
-                  child: Text(
-                    key: const Key('na_me_strobing'),
-                    'Signalling…',
-                    style: AlongText.bodyStrong.copyWith(
-                      color: AlongColors.surface0,
-                    ),
+            ),
+            if (_effectiveStrobing)
+              Padding(
+                padding: const EdgeInsets.all(AlongSpace.s16),
+                child: Text(
+                  key: const Key('na_me_strobing'),
+                  'Signalling…',
+                  style: AlongText.bodyStrong.copyWith(
+                    color: AlongColors.surface0,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-            ],
-          ),
+              ),
+            SizedBox(height: MediaQuery.paddingOf(context).bottom),
+          ],
         ),
       ),
     );
   }
-}
-
-class _NaMeShapeLarge extends CustomPainter {
-  _NaMeShapeLarge({required this.shape, required this.color});
-
-  final NaMeShape shape;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = color;
-    final center = Offset(size.width / 2, size.height / 2);
-    final r = size.width / 2;
-    switch (shape) {
-      case NaMeShape.circle:
-        canvas.drawCircle(center, r, paint);
-      case NaMeShape.diamond:
-        final path = Path()
-          ..moveTo(center.dx, center.dy - r)
-          ..lineTo(center.dx + r, center.dy)
-          ..lineTo(center.dx, center.dy + r)
-          ..lineTo(center.dx - r, center.dy)
-          ..close();
-        canvas.drawPath(path, paint);
-      default:
-        canvas.drawCircle(center, r, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _NaMeShapeLarge oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.shape != shape;
 }

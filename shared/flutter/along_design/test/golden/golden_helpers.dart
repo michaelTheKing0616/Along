@@ -54,6 +54,42 @@ Future<void> expectAlongGolden(
   );
 }
 
+/// Pumps a full-bleed [NaMeFullscreen] for golden tests (no outer padding).
+Future<void> pumpNaMeGolden(
+  WidgetTester tester, {
+  required Widget child,
+  Size surfaceSize = const Size(400, 800),
+}) async {
+  await tester.binding.setSurfaceSize(surfaceSize);
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
+  await tester.pumpWidget(
+    MediaQuery(
+      data: MediaQueryData(size: surfaceSize),
+      child: MaterialApp(
+        theme: alongTheme(),
+        debugShowCheckedModeBanner: false,
+        home: child,
+      ),
+    ),
+  );
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 100));
+}
+
+/// Asserts a golden against the [NaMeFullscreen] scaffold.
+Future<void> expectNaMeGolden(
+  WidgetTester tester,
+  String path, {
+  bool? skip,
+}) {
+  return expectLater(
+    find.byType(Scaffold),
+    matchesGoldenFile(path),
+    skip: skip,
+  );
+}
+
 /// Golden matrix documentation (TS-DS-03):
 ///
 /// | Component     | States captured                          | textScale 1.3 |
@@ -75,6 +111,7 @@ Future<void> expectAlongGolden(
 /// | RequestSheet  | default/load/womenOnly                   | 1.0 + 1.3     |
 /// | BalanceCard   | good/warned/paused                       | 1.0 + 1.3     |
 /// | NaMeChip      | green diamond (representative)           | 1.0 only      |
+/// | NaMeScreen    | idle / strobeOn / strobeOff              | 1.0 only      |
 /// | NegotiationSheet | park/roaming/extension variants × rounds | 1.0 + 1.3  |
 /// | LegTimeline   | compact + full itinerary                 | 1.0 only      |
 /// | FareHero      | collapsed/expanded + delta               | 1.0 + 1.3     |

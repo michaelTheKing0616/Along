@@ -47,6 +47,8 @@ class _HoldButtonState extends State<HoldButton>
 
   Duration get _holdDuration => widget.holdDuration ?? _defaultHoldDuration;
 
+  bool get _isSos => widget.type == HoldButtonType.sos;
+
   @override
   void initState() {
     super.initState();
@@ -98,10 +100,22 @@ class _HoldButtonState extends State<HoldButton>
 
   @override
   Widget build(BuildContext context) {
-    final isSos = widget.type == HoldButtonType.sos;
-    final bg = isSos ? AlongColors.semanticDangerFill : AlongColors.ink900;
+    final isHolding = widget.visualState == HoldButtonVisualState.holding ||
+        (_displayProgress > 0 && widget.visualState == HoldButtonVisualState.idle);
+    final isFired = widget.visualState == HoldButtonVisualState.fired;
+
+    final bg = _isSos ? AlongColors.semanticDangerFill : AlongColors.ink900;
     final fg = AlongColors.surface0;
-    final label = widget.label ?? (isSos ? 'Hold for SOS' : 'Na Me');
+    final trackColor = _isSos
+        ? (isHolding || isFired
+            ? AlongColors.semanticDangerTint
+            : bg.withValues(alpha: 0.25))
+        : bg.withValues(alpha: 0.25);
+    final progressColor = _isSos ? AlongColors.semanticDanger : bg;
+    final label = widget.label ?? (_isSos ? 'Hold for SOS' : 'Na Me');
+    final firedLabel = _isSos ? 'SOS sent' : 'Fired';
+    final firedLabelColor =
+        _isSos ? AlongColors.semanticDanger : AlongColors.ink700;
 
     return Semantics(
       button: true,
@@ -121,36 +135,51 @@ class _HoldButtonState extends State<HoldButton>
             : null,
         child: SizedBox(
           width: AlongSpace.sizeCtaPrimary,
-          height: AlongSpace.sizeCtaPrimary,
+          height: AlongSpace.sizeCtaPrimary + AlongSpace.s24,
           child: Stack(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             children: [
+              if (_isSos && (isHolding || isFired))
+                Container(
+                  width: AlongSpace.sizeCtaPrimary + AlongSpace.s8,
+                  height: AlongSpace.sizeCtaPrimary + AlongSpace.s8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AlongColors.semanticDangerTint,
+                  ),
+                ),
               CustomPaint(
                 size: const Size.square(AlongSpace.sizeCtaPrimary),
                 painter: _HoldProgressPainter(
                   progress: _displayProgress,
-                  trackColor: bg.withValues(alpha: 0.25),
-                  progressColor: bg,
+                  trackColor: trackColor,
+                  progressColor: progressColor,
                 ),
               ),
               Container(
                 width: AlongSpace.s48,
                 height: AlongSpace.s48,
-                decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: isFired && _isSos
+                      ? AlongColors.semanticDanger
+                      : bg,
+                  shape: BoxShape.circle,
+                  border: isFired && _isSos
+                      ? Border.all(color: AlongColors.semanticDangerFill, width: 2)
+                      : null,
+                ),
                 alignment: Alignment.center,
                 child: Icon(
-                  isSos ? Icons.sos_rounded : Icons.flashlight_on_rounded,
+                  _isSos ? Icons.sos_rounded : Icons.flashlight_on_rounded,
                   color: fg,
                 ),
               ),
-              if (widget.visualState == HoldButtonVisualState.fired)
+              if (isFired)
                 Positioned(
-                  bottom: -AlongSpace.s20,
+                  bottom: 0,
                   child: Text(
-                    'Fired',
-                    style: AlongText.caption.copyWith(
-                      color: AlongColors.semanticDanger,
-                    ),
+                    firedLabel,
+                    style: AlongText.caption.copyWith(color: firedLabelColor),
                   ),
                 ),
             ],
@@ -198,5 +227,7 @@ class _HoldProgressPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _HoldProgressPainter oldDelegate) =>
-      oldDelegate.progress != progress;
+      oldDelegate.progress != progress ||
+      oldDelegate.trackColor != trackColor ||
+      oldDelegate.progressColor != progressColor;
 }
