@@ -1,0 +1,7 @@
+route_name,from_seq,to_seq,fare
+Osu–Airport Car Route,1,2,120
+Osu–Airport Car Route,2,3,120
+Osu–Airport Car Route,3,4,120
+Osu–Airport Keke Route,1,2,60
+Osu–Airport Keke Route,2,3,60
+Osu–Airport Keke Route,3,4,60

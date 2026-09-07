@@ -13,7 +13,7 @@ Operational procedures for the team running Along. Each runbook is owned by the 
 | `corridor_onboarding.md` | Phase 6 (P6-E-01); validated P7-E-01 | ops-ready |
 | `pilot_day_dry_run.md` | Phase 6 (P6-E-01) | ops-ready |
 | `city_onboarding.md` | Phase 9 | template |
-| `new_country_checklist.md` | Phase 10 | template |
+| `new_country_checklist.md` | Phase 10 (P10-E-01) | ops-ready |
 | `deploy_rollback.md` | Phase 9/12 | template |
 | `db_restore_drill.md` | Phase 9 (P9-E-02) | ops-ready |
 | `observability.md` | Phase 9 (P9-E-02) | ops-ready |
