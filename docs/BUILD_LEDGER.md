@@ -1610,3 +1610,27 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P8-A-03 PASS. Attach 06, 02 §13. AC: no personal data in request (network assertion). Config-gated, labelled Sponsored. Do not flip digital_enabled.
+
+## [Phase 8 / P8-B-01] Sponsored slot R-07/R-22
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: R-07/R-22 Sponsored slots; FM39 request builder; Flutter tests 8/8. Migration 00072 grant only.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: R-22 reads profile client-side for city→corridor; CTA does not open URL.
+- Rework count: 0
+- Notes/escalations: Merged 7c3332b. Next: skip P8-E-01 (human), then Phase 8 code gate. Do not flip digital_enabled.
+
+## [Phase 8 / P8-E-01] Legal review checkpoint (human)
+- Status: BLOCKED — human
+- Assigned: 2026-09-07
+- Worker report summary: Skipped per 2026-09-07 owner decision. Does not block Phase 8–12 code.
+- Reviewer verdict: n/a — never invent PASS
+- Rework count: 0
+- Notes/escalations: Sign-off required before any B2B contract goes live (VAT/NDPA/ads/operator SaaS). Ads/API stay behind placements.enabled=false and FM39/FM40. Not a code-gate fail.
+
+## [Phase 8 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 8: k-anon export; invoice reconcile; FM39; FM40. P8-E-01 human deferred. Playwright/device DEFERRED. Do not flip digital_enabled. Then chain Phase 9.
