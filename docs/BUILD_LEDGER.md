@@ -1530,3 +1530,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 7: zero-code corridor; load tests attached; FM27 raw traces → zero proposals. Full-city k6 / Patrol / live corridor DEFERRED. Do not start Phase 8 until gate recorded. Then chain Phase 8.
+
+## [Phase 7 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master 58c926c)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — FM27 19/19 + SQL []; corridor RPC + CLI dry-run; route-inference fixture candidate; ETA A/B report; A-14 RPCs exist; load artifacts attached. Flag false. Deferred: full-city k6, Patrol, live ops sign-off, dirty-DB pgTAP full counts.
+- Rework count: 0
+- Notes/escalations: Residuals: P1-G-01, P4-E-02, P8-E-01 stay BLOCKED — human. Do not flip digital_enabled. Chaining Phase 8 from P8-A-01.
+
+## [Phase 8 / P8-A-01] Corporate tables + invoices
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P4-A-01 PASS. Attach 02 §13. AC: invoice reconciles; discrepancy cases tested. Do not flip digital_enabled. Do not invent P8-E-01 PASS.
