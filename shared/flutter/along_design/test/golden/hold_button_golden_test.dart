@@ -10,7 +10,7 @@ void main() {
         testWidgets('${type.name}_${state.name}_scale1_0', (tester) async {
           await pumpAlongGolden(
             tester,
-            surfaceSize: const Size(200, 160),
+            surfaceSize: const Size(200, 180),
             child: HoldButton(type: type, visualState: state),
           );
           await expectAlongGolden(

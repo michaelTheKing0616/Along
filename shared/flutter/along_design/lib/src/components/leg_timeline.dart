@@ -139,7 +139,7 @@ class _FullLegRow extends StatelessWidget {
   final LegTimelineLeg leg;
   final bool isLast;
 
-  Color get _railColor {
+  Color get _segmentColor {
     if (leg.isWalk) return AlongColors.mapRouteWalk;
     return switch (leg.state) {
       LegTimelineLegState.done => leg.mode.fillColor.withValues(alpha: 0.5),
@@ -152,93 +152,142 @@ class _FullLegRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final opacity = leg.state == LegTimelineLegState.pending ? 0.55 : 1.0;
+    final isCurrent = leg.state == LegTimelineLegState.current;
 
     return Opacity(
       opacity: opacity,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              width: 28,
-              child: Column(
-                children: [
-                  _RailDot(color: _railColor, dashed: leg.isWalk),
-                  if (!isLast)
-                    Expanded(
-                      child: CustomPaint(
-                        painter: _RailSegmentPainter(
-                          color: _railColor,
-                          dashed: leg.isWalk,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: AlongSpace.s12),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: isLast ? 0 : AlongSpace.s16),
+      child: Container(
+        margin: EdgeInsets.only(bottom: isLast ? 0 : AlongSpace.s8),
+        padding: isCurrent
+            ? const EdgeInsets.all(AlongSpace.s12)
+            : EdgeInsets.zero,
+        decoration: isCurrent
+            ? BoxDecoration(
+                color: AlongColors.surface50,
+                borderRadius: BorderRadius.circular(AlongRadius.md.x),
+                border: Border.all(color: leg.mode.fillColor, width: 1),
+              )
+            : null,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                width: 28,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        if (!leg.isWalk)
-                          ModeChip(
-                            mode: leg.mode,
-                            size: ModeChipSize.small,
-                            selected: leg.state == LegTimelineLegState.current,
-                          )
-                        else
-                          Icon(
-                            Icons.directions_walk_rounded,
-                            size: 18,
-                            color: AlongColors.ink700,
-                          ),
-                        const SizedBox(width: AlongSpace.s8),
-                        Expanded(
-                          child: Text(
-                            '${leg.boardLabel} → ${leg.alightLabel}',
-                            style: AlongText.bodyStrong.copyWith(
-                              color: leg.state == LegTimelineLegState.current
-                                  ? AlongColors.ink900
-                                  : AlongColors.ink700,
-                            ),
+                    _RailDot(
+                      color: _segmentColor,
+                      dashed: leg.isWalk,
+                      state: leg.state,
+                    ),
+                    if (!isLast)
+                      Expanded(
+                        child: CustomPaint(
+                          painter: _RailSegmentPainter(
+                            color: _segmentColor,
+                            dashed: leg.isWalk,
                           ),
                         ),
-                      ],
-                    ),
-                    if (leg.fareNaira != null || leg.etaAtTransfer != null) ...[
-                      const SizedBox(height: AlongSpace.s4),
-                      Row(
-                        children: [
-                          if (leg.fareNaira != null)
-                            Text(
-                              formatMoney(leg.fareNaira!),
-                              style: AlongText.numericM,
-                              softWrap: false,
-                              overflow: TextOverflow.visible,
-                            ),
-                          if (leg.fareNaira != null && leg.etaAtTransfer != null)
-                            Text(
-                              ' · ',
-                              style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                            ),
-                          if (leg.etaAtTransfer != null)
-                            Text(
-                              leg.etaAtTransfer!,
-                              style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                            ),
-                        ],
                       ),
-                    ],
                   ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(width: AlongSpace.s12),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: isLast ? 0 : AlongSpace.s8,
+                    top: isCurrent ? 0 : AlongSpace.s4,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isCurrent)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AlongSpace.s4),
+                          child: Text(
+                            'NOW',
+                            style: AlongText.overline.copyWith(
+                              color: leg.mode.fillColor,
+                            ),
+                          ),
+                        ),
+                      Row(
+                        children: [
+                          if (!leg.isWalk)
+                            ModeChip(
+                              mode: leg.mode,
+                              size: ModeChipSize.small,
+                              selected: isCurrent,
+                            )
+                          else
+                            Icon(
+                              Icons.directions_walk_rounded,
+                              size: 18,
+                              color: AlongColors.ink700,
+                            ),
+                          const SizedBox(width: AlongSpace.s8),
+                          Expanded(
+                            child: Text(
+                              '${leg.boardLabel} → ${leg.alightLabel}',
+                              style: (isCurrent
+                                      ? AlongText.bodyStrong
+                                      : AlongText.body)
+                                  .copyWith(
+                                color: switch (leg.state) {
+                                  LegTimelineLegState.current =>
+                                    AlongColors.ink900,
+                                  LegTimelineLegState.done =>
+                                    AlongColors.ink500,
+                                  _ => AlongColors.ink700,
+                                },
+                                decoration: leg.state == LegTimelineLegState.done
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (leg.fareNaira != null || leg.etaAtTransfer != null) ...[
+                        const SizedBox(height: AlongSpace.s4),
+                        Row(
+                          children: [
+                            if (leg.fareNaira != null)
+                              Text(
+                                formatMoney(leg.fareNaira!),
+                                style: AlongText.numericM.copyWith(
+                                  color: leg.state == LegTimelineLegState.pending
+                                      ? AlongColors.ink500
+                                      : AlongColors.ink900,
+                                ),
+                                softWrap: false,
+                                overflow: TextOverflow.visible,
+                              ),
+                            if (leg.fareNaira != null && leg.etaAtTransfer != null)
+                              Text(
+                                ' · ',
+                                style: AlongText.caption.copyWith(
+                                  color: AlongColors.ink500,
+                                ),
+                              ),
+                            if (leg.etaAtTransfer != null)
+                              Text(
+                                leg.etaAtTransfer!,
+                                style: AlongText.caption.copyWith(
+                                  color: AlongColors.ink500,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -246,13 +295,50 @@ class _FullLegRow extends StatelessWidget {
 }
 
 class _RailDot extends StatelessWidget {
-  const _RailDot({required this.color, required this.dashed});
+  const _RailDot({
+    required this.color,
+    required this.dashed,
+    required this.state,
+  });
 
   final Color color;
   final bool dashed;
+  final LegTimelineLegState state;
 
   @override
   Widget build(BuildContext context) {
+    if (state == LegTimelineLegState.done) {
+      return Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        child: const Icon(
+          Icons.check_rounded,
+          size: 12,
+          color: AlongColors.surface0,
+        ),
+      );
+    }
+
+    if (state == LegTimelineLegState.current) {
+      return Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color,
+          border: Border.all(color: AlongColors.surface0, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.4),
+              blurRadius: 0,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+      );
+    }
+
     if (dashed) {
       return Container(
         width: 12,
@@ -263,6 +349,7 @@ class _RailDot extends StatelessWidget {
         ),
       );
     }
+
     return Container(
       width: 12,
       height: 12,
@@ -290,7 +377,11 @@ class _RailSegmentPainter extends CustomPainter {
       var y = 0.0;
       while (y < size.height) {
         final end = (y + dashHeight).clamp(0.0, size.height);
-        canvas.drawLine(Offset(size.width / 2, y), Offset(size.width / 2, end.toDouble()), paint);
+        canvas.drawLine(
+          Offset(size.width / 2, y),
+          Offset(size.width / 2, end.toDouble()),
+          paint,
+        );
         y += dashHeight + gap;
       }
     } else {

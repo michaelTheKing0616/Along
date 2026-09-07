@@ -41,7 +41,7 @@ void main() {
     testWidgets('full_itinerary_scale_1_0', (tester) async {
       await pumpAlongGolden(
         tester,
-        surfaceSize: const Size(400, 420),
+        surfaceSize: const Size(400, 480),
         child: const LegTimeline(legs: sampleLegs),
       );
       await expectAlongGolden(tester, 'goldens/leg_timeline_full_1_0.png');
