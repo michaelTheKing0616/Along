@@ -1,5 +1,5 @@
 {
-  "$comment": "Phase ≤6 admin WRITE RPCs (doc 03 §11 + implemented extras). Phase 7 intelligence RPCs remain GAP.",
+  "$comment": "Admin WRITE RPCs (doc 03 §11 + implemented extras). Phase 7 intelligence RPCs covered in 00065.",
   "write_rpcs": [
     {
       "name": "admin_approve_verification",
@@ -67,15 +67,15 @@
     },
     {
       "name": "admin_review_candidate_park",
-      "audit": { "kind": "gap", "reason": "RPC not implemented — Phase 7 intelligence" }
+      "audit": { "kind": "trigger", "table": "candidate_park_clusters" }
     },
     {
       "name": "admin_review_route_inference",
-      "audit": { "kind": "gap", "reason": "RPC not implemented — Phase 7 intelligence" }
+      "audit": { "kind": "trigger", "table": "route_inference_candidates" }
     },
     {
       "name": "admin_review_geometry_correction",
-      "audit": { "kind": "gap", "reason": "RPC not implemented — Phase 7 intelligence" }
+      "audit": { "kind": "trigger", "table": "road_geometry_corrections" }
     },
     {
       "name": "admin_log_view_document",

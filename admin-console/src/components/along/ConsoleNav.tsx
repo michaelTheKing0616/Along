@@ -16,6 +16,7 @@ const LINKS = [
   { segment: 'integrity', label: 'Integrity' },
   { segment: 'finance', label: 'Finance' },
   { segment: 'analytics', label: 'Analytics' },
+  { segment: 'intelligence', label: 'Intelligence' },
   { segment: 'safety', label: 'Safety' },
   { segment: 'audit', label: 'Audit' },
   { segment: 'admins', label: 'Admins' },
