@@ -7,6 +7,7 @@ Operational procedures for the team running Along. Each runbook is owned by the 
 | `sos_escalation.md` | Phase 5 (P5-D-01) | ops-ready |
 | `incident_response.md` (safety) | Phase 6 (P6-E-01) | ops-ready |
 | `security_incident.md` | Phase 11 | template |
+| `pen_test_coordination.md` | Phase 11 (P11-E-01) | ops-ready (external test DEFERRED) |
 | `verification_review.md` | Phase 6 (P6-E-01) | ops-ready |
 | `fare_dispute.md` | Phase 6 (P6-E-01) | ops-ready |
 | `guarantor_referral.md` | Phase 4 | template |

@@ -33,9 +33,9 @@ Pin all toolchain versions at repo bootstrap. Upgrading a **major** version requ
 | TypeScript | **5.8.3** | `backend/jobs`, `admin-console` |
 | ESLint | **9.28.0** | `backend/jobs`, `admin-console` |
 | typescript-eslint | **8.33.0** | `backend/jobs`, `admin-console` |
-| Vitest | **3.2.1** | `backend/jobs`, `admin-console` |
+| Vitest | **3.2.6** | `backend/jobs`, `admin-console`, `data-collection` |
 | pg (Node Postgres client) | **8.13.1** | `backend/jobs/package.json` |
-| Style Dictionary | **4.3.3** | `shared/design-tokens` token build |
+| Style Dictionary | **5.4.4** | `shared/design-tokens` token build (P11-E-01 security bump from 4.3.3) |
 
 ### Deno (Edge Functions)
 
@@ -47,7 +47,8 @@ Pin all toolchain versions at repo bootstrap. Upgrading a **major** version requ
 
 | Component | Version | Notes |
 |---|---|---|
-| Next.js | **15.1.12** | admin-console scaffold in P0-D-01 |
+| Next.js | **15.5.21** | admin-console (P11-E-01 security bump from 15.1.12) |
+| Playwright | **1.55.1** | admin-console E2E |
 | MapLibre GL JS | **5.6.1** | admin-console live map (A-03, P6-D-02) |
 | pmtiles (JS) | **4.3.0** | admin-console PMTiles protocol for MapLibre GL JS |
 | maplibre_gl (Flutter plugin) | **0.22.0** | `along_map` in P1-E-02 |

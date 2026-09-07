@@ -1,0 +1,55 @@
+name: security
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+      - name: Semgrep (Along ruleset)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: .semgrep/along-rules.yml
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: pnpm audit (fail on high or critical)
+        run: pnpm audit --audit-level=high
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.2'
+          cache: true
+
+      - name: Install Melos
+        run: dart pub global activate melos 6.3.2
+
+      - name: Melos bootstrap
+        run: melos bootstrap
+
+      - name: Dart pub outdated report (informational)
+        run: melos exec -- dart pub outdated --mode=null-safety --no-dev-dependencies --up-to-date || true
