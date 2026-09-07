@@ -13,6 +13,7 @@ const LINKS = [
   { segment: 'corrections', label: 'Fare corrections' },
   { segment: 'integrity', label: 'Integrity' },
   { segment: 'finance', label: 'Finance' },
+  { segment: 'analytics', label: 'Analytics' },
   { segment: 'safety', label: 'Safety' },
   { segment: 'audit', label: 'Audit' },
   { segment: 'admins', label: 'Admins' },
