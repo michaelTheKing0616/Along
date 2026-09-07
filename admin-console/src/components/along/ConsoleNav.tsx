@@ -20,6 +20,7 @@ const LINKS = [
   { segment: 'corporate', label: 'Corporate' },
   { segment: 'operator', label: 'Operator' },
   { segment: 'revenue', label: 'Revenue' },
+  { segment: 'markets', label: 'Markets' },
   { segment: 'safety', label: 'Safety' },
   { segment: 'audit', label: 'Audit' },
   { segment: 'admins', label: 'Admins' },

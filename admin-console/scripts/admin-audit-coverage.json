@@ -112,6 +112,14 @@
     {
       "name": "admin_disable_admin",
       "audit": { "kind": "trigger", "table": "admin_users" }
+    },
+    {
+      "name": "admin_upsert_country",
+      "audit": { "kind": "trigger", "table": "countries" }
+    },
+    {
+      "name": "admin_set_country_schema",
+      "audit": { "kind": "trigger", "table": "countries" }
     }
   ]
 }
