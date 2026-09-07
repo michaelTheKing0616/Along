@@ -960,9 +960,9 @@ P1-G-01 still blocks Phase 7 only.
 - Notes/escalations: Merged 5c99872. Live-device camera: deferred to P1-G-01. No production stickers printed.
 
 ## [Phase 4 / P4-D-02] W-04 web pay + admin QR ops
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-06
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: Flag-gated. Playwright vs mocked sandbox only — no real rider charge. PDF is ops preview, not production sticker print. Do not flip digital_enabled.
+- Worker report summary: W-04 /p/[code], A-11/A-13, STAGING PDF, ADR-0021. Vitest PDF PASS. Playwright not independently green.
+- Reviewer verdict: FAIL — check_playwright.sh 23/23 failed. W-04: PostgREST schema cache miss on resolve_qr_driver. Admin sign-in: Invalid email or password after stop/start. Flag still false. Paystack mocked in spec.
+- Rework count: 1 / 2
+- Notes/escalations: Minimal fix: reload PostgREST after db reset; keep local Supabase env after .env.local so e2e users authenticate. Do not flip digital_enabled.
