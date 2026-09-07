@@ -34,6 +34,8 @@ class FakeAlongSupabase implements AlongSupabase {
     this.profileRow,
     this.riderRow,
     this.cityRegulatoryFlags = const {'women_only_matching': true},
+    this.itineraryStateResponse,
+    this.parseItineraryResponse,
     FakeNegotiationEngine? negotiationEngine,
   }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
@@ -68,11 +70,18 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? profileRow;
   Map<String, dynamic>? riderRow;
   Map<String, dynamic> cityRegulatoryFlags;
+  Map<String, dynamic>? itineraryStateResponse;
+  Map<String, dynamic>? parseItineraryResponse;
 
   final FakeNegotiationEngine negotiationEngine;
 
   int planTripInvokeCount = 0;
   int requestTripInvokeCount = 0;
+  int createItineraryInvokeCount = 0;
+  int updateItineraryStopsInvokeCount = 0;
+  int itineraryStateInvokeCount = 0;
+  int itineraryMatchNextInvokeCount = 0;
+  int parseItineraryInvokeCount = 0;
   int tripSnapshotCallCount = 0;
   int markBoardedInvokeCount = 0;
   int confirmFareInvokeCount = 0;
@@ -317,6 +326,22 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       return {};
     }
+    if (fn == 'create_itinerary') {
+      createItineraryInvokeCount++;
+      return itineraryStateResponse ?? sampleItineraryStateJson();
+    }
+    if (fn == 'update_itinerary_stops') {
+      updateItineraryStopsInvokeCount++;
+      return itineraryStateResponse ?? sampleItineraryStateJson();
+    }
+    if (fn == 'itinerary_state') {
+      itineraryStateInvokeCount++;
+      return itineraryStateResponse ?? sampleItineraryStateJson();
+    }
+    if (fn == 'itinerary_match_next') {
+      itineraryMatchNextInvokeCount++;
+      return sampleItineraryStateWithPreparedPlan();
+    }
     return {};
   }
 
@@ -402,6 +427,31 @@ class FakeAlongSupabase implements AlongSupabase {
         await Future<void>.delayed(planTripDelay);
       }
       return planTripResponse ?? {'data': {'candidates': []}};
+    }
+    if (slug == 'parse-itinerary') {
+      parseItineraryInvokeCount++;
+      return parseItineraryResponse ??
+          {
+            'data': {
+              'proposal': [
+                {
+                  'sequence': 1,
+                  'destination_description': 'School',
+                  'resolved': null,
+                },
+                {
+                  'sequence': 2,
+                  'destination_description': 'Work',
+                  'resolved': {
+                    'label': 'Area 1',
+                    'location': {'lat': 9.08, 'lng': 7.45},
+                    'confidence': 0.8,
+                  },
+                },
+              ],
+              'needs_confirmation': true,
+            },
+          };
     }
     if (slug == 'walking-directions') {
       return walkingDirectionsResponse ??
@@ -941,6 +991,118 @@ class FakeNegotiationEngine {
         'timestamps': {},
       };
 }
+
+Map<String, dynamic> sampleItineraryStateJson({
+  String itineraryId = 'itin-test-001',
+  String nextStopId = 'stop-2',
+  bool withPreparedPlan = false,
+}) {
+  final preparedPlan = {
+    'query_id': 'query-itin-1',
+    'city_id': 'b1000000-0000-4000-8000-000000000001',
+    'degraded': false,
+    'candidates': [
+      {
+        'candidate_id': 'cand-itin-1',
+        'kind': 'direct',
+        'source': 'parked',
+        'viable_direct': true,
+        'legs': [
+          {
+            'leg_index': 0,
+            'mode': {
+              'code': 'keke',
+              'label': 'Keke',
+              'icon_key': 'keke',
+              'color_token': 'modeKeke',
+            },
+            'board': {
+              'stage_id': 's-lugbe',
+              'name': 'Lugbe Park',
+              'location': {'lat': 9.01, 'lng': 7.40},
+              'walk_m': 240,
+              'walk_s': 240,
+              'wayfinding_available': true,
+            },
+            'alight': {
+              'stage_id': 's-area1',
+              'name': 'Area 1 Park',
+              'location': {'lat': 9.05, 'lng': 7.45},
+            },
+            'route_id': 'route-1',
+            'route_leg_ids': ['leg-1'],
+            'in_vehicle_s': 900,
+            'wait_s': 360,
+            'fare': {
+              'total': {'amount': '450.00', 'currency': 'NGN'},
+              'tier': 1,
+              'confidence': 0.95,
+              'unconfirmed': false,
+              'quote_id': 'quote-itin-1',
+              'expires_at': '2026-09-05T16:00:00Z',
+            },
+            'supply': {'kind': 'parked', 'vehicles_bucket': '1-2'},
+            'load_warning': null,
+          },
+        ],
+        'transfers': [],
+        'metrics': {
+          'total_fare_minor': 45000,
+          'total_time_s': 1500,
+          'transfer_count': 0,
+          'total_walking_distance_m': 240,
+          'strenuousness_score': 0.2,
+          'recommended_score': 1.0,
+          'explain': {'fare': 0.4, 'time': 0.4, 'strenuous': 0.2},
+        },
+      },
+    ],
+    'sort_orders': {
+      'recommended': ['cand-itin-1'],
+      'cheapest': ['cand-itin-1'],
+      'fastest': ['cand-itin-1'],
+      'least_strenuous': ['cand-itin-1'],
+    },
+    'coverage_gap': null,
+    'candidate_set_only': true,
+    'match_requires_request_trip': true,
+  };
+
+  final stop1 = {
+    'id': 'stop-1',
+    'sequence': 1,
+    'destination_description': 'School',
+    'destination_location': {'lat': 9.05, 'lng': 7.40},
+    'status': 'completed',
+    'linked_journey_id': null,
+    'prepared_plan': null,
+  };
+  final stop2 = {
+    'id': nextStopId,
+    'sequence': 2,
+    'destination_description': 'Work',
+    'destination_location': {'lat': 9.08, 'lng': 7.45},
+    'status': 'pending',
+    'linked_journey_id': null,
+    'prepared_plan': withPreparedPlan ? preparedPlan : null,
+  };
+  return {
+    'itinerary_id': itineraryId,
+    'status': 'active',
+    'plan_date': '2026-09-07',
+    'load_flagged': false,
+    'load_size': null,
+    'load_note': null,
+    'stops': [stop1, stop2],
+    'next_pending_stop_id': nextStopId,
+    'next_prepared_plan': withPreparedPlan ? preparedPlan : null,
+    'not_booked': true,
+    'match_action': 'request_trip',
+  };
+}
+
+Map<String, dynamic> sampleItineraryStateWithPreparedPlan() =>
+    sampleItineraryStateJson(withPreparedPlan: true);
 
 class _FakeNegotiation {
   _FakeNegotiation({
