@@ -1226,3 +1226,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: FAIL — AC MET (admin-only precise positions). Gates FAIL: (a) hardcoded 5000 ms poll in AdminLiveMap.tsx; (f) ~20 inline hex in MapLibre paint (FM20).
 - Rework count: 1
 - Notes/escalations: Rework 1/2 — cfg ops.live_map_poll_s; resolve paint colors from CSS tokens. Do not expand scope.
+
+## [Phase 6 / P6-D-02] A-03 Live map
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: A-03 /live MapLibre+PMTiles; TS-OPS-04 9/9; ADR-0013 pins. Rework 1: ops.live_map_poll_s + token paint.
+- Reviewer verdict: PASS WITH NOTES — prior FAIL fixed. AC MET. Notes: TS poll fallback 5; Abuja default center; SOS pulse 800 ms animation.
+- Rework count: 1
+- Notes/escalations: Merged 836a8c1. Next: P6-D-03. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 6 / P6-D-03] A-05 Graph editor + A-09 Config editor
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P0-D-02 PASS. Playwright required: graph edit → revision+audit; config change → audit with reason. Reuse MapLibre from P6-D-02. Do not redo live map.
