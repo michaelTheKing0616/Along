@@ -49,7 +49,7 @@ function createMockService(provider = 'log'): SupabaseClient {
   } as unknown as SupabaseClient;
 }
 
-Deno.test('send-sms: log provider writes structured OTP log', async () => {
+Deno.test('send-sms: log provider writes structured delivery log without OTP', async () => {
   const logs: Record<string, unknown>[] = [];
   const req = await signedRequest({
     user: { id: USER_ID, phone: '+2348012345678' },
@@ -65,8 +65,8 @@ Deno.test('send-sms: log provider writes structured OTP log', async () => {
   assertEquals(res.status, 200);
   assertEquals(logs.length, 1);
   assertEquals(logs[0]?.event, 'sms_otp_log');
-  assertEquals(logs[0]?.otp, '561166');
   assertEquals(logs[0]?.phone_suffix, '5678');
+  assertEquals('otp' in (logs[0] ?? {}), false);
 });
 
 Deno.test('send-sms: rejects non-log provider until Termii is wired', async () => {

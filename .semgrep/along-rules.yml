@@ -1,0 +1,118 @@
+# Along-specific Semgrep rules (doc 12, P11-E-01). Run in CI via .github/workflows/security.yml
+rules:
+  - id: along-pii-otp-in-logs
+    message: >-
+      OTP must never appear in logs (doc 12 §2). Remove otp/OTP from log payloads;
+      use phone_suffix only for the sms log provider.
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: |
+              console.log(..., { ..., otp: $OTP, ... }, ...)
+          - pattern: |
+              $LOG({ ..., otp: $OTP, ... })
+          - pattern: |
+              $LOG({ ..., OTP: $OTP, ... })
+    paths:
+      exclude:
+        - "**/*_test.ts"
+        - "**/*_test.tsx"
+
+  - id: along-pii-phone-in-logs
+    message: >-
+      Full phone numbers must not be logged (doc 12 T12). Log phone_suffix (last 4) only.
+    severity: WARNING
+    languages: [typescript, javascript, dart]
+    pattern-either:
+      - pattern: |
+          console.log(..., { ..., phone: $PHONE, ... }, ...)
+      - pattern: |
+          $LOG(..., { ..., phone: $PHONE, ... }, ...)
+    metavariable-regex:
+      metavariable: $PHONE
+      regex: ^(?!.*suffix).*$
+    paths:
+      exclude:
+        - "**/*_test.ts"
+        - "**/*_test.tsx"
+        - "**/*_test.dart"
+
+  - id: along-pii-plate-or-token-in-logs
+    message: >-
+      Plates and auth tokens must not appear in structured logs (doc 12 T12).
+    severity: WARNING
+    languages: [typescript, javascript, dart]
+    pattern-either:
+      - pattern: |
+          console.log(..., { ..., plate: $X, ... }, ...)
+      - pattern: |
+          console.log(..., { ..., token: $X, ... }, ...)
+      - pattern: |
+          $LOG(..., { ..., plate: $X, ... }, ...)
+      - pattern: |
+          $LOG(..., { ..., token: $X, ... }, ...)
+    paths:
+      exclude:
+        - "**/*_test.ts"
+        - "**/*_test.tsx"
+        - "**/*_test.dart"
+
+  - id: along-postgres-current-user-bypass
+    message: >-
+      Column-protection trigger bypass via current_user postgres/supabase_admin.
+      Allowed only inside protect_* triggers for migrations/service paths — verify
+      search_path and that no client role can reach this branch.
+    severity: WARNING
+    languages: [sql]
+    pattern: |
+      current_user in ('postgres', 'supabase_admin')
+    paths:
+      include:
+        - "backend/db/migrations/**"
+        - "backend/db/policies/**"
+
+  - id: along-digital-enabled-migration-flip
+    message: >-
+      Do not set payments.digital_enabled to true in migrations (P4-E-02 / doc 11).
+      Default stays false via config_default(); enable only via A-09 after counsel.
+    severity: ERROR
+    languages: [sql]
+    pattern-either:
+      - pattern: |
+          update app_config set value = 'true' ... payments.digital_enabled ...
+      - pattern: |
+          insert into app_config ... payments.digital_enabled ... 'true' ...
+      - pattern: |
+          config_default('payments.digital_enabled', 'true')
+    paths:
+      include:
+        - "backend/db/migrations/**"
+      exclude:
+        - "**/*_test.sql"
+        - "**/seed/**"
+
+  - id: along-driver-presence-rider-select
+    message: >-
+      Riders must not have SELECT on driver_presence (doc 12 T1 / TS-DISC-01).
+      Tier-A disclosure uses ambient_vehicles() only.
+    severity: ERROR
+    languages: [sql]
+    patterns:
+      - pattern: |
+          create policy $POLICY
+            on driver_presence for select ...
+            ...
+            $COND
+      - metavariable-pattern:
+          metavariable: $COND
+          patterns:
+            - pattern-either:
+                - pattern: |
+                    profiles.role = 'rider'
+                - pattern: |
+                    (select role from profiles ...) = 'rider'
+    paths:
+      include:
+        - "backend/db/policies/**"
+        - "backend/db/migrations/**"

@@ -1,0 +1,34 @@
+# Along secret scanning (doc 12 T12, P11-E-01). Extends gitleaks defaults.
+title = "Along gitleaks"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Unit/integration test fixtures with synthetic secrets"
+paths = [
+  '''(?i).*_test\.(ts|tsx|dart|sql)$''',
+  '''(?i).*handler_test\.ts$''',
+  '''(?i).*fcm_token_test\.ts$''',
+  '''(?i).*paystack.*_test\.ts$''',
+  '''(?i).*/testing/fakes/.*''',
+  '''(?i).*/e2e/.*''',
+]
+
+[[allowlists]]
+description = "Placeholder env JSON committed for local/staging scaffold (no live secrets)"
+paths = [
+  '''^env/staging\.example\.json$''',
+  '''^mobile-(rider|driver)/env/(dev|staging|prod)\.json$''',
+]
+
+[[allowlists]]
+description = "Known synthetic test secret patterns"
+regexTarget = "match"
+regexes = [
+  '''sk_test_[a-z_0-9]+''',
+  '''placeholder-anon-key''',
+  '''test-secret-key''',
+  '''<paystack-secret-placeholder>''',
+  '''<legacy-anon-jwt>''',
+]

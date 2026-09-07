@@ -62,12 +62,12 @@ export async function handleSendSms(
   const phone = parsed.data.user.phone ?? null;
 
   if (provider === 'log') {
+    // doc 12: OTP never logged — staging log provider records delivery only.
     deps.log({
       event: 'sms_otp_log',
       provider,
       user_id: parsed.data.user.id,
       phone_suffix: phoneSuffix(phone),
-      otp: parsed.data.sms.otp,
     });
     return new Response('{}', {
       status: 200,
