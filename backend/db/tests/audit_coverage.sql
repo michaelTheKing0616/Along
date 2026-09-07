@@ -30,6 +30,7 @@ with required as (
     'corporate_accounts',
     'corporate_members',
     'corporate_trip_policies',
+    'operator_accounts',
     'sponsored_placements',
     'api_keys'
   ]) as tbl
@@ -65,11 +66,11 @@ select is(
   'doc 02 §15: every existing attach-list table has audit_admin_write trigger'
 );
 
--- Phase 8 tables not yet migrated — confirm deferred, not forgotten
+-- Phase 8 tables now migrated in P8-A-03
 select ok(
-  to_regclass('public.sponsored_placements') is null
-  and to_regclass('public.api_keys') is null,
-  'sponsored_placements and api_keys deferred to Phase 8 (P8-A-03)'
+  to_regclass('public.sponsored_placements') is not null
+  and to_regclass('public.api_keys') is not null,
+  'sponsored_placements and api_keys exist after P8-A-03'
 );
 
 -- Conditional triggers: drivers.standing

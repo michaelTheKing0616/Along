@@ -151,7 +151,10 @@ with required_global as (
     'jobs.map_match_default_radius_m',
     'jobs.speed_profile_min_samples',
     'jobs.corporate_invoice_day',
-    'jobs.corporate_invoice_hour_utc'
+    'jobs.corporate_invoice_hour_utc',
+    'api.default_rate_limit_per_min',
+    'api.max_page_size',
+    'placements.enabled'
   ]) as key
 ),
 missing_global as (
