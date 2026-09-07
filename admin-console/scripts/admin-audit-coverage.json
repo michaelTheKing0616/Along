@@ -1,5 +1,5 @@
 {
-  "$comment": "Phase ≤6 admin WRITE RPCs (doc 03 §11 + implemented extras). Gaps are P6-A-01 follow-up — do not attach triggers here.",
+  "$comment": "Phase ≤6 admin WRITE RPCs (doc 03 §11 + implemented extras). Phase 7 intelligence RPCs remain GAP.",
   "write_rpcs": [
     {
       "name": "admin_approve_verification",
@@ -35,15 +35,15 @@
     },
     {
       "name": "admin_review_flag",
-      "audit": { "kind": "gap", "reason": "trip_reconciliation_flags — P6-A-01" }
+      "audit": { "kind": "trigger", "table": "trip_reconciliation_flags" }
     },
     {
       "name": "admin_transition_standing",
-      "audit": { "kind": "gap", "reason": "driver_standing_transitions + drivers.standing — P6-A-01" }
+      "audit": { "kind": "trigger", "table": "driver_standing_transitions" }
     },
     {
       "name": "admin_notify_guarantor",
-      "audit": { "kind": "gap", "reason": "guarantors.last_notified_at — P6-A-01" }
+      "audit": { "kind": "trigger", "table": "guarantors" }
     },
     {
       "name": "admin_manual_ledger_adjustment",
@@ -95,7 +95,7 @@
     },
     {
       "name": "admin_upsert_settlement_agent",
-      "audit": { "kind": "gap", "reason": "settlement_agents — P6-A-01" }
+      "audit": { "kind": "trigger", "table": "settlement_agents" }
     },
     {
       "name": "admin_import_apply",

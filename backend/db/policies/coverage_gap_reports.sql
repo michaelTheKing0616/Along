@@ -10,4 +10,4 @@ create policy coverage_gap_reports_no_client_write
 
 create policy coverage_gap_reports_select_admin
   on coverage_gap_reports for select to authenticated
-  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text, 'analyst'::text]));
+  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text, 'ops_agent'::text, 'safety'::text, 'analyst'::text]) AND ((city_id IS NULL) OR admin_can_access_city(city_id)));
