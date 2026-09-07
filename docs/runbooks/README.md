@@ -4,13 +4,14 @@ Operational procedures for the team running Along. Each runbook is owned by the 
 
 | Runbook | Owner phase | Status |
 |---|---|---|
-| `sos_escalation.md` | Phase 5 (P5-D-01) | template |
-| `incident_response.md` (safety) | Phase 5/6 | template |
+| `sos_escalation.md` | Phase 5 (P5-D-01) | ops-ready |
+| `incident_response.md` (safety) | Phase 6 (P6-E-01) | ops-ready |
 | `security_incident.md` | Phase 11 | template |
-| `verification_review.md` | Phase 6 | template |
-| `fare_dispute.md` | Phase 6 | template |
+| `verification_review.md` | Phase 6 (P6-E-01) | ops-ready |
+| `fare_dispute.md` | Phase 6 (P6-E-01) | ops-ready |
 | `guarantor_referral.md` | Phase 4 | template |
-| `corridor_onboarding.md` | Phase 7 | template |
+| `corridor_onboarding.md` | Phase 6 (P6-E-01); validated P7-E-01 | ops-ready |
+| `pilot_day_dry_run.md` | Phase 6 (P6-E-01) | ops-ready |
 | `city_onboarding.md` | Phase 9 | template |
 | `new_country_checklist.md` | Phase 10 | template |
 | `deploy_rollback.md` | Phase 9/12 | template |
