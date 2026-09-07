@@ -1218,3 +1218,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P3-A-03 PASS. Precise positions admin-role only (RLS). FM19 vector tiles. FM21 no leak to non-admin. No Phase 5 redo.
+
+## [Phase 6 / P6-D-02] A-03 Live map
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: A-03 /live MapLibre+PMTiles; TS-OPS-04 9/9; ADR-0013 maplibre-gl 5.6.1 + pmtiles 4.3.0.
+- Reviewer verdict: FAIL — AC MET (admin-only precise positions). Gates FAIL: (a) hardcoded 5000 ms poll in AdminLiveMap.tsx; (f) ~20 inline hex in MapLibre paint (FM20).
+- Rework count: 1
+- Notes/escalations: Rework 1/2 — cfg ops.live_map_poll_s; resolve paint colors from CSS tokens. Do not expand scope.
