@@ -31,6 +31,20 @@ export {
   extractObservationsFromMatchedTrace,
 } from './segment-observations.js';
 export { runEtaAbReport } from './eta-ab.js';
+export { runAnonymizedExportJob } from './anonymized-export.js';
+export type {
+  AnonymizedExportDb,
+  AnonymizedExportJobConfig,
+  AnonymizedExportStats,
+} from './anonymized-export.js';
+export {
+  aggregateOdObservations,
+  suppressCellsBelowK,
+  partitionCellsByK,
+  assertExportRowIsPiiFree,
+  EXPORT_ALLOWED_COLUMNS,
+  EXPORT_FORBIDDEN_COLUMNS,
+} from './anonymized-export-core.js';
 export type {
   GeoJsonLineString,
   MapMatchJobConfig,
@@ -50,6 +64,7 @@ import { runMapMatchJob } from './map-match.js';
 import { runSpeedProfilesJob } from './speed-profiles.js';
 import { runRouteInferenceJob } from './route-inference.js';
 import { runGeometryCorrectionsJob } from './geometry-corrections.js';
+import { runAnonymizedExportJob } from './anonymized-export.js';
 
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
   const command = argv[0];
@@ -77,6 +92,12 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   if (command === 'geometry-corrections') {
     const stats = await runGeometryCorrectionsJob(db);
     console.log(JSON.stringify({ job: 'geometry-corrections', stats }));
+    return;
+  }
+
+  if (command === 'anonymized-export') {
+    const stats = await runAnonymizedExportJob(db);
+    console.log(JSON.stringify({ job: 'anonymized-export', stats }));
     return;
   }
 

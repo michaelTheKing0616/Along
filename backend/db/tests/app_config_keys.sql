@@ -119,6 +119,7 @@ with required_global as (
     'ledger.dual_control_threshold',
     'ledger.deactivate_after_days',
     'export.k',
+    'export.geohash_precision',
     'geometry.min_supporting_traces',
     'geometry.cluster_m',
     'inference.min_trips',

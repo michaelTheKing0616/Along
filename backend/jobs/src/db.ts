@@ -20,8 +20,13 @@ import type {
   RouteInferenceJobConfig,
 } from './route-inference.js';
 import type { MatchedTraceForGeometry } from './geometry-corrections.js';
+import type {
+  AnonymizedExportDb,
+  AnonymizedExportJobConfig,
+} from './anonymized-export.js';
+import type { OdAggregateCell } from './anonymized-export-core.js';
 
-export type JobsDb = {
+export type JobsDb = AnonymizedExportDb & {
   beginJobRun(jobName: string, params?: Record<string, unknown>): Promise<JobRunRecord>;
   finishJobRun(
     jobRunId: string,
@@ -485,6 +490,177 @@ export function createPgJobsDb(options?: PgJobsDbOptions): JobsDb {
         inserted += rowCount ?? 0;
       }
       return inserted;
+    },
+
+    async loadAnonymizedExportConfig(cityId) {
+      const { rows } = await pool.query<{
+        k: string;
+        geohash_precision: string;
+      }>(
+        `select
+           cfg_num('export.k', $1::uuid) as k,
+           cfg_num('export.geohash_precision', $1::uuid) as geohash_precision`,
+        [cityId ?? null],
+      );
+      const row = rows[0];
+      return {
+        kAnonymity: Number(row?.k ?? 10),
+        geohashPrecision: Number(row?.geohash_precision ?? 5),
+      } satisfies AnonymizedExportJobConfig;
+    },
+
+    async listActiveCityIds() {
+      const { rows } = await pool.query<{ id: string }>(
+        `select id from cities where status = 'live' order by slug`,
+      );
+      return rows.map((row) => row.id);
+    },
+
+    async getExportWatermark(cityId) {
+      const { rows } = await pool.query<{ period_end: Date | null }>(
+        `select max(e.period_end) as period_end
+         from anonymized_od_exports e
+         join job_runs jr on jr.id = e.job_run_id
+         where e.city_id = $1
+           and jr.status = 'succeeded'`,
+        [cityId],
+      );
+      return rows[0]?.period_end ?? null;
+    },
+
+    async aggregateCityOdCells(input) {
+      const { rows: tripRows } = await pool.query<{ count: string }>(
+        `select count(*)::text as count
+         from trips t
+         join journeys j on j.id = t.journey_id
+         where j.city_id = $1
+           and t.status = 'completed'
+           and coalesce(t.ended_at, t.started_at, t.requested_at) >= $2
+           and coalesce(t.ended_at, t.started_at, t.requested_at) < $3`,
+        [input.cityId, input.periodStart, input.periodEnd],
+      );
+
+      const { rows: cellRows } = await pool.query<{
+        origin_geohash: string;
+        destination_geohash: string;
+        mode_code: string;
+        dow_bucket: number;
+        hour_bucket: number;
+        trip_count: string;
+      }>(
+        `select
+           origin_geohash,
+           destination_geohash,
+           mode_code,
+           dow_bucket,
+           hour_bucket,
+           trip_count::text
+         from private.aggregate_anonymized_od_cells($1, $2, $3, $4, $5)`,
+        [
+          input.cityId,
+          input.periodStart,
+          input.periodEnd,
+          input.kAnonymity,
+          input.geohashPrecision,
+        ],
+      );
+
+      const { rows: suppressedRows } = await pool.query<{ count: string }>(
+        `select private.count_suppressed_od_cells($1, $2, $3, $4, $5)::text as count`,
+        [
+          input.cityId,
+          input.periodStart,
+          input.periodEnd,
+          input.kAnonymity,
+          input.geohashPrecision,
+        ],
+      );
+
+      const cells: OdAggregateCell[] = cellRows.map((row) => ({
+        originGeohash: row.origin_geohash,
+        destinationGeohash: row.destination_geohash,
+        modeCode: row.mode_code,
+        dowBucket: row.dow_bucket as 0 | 1,
+        hourBucket: row.hour_bucket,
+        tripCount: Number(row.trip_count),
+      }));
+
+      return {
+        tripsExamined: Number(tripRows[0]?.count ?? 0),
+        cells,
+        rawCellCount: cells.length + Number(suppressedRows[0]?.count ?? 0),
+        cellsSuppressed: Number(suppressedRows[0]?.count ?? 0),
+      };
+    },
+
+    async writeAnonymizedExport(input) {
+      const client = await pool.connect();
+      try {
+        await client.query('begin');
+
+        const { rows: exportRows } = await client.query<{ id: string }>(
+          `insert into anonymized_od_exports (
+             job_run_id,
+             city_id,
+             period_start,
+             period_end,
+             k_threshold,
+             geohash_precision,
+             trips_examined,
+             cells_emitted,
+             cells_suppressed
+           ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+           returning id`,
+          [
+            input.jobRunId,
+            input.cityId,
+            input.periodStart,
+            input.periodEnd,
+            input.kThreshold,
+            input.geohashPrecision,
+            input.tripsExamined,
+            input.cells.length,
+            input.cellsSuppressed,
+          ],
+        );
+        const exportId = exportRows[0]?.id;
+        if (!exportId) {
+          throw new Error('failed to create anonymized_od_exports row');
+        }
+
+        for (const cell of input.cells) {
+          await client.query(
+            `insert into anonymized_od_cells (
+               export_id,
+               city_id,
+               origin_geohash,
+               destination_geohash,
+               mode_code,
+               dow_bucket,
+               hour_bucket,
+               trip_count
+             ) values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [
+              exportId,
+              input.cityId,
+              cell.originGeohash,
+              cell.destinationGeohash,
+              cell.modeCode,
+              cell.dowBucket,
+              cell.hourBucket,
+              cell.tripCount,
+            ],
+          );
+        }
+
+        await client.query('commit');
+        return exportId;
+      } catch (err) {
+        await client.query('rollback');
+        throw err;
+      } finally {
+        client.release();
+      }
     },
   };
 }
