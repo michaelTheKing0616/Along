@@ -966,3 +966,23 @@ P1-G-01 still blocks Phase 7 only.
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Flag-gated. Playwright vs mocked sandbox only — no real rider charge. PDF is ops preview, not production sticker print. Do not flip digital_enabled.
+
+---
+
+## [Planning] Spec §4.1.2/4.1.3 wait-decision + FM41–43 — parked for after P4-D-02
+**Date:** 2026-09-07
+Product-owner: coarse pre-accept approach band + post-accept walking-route ETA / one-tap release / rider no-show review.
+
+**Do not fold into in-flight P4-D-02 (W-04 / A-11 / A-13).** Finish that task, merge, then issue:
+- **P3-A-04** wait-decision backend (TS-DISC-07, TS-WAIT-01..05)
+- **P3-C-02** D-14 band + D-16 ETA/Release
+
+Critical implementation split (Workers will get this wrong if they only read "trips row = Tier B"):
+- `requested` → driver sees `approach_band` only (FM42). A trips row exists; GPS still withheld.
+- `accepted` → walking-route `wait.walk_eta_s` (FM41), not haversine.
+- `release_match` → `released_before_arrival`, excluded from `reconcile_cancelled_trips` (not `cancel_trip`).
+- Missing GPS → `approach=unknown`, never stalled.
+- FM43 = admin flag only.
+
+Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_pickup_radius_m`, `rider.no_show_*`.
+**Escalations:** none.

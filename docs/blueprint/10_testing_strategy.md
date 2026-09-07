@@ -52,6 +52,12 @@ Determinism: fixed seeds, frozen clock (`set_config('along.now', …)` in SQL te
 
 ### Disclosure (Phase 3/5 gates, FM21)
 - **TS-DISC-01** `ambient_vehicles` output contains no uuid, plate, or coordinate not equal to a cell centroid (schema test).
+- **TS-DISC-07** Pre-accept `TripView` / `trip_request` FCM payload contains `approach_band` ∈ {under_2,m2_5,over_5} and zero rider lat/lng / walk_eta_s / polyline (FM42).
+- **TS-WAIT-01** FM41 fixture: straight-line < 100 m, OSRM foot > 8 min → `wait.walk_eta_s` matches foot, not haversine.
+- **TS-WAIT-02** `release_match` on `accepted` with rider never inside pickup radius → `released_before_arrival`; `reconcile_cancelled_trips` produces **no** flag for that trip.
+- **TS-WAIT-03** `release_match` after rider entered pickup radius → `STATE_INVALID` (use cancel/no-show instead).
+- **TS-WAIT-04** Missing rider GPS in stalled window → `approach='unknown'`, never `stalled`.
+- **TS-WAIT-05** FM43: three `no_show`/`released_before_arrival` in the window → one `rider_no_show_pattern` flag; no standing/trust auto-change.
 - **TS-DISC-02** Rider cannot `select` from `driver_presence` (RLS) — expect 0 rows/permission error.
 - **TS-DISC-03** `TripView` for a trip the caller isn't party to → `FORBIDDEN`.
 - **TS-DISC-04** Realtime authz: rider joining `trip:{other}` rejected.

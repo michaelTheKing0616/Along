@@ -6,7 +6,7 @@ Spec references: §4.1.2 (disclosure), §4.4 (money), §4.14 (data products), Ph
 
 | # | Threat | Vector | Control |
 |---|---|---|---|
-| T1 | Disintermediation / stalking via pre-commit position leak | ambient endpoints, Realtime, planner payloads | Tier A shapes contain no ids/coordinates (schema tests TS-DISC-*); `driver_presence` has no rider policy; candidate tokens opaque + 60 s |
+| T1 | Disintermediation / stalking via pre-commit position leak | ambient endpoints, Realtime, planner payloads, **pre-accept trip_request** | Tier A shapes contain no ids/coordinates (TS-DISC-*); pre-accept TripView has `approach_band` only (TS-DISC-07 / FM42); `driver_presence` has no rider policy; candidate tokens opaque + 60 s |
 | T2 | Fare manipulation | client-supplied fare | Fares only from `resolve_fare`; `trips.fare_shown` copied server-side from `fare_quotes`; clients send quote ids, never amounts (except negotiation chips validated against steps) |
 | T3 | Ledger tampering | direct table writes, replay | Append-only triggers; `ledger_post` security definer; idempotency keys; advisory lock; nightly invariant |
 | T4 | Fake settlements | forged webhook, reused agent code | HMAC-SHA512 verify with constant-time compare; raw webhook stored; unique `provider_reference`; agent codes single-use, 15 min, city-bound |

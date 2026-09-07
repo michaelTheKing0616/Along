@@ -219,6 +219,10 @@ returns void language sql as $$
 | `presence.ping_interval_moving_s` | `4`; `presence.ping_interval_still_s` `15`; `presence.stale_after_s` `45`; `presence.offline_after_s` `180` | §4.1 |
 | `presence.history_full_res_hours` | `24`; `presence.history_downsampled_days` `30`; `presence.downsample_interval_s` `60` | §4.1 retention |
 | `presence.ambient_cell_precision` | `6` (geohash) | §4.1.2 |
+| `disclosure.approach_band_s` | `[120,300]` — walking-seconds thresholds mapping to `under_2` / `m2_5` / `over_5` (FM42). Computed from OSRM foot, then **banded**; never returned as seconds pre-accept. | §4.1.2 |
+| `wait.stalled_window_s` | `90`; `wait.stalled_progress_m` `25` — below this walk-progress in the window → `approach='stalled'` **only if** rider samples exist in the window; missing GPS → `unknown` never stalled | §4.1.3 |
+| `wait.release_pickup_radius_m` | `80` — rider must not have entered this radius for `release_match` to be allowed | §4.1.3 |
+| `rider.no_show_review_count` | `3` in `rider.no_show_window_days` `14` — flag for admin review (FM43), never auto-punish | §4.1.3 |
 | `boarding.colocation_radius_m` | `25`; `boarding.colocation_duration_s` `20`; `boarding.min_speed_mps` `1.5` | §4.6 auto-confirm |
 | `negotiation.park.round_cap` | `4`; `negotiation.park.round_timeout_s` `20` | §4.3.1 |
 | `negotiation.roaming.eta_none_s` | `20`; `negotiation.roaming.eta_single_s` `60`; `negotiation.roaming.round_timeout_s` `12`; `negotiation.roaming.round_cap` `3`; `negotiation.pickup_radius_m` `150` | §4.3.1 ETA bands, FM37/38 |
@@ -274,6 +278,9 @@ create table riders (
   women_only_pref boolean not null default false,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
+-- FM43: no mutable "strikes" column. Nightly `rider_no_show_review` counts trips in
+-- `no_show` ∪ `released_before_arrival` in cfg rider.no_show_window_days and inserts
+-- trip_reconciliation_flags(kind='rider_no_show_pattern') for admin review only.
 
 create type verified_status as enum ('unverified','pending','verified','rejected','suspended');
 create type driver_standing as enum ('good_standing','warned','matching_paused','deactivated','guarantor_referred'); -- §4.4.3
@@ -683,7 +690,7 @@ create index coverage_gap_loc_gix on coverage_gap_reports using gist (searched_l
 
 ```sql
 create type journey_status as enum ('planning','active','transfer','completed','abandoned');
-create type trip_status as enum ('requested','accepted','boarded','in_transit','completed','declined','expired','cancelled_by_rider','cancelled_by_driver','no_show');
+create type trip_status as enum ('requested','accepted','boarded','in_transit','completed','declined','expired','cancelled_by_rider','cancelled_by_driver','no_show','released_before_arrival');
 create type load_size as enum ('small','medium','large');
 create type payment_method as enum ('cash','digital');
 

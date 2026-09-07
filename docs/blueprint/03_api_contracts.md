@@ -116,7 +116,13 @@ Same as above for a cell-card hail without a full plan; server resolves fare via
 ### `rpc.respond_to_trip(p_trip_id, p_action 'accept'|'decline', p_decline_reason?)` → **B** (driver)
 One tap. `decline_reason ∈ cfg('decline.reasons') ∪ {'no_room_for_load'}`. Decline/expiry on a roaming hail triggers `dispatch` cascade.
 
+**Pre-accept `TripView` (status=`requested`) is still disclosure-restricted (FM42):** the driver payload may include rider `display_name`/`rating`/`trip_count` (needed to decide), load flag (FM35), fare lines, pickup **label** (stage name), and `approach_band` ∈ `{under_2,m2_5,over_5}` computed by banding OSRM-foot seconds at `cfg disclosure.approach_band_s`. It must **not** include rider lat/lng, walking polyline, or `eta_s`. Accept unlocks the full `TripView`.
+
+### `rpc.release_match(p_trip_id)` → **B** (driver)
+One tap. Allowed only while `status='accepted'` **and** the rider has never entered `cfg wait.release_pickup_radius_m` of the vehicle. Writes `released_before_arrival` (not `cancelled_by_driver`). `reconcile_cancelled_trips` **must exclude this status** (FM13 / §4.1.3). After the no-show timer, prefer `mark_no_show` instead (records a rider-side outcome for FM43).
+
 ### `rpc.cancel_trip(p_trip_id, p_reason?)` → **B** (rider or driver; both recorded distinctly)
+Do not use this for "wait not worth it" — that is `release_match`.
 
 ### `rpc.open_negotiation(p_context, p_candidate_token?|p_driver_id?, p_from Point|stage, p_to Point|stage, p_client_ref)` → **B-pending**
 Server verifies Tier 3 (raises `STATE_INVALID` if a Tier 0–2 fare resolves — FM31), computes anchor (`fare_quotes tier=3`), sets `round_cap/round_timeout_s/eta_band/pickup_radius_m` per context (doc 04 §8). Returns `{negotiation_id, anchor: Money, chip_steps:[…], round_cap, round_timeout_s, eta_band, expires_at}`.
@@ -143,12 +149,15 @@ Allowed only when `rounds = round_cap` and status open; creates system round at 
   "fare": Fare, "load": {"flagged","size","note"}, "women_only",
   "na_me": {"color_token","shape","label":"Green Diamond"},                // §4.8 cached client-side immediately
   "live_channel": "trip:{id}", "expires_at", "timestamps": {...},
+  "approach_band": "under_2"|"m2_5"|"over_5"|null,                         // requested only; omitted after accept
+  "wait": null | {"walk_eta_s":int,"approach":"approaching"|"stalled"|"unknown","updated_at"}, // accepted, pre-board; driver only
   "extension": null | {...}, "payment_method" }
 ```
 
 | Endpoint | Actor | Notes |
 |---|---|---|
-| `rpc.trip_snapshot(p_trip_id)` | party | Polling fallback. |
+| `rpc.trip_snapshot(p_trip_id)` | party | Polling fallback. After accept, includes `wait` (walking ETA). Pre-accept driver view still only `approach_band`. |
+| `rpc.release_match(p_trip_id)` | driver | See §4 above. |
 | `rpc.trip_location_sample(p_trip_id, p_points [{ts,lat,lng,accuracy_m,speed_mps,heading}] ≤ 5)` | party | Inserts samples; runs `auto_boarding_check()`; returns `{boarded_auto: bool}`. Rejects if trip not in `accepted|boarded|in_transit`. |
 | `rpc.mark_boarded(p_trip_id)` | rider or driver | Manual fallback (§4.6). Records `boarded_via`. |
 | `rpc.start_trip(p_trip_id)` | driver | `boarded → in_transit` (also auto when speed > threshold for 30 s). |
@@ -164,7 +173,7 @@ Allowed only when `rounds = round_cap` and status open; creates system round at 
 Authorized via RLS on `realtime.messages` (topic must match a trip the caller is party to). Payloads: `{"type":"loc","actor":"driver"|"rider","lat","lng","heading","speed_mps","ts"}`, `{"type":"status","status","ts"}`, `{"type":"extension","extension_id","status"}`, `{"type":"na_me","triggered_by"}` (informational only; the trigger itself is local).
 
 ### Realtime Broadcast `driver:{driver_id}` → **B** (driver only)
-`{"type":"trip_request","trip":TripView(pre-accept, includes load flag — FM35),"expires_at"}` plus FCM data push with the same payload for background wake.
+`{"type":"trip_request","trip":TripView(pre-accept: approach_band, load flag — FM35/FM42; no rider coordinate),"expires_at"}` plus FCM data push with the same payload for background wake. After accept: `{"type":"wait","walk_eta_s","approach","ts"}` on `trip:{id}` whenever walking ETA is recomputed (throttle ≥ 10 s).
 
 ---
 
