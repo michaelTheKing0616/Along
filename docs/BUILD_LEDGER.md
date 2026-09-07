@@ -996,9 +996,25 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Merged e6b3bb7. Absorb native entitlements into store-release / P1-G-01.
 
 ## [Phase 4 / Gate] Code gate (implementation only)
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-06
+- Worker report summary: n/a (gate Reviewer)
+- Reviewer verdict: FAIL — rider `payments_test.dart` does not compile (duplicate `QrPayloadParser` after along_core export in d1599e1). Flag still false; cash/Paystack isolation PASS; split-at-source PASS.
+- Rework count: 0
+- Notes/escalations: Blocking for Phase 5 only. Does not block P3-A-04. Absorb: one-line import hide/remove in mobile-rider tests. Residuals: P4-E-02, P1-G-01, verification.spec.ts flake.
+
+## [Phase 4 / Decision] D-02 merged; wait-decision spec already on master
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner: do not interrupt P4-D-02; do not add wait-ETA application code to that branch. After D-02 merge, cherry-pick 1340bbc + 85abb67 if missing, then P3-A-04 → P3-C-02.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: D-02 already merged `e5e2908`. Commits 1340bbc and 85abb67 are already ancestors of master (docs/spec only — no wait-ETA application code on the D-02 product branch). Cherry-pick skipped. Issuing P3-A-04.
+
+## [Phase 3 / P3-A-04] Wait-decision backend
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Flag stays false. P4-E-02 still NOT PASS. Device/corridor deferred to P1-G-01. Do not start Phase 7.
+- Notes/escalations: requested ≠ accepted. Pre-accept TripView/FCM grep-clean of lat/lng and walk_eta_s. release_match must not call cancel_trip. Next migration 00050.
