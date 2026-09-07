@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:along_map/along_map.dart';
@@ -47,6 +48,7 @@ class AlongRiderApp extends ConsumerWidget {
 /// Initializes Supabase and provider overrides for the app shell.
 Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
   WidgetsFlutterBinding.ensureInitialized();
+  AppStartupMetrics.instance.markBindingReady();
 
   final config = configOverride ?? AppConfig.fromEnvironment();
   final supabase = await createAlongSupabase(
@@ -57,7 +59,7 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
   final mapDir = await getApplicationDocumentsDirectory();
   final mapCacheDir = Directory('${mapDir.path}/map_cache');
 
-  return ProviderContainer(
+  final container = ProviderContainer(
     overrides: buildProviderOverrides(
       config: config,
       supabase: supabase,
@@ -70,4 +72,6 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
       ),
     ),
   );
+  AppStartupMetrics.instance.markBootstrapComplete();
+  return container;
 }

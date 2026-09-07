@@ -46,6 +46,7 @@ export 'src/models/trip_stop.dart';
 export 'src/models/trip_summary.dart';
 export 'src/models/trip_wait.dart';
 export 'src/payments/qr_payload_parser.dart';
+export 'src/perf/app_startup_metrics.dart';
 export 'src/time/clock.dart';
 export 'src/value/money.dart';
 

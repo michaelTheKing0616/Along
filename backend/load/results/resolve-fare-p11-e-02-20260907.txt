@@ -1,0 +1,15 @@
+# resolve_fare p95 — P11-E-02 local run (2026-09-07)
+
+**Method:** SQL timing loop (TS-FARE-08 pattern) over 1,000 random stage pairs  
+**Database:** local Supabase Postgres (`127.0.0.1:54322`)  
+**Fixture:** kaduna-pilot seed (2 active routes; Abuja seed not loaded on this DB)
+
+| Metric | Value | Budget | Result |
+|---|---|---|---|
+| samples | 1,000 | — | — |
+| min | 0.06 ms | — | — |
+| p50 | 0.08 ms | — | — |
+| p95 | 0.27 ms | ≤ 150 ms | **PASS** |
+| max | 32.50 ms | — | — |
+
+**Note:** Zaria-Test / Abuja pgTAP fixtures (`TS-FARE-08-abuja.sql`, `fare_resolution.sql`) require fresh seed; kaduna-pilot proves budget on available local graph. CI `db` workflow runs full pgTAP on reset DB.

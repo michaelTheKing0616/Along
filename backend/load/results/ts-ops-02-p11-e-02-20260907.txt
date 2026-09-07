@@ -1,0 +1,176 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: plan_trip_mix.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 2400 max VUs, 1m5s max duration (incl. graceful stop):
+              * plan_trip_rps: 10.00 iterations/s for 30s (maxVUs: 10-400, exec: planTripOnce, gracefulStop: 30s)
+              * presence_ping_rps: 50.00 iterations/s for 30s (maxVUs: 10-2000, exec: presencePingOnce, startTime: 5s, gracefulStop: 30s)
+
+
+running (0m01.0s), 0005/0020 VUs, 5 complete and 0 interrupted iterations
+plan_trip_rps       [   3% ] 005/010 VUs  01.0s/30s  10.00 iters/s
+presence_ping_rps • [   0% ] waiting      4.0s      
+
+running (0m02.0s), 0007/0020 VUs, 13 complete and 0 interrupted iterations
+plan_trip_rps       [   7% ] 007/010 VUs  02.0s/30s  10.00 iters/s
+presence_ping_rps • [   0% ] waiting      3.0s      
+
+running (0m03.0s), 0005/0020 VUs, 25 complete and 0 interrupted iterations
+plan_trip_rps       [  10% ] 005/010 VUs  03.0s/30s  10.00 iters/s
+presence_ping_rps • [   0% ] waiting      2.0s      
+
+running (0m04.0s), 0001/0020 VUs, 39 complete and 0 interrupted iterations
+plan_trip_rps       [  13% ] 001/010 VUs  04.0s/30s  10.00 iters/s
+presence_ping_rps • [   0% ] waiting      1.0s      
+
+running (0m05.0s), 0000/0020 VUs, 50 complete and 0 interrupted iterations
+plan_trip_rps       [  17% ] 000/010 VUs  05.0s/30s  10.00 iters/s
+presence_ping_rps • [   0% ] waiting      0.0s      
+
+running (0m06.0s), 0003/0020 VUs, 107 complete and 0 interrupted iterations
+plan_trip_rps       [  20% ] 000/010 VUs    06.0s/30s  10.00 iters/s
+presence_ping_rps   [   3% ] 0003/0010 VUs  01.0s/30s  50.00 iters/s
+
+running (0m07.0s), 0003/0020 VUs, 167 complete and 0 interrupted iterations
+plan_trip_rps       [  23% ] 000/010 VUs    07.0s/30s  10.00 iters/s
+presence_ping_rps   [   7% ] 0003/0010 VUs  02.0s/30s  50.00 iters/s
+
+running (0m08.0s), 0004/0020 VUs, 226 complete and 0 interrupted iterations
+plan_trip_rps       [  27% ] 001/010 VUs    08.0s/30s  10.00 iters/s
+presence_ping_rps   [  10% ] 0003/0010 VUs  03.0s/30s  50.00 iters/s
+
+running (0m09.0s), 0003/0020 VUs, 287 complete and 0 interrupted iterations
+plan_trip_rps       [  30% ] 000/010 VUs    09.0s/30s  10.00 iters/s
+presence_ping_rps   [  13% ] 0003/0010 VUs  04.0s/30s  50.00 iters/s
+
+running (0m10.0s), 0003/0020 VUs, 347 complete and 0 interrupted iterations
+plan_trip_rps       [  33% ] 000/010 VUs    10.0s/30s  10.00 iters/s
+presence_ping_rps   [  17% ] 0003/0010 VUs  05.0s/30s  50.00 iters/s
+
+running (0m11.0s), 0003/0020 VUs, 407 complete and 0 interrupted iterations
+plan_trip_rps       [  37% ] 000/010 VUs    11.0s/30s  10.00 iters/s
+presence_ping_rps   [  20% ] 0003/0010 VUs  06.0s/30s  50.00 iters/s
+
+running (0m12.0s), 0003/0020 VUs, 467 complete and 0 interrupted iterations
+plan_trip_rps       [  40% ] 000/010 VUs    12.0s/30s  10.00 iters/s
+presence_ping_rps   [  23% ] 0003/0010 VUs  07.0s/30s  50.00 iters/s
+
+running (0m13.0s), 0003/0020 VUs, 527 complete and 0 interrupted iterations
+plan_trip_rps       [  43% ] 000/010 VUs    13.0s/30s  10.00 iters/s
+presence_ping_rps   [  27% ] 0003/0010 VUs  08.0s/30s  50.00 iters/s
+
+running (0m14.0s), 0003/0020 VUs, 587 complete and 0 interrupted iterations
+plan_trip_rps       [  47% ] 000/010 VUs    14.0s/30s  10.00 iters/s
+presence_ping_rps   [  30% ] 0003/0010 VUs  09.0s/30s  50.00 iters/s
+
+running (0m15.0s), 0003/0020 VUs, 647 complete and 0 interrupted iterations
+plan_trip_rps       [  50% ] 000/010 VUs    15.0s/30s  10.00 iters/s
+presence_ping_rps   [  33% ] 0003/0010 VUs  10.0s/30s  50.00 iters/s
+
+running (0m16.0s), 0003/0020 VUs, 707 complete and 0 interrupted iterations
+plan_trip_rps       [  53% ] 000/010 VUs    16.0s/30s  10.00 iters/s
+presence_ping_rps   [  37% ] 0003/0010 VUs  11.0s/30s  50.00 iters/s
+
+running (0m17.0s), 0003/0020 VUs, 767 complete and 0 interrupted iterations
+plan_trip_rps       [  57% ] 000/010 VUs    17.0s/30s  10.00 iters/s
+presence_ping_rps   [  40% ] 0003/0010 VUs  12.0s/30s  50.00 iters/s
+
+running (0m18.0s), 0003/0020 VUs, 827 complete and 0 interrupted iterations
+plan_trip_rps       [  60% ] 000/010 VUs    18.0s/30s  10.00 iters/s
+presence_ping_rps   [  43% ] 0003/0010 VUs  13.0s/30s  50.00 iters/s
+
+running (0m19.0s), 0003/0020 VUs, 887 complete and 0 interrupted iterations
+plan_trip_rps       [  63% ] 000/010 VUs    19.0s/30s  10.00 iters/s
+presence_ping_rps   [  47% ] 0003/0010 VUs  14.0s/30s  50.00 iters/s
+
+running (0m20.0s), 0003/0020 VUs, 947 complete and 0 interrupted iterations
+plan_trip_rps       [  67% ] 000/010 VUs    20.0s/30s  10.00 iters/s
+presence_ping_rps   [  50% ] 0003/0010 VUs  15.0s/30s  50.00 iters/s
+
+running (0m21.0s), 0003/0020 VUs, 1007 complete and 0 interrupted iterations
+plan_trip_rps       [  70% ] 000/010 VUs    21.0s/30s  10.00 iters/s
+presence_ping_rps   [  53% ] 0003/0010 VUs  16.0s/30s  50.00 iters/s
+
+running (0m22.0s), 0004/0020 VUs, 1066 complete and 0 interrupted iterations
+plan_trip_rps       [  73% ] 001/010 VUs    22.0s/30s  10.00 iters/s
+presence_ping_rps   [  57% ] 0003/0010 VUs  17.0s/30s  50.00 iters/s
+
+running (0m23.0s), 0003/0020 VUs, 1127 complete and 0 interrupted iterations
+plan_trip_rps       [  77% ] 000/010 VUs    23.0s/30s  10.00 iters/s
+presence_ping_rps   [  60% ] 0003/0010 VUs  18.0s/30s  50.00 iters/s
+
+running (0m24.0s), 0003/0020 VUs, 1187 complete and 0 interrupted iterations
+plan_trip_rps       [  80% ] 000/010 VUs    24.0s/30s  10.00 iters/s
+presence_ping_rps   [  63% ] 0003/0010 VUs  19.0s/30s  50.00 iters/s
+
+running (0m25.0s), 0003/0020 VUs, 1247 complete and 0 interrupted iterations
+plan_trip_rps       [  83% ] 000/010 VUs    25.0s/30s  10.00 iters/s
+presence_ping_rps   [  67% ] 0003/0010 VUs  20.0s/30s  50.00 iters/s
+
+running (0m26.0s), 0003/0020 VUs, 1307 complete and 0 interrupted iterations
+plan_trip_rps       [  87% ] 000/010 VUs    26.0s/30s  10.00 iters/s
+presence_ping_rps   [  70% ] 0003/0010 VUs  21.0s/30s  50.00 iters/s
+
+running (0m27.0s), 0003/0020 VUs, 1367 complete and 0 interrupted iterations
+plan_trip_rps       [  90% ] 000/010 VUs    27.0s/30s  10.00 iters/s
+presence_ping_rps   [  73% ] 0003/0010 VUs  22.0s/30s  50.00 iters/s
+
+running (0m28.0s), 0004/0020 VUs, 1426 complete and 0 interrupted iterations
+plan_trip_rps       [  93% ] 001/010 VUs    28.0s/30s  10.00 iters/s
+presence_ping_rps   [  77% ] 0003/0010 VUs  23.0s/30s  50.00 iters/s
+
+running (0m29.0s), 0003/0020 VUs, 1487 complete and 0 interrupted iterations
+plan_trip_rps       [  97% ] 000/010 VUs    29.0s/30s  10.00 iters/s
+presence_ping_rps   [  80% ] 0003/0010 VUs  24.0s/30s  50.00 iters/s
+
+running (0m30.0s), 0003/0020 VUs, 1547 complete and 0 interrupted iterations
+plan_trip_rps       [ 100% ] 000/010 VUs    30.0s/30s  10.00 iters/s
+presence_ping_rps   [  83% ] 0003/0010 VUs  25.0s/30s  50.00 iters/s
+
+running (0m31.0s), 0003/0020 VUs, 1598 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/010 VUs    30s        10.00 iters/s
+presence_ping_rps   [  87% ] 0003/0010 VUs  26.0s/30s  50.00 iters/s
+
+running (0m32.0s), 0003/0020 VUs, 1648 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/010 VUs    30s        10.00 iters/s
+presence_ping_rps   [  90% ] 0003/0010 VUs  27.0s/30s  50.00 iters/s
+
+running (0m33.0s), 0003/0020 VUs, 1698 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/010 VUs    30s        10.00 iters/s
+presence_ping_rps   [  93% ] 0003/0010 VUs  28.0s/30s  50.00 iters/s
+
+running (0m34.0s), 0003/0020 VUs, 1748 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/010 VUs    30s        10.00 iters/s
+presence_ping_rps   [  97% ] 0003/0010 VUs  29.0s/30s  50.00 iters/s
+
+running (0m35.0s), 0003/0020 VUs, 1798 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/010 VUs    30s        10.00 iters/s
+presence_ping_rps   [ 100% ] 0003/0010 VUs  30.0s/30s  50.00 iters/s
+
+=== TS-OPS-02 plan-trip + presence mix (k6) ===
+target_plan_trip_rps=10 target_presence_ping_rps=50
+duration=30s scale_factor=20
+http_req_tls_handshaking: p95=0.00
+http_req_sending: p95=0.05
+http_req_blocked: p95=0.01
+http_req_duration: p95=73.01
+http_req_receiving: p95=0.08
+iteration_duration: p95=74.04
+plan_trip_latency_ms: p95=545.28
+http_req_duration{expected_response:true}: p95=5.25
+http_req_connecting: p95=0.00
+http_req_waiting: p95=72.93
+presence_ping_latency_ms: p95=5.25
+
+running (0m35.1s), 0000/0020 VUs, 1802 complete and 0 interrupted iterations
+plan_trip_rps     ✓ [ 100% ] 000/010 VUs    30s  10.00 iters/s
+presence_ping_rps ✓ [ 100% ] 0000/0010 VUs  30s  50.00 iters/s
+time="2026-09-07T20:16:46+01:00" level=error msg="thresholds on metrics 'checks, http_req_failed{rpc:plan-trip}' have been crossed"
