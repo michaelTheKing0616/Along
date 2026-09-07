@@ -31,7 +31,8 @@ declare
     {"id":"b0000000-0000-4000-8000-000000000106","email":"e2e-finance2@along.local","role":"finance"},
     {"id":"b0000000-0000-4000-8000-000000000103","email":"e2e-verifier@along.local","role":"verifier"},
     {"id":"b0000000-0000-4000-8000-000000000104","email":"e2e-analyst@along.local","role":"analyst"},
-    {"id":"b0000000-0000-4000-8000-000000000105","email":"e2e-ops-agent@along.local","role":"ops_agent"}
+    {"id":"b0000000-0000-4000-8000-000000000105","email":"e2e-ops-agent@along.local","role":"ops_agent"},
+    {"id":"b0000000-0000-4000-8000-000000000107","email":"e2e-safety@along.local","role":"safety"}
   ]'::jsonb;
   v_user jsonb;
 begin

@@ -5122,6 +5122,7 @@ export type Database = {
             }
             Returns: string
           }
+      admin_ack_sos: { Args: { p_id: string }; Returns: Json }
       admin_approve_adjustment: {
         Args: { p_request_id: string }
         Returns: Json
@@ -5188,6 +5189,10 @@ export type Database = {
         Args: { p_reason: string; p_verification_id: string }
         Returns: Json
       }
+      admin_resolve_sos: {
+        Args: { p_id: string; p_note?: string; p_status: string }
+        Returns: Json
+      }
       admin_review_fare_correction: {
         Args: { action: string; id: string; note?: string }
         Returns: Json
@@ -5204,6 +5209,15 @@ export type Database = {
       admin_rotate_driver_code: { Args: { p_driver_id: string }; Returns: Json }
       admin_transition_standing: {
         Args: { p_driver_id: string; p_reason: string; p_to: string }
+        Returns: Json
+      }
+      admin_triage_incident: {
+        Args: {
+          p_assigned_to?: string
+          p_id: string
+          p_severity?: number
+          p_status: string
+        }
         Returns: Json
       }
       admin_upsert_settlement_agent: {
