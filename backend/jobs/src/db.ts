@@ -1,0 +1,175 @@
+import pg from 'pg';
+
+import type { JobsDb, JobRunRecord } from './map-match.js';
+import type {
+  MapMatchJobConfig,
+  PendingTraceMatch,
+  TraceActorType,
+  TraceSample,
+} from './types.js';
+
+const { Pool } = pg;
+
+export type PgJobsDbOptions = {
+  connectionString?: string;
+  pool?: pg.Pool;
+};
+
+export function createPgJobsDb(options?: PgJobsDbOptions): JobsDb {
+  const pool = options?.pool ?? new Pool({
+    connectionString:
+      options?.connectionString ??
+      process.env.DATABASE_URL ??
+      'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
+  });
+
+  return {
+    async beginJobRun(jobName, params = {}) {
+      const { rows } = await pool.query<{ id: string }>(
+        `insert into job_runs (job_name, params)
+         values ($1, $2::jsonb)
+         returning id`,
+        [jobName, JSON.stringify(params)],
+      );
+      const row = rows[0];
+      if (!row) {
+        throw new Error('failed to create job_run');
+      }
+      return { id: row.id, jobName, status: 'running' } satisfies JobRunRecord;
+    },
+
+    async finishJobRun(jobRunId, status, stats, error) {
+      await pool.query(
+        `update job_runs
+         set status = $2,
+             finished_at = now(),
+             stats = coalesce($3::jsonb, stats),
+             error = $4
+         where id = $1`,
+        [jobRunId, status, stats ? JSON.stringify(stats) : null, error ?? null],
+      );
+    },
+
+    async loadMapMatchConfig(cityId) {
+      const { rows } = await pool.query<{
+        min_samples: string;
+        min_confidence: string;
+      }>(
+        `select
+           cfg_num('jobs.map_match_min_samples', $1::uuid) as min_samples,
+           cfg_num('jobs.map_match_min_confidence', $1::uuid) as min_confidence`,
+        [cityId ?? null],
+      );
+      const row = rows[0];
+      return {
+        minSamples: Number(row?.min_samples ?? 10),
+        minConfidence: Number(row?.min_confidence ?? 0.6),
+        osrmBaseUrl:
+          process.env.OSRM_BASE_URL ??
+          process.env.OSRM_URL ??
+          '',
+        osrmTimeoutMs: Number(process.env.OSRM_TIMEOUT_MS ?? '8000'),
+        defaultRadiusM: 25,
+      } satisfies MapMatchJobConfig;
+    },
+
+    async listPendingTraceMatches(minSamples) {
+      const { rows } = await pool.query<{
+        trip_id: string;
+        city_id: string;
+        actor_type: TraceActorType;
+        sample_count: string;
+      }>(
+        `select
+           t.id as trip_id,
+           j.city_id,
+           tls.actor_type,
+           count(*)::text as sample_count
+         from trips t
+         join journeys j on j.id = t.journey_id
+         join trip_location_samples tls on tls.trip_id = t.id
+         where t.status = 'completed'
+           and tls.actor_type in ('driver', 'rider')
+           and not exists (
+             select 1
+             from matched_traces mt
+             where mt.trip_id = t.id
+               and mt.actor_type = tls.actor_type
+           )
+         group by t.id, j.city_id, tls.actor_type
+         having count(*) >= $1`,
+        [minSamples],
+      );
+
+      return rows.map((row) => ({
+        tripId: row.trip_id,
+        cityId: row.city_id,
+        actorType: row.actor_type,
+        sampleCount: Number(row.sample_count),
+      })) satisfies PendingTraceMatch[];
+    },
+
+    async loadTraceSamples(tripId, actorType) {
+      const { rows } = await pool.query<{
+        lng: number;
+        lat: number;
+        ts: Date;
+        accuracy_m: string | null;
+      }>(
+        `select
+           st_x(location::geometry) as lng,
+           st_y(location::geometry) as lat,
+           ts,
+           accuracy_m
+         from trip_location_samples
+         where trip_id = $1
+           and actor_type = $2
+         order by ts asc`,
+        [tripId, actorType],
+      );
+
+      return rows.map((row) => ({
+        lng: Number(row.lng),
+        lat: Number(row.lat),
+        ts: row.ts,
+        accuracyM: row.accuracy_m === null ? null : Number(row.accuracy_m),
+      })) satisfies TraceSample[];
+    },
+
+    async insertMatchedTrace(record) {
+      const { rowCount } = await pool.query(
+        `insert into matched_traces (
+           trip_id,
+           actor_type,
+           geometry,
+           confidence,
+           osm_way_ids,
+           match_meta
+         ) values (
+           $1,
+           $2,
+           st_geogfromgeojson($3),
+           $4,
+           $5::bigint[],
+           $6::jsonb
+         )
+         on conflict (trip_id, actor_type) do nothing`,
+        [
+          record.tripId,
+          record.actorType,
+          JSON.stringify(record.geometryGeoJson),
+          record.confidence,
+          record.osmWayIds,
+          JSON.stringify(record.matchMeta),
+        ],
+      );
+      return (rowCount ?? 0) > 0;
+    },
+  };
+}
+
+export async function closePgJobsDb(db: JobsDb & { pool?: pg.Pool }): Promise<void> {
+  if ('pool' in db && db.pool) {
+    await db.pool.end();
+  }
+}
