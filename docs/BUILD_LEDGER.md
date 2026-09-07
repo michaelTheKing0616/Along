@@ -1162,3 +1162,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P2-E-01 PASS. Scope: NaMeScreen polish, StepList audio state, itinerary timeline, SOS styles. Goldens required.
+
+## [Phase 5 / P5-E-01] along_design batch 3 goldens
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: NaMeScreen, StepList audio, LegTimeline full, HoldButton SOS; 13 task goldens PASS. Claimed full golden suite PASS — Reviewer found 6 BalanceCard pixel failures.
+- Reviewer verdict: FAIL — flutter test test/golden/ 126 pass / 6 fail (balance_card_*). Task goldens MET. along_core path dep made BalanceCard tests compile (they do not even load on master).
+- Rework count: 1
+- Notes/escalations: Rework 1/2 — regenerate BalanceCard goldens so full test/golden/ is 0 failures. Do not rewrite BalanceCard unless required. Do not claim full suite PASS until the command exits 0.
