@@ -1130,3 +1130,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P5-A-01 PASS. Same SOS gates as P5-B-01 (2G ≤ 10 s). Reuse raise_sos/update_sos/report_incident. Do not redo rider SOS.
+
+## [Phase 5 / P5-C-01] Driver SOS, incident, D-18 rating, D-24
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Driver SOS active + 2G gate; incident report; D-18 rating tags; D-24 account. url_launcher 6.3.1 (ADR-0019). Flutter 52/52.
+- Reviewer verdict: PASS WITH NOTES — SOS gates MET. Notes: D-24 vehicle switch deferred (no RPC); ADR-0019 Used-in lists rider only; hold-to-cancel untested.
+- Rework count: 0
+- Notes/escalations: Merged 8728828. Next: P5-D-01. P4-E-02 still human. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 5 / P5-D-01] A-12 Safety board + sos_escalation runbook
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P5-A-01 PASS. admin_ack_sos / admin_resolve_sos named in doc 03 but missing from 00051 — in scope for ack-pushes-to-rider. SLA 60s/180s via app_config.
