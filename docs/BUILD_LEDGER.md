@@ -1146,3 +1146,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P5-A-01 PASS. admin_ack_sos / admin_resolve_sos named in doc 03 but missing from 00051 — in scope for ack-pushes-to-rider. SLA 60s/180s via app_config.
+
+## [Phase 5 / P5-D-01] A-12 Safety board + sos_escalation runbook
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00054 admin_ack_sos/resolve/triage; notify sos_ack; A-12 board; runbook rota. pgTAP 8/8, Deno 2/2, Vitest 2/2. Playwright spec written not run.
+- Reviewer verdict: PASS WITH NOTES — AC MET independently. Notes: Playwright not run (admin-console down); no embedded MapLibre (OSM link); ops_agent RPC vs route allowlist.
+- Rework count: 0
+- Notes/escalations: Merged db016e1. Next: P5-E-01. P4-E-02 still human. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 5 / P5-E-01] along_design batch 3 goldens
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P2-E-01 PASS. Scope: NaMeScreen polish, StepList audio state, itinerary timeline, SOS styles. Goldens required.
