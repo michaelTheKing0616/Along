@@ -1634,3 +1634,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Spec §7 Phase 8: k-anon export; invoice reconcile; FM39; FM40. P8-E-01 human deferred. Playwright/device DEFERRED. Do not flip digital_enabled. Then chain Phase 9.
+
+## [Phase 8 / Gate] Code gate (implementation-checkable)
+- Status: PASS WITH DEFERRED EVIDENCE
+- Assigned: 2026-09-07
+- Worker report summary: n/a (gate Reviewer against master 29f7fc8)
+- Reviewer verdict: PASS WITH DEFERRED EVIDENCE — pgTAP 42/42 Phase-8 tests + vitest 72/72 locally; digital_enabled false/read-only; P8-E-01 BLOCKED human. Deferred: Playwright b2b-portals live, Flutter sponsored_placement_test.
+- Rework count: 0
+- Notes/escalations: Residuals: P1-G-01, P4-E-02, P8-E-01 stay BLOCKED — human. Do not flip digital_enabled. Chaining Phase 9 from P9-A-01.
+
+## [Phase 9 / P9-A-01] City/currency hardcode audit
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-E-01 PASS. Attach 01 §8, 10 TS-CFG-01. AC: grep report attached. Fix findings. Do not flip digital_enabled.
