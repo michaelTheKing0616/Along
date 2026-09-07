@@ -653,6 +653,18 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'value': '3',
       },
       {
+        'key': 'client.low_data_tile_max_zoom',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '15',
+      },
+      {
+        'key': 'client.ambient_poll_interval_s',
+        'scope_type': 'global',
+        'scope_id': '*',
+        'value': '30',
+      },
+      {
         'key': 'boarding.colocation_radius_m',
         'scope_type': 'global',
         'scope_id': '*',

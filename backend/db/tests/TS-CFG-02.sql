@@ -87,6 +87,8 @@ with required_global as (
     'clustering.window_days',
     'client.trip_poll_interval_s',
     'client.trip_location_sample_interval_s',
+    'client.low_data_tile_max_zoom',
+    'client.ambient_poll_interval_s',
     'driver.negotiation_poll_s',
     'driver.manifest_poll_s',
     'motion.naMe.strobe_ms',
