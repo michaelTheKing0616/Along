@@ -162,7 +162,7 @@ begin
     'candidate',
     v_confidence
   )
-  returning id into v_park_id;
+  returning parks.id into v_park_id;
 
   update candidate_park_clusters
   set status = 'promoted_to_stage',
@@ -297,7 +297,7 @@ begin
     'candidate',
     v_confidence
   )
-  returning id into v_route_id;
+  returning routes.id into v_route_id;
 
   update route_inference_candidates
   set status = 'promoted_to_route',
