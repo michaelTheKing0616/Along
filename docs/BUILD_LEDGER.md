@@ -1810,3 +1810,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Attach 02 §16, 12. AC: gate artifact generated from live policies vs doc 02 §16; discrepancies fixed. Do not flip digital_enabled.
+
+## [Phase 11 / P11-A-01] Authorization matrix
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Live-vs-doc matrix 75 MATCH / 14 DOC-STALE / 0 DRIFT; migration 00079 private RLS + city_admin scope; TS-AUTHZ-01 14/14.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: fare_quotes/driver_verifications city scope is catalog-checked not behavioral pgTAP.
+- Rework count: 0
+- Notes/escalations: Merged f038348. Next: P11-E-01. Do not flip digital_enabled.
+
+## [Phase 11 / P11-E-01] Security audit (semgrep, secrets, deps)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Attach 12. AC: report with no open critical/high. External pen test is human/DEFERRED — implement local scans + remediations + coordination runbook. Do not flip digital_enabled.
