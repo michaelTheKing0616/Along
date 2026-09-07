@@ -1514,3 +1514,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-A-01 PASS. Attach 07 §4. AC: Patrol under edge netspeed — search from cache with stale badge. Patrol-on-device deferred; widget/unit tests required. Do not flip digital_enabled.
+
+## [Phase 7 / P7-B-01] Rider low-data + graph-bundle cache
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Drift graph/plan cache; LowDataMode; stale badge; corridor precache stub; migration 00067. Widget tests 9/9. Patrol SKIP.
+- Reviewer verdict: PASS WITH NOTES — AC MET via widgets. Notes: precache stub; quote-level expiry not implemented; Patrol deferred.
+- Rework count: 1
+- Notes/escalations: Merged f1db0be. All Phase 7 implementation tasks PASS. Issuing Phase 7 code gate. Do not flip digital_enabled.
+
+## [Phase 7 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 7: zero-code corridor; load tests attached; FM27 raw traces → zero proposals. Full-city k6 / Patrol / live corridor DEFERRED. Do not start Phase 8 until gate recorded. Then chain Phase 8.
