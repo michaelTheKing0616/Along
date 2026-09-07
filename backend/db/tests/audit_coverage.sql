@@ -27,6 +27,9 @@ with required as (
     'admin_users',
     'deployments',
     'countries',
+    'corporate_accounts',
+    'corporate_members',
+    'corporate_trip_policies',
     'sponsored_placements',
     'api_keys'
   ]) as tbl
