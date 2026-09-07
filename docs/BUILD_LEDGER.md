@@ -1842,3 +1842,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-E-02 PASS. Attach 01 §7, 07. AC: budgets met; report. Local k6/size analysis required; device APK/cold-start DEFERRED (not FAIL). Do not flip digital_enabled.
+
+## [Phase 11 / P11-E-02] Performance budget review
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: resolve_fare p95 0.27ms; TS-PERF-01 pagination cap 00080; k6 scaled-local; APK/cold-start/FCM harnesses. Plan-trip local FAIL (0% HTTP 200 at 10 rps).
+- Reviewer verdict: PASS WITH NOTES — AC MET as audit. Plan-trip availability FAIL honestly residual (P7). Device APK/cold-start/full-city DEFERRED. Note: one summary file understated k6 exit.
+- Rework count: 0
+- Notes/escalations: Merged 5ba8952. All Phase 11 implementation tasks PASS. Issuing Phase 11 code gate. Do not flip digital_enabled.
+
+## [Phase 11 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 11: authz matrix; no open critical/high; perf budgets. External pen test / device APK / full-city k6 DEFERRED. Do not flip digital_enabled. Then chain Phase 12.
