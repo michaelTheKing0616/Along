@@ -5,7 +5,7 @@
 
 create policy app_config_select_authenticated
   on app_config for select to authenticated
-  using (true);
+  using (app_config_visible_to_user(scope_type, scope_id));
 
 create policy app_config_write_admin
   on app_config for all to authenticated

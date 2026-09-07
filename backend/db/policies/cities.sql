@@ -5,7 +5,7 @@
 
 create policy cities_select_authenticated
   on cities for select to authenticated
-  using (true);
+  using (city_in_user_deployment(id));
 
 create policy cities_write_admin
   on cities for all to authenticated

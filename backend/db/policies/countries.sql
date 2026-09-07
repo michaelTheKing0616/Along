@@ -9,7 +9,7 @@ create policy countries_select_anon_active
 
 create policy countries_select_authenticated
   on countries for select to authenticated
-  using (true);
+  using ((auth_user_deployment_id() IS NULL) OR (deployment_id = auth_user_deployment_id()));
 
 create policy countries_write_admin
   on countries for all to authenticated

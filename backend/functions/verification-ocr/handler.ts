@@ -6,6 +6,8 @@ import {
 } from '../_shared/redact_ids.ts';
 import { errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
 import { createServiceClient } from '../_shared/supabase.ts';
+import { resolveVerificationProvider } from '../_shared/verification/registry.ts';
+import type { VerificationProviderResult } from '../_shared/verification/types.ts';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const verificationOcrRequestSchema = z.object({
@@ -22,54 +24,40 @@ type VerificationRow = {
   country_code: string;
 };
 
-export type OcrUpstreamResult = {
-  fields: Record<string, string>;
-  provider: string;
-  provider_reference: string;
-};
+export type OcrUpstreamResult = VerificationProviderResult;
 
 export type VerificationOcrDeps = {
   service: SupabaseClient;
-  ocrUpstream?: (path: string, documentType: string) => Promise<OcrUpstreamResult>;
+  ocrUpstream?: (path: string, documentType: string, providerName: string) => Promise<OcrUpstreamResult>;
+  resolveProviderName?: (countryCode: string, documentType: string) => Promise<string>;
   computeHash?: (
     documentType: string,
     normalizedId: string,
   ) => Promise<string | null>;
 };
 
-async function defaultOcrUpstream(
-  _path: string,
+async function defaultResolveProviderName(
+  service: SupabaseClient,
+  countryCode: string,
   documentType: string,
+): Promise<string> {
+  const { data, error } = await service.rpc('verification_doc_provider', {
+    p_country_code: countryCode,
+    p_document_type: documentType,
+  });
+  if (error || data == null || String(data).trim() === '') {
+    return 'verifyme';
+  }
+  return String(data);
+}
+
+async function defaultOcrUpstream(
+  path: string,
+  documentType: string,
+  providerName: string,
 ): Promise<OcrUpstreamResult> {
-  if (documentType === 'nin') {
-    return {
-      fields: {
-        full_name: 'Test Driver',
-        id_number: '12345678901',
-        dob: '1990-05-15',
-      },
-      provider: 'mock-verifyme',
-      provider_reference: 'mock-ref-nin',
-    };
-  }
-
-  if (documentType === 'drivers_license') {
-    return {
-      fields: {
-        full_name: 'Test Driver',
-        license_number: 'LAG1234567',
-        expiry: '2028-12-01',
-      },
-      provider: 'mock-verifyme',
-      provider_reference: 'mock-ref-license',
-    };
-  }
-
-  return {
-    fields: { full_name: 'Test Driver' },
-    provider: 'mock-verifyme',
-    provider_reference: 'mock-ref-generic',
-  };
+  const provider = resolveVerificationProvider(providerName);
+  return provider.runOcr(path, documentType);
 }
 
 function byteaToBase64(value: unknown): string | null {
@@ -121,8 +109,39 @@ export async function handleVerificationOcr(
     return errorResponse('VALIDATION', 'Missing storage path', 400, { request_id: rid });
   }
 
+  const resolveProviderName = deps.resolveProviderName
+    ?? ((countryCode, documentType) =>
+      defaultResolveProviderName(service, countryCode, documentType));
+
+  let providerName: string;
+  try {
+    providerName = await resolveProviderName(
+      verification.country_code,
+      verification.document_type,
+    );
+  } catch {
+    return errorResponse('VALIDATION', 'Unknown verification provider', 400, {
+      request_id: rid,
+    });
+  }
+
   const ocrUpstream = deps.ocrUpstream ?? defaultOcrUpstream;
-  const upstream = await ocrUpstream(verification.storage_path, verification.document_type);
+  let upstream: OcrUpstreamResult;
+  try {
+    upstream = await ocrUpstream(
+      verification.storage_path,
+      verification.document_type,
+      providerName,
+    );
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.startsWith('UNKNOWN_VERIFICATION_PROVIDER:')) {
+      return errorResponse('VALIDATION', 'Unknown verification provider', 400, {
+        request_id: rid,
+      });
+    }
+    throw err;
+  }
 
   const normalizedId = extractNormalizedId(verification.document_type, upstream.fields);
   const hints = redactOcrFields(upstream.fields);

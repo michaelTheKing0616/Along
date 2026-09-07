@@ -6,8 +6,9 @@ String formatMoney(
   Money money, {
   String locale = 'en_NG',
   bool showDecimals = false,
+  String? currencySymbol,
 }) {
-  final symbol = _currencySymbol(money.currency);
+  final symbol = currencySymbol ?? _currencySymbol(money.currency);
   final pattern = showDecimals ? '$symbol#,##0.00' : '$symbol#,##0';
   final formatter = NumberFormat(pattern, locale);
   final value = showDecimals ? money.amount.toDouble() : money.amount.round().toDouble();

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
@@ -28,13 +29,29 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
   String? _statusMessage;
   String? _channelDetail;
   bool _busy = false;
+  String? _currencySymbol;
   Timer? _pollTimer;
 
   @override
   void initState() {
     super.initState();
     _amountController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _prefillAmount());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _prefillAmount();
+      _loadCurrencySymbol();
+    });
+  }
+
+  Future<void> _loadCurrencySymbol() async {
+    final cityId = ref.read(homeControllerProvider).cityId;
+    if (cityId == null) return;
+    try {
+      final meta =
+          await ref.read(catalogRepositoryProvider).currencyMetaForCity(cityId);
+      if (mounted) setState(() => _currencySymbol = meta.currencySymbol);
+    } catch (_) {
+      // Balance currency code still applies; symbol falls back in formatMoney.
+    }
   }
 
   @override
@@ -54,9 +71,16 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
     _amountController.text = toZero;
   }
 
-  Money _parseAmount() {
+  Money _parseAmount(String currency) {
     final parsed = double.tryParse(_amountController.text.trim()) ?? 0;
-    return Money.parse(parsed.toStringAsFixed(2), currency: 'NGN');
+    return Money.parse(parsed.toStringAsFixed(2), currency: currency);
+  }
+
+  String _formatMinimumAmount(String currency) {
+    return formatMoney(
+      Money.parse('100', currency: currency),
+      currencySymbol: _currencySymbol,
+    );
   }
 
   Future<void> _initiateChannel(String channel) async {
@@ -68,9 +92,12 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
       _nearbyAgents = const [];
     });
     try {
-      final amount = _parseAmount();
+      final currency = ref.read(driverLedgerControllerProvider).balance.currency;
+      final amount = _parseAmount(currency);
       if (amount.amount <= Decimal.zero) {
-        setState(() => _statusMessage = 'Enter at least ₦100');
+        setState(
+          () => _statusMessage = 'Enter at least ${_formatMinimumAmount(currency)}',
+        );
         return;
       }
       final repo = ref.read(ledgerRepositoryProvider);
@@ -145,7 +172,12 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
         padding: const EdgeInsets.all(AlongSpace.s16),
         children: [
           Text(
-            l10n.settleCurrentBalance(formatMoney(ledger.balance)),
+            l10n.settleCurrentBalance(
+              formatMoney(
+                ledger.balance,
+                currencySymbol: _currencySymbol,
+              ),
+            ),
             style: AlongText.body,
           ),
           const SizedBox(height: AlongSpace.s16),

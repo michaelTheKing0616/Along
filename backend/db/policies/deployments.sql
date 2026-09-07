@@ -5,7 +5,7 @@
 
 create policy deployments_select_authenticated
   on deployments for select to authenticated
-  using (true);
+  using ((auth_user_deployment_id() IS NULL) OR (id = auth_user_deployment_id()));
 
 create policy deployments_write_admin
   on deployments for all to authenticated
