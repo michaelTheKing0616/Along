@@ -1298,3 +1298,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P5-D-01 PASS. Write corridor_onboarding, verification_review, fare_dispute, incident_response. Attach runbooks/README. AC: ops dry-run of a pilot day recorded. Do not write application code. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 6 / P6-E-01] Pilot-day runbooks
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Four TEMPLATE runbooks + pilot_day_dry_run.md (verify / fare dispute / incident / demand report, no raw SQL). README ops-ready.
+- Reviewer verdict: PASS WITH NOTES — AC MET independently. All cited screens/RPCs exist. Notes: dry-run script recorded, human sign-off pending; Step 0 A-02 vs A-15 analytics RPC cosmetic.
+- Rework count: 0
+- Notes/escalations: Merged e89db8b. All Phase 6 implementation tasks PASS. Issuing Phase 6 code gate. Do not start Phase 7. Do not flip digital_enabled.
+
+## [Phase 6 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 6: admin writes audited actor+timestamp; analytics paginated/bounded; exit = ops can verify a driver, resolve a fare dispute, review an incident, pull a demand report without raw SQL. Live-device/corridor evidence deferred to P1-G-01 — do not FAIL for missing field screenshots. Do not start Phase 7.
