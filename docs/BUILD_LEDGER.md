@@ -1050,3 +1050,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: PASS WITH NOTES on implementation — prior compile FAIL fixed (`payments_test.dart` analyze clean, 8/8). Flag still false. Cash trip zero Paystack (Deno TS-UI-04 7/7; pgTAP cash complete_trip / cash-no-payment). TS-LEDGER-01..06 15/15. TS-LEDGER-06 park+roaming block. TS-INTEG-01..05 9/9. TS-TRIP-08 9/9. Split-at-source wired. Notes: TS-QR-01-12 plan(35)/ran 36 (all ok); pg_prove missing (psql used).
 - Rework count: 0
 - Notes/escalations: Residuals (not code defects): **P4-E-02** human counsel — never PASS; **P1-G-01** device/corridor; native App Link entitlements not in repo; camera stub; verification.spec.ts flake not re-run. Do not flip `payments.digital_enabled`. Do not start Phase 7. Next implementation task when resumed: **P5-A-01**. Not started this session.
+
+## [Phase 5 / Decision] Continue — open Phase 5 implementation
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner: continue. Phase 4 code gate is PASS WITH DEFERRED EVIDENCE. Issue P5-A-01. Do not grant P4-E-02. Do not flip `payments.digital_enabled`. Do not start Phase 7. Do not re-implement wait-decision.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Issuing P5-A-01.
+
+## [Phase 5 / P5-A-01] SOS, trip share, incidents RLS
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Next migration 00051. Do not create itineraries (P5-A-03). Ratings already exist (P4-A-04).
