@@ -51,7 +51,9 @@ export async function isAdmin(): Promise<boolean> {
   return Boolean(data);
 }
 
-const DEFAULT_AUDIT_PAGE_SIZE = 50;
+function clampAuditPageSize(size: number): number {
+  return Math.min(Math.max(size, 1), 200);
+}
 
 export async function fetchAuditLogForTarget(
   targetId: string,
@@ -70,7 +72,15 @@ export async function fetchAuditLogPage(input: {
   actorRole?: string;
 }): Promise<AuditLogPage> {
   const supabase = await createClient();
-  const pageSize = Math.min(Math.max(input.limit ?? DEFAULT_AUDIT_PAGE_SIZE, 1), 200);
+
+  let resolvedLimit = input.limit;
+  if (resolvedLimit == null) {
+    const { data } = await supabase.rpc('cfg_num', { p_key: 'audit.page_size' });
+    if (data != null) {
+      resolvedLimit = Number(data);
+    }
+  }
+  const pageSize = clampAuditPageSize(resolvedLimit ?? 50);
 
   let query = supabase
     .from('audit_log' as 'app_config')
