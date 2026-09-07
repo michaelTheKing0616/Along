@@ -132,7 +132,13 @@ with required_global as (
     'analytics.max_window_days',
     'analytics.bucket_interval_s',
     'ops.live_map_poll_s',
-    'audit.page_size'
+    'audit.page_size',
+    'cache.plan_trip_ttl_s',
+    'cache.places_ttl_s',
+    'cache.graph_bundle_ttl_s',
+    'cache.graph_bundle_max_parks',
+    'cache.graph_bundle_max_stages',
+    'cache.graph_bundle_max_legs'
   ]) as key
 ),
 missing_global as (

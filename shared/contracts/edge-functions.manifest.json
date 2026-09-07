@@ -5,6 +5,8 @@
     { "slug": "walking-directions", "tier": "A", "status": "implemented" },
     { "slug": "verification-ocr", "tier": "service", "status": "implemented" },
     { "slug": "parse-itinerary", "tier": "A", "status": "implemented" },
+    { "slug": "graph-bundle", "tier": "A", "status": "implemented" },
+    { "slug": "cache-metrics", "tier": "service", "status": "implemented" },
     { "slug": "settlement/initiate", "tier": "I", "status": "implemented" },
     { "slug": "webhooks/paystack", "tier": "service", "status": "implemented" },
     { "slug": "payments/initiate", "tier": "B/A", "status": "implemented" },

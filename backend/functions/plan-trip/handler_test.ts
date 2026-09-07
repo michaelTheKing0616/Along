@@ -2,11 +2,14 @@ import { assertEquals, assertExists } from 'jsr:@std/assert@1';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { OsrmClient } from '../_shared/osrm.ts';
 import { applyRanking, computeMetrics } from '../_shared/planner/ranking.ts';
+import { TtlCache } from '../_shared/edge_cache.ts';
+import { resetEdgeCachesForTests } from '../_shared/edge_cache.ts';
 import type { Metrics, ModeRow, PlanCandidate } from '../_shared/types.ts';
 import { handlePlanTrip, type PlanTripRequest } from './handler.ts';
 
 const CITY_ID = '0a000000-0000-4000-8000-000000000001';
 const RIDER_ID = '0a200000-0000-4000-8000-000000000001';
+const RIDER_B_ID = '0a200000-0000-4000-8000-000000000002';
 const BOARD_ID = '0a040000-0000-4000-8000-000000000001';
 const ALIGHT_ID = '0a040000-0000-4000-8000-000000000003';
 const ROUTE_ID = '0a030000-0000-4000-8000-000000000001';
@@ -69,6 +72,12 @@ const multiLegItinerary = {
 
 function cfgValue(key: string): unknown {
   const values: Record<string, unknown> = {
+    'cache.plan_trip_ttl_s': '60',
+    'cache.places_ttl_s': '86400',
+    'cache.graph_bundle_ttl_s': '3600',
+    'cache.graph_bundle_max_parks': '500',
+    'cache.graph_bundle_max_stages': '2000',
+    'cache.graph_bundle_max_legs': '5000',
     'planner.max_candidates': '12',
     'planner.walk_speed_mps': '1.25',
     'planner.shared_vehicle_factor': '1.25',
@@ -96,6 +105,7 @@ const stageRows = [
 function createMockServiceClient(
   directCandidates: unknown[],
   multiItineraries: unknown[] = [],
+  opts?: { insertCalls?: Array<{ rider_id: string; query_id: string }> },
 ): SupabaseClient {
   return {
     rpc: (name: string, args?: Record<string, unknown>) => {
@@ -120,13 +130,15 @@ function createMockServiceClient(
         }
         case 'resolve_fare': {
           const routeId = args?.p_route_id as string | undefined;
+          const riderId = args?.p_rider_id as string | undefined;
           const amount = routeId === '0a030000-0000-4000-8000-000000000003' ? 1000
             : routeId === '0a030000-0000-4000-8000-000000000004' ? 80
             : routeId === ROUTE_ID ? 320
             : 200;
+          const quoteSuffix = riderId === RIDER_B_ID ? '002' : '001';
           return Promise.resolve({
             data: {
-              quote_id: '0c100000-0000-4000-8000-000000000001',
+              quote_id: `0c100000-0000-4000-8000-0000000000${quoteSuffix}`,
               amount,
               currency: 'NGN',
               tier: 1,
@@ -147,6 +159,10 @@ function createMockServiceClient(
             error: null,
           });
         case 'insert_planner_query':
+          opts?.insertCalls?.push({
+            rider_id: String(args?.p_rider_id),
+            query_id: String(args?.p_id),
+          });
           return Promise.resolve({ data: null, error: null });
         case 'route_leg_segment_keys':
           return Promise.resolve({ data: [], error: null });
@@ -179,11 +195,11 @@ function createMockServiceClient(
   } as unknown as SupabaseClient;
 }
 
-function createMockUserClient(): SupabaseClient {
+function createMockUserClient(riderId = RIDER_ID): SupabaseClient {
   return {
     auth: {
       getUser: () =>
-        Promise.resolve({ data: { user: { id: RIDER_ID } }, error: null }),
+        Promise.resolve({ data: { user: { id: riderId } }, error: null }),
     },
   } as unknown as SupabaseClient;
 }
@@ -216,6 +232,7 @@ function mockDeps(direct: unknown[], multi: unknown[] = []) {
     service: createMockServiceClient(direct, multi),
     user: createMockUserClient(),
     osrm: mockOsrmClient(),
+    cache: false as const,
   };
 }
 
@@ -387,4 +404,77 @@ Deno.test('TS-PLAN-09 handler: candidate count respects max_candidates', async (
   );
   const body = await res.json();
   assertEquals(body.data.candidates.length <= 12, true);
+});
+
+Deno.test('plan-trip cache: second identical request is X-Cache HIT with same candidates', async () => {
+  resetEdgeCachesForTests();
+  const cache = new TtlCache<Record<string, unknown>>(8);
+  const deps = { ...mockDeps([parkedCandidate], [multiLegItinerary]), cache };
+
+  const first = await handlePlanTrip(baseRequest, 'Bearer test-token', deps);
+  assertEquals(first.headers.get('X-Cache'), 'MISS');
+  const firstBody = await first.json();
+
+  const second = await handlePlanTrip(baseRequest, 'Bearer test-token', deps);
+  assertEquals(second.headers.get('X-Cache'), 'HIT');
+  const secondBody = await second.json();
+
+  assertEquals(
+    secondBody.data.candidates.map((c: { candidate_id: string }) => c.candidate_id),
+    firstBody.data.candidates.map((c: { candidate_id: string }) => c.candidate_id),
+  );
+  assertEquals(
+    secondBody.data.sort_orders.recommended,
+    firstBody.data.sort_orders.recommended,
+  );
+  assertEquals(secondBody.data.query_id !== firstBody.data.query_id, true);
+});
+
+Deno.test('plan-trip cache: two riders same OD — HIT for rider B with own query_id', async () => {
+  resetEdgeCachesForTests();
+  const cache = new TtlCache<Record<string, unknown>>(8);
+  const insertCalls: Array<{ rider_id: string; query_id: string }> = [];
+  const service = createMockServiceClient(
+    [parkedCandidate],
+    [multiLegItinerary],
+    { insertCalls },
+  );
+  const deps = {
+    service,
+    user: createMockUserClient(RIDER_ID),
+    osrm: mockOsrmClient(),
+    cache,
+  };
+
+  const first = await handlePlanTrip(baseRequest, 'Bearer rider-a', deps);
+  assertEquals(first.headers.get('X-Cache'), 'MISS');
+  const firstBody = await first.json();
+
+  const second = await handlePlanTrip(baseRequest, 'Bearer rider-b', {
+    ...deps,
+    user: createMockUserClient(RIDER_B_ID),
+  });
+  assertEquals(second.headers.get('X-Cache'), 'HIT');
+  const secondBody = await second.json();
+
+  assertEquals(secondBody.data.query_id !== firstBody.data.query_id, true);
+  assertEquals(insertCalls.length, 2);
+  assertEquals(insertCalls[0].rider_id, RIDER_ID);
+  assertEquals(insertCalls[1].rider_id, RIDER_B_ID);
+  assertEquals(insertCalls[1].query_id, secondBody.data.query_id);
+
+  assertEquals(
+    secondBody.data.candidates.map((c: { candidate_id: string }) => c.candidate_id),
+    firstBody.data.candidates.map((c: { candidate_id: string }) => c.candidate_id),
+  );
+  assertEquals(
+    secondBody.data.sort_orders.recommended,
+    firstBody.data.sort_orders.recommended,
+  );
+
+  const firstQuote = firstBody.data.candidates[0].legs[0].fare.quote_id;
+  const secondQuote = secondBody.data.candidates[0].legs[0].fare.quote_id;
+  assertEquals(firstQuote.endsWith('001'), true);
+  assertEquals(secondQuote.endsWith('002'), true);
+  assertEquals(secondQuote !== firstQuote, true);
 });
