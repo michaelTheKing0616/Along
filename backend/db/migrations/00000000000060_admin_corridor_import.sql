@@ -497,13 +497,11 @@ declare
   v_i int;
 begin
   if coalesce(current_setting('role', true), '') <> 'service_role'
-     and current_user not in ('postgres', 'supabase_admin')
      and not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
 
   if coalesce(current_setting('role', true), '') <> 'service_role'
-     and current_user not in ('postgres', 'supabase_admin')
      and not admin_can_access_city(p_city_id) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
@@ -566,13 +564,11 @@ declare
   v_is_corridor boolean := false;
 begin
   if coalesce(current_setting('role', true), '') <> 'service_role'
-     and current_user not in ('postgres', 'supabase_admin')
      and not has_admin_role(array['ops_agent', 'ops_lead', 'superadmin']) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
 
   if coalesce(current_setting('role', true), '') <> 'service_role'
-     and current_user not in ('postgres', 'supabase_admin')
      and not admin_can_access_city(p_city_id) then
     raise exception 'FORBIDDEN' using errcode = '42501';
   end if;
