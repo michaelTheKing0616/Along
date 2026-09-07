@@ -47,7 +47,8 @@ Pin all toolchain versions at repo bootstrap. Upgrading a **major** version requ
 | Component | Version | Notes |
 |---|---|---|
 | Next.js | **15.1.12** | admin-console scaffold in P0-D-01 |
-| MapLibre GL JS | **5.6.1** | admin map views |
+| MapLibre GL JS | **5.6.1** | admin-console live map (A-03, P6-D-02) |
+| pmtiles (JS) | **4.3.0** | admin-console PMTiles protocol for MapLibre GL JS |
 | maplibre_gl (Flutter plugin) | **0.22.0** | `along_map` in P1-E-02 |
 
 ### Routing stack (backend/routing — pinned now, implemented in P1-A-07)

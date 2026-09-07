@@ -6,6 +6,7 @@ interface ConsoleNavProps {
 
 const LINKS = [
   { segment: 'dashboard', label: 'Dashboard' },
+  { segment: 'live', label: 'Live map' },
   { segment: 'field', label: 'Field reconciliation' },
   { segment: 'graph', label: 'Graph editor' },
   { segment: 'deploy', label: 'City playbook' },

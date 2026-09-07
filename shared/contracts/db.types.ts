@@ -5160,6 +5160,7 @@ export type Database = {
         Returns: Json
       }
       admin_presence_fanout: { Args: { p_city_id: string }; Returns: Json }
+      admin_active_trips_map: { Args: { p_city_id: string }; Returns: Json }
       admin_presence_snapshot: { Args: { p_city_id: string }; Returns: Json }
       admin_publish_field_entity: {
         Args: { p_reconciliation_id: string }
