@@ -1322,3 +1322,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: PASS WITH DEFERRED EVIDENCE — audit_coverage 6/6; coverage script 25 OK / 3 Phase 7 GAP; TS-ANALYTICS-01 11/11 bounded + diagnostic_only; TS-OPS-04 9/9 admin-only precise positions; exit screens/RPCs present. Flag global false / read-only. Deferred: human pilot dry-run sign-off; Playwright graph-config (admin-console down). Note: local Abuja city row payments.digital_enabled=true is E2E seed residue, not shipped default.
 - Rework count: 0
 - Notes/escalations: Residuals: **P4-E-02** human counsel — never PASS; **P1-G-01** live-device/corridor/2G field — deferred. Do not flip payments.digital_enabled. **Phase 7 stays CLOSED until P1-G-01 is PASS.** P7-E-01 is next in doc 11 but was not issued. Session STOP.
+
+## [Phase 7 / Decision] Owner: do not halt the build on counsel or evidence day
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner: lift implementation blockers. Continue building Phases 7–12. Testing/evidence/counsel after the app is built. Keep go-live switches as config.
+- Reviewer verdict: n/a (product-owner policy)
+- Rework count: 0
+- Notes/escalations: **P1-G-01, P4-E-02, P8-E-01 are deferred, not build gates.** Never record those rows PASS from an agent. **Do not flip** the shipped default of `payments.digital_enabled` (stays false; A-09 / tests may override locally). No production stickers. No real rider charge. Phase 7 implementation is OPEN from P7-E-01. Orchestrator may chain phase code gates into the next phase (spec §0.1) when PHASE_LIMIT is unlimited. Docs updated: AUTOPILOT_PROMPT §5, blueprint 11 (P1-G-01, P4-E-02, P8-E-01, Phase 7 intro).
