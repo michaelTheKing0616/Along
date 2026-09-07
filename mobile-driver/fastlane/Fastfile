@@ -1,0 +1,31 @@
+# Fastlane stub — Along Driver (P12-E-02)
+#
+# Mirror of mobile-rider/fastlane/Fastfile. See docs/runbooks/store_rollout.md.
+
+default_platform(:android)
+
+platform :android do
+  desc 'Upload prod AAB to Play internal track (requires signing + PLAY_STORE_JSON)'
+  lane :deploy_play_internal do
+    UI.user_error!('Stub lane — configure supply + signing before use')
+  end
+
+  desc 'Promote to Play production with staged rollout fraction (0.1, 0.5, 1.0)'
+  lane :deploy_play_prod do |options|
+    rollout = options[:rollout] || '0.1'
+    UI.message("Stub: would deploy prod with rollout=#{rollout}")
+    UI.user_error!('Stub lane — configure supply before use')
+  end
+end
+
+platform :ios do
+  desc 'Build and upload to TestFlight (requires match + ASC API key)'
+  lane :deploy_testflight do
+    UI.user_error!('Stub lane — configure match + pilot before use')
+  end
+
+  desc 'Submit to App Store (phased release enabled in App Store Connect)'
+  lane :deploy_appstore do
+    UI.user_error!('Stub lane — configure deliver before use')
+  end
+end

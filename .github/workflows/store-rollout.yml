@@ -1,0 +1,40 @@
+# Store rollout CI stub (P12-E-02)
+#
+# Manual rollout is authoritative until Play + App Store credentials are in GitHub Environment `production`.
+# Trigger: workflow_dispatch only — does not run on PR.
+#
+# When ready, replace stub steps with:
+#   - bundle exec fastlane deploy_play_prod rollout:0.1 (mobile-rider, mobile-driver)
+#   - Sentry crash-free check gate (≥ 99.5%)
+# See docs/runbooks/store_rollout.md
+
+name: store-rollout
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'App to promote'
+        required: true
+        type: choice
+        options:
+          - rider
+          - driver
+          - both
+      rollout_fraction:
+        description: 'Play staged rollout (0.1, 0.5, 1.0)'
+        required: true
+        default: '0.1'
+
+jobs:
+  stub:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Store rollout placeholder
+        run: |
+          echo "Store rollout is manual until Fastlane credentials are configured."
+          echo "App: ${{ inputs.app }} · Rollout: ${{ inputs.rollout_fraction }}"
+          echo "See docs/runbooks/store_rollout.md"
+          exit 1

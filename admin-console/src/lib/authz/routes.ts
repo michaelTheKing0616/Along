@@ -48,6 +48,11 @@ export function isWellKnownPath(pathname: string): boolean {
   return pathname.startsWith('/.well-known/');
 }
 
+/** W-03 legal pages (P12-E-02) — no auth. */
+export function isLegalPath(pathname: string): boolean {
+  return pathname === '/legal' || pathname.startsWith('/legal/');
+}
+
 export function isAgentPath(pathname: string): boolean {
   return pathname === AGENT_PATH || pathname.startsWith(`${AGENT_PATH}/`);
 }
@@ -56,6 +61,7 @@ export function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.has(pathname)) return true;
   if (isPayPath(pathname)) return true;
   if (isWellKnownPath(pathname)) return true;
+  if (isLegalPath(pathname)) return true;
   return false;
 }
 
