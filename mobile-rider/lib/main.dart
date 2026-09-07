@@ -1,3 +1,4 @@
+import 'package:along_core/along_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/app.dart';
@@ -6,6 +7,7 @@ import 'package:mobile_rider/observability/sentry_config.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
+  AppStartupMetrics.instance.markProcessStart();
   final config = AppConfig.fromEnvironment();
 
   Future<void> runAlongApp() async {
