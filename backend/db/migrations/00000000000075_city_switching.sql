@@ -31,7 +31,8 @@ begin
 end;
 $$;
 
-grant execute on function set_home_city(uuid) to authenticated;
+revoke all on function set_home_city(uuid) from public;
+grant execute on function set_home_city(uuid) to authenticated, service_role;
 
 create or replace function set_driver_city(p_city_id uuid)
 returns void
@@ -67,4 +68,5 @@ begin
 end;
 $$;
 
-grant execute on function set_driver_city(uuid) to authenticated;
+revoke all on function set_driver_city(uuid) from public;
+grant execute on function set_driver_city(uuid) to authenticated, service_role;

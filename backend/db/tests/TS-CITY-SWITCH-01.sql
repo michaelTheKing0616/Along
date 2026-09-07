@@ -1,6 +1,10 @@
 -- P9-B-01: set_home_city / set_driver_city validate active cities and own row.
+create extension if not exists pgtap;
 
 begin;
+\ir ../seed/seed_testcity_fixture/00_zaria_test.sql
+\ir ../seed/seed_abuja_pilot/00_city_and_corridors.sql
+
 select plan(4);
 
 \set abuja_id 'b1000000-0000-4000-8000-000000000001'
@@ -8,11 +12,18 @@ select plan(4);
 \set rider_id 'a1000000-0000-4000-8000-000000000001'
 \set driver_id 'a2000000-0000-4000-8000-000000000001'
 
+insert into auth.users (id, aud, role, phone) values
+  (:'rider_id', 'authenticated', 'authenticated', '+2348000009201'),
+  (:'driver_id', 'authenticated', 'authenticated', '+2348000009202')
+on conflict (id) do nothing;
+
 insert into profiles (id, phone_e164, display_name)
 values
-  (:'rider_id', '+2348000000101', 'City Switch Rider'),
-  (:'driver_id', '+2348000000102', 'City Switch Driver')
-on conflict (id) do nothing;
+  (:'rider_id', '+2348000009201', 'City Switch Rider'),
+  (:'driver_id', '+2348000009202', 'City Switch Driver')
+on conflict (id) do update set
+  phone_e164 = excluded.phone_e164,
+  display_name = excluded.display_name;
 
 insert into riders (id, home_city_id)
 values (:'rider_id', :'abuja_id')
