@@ -1330,3 +1330,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: n/a (product-owner policy)
 - Rework count: 0
 - Notes/escalations: **P1-G-01, P4-E-02, P8-E-01 are deferred, not build gates.** Never record those rows PASS from an agent. **Do not flip** the shipped default of `payments.digital_enabled` (stays false; A-09 / tests may override locally). No production stickers. No real rider charge. Phase 7 implementation is OPEN from P7-E-01. Orchestrator may chain phase code gates into the next phase (spec §0.1) when PHASE_LIMIT is unlimited. Docs updated: AUTOPILOT_PROMPT §5, blueprint 11 (P1-G-01, P4-E-02, P8-E-01, Phase 7 intro).
+
+## [Phase 7 / Decision] Continue — open Phase 7–12 implementation chain
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner resume points at the 2026-09-07 ledger decision above. PHASE_LIMIT unlimited. Issue P7-E-01; chain through Phase 12 code gate; then stop. Skip human rows P1-G-01, P4-E-02, P8-E-01 (leave BLOCKED — human; never invent PASS).
+- Reviewer verdict: n/a (product-owner policy)
+- Rework count: 0
+- Notes/escalations: Do not flip payments.digital_enabled shipped default. Do not absorb Phase 6 residuals into P7-E-01. Live-device / k6-at-full-city / Patrol-on-device / Playwright-when-console-down: implement + local tests; defer field evidence at code gates.
+
+## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P6-D-03 PASS. Attach 13 + 06 A-08. AC: new corridor with zero code changes (data/config only). Do not redo graph/config editors. Do not absorb Phase 6 residuals. Do not flip digital_enabled.
