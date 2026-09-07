@@ -8,6 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/trip_options/domain/load_capacity_warning.dart';
+import 'package:mobile_rider/features/placements/domain/placement_context_resolver.dart';
+import 'package:mobile_rider/features/placements/presentation/placement_providers.dart';
+import 'package:mobile_rider/features/placements/presentation/sponsored_placement_slot.dart';
 import 'package:mobile_rider/features/trip_options/presentation/coverage_gap_view.dart';
 import 'package:mobile_rider/features/trip_options/presentation/explain_popover.dart';
 import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.dart';
@@ -196,6 +199,16 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
     final candidates = state.sortedCandidates;
     final recommendedId = state.plan?.sortOrders[SortCriterion.recommended]
         ?.firstOrNull;
+    final recommended = candidates
+        .where((c) => c.candidateId == recommendedId)
+        .firstOrNull;
+    final alightStageId = recommended?.legs.lastOrNull?.alightStageId;
+    final placementContext = placementContextFromPlan(
+      sessionContext: state.session?.placementContext,
+      recommendedAlightStageId: alightStageId,
+    );
+    final placementsAsync =
+        ref.watch(tripOptionsPlacementProvider(placementContext));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,6 +231,14 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                     controller.setSort(_mapSortOption(option)),
               ),
             ],
+          ),
+        ),
+        placementsAsync.when(
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+          data: (placements) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
+            child: SponsoredPlacementSlot(placements: placements),
           ),
         ),
         Expanded(

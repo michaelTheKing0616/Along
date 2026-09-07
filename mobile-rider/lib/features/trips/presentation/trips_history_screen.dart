@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
+import 'package:mobile_rider/features/placements/presentation/placement_providers.dart';
+import 'package:mobile_rider/features/placements/presentation/sponsored_placement_slot.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -18,6 +20,7 @@ class TripsHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final history = ref.watch(tripsHistoryProvider);
+    final placementsAsync = ref.watch(tripsHistoryPlacementProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.navTrips)),
@@ -31,6 +34,19 @@ class TripsHistoryScreen extends ConsumerWidget {
           final grouped = _groupByDay(entries);
           return ListView(
             children: [
+              placementsAsync.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (placements) => Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AlongSpace.s16,
+                    AlongSpace.s16,
+                    AlongSpace.s16,
+                    0,
+                  ),
+                  child: SponsoredPlacementSlot(placements: placements),
+                ),
+              ),
               for (final group in grouped.entries) ...[
                 Padding(
                   padding: const EdgeInsets.fromLTRB(

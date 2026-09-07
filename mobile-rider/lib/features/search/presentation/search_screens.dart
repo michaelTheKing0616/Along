@@ -35,7 +35,7 @@ class DestinationSearchScreen extends ConsumerWidget {
             Expanded(
               child: DestinationSearchPanel(
                 onDestinationSelected: (pick) {
-                  _startTripPlan(ref, pick.name, pick.location);
+                  _startTripPlan(ref, pick);
                   if (context.mounted) {
                     _afterDestinationSelected(context, ref);
                   }
@@ -145,7 +145,7 @@ class AdjustPickupScreen extends ConsumerWidget {
   }
 }
 
-void _startTripPlan(WidgetRef ref, String label, GeoPoint destination) {
+void _startTripPlan(WidgetRef ref, DestinationPick pick) {
   final home = ref.read(homeControllerProvider);
   final hail = ref.read(hailIntentProvider);
   final origin = home.userLocation ??
@@ -156,9 +156,10 @@ void _startTripPlan(WidgetRef ref, String label, GeoPoint destination) {
   ref.read(tripPlanSessionProvider.notifier).setSession(
         TripPlanSession(
           origin: origin,
-          destination: destination,
-          destinationLabel: label,
+          destination: pick.location,
+          destinationLabel: pick.name,
           hailIntent: hail,
+          placementContext: pick.toPlacementContext(),
         ),
       );
 }

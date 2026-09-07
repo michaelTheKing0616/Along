@@ -10,7 +10,7 @@ class FakeAlongSupabase implements AlongSupabase {
   }) : _user = user;
 
   User? _user;
-  Map<String, dynamic> Function(String fn, Map<String, dynamic> params)? rpcHandler;
+  dynamic Function(String fn, Map<String, dynamic> params)? rpcHandler;
   Map<String, dynamic> Function(String slug, Map<String, dynamic> body)?
       functionHandler;
 

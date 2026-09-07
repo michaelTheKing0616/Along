@@ -79,6 +79,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTrips => 'Trips';
 
   @override
+  String get sponsoredLabel => 'Sponsored';
+
+  @override
   String get navAccount => 'Account';
 
   @override

@@ -1,6 +1,6 @@
 import 'package:along_core/along_core.dart';
+import 'package:along_data/along_data.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
-import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 
 /// Active trip-planning context passed from search → R-07 (P1-B-03).
 class TripPlanSession {
@@ -10,6 +10,7 @@ class TripPlanSession {
     required this.destinationLabel,
     this.hailIntent,
     this.itineraryStopId,
+    this.placementContext,
   });
 
   final GeoPoint origin;
@@ -17,6 +18,7 @@ class TripPlanSession {
   final String destinationLabel;
   final HailIntent? hailIntent;
   final String? itineraryStopId;
+  final PlacementContext? placementContext;
 
   bool get isHail => hailIntent != null;
 }

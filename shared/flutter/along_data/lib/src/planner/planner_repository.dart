@@ -138,17 +138,19 @@ class PlannerRepository {
       final mode = TransportMode.tryParse(modeCode) ?? TransportMode.car;
       final fareJson = leg['fare'] as Map<String, dynamic>;
       final board = leg['board'] as Map<String, dynamic>;
+      final alight = leg['alight'] as Map<String, dynamic>;
       return PlanCandidateLeg(
         legIndex: (leg['leg_index'] as num).toInt(),
         mode: mode,
         boardName: board['name'] as String? ?? '',
-        alightName: (leg['alight'] as Map)['name'] as String? ?? '',
+        alightName: alight['name'] as String? ?? '',
         walkMeters: (board['walk_m'] as num?)?.toInt() ?? 0,
         walkSeconds: (board['walk_s'] as num?)?.toInt() ?? 0,
         inVehicleSeconds: (leg['in_vehicle_s'] as num).toInt(),
         waitSeconds: (leg['wait_s'] as num).toInt(),
         fare: FareQuote.fromJson(fareJson),
         loadWarning: _mapLoadWarning(leg['load_warning']),
+        alightStageId: alight['stage_id'] as String?,
       );
     }).toList();
 

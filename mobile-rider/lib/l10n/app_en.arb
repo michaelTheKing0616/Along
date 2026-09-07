@@ -102,6 +102,10 @@
   "@navTrips": {
     "description": "Bottom nav Trips tab"
   },
+  "sponsoredLabel": "Sponsored",
+  "@sponsoredLabel": {
+    "description": "Disclosure label for contextual sponsored placement slots (P8-B-01, FM39)"
+  },
   "navAccount": "Account",
   "@navAccount": {
     "description": "Bottom nav Account tab"

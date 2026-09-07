@@ -16,6 +16,7 @@ class PlanCandidateLeg {
     required this.waitSeconds,
     required this.fare,
     this.loadWarning,
+    this.alightStageId,
   });
 
   final int legIndex;
@@ -28,6 +29,7 @@ class PlanCandidateLeg {
   final int waitSeconds;
   final FareQuote fare;
   final LoadWarning? loadWarning;
+  final String? alightStageId;
 }
 
 /// Planner option returned from `plan-trip`.

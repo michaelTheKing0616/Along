@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:along_data/along_data.dart';
+import 'package:along_data/src/placements/placements_repository.dart';
 import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -37,6 +38,8 @@ class FakeAlongSupabase implements AlongSupabase {
     this.cityRegulatoryFlags = const {'women_only_matching': true},
     this.itineraryStateResponse,
     this.parseItineraryResponse,
+    this.sponsoredPlacementsResponse = const [],
+    this.corridorRows = const [],
     FakeNegotiationEngine? negotiationEngine,
   }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
@@ -74,6 +77,8 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic> cityRegulatoryFlags;
   Map<String, dynamic>? itineraryStateResponse;
   Map<String, dynamic>? parseItineraryResponse;
+  List<Map<String, dynamic>> sponsoredPlacementsResponse;
+  List<Map<String, dynamic>> corridorRows;
 
   final FakeNegotiationEngine negotiationEngine;
 
@@ -109,6 +114,7 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? lastRespondExtensionParams;
   List<Map<String, dynamic>> tripSnapshotSequence = const [];
   Map<String, dynamic>? lastRequestTripParams;
+  final List<(String fn, Map<String, dynamic> params)> rpcCalls = [];
 
   User? _user;
   final _controller = StreamController<AuthState>.broadcast();
@@ -155,6 +161,8 @@ class FakeAlongSupabase implements AlongSupabase {
     String fn, {
     Map<String, dynamic>? params,
   }) async {
+    final p = params ?? {};
+    rpcCalls.add((fn, Map<String, dynamic>.from(p)));
     if (fn == 'complete_rider_onboarding') {
       onCompleteOnboarding?.call(params?['display_name'] as String?);
       return {};
@@ -347,6 +355,14 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'itinerary_match_next') {
       itineraryMatchNextInvokeCount++;
       return sampleItineraryStateWithPreparedPlan();
+    }
+    if (fn == 'resolve_sponsored_placements') {
+      PlacementsRepository.assertNoPersonalIdentifiers(params ?? {});
+      return sponsoredPlacementsResponse;
+    }
+    if (fn == 'record_placement_counter') {
+      PlacementsRepository.assertNoPersonalIdentifiers(params ?? {});
+      return {};
     }
     return {};
   }
@@ -588,6 +604,16 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (table == 'route_stages') {
       return routeStageRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
+    }
+    if (table == 'corridors') {
+      return corridorRows
           .where((row) {
             for (final entry in filters.entries) {
               if (row[entry.key] != entry.value) return false;
