@@ -18,6 +18,8 @@ class HoldButton extends StatefulWidget {
     this.onFired,
     this.visualState = HoldButtonVisualState.idle,
     this.holdProgress,
+    this.holdDuration,
+    this.label,
   });
 
   final HoldButtonType type;
@@ -27,20 +29,36 @@ class HoldButton extends StatefulWidget {
   /// 0–1 radial progress while holding (defaults to 0.5 in holding state).
   final double? holdProgress;
 
+  /// Hold duration — defaults to design token when null (doc 05 §9).
+  final Duration? holdDuration;
+
+  /// Optional override for accessibility label (e.g. "Hold to cancel").
+  final String? label;
+
   @override
   State<HoldButton> createState() => _HoldButtonState();
 }
 
 class _HoldButtonState extends State<HoldButton>
     with SingleTickerProviderStateMixin {
-  static const _holdDuration = Duration(milliseconds: 600);
+  static const _defaultHoldDuration = Duration(milliseconds: 600);
 
   late AnimationController _controller;
+
+  Duration get _holdDuration => widget.holdDuration ?? _defaultHoldDuration;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: _holdDuration);
+  }
+
+  @override
+  void didUpdateWidget(covariant HoldButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.holdDuration != widget.holdDuration) {
+      _controller.duration = _holdDuration;
+    }
   }
 
   @override
@@ -83,7 +101,7 @@ class _HoldButtonState extends State<HoldButton>
     final isSos = widget.type == HoldButtonType.sos;
     final bg = isSos ? AlongColors.semanticDangerFill : AlongColors.ink900;
     final fg = AlongColors.surface0;
-    final label = isSos ? 'Hold for SOS' : 'Na Me';
+    final label = widget.label ?? (isSos ? 'Hold for SOS' : 'Na Me');
 
     return Semantics(
       button: true,

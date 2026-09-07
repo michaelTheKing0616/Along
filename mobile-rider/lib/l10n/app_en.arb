@@ -833,5 +833,147 @@
   "tripDetailReceiptCopied": "Receipt copied to clipboard",
   "@tripDetailReceiptCopied": {
     "description": "R-22 receipt share acknowledgement"
-  }
+  },
+  "sosTeamAlerted": "Along safety team alerted",
+  "@sosTeamAlerted": {
+    "description": "R-23 SOS headline"
+  },
+  "sosSharingDetails": "We're sharing your live location and trip details with our safety line",
+  "@sosSharingDetails": {
+    "description": "R-23 SOS subcopy"
+  },
+  "sosCallEmergency": "Call {number}",
+  "@sosCallEmergency": {
+    "description": "R-23 emergency tel button",
+    "placeholders": {
+      "number": { "type": "String", "example": "112" }
+    }
+  },
+  "sosShareWithContact": "Share with a contact",
+  "@sosShareWithContact": {
+    "description": "R-23 link to R-25"
+  },
+  "sosHoldToCancel": "Hold to cancel",
+  "@sosHoldToCancel": {
+    "description": "R-23 hold-to-cancel label"
+  },
+  "sosRaising": "Alerting safety team…",
+  "@sosRaising": {
+    "description": "R-23 SOS in progress"
+  },
+  "sosRaiseFailed": "Could not reach safety line",
+  "@sosRaiseFailed": {
+    "description": "R-23 SOS failure"
+  },
+  "sosRetry": "Try again",
+  "@sosRetry": {
+    "description": "R-23 SOS retry"
+  },
+  "reportIncidentTitle": "Report incident",
+  "@reportIncidentTitle": {
+    "description": "R-24 screen title"
+  },
+  "reportIncidentCategoryHeading": "What happened?",
+  "@reportIncidentCategoryHeading": {
+    "description": "R-24 category grid heading"
+  },
+  "reportIncidentDescriptionHeading": "Tell us more",
+  "@reportIncidentDescriptionHeading": {
+    "description": "R-24 description heading"
+  },
+  "reportIncidentDescriptionHint": "Describe what happened (optional details help)",
+  "@reportIncidentDescriptionHint": {
+    "description": "R-24 description placeholder"
+  },
+  "reportIncidentAttachPhoto": "Attach photo",
+  "@reportIncidentAttachPhoto": {
+    "description": "R-24 optional photo stub"
+  },
+  "reportIncidentPhotoAttached": "Photo attached (stub)",
+  "@reportIncidentPhotoAttached": {
+    "description": "R-24 photo stub attached"
+  },
+  "reportIncidentSubmit": "Submit report",
+  "@reportIncidentSubmit": {
+    "description": "R-24 submit CTA"
+  },
+  "reportIncidentPickCategory": "Pick a category",
+  "@reportIncidentPickCategory": {
+    "description": "R-24 validation"
+  },
+  "reportIncidentDescriptionRequired": "Add a short description",
+  "@reportIncidentDescriptionRequired": {
+    "description": "R-24 validation"
+  },
+  "reportIncidentSubmitted": "Report submitted — our safety team will review it",
+  "@reportIncidentSubmitted": {
+    "description": "R-24 success"
+  },
+  "incidentCategorySafety": "Safety",
+  "incidentCategoryFareDispute": "Fare dispute",
+  "incidentCategoryVehicleQuality": "Vehicle quality",
+  "incidentCategoryDriverBehavior": "Driver behaviour",
+  "incidentCategoryLostItem": "Lost item",
+  "incidentCategoryOther": "Other",
+  "shareTripTitle": "Share live trip",
+  "@shareTripTitle": {
+    "description": "R-25 sheet title"
+  },
+  "shareTripCreateLink": "Create share link",
+  "@shareTripCreateLink": {
+    "description": "R-25 create link CTA"
+  },
+  "shareTripCopy": "Copy link",
+  "@shareTripCopy": {
+    "description": "R-25 copy"
+  },
+  "shareTripSms": "SMS",
+  "@shareTripSms": {
+    "description": "R-25 SMS share"
+  },
+  "shareTripCopied": "Link copied",
+  "@shareTripCopied": {
+    "description": "R-25 copy acknowledgement"
+  },
+  "shareTripExpiryNote": "Links auto-expire when your trip ends",
+  "@shareTripExpiryNote": {
+    "description": "R-25 expiry note"
+  },
+  "shareTripActiveHeading": "Active shares",
+  "@shareTripActiveHeading": {
+    "description": "R-25 active list heading"
+  },
+  "shareTripAnonymousContact": "Shared contact",
+  "@shareTripAnonymousContact": {
+    "description": "R-25 share without contact name"
+  },
+  "shareTripExpires": "Expires {date}",
+  "@shareTripExpires": {
+    "description": "R-25 share expiry label",
+    "placeholders": {
+      "date": { "type": "String", "example": "Sep 7" }
+    }
+  },
+  "shareTripSmsBody": "Track my Along trip: {url}",
+  "@shareTripSmsBody": {
+    "description": "R-25 SMS body",
+    "placeholders": {
+      "url": { "type": "String", "example": "https://along.ng/s/abc" }
+    }
+  },
+  "accountProfileHeading": "PROFILE",
+  "accountPreferencesHeading": "PREFERENCES",
+  "accountPaymentHeading": "PAYMENT",
+  "accountSafetyHeading": "SAFETY",
+  "accountWayfindingLabel": "Wayfinding mode",
+  "accountSortLabel": "Default trip sort",
+  "accountWomenOnlyLabel": "Women-only matching",
+  "accountWomenOnlyHint": "Prefer trips with women-only drivers when available",
+  "accountPaymentCashDefault": "Cash",
+  "accountPaymentCashHint": "Default payment method for Along trips",
+  "accountSafetyHowSos": "How SOS works",
+  "accountSafetyHowSosBody": "Hold SOS during a trip to alert our safety team and share live location",
+  "accountHelp": "Help & support",
+  "accountLegal": "Legal",
+  "accountSignOut": "Sign out"
 }

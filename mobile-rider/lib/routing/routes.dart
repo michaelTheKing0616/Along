@@ -22,4 +22,6 @@ abstract final class AppRoutes {
   static const payDriver = '/pay-driver';
   static const scanToPay = '/scan-to-pay';
   static const paymentMethods = '/payment-methods';
+  static const sosActive = '/sos-active';
+  static const reportIncident = '/report-incident';
 }
