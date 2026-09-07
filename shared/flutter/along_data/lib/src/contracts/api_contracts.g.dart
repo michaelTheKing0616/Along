@@ -78,6 +78,24 @@ class AdminApproveVerificationRequest {
   };
 }
 
+class AdminCheckIdentityDuplicateRequest {
+  final String p_verification_id;
+
+  const AdminCheckIdentityDuplicateRequest({
+    required this.p_verification_id,
+  });
+
+  factory AdminCheckIdentityDuplicateRequest.fromJson(Map<String, dynamic> json) {
+    return AdminCheckIdentityDuplicateRequest(
+      p_verification_id: json["p_verification_id"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "p_verification_id": p_verification_id,
+  };
+}
+
 class AdminCorridorAnalyticsRequest {
   final String p_corridor_id;
   final String p_from;
@@ -109,6 +127,24 @@ class AdminCorridorAnalyticsRequest {
     "p_to": p_to,
     "p_cursor": p_cursor,
     "p_limit": p_limit,
+  };
+}
+
+class AdminLogViewDocumentRequest {
+  final String p_verification_id;
+
+  const AdminLogViewDocumentRequest({
+    required this.p_verification_id,
+  });
+
+  factory AdminLogViewDocumentRequest.fromJson(Map<String, dynamic> json) {
+    return AdminLogViewDocumentRequest(
+      p_verification_id: json["p_verification_id"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "p_verification_id": p_verification_id,
   };
 }
 
@@ -264,11 +300,13 @@ class AdminReviewFlagRequest {
   final String p_flag_id;
   final String action;
   final String? note;
+  final int? p_standing_transition_id;
 
   const AdminReviewFlagRequest({
     required this.p_flag_id,
     required this.action,
     this.note,
+    this.p_standing_transition_id,
   });
 
   factory AdminReviewFlagRequest.fromJson(Map<String, dynamic> json) {
@@ -276,6 +314,7 @@ class AdminReviewFlagRequest {
       p_flag_id: json["p_flag_id"] as String,
       action: json["action"] as String,
       note: json["note"] as String?,
+      p_standing_transition_id: (json["p_standing_transition_id"] as num?)?.toInt(),
     );
   }
 
@@ -283,6 +322,7 @@ class AdminReviewFlagRequest {
     "p_flag_id": p_flag_id,
     "action": action,
     "note": note,
+    "p_standing_transition_id": p_standing_transition_id,
   };
 }
 
@@ -1139,6 +1179,40 @@ class ItineraryStopInput {
     "sequence": sequence,
     "destination_description": destination_description,
     "location": location?.toJson(),
+  };
+}
+
+class LivePosition {
+  final double lat;
+  final double lng;
+  final Object? heading;
+  final Object? speed_mps;
+  final String ts;
+
+  const LivePosition({
+    required this.lat,
+    required this.lng,
+    this.heading,
+    this.speed_mps,
+    required this.ts,
+  });
+
+  factory LivePosition.fromJson(Map<String, dynamic> json) {
+    return LivePosition(
+      lat: (json["lat"] as num).toDouble(),
+      lng: (json["lng"] as num).toDouble(),
+      heading: json["heading"],
+      speed_mps: json["speed_mps"],
+      ts: json["ts"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "lat": lat,
+    "lng": lng,
+    "heading": heading,
+    "speed_mps": speed_mps,
+    "ts": ts,
   };
 }
 
@@ -2393,6 +2467,9 @@ class TripView {
   final Map<String, dynamic> timestamps;
   final Object? extension;
   final String? payment_method;
+  final Map<String, dynamic>? live;
+  final String? approach_band;
+  final Object? wait;
 
   const TripView({
     required this.trip_id,
@@ -2415,6 +2492,9 @@ class TripView {
     required this.timestamps,
     this.extension,
     this.payment_method,
+    this.live,
+    this.approach_band,
+    this.wait,
   });
 
   factory TripView.fromJson(Map<String, dynamic> json) {
@@ -2439,6 +2519,9 @@ class TripView {
       timestamps: Map<String, dynamic>.from(json["timestamps"] as Map),
       extension: json["extension"],
       payment_method: json["payment_method"] as String?,
+      live: json["live"] == null ? null : Map<String, dynamic>.from(json["live"] as Map),
+      approach_band: json["approach_band"] as String?,
+      wait: json["wait"],
     );
   }
 
@@ -2463,6 +2546,9 @@ class TripView {
     "timestamps": timestamps,
     "extension": extension,
     "payment_method": payment_method,
+    "live": live,
+    "approach_band": approach_band,
+    "wait": wait,
   };
 }
 

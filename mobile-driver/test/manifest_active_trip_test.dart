@@ -219,6 +219,115 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byKey(const Key('na_me_strobing')), findsOneWidget);
     });
+
+    testWidgets('Release button visible when accepted, hidden when boarded',
+        (tester) async {
+      fakeSupabase.tripStatuses['trip-accepted-release'] = 'accepted';
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-accepted-release'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byKey(const Key('active_trip_release')), findsOneWidget);
+
+      fakeSupabase.tripStatuses['trip-boarded-release'] = 'boarded';
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-boarded-release'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byKey(const Key('active_trip_release')), findsNothing);
+    });
+
+    testWidgets('stalled caption only when approach is stalled', (tester) async {
+      fakeSupabase.tripStatuses['trip-stalled'] = 'accepted';
+      fakeSupabase.tripWaitById['trip-stalled'] = {
+        'walk_eta_s': 300,
+        'approach': 'stalled',
+        'updated_at': '2026-09-05T13:30:00Z',
+      };
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(args: ActiveTripArgs(tripId: 'trip-stalled')),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byKey(const Key('active_trip_stalled_caption')), findsOneWidget);
+      expect(find.text('not moving closer'), findsOneWidget);
+
+      fakeSupabase.tripStatuses['trip-unknown'] = 'accepted';
+      fakeSupabase.tripWaitById['trip-unknown'] = {
+        'walk_eta_s': 300,
+        'approach': 'unknown',
+        'updated_at': '2026-09-05T13:30:00Z',
+      };
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(args: ActiveTripArgs(tripId: 'trip-unknown')),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byKey(const Key('active_trip_stalled_caption')), findsNothing);
+
+      fakeSupabase.tripStatuses['trip-approaching'] = 'accepted';
+      fakeSupabase.tripWaitById['trip-approaching'] = {
+        'walk_eta_s': 120,
+        'approach': 'approaching',
+        'updated_at': '2026-09-05T13:30:00Z',
+      };
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-approaching'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byKey(const Key('active_trip_stalled_caption')), findsNothing);
+      expect(find.byKey(const Key('active_trip_walk_eta')), findsOneWidget);
+    });
+
+    test('release handler calls release_match not cancel_trip', () async {
+      var cancelInvoked = false;
+      String? releasedTripId;
+      fakeSupabase.onReleaseMatch = (tripId) => releasedTripId = tripId;
+      fakeSupabase.onCancelTrip = (_) => cancelInvoked = true;
+
+      final repo = TripsRepository(
+        fakeSupabase,
+        container.read(alongDatabaseProvider),
+      );
+
+      final summary = await repo.releaseMatch('trip-accepted-1');
+      expect(releasedTripId, 'trip-accepted-1');
+      expect(cancelInvoked, isFalse);
+      expect(summary.status, TripStatus.releasedBeforeArrival);
+    });
   });
 }
 

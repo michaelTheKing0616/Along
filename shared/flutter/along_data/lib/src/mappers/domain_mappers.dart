@@ -73,6 +73,24 @@ class DomainMappers {
         note: load.note,
       );
 
+  static TripApproachBand? approachBandFromDto(String? raw) =>
+      TripApproachBand.tryParse(raw);
+
+  static TripWaitInfo? waitFromJson(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    final approach = TripWaitApproach.tryParse(json['approach'] as String?);
+    if (approach == null) return null;
+    final walkEtaS = json['walk_eta_s'];
+    if (walkEtaS is! num) return null;
+    final updatedAt = json['updated_at'];
+    if (updatedAt is! String) return null;
+    return TripWaitInfo(
+      walkEtaS: walkEtaS.toInt(),
+      approach: approach,
+      updatedAt: DateTime.parse(updatedAt),
+    );
+  }
+
   static TripSummary tripFromDto(
     dto.TripView view, {
     Map<String, dynamic>? raw,
@@ -119,6 +137,10 @@ class DomainMappers {
       dispatchAttempt: _dispatchAttemptFromTripJson(view),
       isRoamingHail: _isRoamingHailFromTripJson(view),
       paymentMethod: view.payment_method ?? raw?['payment_method'] as String?,
+      approachBand: approachBandFromDto(
+        view.approach_band ?? raw?['approach_band'] as String?,
+      ),
+      wait: waitFromJson(raw?['wait'] ?? view.wait),
     );
   }
 
@@ -156,6 +178,8 @@ class DomainMappers {
       womenOnly: summary.womenOnly,
       dispatchAttempt: dispatchAttempt,
       isRoamingHail: isRoamingHail,
+      approachBand: summary.approachBand,
+      wait: summary.wait,
     );
   }
 

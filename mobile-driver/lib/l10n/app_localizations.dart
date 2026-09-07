@@ -886,6 +886,24 @@ abstract class AppLocalizations {
   /// **'Women-only match'**
   String get incomingRequestWomenOnly;
 
+  /// No description provided for @incomingRequestApproachBandUnder2.
+  ///
+  /// In en, this message translates to:
+  /// **'under 2 min'**
+  String get incomingRequestApproachBandUnder2;
+
+  /// No description provided for @incomingRequestApproachBandM2_5.
+  ///
+  /// In en, this message translates to:
+  /// **'2–5 min'**
+  String get incomingRequestApproachBandM2_5;
+
+  /// No description provided for @incomingRequestApproachBandOver5.
+  ///
+  /// In en, this message translates to:
+  /// **'5+ min'**
+  String get incomingRequestApproachBandOver5;
+
   /// No description provided for @incomingRequestAccept.
   ///
   /// In en, this message translates to:
@@ -1035,6 +1053,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{board} → {alight}'**
   String activeTripBoardAlight(String board, String alight);
+
+  /// No description provided for @activeTripWalkEta.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min walk'**
+  String activeTripWalkEta(int minutes);
+
+  /// No description provided for @activeTripStalledCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'not moving closer'**
+  String get activeTripStalledCaption;
+
+  /// No description provided for @activeTripRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get activeTripRelease;
 
   /// No description provided for @sosPlaceholder.
   ///

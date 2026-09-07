@@ -8,7 +8,8 @@ enum TripStatus {
   completed,
   declined,
   expired,
-  cancelled;
+  cancelled,
+  releasedBeforeArrival;
 
   static TripStatus? tryParse(String? raw) {
     if (raw == null) return null;
@@ -23,6 +24,7 @@ enum TripStatus {
       'declined' => TripStatus.declined,
       'expired' => TripStatus.expired,
       'cancelled' => TripStatus.cancelled,
+      'released_before_arrival' => TripStatus.releasedBeforeArrival,
       _ => null,
     };
   }

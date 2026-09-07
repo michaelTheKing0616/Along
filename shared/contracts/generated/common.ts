@@ -279,6 +279,38 @@ export interface TripView {
   };
   extension?: unknown;
   payment_method?: string;
+  live?: {
+    as_of: string;
+    driver?: {
+      lat: number;
+      lng: number;
+      heading?: number | null;
+      speed_mps?: number | null;
+      ts: string;
+    };
+    rider?: {
+      lat: number;
+      lng: number;
+      heading?: number | null;
+      speed_mps?: number | null;
+      ts: string;
+    };
+  };
+  approach_band?: "under_2" | "m2_5" | "over_5" | null;
+  wait?: {
+    walk_eta_s: number;
+    approach: "approaching" | "stalled" | "unknown";
+    updated_at: string;
+  } | null;
+}
+
+/** common.json → LivePosition */
+export interface LivePosition {
+  lat: number;
+  lng: number;
+  heading?: number | null;
+  speed_mps?: number | null;
+  ts: string;
 }
 
 /** common.json → CountBucket */

@@ -291,6 +291,22 @@
             "driver": { "$ref": "#/$defs/LivePosition" },
             "rider": { "$ref": "#/$defs/LivePosition" }
           }
+        },
+        "approach_band": {
+          "type": ["string", "null"],
+          "enum": ["under_2", "m2_5", "over_5", null]
+        },
+        "wait": {
+          "type": ["object", "null"],
+          "required": ["walk_eta_s", "approach", "updated_at"],
+          "properties": {
+            "walk_eta_s": { "type": "integer", "minimum": 0 },
+            "approach": {
+              "type": "string",
+              "enum": ["approaching", "stalled", "unknown"]
+            },
+            "updated_at": { "type": "string", "format": "date-time" }
+          }
         }
       }
     },

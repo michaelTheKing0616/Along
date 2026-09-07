@@ -259,6 +259,9 @@
     }
   },
   "incomingRequestWomenOnly": "Women-only match",
+  "incomingRequestApproachBandUnder2": "under 2 min",
+  "incomingRequestApproachBandM2_5": "2–5 min",
+  "incomingRequestApproachBandOver5": "5+ min",
   "incomingRequestAccept": "Accept",
   "incomingRequestDecline": "Decline",
   "declineReasonTitle": "Why are you declining?",
@@ -310,6 +313,14 @@
       "alight": {"type": "String"}
     }
   },
+  "activeTripWalkEta": "{minutes} min walk",
+  "@activeTripWalkEta": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "activeTripStalledCaption": "not moving closer",
+  "activeTripRelease": "Release",
   "sosPlaceholder": "SOS will connect in a future release",
   "homeLedgerBlockedTitle": "Matching paused",
   "homeLedgerBlockedBalance": "Balance {amount}",

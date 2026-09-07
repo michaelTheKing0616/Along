@@ -118,14 +118,14 @@ class IncomingRequestSheet extends StatelessWidget {
                     ? l10n.incomingRequestRoamingPickup
                     : l10n.incomingRequestPickup,
                 value: trip.board.name,
-                meta: trip.board.walkM > 0 || trip.board.walkS > 0
-                    ? l10n.incomingRequestPickupMeta(
-                        trip.board.walkM,
-                        (trip.board.walkS / 60).ceil().clamp(1, 999),
-                      )
+                meta: trip.approachBand != null
+                    ? _approachBandLabel(l10n, trip.approachBand!)
                     : state.trip.isRoamingHail
                         ? l10n.incomingRequestRoamingPickupMeta
                         : null,
+                metaKey: trip.approachBand != null
+                    ? const Key('incoming_request_approach_band')
+                    : null,
               ),
               const SizedBox(height: AlongSpace.s8),
               _LocationRow(
@@ -253,6 +253,13 @@ class IncomingRequestSheet extends StatelessWidget {
         FareTier.driverProfile => design_fare.FareTier.candidate,
         FareTier.unconfirmed => design_fare.FareTier.estimate,
       };
+
+  String _approachBandLabel(AppLocalizations l10n, TripApproachBand band) =>
+      switch (band) {
+        TripApproachBand.under2 => l10n.incomingRequestApproachBandUnder2,
+        TripApproachBand.m2_5 => l10n.incomingRequestApproachBandM2_5,
+        TripApproachBand.over5 => l10n.incomingRequestApproachBandOver5,
+      };
 }
 
 class _LocationRow extends StatelessWidget {
@@ -261,12 +268,14 @@ class _LocationRow extends StatelessWidget {
     required this.label,
     required this.value,
     this.meta,
+    this.metaKey,
   });
 
   final IconData icon;
   final String label;
   final String value;
   final String? meta;
+  final Key? metaKey;
 
   @override
   Widget build(BuildContext context) {
@@ -287,6 +296,7 @@ class _LocationRow extends StatelessWidget {
               if (meta != null)
                 Text(
                   meta!,
+                  key: metaKey,
                   style: AlongText.caption.copyWith(color: AlongColors.ink500),
                 ),
             ],

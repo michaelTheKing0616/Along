@@ -24,15 +24,40 @@ void main() {
     batteryGuardPercent: 15,
   );
 
-  TripSummary sampleTrip({bool loadFlagged = true}) {
-    return DomainMappers.incomingTripFromEnvelope(
+  TripSummary sampleTrip({
+    bool loadFlagged = true,
+    TripApproachBand? approachBand,
+  }) {
+    final summary = DomainMappers.incomingTripFromEnvelope(
       FakeAlongSupabase().sampleTripRequestEnvelope(loadFlagged: loadFlagged),
+    );
+    if (approachBand == null) return summary;
+    return TripSummary(
+      tripId: summary.tripId,
+      journeyId: summary.journeyId,
+      journeySequence: summary.journeySequence,
+      status: summary.status,
+      fare: summary.fare,
+      naMe: summary.naMe,
+      liveChannel: summary.liveChannel,
+      expiresAt: summary.expiresAt,
+      rider: summary.rider,
+      board: summary.board,
+      alight: summary.alight,
+      load: summary.load,
+      womenOnly: summary.womenOnly,
+      dispatchAttempt: summary.dispatchAttempt,
+      isRoamingHail: summary.isRoamingHail,
+      approachBand: approachBand,
     );
   }
 
-  IncomingRequestState sampleState({bool loadFlagged = true}) {
+  IncomingRequestState sampleState({
+    bool loadFlagged = true,
+    TripApproachBand? approachBand,
+  }) {
     return IncomingRequestState(
-      trip: sampleTrip(loadFlagged: loadFlagged),
+      trip: sampleTrip(loadFlagged: loadFlagged, approachBand: approachBand),
       commissionRate: 0.075,
       requestTtlS: 25,
       remainingSeconds: 18,
@@ -71,6 +96,26 @@ void main() {
 
     expect(find.byKey(const Key('incoming_request_load_row')), findsOneWidget);
     expect(find.textContaining('Medium load'), findsOneWidget);
+  });
+
+  testWidgets('shows approach band labels without metres or walk ETA', (tester) async {
+    for (final entry in [
+      (TripApproachBand.under2, 'under 2 min'),
+      (TripApproachBand.m2_5, '2–5 min'),
+      (TripApproachBand.over5, '5+ min'),
+    ]) {
+      await tester.pumpWidget(
+        buildSheet(state: sampleState(approachBand: entry.$1)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('incoming_request_approach_band')), findsOneWidget);
+      expect(find.text(entry.$2), findsOneWidget);
+      expect(find.textContaining('400 m'), findsNothing);
+      expect(find.textContaining('walk_eta'), findsNothing);
+      expect(find.textContaining('9.0'), findsNothing);
+      expect(find.textContaining('7.0'), findsNothing);
+    }
   });
 
   testWidgets('accept is one tap', (tester) async {

@@ -56,6 +56,23 @@ class TripsRepository {
     }
   }
 
+  Future<TripSummary> releaseMatch(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'release_match',
+        params: dto.TripSnapshotRequest(p_trip_id: tripId).toJson(),
+      );
+      final map = raw as Map<String, dynamic>;
+      final view = dto.TripView.fromJson(map);
+      await _cacheTrip(view);
+      final summary = DomainMappers.tripFromDto(view, raw: map);
+      await _persistNaMePairing(summary);
+      return summary;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
   Future<TripSummary> respondToTrip({
     required String tripId,
     required String action,
