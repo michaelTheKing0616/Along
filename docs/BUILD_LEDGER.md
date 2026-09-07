@@ -1090,3 +1090,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: PASS WITH NOTES — prior ADR + FM20 FAIL fixed. SOS 2G ≤ 10 s MET. W-01 minimal data MET. Notes: Drift warnings; Playwright W-01 not independently run.
 - Rework count: 1
 - Notes/escalations: Merged 6db0e7a. Next: P5-B-02. P4-E-02 still human. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 5 / Decision] Continue — remaining Phase 5 implementation then code gate
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: Owner: start at P5-B-02; finish remaining Phase 5 implementation (B-02, C-01, D-01, E-01); run Phase 5 code gate; then stop. Do not open Phase 6. Do not re-implement SOS, women-only, itinerary backend, or R-23–R-26 / W-01. Do not grant P4-E-02. Do not flip payments.digital_enabled. Do not start Phase 7.
+- Reviewer verdict: n/a
+- Rework count: 0
+- Notes/escalations: Issuing P5-B-02. After E-01 merge, spawn Phase 5 code gate Reviewer against master. Next after this session if gate PASS / PASS WITH DEFERRED EVIDENCE: P6-D-01 (do not start it here).
+
+## [Phase 5 / P5-B-02] R-20 Day planner, R-21 itinerary entry
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P5-A-03 PASS. FM23 copy; Match now = 1 tap reusing request_trip. Do not absorb TS-PLAN-v2 decompose 3/8.
