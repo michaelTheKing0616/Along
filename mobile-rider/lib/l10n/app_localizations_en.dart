@@ -132,7 +132,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline — showing recents only';
+  String get searchOfflineHint => 'Offline — search uses cached places';
+
+  @override
+  String get cachedOptionsStaleBadge => 'Cached · may be outdated';
 
   @override
   String searchResultSubtitle(String area, int distanceM) {
@@ -782,8 +785,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dayPlannerStopDone => 'Done';
 
   @override
-  String dayPlannerStopInProgress(int minutes) =>
-      'In progress · ETA $minutes min';
+  String dayPlannerStopInProgress(int minutes) {
+    return 'In progress · ETA $minutes min';
+  }
 
   @override
   String get dayPlannerStopReady => 'Ready — tap Match now below';

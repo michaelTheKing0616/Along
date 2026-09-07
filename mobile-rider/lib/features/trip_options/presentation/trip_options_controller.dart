@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
+import 'package:along_map/along_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
@@ -26,6 +27,8 @@ class TripOptionsState {
     this.pendingRequestLegIndex = 0,
     this.activeTrip,
     this.isRoamingSource = false,
+    this.isStalePlan = false,
+    this.planCachedAt,
   });
 
   final TripPlanSession? session;
@@ -40,6 +43,8 @@ class TripOptionsState {
   final int pendingRequestLegIndex;
   final TripSummary? activeTrip;
   final bool isRoamingSource;
+  final bool isStalePlan;
+  final DateTime? planCachedAt;
 
   bool get hasCoverageGap =>
       plan != null && plan!.candidates.isEmpty && plan!.coverageGap != null;
@@ -60,6 +65,8 @@ class TripOptionsState {
     int? pendingRequestLegIndex,
     TripSummary? activeTrip,
     bool? isRoamingSource,
+    bool? isStalePlan,
+    DateTime? planCachedAt,
     bool clearError = false,
     bool clearActiveTrip = false,
     bool clearPending = false,
@@ -81,6 +88,8 @@ class TripOptionsState {
           pendingRequestLegIndex ?? this.pendingRequestLegIndex,
       activeTrip: clearActiveTrip ? null : (activeTrip ?? this.activeTrip),
       isRoamingSource: isRoamingSource ?? this.isRoamingSource,
+      isStalePlan: isStalePlan ?? this.isStalePlan,
+      planCachedAt: planCachedAt ?? this.planCachedAt,
     );
   }
 }
@@ -144,9 +153,7 @@ class TripOptionsController extends Notifier<TripOptionsState> {
       }
     });
 
-    try {
-      final planner = ref.read(plannerRepositoryProvider);
-      final body = {
+    final body = {
         'origin': {
           'lat': session.origin.lat,
           'lng': session.origin.lng,
@@ -170,21 +177,74 @@ class TripOptionsController extends Notifier<TripOptionsState> {
         'session_id': session.hashCode.toString(),
         'itinerary_stop_id': session.itineraryStopId,
       };
-      final plan = await planner.planTrip(requestBody: body);
+
+    try {
+      final planner = ref.read(plannerRepositoryProvider);
+      final outcome = await planner.planTrip(requestBody: body);
       _skeletonTimer?.cancel();
       state = state.copyWith(
-        plan: plan,
+        plan: outcome.result,
         isLoading: false,
         showSkeleton: false,
+        isStalePlan: outcome.fromCache,
+        planCachedAt: outcome.cachedAt,
       );
+      if (!outcome.fromCache && outcome.result.cityId.isNotEmpty) {
+        unawaited(_precacheCorridor(outcome.result));
+        unawaited(
+          ref.read(graphCacheStoreProvider).refreshIfNeeded(
+                cityId: outcome.result.cityId,
+              ),
+        );
+      }
     } catch (e) {
       _skeletonTimer?.cancel();
+      final cached = await ref.read(plannerRepositoryProvider).readCachedPlan(
+            requestBody: body,
+          );
+      if (cached != null) {
+        state = state.copyWith(
+          plan: cached.result,
+          isLoading: false,
+          showSkeleton: false,
+          isStalePlan: true,
+          planCachedAt: cached.cachedAt,
+          clearError: true,
+        );
+        return;
+      }
       state = state.copyWith(
         isLoading: false,
         showSkeleton: false,
         errorMessage: e.toString(),
       );
     }
+  }
+
+  Future<void> _precacheCorridor(PlanResult plan) async {
+    if (plan.candidates.isEmpty) return;
+    final session = state.session;
+    if (session == null) return;
+    final precache = ref.read(corridorTilePrecacheProvider);
+    await precache.precacheCorridor(
+      CorridorPrecacheRequest(
+        corridorId: plan.cityId,
+        bbox: CorridorBbox(
+          minLat: session.origin.lat < session.destination.lat
+              ? session.origin.lat
+              : session.destination.lat,
+          minLng: session.origin.lng < session.destination.lng
+              ? session.origin.lng
+              : session.destination.lng,
+          maxLat: session.origin.lat > session.destination.lat
+              ? session.origin.lat
+              : session.destination.lat,
+          maxLng: session.origin.lng > session.destination.lng
+              ? session.origin.lng
+              : session.destination.lng,
+        ),
+      ),
+    );
   }
 
   void setSort(SortCriterion sort) {
@@ -306,6 +366,8 @@ class TripOptionsController extends Notifier<TripOptionsState> {
       clearError: true,
       clearPending: true,
       clearActiveTrip: true,
+      isStalePlan: false,
+      planCachedAt: null,
     );
   }
 }

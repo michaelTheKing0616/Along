@@ -318,8 +318,14 @@ abstract class AppLocalizations {
   /// R-06 offline state
   ///
   /// In en, this message translates to:
-  /// **'Offline — showing recents only'**
+  /// **'Offline — search uses cached places'**
   String get searchOfflineHint;
+
+  /// Offline/stale plan or search results badge (doc 07 §4)
+  ///
+  /// In en, this message translates to:
+  /// **'Cached · may be outdated'**
+  String get cachedOptionsStaleBadge;
 
   /// R-06 result subtitle
   ///
@@ -1435,33 +1441,172 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get accountSignOut;
 
+  /// No description provided for @homePlanYourDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your day'**
   String get homePlanYourDay;
+
+  /// No description provided for @dayPlannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s plan'**
   String get dayPlannerTitle;
+
+  /// No description provided for @dayPlannerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No stops in your plan yet'**
   String get dayPlannerEmpty;
+
+  /// No description provided for @dayPlannerNotBookedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops are planned — matching starts when you tap Match now. Nothing is reserved ahead of time.'**
   String get dayPlannerNotBookedHint;
+
+  /// No description provided for @dayPlannerLoadToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load today'**
   String get dayPlannerLoadToggle;
+
+  /// No description provided for @dayPlannerMatchNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Match now'**
   String get dayPlannerMatchNow;
+
+  /// No description provided for @dayPlannerPrepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare'**
   String get dayPlannerPrepare;
+
+  /// No description provided for @dayPlannerAddStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Add stop'**
   String get dayPlannerAddStop;
+
+  /// No description provided for @dayPlannerStopDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
   String get dayPlannerStopDone;
+
+  /// No description provided for @dayPlannerStopInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress · ETA {minutes} min'**
   String dayPlannerStopInProgress(int minutes);
+
+  /// No description provided for @dayPlannerStopReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready — tap Match now below'**
   String get dayPlannerStopReady;
+
+  /// No description provided for @dayPlannerStopPrepareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Prepare when you are ready'**
   String get dayPlannerStopPrepareHint;
+
+  /// No description provided for @dayPlannerStopPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Up next'**
   String get dayPlannerStopPending;
+
+  /// No description provided for @dayPlannerStopSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
   String get dayPlannerStopSkipped;
+
+  /// No description provided for @itineraryEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your day'**
   String get itineraryEntryTitle;
+
+  /// No description provided for @itineraryEntryStructured.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops'**
   String get itineraryEntryStructured;
+
+  /// No description provided for @itineraryEntryNaturalLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe'**
   String get itineraryEntryNaturalLanguage;
+
+  /// No description provided for @itineraryEntryStopHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to?'**
   String get itineraryEntryStopHint;
+
+  /// No description provided for @itineraryEntryAddRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another stop'**
   String get itineraryEntryAddRow;
+
+  /// No description provided for @itineraryEntryDescribeDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your day'**
   String get itineraryEntryDescribeDay;
+
+  /// No description provided for @itineraryEntryNlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. drop kids at school, then work, then market'**
   String get itineraryEntryNlHint;
+
+  /// No description provided for @itineraryEntryMicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Say your stops'**
   String get itineraryEntryMicTitle;
+
+  /// No description provided for @itineraryEntryMicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak or type your stops…'**
   String get itineraryEntryMicHint;
+
+  /// No description provided for @itineraryEntryParse.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview stops'**
   String get itineraryEntryParse;
+
+  /// No description provided for @itineraryEntryProposalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We heard'**
   String get itineraryEntryProposalTitle;
+
+  /// No description provided for @itineraryEntryUnresolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a place name'**
   String get itineraryEntryUnresolved;
+
+  /// No description provided for @itineraryEntryLooksRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks right'**
   String get itineraryEntryLooksRight;
+
+  /// No description provided for @itineraryEntrySavePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Save plan'**
   String get itineraryEntrySavePlan;
 }
 

@@ -14,6 +14,7 @@ import 'package:mobile_rider/features/trip_options/presentation/load_flag_sheet.
 import 'package:mobile_rider/features/trip_options/presentation/multi_leg_option_card.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
+import 'package:mobile_rider/features/offline/stale_badge.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -108,6 +109,19 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                 style: AlongText.caption.copyWith(
                   color: AlongColors.semanticWarning,
                 ),
+              ),
+            ),
+          if (state.isStalePlan)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AlongSpace.s16,
+                AlongSpace.s8,
+                AlongSpace.s16,
+                0,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: StaleBadge(label: l10n.cachedOptionsStaleBadge),
               ),
             ),
           Expanded(

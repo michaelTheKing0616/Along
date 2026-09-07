@@ -192,11 +192,11 @@ void main() {
       );
 
       final repo = PlannerRepository(fake);
-      final result = await repo.planTrip(requestBody: {'origin': {}});
+      final outcome = await repo.planTrip(requestBody: {'origin': {}});
 
-      expect(result.candidates, hasLength(1));
-      expect(result.candidates.first.kind, 'direct');
-      expect(result.sortOrders[SortCriterion.recommended], ['c1']);
+      expect(outcome.result.candidates, hasLength(1));
+      expect(outcome.result.candidates.first.kind, 'direct');
+      expect(outcome.result.sortOrders[SortCriterion.recommended], ['c1']);
       expect(fake.functionCalls.single.$1, 'plan-trip');
     });
   });

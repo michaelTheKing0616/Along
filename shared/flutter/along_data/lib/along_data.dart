@@ -1,6 +1,11 @@
 /// Supabase repositories, Drift offline cache, and pending-action queue.
 library;
 
+export 'src/cache/filters_hash.dart';
+export 'src/cache/graph_cache_store.dart';
+export 'src/cache/plan_cache_key.dart';
+export 'src/cache/plan_cache_store.dart';
+export 'src/connectivity/low_data_mode.dart';
 export 'src/auth/auth_repository.dart';
 export 'src/catalog/catalog_repository.dart';
 export 'src/config/config_repository.dart';

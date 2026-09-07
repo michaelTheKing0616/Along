@@ -4,9 +4,9 @@ import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_location/along_location.dart';
 import 'package:along_realtime/along_realtime.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:along_map/along_map.dart' as map_geo;
@@ -96,8 +96,10 @@ final homeControllerProvider =
 class HomeController extends Notifier<HomeState> {
   StreamSubscription<LocationSample>? _locationSub;
   StreamSubscription<Map<String, dynamic>>? _ambientBroadcastSub;
+  Timer? _ambientPollTimer;
   String? _ambientTopic;
   late final AmbientChannel _ambientChannel;
+  LowDataMode _lowDataMode = LowDataMode.disabled();
 
   @override
   HomeState build() {
@@ -105,6 +107,7 @@ class HomeController extends Notifier<HomeState> {
     ref.onDispose(() {
       _locationSub?.cancel();
       _ambientBroadcastSub?.cancel();
+      _ambientPollTimer?.cancel();
       unawaited(_ambientChannel.unsubscribe());
     });
     Future.microtask(_bootstrap);
@@ -115,6 +118,7 @@ class HomeController extends Notifier<HomeState> {
     final recents = await ref.read(recentPlacesStoreProvider).load();
     state = state.copyWith(recents: recents);
     await _loadConfig();
+    _lowDataMode = await ref.read(lowDataModeProvider.future);
     await _initLocation();
   }
 
@@ -150,6 +154,10 @@ class HomeController extends Notifier<HomeState> {
 
     _ambientBroadcastSub ??=
         _ambientChannel.cellUpdates.listen(_onAmbientBroadcast);
+
+    if (!_lowDataMode.useAmbientBroadcast) {
+      await _startAmbientPolling();
+    }
 
     _locationSub?.cancel();
     _locationSub = FilteredLocationStream(source).track().listen((sample) {
@@ -188,19 +196,32 @@ class HomeController extends Notifier<HomeState> {
     final citySlug = await places.citySlugForId(cityId);
     if (citySlug == null) return;
 
-    final topic = ambientChannelTopic(citySlug: citySlug, location: location);
-    if (_ambientTopic != topic) {
-      await _ambientChannel.subscribe(
-            citySlug: citySlug,
-            geohash5: geohashEncode(location, precision: 5),
-          );
-      _ambientTopic = topic;
-      if (state.cityId == null) {
-        state = state.copyWith(cityId: cityId);
+    if (_lowDataMode.useAmbientBroadcast) {
+      final topic = ambientChannelTopic(citySlug: citySlug, location: location);
+      if (_ambientTopic != topic) {
+        await _ambientChannel.subscribe(
+              citySlug: citySlug,
+              geohash5: geohashEncode(location, precision: 5),
+            );
+        _ambientTopic = topic;
+        if (state.cityId == null) {
+          state = state.copyWith(cityId: cityId);
+        }
       }
     }
 
     await _fetchAmbientRpc(location);
+  }
+
+  Future<void> _startAmbientPolling() async {
+    _ambientPollTimer?.cancel();
+    final interval = Duration(seconds: _lowDataMode.ambientPollIntervalS);
+    _ambientPollTimer = Timer.periodic(interval, (_) {
+      final location = state.userLocation;
+      if (location != null) {
+        unawaited(_fetchAmbientRpc(location));
+      }
+    });
   }
 
   void _onAmbientBroadcast(Map<String, dynamic> payload) {
@@ -312,6 +333,7 @@ class SearchState {
     this.recents = const [],
     this.isOffline = false,
     this.isSearching = false,
+    this.isStaleResults = false,
   });
 
   final String query;
@@ -319,6 +341,7 @@ class SearchState {
   final List<RecentPlace> recents;
   final bool isOffline;
   final bool isSearching;
+  final bool isStaleResults;
 
   SearchState copyWith({
     String? query,
@@ -326,6 +349,7 @@ class SearchState {
     List<RecentPlace>? recents,
     bool? isOffline,
     bool? isSearching,
+    bool? isStaleResults,
   }) {
     return SearchState(
       query: query ?? this.query,
@@ -333,6 +357,7 @@ class SearchState {
       recents: recents ?? this.recents,
       isOffline: isOffline ?? this.isOffline,
       isSearching: isSearching ?? this.isSearching,
+      isStaleResults: isStaleResults ?? this.isStaleResults,
     );
   }
 }
@@ -349,16 +374,20 @@ class SearchController extends Notifier<SearchState> {
 
   Future<void> _bootstrap() async {
     final recents = await ref.read(recentPlacesStoreProvider).load();
-    final connectivity = await Connectivity().checkConnectivity();
-    final offline = connectivity.contains(ConnectivityResult.none);
+    final probe = ref.read(networkConditionsProbeProvider);
+    final offline = (await probe.snapshot()).offline;
     state = state.copyWith(recents: recents, isOffline: offline);
   }
 
   void onQueryChanged(String query) {
-    state = state.copyWith(query: query);
+    state = state.copyWith(query: query, isStaleResults: false);
     _debounce?.cancel();
-    if (query.trim().length < 2 || state.isOffline) {
+    if (query.trim().length < 2) {
       state = state.copyWith(results: const [], isSearching: false);
+      return;
+    }
+    if (state.isOffline) {
+      unawaited(_searchOffline(query.trim()));
       return;
     }
     _debounce = Timer(const Duration(milliseconds: 250), () {
@@ -386,6 +415,38 @@ class SearchController extends Notifier<SearchState> {
             limit: 8,
           );
       state = state.copyWith(results: results, isSearching: false);
+      if (cityId.isNotEmpty) {
+        unawaited(
+          ref.read(graphCacheStoreProvider).refreshIfNeeded(cityId: cityId),
+        );
+      }
+    } catch (_) {
+      state = state.copyWith(results: const [], isSearching: false);
+    }
+  }
+
+  Future<void> _searchOffline(String query) async {
+    state = state.copyWith(isSearching: true);
+    try {
+      final graphCache = ref.read(graphCacheStoreProvider);
+      final hits = await graphCache.searchByName(query: query);
+      final results = hits
+          .map(
+            (hit) => PlaceResult(
+              kind: hit.kind,
+              id: hit.id,
+              name: hit.name,
+              area: hit.area,
+              location: hit.location,
+              distanceM: 0,
+            ),
+          )
+          .toList(growable: false);
+      state = state.copyWith(
+        results: results,
+        isSearching: false,
+        isStaleResults: results.isNotEmpty,
+      );
     } catch (_) {
       state = state.copyWith(results: const [], isSearching: false);
     }

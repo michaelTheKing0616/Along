@@ -17,6 +17,7 @@ class FakeAlongSupabase implements AlongSupabase {
     this.citySlug = 'abuja',
     this.planTripResponse,
     this.planTripDelay = Duration.zero,
+    this.planTripError,
     this.requestTripResponse,
     this.walkingDirectionsResponse,
     this.journeyRows = const [],
@@ -53,6 +54,7 @@ class FakeAlongSupabase implements AlongSupabase {
   String? citySlug;
   Map<String, dynamic>? planTripResponse;
   Duration planTripDelay;
+  Object? planTripError;
   Map<String, dynamic>? requestTripResponse;
   Map<String, dynamic>? walkingDirectionsResponse;
   List<Map<String, dynamic>> journeyRows;
@@ -427,6 +429,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (slug == 'plan-trip') {
       planTripInvokeCount++;
+      if (planTripError != null) throw planTripError!;
       if (planTripDelay > Duration.zero) {
         await Future<void>.delayed(planTripDelay);
       }

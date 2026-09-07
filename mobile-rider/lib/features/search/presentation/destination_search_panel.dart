@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
+import 'package:mobile_rider/features/offline/stale_badge.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
 /// Selected destination from R-06 search (places-search or recents).
@@ -120,7 +121,11 @@ class _DestinationSearchPanelState extends ConsumerState<DestinationSearchPanel>
               style: AlongText.caption.copyWith(color: AlongColors.ink500),
             ),
           ),
-        if (!state.isOffline && state.query.length >= 2) ...[
+        if (state.isStaleResults) ...[
+          const SizedBox(height: AlongSpace.s8),
+          StaleBadge(label: l10n.cachedOptionsStaleBadge),
+        ],
+        if (state.query.length >= 2) ...[
           const SizedBox(height: AlongSpace.s16),
           Text(l10n.searchResultsTitle, style: AlongText.bodyStrong),
           const SizedBox(height: AlongSpace.s8),

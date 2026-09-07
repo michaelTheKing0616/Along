@@ -7,8 +7,10 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
+import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
+import 'package:along_map/along_map.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/testing/fakes/fake_negotiation_channel.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,7 +52,28 @@ final alongDatabaseProvider = Provider<AlongDatabase>((ref) {
 });
 
 final plannerRepositoryProvider = Provider<PlannerRepository>((ref) {
-  return PlannerRepository(ref.watch(alongSupabaseProvider));
+  return PlannerRepository(
+    ref.watch(alongSupabaseProvider),
+    planCache: ref.watch(planCacheStoreProvider),
+  );
+});
+
+final planCacheStoreProvider = Provider<PlanCacheStore>((ref) {
+  return PlanCacheStore(ref.watch(alongDatabaseProvider));
+});
+
+final graphCacheStoreProvider = Provider<GraphCacheStore>((ref) {
+  return GraphCacheStore(
+    ref.watch(alongDatabaseProvider),
+    ref.watch(alongSupabaseProvider),
+    RoutesRepository(ref.watch(alongSupabaseProvider)),
+  );
+});
+
+final corridorTilePrecacheProvider = Provider<CorridorTilePrecacheService>((ref) {
+  throw UnimplementedError(
+    'corridorTilePrecacheProvider must be overridden at startup',
+  );
 });
 
 final itineraryRepositoryProvider = Provider<ItineraryRepository>((ref) {
@@ -140,6 +163,8 @@ List<Override> buildProviderOverrides({
   required AmbientChannel ambientChannel,
   NegotiationChannel? negotiationChannel,
   AlongDatabase? database,
+  NetworkConditionsProbe? networkProbe,
+  CorridorTilePrecacheService? corridorTilePrecache,
   OnboardingPreferences? onboardingPreferences,
   LocationStreamSource? locationStreamSource,
   RecentPlacesReader? recentPlacesStore,
@@ -156,6 +181,19 @@ List<Override> buildProviderOverrides({
     alongDatabaseProvider.overrideWithValue(
       database ?? AlongDatabase.memory(),
     ),
+    networkConditionsProbeProvider.overrideWithValue(
+      networkProbe ?? FakeNetworkConditionsProbe(
+        const NetworkConditionsSnapshot(),
+      ),
+    ),
+    if (corridorTilePrecache != null)
+      corridorTilePrecacheProvider.overrideWithValue(corridorTilePrecache)
+    else
+      corridorTilePrecacheProvider.overrideWithValue(
+        CorridorTilePrecacheService(
+          cacheDirectory: Directory.systemTemp.createTempSync('along_map_cache'),
+        ),
+      ),
     if (onboardingPreferences != null)
       onboardingPreferencesProvider.overrideWithValue(onboardingPreferences),
     if (locationStreamSource != null)
