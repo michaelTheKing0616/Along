@@ -988,9 +988,17 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 **Escalations:** none.
 
 ## [Phase 4 / P4-E-03] Universal links + sticker spec + runbook
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-06
+- Worker report summary: AASA + assetlinks well-known routes; print spec ≥70 mm EC-H; runbook qr_sticker_lifecycle. Vitest 5/5. Flag unchanged. No production print.
+- Reviewer verdict: PASS WITH NOTES — server files MET; native iOS/Android App Link config documented not committed. Device camera gate deferred to P1-G-01.
+- Rework count: 0
+- Notes/escalations: Merged e6b3bb7. Absorb native entitlements into store-release / P1-G-01.
+
+## [Phase 4 / Gate] Code gate (implementation only)
 - Status: IN PROGRESS
 - Assigned: 2026-09-06
 - Worker report summary: (pending)
 - Reviewer verdict: (pending)
 - Rework count: 0
-- Notes/escalations: Do not print production stickers. Live-device OS camera gate deferred to P1-G-01. Flag stays false. Do not flip digital_enabled.
+- Notes/escalations: Flag stays false. P4-E-02 still NOT PASS. Device/corridor deferred to P1-G-01. Do not start Phase 7.
