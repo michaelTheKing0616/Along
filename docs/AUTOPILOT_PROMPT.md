@@ -6,7 +6,7 @@ Paste **everything below the line** into a fresh Cursor Agent chat opened at the
 
 The session you paste into becomes the **Orchestrator**. It never writes application code; it spawns a fresh subagent for every Worker task and another for every Review, keeps `docs/BUILD_LEDGER.md`, merges passing branches, and stops only for the human decisions listed in §6.
 
-Knobs (edit before pasting if you want): `PHASE_LIMIT = current phase only` · `MAX_REWORK = 2` · `PARALLELISM = 1` · `STOP_AFTER_TASKS = unlimited`.
+Knobs (edit before pasting if you want): `PHASE_LIMIT = unlimited` (chain after each code gate; 2026-09-07 owner) · `MAX_REWORK = 2` · `PARALLELISM = 1` · `STOP_AFTER_TASKS = unlimited`.
 
 ---
 
