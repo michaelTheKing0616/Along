@@ -95,6 +95,7 @@ export interface AdminSetConfigRequest {
   scope_type: string;
   scope_id: string;
   value: unknown;
+  reason: string;
 }
 
 /** admin.json → AdminCorridorAnalyticsRequest */
@@ -255,6 +256,16 @@ export interface UpdateRiderPrefsRequest {
   wayfinding_mode?: "text" | "map" | "audio";
   saved_sort?: "recommended" | "cheapest" | "fastest" | "least_strenuous";
   women_only_pref?: boolean;
+}
+
+/** auth.json → SetHomeCityRequest */
+export interface SetHomeCityRequest {
+  p_city_id: string;
+}
+
+/** auth.json → SetDriverCityRequest */
+export interface SetDriverCityRequest {
+  p_city_id: string;
 }
 
 /** auth.json → RegisterGuarantorRequest */

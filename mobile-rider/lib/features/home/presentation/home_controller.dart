@@ -24,6 +24,8 @@ class HomeState {
     this.staleAfterS,
     this.fanoutRadiusM,
     this.cityId,
+    this.citySlug,
+    this.cityName,
     this.mapCenter,
   });
 
@@ -38,6 +40,8 @@ class HomeState {
   final int? staleAfterS;
   final int? fanoutRadiusM;
   final String? cityId;
+  final String? citySlug;
+  final String? cityName;
   final GeoPoint? mapCenter;
 
   bool get showLocationBanner => locationDenied;
@@ -54,6 +58,8 @@ class HomeState {
     int? staleAfterS,
     int? fanoutRadiusM,
     String? cityId,
+    String? citySlug,
+    String? cityName,
     GeoPoint? mapCenter,
   }) {
     return HomeState(
@@ -68,6 +74,8 @@ class HomeState {
       staleAfterS: staleAfterS ?? this.staleAfterS,
       fanoutRadiusM: fanoutRadiusM ?? this.fanoutRadiusM,
       cityId: cityId ?? this.cityId,
+      citySlug: citySlug ?? this.citySlug,
+      cityName: cityName ?? this.cityName,
       mapCenter: mapCenter ?? this.mapCenter,
     );
   }
@@ -75,7 +83,7 @@ class HomeState {
 
 class NearbyAmbientRow {
   const NearbyAmbientRow({
-    required this.modeLabelKey,
+    required this.modeLabel,
     required this.countBucket,
     required this.headingLabel,
     required this.etaMinutes,
@@ -84,7 +92,7 @@ class NearbyAmbientRow {
     this.etaBandSeconds,
   });
 
-  final String modeLabelKey;
+  final String modeLabel;
   final String countBucket;
   final String headingLabel;
   final int etaMinutes;
@@ -121,8 +129,66 @@ class HomeController extends Notifier<HomeState> {
     final recents = await ref.read(recentPlacesStoreProvider).load();
     state = state.copyWith(recents: recents);
     await _loadConfig();
+    await _loadHomeCity();
     _lowDataMode = await ref.read(lowDataModeProvider.future);
     await _initLocation();
+  }
+
+  Future<void> _loadHomeCity() async {
+    final profile =
+        await ref.read(riderProfileRepositoryProvider).fetchCurrentProfile();
+    final cityId = profile?.homeCityId;
+    if (cityId == null) return;
+
+    final places = ref.read(placesRepositoryProvider);
+    final centroid = await places.cityCentroidForId(cityId);
+    final slug = await places.citySlugForId(cityId);
+    final cities = await ref.read(catalogRepositoryProvider).activeCities();
+    final cityName = cities
+        .where((city) => city.id == cityId)
+        .map((city) => city.name)
+        .firstOrNull;
+
+    state = state.copyWith(
+      cityId: cityId,
+      citySlug: slug,
+      cityName: cityName,
+      mapCenter: centroid ?? state.mapCenter,
+    );
+  }
+
+  /// Persists [cityId], recenters the map, and reloads ambient tiles for that city.
+  Future<void> switchCity(String cityId) async {
+    await ref.read(riderProfileRepositoryProvider).setHomeCity(cityId);
+
+    final places = ref.read(placesRepositoryProvider);
+    final centroid = await places.cityCentroidForId(cityId);
+    final slug = await places.citySlugForId(cityId);
+    final cities = await ref.read(catalogRepositoryProvider).activeCities();
+    final cityName = cities
+        .where((city) => city.id == cityId)
+        .map((city) => city.name)
+        .firstOrNull;
+
+    state = state.copyWith(
+      cityId: cityId,
+      citySlug: slug,
+      cityName: cityName,
+      mapCenter: centroid ?? state.mapCenter,
+      ambientCells: const [],
+      nearbyRows: const [],
+      activeLayers: state.locationGranted
+          ? {HomeMapOverlayLayer.puck}
+          : state.activeLayers,
+    );
+
+    unawaited(ref.read(graphCacheStoreProvider).refreshIfNeeded(cityId: cityId));
+
+    final location = state.userLocation ?? centroid;
+    if (location != null) {
+      _ambientTopic = null;
+      await _ensureAmbientSubscription(location);
+    }
   }
 
   Future<void> _loadConfig() async {
@@ -209,7 +275,17 @@ class HomeController extends Notifier<HomeState> {
         _ambientTopic = topic;
         if (state.cityId == null || state.mapCenter == null) {
           final centroid = await places.cityCentroidForId(cityId);
-          state = state.copyWith(cityId: cityId, mapCenter: centroid ?? state.mapCenter);
+          final cities = await ref.read(catalogRepositoryProvider).activeCities();
+          final cityName = cities
+              .where((city) => city.id == cityId)
+              .map((city) => city.name)
+              .firstOrNull;
+          state = state.copyWith(
+            cityId: cityId,
+            citySlug: citySlug,
+            cityName: cityName,
+            mapCenter: centroid ?? state.mapCenter,
+          );
         }
       }
     }
@@ -293,7 +369,7 @@ class HomeController extends Notifier<HomeState> {
     final rows = [
       for (final cell in apiCells)
         NearbyAmbientRow(
-          modeLabelKey: 'mode_${cell.mode.code}',
+          modeLabel: cell.mode.label,
           countBucket: cell.count_bucket,
           headingLabel: AmbientCellMapper.headingLabel(
             AmbientCellMapper.toMapCells(

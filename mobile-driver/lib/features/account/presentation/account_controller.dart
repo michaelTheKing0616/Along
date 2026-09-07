@@ -1,6 +1,7 @@
 import 'package:along_data/along_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/payments/data/payments_providers.dart';
 
 class AccountVehicleRow {
@@ -21,6 +22,8 @@ class AccountState {
     this.phoneE164,
     this.verifiedStatus,
     this.standing,
+    this.cityId,
+    this.cities = const [],
     this.vehicles = const [],
     this.documentSummary,
     this.hasPayoutSubaccount = false,
@@ -33,6 +36,8 @@ class AccountState {
   final String? phoneE164;
   final String? verifiedStatus;
   final String? standing;
+  final String? cityId;
+  final List<CityOption> cities;
   final List<AccountVehicleRow> vehicles;
   final String? documentSummary;
   final bool hasPayoutSubaccount;
@@ -47,6 +52,8 @@ class AccountState {
     String? phoneE164,
     String? verifiedStatus,
     String? standing,
+    String? cityId,
+    List<CityOption>? cities,
     List<AccountVehicleRow>? vehicles,
     String? documentSummary,
     bool? hasPayoutSubaccount,
@@ -60,6 +67,8 @@ class AccountState {
       phoneE164: phoneE164 ?? this.phoneE164,
       verifiedStatus: verifiedStatus ?? this.verifiedStatus,
       standing: standing ?? this.standing,
+      cityId: cityId ?? this.cityId,
+      cities: cities ?? this.cities,
       vehicles: vehicles ?? this.vehicles,
       documentSummary: documentSummary ?? this.documentSummary,
       hasPayoutSubaccount: hasPayoutSubaccount ?? this.hasPayoutSubaccount,
@@ -142,12 +151,15 @@ class AccountController extends AsyncNotifier<AccountState> {
       );
 
       final profile = profileRows.isNotEmpty ? profileRows.first : null;
+      final cities = await ref.read(catalogRepositoryProvider).activeCities();
 
       return AccountState(
         displayName: profile?['display_name'] as String?,
         phoneE164: profile?['phone_e164'] as String?,
         verifiedStatus: driverProfile?.verifiedStatus,
         standing: driverProfile?.standing,
+        cityId: driverProfile?.cityId,
+        cities: cities,
         vehicles: vehicles,
         documentSummary: documentSummary,
         hasPayoutSubaccount: qrProfile.hasSubaccount,
@@ -191,5 +203,10 @@ class AccountController extends AsyncNotifier<AccountState> {
   Future<void> refresh() async {
     state = const AsyncLoading();
     state = AsyncData(await _load());
+  }
+
+  Future<void> switchCity(String cityId) async {
+    await ref.read(driverHomeControllerProvider.notifier).switchCity(cityId);
+    await refresh();
   }
 }

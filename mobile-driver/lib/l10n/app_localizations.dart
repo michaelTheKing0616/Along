@@ -1330,6 +1330,18 @@ abstract class AppLocalizations {
   /// **'PREFERENCES'**
   String get accountPreferencesHeading;
 
+  /// D-24 city switcher label
+  ///
+  /// In en, this message translates to:
+  /// **'Operating city'**
+  String get accountCityLabel;
+
+  /// D-24 city switcher hint
+  ///
+  /// In en, this message translates to:
+  /// **'Map, parks, and demand use this city'**
+  String get accountCityHint;
+
   /// No description provided for @accountLanguage.
   ///
   /// In en, this message translates to:

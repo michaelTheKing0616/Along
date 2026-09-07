@@ -28,7 +28,7 @@ void main() {
       await pumpAlongGolden(
         tester,
         surfaceSize: const Size(360, 100),
-        child: const PhoneField(),
+        child: const PhoneField(countryCode: '+234'),
       );
       await expectAlongGolden(tester, 'goldens/phone_field_default_1_0.png');
     });
@@ -37,7 +37,10 @@ void main() {
       await pumpAlongGolden(
         tester,
         surfaceSize: const Size(360, 120),
-        child: const PhoneField(errorText: 'Enter a valid Nigerian number'),
+        child: const PhoneField(
+          countryCode: '+234',
+          errorText: 'Enter a valid Nigerian number',
+        ),
       );
       await expectAlongGolden(tester, 'goldens/phone_field_error_1_0.png');
     });

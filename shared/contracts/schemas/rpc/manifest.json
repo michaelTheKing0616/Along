@@ -28,6 +28,8 @@
     { "name": "my_verifications", "tier": "auth", "response": "auth.json#/$defs/MyVerificationsResponse" },
     { "name": "register_device_token", "tier": "auth", "request": "auth.json#/$defs/RegisterDeviceTokenRequest" },
     { "name": "update_rider_prefs", "tier": "auth", "request": "auth.json#/$defs/UpdateRiderPrefsRequest" },
+    { "name": "set_home_city", "tier": "auth", "request": "auth.json#/$defs/SetHomeCityRequest" },
+    { "name": "set_driver_city", "tier": "auth", "request": "auth.json#/$defs/SetDriverCityRequest" },
     { "name": "register_guarantor", "tier": "auth", "request": "auth.json#/$defs/RegisterGuarantorRequest" },
     { "name": "acknowledge_guarantor", "tier": "anon", "request": "auth.json#/$defs/AcknowledgeGuarantorRequest", "response": "auth.json#/$defs/AcknowledgeGuarantorResponse" },
     { "name": "ambient_vehicles", "tier": "A", "request": "ambient.json#/$defs/AmbientVehiclesRequest", "response": "ambient.json#/$defs/AmbientVehiclesResponse" },

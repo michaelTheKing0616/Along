@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -20,6 +21,7 @@ class AccountSettingsScreen extends ConsumerStatefulWidget {
 
 class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   RiderProfile? _profile;
+  List<CityOption> _cities = const [];
   bool _womenOnlyRegulatory = false;
   bool _loading = true;
   bool _saving = false;
@@ -33,15 +35,28 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   Future<void> _load() async {
     final profileRepo = ref.read(riderProfileRepositoryProvider);
     final profile = await profileRepo.fetchCurrentProfile();
+    final cities = await ref.read(catalogRepositoryProvider).activeCities();
     final regulatory = profile?.homeCityId != null
         ? await profileRepo.womenOnlyMatchingEnabled(profile!.homeCityId)
         : false;
     if (!mounted) return;
     setState(() {
       _profile = profile;
+      _cities = cities;
       _womenOnlyRegulatory = regulatory;
       _loading = false;
     });
+  }
+
+  Future<void> _updateHomeCity(String? cityId) async {
+    if (cityId == null || cityId == _profile?.homeCityId) return;
+    setState(() => _saving = true);
+    try {
+      await ref.read(homeControllerProvider.notifier).switchCity(cityId);
+      await _load();
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 
   Future<void> _updateWayfinding(WayfindingMode mode) async {
@@ -114,6 +129,27 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         const SizedBox(height: AlongSpace.s24),
         Text(l10n.accountPreferencesHeading, style: AlongText.overline),
         const SizedBox(height: AlongSpace.s8),
+        if (_cities.isNotEmpty) ...[
+          Text(l10n.accountCityLabel, style: AlongText.bodyStrong),
+          const SizedBox(height: AlongSpace.s8),
+          DropdownButtonFormField<String>(
+            key: const Key('account_city_dropdown'),
+            value: profile?.homeCityId,
+            decoration: InputDecoration(
+              hintText: l10n.accountCityHint,
+            ),
+            items: _cities
+                .map(
+                  (city) => DropdownMenuItem(
+                    value: city.id,
+                    child: Text(city.name),
+                  ),
+                )
+                .toList(),
+            onChanged: _saving ? null : _updateHomeCity,
+          ),
+          const SizedBox(height: AlongSpace.s16),
+        ],
         Text(l10n.accountWayfindingLabel, style: AlongText.bodyStrong),
         const SizedBox(height: AlongSpace.s8),
         SegmentedButton<WayfindingMode>(

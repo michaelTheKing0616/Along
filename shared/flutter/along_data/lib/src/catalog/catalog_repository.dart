@@ -25,11 +25,33 @@ class CityOption {
   }
 }
 
+/// Resolves a localized mode label from `mode_config.label_i18n` with fallback to
+/// [fallbackLabel] (the `label` column) and locale `en`.
+String resolveModeLabel({
+  required Map<String, String> labelI18n,
+  required String fallbackLabel,
+  required String locale,
+}) {
+  if (labelI18n.isEmpty) return fallbackLabel;
+  final normalized = locale.replaceAll('_', '-');
+  if (labelI18n.containsKey(normalized)) {
+    return labelI18n[normalized]!;
+  }
+  final language = normalized.split('-').first;
+  for (final entry in labelI18n.entries) {
+    if (entry.key.split('-').first == language) {
+      return entry.value;
+    }
+  }
+  return labelI18n['en'] ?? labelI18n['en-NG'] ?? fallbackLabel;
+}
+
 /// Mode row from `mode_config` for D-05 chips.
 class ModeConfigRow {
   const ModeConfigRow({
     required this.code,
     required this.label,
+    required this.labelI18n,
     required this.iconKey,
     required this.colorToken,
     required this.loadCapacity,
@@ -39,16 +61,27 @@ class ModeConfigRow {
 
   final String code;
   final String label;
+  final Map<String, String> labelI18n;
   final String iconKey;
   final String colorToken;
   final String loadCapacity;
   final int defaultSeatCapacity;
   final int sortOrder;
 
+  String displayLabel(String locale) => resolveModeLabel(
+        labelI18n: labelI18n,
+        fallbackLabel: label,
+        locale: locale,
+      );
+
   factory ModeConfigRow.fromJson(Map<String, dynamic> json) {
+    final rawI18n = json['label_i18n'] as Map<String, dynamic>? ?? const {};
     return ModeConfigRow(
       code: json['code'] as String,
       label: json['label'] as String,
+      labelI18n: rawI18n.map(
+        (key, value) => MapEntry(key as String, value as String),
+      ),
       iconKey: json['icon_key'] as String,
       colorToken: json['color_token'] as String,
       loadCapacity: json['load_capacity'] as String? ?? 'none',
@@ -120,6 +153,9 @@ class CatalogRepository {
       throw mapSupabaseError(e);
     }
   }
+
+  /// Alias retained for P9-A-01 call sites.
+  Future<List<CityOption>> listActiveCities() => activeCities();
 
   Future<List<ModeConfigRow>> modeConfigs() async {
     try {

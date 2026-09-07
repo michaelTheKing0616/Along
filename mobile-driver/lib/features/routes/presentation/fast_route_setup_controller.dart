@@ -1,5 +1,4 @@
 import 'package:along_core/along_core.dart';
-import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart' hide Money;
 import 'package:decimal/decimal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,11 +51,27 @@ class FastRouteSetupController extends StateNotifier<FastRouteSetupState> {
             suggestion: suggestion,
             stops: draftsFromSuggestion(suggestion),
           ),
-        );
+        ) {
+    Future.microtask(_loadCurrency);
+  }
 
   final Ref _ref;
 
   RoutesRepository get _routesRepo => _ref.read(routesRepositoryProvider);
+  CatalogRepository get _catalogRepo => _ref.read(catalogRepositoryProvider);
+
+  Future<void> _loadCurrency() async {
+    final userId = _ref.read(alongSupabaseProvider).currentUser?.id;
+    if (userId == null) return;
+    final profile =
+        await _ref.read(driverRepositoryProvider).fetchDriverProfile(userId);
+    final cityId = profile?.cityId;
+    if (cityId == null) return;
+    final currencyCode = await _catalogRepo.currencyCodeForCity(cityId);
+    _currencyCode = currencyCode;
+  }
+
+  String _currencyCode = 'NGN';
 
   void updateStopPrice(int sequence, Decimal price) {
     state = state.copyWith(
@@ -89,7 +104,7 @@ class FastRouteSetupController extends StateNotifier<FastRouteSetupState> {
         stops: state.stops.map((s) => s.toPublishInput()).toList(growable: false),
         loadSurcharge: state.loadSurcharge == null
             ? null
-            : Money.parse(state.loadSurcharge!.toString(), currency: 'NGN'),
+            : Money.parse(state.loadSurcharge!.toString(), currency: _currencyCode),
       );
       state = state.copyWith(isPublishing: false);
       return true;

@@ -48,7 +48,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               key: const Key('home_map'),
               styleUrl: config.tilesBaseUrl == null
                   ? null
-                  : '${config.tilesBaseUrl}/styles/along-light.json',
+                  : AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
+                      .remoteStyleUrl(citySlug: state.citySlug),
               offlineStyleJson: config.tilesBaseUrl == null
                   ? ref.watch(homeOfflineStyleProvider).maybeWhen(
                         data: (value) => value,

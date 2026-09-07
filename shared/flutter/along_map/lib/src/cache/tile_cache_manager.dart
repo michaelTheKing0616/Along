@@ -17,10 +17,12 @@ class TileCacheManager {
 
   static const fixturePmtilesAsset = 'assets/fixtures/abuja_fixture.pmtiles';
 
-  /// Seeds the cache directory with the Abuja fixture PMTiles for offline tests.
-  Future<CachedTileBundle> seedAbujaFixture() async {
+  /// Seeds the cache directory with a city-scoped PMTiles fixture for offline tests.
+  Future<CachedTileBundle> seedFixtureForCity(String citySlug) async {
     await cacheDirectory.create(recursive: true);
-    final target = File(p.join(cacheDirectory.path, 'abuja_fixture.pmtiles'));
+    final target = File(
+      p.join(cacheDirectory.path, '${citySlug}_fixture.pmtiles'),
+    );
     if (!await target.exists()) {
       final bytes = await rootBundle.load(fixturePmtilesAsset);
       await target.writeAsBytes(
@@ -30,8 +32,12 @@ class TileCacheManager {
     return CachedTileBundle(
       pmtilesPath: target.path,
       cacheDirectory: cacheDirectory,
+      citySlug: citySlug,
     );
   }
+
+  /// Seeds the cache directory with the Abuja fixture PMTiles for offline tests.
+  Future<CachedTileBundle> seedAbujaFixture() => seedFixtureForCity('abuja');
 
   /// Returns total bytes used by `.pmtiles` files in the cache directory.
   Future<int> currentUsageBytes() async {
@@ -74,8 +80,10 @@ class CachedTileBundle {
   const CachedTileBundle({
     required this.pmtilesPath,
     required this.cacheDirectory,
+    this.citySlug = 'abuja',
   });
 
   final String pmtilesPath;
   final Directory cacheDirectory;
+  final String citySlug;
 }

@@ -971,6 +971,14 @@
   },
   "accountProfileHeading": "PROFILE",
   "accountPreferencesHeading": "PREFERENCES",
+  "accountCityLabel": "Home city",
+  "@accountCityLabel": {
+    "description": "R-26 city switcher label"
+  },
+  "accountCityHint": "Map and search default to this city when location is unavailable",
+  "@accountCityHint": {
+    "description": "R-26 city switcher hint"
+  },
   "accountPaymentHeading": "PAYMENT",
   "accountSafetyHeading": "SAFETY",
   "accountWayfindingLabel": "Wayfinding mode",

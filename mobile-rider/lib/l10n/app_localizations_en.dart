@@ -719,6 +719,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountPreferencesHeading => 'PREFERENCES';
 
   @override
+  String get accountCityLabel => 'Home city';
+
+  @override
+  String get accountCityHint =>
+      'Map and search default to this city when location is unavailable';
+
+  @override
   String get accountPaymentHeading => 'PAYMENT';
 
   @override

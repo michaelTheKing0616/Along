@@ -331,12 +331,14 @@ class AdminSetConfigRequest {
   final String scope_type;
   final String scope_id;
   final Object? value;
+  final String reason;
 
   const AdminSetConfigRequest({
     required this.key,
     required this.scope_type,
     required this.scope_id,
     required this.value,
+    required this.reason,
   });
 
   factory AdminSetConfigRequest.fromJson(Map<String, dynamic> json) {
@@ -345,6 +347,7 @@ class AdminSetConfigRequest {
       scope_type: json["scope_type"] as String,
       scope_id: json["scope_id"] as String,
       value: json["value"],
+      reason: json["reason"] as String,
     );
   }
 
@@ -353,6 +356,7 @@ class AdminSetConfigRequest {
     "scope_type": scope_type,
     "scope_id": scope_id,
     "value": value,
+    "reason": reason,
   };
 }
 
@@ -2041,6 +2045,42 @@ class SetAcceptsDigitalRequest {
 
   Map<String, dynamic> toJson() => {
     "p_enabled": p_enabled,
+  };
+}
+
+class SetDriverCityRequest {
+  final String p_city_id;
+
+  const SetDriverCityRequest({
+    required this.p_city_id,
+  });
+
+  factory SetDriverCityRequest.fromJson(Map<String, dynamic> json) {
+    return SetDriverCityRequest(
+      p_city_id: json["p_city_id"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "p_city_id": p_city_id,
+  };
+}
+
+class SetHomeCityRequest {
+  final String p_city_id;
+
+  const SetHomeCityRequest({
+    required this.p_city_id,
+  });
+
+  factory SetHomeCityRequest.fromJson(Map<String, dynamic> json) {
+    return SetHomeCityRequest(
+      p_city_id: json["p_city_id"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "p_city_id": p_city_id,
   };
 }
 

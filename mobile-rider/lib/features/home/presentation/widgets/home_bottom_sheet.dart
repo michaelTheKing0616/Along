@@ -90,7 +90,7 @@ class HomeNearbySheet extends StatelessWidget {
         separatorBuilder: (_, __) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final row = rows[index];
-          final modeLabel = _modeLabel(l10n, row.modeLabelKey);
+          final modeLabel = row.modeLabel;
           return ListTile(
             key: Key('nearby_row_${row.modeCode}'),
             title: Text(
@@ -106,14 +106,5 @@ class HomeNearbySheet extends StatelessWidget {
         },
       ),
     );
-  }
-
-  String _modeLabel(AppLocalizations l10n, String key) {
-    return switch (key) {
-      'mode_keke' => l10n.modeKeke,
-      'mode_okada' => l10n.modeOkada,
-      'mode_minibus' => l10n.modeMinibus,
-      _ => l10n.modeCar,
-    };
   }
 }

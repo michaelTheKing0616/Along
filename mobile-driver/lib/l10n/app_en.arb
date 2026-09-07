@@ -372,6 +372,14 @@
   },
   "accountPayoutNotConfigured": "Set up your payout bank",
   "accountPreferencesHeading": "PREFERENCES",
+  "accountCityLabel": "Operating city",
+  "@accountCityLabel": {
+    "description": "D-24 city switcher label"
+  },
+  "accountCityHint": "Map, parks, and demand use this city",
+  "@accountCityHint": {
+    "description": "D-24 city switcher hint"
+  },
   "accountLanguage": "Language",
   "accountLanguageValue": "English",
   "accountSafetyHeading": "SAFETY",
