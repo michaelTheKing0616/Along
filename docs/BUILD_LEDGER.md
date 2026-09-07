@@ -1442,3 +1442,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-A-02 PASS. Attach 04 §15 speed-profiles, 04 §4 planner ETA. AC: measurable ETA improvement documented. Use matched_traces only (FM27). Do not implement route-inference (A-04). Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-03] speed-profiles + planner calibration
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: speed-profiles job from matched_traces; A/B 650s→0s MAE fixture; TS-JOBS-02 4/4; vitest 14/14.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Notes: A/B fixture-constructed; live presence speed precedence deferred.
+- Rework count: 0
+- Notes/escalations: Merged fcbd6e7. Next: P7-A-04. Do not flip digital_enabled.
+
+## [Phase 7 / P7-A-04] route-inference + geometry-corrections
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-A-02 PASS. Attach 04 §14–15. AC: TS-GRAPH-08; simulated undeclared corridor yields reviewable route candidate. FM27 matched traces only. Do not redo speed-profiles. Do not flip digital_enabled.
