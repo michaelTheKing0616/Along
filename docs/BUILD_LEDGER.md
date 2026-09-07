@@ -986,3 +986,11 @@ Critical implementation split (Workers will get this wrong if they only read "tr
 
 Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_pickup_radius_m`, `rider.no_show_*`.
 **Escalations:** none.
+
+## [Phase 4 / P4-E-03] Universal links + sticker spec + runbook
+- Status: IN PROGRESS
+- Assigned: 2026-09-06
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Do not print production stickers. Live-device OS camera gate deferred to P1-G-01. Flag stays false. Do not flip digital_enabled.
