@@ -5285,6 +5285,31 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_disable_admin: { Args: { p_user_id: string }; Returns: Json }
+      admin_invite_admin: {
+        Args: {
+          p_city_scope?: string[] | null
+          p_deployment_id?: string | null
+          p_display_name?: string | null
+          p_email: string
+          p_role: Database["public"]["Enums"]["admin_role"]
+        }
+        Returns: Json
+      }
+      admin_list_admins: {
+        Args: { p_cursor?: string; p_limit?: number }
+        Returns: Json
+      }
+      admin_update_admin: {
+        Args: {
+          p_city_scope?: string[] | null
+          p_clear_city_scope?: boolean
+          p_deployment_id?: string | null
+          p_role?: Database["public"]["Enums"]["admin_role"] | null
+          p_user_id: string
+        }
+        Returns: Json
+      }
       admin_upsert_settlement_agent: {
         Args: {
           p_active?: boolean

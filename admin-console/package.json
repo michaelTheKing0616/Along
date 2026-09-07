@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:audit-coverage": "node scripts/check-admin-audit-coverage.mjs",
     "test:e2e": "playwright test",
     "test:e2e:setup": "node --experimental-strip-types e2e/run-global-setup.ts",
     "test:e2e:install": "playwright install chromium"

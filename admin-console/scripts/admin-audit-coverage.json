@@ -1,0 +1,117 @@
+{
+  "$comment": "Phase ≤6 admin WRITE RPCs (doc 03 §11 + implemented extras). Gaps are P6-A-01 follow-up — do not attach triggers here.",
+  "write_rpcs": [
+    {
+      "name": "admin_approve_verification",
+      "audit": { "kind": "trigger", "table": "driver_verifications" }
+    },
+    {
+      "name": "admin_reject_verification",
+      "audit": { "kind": "trigger", "table": "driver_verifications" }
+    },
+    {
+      "name": "admin_review_fare_correction",
+      "audit": { "kind": "trigger", "table": "fare_corrections" }
+    },
+    {
+      "name": "admin_publish_graph_entity",
+      "audit": { "kind": "trigger", "table": "parks" }
+    },
+    {
+      "name": "admin_update_graph_entity",
+      "audit": { "kind": "trigger", "table": "parks" }
+    },
+    {
+      "name": "admin_deactivate_graph_entity",
+      "audit": { "kind": "trigger", "table": "parks" }
+    },
+    {
+      "name": "admin_reconcile_field_entity",
+      "audit": { "kind": "trigger", "table": "field_reconciliations" }
+    },
+    {
+      "name": "admin_publish_field_entity",
+      "audit": { "kind": "trigger", "table": "field_reconciliations" }
+    },
+    {
+      "name": "admin_review_flag",
+      "audit": { "kind": "gap", "reason": "trip_reconciliation_flags — P6-A-01" }
+    },
+    {
+      "name": "admin_transition_standing",
+      "audit": { "kind": "gap", "reason": "driver_standing_transitions + drivers.standing — P6-A-01" }
+    },
+    {
+      "name": "admin_notify_guarantor",
+      "audit": { "kind": "gap", "reason": "guarantors.last_notified_at — P6-A-01" }
+    },
+    {
+      "name": "admin_manual_ledger_adjustment",
+      "audit": { "kind": "explicit", "pattern": "audit_finance_action|insert into audit_log" }
+    },
+    {
+      "name": "admin_ack_sos",
+      "audit": { "kind": "trigger", "table": "sos_alerts" }
+    },
+    {
+      "name": "admin_resolve_sos",
+      "audit": { "kind": "trigger", "table": "sos_alerts" }
+    },
+    {
+      "name": "admin_triage_incident",
+      "audit": { "kind": "trigger", "table": "incidents" }
+    },
+    {
+      "name": "admin_set_config",
+      "audit": { "kind": "trigger", "table": "app_config" }
+    },
+    {
+      "name": "admin_review_candidate_park",
+      "audit": { "kind": "gap", "reason": "RPC not implemented — Phase 7 intelligence" }
+    },
+    {
+      "name": "admin_review_route_inference",
+      "audit": { "kind": "gap", "reason": "RPC not implemented — Phase 7 intelligence" }
+    },
+    {
+      "name": "admin_review_geometry_correction",
+      "audit": { "kind": "gap", "reason": "RPC not implemented — Phase 7 intelligence" }
+    },
+    {
+      "name": "admin_log_view_document",
+      "audit": { "kind": "explicit", "pattern": "insert into audit_log" }
+    },
+    {
+      "name": "admin_approve_adjustment",
+      "audit": { "kind": "explicit", "pattern": "audit_finance_action" }
+    },
+    {
+      "name": "admin_payout_positive_balance",
+      "audit": { "kind": "explicit", "pattern": "audit_finance_action" }
+    },
+    {
+      "name": "admin_rotate_driver_code",
+      "audit": { "kind": "explicit", "pattern": "insert into audit_log" }
+    },
+    {
+      "name": "admin_upsert_settlement_agent",
+      "audit": { "kind": "gap", "reason": "settlement_agents — P6-A-01" }
+    },
+    {
+      "name": "admin_import_apply",
+      "audit": { "kind": "trigger", "table": "parks" }
+    },
+    {
+      "name": "admin_invite_admin",
+      "audit": { "kind": "trigger", "table": "admin_users" }
+    },
+    {
+      "name": "admin_update_admin",
+      "audit": { "kind": "trigger", "table": "admin_users" }
+    },
+    {
+      "name": "admin_disable_admin",
+      "audit": { "kind": "trigger", "table": "admin_users" }
+    }
+  ]
+}

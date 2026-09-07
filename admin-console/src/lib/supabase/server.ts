@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import type { Database } from '@along/contracts/db.types';
+import type { AuditLogPage, AuditLogRow } from '@/lib/audit/types';
+
+export type { AuditLogRow, AuditLogFilters, AuditLogPage } from '@/lib/audit/types';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -48,28 +51,74 @@ export async function isAdmin(): Promise<boolean> {
   return Boolean(data);
 }
 
-export type AuditLogRow = {
-  id: number;
-  actor_id: string | null;
-  actor_role: string | null;
-  action: string;
-  target_type: string;
-  target_id: string;
-  created_at: string;
-};
+function clampAuditPageSize(size: number): number {
+  return Math.min(Math.max(size, 1), 200);
+}
 
 export async function fetchAuditLogForTarget(
   targetId: string,
   limit = 20
 ): Promise<AuditLogRow[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('audit_log' as 'app_config')
-    .select('id, actor_id, actor_role, action, target_type, target_id, created_at')
-    .eq('target_id', targetId)
-    .order('created_at', { ascending: false })
-    .limit(limit);
+  const page = await fetchAuditLogPage({ targetId, limit });
+  return page.rows;
+}
 
-  if (error || !data) return [];
-  return data as unknown as AuditLogRow[];
+export async function fetchAuditLogPage(input: {
+  cursor?: number;
+  limit?: number;
+  targetId?: string;
+  action?: string;
+  targetType?: string;
+  actorRole?: string;
+}): Promise<AuditLogPage> {
+  const supabase = await createClient();
+
+  let resolvedLimit = input.limit;
+  if (resolvedLimit == null) {
+    const { data } = await supabase.rpc('cfg_num', { p_key: 'audit.page_size' });
+    if (data != null) {
+      resolvedLimit = Number(data);
+    }
+  }
+  const pageSize = clampAuditPageSize(resolvedLimit ?? 50);
+
+  let query = supabase
+    .from('audit_log' as 'app_config')
+    .select(
+      'id, actor_id, actor_role, action, target_type, target_id, before, after, created_at'
+    )
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(pageSize + 1);
+
+  if (input.cursor != null) {
+    query = query.lt('id', input.cursor);
+  }
+  if (input.targetId) {
+    query = query.eq('target_id', input.targetId);
+  }
+  if (input.action) {
+    query = query.eq('action', input.action);
+  }
+  if (input.targetType) {
+    query = query.eq('target_type', input.targetType);
+  }
+  if (input.actorRole) {
+    query = query.eq('actor_role', input.actorRole);
+  }
+
+  const { data, error } = await query;
+  if (error || !data) {
+    return { rows: [], nextCursor: null, pageSize };
+  }
+
+  const rows = data as unknown as AuditLogRow[];
+  const hasMore = rows.length > pageSize;
+  const pageRows = hasMore ? rows.slice(0, pageSize) : rows;
+
+  return {
+    rows: pageRows,
+    nextCursor: hasMore ? pageRows[pageRows.length - 1]?.id ?? null : null,
+    pageSize,
+  };
 }

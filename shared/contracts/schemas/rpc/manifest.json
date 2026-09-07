@@ -104,6 +104,10 @@
     { "name": "admin_review_candidate_park", "tier": "I" },
     { "name": "admin_review_route_inference", "tier": "I" },
     { "name": "admin_review_geometry_correction", "tier": "I" },
-    { "name": "admin_corridor_analytics", "tier": "I", "request": "admin.json#/$defs/AdminCorridorAnalyticsRequest" }
+    { "name": "admin_corridor_analytics", "tier": "I", "request": "admin.json#/$defs/AdminCorridorAnalyticsRequest" },
+    { "name": "admin_list_admins", "tier": "I" },
+    { "name": "admin_invite_admin", "tier": "I" },
+    { "name": "admin_update_admin", "tier": "I" },
+    { "name": "admin_disable_admin", "tier": "I" }
   ]
 }

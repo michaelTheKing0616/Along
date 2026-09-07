@@ -1,4 +1,6 @@
-import { AuditDrawer } from '@/components/along/AuditDrawer';
+import { ConsoleNav } from '@/components/along/ConsoleNav';
+import { fetchAuditLogPage } from '@/lib/supabase/server';
+import { AuditViewer } from './audit-viewer';
 
 interface PageProps {
   params: Promise<{ city: string }>;
@@ -6,14 +8,19 @@ interface PageProps {
 
 export default async function AuditPage({ params }: PageProps) {
   const { city } = await params;
+  const initialPage = await fetchAuditLogPage({});
 
   return (
     <>
       <div className="page-header">
         <h1>Audit log</h1>
-        <p>Recent admin actions — {city}</p>
+        <p>
+          Filterable, paginated admin actions for <strong>{city}</strong> — select a row to inspect
+          JSON before/after payloads.
+        </p>
       </div>
-      <AuditDrawer targetId="commission.rate" targetLabel="Sample entity" />
+      <ConsoleNav city={city} />
+      <AuditViewer citySlug={city} initialPage={initialPage} />
     </>
   );
 }
