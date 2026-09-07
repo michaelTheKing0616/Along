@@ -1084,9 +1084,9 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Merged 5890db0. Next: P5-B-01.
 
 ## [Phase 5 / P5-B-01] Rider SOS, report, share, account
-- Status: FAIL
+- Status: PASS WITH NOTES
 - Assigned: 2026-09-07
-- Worker report summary: R-23–R-26 + W-01 `/s/[token]`. Flutter 4/4 including 2G SOS gate; vitest 2/2. Playwright spec added not run.
-- Reviewer verdict: FAIL — (1) `url_launcher` 6.3.1 in pubspec without ADR; (2) FM20 hex/font-size in `share.css` and `layout.tsx`. Acceptance tests otherwise MET.
+- Worker report summary: R-23–R-26 + W-01 `/s/[token]`. Flutter 4/4 (2G SOS gate); vitest 2/2. Rework 1: ADR-0019 url_launcher 6.3.1; W-01 CSS tokens only.
+- Reviewer verdict: PASS WITH NOTES — prior ADR + FM20 FAIL fixed. SOS 2G ≤ 10 s MET. W-01 minimal data MET. Notes: Drift warnings; Playwright W-01 not independently run.
 - Rework count: 1
-- Notes/escalations: Rework 1/2 — ADR-0019 (or new ADR) for url_launcher; strip hex and raw font-size from W-01 CSS. Do not expand scope.
+- Notes/escalations: Merged 6db0e7a. Next: P5-B-02. P4-E-02 still human. Do not flip digital_enabled. Do not start Phase 7.
