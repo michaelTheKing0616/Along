@@ -1890,3 +1890,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P11-E-01 PASS. Attach 09 §2, 12 §5. AC: store review passes — artifacts + legal pages required; live store submission DEFERRED (not FAIL). Do not flip digital_enabled. Do not invent P8-E-01 PASS.
+
+## [Phase 12 / P12-E-02] Store readiness + W-03 legal
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: W-03 /legal/terms + /privacy; Play/App Store listings; store_rollout 10→50→100%; Fastlane stubs. Live submission DEFERRED.
+- Reviewer verdict: PASS WITH NOTES — AC MET for in-repo store review. Legal copy is product draft. P4-E-02 / P8-E-01 not invented PASS.
+- Rework count: 0
+- Notes/escalations: Merged 824a77d. All Phase 12 implementation tasks PASS. Issuing Phase 12 code gate. Then STOP.
+
+## [Phase 12 / Gate] Code gate (implementation-checkable)
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending gate Reviewer against master)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Spec §7 Phase 12: README local stack; config ref; store artifacts; W-03. Live store / legal counsel DEFERRED. Do not flip digital_enabled. After this gate: STOP. No further tasks.
