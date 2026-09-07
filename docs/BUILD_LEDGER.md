@@ -1170,3 +1170,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: FAIL — flutter test test/golden/ 126 pass / 6 fail (balance_card_*). Task goldens MET. along_core path dep made BalanceCard tests compile (they do not even load on master).
 - Rework count: 1
 - Notes/escalations: Rework 1/2 — regenerate BalanceCard goldens so full test/golden/ is 0 failures. Do not rewrite BalanceCard unless required. Do not claim full suite PASS until the command exits 0.
+
+## [Phase 5 / P5-E-01] along_design batch 3 goldens
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: NaMeScreen, StepList audio, LegTimeline full, HoldButton SOS; 13 task goldens + along_core path dep. Rework 1: regenerate 6 BalanceCard PNGs. Full golden suite 132/132.
+- Reviewer verdict: PASS WITH NOTES — prior FAIL fixed (132/132 independently). Note: along_core path dep formalizes existing import.
+- Rework count: 1
+- Notes/escalations: Merged c027b3b. All Phase 5 implementation tasks PASS. Issuing Phase 5 code gate. Do not start Phase 6 until gate recorded. P4-E-02 still human. Do not flip digital_enabled. Do not start Phase 7.
