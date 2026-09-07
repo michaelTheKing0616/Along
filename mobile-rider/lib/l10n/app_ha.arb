@@ -1,0 +1,12 @@
+{
+  "@@locale": "ha",
+  "navHome": "Gida",
+  "navTrips": "Tafiye-tafiye",
+  "navAccount": "Asusu",
+  "sponsoredLabel": "Tallafi",
+  "continueButton": "Ci gaba",
+  "skip": "Tsallake",
+  "accountCityLabel": "Birnin gida",
+  "accountCityHint": "Taswira da bincike suna amfani da wannan birni idan wuri bai samu ba",
+  "homeSearchHint": "Ina za a je?"
+}

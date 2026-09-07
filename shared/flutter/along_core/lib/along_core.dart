@@ -13,6 +13,7 @@ export 'src/errors/along_exception.dart';
 export 'src/formatting/duration_format.dart';
 export 'src/formatting/ledger_labels.dart';
 export 'src/formatting/money_format.dart';
+export 'src/formatting/money_formatter.dart';
 export 'src/geo/bearing.dart';
 export 'src/geo/distance.dart';
 export 'src/models/candidate.dart';

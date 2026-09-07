@@ -1,0 +1,12 @@
+{
+  "@@locale": "pcm",
+  "navHome": "Home",
+  "navTrips": "Trips dem",
+  "navAccount": "Account",
+  "sponsoredLabel": "Sponsor",
+  "continueButton": "Continue",
+  "skip": "Skip am",
+  "accountCityLabel": "Home city",
+  "accountCityHint": "Map and search go use dis city if location no dey",
+  "homeSearchHint": "Where you dey go?"
+}

@@ -43,9 +43,13 @@ class FakeAlongSupabase implements AlongSupabase {
     this.parseItineraryResponse,
     this.sponsoredPlacementsResponse = const [],
     this.corridorRows = const [],
+    Map<String, dynamic>? countryRow,
+    Map<String, dynamic>? deploymentRow,
     FakeNegotiationEngine? negotiationEngine,
   })  : cityRows = cityRows ?? defaultCityRows(),
         cityCentroids = cityCentroids ?? defaultCityCentroids(),
+        countryRow = countryRow ?? defaultCountryRow(),
+        deploymentRow = deploymentRow ?? defaultDeploymentRow(),
         negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
   final String otpCode;
@@ -86,6 +90,9 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? parseItineraryResponse;
   List<Map<String, dynamic>> sponsoredPlacementsResponse;
   List<Map<String, dynamic>> corridorRows;
+
+  final Map<String, dynamic> countryRow;
+  final Map<String, dynamic> deploymentRow;
 
   final FakeNegotiationEngine negotiationEngine;
 
@@ -651,6 +658,23 @@ class FakeAlongSupabase implements AlongSupabase {
           })
           .toList(growable: false);
     }
+    if (table == 'countries') {
+      final code = filters['code'];
+      if (code != null && countryRow['code'] == code) {
+        return [countryRow];
+      }
+      if (filters['active'] == true) {
+        return [countryRow];
+      }
+      return [];
+    }
+    if (table == 'deployments') {
+      final id = filters['id'];
+      if (id != null && deploymentRow['id'] == id) {
+        return [deploymentRow];
+      }
+      return [];
+    }
     if (table != 'app_config') return [];
     final key = filters['key'];
     return configRows
@@ -824,6 +848,30 @@ List<Map<String, dynamic>> sampleSavedPaymentMethods() => [
         'is_default': true,
       },
     ];
+
+/// Default NG country + Along NG deployment for catalog/branding tests.
+Map<String, dynamic> defaultCountryRow() => {
+      'code': 'NG',
+      'name': 'Nigeria',
+      'currency_code': 'NGN',
+      'currency_minor_units': 2,
+      'currency_symbol': '₦',
+      'phone_prefix': '+234',
+      'default_locale': 'en-NG',
+      'timezone': 'Africa/Lagos',
+      'deployment_id': 'a0000000-0000-4000-8000-000000000001',
+      'verification_schema': const [],
+      'regulatory_flags': const {'plate_pattern': r'^[A-Za-z]{3}[-\s]?\d{3}[A-Za-z]{2}$'},
+      'active': true,
+    };
+
+Map<String, dynamic> defaultDeploymentRow() => {
+      'id': 'a0000000-0000-4000-8000-000000000001',
+      'tenant_name': 'Along NG',
+      'branding_config': const {},
+      'region_config': const {},
+      'active': true,
+    };
 
 /// Default `load.warn_capacities` + `mode_config` rows for FM36 tests.
 List<Map<String, dynamic>> defaultCityRows() => [

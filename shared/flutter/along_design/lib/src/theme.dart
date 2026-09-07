@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
+import 'branding/branding_overrides.dart';
 import 'tokens.g.dart';
 
 /// Material 3 theme wired to generated Along tokens (doc 05 §10).
 ///
 /// Does not use [ColorScheme.fromSeed] — explicit ink/yellow palette per ADR-0005.
-ThemeData alongTheme() {
-  const colorScheme = ColorScheme(
+/// [branding] applies `deployments.branding_config` token overrides only.
+ThemeData alongTheme({BrandingOverrides branding = BrandingOverrides.empty}) {
+  final resolved = AlongBranding.fromOverrides(branding);
+  final colorScheme = ColorScheme(
     brightness: Brightness.light,
     primary: AlongColors.ink900,
     onPrimary: AlongColors.surface0,
-    secondary: AlongColors.brandYellow,
-    onSecondary: AlongColors.brandYellowOn,
+    secondary: resolved.brandYellow,
+    onSecondary: resolved.brandYellowOn,
     error: AlongColors.semanticDangerFill,
     onError: AlongColors.surface0,
     surface: AlongColors.surface0,
@@ -65,6 +68,7 @@ ThemeData alongTheme() {
         TargetPlatform.iOS: _AlongAxisPageTransitionsBuilder(),
       },
     ),
+    extensions: [resolved],
   );
 }
 

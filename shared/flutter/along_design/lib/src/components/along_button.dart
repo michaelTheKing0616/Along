@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../branding/branding_overrides.dart';
 import '../tokens.g.dart';
 
 /// Visual button variants (doc 05 §9 `AlongButton`).
@@ -43,7 +44,8 @@ class AlongButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _styleForVariant();
+    final branding = alongBrandingOf(context);
+    final style = _styleForVariant(branding);
     final child = _isLoading
         ? SizedBox(
             width: AlongSpace.s24,
@@ -86,7 +88,7 @@ class AlongButton extends StatelessWidget {
               child: IgnorePointer(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: _pressedOverlay(style.backgroundColor),
+                    color: _pressedOverlay(style.backgroundColor, branding),
                     borderRadius: BorderRadius.circular(AlongRadius.sm.x),
                   ),
                 ),
@@ -97,14 +99,14 @@ class AlongButton extends StatelessWidget {
     );
   }
 
-  Color _pressedOverlay(Color base) {
+  Color _pressedOverlay(Color base, AlongBranding branding) {
     if (variant == AlongButtonVariant.yellow) {
-      return AlongColors.brandYellowPressed.withValues(alpha: 0.35);
+      return branding.brandYellowPressed.withValues(alpha: 0.35);
     }
     return AlongColors.ink900.withValues(alpha: 0.08);
   }
 
-  _ButtonStyle _styleForVariant() {
+  _ButtonStyle _styleForVariant(AlongBranding branding) {
     return switch (variant) {
       AlongButtonVariant.primary => _ButtonStyle(
           backgroundColor: AlongColors.ink900,
@@ -124,8 +126,8 @@ class AlongButton extends StatelessWidget {
           foregroundColor: AlongColors.surface0,
         ),
       AlongButtonVariant.yellow => _ButtonStyle(
-          backgroundColor: AlongColors.brandYellow,
-          foregroundColor: AlongColors.brandYellowOn,
+          backgroundColor: branding.brandYellow,
+          foregroundColor: branding.brandYellowOn,
         ),
     };
   }

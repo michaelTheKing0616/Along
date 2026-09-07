@@ -1,6 +1,20 @@
 import 'package:along_core/src/value/money.dart';
 import 'package:intl/intl.dart';
 
+/// Formats [money] using an explicit [currencySymbol] from `countries`.
+String formatMoneyWithMeta(
+  Money money, {
+  required String currencySymbol,
+  String locale = 'en_NG',
+  bool showDecimals = false,
+}) =>
+    formatMoney(
+      money,
+      locale: locale,
+      showDecimals: showDecimals,
+      currencySymbol: currencySymbol,
+    );
+
 /// Formats [money] for display (e.g. `₦450`).
 String formatMoney(
   Money money, {

@@ -1,6 +1,5 @@
 import 'package:along_core/along_core.dart';
-import 'package:along_design/along_design.dart' hide formatMoney;
-import 'package:along_design/along_design.dart' as design show formatMoney;
+import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/placements/presentation/placement_providers.dart';
 import 'package:mobile_rider/features/placements/presentation/sponsored_placement_slot.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -62,7 +62,7 @@ class TripsHistoryScreen extends ConsumerWidget {
                     key: Key('trip_history_${entry.tripId}'),
                     title: Text(entry.routeLabel),
                     subtitle: Text(
-                      '${DateFormat.jm().format(entry.completedAt)} · ${design.formatMoney(entry.totalFare.minorUnits ~/ 100)}',
+                      '${DateFormat.jm().format(entry.completedAt)} · ${formatAppMoney(ref, entry.totalFare)}',
                     ),
                     leading: ModeChip(
                       mode: designMode(entry.modeCode),

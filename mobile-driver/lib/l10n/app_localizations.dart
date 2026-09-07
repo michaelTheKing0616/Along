@@ -6,6 +6,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_ha.dart';
+import 'app_localizations_ig.dart';
+import 'app_localizations_pcm.dart';
+import 'app_localizations_yo.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +96,13 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ha'),
+    Locale('ig'),
+    Locale('pcm'),
+    Locale('yo'),
+  ];
 
   /// D-01–D-03 driver auth branding
   ///
@@ -1984,7 +1994,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'ha', 'ig', 'pcm', 'yo'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1995,6 +2005,14 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'ha':
+      return AppLocalizationsHa();
+    case 'ig':
+      return AppLocalizationsIg();
+    case 'pcm':
+      return AppLocalizationsPcm();
+    case 'yo':
+      return AppLocalizationsYo();
   }
 
   throw FlutterError(

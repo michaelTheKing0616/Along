@@ -1,0 +1,12 @@
+{
+  "@@locale": "yo",
+  "navHome": "Ilé",
+  "navTrips": "Irìn-àjò",
+  "navAccount": "Àkọọlẹ",
+  "sponsoredLabel": "Atìlẹyin",
+  "continueButton": "Tẹ̀síwájú",
+  "skip": "Fò",
+  "accountCityLabel": "Ìlú ilé",
+  "accountCityHint": "Maapu àti wíwá n lo ìlú yìí nígbà tí a kò leè rí ibùdó",
+  "homeSearchHint": "Níbo ni a ó lọ?"
+}

@@ -1,12 +1,12 @@
-import 'package:along_core/along_core.dart' show FareTier, Money, TripReceipt, TripSummary, formatMoney;
-import 'package:along_design/along_design.dart' hide FareTier, formatMoney;
-import 'package:along_design/along_design.dart' as design show formatMoney;
+import 'package:along_core/along_core.dart' show FareTier, Money, TripReceipt, TripSummary;
+import 'package:along_design/along_design.dart' hide FareTier;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
 /// R-17 Trip complete — fare confirm + rating (2-tap default path).
@@ -123,7 +123,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
               Text(
                 _isTier3
                     ? l10n.tripCompleteTier3Question
-                    : l10n.tripCompletePaidQuestion(formatMoney(widget.trip.totalFare)),
+                    : l10n.tripCompletePaidQuestion(formatAppMoney(ref, widget.trip.totalFare)),
                 style: AlongText.heading2,
               ),
               const SizedBox(height: AlongSpace.s16),
@@ -144,7 +144,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                       .map(
                         (amount) => _AmountChip(
                           key: Key('trip_complete_chip_$amount'),
-                          label: design.formatMoney(amount),
+                          label: formatAppMoneyMajor(ref, amount),
                           onTap: _busy ? null : () => _confirmDifferent(amount),
                         ),
                       )
@@ -170,7 +170,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                 children: fareConfirmChipAmounts(_fareNaira)
                     .map(
                       (amount) => _AmountChip(
-                        label: design.formatMoney(amount),
+                        label: formatAppMoneyMajor(ref, amount),
                         onTap: _busy ? null : () => _confirmDifferent(amount),
                       ),
                     )
@@ -221,7 +221,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
               const SizedBox(height: AlongSpace.s8),
               AlongButton(
                 key: const Key('trip_complete_pay'),
-                label: l10n.payDriverCta(formatMoney(widget.trip.totalFare)),
+                label: l10n.payDriverCta(formatAppMoney(ref, widget.trip.totalFare)),
                 variant: AlongButtonVariant.yellow,
                 onPressed: () => PayDriverSheet.show(
                   context,
