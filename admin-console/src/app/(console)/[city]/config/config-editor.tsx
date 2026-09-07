@@ -181,6 +181,8 @@ export function ConfigEditor({
             action: 'update',
             target_type: 'app_config',
             target_id: `${selectedKey}:${scopeTab}:${scopeId}`,
+            before: null,
+            after: null,
             created_at: new Date().toISOString(),
           },
           ...rows,
