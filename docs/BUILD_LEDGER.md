@@ -1666,3 +1666,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P9-A-01 PASS. Attach 13, runbooks. AC: zero bespoke code. Document deltas as tooling fixes. Do not flip digital_enabled.
+
+## [Phase 9 / P9-E-01] Second Nigerian city via tooling
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: admin_create_city + import:city CLI; Kaduna-Pilot fixture; TS-CITY-01 5/5; vitest 5/5.
+- Reviewer verdict: PASS — AC MET. Zero bespoke city code. A-08 city-create UI deferred (non-blocking).
+- Rework count: 0
+- Notes/escalations: Merged 28d2d66. Next: P9-B-01 / P9-C-01. Do not flip digital_enabled.
+
+## [Phase 9 / P9-B-01] Apps city switching + tiles + l10n
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Combined P9-B-01 / P9-C-01. Depends P9-A-01 PASS. Attach 07 §10. AC: golden with alternate city data. Also close P9-A-01 DEFERRED hardcodes that belong here (PhoneField default, unauthorized /abuja link). Do not flip digital_enabled.
