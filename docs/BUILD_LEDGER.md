@@ -1266,3 +1266,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: FAIL — AC MET (grep). Gate FAIL: fetchAuditLogPage hardcodes page size 50 instead of cfg_num('audit.page_size').
 - Rework count: 1
 - Notes/escalations: Rework 2/2 — wire audit.page_size in fetchAuditLogPage. Nothing else.
+
+## [Phase 6 / P6-D-04] A-16 Audit log + A-17 Admin users
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: A-16/A-17 + 00058 RPCs; coverage 21/7 GAP. Rework 2: cfg_num audit.page_size.
+- Reviewer verdict: PASS WITH NOTES — prior FAIL fixed. AC MET. Notes: ?? 50 fallback; clamp min vs schema min 10; 7 gaps for P6-A-01.
+- Rework count: 2
+- Notes/escalations: Merged 43a4376. Next: P6-A-01. Absorb dump_policies app_config_keys + remaining audit triggers. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 6 / P6-A-01] Audit coverage + admin_set_config validation
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P4-A-07 PASS. pgTAP: audit coverage = doc 02 §15 list. Run dump_policies.sh for app_config_keys. Do not redo A-16/A-17 UI.
