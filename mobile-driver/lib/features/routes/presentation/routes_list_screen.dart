@@ -183,5 +183,6 @@ class RoutesListScreen extends ConsumerWidget {
 
 final _modeLabelsProvider = FutureProvider<Map<String, String>>((ref) async {
   final modes = await ref.read(catalogRepositoryProvider).modeConfigs();
-  return {for (final mode in modes) mode.code: mode.label};
+  const locale = 'en-NG';
+  return {for (final mode in modes) mode.code: mode.displayLabel(locale)};
 });

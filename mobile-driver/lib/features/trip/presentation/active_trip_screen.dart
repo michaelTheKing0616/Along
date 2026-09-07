@@ -82,7 +82,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
               key: const Key('active_trip_map'),
               styleUrl: appConfig.tilesBaseUrl == null
                   ? null
-                  : '${appConfig.tilesBaseUrl}/styles/along-light.json',
+                  : AlongStyleLoader(tilesBase: appConfig.tilesBaseUrl!)
+                      .remoteStyleUrl(citySlug: home.citySlug),
               initialCameraPosition: home.mapCenter == null
                   ? null
                   : MapCamera.forCenter(

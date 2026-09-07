@@ -49,7 +49,8 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
               key: const Key('draw_route_map'),
               styleUrl: config.tilesBaseUrl == null
                   ? null
-                  : '${config.tilesBaseUrl}/styles/along-light.json',
+                  : AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
+                      .remoteStyleUrl(citySlug: home.citySlug),
               initialCameraPosition: home.mapCenter == null
                   ? null
                   : MapCamera.forCenter(

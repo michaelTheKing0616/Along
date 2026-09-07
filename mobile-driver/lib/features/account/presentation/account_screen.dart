@@ -146,6 +146,32 @@ class AccountScreen extends ConsumerWidget {
               const SizedBox(height: AlongSpace.s24),
               Text(l10n.accountPreferencesHeading, style: AlongText.overline),
               const SizedBox(height: AlongSpace.s8),
+              if (state.cities.isNotEmpty) ...[
+                Text(l10n.accountCityLabel, style: AlongText.bodyStrong),
+                const SizedBox(height: AlongSpace.s8),
+                DropdownButtonFormField<String>(
+                  key: const Key('account_city_dropdown'),
+                  value: state.cityId,
+                  decoration: InputDecoration(
+                    hintText: l10n.accountCityHint,
+                  ),
+                  items: state.cities
+                      .map(
+                        (city) => DropdownMenuItem(
+                          value: city.id,
+                          child: Text(city.name),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (cityId) async {
+                    if (cityId == null) return;
+                    await ref
+                        .read(accountControllerProvider.notifier)
+                        .switchCity(cityId);
+                  },
+                ),
+                const SizedBox(height: AlongSpace.s16),
+              ],
               ListTile(
                 key: const Key('account_language_tile'),
                 contentPadding: EdgeInsets.zero,

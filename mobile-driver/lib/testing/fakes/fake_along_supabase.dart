@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -32,6 +33,8 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Map<String, dynamic>>? digitalPayments,
     this.raiseSosDelay = Duration.zero,
     this.raiseSosResponse,
+    Map<String, GeoPoint>? cityCentroids,
+    String? driverCityId,
   })  : cities = cities ?? defaultTestCities(),
         modes = modes ?? defaultTestModes(),
         countryConfig = countryConfig ?? defaultTestCountry(),
@@ -46,7 +49,9 @@ class FakeAlongSupabase implements AlongSupabase {
         nearbySettlementAgents = nearbySettlementAgents ??
             defaultNearbySettlementAgents(),
         qrStickerRequests = qrStickerRequests ?? [],
-        digitalPayments = digitalPayments ?? [] {
+        digitalPayments = digitalPayments ?? [],
+        cityCentroids = cityCentroids ?? defaultCityCentroids(),
+        driverCityId = driverCityId ?? 'b1000000-0000-4000-8000-000000000001' {
     if (signedInUser != null) {
       _user = signedInUser;
     } else {
@@ -133,6 +138,9 @@ class FakeAlongSupabase implements AlongSupabase {
   String? publicOrigin;
   List<Map<String, dynamic>> qrStickerRequests;
   List<Map<String, dynamic>> digitalPayments;
+  Map<String, GeoPoint> cityCentroids;
+  String driverCityId;
+  final List<(String fn, Map<String, dynamic> params)> rpcCalls = [];
   final Map<String, Map<String, dynamic>> paymentRequestsByTrip = {};
 
   static List<Map<String, dynamic>> defaultNearbySettlementAgents() => [
@@ -194,6 +202,21 @@ class FakeAlongSupabase implements AlongSupabase {
     String fn, {
     Map<String, dynamic>? params,
   }) async {
+    final p = params ?? {};
+    rpcCalls.add((fn, Map<String, dynamic>.from(p)));
+    if (fn == 'set_driver_city') {
+      final nextCityId = p['p_city_id'] as String?;
+      if (nextCityId != null) {
+        driverCityId = nextCityId;
+      }
+      return {};
+    }
+    if (fn == 'city_centroid') {
+      final id = p['p_city_id'] as String? ?? driverCityId;
+      final centroid = cityCentroids[id];
+      if (centroid == null) return {};
+      return {'lat': centroid.lat, 'lng': centroid.lng};
+    }
     if (fn == 'start_driver_onboarding') {
       onStartDriverOnboarding?.call(params ?? {});
       return {};
@@ -654,6 +677,10 @@ class FakeAlongSupabase implements AlongSupabase {
             .where((row) => inValues.contains(row['status']))
             .toList(growable: false);
       }
+      final id = filters['id'];
+      if (id != null) {
+        return cities.where((row) => row['id'] == id).toList(growable: false);
+      }
       return cities;
     }
     if (table == 'mode_config') return modes;
@@ -872,7 +899,7 @@ class FakeAlongSupabase implements AlongSupabase {
         {
           'id': _user?.id ?? 'test-driver-id',
           'verified_status': 'verified',
-          'city_id': 'b1000000-0000-4000-8000-000000000001',
+          'city_id': driverCityId,
           'standing': 'good_standing',
           'driver_code': driverCode,
           'accepts_digital': acceptsDigital,
@@ -1028,7 +1055,21 @@ List<Map<String, dynamic>> defaultTestCities() => [
         'country_code': 'NG',
         'status': 'live',
       },
+      {
+        'id': '0a000000-0000-4000-8000-000000000001',
+        'name': 'Zaria-Test',
+        'slug': 'zaria-test',
+        'country_code': 'NG',
+        'status': 'live',
+      },
     ];
+
+Map<String, GeoPoint> defaultCityCentroids() => {
+      'b1000000-0000-4000-8000-000000000001':
+          const GeoPoint(lat: 9.057, lng: 7.495),
+      '0a000000-0000-4000-8000-000000000001':
+          const GeoPoint(lat: 11.066, lng: 7.702),
+    };
 
 List<Map<String, dynamic>> defaultTestModes() => [
       {

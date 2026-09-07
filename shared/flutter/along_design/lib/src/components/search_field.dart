@@ -71,13 +71,13 @@ class SearchField extends StatelessWidget {
   }
 }
 
-/// Phone number field with +234 prefix (doc 05 §9 `PhoneField`).
+/// Phone number field with country dial prefix (doc 05 §9 `PhoneField`).
 class PhoneField extends StatelessWidget {
   const PhoneField({
     super.key,
+    required this.countryCode,
     this.controller,
     this.errorText,
-    this.countryCode = '+234',
     this.onChanged,
   });
 

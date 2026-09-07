@@ -36,6 +36,8 @@ class DriverHomeState {
     this.isBusy = false,
     this.errorMessage,
     this.cityId,
+    this.citySlug,
+    this.cityName,
     this.mapCenter,
     this.movingPingIntervalS = 4,
     this.stillPingIntervalS = 15,
@@ -57,6 +59,8 @@ class DriverHomeState {
   final bool isBusy;
   final String? errorMessage;
   final String? cityId;
+  final String? citySlug;
+  final String? cityName;
   final GeoPoint? mapCenter;
   final int movingPingIntervalS;
   final int stillPingIntervalS;
@@ -86,6 +90,8 @@ class DriverHomeState {
     bool? isBusy,
     String? errorMessage,
     String? cityId,
+    String? citySlug,
+    String? cityName,
     GeoPoint? mapCenter,
     int? movingPingIntervalS,
     int? stillPingIntervalS,
@@ -109,6 +115,8 @@ class DriverHomeState {
       isBusy: isBusy ?? this.isBusy,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       cityId: cityId ?? this.cityId,
+      citySlug: citySlug ?? this.citySlug,
+      cityName: cityName ?? this.cityName,
       mapCenter: mapCenter ?? this.mapCenter,
       movingPingIntervalS: movingPingIntervalS ?? this.movingPingIntervalS,
       stillPingIntervalS: stillPingIntervalS ?? this.stillPingIntervalS,
@@ -157,6 +165,38 @@ class DriverHomeController extends Notifier<DriverHomeState> {
     );
   }
 
+  Future<void> switchCity(String cityId) async {
+    if (state.isOnline) {
+      await setStatus(DriverStatus.offline);
+    }
+
+    await ref.read(driverRepositoryProvider).setDriverCity(cityId);
+
+    final places = ref.read(placesRepositoryProvider);
+    final centroid = await places.cityCentroidForId(cityId);
+    final slug = await places.citySlugForId(cityId);
+    final cities = await ref.read(catalogRepositoryProvider).activeCities();
+    final cityName = cities
+        .where((city) => city.id == cityId)
+        .map((city) => city.name)
+        .firstOrNull;
+
+    state = state.copyWith(
+      cityId: cityId,
+      citySlug: slug,
+      cityName: cityName,
+      mapCenter: centroid ?? state.mapCenter,
+      demandCells: const [],
+      demandLabels: const [],
+      clearPark: true,
+    );
+
+    final location = state.userLocation ?? centroid;
+    if (location != null && state.isOnline) {
+      await _refreshDemand(location);
+    }
+  }
+
   Future<void> _loadProfile() async {
     final user = ref.read(authRepositoryProvider).currentUser;
     if (user == null) return;
@@ -165,14 +205,26 @@ class DriverHomeController extends Notifier<DriverHomeState> {
         await ref.read(driverRepositoryProvider).fetchDriverProfile(user.id);
     if (profile == null) return;
 
+    if (profile.cityId == null) return;
+
     final centroid = await ref
         .read(placesRepositoryProvider)
-        .cityCentroidForId(profile.cityId);
+        .cityCentroidForId(profile.cityId!);
+    final slug = await ref
+        .read(placesRepositoryProvider)
+        .citySlugForId(profile.cityId!);
+    final cities = await ref.read(catalogRepositoryProvider).activeCities();
+    final cityName = cities
+        .where((city) => city.id == profile.cityId)
+        .map((city) => city.name)
+        .firstOrNull;
 
     state = state.copyWith(
       isVerified: profile.isVerified,
       ledgerBlocked: profile.isLedgerBlocked,
       cityId: profile.cityId,
+      citySlug: slug,
+      cityName: cityName,
       mapCenter: centroid,
     );
     await ref.read(driverLedgerControllerProvider.notifier).refresh();

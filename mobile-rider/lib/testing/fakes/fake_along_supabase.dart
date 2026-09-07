@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_data/src/placements/placements_repository.dart';
 import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
@@ -36,12 +37,16 @@ class FakeAlongSupabase implements AlongSupabase {
     this.profileRow,
     this.riderRow,
     this.cityRegulatoryFlags = const {'women_only_matching': true},
+    List<Map<String, dynamic>>? cityRows,
+    Map<String, GeoPoint>? cityCentroids,
     this.itineraryStateResponse,
     this.parseItineraryResponse,
     this.sponsoredPlacementsResponse = const [],
     this.corridorRows = const [],
     FakeNegotiationEngine? negotiationEngine,
-  }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
+  })  : cityRows = cityRows ?? defaultCityRows(),
+        cityCentroids = cityCentroids ?? defaultCityCentroids(),
+        negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
   final String otpCode;
   void Function(String phone)? onRequestOtp;
@@ -75,6 +80,8 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? profileRow;
   Map<String, dynamic>? riderRow;
   Map<String, dynamic> cityRegulatoryFlags;
+  List<Map<String, dynamic>> cityRows;
+  Map<String, GeoPoint> cityCentroids;
   Map<String, dynamic>? itineraryStateResponse;
   Map<String, dynamic>? parseItineraryResponse;
   List<Map<String, dynamic>> sponsoredPlacementsResponse;
@@ -338,6 +345,22 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       return {};
     }
+    if (fn == 'set_home_city') {
+      final nextCityId = params?['p_city_id'] as String?;
+      if (nextCityId != null) {
+        cityId = nextCityId;
+        if (riderRow != null) {
+          riderRow = {...riderRow!, 'home_city_id': nextCityId};
+        }
+      }
+      return {};
+    }
+    if (fn == 'city_centroid') {
+      final id = params?['p_city_id'] as String? ?? cityId;
+      final centroid = cityCentroids[id];
+      if (centroid == null) return {};
+      return {'lat': centroid.lat, 'lng': centroid.lng};
+    }
     if (fn == 'create_itinerary') {
       createItineraryInvokeCount++;
       lastCreateItineraryParams = params;
@@ -501,17 +524,23 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Object?>? inValues,
   }) async {
     if (table == 'cities') {
-      final id = filters['id'];
-      if (id == cityId) {
-        return [
-          {
-            'id': cityId,
-            'slug': citySlug ?? 'abuja',
-            'regulatory_flags': cityRegulatoryFlags,
-          },
-        ];
+      if (inColumn == 'status' && inValues != null) {
+        return cityRows
+            .where((row) => inValues.contains(row['status']))
+            .toList(growable: false);
       }
-      return [];
+      final id = filters['id'];
+      final slug = filters['slug'];
+      if (id != null) {
+        return cityRows.where((row) => row['id'] == id).toList(growable: false);
+      }
+      if (slug != null) {
+        return cityRows.where((row) => row['slug'] == slug).toList(growable: false);
+      }
+      if (cityId != null) {
+        return cityRows.where((row) => row['id'] == cityId).toList(growable: false);
+      }
+      return cityRows;
     }
     if (table == 'profiles') {
       final id = filters['id'];
@@ -797,6 +826,32 @@ List<Map<String, dynamic>> sampleSavedPaymentMethods() => [
     ];
 
 /// Default `load.warn_capacities` + `mode_config` rows for FM36 tests.
+List<Map<String, dynamic>> defaultCityRows() => [
+      {
+        'id': 'b1000000-0000-4000-8000-000000000001',
+        'name': 'Abuja',
+        'slug': 'abuja',
+        'country_code': 'NG',
+        'status': 'live',
+        'regulatory_flags': {'women_only_matching': true},
+      },
+      {
+        'id': '0a000000-0000-4000-8000-000000000001',
+        'name': 'Zaria-Test',
+        'slug': 'zaria-test',
+        'country_code': 'NG',
+        'status': 'live',
+        'regulatory_flags': const {},
+      },
+    ];
+
+Map<String, GeoPoint> defaultCityCentroids() => {
+      'b1000000-0000-4000-8000-000000000001':
+          const GeoPoint(lat: 9.057, lng: 7.495),
+      '0a000000-0000-4000-8000-000000000001':
+          const GeoPoint(lat: 11.066, lng: 7.702),
+    };
+
 List<Map<String, dynamic>> defaultLoadWarningConfigRows() => [
       {
         'key': 'load.warn_capacities',

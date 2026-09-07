@@ -122,7 +122,7 @@ class _NearbyRowHarness extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const row = NearbyAmbientRow(
-      modeLabelKey: 'mode_keke',
+      modeLabel: 'Keke',
       countBucket: '3-5',
       headingLabel: 'NE',
       etaMinutes: 3,

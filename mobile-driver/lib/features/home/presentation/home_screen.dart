@@ -77,7 +77,8 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
               key: const Key('driver_home_map'),
               styleUrl: config.tilesBaseUrl == null
                   ? null
-                  : '${config.tilesBaseUrl}/styles/along-light.json',
+                  : AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
+                      .remoteStyleUrl(citySlug: state.citySlug),
               offlineStyleJson: config.tilesBaseUrl == null
                   ? ref.watch(driverHomeOfflineStyleProvider).maybeWhen(
                         data: (value) => value,

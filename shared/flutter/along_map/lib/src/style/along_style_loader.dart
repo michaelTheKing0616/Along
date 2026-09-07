@@ -17,7 +17,14 @@ class AlongStyleLoader {
   final String? glyphsUrl;
 
   /// Default remote style URL (doc 07 §7).
-  String get remoteStyleUrl => '$tilesBase/styles/along-light.json';
+  ///
+  /// [TILES_BASE] is deployment-wide; [citySlug] scopes CDN cache keys and style
+  /// query so per-city PMTiles archives do not collide in the tile cache.
+  String remoteStyleUrl({String? citySlug}) {
+    final base = '$tilesBase/styles/along-light.json';
+    if (citySlug == null || citySlug.isEmpty) return base;
+    return '$base?city=$citySlug';
+  }
 
   /// Resolves placeholders in a style JSON string for the given PMTiles location.
   ///

@@ -74,7 +74,7 @@ class _AlongMapState extends State<AlongMap> {
   Widget build(BuildContext context) {
     final styleString = widget.offlineStyleJson ??
         widget.styleUrl ??
-        const AlongStyleLoader().remoteStyleUrl;
+        const AlongStyleLoader().remoteStyleUrl();
 
     return MapLibreMap(
       styleString: styleString,

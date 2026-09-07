@@ -95,6 +95,17 @@ class RiderProfileRepository {
     }
   }
 
+  Future<void> setHomeCity(String cityId) async {
+    try {
+      await _gateway.rpc(
+        'set_home_city',
+        params: dto.SetHomeCityRequest(p_city_id: cityId).toJson(),
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
   SortCriterion? _parseSort(String? raw) => switch (raw) {
         'cheapest' => SortCriterion.cheapest,
         'fastest' => SortCriterion.fastest,

@@ -1369,6 +1369,18 @@ abstract class AppLocalizations {
   /// **'PREFERENCES'**
   String get accountPreferencesHeading;
 
+  /// R-26 city switcher label
+  ///
+  /// In en, this message translates to:
+  /// **'Home city'**
+  String get accountCityLabel;
+
+  /// R-26 city switcher hint
+  ///
+  /// In en, this message translates to:
+  /// **'Map and search default to this city when location is unavailable'**
+  String get accountCityHint;
+
   /// No description provided for @accountPaymentHeading.
   ///
   /// In en, this message translates to:

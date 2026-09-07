@@ -57,6 +57,17 @@ class DriverRepository {
       throw mapSupabaseError(e);
     }
   }
+
+  Future<void> setDriverCity(String cityId) async {
+    try {
+      await _gateway.rpc(
+        'set_driver_city',
+        params: SetDriverCityRequest(p_city_id: cityId).toJson(),
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
 }
 
 class DriverProfileSnapshot {

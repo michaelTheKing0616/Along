@@ -699,6 +699,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountPreferencesHeading => 'PREFERENCES';
 
   @override
+  String get accountCityLabel => 'Operating city';
+
+  @override
+  String get accountCityHint => 'Map, parks, and demand use this city';
+
+  @override
   String get accountLanguage => 'Language';
 
   @override
