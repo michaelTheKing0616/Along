@@ -1682,3 +1682,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Combined P9-B-01 / P9-C-01. Depends P9-A-01 PASS. Attach 07 §10. AC: golden with alternate city data. Also close P9-A-01 DEFERRED hardcodes that belong here (PhoneField default, unauthorized /abuja link). Do not flip digital_enabled.
+
+## [Phase 9 / P9-B-01] Apps city switching + tiles + l10n
+- Status: PASS
+- Assigned: 2026-09-07
+- Worker report summary: set_home_city / set_driver_city; per-city tiles; label_i18n; Flutter + pgTAP 4/4 after rework.
+- Reviewer verdict: PASS — AC MET after rework 1. Prior FAIL: SQL fixtures + two unscoped driver map URLs — fixed.
+- Rework count: 1
+- Notes/escalations: Merged 7900348. Combined P9-C-01. Next: P9-E-02. Do not flip digital_enabled.
+
+## [Phase 9 / P9-E-02] Observability & backups
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-E-02 PASS. Attach 09 §3, §8. AC: drill executed and recorded. Local dump/restore + TS-OPS-01 required. Live scratch-project / PagerDuty DEFERRED (not FAIL). Do not flip digital_enabled.
