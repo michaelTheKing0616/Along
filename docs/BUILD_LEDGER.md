@@ -1202,3 +1202,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P4-A-06 PASS. admin_corridor_analytics missing — implement here, bounded/paginated, conversion metric review-not-punish (FM13). No live map (P6-D-02).
+
+## [Phase 6 / P6-D-01] A-02 Ops dashboard + A-15 Corridor analytics
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00055 admin_corridor_analytics (bounded, conversion diagnostic_only). A-02 KPI tiles; A-15 series/gaps table/CSV. pgTAP 11/11; Vitest 25/25.
+- Reviewer verdict: PASS WITH NOTES — AC MET independently. Notes: city-wide fare-discrepancy tile null when multi-corridor; coverage gaps table not map (P6-D-02).
+- Rework count: 0
+- Notes/escalations: Merged a299038. Next: P6-D-02. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 6 / P6-D-02] A-03 Live map
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P3-A-03 PASS. Precise positions admin-role only (RLS). FM19 vector tiles. FM21 no leak to non-admin. No Phase 5 redo.
