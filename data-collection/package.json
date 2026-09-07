@@ -10,6 +10,7 @@
     "build:forms": "node --experimental-strip-types scripts/build_forms.ts",
     "export:choices": "node --experimental-strip-types scripts/export_choices.ts",
     "ingest": "node --experimental-strip-types scripts/ingest.ts",
+    "import:corridor": "node --experimental-strip-types scripts/import_corridor.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

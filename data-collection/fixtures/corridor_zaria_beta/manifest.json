@@ -1,0 +1,8 @@
+{
+  "corridor": {
+    "name": "Test Corridor Beta",
+    "slug": "test-corridor-beta"
+  },
+  "target_city_slug": "zaria-test",
+  "description": "Fictional second corridor for Zaria-Test (doc 13 §6). Not an FCT corridor. Data/config only — applied via import_corridor CLI or A-08 corridor bundle."
+}
