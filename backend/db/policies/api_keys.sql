@@ -10,4 +10,4 @@ create policy api_keys_no_client_write
 
 create policy api_keys_select_admin
   on api_keys for select to authenticated
-  using (has_admin_role(ARRAY['superadmin'::text, 'ops_lead'::text, 'analyst'::text]));
+  using (has_admin_role(ARRAY['superadmin'::text, 'finance'::text, 'ops_lead'::text, 'analyst'::text]));
