@@ -1746,3 +1746,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P10-A-01 PASS. Attach 06 A-18. AC: Playwright add hypothetical country config without code. Write specs; admin-console-down is not FAIL. Do not flip digital_enabled.
+
+## [Phase 10 / P10-D-01] A-18 Markets & portability
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: A-18 /[city]/markets; migration 00078; vitest 7/7; Playwright written + skipped.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Note: 00078 missing revoke-from-public (authenticated-only grant).
+- Rework count: 0
+- Notes/escalations: Merged 2dc173f. Next: P10-B-01 / P10-C-01. Do not flip digital_enabled.
+
+## [Phase 10 / P10-B-01] Tenant branding + locale packs
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Combined P10-B-01 / P10-C-01. Depends P10-A-01 PASS. Attach 07 §10, 05. AC: goldens per locale; white-label dry run screenshots. Token overrides only. Do not flip digital_enabled.
