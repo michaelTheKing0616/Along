@@ -1346,3 +1346,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P6-D-03 PASS. Attach 13 + 06 A-08. AC: new corridor with zero code changes (data/config only). Do not redo graph/config editors. Do not absorb Phase 6 residuals. Do not flip digital_enabled.
+
+## [Phase 7 / P7-E-01] Corridor onboarding tooling + runbook
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: Migration 00060 corridor bundle import; A-08 UI; CLI + Zaria-Test fixture; unit tests 6/6. pgTAP and CLI dry-run not run green by Worker.
+- Reviewer verdict: FAIL — RPC apply path proven (8 graph rows). TS-CORRIDOR-01 broken (test_set_jwt missing). CLI 403 FORBIDDEN with service-role (has_admin_role).
+- Rework count: 1
+- Notes/escalations: Rework 1/2 — fix pgTAP JWT/seed; fix CLI auth. Nothing else. Do not flip digital_enabled.
