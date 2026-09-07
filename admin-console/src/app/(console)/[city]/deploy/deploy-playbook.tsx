@@ -2,7 +2,11 @@
 
 import { useMemo, useState, useTransition } from 'react';
 import { diffParksCsv, parseParksCsv, type ParkImportDiffRow } from '@/lib/deploy/csv-parks';
-import { advanceCityStatus, applyParksImport } from './actions';
+import {
+  loadCorridorManifestFromFiles,
+  type CorridorImportDiffRow,
+} from '@/lib/deploy/corridor-bundle';
+import { advanceCityStatus, applyCorridorImport, applyParksImport, dryRunCorridorImport } from './actions';
 
 interface DeployPlaybookProps {
   citySlug: string;
@@ -19,6 +23,7 @@ interface DeployPlaybookProps {
 const CHECKLIST = [
   { id: 'geofence', label: 'Geofence polygon defined (draw/upload)', manual: true },
   { id: 'parks_csv', label: 'Backbone parks CSV reviewed', manual: false },
+  { id: 'corridor_bundle', label: 'Corridor bundle (routes/stages/fares) imported', manual: false },
   { id: 'routes', label: 'Routes seeded for corridors', manual: false },
   { id: 'fares', label: 'Leg/through fares present', manual: true },
   { id: 'config', label: 'City config overrides reviewed', manual: true },
@@ -26,9 +31,22 @@ const CHECKLIST = [
   { id: 'osrm', label: 'OSRM extract check', manual: true },
 ] as const;
 
+const EMPTY_CORRIDOR = {
+  corridorName: '',
+  corridorSlug: '',
+  parksCsv: '',
+  routesCsv: '',
+  stagesCsv: '',
+  legFaresCsv: '',
+  throughFaresCsv: '',
+};
+
 export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPlaybookProps) {
   const [csvText, setCsvText] = useState('');
   const [diff, setDiff] = useState<ParkImportDiffRow[] | null>(null);
+  const [corridor, setCorridor] = useState(EMPTY_CORRIDOR);
+  const [corridorDiff, setCorridorDiff] = useState<CorridorImportDiffRow[] | null>(null);
+  const [corridorSummary, setCorridorSummary] = useState<Record<string, number> | null>(null);
   const [parseErrors, setParseErrors] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -38,9 +56,12 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
   const autoChecks = useMemo(
     () => ({
       parks_csv: stats.parkCount > 0 || (diff?.some((d) => d.action === 'create') ?? false),
-      routes: stats.routeCount > 0,
+      corridor_bundle:
+        stats.corridorCount > 1 ||
+        (corridorDiff?.some((d) => d.entity === 'corridor' && d.action === 'create') ?? false),
+      routes: stats.routeCount > 0 || (corridorDiff?.some((d) => d.entity === 'route' && d.action === 'create') ?? false),
     }),
-    [stats, diff]
+    [stats, diff, corridorDiff]
   );
 
   function runDryRun() {
@@ -63,9 +84,52 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
     startTransition(async () => {
       const result = await applyParksImport(citySlug, cityId, diff);
       if (result.ok) {
-        setMessage(`Applied import: ${result.created} created, ${result.skipped} skipped.`);
+        setMessage(`Applied parks import: ${result.created} created, ${result.skipped} skipped.`);
         setDiff(null);
         setCsvText('');
+      } else {
+        setError(result.error);
+      }
+    });
+  }
+
+  function runCorridorDryRun() {
+    setMessage(null);
+    setError(null);
+    setParseErrors([]);
+
+    const manifest = loadCorridorManifestFromFiles({
+      corridor: { name: corridor.corridorName, slug: corridor.corridorSlug },
+      parksCsv: corridor.parksCsv,
+      routesCsv: corridor.routesCsv,
+      stagesCsv: corridor.stagesCsv,
+      legFaresCsv: corridor.legFaresCsv,
+      throughFaresCsv: corridor.throughFaresCsv || undefined,
+    });
+
+    startTransition(async () => {
+      const result = await dryRunCorridorImport(cityId, manifest);
+      if (!result.ok) {
+        setError(result.error);
+        setCorridorDiff(null);
+        setCorridorSummary(null);
+        return;
+      }
+      setCorridorDiff(result.diff);
+      setCorridorSummary(result.summary);
+    });
+  }
+
+  function runCorridorApply() {
+    if (!corridorDiff) return;
+    setMessage(null);
+    setError(null);
+    startTransition(async () => {
+      const result = await applyCorridorImport(citySlug, cityId, corridorDiff);
+      if (result.ok) {
+        setMessage(`Applied corridor import: ${result.created} created, ${result.skipped} skipped.`);
+        setCorridorDiff(null);
+        setCorridorSummary(null);
       } else {
         setError(result.error);
       }
@@ -113,10 +177,117 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
       </section>
 
       <section className="card" style={{ marginBottom: 'var(--space-6)' }}>
+        <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1rem' }}>Corridor backbone import (A-08)</h2>
+        <p style={{ margin: '0 0 var(--space-4)', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+          Paste doc 13 CSV sections for a new corridor. Dry-run calls{' '}
+          <code>admin_import_dry_run</code>; apply calls <code>admin_import_apply</code>. Rows use{' '}
+          <code>import</code> source and <code>candidate</code> verification status.
+        </p>
+        <div style={{ display: 'grid', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+          <div className="field">
+            <label htmlFor="corridor-name">Corridor name</label>
+            <input
+              id="corridor-name"
+              value={corridor.corridorName}
+              onChange={(e) => setCorridor((prev) => ({ ...prev, corridorName: e.target.value }))}
+              data-testid="deploy-corridor-name"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="corridor-slug">Corridor slug</label>
+            <input
+              id="corridor-slug"
+              value={corridor.corridorSlug}
+              onChange={(e) => setCorridor((prev) => ({ ...prev, corridorSlug: e.target.value }))}
+              data-testid="deploy-corridor-slug"
+            />
+          </div>
+        </div>
+        {(
+          [
+            ['parksCsv', 'Parks CSV (name,aliases,lat,lng,modes)', 'deploy-corridor-parks'],
+            ['routesCsv', 'Routes CSV (origin_park,destination_park,mode,name)', 'deploy-corridor-routes'],
+            ['stagesCsv', 'Stages CSV (route_name,sequence,stage_name,lat,lng,is_official_park)', 'deploy-corridor-stages'],
+            ['legFaresCsv', 'Leg fares CSV (route_name,from_seq,to_seq,fare)', 'deploy-corridor-leg-fares'],
+            ['throughFaresCsv', 'Through fares CSV (optional)', 'deploy-corridor-through-fares'],
+          ] as const
+        ).map(([key, label, testId]) => (
+          <div key={key} className="field" style={{ marginBottom: 'var(--space-3)' }}>
+            <label htmlFor={testId}>{label}</label>
+            <textarea
+              id={testId}
+              value={corridor[key]}
+              onChange={(e) => setCorridor((prev) => ({ ...prev, [key]: e.target.value }))}
+              rows={4}
+              style={{
+                width: '100%',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.8125rem',
+                padding: 'var(--space-3)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-sm)',
+              }}
+              data-testid={testId}
+            />
+          </div>
+        ))}
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-4)' }}>
+          <button
+            type="button"
+            className="btn"
+            onClick={runCorridorDryRun}
+            disabled={pending}
+            data-testid="deploy-corridor-dry-run"
+          >
+            Corridor dry-run
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={!corridorDiff || pending || !corridorDiff.some((d) => d.action === 'create')}
+            onClick={runCorridorApply}
+            data-testid="deploy-corridor-apply"
+          >
+            Initialize corridor
+          </button>
+        </div>
+        {corridorSummary ? (
+          <p style={{ marginTop: 'var(--space-3)', fontSize: '0.8125rem' }} data-testid="deploy-corridor-summary">
+            Creates pending:{' '}
+            {Object.entries(corridorSummary)
+              .map(([entity, count]) => `${entity} (${count})`)
+              .join(', ') || 'none'}
+          </p>
+        ) : null}
+        {corridorDiff ? (
+          <table className="data-table" style={{ marginTop: 'var(--space-4)' }} data-testid="deploy-corridor-diff-table">
+            <thead>
+              <tr>
+                <th>Entity</th>
+                <th>Key</th>
+                <th>Action</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              {corridorDiff.map((row, index) => (
+                <tr key={`${row.entity}-${String(row.name ?? row.route_name)}-${index}`}>
+                  <td>{row.entity}</td>
+                  <td>{String(row.name ?? `${row.route_name ?? ''}:${String(row.sequence ?? '')}`)}</td>
+                  <td>{row.action}</td>
+                  <td>{row.reason ?? '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : null}
+      </section>
+
+      <section className="card" style={{ marginBottom: 'var(--space-6)' }}>
         <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1rem' }}>Backbone parks CSV</h2>
         <p style={{ margin: '0 0 var(--space-4)', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-          Format: <code>name,lat,lng[,aliases pipe-separated]</code>. Dry-run shows create/skip diff
-          before apply (rows use <code>import</code> source, <code>candidate</code> status).
+          Format: <code>name,lat,lng[,aliases pipe-separated]</code>. Use for parks-only drops; full
+          corridors should use the bundle above.
         </p>
         <textarea
           value={csvText}
