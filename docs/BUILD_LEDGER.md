@@ -1826,3 +1826,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Attach 12. AC: report with no open critical/high. External pen test is human/DEFERRED — implement local scans + remediations + coordination runbook. Do not flip digital_enabled.
+
+## [Phase 11 / P11-E-01] Security audit (semgrep, secrets, deps)
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: security.yml (gitleaks/semgrep/pnpm audit); OTP log fix; npm CVE bumps; pen-test runbook DEFERRED.
+- Reviewer verdict: PASS WITH NOTES — AC MET. pnpm audit 0 critical/high; pen test correctly DEFERRED. Note: 1 low @supabase/auth-js.
+- Rework count: 0
+- Notes/escalations: Merged 9069ffd. Next: P11-E-02. Do not flip digital_enabled.
+
+## [Phase 11 / P11-E-02] Performance budget review
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-E-02 PASS. Attach 01 §7, 07. AC: budgets met; report. Local k6/size analysis required; device APK/cold-start DEFERRED (not FAIL). Do not flip digital_enabled.
