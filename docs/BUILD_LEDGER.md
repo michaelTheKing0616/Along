@@ -1474,3 +1474,27 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P7-A-04 PASS. Attach 06 A-14. AC: Promote creates candidate rows with provenance; audit. Implement the three Phase 7 GAP RPCs. Do not flip digital_enabled.
+
+## [Phase 7 / P7-D-01] A-14 Intelligence review
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: A-14 UI + 00065 RPCs; coverage 28/28. pgTAP written not run.
+- Reviewer verdict: FAIL — RETURNING id ambiguous; park/route promote crash.
+- Rework count: 1
+- Notes/escalations: Qualify parks.id / routes.id.
+
+## [Phase 7 / P7-D-01] A-14 Intelligence review
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: Qualified RETURNING; TS-INTEL-01 12/12 executed (plan said 14).
+- Reviewer verdict: PASS WITH NOTES — prior fail closed. Notes: plan(14) vs 12; Playwright skipped.
+- Rework count: 1
+- Notes/escalations: Merged this commit. Next: P7-E-02. Do not flip digital_enabled.
+
+## [Phase 7 / P7-E-02] Load tests k6
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P7-A-01 PASS. Attach 10 Ops, 01 §7. AC: TS-OPS-02/03 pass. Local/staging k6 OK; full-city field evidence deferred. Do not flip digital_enabled.
