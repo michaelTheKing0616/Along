@@ -10,7 +10,7 @@ import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
-import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
+import 'package:mobile_driver/features/onboarding/domain/phone_number_formatter.dart';
 import 'package:mobile_driver/features/payments/domain/qr_scanner_port.dart';
 import 'package:mobile_driver/features/payments/domain/share_image_port.dart';
 import 'package:mobile_driver/features/payments/presentation/my_qr_controller.dart';
@@ -40,6 +40,11 @@ final verificationRepositoryProvider = Provider<VerificationRepository>((ref) {
 
 final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
   return CatalogRepository(ref.watch(alongSupabaseProvider));
+});
+
+final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((ref) async {
+  final country = await ref.read(catalogRepositoryProvider).defaultActiveCountry();
+  return PhoneNumberFormatter(phonePrefix: country.phonePrefix);
 });
 
 final configRepositoryProvider = Provider<ConfigRepository>((ref) {

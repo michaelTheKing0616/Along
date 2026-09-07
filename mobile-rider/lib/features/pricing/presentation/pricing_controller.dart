@@ -208,7 +208,7 @@ class PricingController extends FamilyNotifier<PricingState, PricingRouteArgs> {
 
     if (amountRaw == null) return;
 
-    final amountNaira = _parseAmountNaira(amountRaw);
+    final amountNaira = _parseAmountNaira(amountRaw, currency: view.amount.currency);
     final nextView = view.copyWithPartial(
       round: round is num ? round.toInt() : view.round,
       amountNaira: amountNaira,
@@ -237,13 +237,14 @@ class PricingController extends FamilyNotifier<PricingState, PricingRouteArgs> {
     _syncCountdown(nextView);
   }
 
-  int _parseAmountNaira(Object raw) {
+  int _parseAmountNaira(Object raw, {String currency = 'NGN'}) {
     if (raw is num) return raw.round();
     if (raw is String) {
-      return Money.parse(raw, currency: 'NGN').amount.round().toBigInt().toInt();
+      return Money.parse(raw, currency: currency).amount.round().toBigInt().toInt();
     }
     if (raw is Map<String, dynamic>) {
-      return Money.parse(raw['amount'] as String, currency: raw['currency'] as String? ?? 'NGN')
+      final resolved = raw['currency'] as String? ?? currency;
+      return Money.parse(raw['amount'] as String, currency: resolved)
           .amount
           .round()
           .toBigInt()
@@ -265,7 +266,10 @@ class PricingController extends FamilyNotifier<PricingState, PricingRouteArgs> {
       final updated = await ref.read(negotiationRepositoryProvider).negotiationRound(
             negotiationId: view.negotiationId,
             action: 'counter',
-            amount: Money.fromMinorUnits(state.displayNaira * 100, currency: 'NGN'),
+            amount: Money.fromMinorUnits(
+              state.displayNaira * 100,
+              currency: view.amount.currency,
+            ),
           );
       _applyServerView(updated);
     } catch (e) {

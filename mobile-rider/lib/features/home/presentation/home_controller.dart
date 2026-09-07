@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
-import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:along_map/along_map.dart' as map_geo;
 import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 
@@ -25,6 +24,7 @@ class HomeState {
     this.staleAfterS,
     this.fanoutRadiusM,
     this.cityId,
+    this.mapCenter,
   });
 
   final bool locationGranted;
@@ -38,6 +38,7 @@ class HomeState {
   final int? staleAfterS;
   final int? fanoutRadiusM;
   final String? cityId;
+  final GeoPoint? mapCenter;
 
   bool get showLocationBanner => locationDenied;
 
@@ -53,6 +54,7 @@ class HomeState {
     int? staleAfterS,
     int? fanoutRadiusM,
     String? cityId,
+    GeoPoint? mapCenter,
   }) {
     return HomeState(
       locationGranted: locationGranted ?? this.locationGranted,
@@ -66,6 +68,7 @@ class HomeState {
       staleAfterS: staleAfterS ?? this.staleAfterS,
       fanoutRadiusM: fanoutRadiusM ?? this.fanoutRadiusM,
       cityId: cityId ?? this.cityId,
+      mapCenter: mapCenter ?? this.mapCenter,
     );
   }
 }
@@ -204,8 +207,9 @@ class HomeController extends Notifier<HomeState> {
               geohash5: geohashEncode(location, precision: 5),
             );
         _ambientTopic = topic;
-        if (state.cityId == null) {
-          state = state.copyWith(cityId: cityId);
+        if (state.cityId == null || state.mapCenter == null) {
+          final centroid = await places.cityCentroidForId(cityId);
+          state = state.copyWith(cityId: cityId, mapCenter: centroid ?? state.mapCenter);
         }
       }
     }
@@ -397,11 +401,8 @@ class SearchController extends Notifier<SearchState> {
 
   Future<void> _search(String query) async {
     final home = ref.read(homeControllerProvider);
-    final location = home.userLocation ??
-        GeoPoint(
-          lat: AbujaMapConstants.centerLat,
-          lng: AbujaMapConstants.centerLng,
-        );
+    final location = home.userLocation ?? home.mapCenter;
+    if (location == null) return;
     final cityId = home.cityId ??
         await ref.read(placesRepositoryProvider).cityForLocation(location);
     if (cityId == null) return;
@@ -471,14 +472,14 @@ final adjustPickupControllerProvider =
 
 class AdjustPickupState {
   const AdjustPickupState({
-    required this.center,
+    this.center,
     this.nearbyPlaces = const [],
     this.snappedStage,
     this.snapRadiusM,
     this.isLoading = false,
   });
 
-  final GeoPoint center;
+  final GeoPoint? center;
   final List<PlaceResult> nearbyPlaces;
   final SnappedStage? snappedStage;
   final int? snapRadiusM;
@@ -506,12 +507,10 @@ class AdjustPickupController extends Notifier<AdjustPickupState> {
   @override
   AdjustPickupState build() {
     final home = ref.read(homeControllerProvider);
-    final center = home.userLocation ??
-        GeoPoint(
-          lat: AbujaMapConstants.centerLat,
-          lng: AbujaMapConstants.centerLng,
-        );
-    Future.microtask(() => _bootstrap(center));
+    final center = home.userLocation ?? home.mapCenter;
+    if (center != null) {
+      Future.microtask(() => _bootstrap(center));
+    }
     return AdjustPickupState(center: center);
   }
 

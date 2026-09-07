@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/offline/low_data_providers.dart';
-import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
+import 'package:mobile_rider/features/onboarding/domain/phone_number_formatter.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:along_map/along_map.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
@@ -31,6 +31,11 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
   return CatalogRepository(ref.watch(alongSupabaseProvider));
+});
+
+final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((ref) async {
+  final country = await ref.read(catalogRepositoryProvider).defaultActiveCountry();
+  return PhoneNumberFormatter(phonePrefix: country.phonePrefix);
 });
 
 final configRepositoryProvider = Provider<ConfigRepository>((ref) {

@@ -3,6 +3,10 @@
 -- RLS enabled: true
 -- RLS forced: false
 
+create policy countries_select_anon_active
+  on countries for select to anon
+  using (active);
+
 create policy countries_select_authenticated
   on countries for select to authenticated
   using (true);

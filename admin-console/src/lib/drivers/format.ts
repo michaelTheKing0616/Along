@@ -7,8 +7,8 @@ export function standingLabel(standing: string): string {
   return standing.replace(/_/g, ' ');
 }
 
-export function formatMoney(amount: number | null, currency = 'NGN'): string {
+export function formatMoney(amount: number | null, currency = 'NGN', currencySymbol?: string): string {
   if (amount == null) return '—';
-  const symbol = currency === 'NGN' ? '₦' : currency;
+  const symbol = currencySymbol ?? (currency === 'NGN' ? '₦' : currency);
   return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }

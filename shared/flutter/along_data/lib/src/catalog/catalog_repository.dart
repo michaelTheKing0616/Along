@@ -79,15 +79,21 @@ class VerificationDocType {
   }
 }
 
-/// Country metadata for plate validation and verification checklist.
+/// Country metadata for plate validation, dial config, and verification checklist.
 class CountryConfig {
   const CountryConfig({
     required this.code,
+    required this.phonePrefix,
+    required this.currencyCode,
+    required this.currencySymbol,
     required this.verificationSchema,
     required this.platePattern,
   });
 
   final String code;
+  final String phonePrefix;
+  final String currencyCode;
+  final String currencySymbol;
   final List<VerificationDocType> verificationSchema;
   final String platePattern;
 }
@@ -143,12 +149,57 @@ class CatalogRepository {
 
       return CountryConfig(
         code: row['code'] as String,
+        phonePrefix: row['phone_prefix'] as String,
+        currencyCode: row['currency_code'] as String,
+        currencySymbol: row['currency_symbol'] as String,
         verificationSchema: schemaJson
             .cast<Map<String, dynamic>>()
             .map(VerificationDocType.fromJson)
             .toList(growable: false),
         platePattern: platePattern,
       );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// First active country for pre-auth onboarding (phone prefix, currency).
+  Future<CountryConfig> defaultActiveCountry() async {
+    try {
+      final rows = await _gateway.selectRows(
+        'countries',
+        filters: {'active': true},
+      );
+      if (rows.isEmpty) {
+        throw StateError('No active country configured');
+      }
+      rows.sort(
+        (a, b) => (a['code'] as String).compareTo(b['code'] as String),
+      );
+      return countryConfig(rows.first['code'] as String);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<String> currencyCodeForCity(String cityId) async {
+    try {
+      final cityRows = await _gateway.selectRows(
+        'cities',
+        filters: {'id': cityId},
+      );
+      if (cityRows.isEmpty) {
+        throw StateError('City not found: $cityId');
+      }
+      final countryCode = cityRows.first['country_code'] as String;
+      final countryRows = await _gateway.selectRows(
+        'countries',
+        filters: {'code': countryCode},
+      );
+      if (countryRows.isEmpty) {
+        throw StateError('Country not found: $countryCode');
+      }
+      return countryRows.first['currency_code'] as String;
     } catch (e) {
       throw mapSupabaseError(e);
     }

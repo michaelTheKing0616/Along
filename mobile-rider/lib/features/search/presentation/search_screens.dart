@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
-import 'package:along_map/along_map.dart' show AbujaMapConstants;
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
 import 'package:mobile_rider/features/search/presentation/destination_search_panel.dart';
@@ -123,15 +122,12 @@ class AdjustPickupScreen extends ConsumerWidget {
               label: l10n.adjustPickupConfirm,
               onPressed: () {
                 final home = ref.read(homeControllerProvider);
-                final origin = home.userLocation ??
-                    GeoPoint(
-                      lat: AbujaMapConstants.centerLat,
-                      lng: AbujaMapConstants.centerLng,
-                    );
+                final origin = home.userLocation ?? home.mapCenter;
+                if (origin == null || state.center == null) return;
                 ref.read(tripPlanSessionProvider.notifier).setSession(
                       TripPlanSession(
                         origin: origin,
-                        destination: state.center,
+                        destination: state.center!,
                         destinationLabel: l10n.adjustPickupConfirm,
                       ),
                     );
@@ -148,11 +144,8 @@ class AdjustPickupScreen extends ConsumerWidget {
 void _startTripPlan(WidgetRef ref, DestinationPick pick) {
   final home = ref.read(homeControllerProvider);
   final hail = ref.read(hailIntentProvider);
-  final origin = home.userLocation ??
-      GeoPoint(
-        lat: AbujaMapConstants.centerLat,
-        lng: AbujaMapConstants.centerLng,
-      );
+  final origin = home.userLocation ?? home.mapCenter;
+  if (origin == null) return;
   ref.read(tripPlanSessionProvider.notifier).setSession(
         TripPlanSession(
           origin: origin,

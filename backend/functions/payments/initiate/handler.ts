@@ -166,6 +166,13 @@ async function deriveAmount(
   }
 
   amount = roundMoney(body.amount);
+  const { data: countryRow } = await service
+    .from('cities')
+    .select('countries(currency_code)')
+    .eq('id', driver.city_id)
+    .single();
+  const joined = countryRow as { countries?: { currency_code?: string } | null } | null;
+  currency = joined?.countries?.currency_code ?? currency;
   const { data: rate } = await service.rpc('cfg', { p_key: 'commission.rate', p_city: driver.city_id });
   commissionRate = Number(rate);
 

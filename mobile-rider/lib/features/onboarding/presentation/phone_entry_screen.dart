@@ -52,6 +52,8 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(onboardingControllerProvider);
     final theme = Theme.of(context);
+    final phonePrefix =
+        ref.watch(phoneFormatterProvider).valueOrNull?.phonePrefix ?? '+234';
 
     return Scaffold(
       body: SafeArea(
@@ -76,6 +78,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
               const SizedBox(height: AlongSpace.s24),
               PhoneField(
                 controller: _controller,
+                countryCode: phonePrefix,
                 errorText: _localizedError(l10n, state),
                 onChanged: (_) {
                   if (state.errorMessage != null) {

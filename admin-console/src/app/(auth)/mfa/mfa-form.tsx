@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 export default function MfaForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get('next') ?? '/abuja/dashboard';
+  const next = searchParams.get('next') ?? '/';
   const [code, setCode] = useState('');
   const [factorId, setFactorId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

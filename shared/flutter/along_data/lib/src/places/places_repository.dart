@@ -128,6 +128,22 @@ class PlacesRepository {
     }
   }
 
+  Future<GeoPoint?> cityCentroidForId(String cityId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'city_centroid',
+        params: {'p_city_id': cityId},
+      );
+      if (raw is! Map<String, dynamic>) return null;
+      final lat = raw['lat'];
+      final lng = raw['lng'];
+      if (lat is! num || lng is! num) return null;
+      return GeoPoint(lat: lat.toDouble(), lng: lng.toDouble());
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
   Future<String?> citySlugForId(String cityId) async {
     try {
       final rows = await _gateway.selectRows(

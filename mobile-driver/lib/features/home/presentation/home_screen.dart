@@ -84,7 +84,12 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         orElse: () => null,
                       )
                   : null,
-              initialCameraPosition: MapCamera.abujaDefault(),
+              initialCameraPosition: state.mapCenter == null
+                  ? null
+                  : MapCamera.forCenter(
+                      lat: state.mapCenter!.lat,
+                      lng: state.mapCenter!.lng,
+                    ),
               myLocationEnabled: state.locationGranted,
               onLayerControllerReady: (controller) {
                 _layerController = controller;
