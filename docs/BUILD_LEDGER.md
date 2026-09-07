@@ -1258,3 +1258,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P0-D-01 PASS. AC: grep RPC list vs audited tables. Do not attach remaining audit triggers (P6-A-01). Do not redo graph/config editors.
+
+## [Phase 6 / P6-D-04] A-16 Audit log + A-17 Admin users
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: A-16/A-17 UI; 00058 invite/disable RPCs; coverage 21 OK / 7 GAP. Open-Q: already matched answers.
+- Reviewer verdict: FAIL — AC MET (grep). Gate FAIL: fetchAuditLogPage hardcodes page size 50 instead of cfg_num('audit.page_size').
+- Rework count: 1
+- Notes/escalations: Rework 2/2 — wire audit.page_size in fetchAuditLogPage. Nothing else.
