@@ -1106,3 +1106,11 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Depends P5-A-03 PASS. FM23 copy; Match now = 1 tap reusing request_trip. Do not absorb TS-PLAN-v2 decompose 3/8.
+
+## [Phase 5 / P5-B-02] R-20 Day planner, R-21 itinerary entry
+- Status: FAIL
+- Assigned: 2026-09-07
+- Worker report summary: R-20/R-21 UI; FM23 copy tests; Match now → request_trip; parse confirm gate; load via create_itinerary(p_load); Add stop via update_itinerary_stops. Flutter 8/8. Open-Q rework then Reviewer FAIL.
+- Reviewer verdict: FAIL — home_bottom_sheet.dart uses context.push(AppRoutes.itineraryEntry) without go_router / AppRoutes imports (analyze errors). AC otherwise MET (FM23, Match now 1 tap). Notes: itinerary_stop_id on plan-trip only, not request_trip payload; swipe-to-remove is ✕ icon.
+- Rework count: 1
+- Notes/escalations: Rework 2/2 — add missing imports; flutter analyze clean on that file. Do not invent update_itinerary_load. Do not absorb TS-PLAN-v2.
