@@ -152,7 +152,10 @@ with required_global as (
     'jobs.map_match_min_samples',
     'jobs.map_match_min_confidence',
     'jobs.map_match_default_radius_m',
-    'jobs.speed_profile_min_samples'
+    'jobs.speed_profile_min_samples',
+    'api.default_rate_limit_per_min',
+    'api.max_page_size',
+    'placements.enabled'
   ]) as key
 ),
 missing_global as (
