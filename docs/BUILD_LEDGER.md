@@ -1114,3 +1114,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: FAIL — home_bottom_sheet.dart uses context.push(AppRoutes.itineraryEntry) without go_router / AppRoutes imports (analyze errors). AC otherwise MET (FM23, Match now 1 tap). Notes: itinerary_stop_id on plan-trip only, not request_trip payload; swipe-to-remove is ✕ icon.
 - Rework count: 1
 - Notes/escalations: Rework 2/2 — add missing imports; flutter analyze clean on that file. Do not invent update_itinerary_load. Do not absorb TS-PLAN-v2.
+
+## [Phase 5 / P5-B-02] R-20 Day planner, R-21 itinerary entry
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: R-20/R-21 UI; FM23 copy; Match now → request_trip 1 tap; parse confirm gate; p_load at create; Add stop via update_itinerary_stops. Rework 2: home_bottom_sheet go_router imports. Flutter 8/8.
+- Reviewer verdict: PASS WITH NOTES — prior compile FAIL fixed (analyze clean). FM23 and Match now MET. Notes: itinerary_stop_id not on RequestTripRequest; swipe is ✕; hardcoded Abuja origin; R-20 load toggle read-only (create-time persist).
+- Rework count: 2
+- Notes/escalations: Merged 4e54379. Follow-ups not Phase 5 blockers. Next: P5-C-01. P4-E-02 still human. Do not flip digital_enabled. Do not start Phase 7.
+
+## [Phase 5 / P5-C-01] Driver SOS, incident, D-18 rating, D-24
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P5-A-01 PASS. Same SOS gates as P5-B-01 (2G ≤ 10 s). Reuse raise_sos/update_sos/report_incident. Do not redo rider SOS.
