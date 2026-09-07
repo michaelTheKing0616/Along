@@ -3,6 +3,7 @@ import {
   getAllowedRolesForSegment,
   getConsoleSegment,
   isAgentPath,
+  isLegalPath,
   isPublicPath,
   isWellKnownPath,
   ROUTE_ALLOWLIST,
@@ -16,6 +17,9 @@ describe('authz routes', () => {
     expect(isPublicPath('/.well-known/apple-app-site-association')).toBe(true);
     expect(isPublicPath('/.well-known/assetlinks.json')).toBe(true);
     expect(isWellKnownPath('/.well-known/assetlinks.json')).toBe(true);
+    expect(isPublicPath('/legal/terms')).toBe(true);
+    expect(isPublicPath('/legal/privacy')).toBe(true);
+    expect(isLegalPath('/legal/privacy')).toBe(true);
     expect(isPublicPath('/abuja/dashboard')).toBe(false);
     expect(isPublicPath('/agent')).toBe(false);
   });

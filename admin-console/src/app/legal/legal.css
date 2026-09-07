@@ -1,0 +1,101 @@
+.w03-shell {
+  min-height: 100dvh;
+  background: var(--color-surface-0);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+}
+
+.w03-main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-12);
+}
+
+.w03-brand {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-500);
+  margin: 0 0 var(--space-2);
+}
+
+.w03-draft {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-semantic-warning-tint);
+  color: var(--color-semantic-warning);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.w03-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-2);
+}
+
+.w03-updated {
+  color: var(--color-ink-500);
+  font-size: 0.875rem;
+  margin: 0 0 var(--space-6);
+}
+
+.w03-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-ink-100);
+}
+
+.w03-nav a {
+  color: var(--color-ink-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.w03-nav a[aria-current='page'] {
+  color: var(--color-ink-900);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.w03-section {
+  margin-bottom: var(--space-8);
+}
+
+.w03-section h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-3);
+}
+
+.w03-section p,
+.w03-section li {
+  line-height: 1.6;
+  color: var(--color-ink-700);
+}
+
+.w03-section p {
+  margin: 0 0 var(--space-3);
+}
+
+.w03-section ul {
+  margin: 0 0 var(--space-3);
+  padding-left: var(--space-5);
+}
+
+.w03-section li {
+  margin-bottom: var(--space-2);
+}
+
+.w03-footer {
+  margin-top: var(--space-10);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-ink-100);
+  font-size: 0.875rem;
+  color: var(--color-ink-500);
+}
