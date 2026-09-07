@@ -1140,6 +1140,300 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Receipt copied to clipboard'**
   String get tripDetailReceiptCopied;
+
+  /// R-23 SOS headline
+  ///
+  /// In en, this message translates to:
+  /// **'Along safety team alerted'**
+  String get sosTeamAlerted;
+
+  /// R-23 SOS subcopy
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re sharing your live location and trip details with our safety line'**
+  String get sosSharingDetails;
+
+  /// R-23 emergency tel button
+  ///
+  /// In en, this message translates to:
+  /// **'Call {number}'**
+  String sosCallEmergency(String number);
+
+  /// R-23 link to R-25
+  ///
+  /// In en, this message translates to:
+  /// **'Share with a contact'**
+  String get sosShareWithContact;
+
+  /// R-23 hold-to-cancel label
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to cancel'**
+  String get sosHoldToCancel;
+
+  /// R-23 SOS in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Alerting safety team…'**
+  String get sosRaising;
+
+  /// R-23 SOS failure
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach safety line'**
+  String get sosRaiseFailed;
+
+  /// R-23 SOS retry
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get sosRetry;
+
+  /// R-24 screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Report incident'**
+  String get reportIncidentTitle;
+
+  /// R-24 category grid heading
+  ///
+  /// In en, this message translates to:
+  /// **'What happened?'**
+  String get reportIncidentCategoryHeading;
+
+  /// R-24 description heading
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us more'**
+  String get reportIncidentDescriptionHeading;
+
+  /// R-24 description placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Describe what happened (optional details help)'**
+  String get reportIncidentDescriptionHint;
+
+  /// R-24 optional photo stub
+  ///
+  /// In en, this message translates to:
+  /// **'Attach photo'**
+  String get reportIncidentAttachPhoto;
+
+  /// R-24 photo stub attached
+  ///
+  /// In en, this message translates to:
+  /// **'Photo attached (stub)'**
+  String get reportIncidentPhotoAttached;
+
+  /// R-24 submit CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Submit report'**
+  String get reportIncidentSubmit;
+
+  /// R-24 validation
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a category'**
+  String get reportIncidentPickCategory;
+
+  /// R-24 validation
+  ///
+  /// In en, this message translates to:
+  /// **'Add a short description'**
+  String get reportIncidentDescriptionRequired;
+
+  /// R-24 success
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted — our safety team will review it'**
+  String get reportIncidentSubmitted;
+
+  /// No description provided for @incidentCategorySafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety'**
+  String get incidentCategorySafety;
+
+  /// No description provided for @incidentCategoryFareDispute.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare dispute'**
+  String get incidentCategoryFareDispute;
+
+  /// No description provided for @incidentCategoryVehicleQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle quality'**
+  String get incidentCategoryVehicleQuality;
+
+  /// No description provided for @incidentCategoryDriverBehavior.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver behaviour'**
+  String get incidentCategoryDriverBehavior;
+
+  /// No description provided for @incidentCategoryLostItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost item'**
+  String get incidentCategoryLostItem;
+
+  /// No description provided for @incidentCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get incidentCategoryOther;
+
+  /// R-25 sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Share live trip'**
+  String get shareTripTitle;
+
+  /// R-25 create link CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Create share link'**
+  String get shareTripCreateLink;
+
+  /// R-25 copy
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get shareTripCopy;
+
+  /// R-25 SMS share
+  ///
+  /// In en, this message translates to:
+  /// **'SMS'**
+  String get shareTripSms;
+
+  /// R-25 copy acknowledgement
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get shareTripCopied;
+
+  /// R-25 expiry note
+  ///
+  /// In en, this message translates to:
+  /// **'Links auto-expire when your trip ends'**
+  String get shareTripExpiryNote;
+
+  /// R-25 active list heading
+  ///
+  /// In en, this message translates to:
+  /// **'Active shares'**
+  String get shareTripActiveHeading;
+
+  /// R-25 share without contact name
+  ///
+  /// In en, this message translates to:
+  /// **'Shared contact'**
+  String get shareTripAnonymousContact;
+
+  /// R-25 share expiry label
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String shareTripExpires(String date);
+
+  /// R-25 SMS body
+  ///
+  /// In en, this message translates to:
+  /// **'Track my Along trip: {url}'**
+  String shareTripSmsBody(String url);
+
+  /// No description provided for @accountProfileHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'PROFILE'**
+  String get accountProfileHeading;
+
+  /// No description provided for @accountPreferencesHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'PREFERENCES'**
+  String get accountPreferencesHeading;
+
+  /// No description provided for @accountPaymentHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'PAYMENT'**
+  String get accountPaymentHeading;
+
+  /// No description provided for @accountSafetyHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'SAFETY'**
+  String get accountSafetyHeading;
+
+  /// No description provided for @accountWayfindingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wayfinding mode'**
+  String get accountWayfindingLabel;
+
+  /// No description provided for @accountSortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default trip sort'**
+  String get accountSortLabel;
+
+  /// No description provided for @accountWomenOnlyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Women-only matching'**
+  String get accountWomenOnlyLabel;
+
+  /// No description provided for @accountWomenOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer trips with women-only drivers when available'**
+  String get accountWomenOnlyHint;
+
+  /// No description provided for @accountPaymentCashDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get accountPaymentCashDefault;
+
+  /// No description provided for @accountPaymentCashHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Default payment method for Along trips'**
+  String get accountPaymentCashHint;
+
+  /// No description provided for @accountSafetyHowSos.
+  ///
+  /// In en, this message translates to:
+  /// **'How SOS works'**
+  String get accountSafetyHowSos;
+
+  /// No description provided for @accountSafetyHowSosBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold SOS during a trip to alert our safety team and share live location'**
+  String get accountSafetyHowSosBody;
+
+  /// No description provided for @accountHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & support'**
+  String get accountHelp;
+
+  /// No description provided for @accountLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get accountLegal;
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accountSignOut;
 }
 
 class _AppLocalizationsDelegate

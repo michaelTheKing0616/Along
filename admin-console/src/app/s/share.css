@@ -1,0 +1,94 @@
+.w01-shell {
+  min-height: 100dvh;
+  background: var(--color-surface-0);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+}
+
+.w01-main {
+  max-width: 24rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+.w01-brand {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-500);
+  margin-bottom: var(--space-4);
+}
+
+.w01-state {
+  text-align: center;
+  padding-top: var(--space-16);
+}
+
+.w01-state h1 {
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.w01-rider {
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.w01-plate {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-1);
+}
+
+.w01-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.w01-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-100);
+  font-weight: 600;
+}
+
+.w01-chip-live {
+  background: var(--color-brand-yellow);
+  color: var(--color-brand-yellow-on);
+}
+
+.w01-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-ink-100);
+}
+
+.w01-row-label {
+  color: var(--color-ink-500);
+}
+
+.w01-row-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.w01-legs {
+  margin-top: var(--space-4);
+}
+
+.w01-leg {
+  padding: var(--space-3) 0;
+}
+
+.w01-footer {
+  margin-top: var(--space-8);
+  text-align: center;
+  color: var(--color-ink-500);
+}

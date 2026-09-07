@@ -28,6 +28,12 @@ class FakeAlongSupabase implements AlongSupabase {
     this.qrResolveByCode = const {},
     this.paymentMethods = const [],
     this.paymentInitiateImmediateSuccess = true,
+    this.raiseSosDelay = Duration.zero,
+    this.raiseSosResponse,
+    this.tripShareRows = const [],
+    this.profileRow,
+    this.riderRow,
+    this.cityRegulatoryFlags = const {'women_only_matching': true},
     FakeNegotiationEngine? negotiationEngine,
   }) : negotiationEngine = negotiationEngine ?? FakeNegotiationEngine();
 
@@ -56,6 +62,12 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, Map<String, dynamic>> qrResolveByCode;
   List<Map<String, dynamic>> paymentMethods;
   bool paymentInitiateImmediateSuccess;
+  Duration raiseSosDelay;
+  Map<String, dynamic>? raiseSosResponse;
+  List<Map<String, dynamic>> tripShareRows;
+  Map<String, dynamic>? profileRow;
+  Map<String, dynamic>? riderRow;
+  Map<String, dynamic> cityRegulatoryFlags;
 
   final FakeNegotiationEngine negotiationEngine;
 
@@ -69,6 +81,14 @@ class FakeAlongSupabase implements AlongSupabase {
   int respondExtensionInvokeCount = 0;
   int qrResolveInvokeCount = 0;
   int paymentInitiateInvokeCount = 0;
+  int raiseSosInvokeCount = 0;
+  int updateSosInvokeCount = 0;
+  int reportIncidentInvokeCount = 0;
+  int createTripShareInvokeCount = 0;
+  int revokeTripShareInvokeCount = 0;
+  Map<String, dynamic>? lastRaiseSosParams;
+  Map<String, dynamic>? lastReportIncidentParams;
+  Map<String, dynamic>? lastUpdateRiderPrefsParams;
   Map<String, dynamic>? lastPaymentInitiateBody;
   Map<String, dynamic>? lastConfirmFareParams;
   Map<String, dynamic>? lastRateTripParams;
@@ -210,6 +230,93 @@ class FakeAlongSupabase implements AlongSupabase {
           },
       };
     }
+    if (fn == 'raise_sos') {
+      raiseSosInvokeCount++;
+      lastRaiseSosParams = params;
+      if (raiseSosDelay > Duration.zero) {
+        await Future<void>.delayed(raiseSosDelay);
+      }
+      return raiseSosResponse ??
+          {
+            'sos_id': 'sos-test-001',
+            'emergency_number': '112',
+          };
+    }
+    if (fn == 'update_sos') {
+      updateSosInvokeCount++;
+      return {'sos_id': params?['p_sos_id'], 'status': 'false_alarm'};
+    }
+    if (fn == 'report_incident') {
+      reportIncidentInvokeCount++;
+      lastReportIncidentParams = params;
+      return {'incident_id': 'incident-test-001'};
+    }
+    if (fn == 'create_trip_share') {
+      createTripShareInvokeCount++;
+      final shareId = 'share-${tripShareRows.length + 1}';
+      final url = 'https://along.ng/s/test-token-$shareId';
+      final expiresAt =
+          DateTime.now().add(const Duration(hours: 6)).toUtc().toIso8601String();
+      tripShareRows = [
+        ...tripShareRows,
+        {
+          'id': shareId,
+          'journey_id': params?['p_journey_id'],
+          'expires_at': expiresAt,
+          'revoked_at': null,
+          'contact_name': params?['p_contact_name'],
+        },
+      ];
+      return {
+        'url': url,
+        'expires_at': expiresAt,
+        'share_id': shareId,
+      };
+    }
+    if (fn == 'revoke_trip_share') {
+      revokeTripShareInvokeCount++;
+      final shareId = params?['p_share_id'] as String?;
+      tripShareRows = tripShareRows
+          .map(
+            (row) => row['id'] == shareId
+                ? {
+                    ...row,
+                    'revoked_at': DateTime.now().toUtc().toIso8601String(),
+                  }
+                : row,
+          )
+          .toList(growable: false);
+      return {'share_id': shareId};
+    }
+    if (fn == 'shared_trip_view') {
+      return {
+        'rider_first_name': 'Ada',
+        'status': 'in_transit',
+        'mode': {'code': 'keke', 'label': 'Keke'},
+        'vehicle': {'plate': 'SHR-01', 'color': 'Yellow'},
+        'driver_first_name': 'Musa',
+        'current_location': {'lat': 9.05, 'lng': 7.49},
+        'destination_label': 'Area 1',
+        'eta_s': 420,
+        'legs_progress': [
+          {'sequence': 1, 'status': 'current', 'label': 'Lugbe → Area 1'},
+        ],
+      };
+    }
+    if (fn == 'update_rider_prefs') {
+      lastUpdateRiderPrefsParams = params;
+      if (riderRow != null) {
+        riderRow = {
+          ...riderRow!,
+          if (params?['wayfinding_mode'] != null)
+            'wayfinding_mode': params!['wayfinding_mode'],
+          if (params?['saved_sort'] != null) 'saved_sort': params!['saved_sort'],
+          if (params?['women_only_pref'] != null)
+            'women_only_pref': params!['women_only_pref'],
+        };
+      }
+      return {};
+    }
     return {};
   }
 
@@ -324,10 +431,60 @@ class FakeAlongSupabase implements AlongSupabase {
       final id = filters['id'];
       if (id == cityId) {
         return [
-          {'id': cityId, 'slug': citySlug ?? 'abuja'},
+          {
+            'id': cityId,
+            'slug': citySlug ?? 'abuja',
+            'regulatory_flags': cityRegulatoryFlags,
+          },
         ];
       }
       return [];
+    }
+    if (table == 'profiles') {
+      final id = filters['id'];
+      if (profileRow != null && profileRow!['id'] == id) {
+        return [profileRow!];
+      }
+      if (id == _user?.id) {
+        return [
+          profileRow ??
+              {
+                'id': id,
+                'display_name': 'Test Rider',
+                'phone_e164': '+2348000000001',
+              },
+        ];
+      }
+      return [];
+    }
+    if (table == 'riders') {
+      final id = filters['id'];
+      if (riderRow != null && riderRow!['id'] == id) {
+        return [riderRow!];
+      }
+      if (id == _user?.id) {
+        return [
+          riderRow ??
+              {
+                'id': id,
+                'home_city_id': cityId,
+                'wayfinding_mode': 'text',
+                'saved_sort': 'recommended',
+                'women_only_pref': false,
+              },
+        ];
+      }
+      return [];
+    }
+    if (table == 'trip_shares') {
+      return tripShareRows
+          .where((row) {
+            for (final entry in filters.entries) {
+              if (row[entry.key] != entry.value) return false;
+            }
+            return true;
+          })
+          .toList(growable: false);
     }
     if (table == 'mode_config') {
       return modeConfigRows;
@@ -479,6 +636,12 @@ List<Map<String, dynamic>> defaultTestConfigRows() => [
         'scope_type': 'global',
         'scope_id': '*',
         'value': '600',
+      },
+      {
+        'key': 'sos.emergency_number',
+        'scope_type': 'country',
+        'scope_id': 'NG',
+        'value': '112',
       },
       {
         'key': 'payments.digital_enabled',

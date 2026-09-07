@@ -594,4 +594,162 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tripDetailReceiptCopied => 'Receipt copied to clipboard';
+
+  @override
+  String get sosTeamAlerted => 'Along safety team alerted';
+
+  @override
+  String get sosSharingDetails =>
+      'We\'re sharing your live location and trip details with our safety line';
+
+  @override
+  String sosCallEmergency(String number) {
+    return 'Call $number';
+  }
+
+  @override
+  String get sosShareWithContact => 'Share with a contact';
+
+  @override
+  String get sosHoldToCancel => 'Hold to cancel';
+
+  @override
+  String get sosRaising => 'Alerting safety team…';
+
+  @override
+  String get sosRaiseFailed => 'Could not reach safety line';
+
+  @override
+  String get sosRetry => 'Try again';
+
+  @override
+  String get reportIncidentTitle => 'Report incident';
+
+  @override
+  String get reportIncidentCategoryHeading => 'What happened?';
+
+  @override
+  String get reportIncidentDescriptionHeading => 'Tell us more';
+
+  @override
+  String get reportIncidentDescriptionHint =>
+      'Describe what happened (optional details help)';
+
+  @override
+  String get reportIncidentAttachPhoto => 'Attach photo';
+
+  @override
+  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
+
+  @override
+  String get reportIncidentSubmit => 'Submit report';
+
+  @override
+  String get reportIncidentPickCategory => 'Pick a category';
+
+  @override
+  String get reportIncidentDescriptionRequired => 'Add a short description';
+
+  @override
+  String get reportIncidentSubmitted =>
+      'Report submitted — our safety team will review it';
+
+  @override
+  String get incidentCategorySafety => 'Safety';
+
+  @override
+  String get incidentCategoryFareDispute => 'Fare dispute';
+
+  @override
+  String get incidentCategoryVehicleQuality => 'Vehicle quality';
+
+  @override
+  String get incidentCategoryDriverBehavior => 'Driver behaviour';
+
+  @override
+  String get incidentCategoryLostItem => 'Lost item';
+
+  @override
+  String get incidentCategoryOther => 'Other';
+
+  @override
+  String get shareTripTitle => 'Share live trip';
+
+  @override
+  String get shareTripCreateLink => 'Create share link';
+
+  @override
+  String get shareTripCopy => 'Copy link';
+
+  @override
+  String get shareTripSms => 'SMS';
+
+  @override
+  String get shareTripCopied => 'Link copied';
+
+  @override
+  String get shareTripExpiryNote => 'Links auto-expire when your trip ends';
+
+  @override
+  String get shareTripActiveHeading => 'Active shares';
+
+  @override
+  String get shareTripAnonymousContact => 'Shared contact';
+
+  @override
+  String shareTripExpires(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String shareTripSmsBody(String url) {
+    return 'Track my Along trip: $url';
+  }
+
+  @override
+  String get accountProfileHeading => 'PROFILE';
+
+  @override
+  String get accountPreferencesHeading => 'PREFERENCES';
+
+  @override
+  String get accountPaymentHeading => 'PAYMENT';
+
+  @override
+  String get accountSafetyHeading => 'SAFETY';
+
+  @override
+  String get accountWayfindingLabel => 'Wayfinding mode';
+
+  @override
+  String get accountSortLabel => 'Default trip sort';
+
+  @override
+  String get accountWomenOnlyLabel => 'Women-only matching';
+
+  @override
+  String get accountWomenOnlyHint =>
+      'Prefer trips with women-only drivers when available';
+
+  @override
+  String get accountPaymentCashDefault => 'Cash';
+
+  @override
+  String get accountPaymentCashHint => 'Default payment method for Along trips';
+
+  @override
+  String get accountSafetyHowSos => 'How SOS works';
+
+  @override
+  String get accountSafetyHowSosBody =>
+      'Hold SOS during a trip to alert our safety team and share live location';
+
+  @override
+  String get accountHelp => 'Help & support';
+
+  @override
+  String get accountLegal => 'Legal';
+
+  @override
+  String get accountSignOut => 'Sign out';
 }

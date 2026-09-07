@@ -11,7 +11,9 @@ import 'package:mobile_rider/features/onboarding/presentation/onboarding_control
 import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_rider/features/search/presentation/search_screens.dart';
-import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
+import 'package:mobile_rider/features/account/presentation/account_settings_screen.dart';
+import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
+import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/transfer/presentation/transfer_screen.dart';
 import 'package:mobile_rider/features/pricing/presentation/pricing_sheet_screen.dart';
@@ -78,7 +80,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.account,
-                builder: (context, state) => const AccountStubScreen(),
+                builder: (context, state) => const AccountSettingsScreen(),
               ),
             ],
           ),
@@ -185,6 +187,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final trip = state.extra as TripSummary;
           return ActiveTripScreen(trip: trip);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.sosActive,
+        builder: (context, state) {
+          final args = state.extra as SosActiveRouteArgs;
+          return SosActiveScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.reportIncident,
+        builder: (context, state) {
+          final tripId = state.extra as String?;
+          return ReportIncidentScreen(tripId: tripId);
         },
       ),
     ],

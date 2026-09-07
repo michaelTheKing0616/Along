@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/live_trip/domain/na_me_chip_mapper.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
+import 'package:mobile_rider/features/live_trip/domain/live_trip_config.dart';
 import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
+import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
+import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
+import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:go_router/go_router.dart';
@@ -74,6 +78,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     final shape = naMeShapeFromToken(liveTrip.naMe.shape);
     final eta = liveTrip.etaMinutes ?? 14;
     final fare = liveTrip.totalFare;
+    final holdDuration = ref.watch(liveTripConfigProvider).maybeWhen(
+          data: (cfg) => cfg.sosHoldDurationMs,
+          orElse: () => const Duration(milliseconds: 600),
+        );
 
     return Scaffold(
       body: Stack(
@@ -90,11 +98,11 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
             child: HoldButton(
               key: const Key('active_trip_sos'),
               type: HoldButtonType.sos,
-              onFired: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.sosPlaceholder)),
-                );
-              },
+              holdDuration: holdDuration,
+              onFired: () => context.push(
+                AppRoutes.sosActive,
+                extra: SosActiveRouteArgs(trip: liveTrip),
+              ),
             ),
           ),
           Align(
@@ -200,11 +208,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                           key: const Key('active_trip_share'),
                           label: l10n.activeTripShare,
                           variant: AlongButtonVariant.secondary,
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.sharePlaceholder)),
-                            );
-                          },
+                          onPressed: () => ShareTripSheet.show(
+                            context,
+                            journeyId: liveTrip.journeyId,
+                          ),
                         ),
                       ),
                       const SizedBox(width: AlongSpace.s8),
@@ -213,11 +220,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                           key: const Key('active_trip_report'),
                           label: l10n.activeTripReport,
                           variant: AlongButtonVariant.secondary,
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.reportPlaceholder)),
-                            );
-                          },
+                          onPressed: () => context.push(
+                            AppRoutes.reportIncident,
+                            extra: liveTrip.tripId,
+                          ),
                         ),
                       ),
                     ],

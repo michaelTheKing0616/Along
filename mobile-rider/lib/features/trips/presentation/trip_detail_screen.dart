@@ -1,6 +1,7 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
@@ -78,11 +79,10 @@ class TripDetailScreen extends ConsumerWidget {
                 key: const Key('trip_detail_report'),
                 label: l10n.activeTripReport,
                 variant: AlongButtonVariant.tertiary,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.reportPlaceholder)),
-                  );
-                },
+                onPressed: () => context.push(
+                  AppRoutes.reportIncident,
+                  extra: tripId,
+                ),
               ),
             ],
           );
