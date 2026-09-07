@@ -1060,9 +1060,9 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Notes/escalations: Issuing P5-A-01.
 
 ## [Phase 5 / P5-A-01] SOS, trip share, incidents RLS
-- Status: IN PROGRESS
+- Status: FAIL
 - Assigned: 2026-09-07
-- Worker report summary: (pending)
-- Reviewer verdict: (pending)
-- Rework count: 0
-- Notes/escalations: Next migration 00051. Do not create itineraries (P5-A-03). Ratings already exist (P4-A-04).
+- Worker report summary: Migration 00051 SOS/shares/incidents + notify kind=sos. TS-SOS-01 9/9, TS-SOS-02 5/5, Deno SOS 1/1 (Worker). Acceptance MET; gate (a) FAIL.
+- Reviewer verdict: FAIL — hardcoded `st_distance(...) / 8.0` in `shared_trip_view`; must use `cfg_num('planner.baseline_speed_mps')`. RLS + share-token criteria MET.
+- Rework count: 1
+- Notes/escalations: Rework 1/2 — replace 8.0 with cfg_num planner.baseline_speed_mps (floor 3, matching negotiation). Do not expand scope.
