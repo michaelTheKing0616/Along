@@ -36,6 +36,7 @@ class DriverHomeState {
     this.isBusy = false,
     this.errorMessage,
     this.cityId,
+    this.mapCenter,
     this.movingPingIntervalS = 4,
     this.stillPingIntervalS = 15,
     this.demandRadiusM = 3000,
@@ -56,6 +57,7 @@ class DriverHomeState {
   final bool isBusy;
   final String? errorMessage;
   final String? cityId;
+  final GeoPoint? mapCenter;
   final int movingPingIntervalS;
   final int stillPingIntervalS;
   final int demandRadiusM;
@@ -84,6 +86,7 @@ class DriverHomeState {
     bool? isBusy,
     String? errorMessage,
     String? cityId,
+    GeoPoint? mapCenter,
     int? movingPingIntervalS,
     int? stillPingIntervalS,
     int? demandRadiusM,
@@ -106,6 +109,7 @@ class DriverHomeState {
       isBusy: isBusy ?? this.isBusy,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       cityId: cityId ?? this.cityId,
+      mapCenter: mapCenter ?? this.mapCenter,
       movingPingIntervalS: movingPingIntervalS ?? this.movingPingIntervalS,
       stillPingIntervalS: stillPingIntervalS ?? this.stillPingIntervalS,
       demandRadiusM: demandRadiusM ?? this.demandRadiusM,
@@ -161,10 +165,15 @@ class DriverHomeController extends Notifier<DriverHomeState> {
         await ref.read(driverRepositoryProvider).fetchDriverProfile(user.id);
     if (profile == null) return;
 
+    final centroid = await ref
+        .read(placesRepositoryProvider)
+        .cityCentroidForId(profile.cityId);
+
     state = state.copyWith(
       isVerified: profile.isVerified,
       ledgerBlocked: profile.isLedgerBlocked,
       cityId: profile.cityId,
+      mapCenter: centroid,
     );
     await ref.read(driverLedgerControllerProvider.notifier).refresh();
     final ledger = ref.read(driverLedgerControllerProvider);

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/routes/presentation/draw_route_controller.dart';
 import 'package:mobile_driver/features/routes/presentation/price_keypad_sheet.dart';
 import 'package:mobile_driver/features/routes/presentation/routes_list_controller.dart';
@@ -28,6 +29,7 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final config = ref.watch(appConfigProvider);
+    final home = ref.watch(driverHomeControllerProvider);
     final state = ref.watch(drawRouteControllerProvider(widget.args));
     final controller =
         ref.read(drawRouteControllerProvider(widget.args).notifier);
@@ -48,7 +50,12 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
               styleUrl: config.tilesBaseUrl == null
                   ? null
                   : '${config.tilesBaseUrl}/styles/along-light.json',
-              initialCameraPosition: MapCamera.abujaDefault(),
+              initialCameraPosition: home.mapCenter == null
+                  ? null
+                  : MapCamera.forCenter(
+                      lat: home.mapCenter!.lat,
+                      lng: home.mapCenter!.lng,
+                    ),
               onMapClick: (_, latLng) {
                 controller.addStopAt(
                   GeoPoint(lat: latLng.latitude, lng: latLng.longitude),

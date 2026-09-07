@@ -114,7 +114,11 @@ class NegotiationRepository {
         }
       }
 
-      final chipSteps = await _chipStepsFromConfig(config, cityId: cityId);
+      final chipSteps = await _chipStepsFromConfig(
+        config,
+        cityId: cityId,
+        currency: currency,
+      );
       final anchorAmount = (row['anchor_amount'] as num?)?.toDouble() ?? 0;
       final amount = latestRound == null
           ? anchorAmount
@@ -151,13 +155,14 @@ class NegotiationRepository {
   static Future<List<Money>> _chipStepsFromConfig(
     ConfigRepository config, {
     String? cityId,
+    required String currency,
   }) async {
     final raw = await config.configJson('negotiation.chip_steps', cityId: cityId);
     if (raw is! List) return const [];
     return raw
         .map((step) {
           final naira = (step as num).abs().toInt();
-          return Money.fromMinorUnits(naira * 100, currency: 'NGN');
+          return Money.fromMinorUnits(naira * 100, currency: currency);
         })
         .toList(growable: false);
   }

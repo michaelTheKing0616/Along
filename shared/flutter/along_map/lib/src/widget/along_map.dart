@@ -79,7 +79,8 @@ class _AlongMapState extends State<AlongMap> {
     return MapLibreMap(
       styleString: styleString,
       initialCameraPosition:
-          widget.initialCameraPosition ?? MapCamera.abujaDefault(),
+          widget.initialCameraPosition ??
+          MapCamera.forCenter(lat: 0, lng: 0, zoom: 2),
       myLocationEnabled: widget.myLocationEnabled,
       minMaxZoomPreference: MinMaxZoomPreference(
         0,

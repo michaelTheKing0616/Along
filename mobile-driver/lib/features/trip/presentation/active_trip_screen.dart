@@ -9,6 +9,7 @@ import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 import 'package:mobile_driver/features/payments/data/payments_providers.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_screen.dart';
+import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
@@ -56,6 +57,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     final controller =
         ref.read(activeTripControllerFamilyProvider(args).notifier);
     final appConfig = ref.watch(appConfigProvider);
+    final home = ref.watch(driverHomeControllerProvider);
     final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider);
 
     final trip = state.trip;
@@ -81,7 +83,12 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
               styleUrl: appConfig.tilesBaseUrl == null
                   ? null
                   : '${appConfig.tilesBaseUrl}/styles/along-light.json',
-              initialCameraPosition: MapCamera.abujaDefault(),
+              initialCameraPosition: home.mapCenter == null
+                  ? null
+                  : MapCamera.forCenter(
+                      lat: home.mapCenter!.lat,
+                      lng: home.mapCenter!.lng,
+                    ),
               myLocationEnabled: true,
             ),
           ),

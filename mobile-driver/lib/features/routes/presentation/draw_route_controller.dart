@@ -31,6 +31,7 @@ class DrawRouteState {
     this.publishError,
     this.snapRadiusM = 60,
     this.cityId,
+    this.currencyCode = 'NGN',
   });
 
   final String? profileId;
@@ -41,6 +42,7 @@ class DrawRouteState {
   final String? publishError;
   final int snapRadiusM;
   final String? cityId;
+  final String currencyCode;
 
   RoutePriceValidation get priceValidation =>
       validateRoutePrices(stops.map((s) => s.priceToEnd).toList(growable: false));
@@ -57,6 +59,7 @@ class DrawRouteState {
     String? publishError,
     int? snapRadiusM,
     String? cityId,
+    String? currencyCode,
     bool clearLoadSurcharge = false,
   }) {
     return DrawRouteState(
@@ -68,6 +71,7 @@ class DrawRouteState {
       publishError: publishError,
       snapRadiusM: snapRadiusM ?? this.snapRadiusM,
       cityId: cityId ?? this.cityId,
+      currencyCode: currencyCode ?? this.currencyCode,
     );
   }
 }
@@ -92,6 +96,8 @@ class DrawRouteController extends StateNotifier<DrawRouteState> {
   ConfigRepository get _configRepo => _ref.read(configRepositoryProvider);
   DriverRepository get _driverRepo => _ref.read(driverRepositoryProvider);
 
+  CatalogRepository get _catalogRepo => _ref.read(catalogRepositoryProvider);
+
   Future<void> _bootstrap() async {
     final userId = _ref.read(alongSupabaseProvider).currentUser?.id;
     if (userId == null) return;
@@ -103,8 +109,13 @@ class DrawRouteController extends StateNotifier<DrawRouteState> {
       'graph.snap_radius_m',
       cityId: cityId,
     )).round();
+    final currencyCode = await _catalogRepo.currencyCodeForCity(cityId);
 
-    state = state.copyWith(cityId: cityId, snapRadiusM: snapRadius);
+    state = state.copyWith(
+      cityId: cityId,
+      snapRadiusM: snapRadius,
+      currencyCode: currencyCode,
+    );
   }
 
   static List<RouteStopDraft> _normalizeSequences(List<RouteStopDraft> stops) {
@@ -235,7 +246,7 @@ class DrawRouteController extends StateNotifier<DrawRouteState> {
         stops: state.stops.map((s) => s.toPublishInput()).toList(growable: false),
         loadSurcharge: state.loadSurcharge == null
             ? null
-            : Money.parse(state.loadSurcharge!.toString(), currency: 'NGN'),
+            : Money.parse(state.loadSurcharge!.toString(), currency: state.currencyCode),
       );
       state = state.copyWith(isPublishing: false);
       return true;

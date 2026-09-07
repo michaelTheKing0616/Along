@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 export default function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get('next') ?? '/abuja/dashboard';
+  const next = searchParams.get('next') ?? '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

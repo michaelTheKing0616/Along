@@ -52,7 +52,10 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(onboardingControllerProvider);
     final theme = Theme.of(context);
-    final displayPhone = state.displayPhone ?? '';
+    final formatter = ref.watch(phoneFormatterProvider).valueOrNull;
+    final displayPhone = formatter == null
+        ? (state.phoneE164 ?? '')
+        : (state.displayPhoneFor(formatter) ?? '');
 
     return Scaffold(
       appBar: AppBar(

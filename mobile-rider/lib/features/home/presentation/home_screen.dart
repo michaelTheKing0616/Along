@@ -56,7 +56,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       )
                   : null,
               maxZoom: lowData.enabled ? lowData.maxTileZoom.toDouble() : null,
-              initialCameraPosition: MapCamera.abujaDefault(),
+              initialCameraPosition: state.mapCenter == null
+                  ? null
+                  : MapCamera.forCenter(
+                      lat: state.mapCenter!.lat,
+                      lng: state.mapCenter!.lng,
+                    ),
               myLocationEnabled: state.locationGranted,
               onLayerControllerReady: (controller) {
                 _layerController = controller;

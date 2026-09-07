@@ -73,11 +73,22 @@ export async function fetchPaymentReceipt(
   return parseEnvelope<PaymentReceiptPayload>(res);
 }
 
-export function formatNaira(amount: number): string {
-  return `₦${amount.toLocaleString(undefined, {
+export function formatMoneyAmount(
+  amount: number,
+  currency: string,
+  currencySymbol?: string,
+): string {
+  const symbol =
+    currencySymbol ?? (currency === 'NGN' ? '₦' : `${currency} `);
+  return `${symbol}${amount.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;
+}
+
+/** @deprecated Use formatMoneyAmount with currency from resolve/receipt payload */
+export function formatNaira(amount: number): string {
+  return formatMoneyAmount(amount, 'NGN');
 }
 
 export function modeLabel(mode: string | undefined): string {

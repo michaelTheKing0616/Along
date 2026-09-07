@@ -5,7 +5,10 @@
 
 create policy vehicles_select_admin
   on vehicles for select to authenticated
-  using (is_admin());
+  using (is_admin() AND (EXISTS ( SELECT 1
+   FROM (driver_vehicles dv
+     JOIN drivers d ON ((d.id = dv.driver_id)))
+  WHERE ((dv.vehicle_id = vehicles.id) AND admin_can_access_city(d.city_id)))));
 
 create policy vehicles_select_linked_driver
   on vehicles for select to authenticated

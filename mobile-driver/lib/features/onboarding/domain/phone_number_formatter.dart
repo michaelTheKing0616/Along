@@ -1,25 +1,43 @@
-/// Nigerian phone helpers for D-02 / D-03.
+/// Phone helpers driven by [countries.phone_prefix] (D-02 / D-03).
 class PhoneNumberFormatter {
-  static const countryCode = '+234';
+  const PhoneNumberFormatter({
+    required this.phonePrefix,
+    this.dialCodeDigits,
+    this.localLength = 10,
+    this.validFirstDigits = const {'7', '8', '9'},
+  });
 
-  static bool isValidLocal(String digits) {
-    if (digits.length != 10) return false;
-    final first = digits[0];
-    return first == '7' || first == '8' || first == '9';
+  final String phonePrefix;
+  final String? dialCodeDigits;
+  final int localLength;
+  final Set<String> validFirstDigits;
+
+  String get _dialDigits =>
+      dialCodeDigits ?? phonePrefix.replaceAll(RegExp(r'\D'), '');
+
+  bool isValidLocal(String digits) {
+    final normalized = digits.replaceAll(RegExp(r'\D'), '');
+    if (normalized.length != localLength) return false;
+    if (validFirstDigits.isEmpty) return true;
+    return validFirstDigits.contains(normalized[0]);
   }
 
-  static String toE164(String localDigits) {
+  String toE164(String localDigits) {
     final digits = localDigits.replaceAll(RegExp(r'\D'), '');
     final normalized = digits.startsWith('0') ? digits.substring(1) : digits;
-    return '$countryCode$normalized';
+    return '$phonePrefix$normalized';
   }
 
-  static String formatDisplay(String e164) {
+  String formatDisplay(String e164) {
     final digits = e164.replaceAll(RegExp(r'\D'), '');
-    if (digits.length < 13 || !digits.startsWith('234')) {
+    if (digits.length < _dialDigits.length + 7 ||
+        !digits.startsWith(_dialDigits)) {
       return e164;
     }
-    final local = digits.substring(3);
-    return '$countryCode ${local.substring(0, 3)} ${local.substring(3, 6)} ${local.substring(6)}';
+    final local = digits.substring(_dialDigits.length);
+    if (local.length == 10) {
+      return '$phonePrefix ${local.substring(0, 3)} ${local.substring(3, 6)} ${local.substring(6)}';
+    }
+    return '$phonePrefix $local';
   }
 }

@@ -23,8 +23,8 @@ class AuthState {
   final int resendSecondsRemaining;
   final int? rateLimitRetrySeconds;
 
-  String? get displayPhone =>
-      phoneE164 == null ? null : PhoneNumberFormatter.formatDisplay(phoneE164!);
+  String? displayPhoneFor(PhoneNumberFormatter formatter) =>
+      phoneE164 == null ? null : formatter.formatDisplay(phoneE164!);
 
   AuthState copyWith({
     String? phoneE164,
@@ -64,12 +64,13 @@ class AuthController extends Notifier<AuthState> {
   }
 
   Future<bool> requestOtp(String localDigits) async {
-    if (!PhoneNumberFormatter.isValidLocal(localDigits)) {
+    final formatter = await ref.read(phoneFormatterProvider.future);
+    if (!formatter.isValidLocal(localDigits)) {
       state = state.copyWith(errorMessage: 'invalid_phone');
       return false;
     }
 
-    final e164 = PhoneNumberFormatter.toE164(localDigits);
+    final e164 = formatter.toE164(localDigits);
     state = state.copyWith(
       phoneE164: e164,
       isSubmitting: true,
