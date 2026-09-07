@@ -1,0 +1,9 @@
+route_name,sequence,stage_name,lat,lng,is_official_park
+Beta Car Route,1,Fictional Park North,11.070,7.690,true
+Beta Car Route,2,Beta Junction One,11.071,7.691,false
+Beta Car Route,3,Beta Junction Two,11.073,7.693,false
+Beta Car Route,4,Fictional Park South,11.075,7.695,true
+Beta Keke Route,1,Fictional Park North,11.070,7.690,true
+Beta Keke Route,2,Beta Junction One,11.071,7.691,false
+Beta Keke Route,3,Beta Junction Two,11.073,7.693,false
+Beta Keke Route,4,Fictional Park South,11.075,7.695,true

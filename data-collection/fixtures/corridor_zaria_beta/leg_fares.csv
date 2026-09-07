@@ -1,0 +1,7 @@
+route_name,from_seq,to_seq,fare
+Beta Car Route,1,2,100
+Beta Car Route,2,3,100
+Beta Car Route,3,4,100
+Beta Keke Route,1,2,60
+Beta Keke Route,2,3,60
+Beta Keke Route,3,4,60
