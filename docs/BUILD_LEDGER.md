@@ -1874,3 +1874,19 @@ Config keys: `disclosure.approach_band_s`, `wait.stalled_*`, `wait.release_picku
 - Reviewer verdict: (pending)
 - Rework count: 0
 - Notes/escalations: Attach 00, 09. AC: fresh engineer runs stack from docs only (recorded). Do not flip digital_enabled.
+
+## [Phase 12 / P12-E-01] README, config ref, deploy runbooks
+- Status: PASS WITH NOTES
+- Assigned: 2026-09-07
+- Worker report summary: README 10-command local stack; CONFIG_REFERENCE 161 keys; ADR index; deploy_rollback; ledger archive guide.
+- Reviewer verdict: PASS WITH NOTES — AC MET. Dry-run is partial (stack already up; db reset skipped).
+- Rework count: 0
+- Notes/escalations: Merged 83abadf. Next: P12-E-02. Do not flip digital_enabled.
+
+## [Phase 12 / P12-E-02] Store readiness + W-03 legal
+- Status: IN PROGRESS
+- Assigned: 2026-09-07
+- Worker report summary: (pending)
+- Reviewer verdict: (pending)
+- Rework count: 0
+- Notes/escalations: Depends P11-E-01 PASS. Attach 09 §2, 12 §5. AC: store review passes — artifacts + legal pages required; live store submission DEFERRED (not FAIL). Do not flip digital_enabled. Do not invent P8-E-01 PASS.
