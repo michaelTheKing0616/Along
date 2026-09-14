@@ -20,6 +20,20 @@ class AuthRepository {
     }
   }
 
+  /// Staging/log SMS only — returns null when Termii is live or no code is pending.
+  Future<String?> peekLogOtp(String phoneE164) async {
+    try {
+      final result = await _gateway.rpc(
+        'peek_log_otp',
+        params: {'p_phone': phoneE164},
+      );
+      if (result is String && result.trim().isNotEmpty) return result.trim();
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<User?> verifyOtp({
     required String phoneE164,
     required String token,

@@ -180,6 +180,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             onPressed: () => PayDriverSheet.show(
                               context,
                               trip: liveTrip,
+                              autoInitiate: true,
                             ),
                           ),
                         ),

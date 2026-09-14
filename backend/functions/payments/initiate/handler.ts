@@ -13,7 +13,7 @@ export const paymentInitiateSchema = z.object({
   trip_id: z.string().uuid().optional(),
   amount: z.number().positive().optional(),
   token: z.string().optional(),
-  method_pref: z.enum(['card', 'bank_transfer', 'ussd', 'saved']).default('card'),
+  method_pref: z.enum(['card', 'bank_transfer', 'ussd', 'saved']).default('bank_transfer'),
   channel: z.enum(['app', 'web']).default('app'),
   payer_phone: z.string().optional(),
   confirm_other_driver: z.boolean().optional(),

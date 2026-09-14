@@ -94,6 +94,10 @@
   "@errorGeneric": {
     "description": "Fallback error message"
   },
+  "errorAuthNotConfigured": "This build is not connected to Along. Rebuild the staging APK with env/staging.json.",
+  "@errorAuthNotConfigured": {
+    "description": "R-02 when SUPABASE_URL was not baked into the APK"
+  },
   "navHome": "Home",
   "@navHome": {
     "description": "Bottom nav Home tab"
@@ -623,10 +627,22 @@
   },
   "tripCompletePaidQuestion": "Did you pay {amount}?",
   "@tripCompletePaidQuestion": {
-    "description": "R-17 Tier 1/2 fare confirm",
+    "description": "R-17 cash fare confirm when digital is off",
     "placeholders": {
       "amount": { "type": "String", "example": "₦450" }
     }
+  },
+  "tripCompletePayQuestion": "Pay {amount} to {name}",
+  "@tripCompletePayQuestion": {
+    "description": "R-17 digital-first close-out heading",
+    "placeholders": {
+      "amount": { "type": "String", "example": "₦450" },
+      "name": { "type": "String", "example": "Musa" }
+    }
+  },
+  "tripCompletePaidCash": "Paid cash",
+  "@tripCompletePaidCash": {
+    "description": "R-17 overflow when the rider paid in cash"
   },
   "tripCompleteTier3Question": "What did you pay?",
   "@tripCompleteTier3Question": {
@@ -706,9 +722,43 @@
   "@payDriverMethodSaved": {
     "description": "R-27 default payment method row"
   },
-  "payDriverPending": "Complete payment in your bank app",
+  "payDriverPending": "Transfer {amount} in your bank app",
   "@payDriverPending": {
-    "description": "R-27 pending transfer/USSD state"
+    "description": "R-27 pending transfer heading",
+    "placeholders": {
+      "amount": { "type": "String", "example": "₦450" }
+    }
+  },
+  "payDriverCopyAccount": "Copy number",
+  "@payDriverCopyAccount": {
+    "description": "R-27 copy virtual account CTA"
+  },
+  "payDriverAccountCopied": "Account number copied",
+  "@payDriverAccountCopied": {
+    "description": "R-27 clipboard confirmation"
+  },
+  "payDriverWaitingTransfer": "Waiting for your transfer",
+  "@payDriverWaitingTransfer": {
+    "description": "R-27 pending caption under account details"
+  },
+  "payDriverOtherAmount": "Other",
+  "@payDriverOtherAmount": {
+    "description": "R-27 informal keypad overflow"
+  },
+  "payDriverOtherHint": "Enter amount",
+  "@payDriverOtherHint": {
+    "description": "R-27 keypad field hint"
+  },
+  "payDriverExpires": "Expires in {seconds}s",
+  "@payDriverExpires": {
+    "description": "R-27 transfer account countdown",
+    "placeholders": {
+      "seconds": { "type": "int", "example": "540" }
+    }
+  },
+  "payDriverOpenCheckout": "Open bank page",
+  "@payDriverOpenCheckout": {
+    "description": "R-27 fallback when Paystack returns a hosted URL"
   },
   "payDriverMethodTransfer": "Bank transfer",
   "@payDriverMethodTransfer": {

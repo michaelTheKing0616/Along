@@ -25,7 +25,8 @@ type PaystackInitResponse = {
     ussd_code?: string;
     account_number?: string;
     account_name?: string;
-    bank?: { name?: string };
+    account_expires_at?: string;
+    bank?: { name?: string; slug?: string };
   };
 };
 
@@ -78,6 +79,61 @@ function paystackChannels(method: TripPaymentInitiateParams['method']): string[]
   }
 }
 
+async function initiatePaystackBankTransfer(
+  secretKey: string,
+  fetchImpl: PaystackFetch,
+  params: TripPaymentInitiateParams,
+): Promise<TripPaymentInitiateResult> {
+  const amountKobo = Math.round(params.amount * 100);
+  const commissionKobo = Math.round(params.commissionAmount * 100);
+  const reference = `pay_${params.paymentId.replace(/-/g, '').slice(0, 20)}_${Date.now()}`;
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+
+  const res = await fetchImpl('https://api.paystack.co/charge', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: params.riderEmail ?? `${params.paymentId}@riders.along.ng`,
+      amount: amountKobo,
+      currency: params.currency,
+      reference,
+      subaccount: params.driverSubaccountCode,
+      transaction_charge: commissionKobo,
+      bearer: params.feeBearer,
+      metadata: { payment_id: params.paymentId },
+      bank_transfer: { account_expires_at: expiresAt },
+    }),
+  });
+
+  const payload = (await res.json()) as PaystackInitResponse;
+  if (!res.ok || !payload.status || !payload.data?.reference) {
+    throw new Error(payload.message ?? 'Paystack bank transfer charge failed');
+  }
+
+  const data = payload.data;
+  const result: TripPaymentInitiateResult = {
+    providerReference: data.reference!,
+    expiresAt: data.account_expires_at ?? expiresAt,
+  };
+  if (data.account_number) {
+    result.bankAccount = {
+      account_number: data.account_number,
+      account_name: data.account_name ?? '',
+      bank_name: data.bank?.name ?? '',
+    };
+  }
+  if (data.authorization_url) {
+    result.authorizationUrl = data.authorization_url;
+  }
+  if (!result.bankAccount && !result.authorizationUrl) {
+    throw new Error('Paystack bank transfer did not return account details');
+  }
+  return result;
+}
+
 export function createPaystackProvider(
   secretKey: string,
   fetchImpl: PaystackFetch = fetch,
@@ -86,9 +142,14 @@ export function createPaystackProvider(
     async initiateTripPayment(
       params: TripPaymentInitiateParams,
     ): Promise<TripPaymentInitiateResult> {
+      if (params.method === 'bank_transfer') {
+        return initiatePaystackBankTransfer(secretKey, fetchImpl, params);
+      }
+
       const amountKobo = Math.round(params.amount * 100);
       const commissionKobo = Math.round(params.commissionAmount * 100);
       const reference = `pay_${params.paymentId.replace(/-/g, '').slice(0, 20)}_${Date.now()}`;
+      const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
 
       const res = await fetchImpl('https://api.paystack.co/transaction/initialize', {
         method: 'POST',
@@ -117,9 +178,7 @@ export function createPaystackProvider(
         throw new Error(payload.message ?? 'Paystack initialize failed');
       }
 
-      const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
       const data = payload.data;
-
       const result: TripPaymentInitiateResult = {
         providerReference: data.reference!,
         expiresAt,
@@ -128,13 +187,7 @@ export function createPaystackProvider(
       if (params.method === 'card') {
         result.authorizationUrl = data.authorization_url;
       } else if (params.method === 'ussd') {
-        result.ussdCode = data.ussd_code;
-      } else if (params.method === 'bank_transfer') {
-        result.bankAccount = {
-          account_number: data.account_number,
-          account_name: data.account_name,
-          bank_name: data.bank?.name,
-        };
+        result.ussdCode = data.ussd_code ?? data.authorization_url;
       }
 
       return result;

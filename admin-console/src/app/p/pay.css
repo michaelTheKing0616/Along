@@ -179,3 +179,36 @@
   margin-bottom: var(--space-4);
   font-size: 0.875rem;
 }
+
+.w04-other {
+  display: block;
+  margin: 0 auto var(--space-4);
+  background: transparent;
+  color: var(--w04-yellow);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.w04-transfer {
+  text-align: center;
+  margin: var(--space-4) 0;
+}
+
+.w04-transfer-bank {
+  color: #b8b8b8;
+  margin: 0 0 var(--space-2);
+}
+
+.w04-transfer-account {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--space-2);
+}
+
+.w04-transfer-name,
+.w04-transfer-wait {
+  color: #b8b8b8;
+  font-size: 0.875rem;
+}

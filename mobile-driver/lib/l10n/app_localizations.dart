@@ -206,6 +206,9 @@ abstract class AppLocalizations {
   /// **'Something went wrong. Please try again.'**
   String get errorGeneric;
 
+  /// Staging APK missing Supabase dart-defines.
+  String get errorAuthNotConfigured;
+
   /// No description provided for @errorValidation.
   ///
   /// In en, this message translates to:

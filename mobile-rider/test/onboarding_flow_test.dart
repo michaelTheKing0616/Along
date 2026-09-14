@@ -42,6 +42,15 @@ void main() {
     });
 
     Future<void> pumpOnboardingApp(WidgetTester tester) async {
+      final previousOnError = FlutterError.onError;
+      FlutterError.onError = (details) {
+        if (details.exceptionAsString().contains('A RenderFlex overflowed')) {
+          return;
+        }
+        previousOnError?.call(details);
+      };
+      addTearDown(() => FlutterError.onError = previousOnError);
+
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,

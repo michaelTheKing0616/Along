@@ -79,12 +79,14 @@ class PhoneField extends StatelessWidget {
     this.controller,
     this.errorText,
     this.onChanged,
+    this.onSubmitted,
   });
 
   final TextEditingController? controller;
   final String? errorText;
   final String countryCode;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +117,8 @@ class PhoneField extends StatelessWidget {
                 child: TextField(
                   controller: controller,
                   onChanged: onChanged,
+                  onSubmitted: onSubmitted,
+                  textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   style: AlongText.body,

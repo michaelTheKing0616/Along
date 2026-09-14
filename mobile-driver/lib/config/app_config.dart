@@ -25,6 +25,14 @@ class AppConfig {
   bool get hasSentry =>
       sentryDsn != null && sentryDsn!.trim().isNotEmpty;
 
+  bool get hasBackend {
+    final url = supabaseUrl.trim();
+    final key = supabaseAnonKey.trim();
+    if (url.isEmpty || key.isEmpty) return false;
+    if (url.contains('placeholder')) return false;
+    return url.startsWith('http://') || url.startsWith('https://');
+  }
+
   static AppConfig fromEnvironment() {
     const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
     const supabaseUrl = String.fromEnvironment('SUPABASE_URL');

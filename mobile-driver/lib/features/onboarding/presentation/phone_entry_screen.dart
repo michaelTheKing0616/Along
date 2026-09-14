@@ -39,6 +39,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final config = ref.read(appConfigProvider);
     return switch (state.errorMessage) {
       'invalid_phone' => l10n.errorInvalidPhone,
+      'not_configured' => l10n.errorAuthNotConfigured,
       'rate_limited' => l10n.errorRateLimited(
           state.rateLimitRetrySeconds ?? config.otpRateLimitRetryS,
         ),
@@ -52,58 +53,88 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(authControllerProvider);
     final theme = Theme.of(context);
+    final phonePrefix =
+        ref.watch(phoneFormatterProvider).valueOrNull?.phonePrefix ?? '+234';
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s24),
+          padding: EdgeInsets.fromLTRB(
+            AlongSpace.s24,
+            AlongSpace.s16,
+            AlongSpace.s24,
+            AlongSpace.s24 + bottomInset,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AlongSpace.s16),
-              SvgPicture.asset(
-                alongLogoBlackSvg,
-                package: 'along_design',
-                width: 96,
-              ),
-              const SizedBox(height: AlongSpace.s32),
-              Text(l10n.phoneEntryTitle, style: theme.textTheme.headlineLarge),
-              const SizedBox(height: AlongSpace.s8),
-              Text(l10n.driverBrandingLine, style: theme.textTheme.titleMedium),
-              const SizedBox(height: AlongSpace.s8),
-              Text(l10n.phoneEntrySubtitle, style: theme.textTheme.bodyLarge),
-              const SizedBox(height: AlongSpace.s24),
-              PhoneField(
-                controller: _controller,
-                errorText: _localizedError(l10n, state),
-              ),
-              const SizedBox(height: AlongSpace.s16),
-              Text.rich(
-                TextSpan(
-                  style: theme.textTheme.bodySmall,
-                  children: [
-                    TextSpan(text: l10n.legalPrefix),
-                    TextSpan(
-                      text: l10n.termsLink,
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: AlongColors.ink900,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SvgPicture.asset(
+                        alongLogoBlackSvg,
+                        package: 'along_design',
+                        width: 96,
                       ),
-                      recognizer: TapGestureRecognizer()..onTap = () {},
-                    ),
-                    TextSpan(text: l10n.legalMiddle),
-                    TextSpan(
-                      text: l10n.privacyLink,
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: AlongColors.ink900,
+                      const SizedBox(height: AlongSpace.s32),
+                      Text(
+                        l10n.phoneEntryTitle,
+                        style: theme.textTheme.headlineLarge,
                       ),
-                      recognizer: TapGestureRecognizer()..onTap = () {},
-                    ),
-                  ],
+                      const SizedBox(height: AlongSpace.s8),
+                      Text(
+                        l10n.driverBrandingLine,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AlongSpace.s8),
+                      Text(
+                        l10n.phoneEntrySubtitle,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      const SizedBox(height: AlongSpace.s24),
+                      PhoneField(
+                        controller: _controller,
+                        countryCode: phonePrefix,
+                        errorText: _localizedError(l10n, state),
+                        onChanged: (_) {
+                          ref.read(authControllerProvider.notifier).clearError();
+                        },
+                        onSubmitted: (_) => _submit(),
+                      ),
+                      const SizedBox(height: AlongSpace.s16),
+                      Text.rich(
+                        TextSpan(
+                          style: theme.textTheme.bodySmall,
+                          children: [
+                            TextSpan(text: l10n.legalPrefix),
+                            TextSpan(
+                              text: l10n.termsLink,
+                              style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: AlongColors.ink900,
+                              ),
+                              recognizer: TapGestureRecognizer()..onTap = () {},
+                            ),
+                            TextSpan(text: l10n.legalMiddle),
+                            TextSpan(
+                              text: l10n.privacyLink,
+                              style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: AlongColors.ink900,
+                              ),
+                              recognizer: TapGestureRecognizer()..onTap = () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const Spacer(),
               AlongButton(
                 key: const Key('phone_continue_button'),
                 label: l10n.continueButton,
@@ -112,7 +143,6 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                     ? AlongButtonVisualState.loading
                     : AlongButtonVisualState.normal,
               ),
-              const SizedBox(height: AlongSpace.s24),
             ],
           ),
         ),

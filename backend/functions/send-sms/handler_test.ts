@@ -44,6 +44,9 @@ function createMockService(provider = 'log'): SupabaseClient {
       if (name === 'cfg' && args?.p_key === 'sms.provider') {
         return Promise.resolve({ data: JSON.stringify(provider), error: null });
       }
+      if (name === 'record_log_otp') {
+        return Promise.resolve({ data: null, error: null });
+      }
       return Promise.resolve({ data: null, error: { message: `unexpected rpc: ${name}` } });
     },
   } as unknown as SupabaseClient;

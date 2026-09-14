@@ -64,7 +64,15 @@ class AuthController extends Notifier<AuthState> {
   }
 
   Future<bool> requestOtp(String localDigits) async {
-    final formatter = await ref.read(phoneFormatterProvider.future);
+    final config = ref.read(appConfigProvider);
+    if (!config.hasBackend) {
+      state = state.copyWith(errorMessage: 'not_configured');
+      return false;
+    }
+
+    final formatter = ref.read(phoneFormatterProvider).valueOrNull ??
+        const PhoneNumberFormatter(phonePrefix: '+234');
+
     if (!formatter.isValidLocal(localDigits)) {
       state = state.copyWith(errorMessage: 'invalid_phone');
       return false;
@@ -78,7 +86,7 @@ class AuthController extends Notifier<AuthState> {
     );
 
     try {
-      await _auth.requestOtp(e164);
+      await _auth.requestOtp(e164).timeout(const Duration(seconds: 20));
       _startResendCountdown();
       state = state.copyWith(isSubmitting: false, clearError: true);
       return true;
@@ -88,6 +96,9 @@ class AuthController extends Notifier<AuthState> {
         errorMessage: _errorKey(e),
         rateLimitRetrySeconds: _retryAfterSeconds(e),
       );
+      return false;
+    } on TimeoutException {
+      state = state.copyWith(isSubmitting: false, errorMessage: 'generic');
       return false;
     } catch (_) {
       state = state.copyWith(isSubmitting: false, errorMessage: 'generic');
@@ -144,6 +155,20 @@ class AuthController extends Notifier<AuthState> {
   void clearPhone() {
     _resendTimer?.cancel();
     state = const AuthState();
+  }
+
+  void clearError() {
+    if (state.errorMessage == null) return;
+    state = state.copyWith(clearError: true);
+  }
+
+  Future<String?> peekStagingOtp() {
+    final phone = state.phoneE164;
+    if (phone == null) return Future.value(null);
+    if (ref.read(appConfigProvider).flavor == 'prod') {
+      return Future.value(null);
+    }
+    return _auth.peekLogOtp(phone);
   }
 
   Future<DriverOnboardingStep> resolveLaunchStep() async {

@@ -55,7 +55,9 @@ ProviderContainer _paymentContainer(
 
 void main() {
   List<Map<String, dynamic>> digitalEnabledConfig() => [
-        ...defaultTestConfigRows(),
+        ...defaultTestConfigRows().where(
+          (row) => row['key'] != 'payments.digital_enabled',
+        ),
         {
           'key': 'payments.digital_enabled',
           'scope_type': 'global',
@@ -165,6 +167,115 @@ void main() {
       expect(payTaps, 1);
       expect(find.byKey(const Key('pay_driver_success_itemised')), findsOneWidget);
       expect(fakeSupabase.paymentInitiateInvokeCount, 1);
+    });
+
+    testWidgets('defaults to bank transfer even when a card is saved', (tester) async {
+      fakeSupabase.paymentInitiateImmediateSuccess = false;
+      fakeSupabase.paymentInitiateTransferAccount = {
+        'account_number': '0123456789',
+        'account_name': 'PAYSTACK CHECKOUT',
+        'bank_name': 'Test Bank',
+      };
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: Builder(
+            builder: (context) => AlongButton(
+              label: 'Open pay',
+              onPressed: () => PayDriverSheet.show(
+                context,
+                driverCode: 'TEST0301',
+                preloadedResolve: QrResolveResult.fromJson(
+                  sampleQrResolveMatchedTrip(),
+                ),
+                trip: trip,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open pay'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('pay_driver_submit')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      expect(fakeSupabase.lastPaymentInitiateBody?['method_pref'], 'bank_transfer');
+      expect(find.byKey(const Key('pay_driver_account_number')), findsOneWidget);
+      expect(find.text('0123456789'), findsOneWidget);
+    });
+
+    testWidgets('unique suggested fare skips amount chips', (tester) async {
+      final unique = {
+        'driver': {
+          'first_name': 'Musa',
+          'plate': 'ABC-123-XY',
+          'mode': {'code': 'keke', 'label': 'Keke'},
+          'accepts_digital': true,
+          'active': true,
+        },
+        'suggested_amounts': [
+          {'amount': '450.00', 'currency': 'NGN'},
+        ],
+        'currency': 'NGN',
+        'min_amount': {'amount': '100.00', 'currency': 'NGN'},
+      };
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: Builder(
+            builder: (context) => AlongButton(
+              label: 'Open pay',
+              onPressed: () => PayDriverSheet.show(
+                context,
+                driverCode: 'TEST0301',
+                preloadedResolve: QrResolveResult.fromJson(unique),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open pay'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ActionChip), findsNothing);
+      expect(find.byKey(const Key('pay_driver_other_amount')), findsOneWidget);
+      expect(find.byKey(const Key('pay_driver_submit')), findsOneWidget);
+    });
+
+    testWidgets('in-trip Pay auto-initiates transfer', (tester) async {
+      fakeSupabase.paymentInitiateImmediateSuccess = false;
+      fakeSupabase.paymentInitiateTransferAccount = {
+        'account_number': '5555666677',
+        'account_name': 'PAYSTACK CHECKOUT',
+        'bank_name': 'Test Bank',
+      };
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: Builder(
+            builder: (context) => AlongButton(
+              label: 'Open pay',
+              onPressed: () => PayDriverSheet.show(
+                context,
+                trip: trip,
+                autoInitiate: true,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open pay'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      expect(fakeSupabase.paymentInitiateInvokeCount, 1);
+      expect(find.byKey(const Key('pay_driver_account_number')), findsOneWidget);
+      expect(find.text('5555666677'), findsOneWidget);
     });
 
     testWidgets('different_driver warning blocks Pay until confirmed', (tester) async {

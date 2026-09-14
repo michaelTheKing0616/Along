@@ -129,6 +129,31 @@ class PaymentMethodSummary {
   }
 }
 
+/// Paystack Pay-with-Transfer virtual account shown on R-27 pending.
+class TransferAccount {
+  const TransferAccount({
+    required this.accountNumber,
+    required this.accountName,
+    required this.bankName,
+  });
+
+  final String accountNumber;
+  final String accountName;
+  final String bankName;
+
+  factory TransferAccount.fromJson(Map<String, dynamic> json) {
+    final bank = json['bank'];
+    final bankName = json['bank_name'] as String? ??
+        (bank is Map ? bank['name'] as String? : bank as String?) ??
+        '';
+    return TransferAccount(
+      accountNumber: json['account_number'] as String? ?? '',
+      accountName: json['account_name'] as String? ?? '',
+      bankName: bankName,
+    );
+  }
+}
+
 /// Result of `payments/initiate`.
 class PaymentInitiateResult {
   const PaymentInitiateResult({
@@ -154,6 +179,11 @@ class PaymentInitiateResult {
   final String? status;
 
   bool get isImmediateSuccess => status == 'succeeded';
+
+  TransferAccount? get transfer {
+    if (transferAccount == null) return null;
+    return TransferAccount.fromJson(transferAccount!);
+  }
 
   factory PaymentInitiateResult.fromJson(Map<String, dynamic> json) {
     final currency = json['currency'] as String? ?? 'NGN';
@@ -190,6 +220,7 @@ class PaymentReceipt {
     required this.driverAmount,
     required this.driverFirstName,
     this.tripId,
+    this.status,
   });
 
   final String paymentId;
@@ -198,6 +229,9 @@ class PaymentReceipt {
   final Money driverAmount;
   final String driverFirstName;
   final String? tripId;
+  final String? status;
+
+  bool get isSucceeded => status == 'succeeded';
 
   factory PaymentReceipt.fromJson(Map<String, dynamic> json) {
     final currency = json['currency'] as String? ?? 'NGN';
@@ -219,6 +253,7 @@ class PaymentReceipt {
       driverAmount: money('driver_amount'),
       driverFirstName: json['driver_first_name'] as String? ?? '',
       tripId: json['trip_id'] as String?,
+      status: json['status'] as String?,
     );
   }
 }

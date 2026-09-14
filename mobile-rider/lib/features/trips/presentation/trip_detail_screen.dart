@@ -1,12 +1,13 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/routing/routes.dart';
 
 /// R-22 Trip detail — itemised fare + text receipt share.
 class TripDetailScreen extends ConsumerWidget {

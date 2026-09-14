@@ -62,7 +62,11 @@ export async function handleSendSms(
   const phone = parsed.data.user.phone ?? null;
 
   if (provider === 'log') {
-    // doc 12: OTP never logged — staging log provider records delivery only.
+    // OTP stays out of stdout (ADR-0012). Staging device smokes read via peek_log_otp.
+    await deps.service.rpc('record_log_otp', {
+      p_phone: phone ?? '',
+      p_otp: parsed.data.sms.otp,
+    });
     deps.log({
       event: 'sms_otp_log',
       provider,

@@ -242,22 +242,39 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             digitalEnabled.maybeWhen(
                               data: (enabled) {
                                 if (!enabled) return const SizedBox.shrink();
-                                return Column(
-                                  children: [
-                                    AlongButton(
-                                      key: const Key('active_trip_request_payment'),
-                                      label: l10n.requestPayment,
-                                      variant: AlongButtonVariant.secondary,
-                                      onPressed: () => context.push(
-                                        AppRoutes.paymentRequest,
-                                        extra: PaymentRequestArgs(
-                                          tripId: args.tripId,
-                                          riderName: riderName,
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: AlongButton(
+                                          key: const Key('active_trip_request_payment'),
+                                          label: l10n.requestPayment,
+                                          variant: AlongButtonVariant.yellow,
+                                          onPressed: () => context.push(
+                                            AppRoutes.paymentRequest,
+                                            extra: PaymentRequestArgs(
+                                              tripId: args.tripId,
+                                              riderName: riderName,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: AlongSpace.s8),
-                                  ],
+                                      const SizedBox(width: AlongSpace.s8),
+                                      Expanded(
+                                        child: AlongButton(
+                                          key: const Key('active_trip_complete'),
+                                          label: l10n.activeTripComplete,
+                                          visualState: state.isSubmitting
+                                              ? AlongButtonVisualState.loading
+                                              : AlongButtonVisualState.normal,
+                                          onPressed: state.isSubmitting
+                                              ? null
+                                              : () => controller.completeTrip(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               },
                               orElse: () => const SizedBox.shrink(),
@@ -271,17 +288,22 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                 tripId: args.tripId,
                               ),
                             ),
-                            const SizedBox(height: AlongSpace.s8),
-                            AlongButton(
-                              key: const Key('active_trip_complete'),
-                              label: l10n.activeTripComplete,
-                              visualState: state.isSubmitting
-                                  ? AlongButtonVisualState.loading
-                                  : AlongButtonVisualState.normal,
-                              onPressed: state.isSubmitting
-                                  ? null
-                                  : () => controller.completeTrip(),
-                            ),
+                            if (digitalEnabled.maybeWhen(
+                              data: (enabled) => !enabled,
+                              orElse: () => true,
+                            )) ...[
+                              const SizedBox(height: AlongSpace.s8),
+                              AlongButton(
+                                key: const Key('active_trip_complete'),
+                                label: l10n.activeTripComplete,
+                                visualState: state.isSubmitting
+                                    ? AlongButtonVisualState.loading
+                                    : AlongButtonVisualState.normal,
+                                onPressed: state.isSubmitting
+                                    ? null
+                                    : () => controller.completeTrip(),
+                              ),
+                            ],
                           ],
                           if (state.errorMessage != null) ...[
                             const SizedBox(height: AlongSpace.s8),

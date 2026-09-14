@@ -15,9 +15,19 @@ class PhoneNumberFormatter {
   String get _dialDigits =>
       dialCodeDigits ?? phonePrefix.replaceAll(RegExp(r'\D'), '');
 
+  /// Local subscriber digits: strips spaces and a leading trunk `0`
+  /// (`0803…` → `803…`) so the field matches how people actually type NG numbers.
+  String localSubscriberDigits(String raw) {
+    var digits = raw.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('0')) {
+      digits = digits.substring(1);
+    }
+    return digits;
+  }
+
   /// Validates a local mobile number for the configured country.
   bool isValidLocal(String digits) {
-    final normalized = digits.replaceAll(RegExp(r'\D'), '');
+    final normalized = localSubscriberDigits(digits);
     if (normalized.length != localLength) return false;
     if (validFirstDigits.isEmpty) return true;
     return validFirstDigits.contains(normalized[0]);
@@ -25,9 +35,7 @@ class PhoneNumberFormatter {
 
   /// Converts local digits to E.164.
   String toE164(String localDigits) {
-    final digits = localDigits.replaceAll(RegExp(r'\D'), '');
-    final normalized = digits.startsWith('0') ? digits.substring(1) : digits;
-    return '$phonePrefix$normalized';
+    return '$phonePrefix${localSubscriberDigits(localDigits)}';
   }
 
   /// Formats E.164 for display.

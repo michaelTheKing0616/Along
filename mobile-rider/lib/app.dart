@@ -10,6 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';

@@ -15,17 +15,23 @@ class PhoneNumberFormatter {
   String get _dialDigits =>
       dialCodeDigits ?? phonePrefix.replaceAll(RegExp(r'\D'), '');
 
+  String localSubscriberDigits(String raw) {
+    var digits = raw.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('0')) {
+      digits = digits.substring(1);
+    }
+    return digits;
+  }
+
   bool isValidLocal(String digits) {
-    final normalized = digits.replaceAll(RegExp(r'\D'), '');
+    final normalized = localSubscriberDigits(digits);
     if (normalized.length != localLength) return false;
     if (validFirstDigits.isEmpty) return true;
     return validFirstDigits.contains(normalized[0]);
   }
 
   String toE164(String localDigits) {
-    final digits = localDigits.replaceAll(RegExp(r'\D'), '');
-    final normalized = digits.startsWith('0') ? digits.substring(1) : digits;
-    return '$phonePrefix$normalized';
+    return '$phonePrefix${localSubscriberDigits(localDigits)}';
   }
 
   String formatDisplay(String e164) {

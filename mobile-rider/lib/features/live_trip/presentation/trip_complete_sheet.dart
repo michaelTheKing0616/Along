@@ -45,7 +45,9 @@ class TripCompleteSheet extends ConsumerStatefulWidget {
 }
 
 class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
-  _CompleteStep _step = _CompleteStep.fare;
+  late _CompleteStep _step = widget.trip.paymentMethod == 'digital'
+      ? _CompleteStep.rating
+      : _CompleteStep.fare;
   int _rating = 5;
   final Set<String> _tags = {};
   bool _busy = false;
@@ -103,6 +105,20 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
     }
   }
 
+  bool get _alreadyPaidDigitally => widget.trip.paymentMethod == 'digital';
+
+  Future<void> _payDigitally() async {
+    final paid = await PayDriverSheet.show(
+      context,
+      trip: widget.trip,
+      receipt: widget.receipt,
+      autoInitiate: true,
+    );
+    if (paid && mounted) {
+      await _confirmAsShown();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -120,37 +136,31 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_step == _CompleteStep.fare) ...[
-              Text(
-                _isTier3
-                    ? l10n.tripCompleteTier3Question
-                    : l10n.tripCompletePaidQuestion(formatAppMoney(ref, widget.trip.totalFare)),
-                style: AlongText.heading2,
-              ),
-              const SizedBox(height: AlongSpace.s16),
-              if (!_isTier3)
+              if (digitalEnabled && !_alreadyPaidDigitally && !_isTier3) ...[
+                Text(
+                  l10n.tripCompletePayQuestion(
+                    formatAppMoney(ref, widget.trip.totalFare),
+                    widget.trip.driver.displayName,
+                  ),
+                  style: AlongText.heading2,
+                ),
+                const SizedBox(height: AlongSpace.s16),
                 AlongButton(
-                  key: const Key('trip_complete_yes'),
-                  label: l10n.tripCompleteYes,
+                  key: const Key('trip_complete_pay'),
+                  label: l10n.payDriverCta(formatAppMoney(ref, widget.trip.totalFare)),
+                  variant: AlongButtonVariant.yellow,
                   visualState: _busy
                       ? AlongButtonVisualState.loading
                       : AlongButtonVisualState.normal,
-                  onPressed: _busy ? null : _confirmAsShown,
-                )
-              else
-                Wrap(
-                  spacing: AlongSpace.s8,
-                  runSpacing: AlongSpace.s8,
-                  children: fareConfirmChipAmounts(_fareNaira)
-                      .map(
-                        (amount) => _AmountChip(
-                          key: Key('trip_complete_chip_$amount'),
-                          label: formatAppMoneyMajor(ref, amount),
-                          onTap: _busy ? null : () => _confirmDifferent(amount),
-                        ),
-                      )
-                      .toList(),
+                  onPressed: _busy ? null : _payDigitally,
                 ),
-              if (!_isTier3) ...[
+                const SizedBox(height: AlongSpace.s8),
+                AlongButton(
+                  key: const Key('trip_complete_paid_cash'),
+                  label: l10n.tripCompletePaidCash,
+                  variant: AlongButtonVariant.tertiary,
+                  onPressed: _busy ? null : _confirmAsShown,
+                ),
                 const SizedBox(height: AlongSpace.s8),
                 AlongButton(
                   key: const Key('trip_complete_different'),
@@ -160,6 +170,50 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                       ? null
                       : () => setState(() => _step = _CompleteStep.different),
                 ),
+              ] else ...[
+                Text(
+                  _isTier3
+                      ? l10n.tripCompleteTier3Question
+                      : l10n.tripCompletePaidQuestion(
+                          formatAppMoney(ref, widget.trip.totalFare),
+                        ),
+                  style: AlongText.heading2,
+                ),
+                const SizedBox(height: AlongSpace.s16),
+                if (!_isTier3)
+                  AlongButton(
+                    key: const Key('trip_complete_yes'),
+                    label: l10n.tripCompleteYes,
+                    visualState: _busy
+                        ? AlongButtonVisualState.loading
+                        : AlongButtonVisualState.normal,
+                    onPressed: _busy ? null : _confirmAsShown,
+                  )
+                else
+                  Wrap(
+                    spacing: AlongSpace.s8,
+                    runSpacing: AlongSpace.s8,
+                    children: fareConfirmChipAmounts(_fareNaira)
+                        .map(
+                          (amount) => _AmountChip(
+                            key: Key('trip_complete_chip_$amount'),
+                            label: formatAppMoneyMajor(ref, amount),
+                            onTap: _busy ? null : () => _confirmDifferent(amount),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                if (!_isTier3) ...[
+                  const SizedBox(height: AlongSpace.s8),
+                  AlongButton(
+                    key: const Key('trip_complete_different'),
+                    label: l10n.tripCompleteDifferent,
+                    variant: AlongButtonVariant.secondary,
+                    onPressed: _busy
+                        ? null
+                        : () => setState(() => _step = _CompleteStep.different),
+                  ),
+                ],
               ],
             ] else if (_step == _CompleteStep.different) ...[
               Text(l10n.tripCompleteDifferentPrompt, style: AlongText.heading2),
@@ -215,19 +269,6 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                     ? AlongButtonVisualState.loading
                     : AlongButtonVisualState.normal,
                 onPressed: _busy ? null : _submitRating,
-              ),
-            ],
-            if (digitalEnabled && _step == _CompleteStep.rating) ...[
-              const SizedBox(height: AlongSpace.s8),
-              AlongButton(
-                key: const Key('trip_complete_pay'),
-                label: l10n.payDriverCta(formatAppMoney(ref, widget.trip.totalFare)),
-                variant: AlongButtonVariant.yellow,
-                onPressed: () => PayDriverSheet.show(
-                  context,
-                  trip: widget.trip,
-                  receipt: widget.receipt,
-                ),
               ),
             ],
           ],

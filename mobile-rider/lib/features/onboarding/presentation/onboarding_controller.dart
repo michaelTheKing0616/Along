@@ -66,7 +66,15 @@ class OnboardingController extends Notifier<OnboardingState> {
   }
 
   Future<bool> requestOtp(String localDigits) async {
-    final formatter = await ref.read(phoneFormatterProvider.future);
+    final config = ref.read(appConfigProvider);
+    if (!config.hasBackend) {
+      state = state.copyWith(errorMessage: 'not_configured');
+      return false;
+    }
+
+    final formatter = ref.read(phoneFormatterProvider).valueOrNull ??
+        const PhoneNumberFormatter(phonePrefix: '+234');
+
     if (!formatter.isValidLocal(localDigits)) {
       state = state.copyWith(errorMessage: 'invalid_phone');
       return false;
@@ -80,16 +88,21 @@ class OnboardingController extends Notifier<OnboardingState> {
     );
 
     try {
-      await _auth.requestOtp(e164);
+      await _auth.requestOtp(e164).timeout(const Duration(seconds: 20));
       _startResendCountdown();
       state = state.copyWith(isSubmitting: false, clearError: true);
       return true;
     } on AlongException catch (e) {
       state = state.copyWith(
         isSubmitting: false,
-        errorMessage: _errorKey(e),
+        errorMessage: e.code == AlongErrorCode.rateLimited
+            ? 'rate_limited'
+            : 'generic',
         rateLimitRetrySeconds: _retryAfterSeconds(e),
       );
+      return false;
+    } on TimeoutException {
+      state = state.copyWith(isSubmitting: false, errorMessage: 'generic');
       return false;
     } catch (_) {
       state = state.copyWith(isSubmitting: false, errorMessage: 'generic');
@@ -164,6 +177,20 @@ class OnboardingController extends Notifier<OnboardingState> {
   void clearPhone() {
     _resendTimer?.cancel();
     state = const OnboardingState();
+  }
+
+  void clearError() {
+    if (state.errorMessage == null) return;
+    state = state.copyWith(clearError: true);
+  }
+
+  Future<String?> peekStagingOtp() {
+    final phone = state.phoneE164;
+    if (phone == null) return Future.value(null);
+    if (ref.read(appConfigProvider).flavor == 'prod') {
+      return Future.value(null);
+    }
+    return _auth.peekLogOtp(phone);
   }
 
   Future<LaunchDestination> resolveLaunchDestination() async {

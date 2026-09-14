@@ -218,6 +218,12 @@ abstract class AppLocalizations {
   /// **'Something went wrong. Please try again.'**
   String get errorGeneric;
 
+  /// R-02 when SUPABASE_URL was not baked into the APK
+  ///
+  /// In en, this message translates to:
+  /// **'This build is not connected to Along. Rebuild the staging APK with env/staging.json.'**
+  String get errorAuthNotConfigured;
+
   /// Bottom nav Home tab
   ///
   /// In en, this message translates to:
@@ -859,11 +865,23 @@ abstract class AppLocalizations {
   /// **'Trip complete'**
   String get tripCompleteTitle;
 
-  /// R-17 Tier 1/2 fare confirm
+  /// R-17 cash fare confirm when digital is off
   ///
   /// In en, this message translates to:
   /// **'Did you pay {amount}?'**
   String tripCompletePaidQuestion(String amount);
+
+  /// R-17 digital-first close-out heading
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {amount} to {name}'**
+  String tripCompletePayQuestion(String amount, String name);
+
+  /// R-17 overflow when the rider paid in cash
+  ///
+  /// In en, this message translates to:
+  /// **'Paid cash'**
+  String get tripCompletePaidCash;
 
   /// R-17 Tier 3 fare confirm (FM33)
   ///
@@ -967,11 +985,53 @@ abstract class AppLocalizations {
   /// **'Visa ···4242'**
   String get payDriverMethodSaved;
 
-  /// R-27 pending transfer/USSD state
+  /// R-27 pending transfer heading
   ///
   /// In en, this message translates to:
-  /// **'Complete payment in your bank app'**
-  String get payDriverPending;
+  /// **'Transfer {amount} in your bank app'**
+  String payDriverPending(String amount);
+
+  /// R-27 copy virtual account CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Copy number'**
+  String get payDriverCopyAccount;
+
+  /// R-27 clipboard confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Account number copied'**
+  String get payDriverAccountCopied;
+
+  /// R-27 pending caption under account details
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your transfer'**
+  String get payDriverWaitingTransfer;
+
+  /// R-27 informal keypad overflow
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get payDriverOtherAmount;
+
+  /// R-27 keypad field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount'**
+  String get payDriverOtherHint;
+
+  /// R-27 transfer account countdown
+  ///
+  /// In en, this message translates to:
+  /// **'Expires in {seconds}s'**
+  String payDriverExpires(int seconds);
+
+  /// R-27 fallback when Paystack returns a hosted URL
+  ///
+  /// In en, this message translates to:
+  /// **'Open bank page'**
+  String get payDriverOpenCheckout;
 
   /// R-27 default method when transfer preferred
   ///

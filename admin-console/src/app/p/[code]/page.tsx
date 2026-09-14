@@ -73,6 +73,8 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
   const locked = lockedAmount(resolve);
   const minAmount = resolve.min_amount?.amount ?? 100;
   const chips = resolve.suggested_amounts ?? [];
+  const uniqueChip = locked == null && chips.length === 1 ? chips[0].amount : null;
+  const resolvedAmount = locked ?? uniqueChip;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
@@ -96,10 +98,10 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
       ) : null}
 
       <div className="w04-amount-display" data-testid="w04-amount">
-        {formatNaira(locked ?? 0)}
+        {formatNaira(resolvedAmount ?? 0)}
       </div>
 
-      {!locked && chips.length > 0 ? (
+      {!resolvedAmount && chips.length > 1 ? (
         <div className="w04-chips" data-testid="w04-chips">
           {chips.map((chip) => (
             <button
@@ -115,8 +117,18 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
         </div>
       ) : null}
 
-      {!locked ? (
-        <div className="w04-keypad" data-testid="w04-keypad">
+      {uniqueChip != null ? (
+        <button type="button" className="w04-other" data-testid="w04-other">
+          Other
+        </button>
+      ) : null}
+
+      {!resolvedAmount || uniqueChip != null ? (
+        <div
+          className="w04-keypad"
+          data-testid="w04-keypad"
+          hidden={uniqueChip != null}
+        >
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'back', '0'].map((key) => (
             <button
               key={key}
@@ -138,12 +150,22 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
 
       <div className="w04-error" role="alert" data-testid="w04-pay-error" hidden />
 
+      <div className="w04-transfer" data-testid="w04-transfer" hidden>
+        <p className="w04-transfer-bank" data-testid="w04-transfer-bank"></p>
+        <p className="w04-transfer-account" data-testid="w04-transfer-account"></p>
+        <p className="w04-transfer-name" data-testid="w04-transfer-name"></p>
+        <button type="button" className="w04-pay-btn" data-testid="w04-copy-account">
+          Copy number
+        </button>
+        <p className="w04-transfer-wait">Waiting for your transfer</p>
+      </div>
+
       <button
         type="button"
         className="w04-pay-btn"
         data-testid="w04-pay-btn"
         data-min={minAmount}
-        data-locked={locked != null ? String(locked) : ''}
+        data-locked={resolvedAmount != null ? String(resolvedAmount) : ''}
         data-code={code}
         data-token={token ?? ''}
         data-supabase-url={supabaseUrl}
@@ -162,10 +184,12 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
         dangerouslySetInnerHTML={{
           __html: `
 (function () {
-  var digits = ${locked != null ? String(Math.round(locked * 100)) : "''"};
+  var digits = ${resolvedAmount != null ? String(Math.round(resolvedAmount * 100)) : "''"};
   var amountEl = document.querySelector('[data-testid="w04-amount"]');
   var payBtn = document.querySelector('[data-testid="w04-pay-btn"]');
   var errEl = document.querySelector('[data-testid="w04-pay-error"]');
+  var keypad = document.querySelector('[data-testid="w04-keypad"]');
+  var transferEl = document.querySelector('[data-testid="w04-transfer"]');
   var minAmount = Number(payBtn.getAttribute('data-min') || '100');
   var lockedVal = payBtn.getAttribute('data-locked');
   var isLocked = lockedVal !== '';
@@ -181,7 +205,16 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
     payBtn.disabled = amount < minAmount;
   }
 
-  if (!isLocked) {
+  var otherBtn = document.querySelector('[data-testid="w04-other"]');
+  if (otherBtn) {
+    otherBtn.addEventListener('click', function () {
+      isLocked = false;
+      if (keypad) keypad.hidden = false;
+      otherBtn.hidden = true;
+    });
+  }
+
+  if (!isLocked || otherBtn) {
     document.querySelectorAll('[data-testid^="w04-chip-"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var a = Number(btn.getAttribute('data-amount'));
@@ -200,14 +233,11 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
         renderAmount();
       });
     });
-    renderAmount();
-  } else {
-    payBtn.disabled = Number(lockedVal) < minAmount;
-    payBtn.textContent = 'Pay ' + formatNaira(Number(lockedVal));
   }
+  renderAmount();
 
   payBtn.addEventListener('click', async function () {
-    var amount = isLocked ? Number(lockedVal) : (digits ? Number(digits) / 100 : 0);
+    var amount = isLocked ? Number(payBtn.getAttribute('data-locked')) : (digits ? Number(digits) / 100 : 0);
     if (amount < minAmount) return;
     errEl.hidden = true;
     payBtn.disabled = true;
@@ -217,6 +247,7 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
       driver_code: payBtn.getAttribute('data-code'),
       amount: amount,
       channel: 'web',
+      method_pref: 'bank_transfer',
       payer_phone: phoneEl && phoneEl.value ? phoneEl.value : undefined
     };
     var token = payBtn.getAttribute('data-token');
@@ -232,8 +263,21 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
       });
       var json = await res.json();
       if (!res.ok) throw new Error((json.error && json.error.message) || 'Payment failed');
-      if (json.data && json.data.authorization_url) {
-        window.location.assign(json.data.authorization_url);
+      var data = json.data || {};
+      if (data.transfer_account && data.transfer_account.account_number) {
+        var acc = data.transfer_account;
+        document.querySelector('[data-testid="w04-transfer-bank"]').textContent = acc.bank_name || '';
+        document.querySelector('[data-testid="w04-transfer-account"]').textContent = acc.account_number;
+        document.querySelector('[data-testid="w04-transfer-name"]').textContent = acc.account_name || '';
+        transferEl.hidden = false;
+        payBtn.hidden = true;
+        document.querySelector('[data-testid="w04-copy-account"]').addEventListener('click', function () {
+          if (navigator.clipboard) navigator.clipboard.writeText(acc.account_number);
+        });
+        return;
+      }
+      if (data.authorization_url) {
+        window.location.assign(data.authorization_url);
         return;
       }
       throw new Error('Checkout URL missing');

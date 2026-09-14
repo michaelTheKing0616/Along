@@ -67,6 +67,10 @@ class AppLocalizationsIg extends AppLocalizations {
   String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
+  String get errorAuthNotConfigured =>
+      'This build is not connected to Along. Rebuild the staging APK with env/staging.json.';
+
+  @override
   String get errorValidation => 'Please check the fields and try again.';
 
   @override

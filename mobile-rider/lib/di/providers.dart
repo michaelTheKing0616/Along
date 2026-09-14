@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:along_core/along_core.dart';
@@ -35,8 +36,15 @@ final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
 });
 
 final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((ref) async {
-  final country = await ref.read(catalogRepositoryProvider).defaultActiveCountry();
-  return PhoneNumberFormatter(phonePrefix: country.phonePrefix);
+  try {
+    final country = await ref
+        .read(catalogRepositoryProvider)
+        .defaultActiveCountry()
+        .timeout(const Duration(seconds: 5));
+    return PhoneNumberFormatter(phonePrefix: country.phonePrefix);
+  } catch (_) {
+    return const PhoneNumberFormatter(phonePrefix: '+234');
+  }
 });
 
 final configRepositoryProvider = Provider<ConfigRepository>((ref) {

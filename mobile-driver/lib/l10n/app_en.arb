@@ -41,6 +41,7 @@
     }
   },
   "errorGeneric": "Something went wrong. Please try again.",
+  "errorAuthNotConfigured": "This build is not connected to Along. Rebuild the staging APK with env/staging.json.",
   "errorValidation": "Please check the fields and try again.",
   "errorPlateConflict": "This plate is already registered.",
   "profileTitle": "Your profile",

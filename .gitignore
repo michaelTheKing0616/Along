@@ -13,6 +13,8 @@ Thumbs.db
 !.env.example
 env/*.json
 !env/*.example.json
+mobile-rider/env/local.json
+mobile-driver/env/local.json
 env/*.plist
 env/*.p8
 env/*.pem

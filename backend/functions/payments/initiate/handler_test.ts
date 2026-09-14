@@ -310,6 +310,16 @@ Deno.test('TS-QR-05: split amounts equal fare − commission to the kobo', async
   assertEquals(capturedParams?.amount, amount);
   assertEquals(capturedParams?.commissionAmount, commission);
   assertEquals(capturedParams?.driverSubaccountCode, 'ACCT_test_sub');
+  assertEquals(capturedParams?.method, 'bank_transfer');
+});
+
+Deno.test('initiate defaults method_pref to bank_transfer', () => {
+  const body = paymentInitiateSchema.parse({
+    driver_code: DRIVER_CODE,
+    trip_id: TRIP_ID,
+    channel: 'app',
+  });
+  assertEquals(body.method_pref, 'bank_transfer');
 });
 
 Deno.test('TS-QR-08: second initiate for paid trip returns CONFLICT with payment_id', async () => {

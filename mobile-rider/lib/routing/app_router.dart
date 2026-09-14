@@ -32,6 +32,7 @@ import 'package:mobile_rider/features/payments/presentation/payment_methods_scre
 import 'package:mobile_rider/features/payments/presentation/scan_to_pay_screen.dart';
 import 'package:mobile_rider/features/day_planner/presentation/day_planner_screen.dart';
 import 'package:mobile_rider/features/day_planner/presentation/itinerary_entry_screen.dart';
+import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {

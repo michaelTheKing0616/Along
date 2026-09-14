@@ -76,8 +76,17 @@ test.describe('W-04 anonymous web pay (TS-UI-06)', () => {
     await expect(page.getByTestId('w04-plate')).toHaveText(PLATE);
     await expect(page.getByTestId('w04-driver-name')).toContainText('Musa');
 
-    await page.locator('[data-testid^="w04-chip-"]').first().click();
-    await page.getByTestId('w04-pay-btn').click();
+    const chip = page.locator('[data-testid^="w04-chip-"]').first();
+    if ((await chip.count()) > 0) {
+      await chip.click();
+    }
+    const pay = page.getByTestId('w04-pay-btn');
+    if (await pay.isDisabled()) {
+      await page.getByTestId('w04-key-5').click();
+      await page.getByTestId('w04-key-0').click();
+      await page.getByTestId('w04-key-0').click();
+    }
+    await pay.click();
 
     await expect(page.getByTestId('mock-paystack-checkout')).toBeVisible({ timeout: 15_000 });
     expect(initiateCalled).toBe(true);

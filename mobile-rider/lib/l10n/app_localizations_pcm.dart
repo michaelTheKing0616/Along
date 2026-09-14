@@ -73,6 +73,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
+  String get errorAuthNotConfigured =>
+      'This build is not connected to Along. Rebuild the staging APK with env/staging.json.';
+
+  @override
   String get navHome => 'Home';
 
   @override
@@ -439,6 +443,14 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
+  String tripCompletePayQuestion(String amount, String name) {
+    return 'Pay $amount to $name';
+  }
+
+  @override
+  String get tripCompletePaidCash => 'Paid cash';
+
+  @override
   String get tripCompleteTier3Question => 'What did you pay?';
 
   @override
@@ -496,7 +508,32 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get payDriverMethodSaved => 'Visa ···4242';
 
   @override
-  String get payDriverPending => 'Complete payment in your bank app';
+  String payDriverPending(String amount) {
+    return 'Transfer $amount in your bank app';
+  }
+
+  @override
+  String get payDriverCopyAccount => 'Copy number';
+
+  @override
+  String get payDriverAccountCopied => 'Account number copied';
+
+  @override
+  String get payDriverWaitingTransfer => 'Waiting for your transfer';
+
+  @override
+  String get payDriverOtherAmount => 'Other';
+
+  @override
+  String get payDriverOtherHint => 'Enter amount';
+
+  @override
+  String payDriverExpires(int seconds) {
+    return 'Expires in ${seconds}s';
+  }
+
+  @override
+  String get payDriverOpenCheckout => 'Open bank page';
 
   @override
   String get payDriverMethodTransfer => 'Bank transfer';

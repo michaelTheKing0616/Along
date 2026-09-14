@@ -372,6 +372,66 @@ void main() {
       expect(find.byType(TripCompleteSheet), findsNothing);
       expect(taps, 1);
     });
+
+    testWidgets('digital-enabled default is Pay then cash overflow', (tester) async {
+      fakeSupabase = FakeAlongSupabase(
+        configRows: [
+          ...defaultTestConfigRows().where(
+            (row) => row['key'] != 'payments.digital_enabled',
+          ),
+          {
+            'key': 'payments.digital_enabled',
+            'scope_type': 'global',
+            'scope_id': '*',
+            'value': 'true',
+          },
+        ],
+        requestTripResponse: sampleAcceptedTripResponse(
+          tripId: 'trip-complete-1',
+          status: 'completed',
+        ),
+      );
+      container.dispose();
+      container = ProviderContainer(
+        overrides: buildProviderOverrides(
+          config: const AppConfig(
+            flavor: 'dev',
+            supabaseUrl: 'https://test.supabase.co',
+            supabaseAnonKey: 'test-key',
+          ),
+          supabase: fakeSupabase,
+          ambientChannel: FakeAmbientChannel(),
+          database: AlongDatabase.memory(),
+          wayfindingTts: FakeWayfindingTts(),
+        ),
+      );
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: Builder(
+            builder: (context) {
+              return AlongButton(
+                label: 'Open complete',
+                onPressed: () => TripCompleteSheet.show(context, trip: trip),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open complete'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('trip_complete_pay')), findsOneWidget);
+      expect(find.byKey(const Key('trip_complete_paid_cash')), findsOneWidget);
+      expect(find.byKey(const Key('trip_complete_yes')), findsNothing);
+
+      await tester.tap(find.byKey(const Key('trip_complete_paid_cash')));
+      await tester.pumpAndSettle();
+
+      expect(fakeSupabase.confirmFareInvokeCount, 1);
+      expect(find.byKey(const Key('trip_complete_done')), findsOneWidget);
+    });
   });
 
   group('TS-UI-04 payment visibility', () {

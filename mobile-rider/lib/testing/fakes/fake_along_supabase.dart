@@ -31,6 +31,8 @@ class FakeAlongSupabase implements AlongSupabase {
     this.qrResolveByCode = const {},
     this.paymentMethods = const [],
     this.paymentInitiateImmediateSuccess = true,
+    this.paymentInitiateTransferAccount,
+    this.paymentReceiptStatus,
     this.raiseSosDelay = Duration.zero,
     this.raiseSosResponse,
     this.tripShareRows = const [],
@@ -78,6 +80,8 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, Map<String, dynamic>> qrResolveByCode;
   List<Map<String, dynamic>> paymentMethods;
   bool paymentInitiateImmediateSuccess;
+  Map<String, dynamic>? paymentInitiateTransferAccount;
+  String? paymentReceiptStatus;
   Duration raiseSosDelay;
   Map<String, dynamic>? raiseSosResponse;
   List<Map<String, dynamic>> tripShareRows;
@@ -180,6 +184,9 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'complete_rider_onboarding') {
       onCompleteOnboarding?.call(params?['display_name'] as String?);
       return {};
+    }
+    if (fn == 'peek_log_otp') {
+      return null;
     }
     if (fn == 'ambient_vehicles') {
       return {
@@ -424,6 +431,8 @@ class FakeAlongSupabase implements AlongSupabase {
           'driver_amount': driverAmount,
           'expires_at': DateTime.now().add(const Duration(minutes: 30)).toIso8601String(),
           if (paymentInitiateImmediateSuccess) 'status': 'succeeded',
+          if (paymentInitiateTransferAccount != null)
+            'transfer_account': paymentInitiateTransferAccount,
         },
       };
     }
@@ -463,6 +472,8 @@ class FakeAlongSupabase implements AlongSupabase {
           'driver_amount': 807.5,
           'driver_first_name': 'Musa',
           'currency': 'NGN',
+          'status': paymentReceiptStatus ??
+              (paymentInitiateImmediateSuccess ? 'succeeded' : 'pending'),
         },
       };
     }
