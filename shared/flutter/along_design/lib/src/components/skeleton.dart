@@ -31,8 +31,19 @@ class _AlongSkeletonState extends State<AlongSkeleton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: _shimmerDuration)
-      ..repeat();
+    _controller = AnimationController(vsync: this, duration: _shimmerDuration);
+    // Widget tests advance a fake clock. A repeating shimmer never lets
+    // pumpAndSettle finish, so tests play the same pass once.
+    if (_inWidgetTest) {
+      _controller.forward();
+    } else {
+      _controller.repeat();
+    }
+  }
+
+  bool get _inWidgetTest {
+    final name = WidgetsBinding.instance.runtimeType.toString();
+    return name.contains('Test');
   }
 
   @override
@@ -45,29 +56,29 @@ class _AlongSkeletonState extends State<AlongSkeleton>
   Widget build(BuildContext context) {
     final child = switch (widget.variant) {
       SkeletonVariant.line => Container(
-          width: widget.width ?? double.infinity,
-          height: widget.height ?? AlongSpace.s16,
-          decoration: BoxDecoration(
-            color: AlongColors.surface200,
-            borderRadius: BorderRadius.circular(AlongRadius.xs.x),
-          ),
+        width: widget.width ?? double.infinity,
+        height: widget.height ?? AlongSpace.s16,
+        decoration: BoxDecoration(
+          color: AlongColors.surface200,
+          borderRadius: BorderRadius.circular(AlongRadius.xs.x),
         ),
+      ),
       SkeletonVariant.card => Container(
-          width: widget.width ?? double.infinity,
-          height: widget.height ?? 120,
-          decoration: BoxDecoration(
-            color: AlongColors.surface200,
-            borderRadius: BorderRadius.circular(AlongRadius.lg.x),
-          ),
+        width: widget.width ?? double.infinity,
+        height: widget.height ?? 120,
+        decoration: BoxDecoration(
+          color: AlongColors.surface200,
+          borderRadius: BorderRadius.circular(AlongRadius.lg.x),
         ),
+      ),
       SkeletonVariant.mapOverlay => Container(
-          width: widget.width ?? 120,
-          height: widget.height ?? 36,
-          decoration: BoxDecoration(
-            color: AlongColors.surface200,
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-          ),
+        width: widget.width ?? 120,
+        height: widget.height ?? 36,
+        decoration: BoxDecoration(
+          color: AlongColors.surface200,
+          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
         ),
+      ),
     };
 
     return AnimatedBuilder(

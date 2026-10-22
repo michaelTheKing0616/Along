@@ -49,8 +49,7 @@ class TripOptionsState {
   bool get hasCoverageGap =>
       plan != null && plan!.candidates.isEmpty && plan!.coverageGap != null;
 
-  List<PlanCandidate> get sortedCandidates =>
-      plan?.sortedBy(sort) ?? const [];
+  List<PlanCandidate> get sortedCandidates => plan?.sortedBy(sort) ?? const [];
 
   TripOptionsState copyWith({
     TripPlanSession? session,
@@ -79,8 +78,7 @@ class TripOptionsState {
       isLoading: isLoading ?? this.isLoading,
       showSkeleton: showSkeleton ?? this.showSkeleton,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      expandedCandidateId:
-          expandedCandidateId ?? this.expandedCandidateId,
+      expandedCandidateId: expandedCandidateId ?? this.expandedCandidateId,
       pendingRequestCandidateId: clearPending
           ? null
           : (pendingRequestCandidateId ?? this.pendingRequestCandidateId),
@@ -96,8 +94,8 @@ class TripOptionsState {
 
 final tripPlanSessionProvider =
     NotifierProvider<TripPlanSessionNotifier, TripPlanSession?>(
-  TripPlanSessionNotifier.new,
-);
+      TripPlanSessionNotifier.new,
+    );
 
 class TripPlanSessionNotifier extends Notifier<TripPlanSession?> {
   @override
@@ -110,8 +108,8 @@ class TripPlanSessionNotifier extends Notifier<TripPlanSession?> {
 
 final tripOptionsControllerProvider =
     NotifierProvider<TripOptionsController, TripOptionsState>(
-  TripOptionsController.new,
-);
+      TripOptionsController.new,
+    );
 
 class TripOptionsController extends Notifier<TripOptionsState> {
   Timer? _skeletonTimer;
@@ -154,29 +152,26 @@ class TripOptionsController extends Notifier<TripOptionsState> {
     });
 
     final body = {
-        'origin': {
-          'lat': session.origin.lat,
-          'lng': session.origin.lng,
-        },
-        'destination': {
-          'lat': session.destination.lat,
-          'lng': session.destination.lng,
-        },
-        'destination_label': session.destinationLabel,
-        'filters': {
-          'women_only': false,
-          'load': state.load.flagged
-              ? {
-                  'flagged': true,
-                  if (state.load.size != null) 'size': state.load.size,
-                  if (state.load.note != null) 'note': state.load.note,
-                }
-              : {'flagged': false},
-          'modes': null,
-        },
-        'session_id': session.hashCode.toString(),
-        'itinerary_stop_id': session.itineraryStopId,
-      };
+      'origin': {'lat': session.origin.lat, 'lng': session.origin.lng},
+      'destination': {
+        'lat': session.destination.lat,
+        'lng': session.destination.lng,
+      },
+      'destination_label': session.destinationLabel,
+      'filters': {
+        'women_only': false,
+        'load': state.load.flagged
+            ? {
+                'flagged': true,
+                if (state.load.size != null) 'size': state.load.size,
+                if (state.load.note != null) 'note': state.load.note,
+              }
+            : {'flagged': false},
+        'modes': null,
+      },
+      'session_id': session.hashCode.toString(),
+      'itinerary_stop_id': session.itineraryStopId,
+    };
 
     try {
       final planner = ref.read(plannerRepositoryProvider);
@@ -192,31 +187,35 @@ class TripOptionsController extends Notifier<TripOptionsState> {
       if (!outcome.fromCache && outcome.result.cityId.isNotEmpty) {
         unawaited(_precacheCorridor(outcome.result));
         unawaited(
-          ref.read(graphCacheStoreProvider).refreshIfNeeded(
-                cityId: outcome.result.cityId,
-              ),
+          ref
+              .read(graphCacheStoreProvider)
+              .refreshIfNeeded(cityId: outcome.result.cityId),
         );
       }
     } catch (e) {
       _skeletonTimer?.cancel();
-      final cached = await ref.read(plannerRepositoryProvider).readCachedPlan(
-            requestBody: body,
+      try {
+        final cached = await ref
+            .read(plannerRepositoryProvider)
+            .readCachedPlan(requestBody: body);
+        if (cached != null) {
+          state = state.copyWith(
+            plan: cached.result,
+            isLoading: false,
+            showSkeleton: false,
+            isStalePlan: true,
+            planCachedAt: cached.cachedAt,
+            clearError: true,
           );
-      if (cached != null) {
-        state = state.copyWith(
-          plan: cached.result,
-          isLoading: false,
-          showSkeleton: false,
-          isStalePlan: true,
-          planCachedAt: cached.cachedAt,
-          clearError: true,
-        );
-        return;
+          return;
+        }
+      } catch (_) {
+        // A broken cache row must not leave the shimmer up.
       }
       state = state.copyWith(
         isLoading: false,
         showSkeleton: false,
-        errorMessage: e.toString(),
+        errorMessage: e is AlongException ? e.message : e.toString(),
       );
     }
   }
@@ -254,8 +253,9 @@ class TripOptionsController extends Notifier<TripOptionsState> {
 
   void toggleExpanded(String candidateId) {
     state = state.copyWith(
-      expandedCandidateId:
-          state.expandedCandidateId == candidateId ? null : candidateId,
+      expandedCandidateId: state.expandedCandidateId == candidateId
+          ? null
+          : candidateId,
     );
   }
 
@@ -304,7 +304,8 @@ class TripOptionsController extends Notifier<TripOptionsState> {
               flagged: true,
               size: state.load.size,
               note: state.load.note,
-              acknowledged_warning: state.load.acknowledgedWarning ||
+              acknowledged_warning:
+                  state.load.acknowledgedWarning ||
                   !OptionCardMapper.hasLoadCapacityWarning(
                     candidate,
                     state.load,
@@ -318,17 +319,14 @@ class TripOptionsController extends Notifier<TripOptionsState> {
           p_leg_index: state.pendingRequestLegIndex,
           p_load: loadFlag,
           p_women_only: false,
-          p_client_ref: '${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
+          p_client_ref:
+              '${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
         ),
       );
-      state = state.copyWith(
-        activeTrip: summary,
-        clearPending: true,
-      );
-      ref.read(activeJourneyMonitorProvider.notifier).trackFromTrip(
-            summary,
-            candidateId: candidateId,
-          );
+      state = state.copyWith(activeTrip: summary, clearPending: true);
+      ref
+          .read(activeJourneyMonitorProvider.notifier)
+          .trackFromTrip(summary, candidateId: candidateId);
       return summary;
     } catch (e) {
       state = state.copyWith(clearPending: true);
@@ -408,10 +406,12 @@ class RequestingState {
   }
 }
 
-final requestingControllerFamilyProvider = NotifierProvider.family<
-    RequestingController, RequestingState, RequestingArgs>(
-  RequestingController.new,
-);
+final requestingControllerFamilyProvider =
+    NotifierProvider.family<
+      RequestingController,
+      RequestingState,
+      RequestingArgs
+    >(RequestingController.new);
 
 class RequestingArgs {
   const RequestingArgs({required this.trip, required this.roamingSource});
@@ -429,7 +429,8 @@ class RequestingArgs {
   int get hashCode => Object.hash(trip.tripId, roamingSource);
 }
 
-class RequestingController extends FamilyNotifier<RequestingState, RequestingArgs> {
+class RequestingController
+    extends FamilyNotifier<RequestingState, RequestingArgs> {
   Timer? _tickTimer;
   Timer? _pollTimer;
 
@@ -496,9 +497,7 @@ class RequestingController extends FamilyNotifier<RequestingState, RequestingArg
   }
 
   Future<void> cancel() async {
-    await ref
-        .read(tripsRepositoryProvider)
-        .cancelTrip(state.trip.tripId);
+    await ref.read(tripsRepositoryProvider).cancelTrip(state.trip.tripId);
     _tickTimer?.cancel();
     _pollTimer?.cancel();
     state = state.copyWith(cancelled: true);

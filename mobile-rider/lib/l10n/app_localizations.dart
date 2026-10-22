@@ -1907,6 +1907,168 @@ abstract class AppLocalizations {
   /// **'Plate matches'**
   String get plateMatches;
 
+  /// No description provided for @plateScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan plate'**
+  String get plateScan;
+
+  /// No description provided for @plateScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit the plate in the frame'**
+  String get plateScanHint;
+
+  /// No description provided for @plateScanDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera is off. You can still confirm the plate yourself.'**
+  String get plateScanDenied;
+
+  /// No description provided for @plateScanMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'This plate does not match the registered one.'**
+  String get plateScanMismatch;
+
+  /// No description provided for @plateScanReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get plateScanReport;
+
+  /// No description provided for @plateScanSos.
+  ///
+  /// In en, this message translates to:
+  /// **'SOS'**
+  String get plateScanSos;
+
+  /// No description provided for @plateScanTorch.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get plateScanTorch;
+
+  /// No description provided for @plateScanContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get plateScanContinue;
+
+  /// No description provided for @guardianTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian'**
+  String get guardianTitle;
+
+  /// No description provided for @guardianEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in on this trip'**
+  String get guardianEnabled;
+
+  /// No description provided for @guardianOffRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Off-route metres'**
+  String get guardianOffRoute;
+
+  /// No description provided for @guardianLongStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Long stop minutes'**
+  String get guardianLongStop;
+
+  /// No description provided for @guardianCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in minutes'**
+  String get guardianCheckIn;
+
+  /// No description provided for @guardianSafeWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe word'**
+  String get guardianSafeWord;
+
+  /// No description provided for @guardianSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get guardianSave;
+
+  /// No description provided for @guardianOk.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m OK'**
+  String get guardianOk;
+
+  /// No description provided for @guardianOffRouteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are farther from the vehicle than you set.'**
+  String get guardianOffRouteBody;
+
+  /// No description provided for @guardianLongStopBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The vehicle has been still longer than you set.'**
+  String get guardianLongStopBody;
+
+  /// No description provided for @guardianCheckInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for the check-in you set.'**
+  String get guardianCheckInBody;
+
+  /// No description provided for @guardianMissedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The check-in is still open.'**
+  String get guardianMissedBody;
+
+  /// No description provided for @guardianSafeWordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Say your word'**
+  String get guardianSafeWordHint;
+
+  /// No description provided for @tripMessagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message the driver'**
+  String get tripMessagesTitle;
+
+  /// No description provided for @tripMessagesClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This conversation is closed.'**
+  String get tripMessagesClosed;
+
+  /// No description provided for @tripMessagesDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get tripMessagesDriver;
+
+  /// No description provided for @tripMessagesRider.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get tripMessagesRider;
+
+  /// No description provided for @tripMessagesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A note about something left behind'**
+  String get tripMessagesHint;
+
+  /// No description provided for @tripMessagesSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get tripMessagesSend;
+
   /// No description provided for @holdNotOffered.
   ///
   /// In en, this message translates to:

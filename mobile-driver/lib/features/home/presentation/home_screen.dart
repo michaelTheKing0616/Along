@@ -245,6 +245,11 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         label: Text(l10n.conductorTitle),
                         onPressed: () => context.push(AppRoutes.conductor),
                       ),
+                      ActionChip(
+                        key: const Key('rest_entry_button'),
+                        label: Text(l10n.restTitle),
+                        onPressed: () => context.push(AppRoutes.rest),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AlongSpace.s8),

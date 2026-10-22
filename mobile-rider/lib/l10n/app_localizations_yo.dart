@@ -1008,6 +1008,91 @@ class AppLocalizationsYo extends AppLocalizations {
   String get plateMatches => 'Plate matches';
 
   @override
+  String get plateScan => 'Scan plate';
+
+  @override
+  String get plateScanHint => 'Fit the plate in the frame';
+
+  @override
+  String get plateScanDenied =>
+      'Camera is off. You can still confirm the plate yourself.';
+
+  @override
+  String get plateScanMismatch =>
+      'This plate does not match the registered one.';
+
+  @override
+  String get plateScanReport => 'Report';
+
+  @override
+  String get plateScanSos => 'SOS';
+
+  @override
+  String get plateScanTorch => 'Light';
+
+  @override
+  String get plateScanContinue => 'Continue';
+
+  @override
+  String get guardianTitle => 'Guardian';
+
+  @override
+  String get guardianEnabled => 'Check in on this trip';
+
+  @override
+  String get guardianOffRoute => 'Off-route metres';
+
+  @override
+  String get guardianLongStop => 'Long stop minutes';
+
+  @override
+  String get guardianCheckIn => 'Check-in minutes';
+
+  @override
+  String get guardianSafeWord => 'Safe word';
+
+  @override
+  String get guardianSave => 'Save';
+
+  @override
+  String get guardianOk => 'I\'m OK';
+
+  @override
+  String get guardianOffRouteBody =>
+      'You are farther from the vehicle than you set.';
+
+  @override
+  String get guardianLongStopBody =>
+      'The vehicle has been still longer than you set.';
+
+  @override
+  String get guardianCheckInBody => 'Time for the check-in you set.';
+
+  @override
+  String get guardianMissedBody => 'The check-in is still open.';
+
+  @override
+  String get guardianSafeWordHint => 'Say your word';
+
+  @override
+  String get tripMessagesTitle => 'Message the driver';
+
+  @override
+  String get tripMessagesClosed => 'This conversation is closed.';
+
+  @override
+  String get tripMessagesDriver => 'Driver';
+
+  @override
+  String get tripMessagesRider => 'You';
+
+  @override
+  String get tripMessagesHint => 'A note about something left behind';
+
+  @override
+  String get tripMessagesSend => 'Send';
+
+  @override
   String get holdNotOffered => 'This driver has not turned on seat holds';
 
   @override

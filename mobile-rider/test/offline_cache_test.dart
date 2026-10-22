@@ -20,8 +20,9 @@ import 'support/trip_options_fixtures.dart';
 
 void main() {
   group('P7-B-01 offline cache with stale badge', () {
-    testWidgets('trip options shows stale badge from plan_cache when offline',
-        (tester) async {
+    testWidgets('trip options shows stale badge from plan_cache when offline', (
+      tester,
+    ) async {
       final db = AlongDatabase.memory();
       final cacheStore = PlanCacheStore(db);
       final fakeSupabase = FakeAlongSupabase(
@@ -66,7 +67,9 @@ void main() {
         ],
       );
 
-      container.read(tripPlanSessionProvider.notifier).setSession(
+      container
+          .read(tripPlanSessionProvider.notifier)
+          .setSession(
             const TripPlanSession(
               origin: GeoPoint(lat: 9.0765, lng: 7.3986),
               destination: GeoPoint(lat: 9.08, lng: 7.45),
@@ -90,14 +93,27 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('stale_badge')), findsOneWidget);
-      expect(find.byKey(const Key('option_card_cand-direct-1')), findsOneWidget);
+      // The planner shimmer used to repeat forever, so pumpAndSettle hit its
+      // ten-minute fake-clock timeout before the cached plan could show.
+      await tester.pump();
+      await tester.runAsync(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      final badge = find.byKey(const Key('stale_badge'));
+      for (var i = 0; i < 40 && badge.evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(badge, findsOneWidget);
+      expect(
+        find.byKey(const Key('option_card_cand-direct-1')),
+        findsOneWidget,
+      );
       expect(find.textContaining('Cached'), findsOneWidget);
     });
 
-    testWidgets('offline search shows cached graph places with stale badge',
-        (tester) async {
+    testWidgets('offline search shows cached graph places with stale badge', (
+      tester,
+    ) async {
       final db = AlongDatabase.memory();
       final graphStore = GraphCacheStore(
         db,
@@ -109,12 +125,7 @@ void main() {
         graphVersion: 'v1',
         payload: {
           'parks': [
-            {
-              'id': 'p1',
-              'name': 'Wuse Market',
-              'lat': 9.0765,
-              'lng': 7.3986,
-            },
+            {'id': 'p1', 'name': 'Wuse Market', 'lat': 9.0765, 'lng': 7.3986},
           ],
           'stages': [],
           'legs': [],
@@ -152,9 +163,7 @@ void main() {
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
-              body: DestinationSearchPanel(
-                onDestinationSelected: (_) {},
-              ),
+              body: DestinationSearchPanel(onDestinationSelected: (_) {}),
             ),
           ),
         ),
@@ -172,8 +181,9 @@ void main() {
   });
 
   group('LowDataMode', () {
-    testWidgets('AvatarGate skips network image when loadAvatars is false',
-        (tester) async {
+    testWidgets('AvatarGate skips network image when loadAvatars is false', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(

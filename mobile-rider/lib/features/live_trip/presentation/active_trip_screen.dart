@@ -1,4 +1,5 @@
 import 'package:along_core/along_core.dart' show TripStatus, TripSummary;
+import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart' hide TransportMode;
 import 'package:along_design/along_design.dart' as design show TransportMode;
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
+import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
@@ -33,6 +35,75 @@ class ActiveTripScreen extends ConsumerStatefulWidget {
 class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
   LiveTripArgs get _args =>
       LiveTripArgs(tripId: widget.trip.tripId, initialTrip: widget.trip);
+
+  final _silentTaps = SilentTapSeries();
+  final _safeWord = TextEditingController();
+  (double, double)? _anchor;
+  DateTime? _stationarySince;
+  DateTime _lastConfirm = DateTime.now();
+  DateTime? _promptSince;
+  var _escalated = false;
+
+  @override
+  void dispose() {
+    _safeWord.dispose();
+    super.dispose();
+  }
+
+  void _track(TripSummary trip) {
+    final driver = trip.live?.driver;
+    if (driver == null) return;
+    final now = DateTime.now();
+    final anchor = _anchor;
+    if (anchor == null) {
+      _anchor = (driver.lat, driver.lng);
+      _stationarySince = now;
+      return;
+    }
+    final moved = distanceMeters(
+      lat1: anchor.$1,
+      lng1: anchor.$2,
+      lat2: driver.lat,
+      lng2: driver.lng,
+    );
+    if (moved > 30) {
+      _anchor = (driver.lat, driver.lng);
+      _stationarySince = now;
+    }
+  }
+
+  GuardianPrompt _promptFor(GuardianPrefs prefs, TripSummary trip) {
+    if (!prefs.enabled) return GuardianPrompt.none;
+    _track(trip);
+    final driver = trip.live?.driver;
+    final rider = trip.live?.rider;
+    double? meters;
+    if (driver != null && rider != null) {
+      meters = distanceMeters(
+        lat1: rider.lat,
+        lng1: rider.lng,
+        lat2: driver.lat,
+        lng2: driver.lng,
+      );
+    }
+    final now = DateTime.now();
+    return evaluateGuardian(
+      prefs: prefs,
+      riderToDriverMeters: meters,
+      stationaryFor: _stationarySince == null
+          ? Duration.zero
+          : now.difference(_stationarySince!),
+      sinceLastConfirm: now.difference(_lastConfirm),
+      promptOpen: _promptSince != null,
+      promptOpenFor: _promptSince == null
+          ? Duration.zero
+          : now.difference(_promptSince!),
+    );
+  }
+
+  void _raiseSilent(TripSummary trip) {
+    context.push(AppRoutes.sosActive, extra: SosActiveRouteArgs(trip: trip));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +155,21 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
           data: (cfg) => cfg.sosHoldDurationMs,
           orElse: () => const Duration(milliseconds: 600),
         );
+    final prefs =
+        ref.watch(guardianPrefsProvider).valueOrNull ?? GuardianPrefs.disabled;
+    final prompt = _promptFor(prefs, liveTrip);
+    if (prompt == GuardianPrompt.missed && !_escalated) {
+      _escalated = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _raiseSilent(liveTrip);
+      });
+    } else if (prompt != GuardianPrompt.none &&
+        prompt != GuardianPrompt.missed) {
+      _promptSince ??= DateTime.now();
+    } else if (prompt == GuardianPrompt.none) {
+      _promptSince = null;
+    }
 
     return Scaffold(
       body: Stack(
@@ -122,12 +208,51 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    l10n.activeTripStatus(
-                      eta,
-                      formatAppMoney(ref, liveTrip.totalFare),
+                  if (prompt != GuardianPrompt.none &&
+                      prompt != GuardianPrompt.missed)
+                    GuardianCheckCard(
+                      title: l10n.guardianTitle,
+                      body: switch (prompt) {
+                        GuardianPrompt.offRoute => l10n.guardianOffRouteBody,
+                        GuardianPrompt.longStop => l10n.guardianLongStopBody,
+                        GuardianPrompt.checkIn => l10n.guardianCheckInBody,
+                        GuardianPrompt.missed => l10n.guardianMissedBody,
+                        GuardianPrompt.none => '',
+                      },
+                      confirmLabel: l10n.guardianOk,
+                      onConfirm: () => setState(() {
+                        _lastConfirm = DateTime.now();
+                        _promptSince = null;
+                        _escalated = false;
+                      }),
                     ),
-                    style: AlongText.heading2,
+                  if (prefs.safeWord.trim().isNotEmpty)
+                    TextField(
+                      key: const Key('active_trip_safe_word'),
+                      controller: _safeWord,
+                      decoration: InputDecoration(
+                        hintText: l10n.guardianSafeWordHint,
+                      ),
+                      onSubmitted: (value) {
+                        if (!safeWordMatches(prefs.safeWord, value)) return;
+                        _safeWord.clear();
+                        _raiseSilent(liveTrip);
+                      },
+                    ),
+                  GestureDetector(
+                    onTap: () {
+                      if (!prefs.enabled) return;
+                      if (_silentTaps.register(DateTime.now())) {
+                        _raiseSilent(liveTrip);
+                      }
+                    },
+                    child: Text(
+                      l10n.activeTripStatus(
+                        eta,
+                        formatAppMoney(ref, liveTrip.totalFare),
+                      ),
+                      style: AlongText.heading2,
+                    ),
                   ),
                   const SizedBox(height: AlongSpace.s12),
                   LegTimeline(

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
+import 'package:mobile_rider/features/safety/presentation/trip_thread_screen.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -63,7 +64,8 @@ class TripDetailScreen extends ConsumerWidget {
                 label: l10n.tripDetailShareReceipt,
                 variant: AlongButtonVariant.secondary,
                 onPressed: () {
-                  final text = receipt?.toShareText(
+                  final text =
+                      receipt?.toShareText(
                         routeLabel: entry.routeLabel,
                         driverName: entry.driverName ?? 'Driver',
                         plate: entry.plateNumber ?? '',
@@ -77,13 +79,24 @@ class TripDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AlongSpace.s8),
               AlongButton(
+                key: const Key('trip_detail_messages'),
+                label: l10n.tripMessagesTitle,
+                variant: AlongButtonVariant.secondary,
+                onPressed: () => context.push(
+                  AppRoutes.tripMessages,
+                  extra: TripThreadArgs(
+                    tripId: tripId,
+                    endedAt: entry.completedAt,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AlongSpace.s8),
+              AlongButton(
                 key: const Key('trip_detail_report'),
                 label: l10n.activeTripReport,
                 variant: AlongButtonVariant.tertiary,
-                onPressed: () => context.push(
-                  AppRoutes.reportIncident,
-                  extra: tripId,
-                ),
+                onPressed: () =>
+                    context.push(AppRoutes.reportIncident, extra: tripId),
               ),
             ],
           );
