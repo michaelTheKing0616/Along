@@ -9,6 +9,8 @@ abstract final class AppRoutes {
   static const documentCapture = '/documents/capture';
   static const pending = '/pending';
   static const home = '/home';
+  static const buildMyDay = '/day';
+  static const seatBoard = '/seats';
   static const routesTab = '/routes';
   static const earnings = '/earnings';
   static const settle = '/earnings/settle';

@@ -1,5 +1,5 @@
 import 'package:along_core/along_core.dart';
-import 'package:along_data/along_data.dart';
+import 'package:along_data/along_data.dart' hide Money;
 import 'package:along_design/along_design.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
@@ -14,7 +14,7 @@ final brandingOverridesProvider = FutureProvider<BrandingOverrides>((ref) async 
 
 /// Currency metadata for the driver's operating city.
 final cityCurrencyMetaProvider = FutureProvider<CityCurrencyMeta>((ref) async {
-  final cityId = ref.watch(homeControllerProvider.select((s) => s.cityId));
+  final cityId = ref.watch(driverHomeControllerProvider.select((s) => s.cityId));
   final catalog = ref.read(catalogRepositoryProvider);
   if (cityId != null) {
     return catalog.currencyMetaForCity(cityId);

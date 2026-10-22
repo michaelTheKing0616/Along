@@ -213,20 +213,8 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         Expanded(
                           child: _SeatsChip(
                             seats: state.seatsAvailable,
-                            onDecrement: state.toggleEnabled
-                                ? () => ref
-                                      .read(
-                                        driverHomeControllerProvider.notifier,
-                                      )
-                                      .adjustSeats(-1)
-                                : null,
-                            onIncrement: state.toggleEnabled
-                                ? () => ref
-                                      .read(
-                                        driverHomeControllerProvider.notifier,
-                                      )
-                                      .adjustSeats(1)
-                                : null,
+                            label: l10n.seatMapTitle,
+                            onTap: () => context.push(AppRoutes.seatBoard),
                           ),
                         ),
                         const SizedBox(width: AlongSpace.s8),
@@ -244,6 +232,15 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                     ),
                     const SizedBox(height: AlongSpace.s8),
                   ],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ActionChip(
+                      key: const Key('build_my_day_button'),
+                      label: Text(l10n.buildMyDayTitle),
+                      onPressed: () => context.push(AppRoutes.buildMyDay),
+                    ),
+                  ),
+                  const SizedBox(height: AlongSpace.s8),
                   AbsorbPointer(
                     absorbing: !state.toggleEnabled,
                     child: Opacity(
@@ -421,30 +418,20 @@ class _ParkChip extends StatelessWidget {
 class _SeatsChip extends StatelessWidget {
   const _SeatsChip({
     required this.seats,
-    required this.onDecrement,
-    required this.onIncrement,
+    required this.label,
+    required this.onTap,
   });
 
   final int seats;
-  final VoidCallback? onDecrement;
-  final VoidCallback? onIncrement;
+  final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InputDecorator(
-      decoration: const InputDecoration(
-        labelText: 'Seats',
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(onPressed: onDecrement, icon: const Icon(Icons.remove)),
-          Text('$seats', style: AlongText.label),
-          IconButton(onPressed: onIncrement, icon: const Icon(Icons.add)),
-        ],
-      ),
+    return ActionChip(
+      key: const Key('driver_seat_map_chip'),
+      label: Text('$label · $seats'),
+      onPressed: onTap,
     );
   }
 }

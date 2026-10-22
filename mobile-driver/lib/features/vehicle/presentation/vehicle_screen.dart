@@ -2,6 +2,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_driver/features/day/presentation/seat_layout_editor.dart';
 import 'package:mobile_driver/features/vehicle/presentation/vehicle_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
@@ -21,6 +22,36 @@ class VehicleScreen extends ConsumerWidget {
         title: Text(l10n.vehicleTitle),
         backgroundColor: AlongColors.surface0,
         elevation: 0,
+      ),
+      bottomNavigationBar: asyncState.maybeWhen(
+        data: (state) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AlongSpace.s24,
+              AlongSpace.s8,
+              AlongSpace.s24,
+              AlongSpace.s16,
+            ),
+            child: AlongButton(
+              key: const Key('vehicle_continue_button'),
+              label: l10n.continueButton,
+              onPressed: state.isSubmitting
+                  ? null
+                  : () async {
+                      final ok = await ref
+                          .read(vehicleControllerProvider.notifier)
+                          .submit();
+                      if (ok && context.mounted) {
+                        context.go(AppRoutes.documents);
+                      }
+                    },
+              visualState: state.isSubmitting
+                  ? AlongButtonVisualState.loading
+                  : AlongButtonVisualState.normal,
+            ),
+          ),
+        ),
+        orElse: () => null,
       ),
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -63,24 +94,23 @@ class VehicleScreen extends ConsumerWidget {
                   const SizedBox(height: AlongSpace.s16),
                   Text(l10n.seatsLabel, style: theme.textTheme.labelLarge),
                   const SizedBox(height: AlongSpace.s8),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: state.seatCapacity > 1
-                            ? () => ref
-                                .read(vehicleControllerProvider.notifier)
-                                .setSeatCapacity(state.seatCapacity - 1)
-                            : null,
-                        icon: const Icon(Icons.remove_circle_outline),
-                      ),
-                      Text('${state.seatCapacity}'),
-                      IconButton(
-                        onPressed: () => ref
-                            .read(vehicleControllerProvider.notifier)
-                            .setSeatCapacity(state.seatCapacity + 1),
-                        icon: const Icon(Icons.add_circle_outline),
-                      ),
-                    ],
+                  SeatLayoutEditor(
+                    layout: state.layout,
+                    reviewSeatMax:
+                        state.modes
+                            .where(
+                              (mode) => mode.code == state.selectedModeCode,
+                            )
+                            .map((mode) => mode.reviewSeatLimit)
+                            .firstOrNull ??
+                        state.seatCapacity,
+                    onChanged: ref
+                        .read(vehicleControllerProvider.notifier)
+                        .setLayout,
+                    addRowLabel: l10n.addRow,
+                    addSeatLabel: l10n.addSeat,
+                    removeRowLabel: l10n.removeRow,
+                    overCapacityLabel: l10n.overCapacityNote,
                   ),
                   const SizedBox(height: AlongSpace.s16),
                   TextField(
@@ -124,15 +154,18 @@ class VehicleScreen extends ConsumerWidget {
                   ),
                   if (!state.ownerIsMe) ...[
                     TextField(
-                      decoration: InputDecoration(labelText: l10n.ownerNameLabel),
+                      decoration: InputDecoration(
+                        labelText: l10n.ownerNameLabel,
+                      ),
                       onChanged: ref
                           .read(vehicleControllerProvider.notifier)
                           .setOwnerName,
                     ),
                     const SizedBox(height: AlongSpace.s8),
                     TextField(
-                      decoration:
-                          InputDecoration(labelText: l10n.ownerPhoneLabel),
+                      decoration: InputDecoration(
+                        labelText: l10n.ownerPhoneLabel,
+                      ),
                       keyboardType: TextInputType.phone,
                       onChanged: ref
                           .read(vehicleControllerProvider.notifier)
@@ -150,24 +183,6 @@ class VehicleScreen extends ConsumerWidget {
                       ),
                     ),
                   ],
-                  const SizedBox(height: AlongSpace.s24),
-                  AlongButton(
-                    key: const Key('vehicle_continue_button'),
-                    label: l10n.continueButton,
-                    onPressed: state.isSubmitting
-                        ? null
-                        : () async {
-                            final ok = await ref
-                                .read(vehicleControllerProvider.notifier)
-                                .submit();
-                            if (ok && context.mounted) {
-                              context.go(AppRoutes.documents);
-                            }
-                          },
-                    visualState: state.isSubmitting
-                        ? AlongButtonVisualState.loading
-                        : AlongButtonVisualState.normal,
-                  ),
                 ],
               ),
             ),

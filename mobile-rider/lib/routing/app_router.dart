@@ -33,6 +33,7 @@ import 'package:mobile_rider/features/payments/presentation/scan_to_pay_screen.d
 import 'package:mobile_rider/features/day_planner/presentation/day_planner_screen.dart';
 import 'package:mobile_rider/features/day_planner/presentation/itinerary_entry_screen.dart';
 import 'package:mobile_rider/features/shell/presentation/rider_shell_screen.dart';
+import 'package:mobile_rider/features/vehicles/presentation/vehicle_cards_screen.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -92,6 +93,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.search,
         builder: (context, state) => const DestinationSearchScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.vehicles,
+        builder: (context, state) => const VehicleCardsScreen(),
       ),
       GoRoute(
         path: AppRoutes.adjustPickup,
@@ -171,9 +176,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           }
           final trip = args as TripSummary?;
           return Scaffold(
-            body: SafeArea(
-              child: PayDriverSheet(trip: trip),
-            ),
+            body: SafeArea(child: PayDriverSheet(trip: trip)),
           );
         },
       ),

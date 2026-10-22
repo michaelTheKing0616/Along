@@ -64,7 +64,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(authControllerProvider);
     final theme = Theme.of(context);
-    final displayPhone = state.displayPhone ?? '';
+    final displayPhone = state.phoneE164 ?? '';
 
     return Scaffold(
       appBar: AppBar(

@@ -8,3 +8,4 @@
 \ir 06_transfer_points.sql
 \ir 07_reverse_routes.sql
 \ir 08_provenance_records.sql
+\ir 09_osm_corridor_geometry.sql

@@ -1105,5 +1105,23 @@
   },
   "emergencyContactInvalidPhone": "Use a phone number like +2348012345678",
   "emergencyContactLimit": "You can save up to 5 contacts",
-  "emergencyContactSaveFailed": "Could not save that contact"
+  "emergencyContactSaveFailed": "Could not save that contact",
+  "vehiclesTitle": "Vehicles",
+  "freeSeatCount": "{count} free",
+  "@freeSeatCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "seatStale": "Seat map is more than a minute old",
+  "seatMapTitle": "Seat map",
+  "filterRulesHint": "Search a driver's rules",
+  "seatTaken": "That seat was just taken",
+  "acknowledgeToClaim": "I agree",
+  "noVehicles": "No vehicles match these rules",
+  "seatFree": "free",
+  "seatOccupied": "occupied",
+  "seatHeld": "held",
+  "seatBlocked": "blocked",
+  "seatDriver": "driver"
 }

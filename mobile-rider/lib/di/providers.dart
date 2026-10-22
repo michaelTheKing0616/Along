@@ -135,6 +135,10 @@ final journeyRepositoryProvider = Provider<JourneyRepository>((ref) {
   );
 });
 
+final seatRepositoryProvider = Provider<SeatRepository>((ref) {
+  return SeatRepository(ref.watch(alongSupabaseProvider));
+});
+
 final safetyRepositoryProvider = Provider<SafetyRepository>((ref) {
   return SafetyRepository(ref.watch(alongSupabaseProvider));
 });

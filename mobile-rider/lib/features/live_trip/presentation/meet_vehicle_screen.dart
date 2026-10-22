@@ -37,6 +37,60 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
   LiveTripArgs get _args =>
       LiveTripArgs(tripId: widget.trip.tripId, initialTrip: widget.trip);
 
+  VehicleCard? _card;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(_loadCard);
+  }
+
+  Future<void> _loadCard() async {
+    try {
+      final card = await ref
+          .read(seatRepositoryProvider)
+          .cardForTrip(widget.trip.tripId);
+      if (mounted && card != null) setState(() => _card = card);
+    } catch (_) {
+      // The trip can be met before a seat layout exists.
+    }
+  }
+
+  Future<void> _claim(String seatId) async {
+    final card = _card;
+    final seat = card?.layout.seatById(seatId);
+    if (card == null || seat == null || !seat.isPassenger) return;
+    final engine = const SeatRuleEngine();
+    final rowId = card.layout.rowIdOf(seatId);
+    final acks = engine.acknowledgementsRequired(
+      rules: card.rules,
+      seatId: seatId,
+      rowId: rowId,
+    );
+    var version = 1;
+    for (final state in card.seats) {
+      if (state.seatId == seatId) version = state.version;
+    }
+    try {
+      await ref
+          .read(seatRepositoryProvider)
+          .claimSeat(
+            layoutId: card.layoutId,
+            seatId: seatId,
+            expectedVersion: version,
+            ackRuleIds: [for (final rule in acks) rule.id],
+          );
+      await _loadCard();
+    } on AlongException catch (error) {
+      if (!mounted) return;
+      final titles = (error.code == AlongErrorCode.ruleAck ? acks : card.rules)
+          .map((rule) => rule.title)
+          .join('\n');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(titles)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -144,6 +198,43 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                     ),
                     const SizedBox(height: AlongSpace.s8),
                     Text(etaLine, style: AlongText.bodyStrong),
+                    if (_card != null) ...[
+                      const SizedBox(height: AlongSpace.s12),
+                      Text(
+                        l10n.freeSeatCount(_card!.freeCount),
+                        style: AlongText.bodyStrong,
+                      ),
+                      for (final rule in _card!.rules)
+                        Text(
+                          rule.body == null
+                              ? rule.title
+                              : '${rule.title}. ${rule.body}',
+                        ),
+                      const SizedBox(height: AlongSpace.s8),
+                      SeatMap(
+                        body: _card!.layout.body,
+                        rows: [
+                          for (final row in _card!.layout.rows)
+                            SeatMapRowView(
+                              id: row.id,
+                              ruleTitle: _rowRule(_card!.rules, row.id),
+                              seats: [
+                                for (final seat in row.seats)
+                                  SeatMapSeat(
+                                    id: seat.id,
+                                    label: seat.label,
+                                    role: seat.role,
+                                    status: _seatStatus(_card!, seat.id),
+                                    statusWord: seat.isPassenger
+                                        ? _seatStatus(_card!, seat.id)
+                                        : l10n.seatDriver,
+                                  ),
+                              ],
+                            ),
+                        ],
+                        onSeatTap: _claim,
+                      ),
+                    ],
                     if (trip.board.walkM > 0) ...[
                       const SizedBox(height: AlongSpace.s12),
                       AlongButton(
@@ -201,6 +292,22 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
         ],
       ),
     );
+  }
+
+  String _seatStatus(VehicleCard card, String seatId) {
+    for (final seat in card.seats) {
+      if (seat.seatId == seatId) return seat.status;
+    }
+    return 'free';
+  }
+
+  String? _rowRule(List<RideRule> rules, String rowId) {
+    final titles = [
+      for (final rule in rules)
+        if (rule.targetScope == 'row' && rule.targetRef == rowId) rule.title,
+    ];
+    if (titles.isEmpty) return null;
+    return titles.join(' · ');
   }
 
   void _openWayfinding(

@@ -43,7 +43,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
   }
 
   Future<void> _loadCurrencySymbol() async {
-    final cityId = ref.read(homeControllerProvider).cityId;
+    final cityId = ref.read(driverHomeControllerProvider).cityId;
     if (cityId == null) return;
     try {
       final meta =
