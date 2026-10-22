@@ -354,7 +354,7 @@ class AlongFlowLive extends StatelessWidget {
           Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final fraction = constraints.maxHeight >= 760 ? 0.22 : 0.30;
+                final fraction = constraints.maxHeight >= 760 ? 0.40 : 0.50;
                 return AlongSpringSheet(
                   fraction: fraction,
                   snaps: [fraction, 0.72],
@@ -378,27 +378,71 @@ class _LiveSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('6 min', style: AlongType.heading(palette)),
-        const SizedBox(height: 8),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: palette.recessed,
-            borderRadius: BorderRadius.circular(99),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.fromLTRB(6, 4, 14, 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AlongDriverPortrait(size: 36, verified: true),
-                SizedBox(width: 8),
-                Text('Chinedu', maxLines: 1, softWrap: false),
-              ],
+        Row(
+          children: [
+            const AlongVehicleMark(
+              kind: AlongVehicleKind.car,
+              width: 108,
+              height: 60,
             ),
-          ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ABC-123-XY',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.title(palette).copyWith(
+                      fontSize: 18,
+                      height: 1.1,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'Silver sedan',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.meta(palette),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            const AlongDriverPortrait(size: 40, verified: true),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Chinedu',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.title(palette)
+                    .copyWith(fontSize: 16, height: 1.1),
+              ),
+            ),
+            Text(
+              '4.9',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.meta(palette),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Text('6 min', style: AlongType.heading(palette)),
+        Text(
+          'Nyanya',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.title(palette).copyWith(fontSize: 16, height: 1.15),
         ),
         const _Fold(
-          label: 'Plate and actions',
+          label: 'Share and call',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -444,25 +488,50 @@ class AlongFlowSos extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return _Page(
       bottom: const SizedBox.shrink(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Safety', style: AlongType.display(palette)),
-          const SizedBox(height: 4),
-          Text(
-            'Your location goes with the alert.',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.bodyMuted(palette),
-          ),
-          const SizedBox(height: 12),
-          const _SafetyLine(icon: AlongIcons.share, label: 'Share trip'),
-          const _SafetyLine(icon: AlongIcons.call, label: 'Call for help'),
-          const _SafetyLine(icon: AlongIcons.shield, label: 'Contact guardian'),
-          const _Fold(label: 'Who is told', child: _SosPanel()),
-          const SizedBox(height: 8),
-          const Center(child: _HoldRing(size: 148)),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final short = constraints.maxHeight < 620;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Safety', style: AlongType.display(palette)),
+              const SizedBox(height: 4),
+              Text(
+                'Your location goes with the alert.',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.bodyMuted(palette),
+              ),
+              SizedBox(height: short ? 8 : 12),
+              Center(child: _HoldRing(size: short ? 108 : 128)),
+              const SizedBox(height: 12),
+              Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.surface,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.fromLTRB(14, 4, 14, 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _TrustedFaces(),
+                        _SafetyLine(
+                          icon: AlongIcons.share,
+                          label: 'Share trip',
+                        ),
+                        _SafetyLine(icon: AlongIcons.call, label: 'Call 112'),
+                        _SafetyTips(),
+                        _Fold(label: 'Who is told', child: _SosPanel()),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -1574,6 +1643,125 @@ class _GoButton extends StatelessWidget {
           palette,
         ).copyWith(fontSize: 44, letterSpacing: -1.6, color: palette.accentInk),
       ),
+    );
+  }
+}
+
+class _TrustedFaces extends StatelessWidget {
+  const _TrustedFaces();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    Widget face(Widget child) {
+      return Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: palette.surface, width: 2),
+        ),
+        child: ClipOval(child: child),
+      );
+    }
+
+    return SizedBox(
+      height: 56,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 80,
+            height: 36,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  child: face(
+                    Image.asset(
+                      AlongDriverPortrait.adaeze,
+                      package: 'along_design',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                      excludeFromSemantics: true,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 22,
+                  child: face(const _Monogram(initials: 'CH', size: 32)),
+                ),
+                Positioned(
+                  left: 44,
+                  child: face(const _Monogram(initials: 'NG', size: 32)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Trusted contacts',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.title(palette)
+                  .copyWith(fontSize: 16, height: 1.1),
+            ),
+          ),
+          Icon(Icons.chevron_right, size: 22, color: palette.muted),
+        ],
+      ),
+    );
+  }
+}
+
+class _SafetyTips extends StatelessWidget {
+  const _SafetyTips();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 4),
+        Text(
+          'Safety tips',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.meta(palette),
+        ),
+        for (final tip in const [
+          'Share the trip',
+          'Sit in the back',
+          'Check the plate',
+        ])
+          SizedBox(
+            height: 36,
+            child: Row(
+              children: [
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: palette.accent,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    tip,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.title(palette)
+                        .copyWith(fontSize: 16, height: 1.1),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

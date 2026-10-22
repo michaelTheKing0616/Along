@@ -190,8 +190,8 @@ class _SchematicBody extends StatelessWidget {
   }
 }
 
-/// Photograph is 864×1152. Front cushions sit near 36% down, the rear bench
-/// near 58%. The drawn cushions face the trunk, so markers are ours.
+/// Photograph is 864×1152. Three front cushions sit near 32% down, the rear
+/// bench near 54%. Markers are ours; the row list decides how many.
 class _CabinShell extends StatelessWidget {
   const _CabinShell({
     required this.rows,
@@ -234,12 +234,13 @@ class _CabinShell extends StatelessWidget {
     for (var r = 0; r < rows.length; r++) {
       final seats = _driverFirst(rows[r].seats);
       final count = seats.length;
-      final seatH = 72.0;
-      // Keep markers on the cushions. The photo has a wide white margin.
-      final span = math.min(width * 0.58, width - 8);
+      final seatH = 64.0;
+      // The leather sits in the middle half. Four rear markers share that
+      // bench evenly, so a row may be narrower than the 48dp floor.
+      final span = math.min(width * 0.50, width - 8);
       var seatW = span / count;
       if (seatW > 64) seatW = 64;
-      if (seatW < 48) seatW = 48;
+      if (seatW < 48 && 48 * count <= span) seatW = 48;
       final gap = count <= 1
           ? 0.0
           : math.max(0.0, (span - seatW * count) / (count - 1));
@@ -297,7 +298,7 @@ class _CabinShell extends StatelessWidget {
     if (count <= 1) {
       frac = 0.55;
     } else if (count == 2) {
-      frac = index == 0 ? 0.36 : 0.58;
+      frac = index == 0 ? 0.32 : 0.54;
     } else {
       frac = 0.32 + 0.42 * (index / (count - 1));
     }
