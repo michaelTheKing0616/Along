@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Shared vehicle set. Rows, onboarding, and markers use one studio render
-/// per kind: a 3/4 view and a top-down view, same soft light.
+/// Shared vehicle set. Rows and onboarding use the project-owned 3/4
+/// photographs. Seats and map markers use the matching top-down renders.
 enum AlongVehicleKind { keke, okada, car, danfo, bus }
 
 /// 3/4 studio render. Same camera for every kind.
