@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:along_design/src/elevation.dart';
 import 'package:along_design/src/motion.dart';
 import 'package:along_design/src/palette.dart';
@@ -59,6 +61,38 @@ class SeatMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final rules = <Widget>[
+      for (final row in rows)
+        if (row.ruleTitle != null && row.ruleTitle!.trim().isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+            child: Text(
+              row.ruleTitle!,
+              key: Key('seat_row_rule_${row.id}'),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: AlongText.caption.copyWith(
+                color: palette.ink,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+    ];
+    // The sedan photograph is the cabin shell. Danfo, keke, bike, and coach
+    // stay on the schematic because they have no matching interior.
+    final diagram = body == 'cabin'
+        ? _CabinShell(
+            rows: rows,
+            onSeatTap: onSeatTap,
+            onSeatLongPress: onSeatLongPress,
+          )
+        : _SchematicBody(
+            body: body,
+            rows: rows,
+            onSeatTap: onSeatTap,
+            onSeatLongPress: onSeatLongPress,
+          );
     return DecoratedBox(
       decoration: BoxDecoration(
         color: palette.surface,
@@ -67,81 +101,207 @@ class SeatMap extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final row in rows)
-              if (row.ruleTitle != null && row.ruleTitle!.trim().isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AlongSpace.s8),
-                  child: Text(
-                    row.ruleTitle!,
-                    key: Key('seat_row_rule_${row.id}'),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    style: AlongText.caption.copyWith(
-                      color: palette.ink,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-            Stack(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // A vertical flex does not pass its max height to non-flex
+            // children. The cabin photo has to take the leftover space or
+            // the 864×1152 shell overflows a bounded test surface. Schematic
+            // bodies keep an intrinsic height.
+            final fitCabin = body == 'cabin' && constraints.maxHeight.isFinite;
+            return Column(
+              mainAxisSize: fitCabin ? MainAxisSize.max : MainAxisSize.min,
+              crossAxisAlignment: fitCabin
+                  ? CrossAxisAlignment.stretch
+                  : CrossAxisAlignment.center,
               children: [
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(6, 0, 6, 4),
-                    child: Image.asset(
-                      _silhouetteAsset(body),
-                      package: 'along_design',
-                      fit: BoxFit.fitWidth,
-                      alignment: Alignment.center,
-                      filterQuality: FilterQuality.medium,
-                      excludeFromSemantics: true,
-                      opacity: const AlwaysStoppedAnimation(0.9),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    28,
-                    body == 'bike' ? 28 : 48,
-                    28,
-                    28,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (final row in rows)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: Row(
-                            children: [
-                              for (final seat in row.seats) ...[
-                                if (seat.isDriver && body != 'bike')
-                                  const _SteeringWheel(),
-                                Expanded(
-                                  child: _SeatButton(
-                                    seat: seat,
-                                    onTap: seat.isClaimable ? onSeatTap : null,
-                                    onLongPress: seat.isClaimable
-                                        ? onSeatLongPress
-                                        : null,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                ...rules,
+                if (fitCabin) Expanded(child: diagram) else diagram,
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
+  }
+}
+
+class _SchematicBody extends StatelessWidget {
+  const _SchematicBody({
+    required this.body,
+    required this.rows,
+    required this.onSeatTap,
+    required this.onSeatLongPress,
+  });
+
+  final String body;
+  final List<SeatMapRowView> rows;
+  final ValueChanged<String>? onSeatTap;
+  final ValueChanged<String>? onSeatLongPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(6, 0, 6, 4),
+            child: Image.asset(
+              _silhouetteAsset(body),
+              package: 'along_design',
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.center,
+              filterQuality: FilterQuality.medium,
+              excludeFromSemantics: true,
+              opacity: const AlwaysStoppedAnimation(0.9),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(28, body == 'bike' ? 28 : 48, 28, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final row in rows)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    children: [
+                      for (final seat in row.seats) ...[
+                        if (seat.isDriver && body != 'bike')
+                          const _SteeringWheel(),
+                        Expanded(
+                          child: _SeatButton(
+                            seat: seat,
+                            onTap: seat.isClaimable ? onSeatTap : null,
+                            onLongPress: seat.isClaimable
+                                ? onSeatLongPress
+                                : null,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Photograph is 864×1152. Front cushions sit near 36% down, the rear bench
+/// near 58%. The drawn cushions face the trunk, so markers are ours.
+class _CabinShell extends StatelessWidget {
+  const _CabinShell({
+    required this.rows,
+    required this.onSeatTap,
+    required this.onSeatLongPress,
+  });
+
+  final List<SeatMapRowView> rows;
+  final ValueChanged<String>? onSeatTap;
+  final ValueChanged<String>? onSeatLongPress;
+
+  static const _photoAspect = 864 / 1152;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxW = constraints.maxWidth;
+        final maxH = constraints.maxHeight;
+        var width = maxW;
+        var height = width / _photoAspect;
+        if (maxH.isFinite && height > maxH) {
+          height = maxH;
+          width = height * _photoAspect;
+        }
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: _shell(width, height),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _shell(double width, double height) {
+    final markers = <Widget>[];
+    for (var r = 0; r < rows.length; r++) {
+      final seats = _driverFirst(rows[r].seats);
+      final count = seats.length;
+      final seatH = 72.0;
+      // Keep markers on the cushions. The photo has a wide white margin.
+      final span = math.min(width * 0.58, width - 8);
+      var seatW = span / count;
+      if (seatW > 64) seatW = 64;
+      if (seatW < 48) seatW = 48;
+      final gap = count <= 1
+          ? 0.0
+          : math.max(0.0, (span - seatW * count) / (count - 1));
+      final rowWidth = seatW * count + gap * (count - 1);
+      final left0 = (width - rowWidth) / 2;
+      final top = _bandTop(r, rows.length, height, seatH);
+      for (var s = 0; s < count; s++) {
+        final seat = seats[s];
+        markers.add(
+          Positioned(
+            left: left0 + s * (seatW + gap),
+            top: top,
+            width: seatW,
+            height: seatH,
+            child: _SeatButton(
+              seat: seat,
+              markHeight: seatH,
+              onTap: seat.isClaimable ? onSeatTap : null,
+              onLongPress: seat.isClaimable ? onSeatLongPress : null,
+            ),
+          ),
+        );
+      }
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/photos/car-cabin-top.jpg',
+              package: 'along_design',
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
+              excludeFromSemantics: true,
+            ),
+          ),
+          ...markers,
+        ],
+      ),
+    );
+  }
+
+  static List<SeatMapSeat> _driverFirst(List<SeatMapSeat> seats) {
+    return [
+      for (final seat in seats)
+        if (seat.isDriver) seat,
+      for (final seat in seats)
+        if (!seat.isDriver) seat,
+    ];
+  }
+
+  static double _bandTop(int index, int count, double height, double seatH) {
+    double frac;
+    if (count <= 1) {
+      frac = 0.55;
+    } else if (count == 2) {
+      frac = index == 0 ? 0.36 : 0.58;
+    } else {
+      frac = 0.32 + 0.42 * (index / (count - 1));
+    }
+    return (frac * height - seatH / 2).clamp(4.0, height - seatH - 4);
   }
 }
 
@@ -217,11 +377,13 @@ class _SeatButton extends StatefulWidget {
     required this.seat,
     required this.onTap,
     required this.onLongPress,
+    this.markHeight = 86,
   });
 
   final SeatMapSeat seat;
   final ValueChanged<String>? onTap;
   final ValueChanged<String>? onLongPress;
+  final double markHeight;
 
   @override
   State<_SeatButton> createState() => _SeatButtonState();
@@ -267,7 +429,7 @@ class _SeatButtonState extends State<_SeatButton>
         child: SizedBox(
           key: Key('seat_${seat.id}'),
           width: double.infinity,
-          height: 86,
+          height: widget.markHeight,
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
@@ -423,10 +585,7 @@ class _SeatPainter extends CustomPainter {
     canvas.drawRRect(back.shift(const Offset(0, 1)), shadow);
     canvas.drawRRect(pad.shift(const Offset(0, 1)), shadow);
     canvas.drawRRect(pad, Paint()..color = cushion);
-    canvas.drawRRect(
-      back,
-      Paint()..color = Color.lerp(cushion, ink, 0.22)!,
-    );
+    canvas.drawRRect(back, Paint()..color = Color.lerp(cushion, ink, 0.22)!);
     canvas.drawRRect(
       head,
       Paint()..color = Color.lerp(cushion, ink, selected ? 0.4 : 0.32)!,
