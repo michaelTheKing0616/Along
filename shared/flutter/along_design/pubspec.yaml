@@ -12,6 +12,9 @@ dependencies:
     path: ../along_core
   flutter:
     sdk: flutter
+  flutter_animate: ^4.5.2
+  lottie: ^3.6.1
+  material_symbols_icons: ^4.2960.0
 
 dev_dependencies:
   flutter_test:
@@ -37,6 +40,8 @@ flutter:
     - assets/splash/
     - assets/map/
     - assets/avatars/
+    - assets/vehicles/
+    - assets/motion/
   fonts:
     - family: Satoshi
       fonts:

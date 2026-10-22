@@ -152,19 +152,27 @@ class AlongCityMap extends StatelessWidget {
   List<_Marker> _markers(double drawn) {
     if (mode == AlongCityMapMode.routeHero) return const [];
     if (mode == AlongCityMapMode.trip) {
-      return [_Marker(route[_indexFor(drawn)], AlongVehicleKind.car, null)];
+      final index = _indexFor(drawn);
+      return [
+        _Marker(route[index], AlongVehicleKind.car, null, _heading(index)),
+      ];
     }
     if (mode == AlongCityMapMode.online) {
       return const [
-        _Marker(Offset(0.4019, 0.4435), AlongVehicleKind.keke, 2),
-        _Marker(Offset(0.5354, 0.5117), AlongVehicleKind.danfo, 6),
+        _Marker(Offset(0.4019, 0.4435), AlongVehicleKind.keke, 2, -0.4),
+        _Marker(Offset(0.5354, 0.5117), AlongVehicleKind.danfo, 6, 0.9),
       ];
     }
     return const [
-      _Marker(Offset(0.4019, 0.4435), AlongVehicleKind.keke, 2),
-      _Marker(Offset(0.4855, 0.4948), AlongVehicleKind.car, 3),
-      _Marker(Offset(0.7157, 0.5571), AlongVehicleKind.danfo, 8),
+      _Marker(Offset(0.4019, 0.4435), AlongVehicleKind.keke, 2, -0.7),
+      _Marker(Offset(0.4855, 0.4948), AlongVehicleKind.car, 3, 0.35),
+      _Marker(Offset(0.7157, 0.5571), AlongVehicleKind.danfo, 8, 1.15),
     ];
+  }
+
+  double _heading(int index) {
+    final i = index.clamp(1, route.length - 1);
+    return alongHeading(route[i - 1], route[i]);
   }
 
   int _indexFor(double drawn) {
@@ -223,16 +231,10 @@ class AlongCityMap extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Container(
-              width: 44,
-              height: 44,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: palette.surface,
-                shape: BoxShape.circle,
-                boxShadow: AlongElevation.float(palette.ink),
-              ),
-              child: AlongVehicleMark(kind: marker.kind, width: 32),
+            AlongTopDownMark(
+              kind: marker.kind,
+              heading: marker.heading,
+              size: 40,
             ),
             if (marker.seats != null)
               Positioned(
@@ -486,9 +488,10 @@ class _Pin {
 }
 
 class _Marker {
-  const _Marker(this.at, this.kind, this.seats);
+  const _Marker(this.at, this.kind, this.seats, this.heading);
 
   final Offset at;
   final AlongVehicleKind kind;
   final int? seats;
+  final double heading;
 }

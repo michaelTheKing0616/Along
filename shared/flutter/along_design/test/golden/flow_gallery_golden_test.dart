@@ -7,8 +7,11 @@ void main() {
     'onboarding': ({bool legacy = false}) =>
         AlongFlowOnboarding(legacyCopy: legacy),
     'home': ({bool legacy = false}) => const AlongFlowHome(),
+    'rides': ({bool legacy = false}) => const AlongFlowRides(),
     'seats': ({bool legacy = false}) => const AlongFlowSeats(),
+    'search': ({bool legacy = false}) => const AlongFlowSearch(),
     'live': ({bool legacy = false}) => const AlongFlowLive(),
+    'rating': ({bool legacy = false}) => const AlongFlowRating(),
     'sos': ({bool legacy = false}) => const AlongFlowSos(),
     'guardian': ({bool legacy = false}) => const AlongFlowGuardian(),
     'plate': ({bool legacy = false}) => const AlongFlowPlate(),

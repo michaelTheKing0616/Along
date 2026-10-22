@@ -1,211 +1,221 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
+import '../elevation.dart';
 import '../palette.dart';
 
-/// Shared vehicle set. One geometric drawing language for cards and the map.
+/// Shared vehicle set. Cards use Fluent Emoji 3D. Map pins are top-down.
 enum AlongVehicleKind { keke, okada, car, danfo, bus }
 
-/// Side-view mark. Drawn in a 100 by 72 box and scaled to [width].
+/// Hero illustration for cards. Fluent Emoji 3D, MIT, not a hand drawing.
 class AlongVehicleMark extends StatelessWidget {
-  const AlongVehicleMark({super.key, required this.kind, this.width = 44});
+  const AlongVehicleMark({super.key, required this.kind, this.width = 64});
 
   final AlongVehicleKind kind;
   final double width;
 
+  static const _asset = <AlongVehicleKind, String>{
+    AlongVehicleKind.keke: 'assets/vehicles/auto_rickshaw_3d.png',
+    AlongVehicleKind.okada: 'assets/vehicles/motorcycle_3d.png',
+    AlongVehicleKind.car: 'assets/vehicles/automobile_3d.png',
+    AlongVehicleKind.danfo: 'assets/vehicles/minibus_3d.png',
+    AlongVehicleKind.bus: 'assets/vehicles/bus_3d.png',
+  };
+
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
     return SizedBox(
       width: width,
-      height: width * 0.72,
-      child: CustomPaint(
-        painter: _VehicleSidePainter(
-          kind: kind,
-          ink: palette.ink,
-          accent: palette.accent,
-          surface: palette.surface,
-          glass: palette.brightness == Brightness.dark
-              ? const Color(0xFF3A342C)
-              : const Color(0xFFD5E4E4),
-        ),
+      height: width,
+      child: Image.asset(
+        _asset[kind]!,
+        package: 'along_design',
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+        gaplessPlayback: true,
+        excludeFromSemantics: true,
       ),
     );
   }
 }
 
-class _VehicleSidePainter extends CustomPainter {
-  _VehicleSidePainter({
+/// Crisp top-down marker. Nose points up before [heading] is applied.
+class AlongTopDownMark extends StatelessWidget {
+  const AlongTopDownMark({
+    super.key,
+    required this.kind,
+    this.heading = 0,
+    this.size = 36,
+  });
+
+  final AlongVehicleKind kind;
+  final double heading;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Transform.translate(
+            offset: Offset(0, size * 0.08),
+            child: Container(
+              width: size * 0.46,
+              height: size * 0.22,
+              decoration: BoxDecoration(
+                color: palette.ink.withValues(alpha: 0.22),
+                borderRadius: BorderRadius.all(Radius.elliptical(size, size)),
+                boxShadow: AlongElevation.float(palette.ink),
+              ),
+            ),
+          ),
+          Transform.rotate(
+            angle: heading,
+            child: CustomPaint(
+              size: Size.square(size),
+              painter: _TopDownPainter(
+                kind: kind,
+                ink: palette.ink,
+                accent: palette.accent,
+                glass: palette.surface,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TopDownPainter extends CustomPainter {
+  _TopDownPainter({
     required this.kind,
     required this.ink,
     required this.accent,
-    required this.surface,
     required this.glass,
   });
 
   final AlongVehicleKind kind;
   final Color ink;
   final Color accent;
-  final Color surface;
   final Color glass;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final s = size.width / 40;
     canvas.save();
-    canvas.scale(size.width / 100, size.height / 72);
-    final stroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.4
-      ..color = ink
-      ..strokeJoin = StrokeJoin.round
-      ..strokeCap = StrokeCap.round;
+    canvas.scale(s, s);
     final fill = Paint()..style = PaintingStyle.fill;
     switch (kind) {
       case AlongVehicleKind.keke:
-        _keke(canvas, fill, stroke);
+        _keke(canvas, fill);
       case AlongVehicleKind.okada:
-        _okada(canvas, fill, stroke);
+        _okada(canvas, fill);
       case AlongVehicleKind.car:
-        _car(canvas, fill, stroke);
+        _car(canvas, fill);
       case AlongVehicleKind.danfo:
-        _danfo(canvas, fill, stroke);
+        _van(canvas, fill, long: false);
       case AlongVehicleKind.bus:
-        _bus(canvas, fill, stroke);
+        _van(canvas, fill, long: true);
     }
     canvas.restore();
   }
 
-  void _wheel(Canvas canvas, Paint fill, Offset center, double radius) {
-    canvas.drawCircle(center, radius, fill..color = ink);
-    canvas.drawCircle(center, radius * 0.42, fill..color = surface);
-  }
-
-  void _keke(Canvas canvas, Paint fill, Paint stroke) {
-    final canopy = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(18, 8, 58, 30),
-      const Radius.circular(12),
-    );
-    canvas.drawRRect(canopy, fill..color = accent);
-    canvas.drawRRect(canopy, stroke);
-    final cabin = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(24, 28, 46, 20),
-      const Radius.circular(5),
-    );
-    canvas.drawRRect(cabin, fill..color = surface);
-    canvas.drawRRect(cabin, stroke);
+  void _car(Canvas canvas, Paint fill) {
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(30, 14, 20, 12),
-        const Radius.circular(3),
-      ),
+      RRect.fromLTRBR(11, 3, 29, 37, const Radius.circular(8)),
+      fill..color = ink,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(13.5, 9, 26.5, 17, const Radius.circular(3)),
       fill..color = glass,
     );
-    _wheel(canvas, fill, const Offset(32, 56), 8);
-    _wheel(canvas, fill, const Offset(58, 56), 8);
-    _wheel(canvas, fill, const Offset(80, 50), 6);
-  }
-
-  void _okada(Canvas canvas, Paint fill, Paint stroke) {
-    canvas.drawCircle(const Offset(24, 50), 12, stroke);
-    canvas.drawCircle(const Offset(78, 50), 12, stroke);
-    canvas.drawLine(const Offset(24, 50), const Offset(78, 50), stroke);
-    canvas.drawLine(const Offset(36, 50), const Offset(48, 30), stroke);
-    canvas.drawLine(const Offset(48, 30), const Offset(66, 30), stroke);
-    canvas.drawLine(const Offset(66, 30), const Offset(78, 46), stroke);
-    final seat = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(40, 32, 22, 8),
-      const Radius.circular(3),
-    );
-    canvas.drawRRect(seat, fill..color = ink);
-    canvas.drawCircle(const Offset(86, 34), 4, fill..color = accent);
-  }
-
-  void _car(Canvas canvas, Paint fill, Paint stroke) {
-    final body = Path()
-      ..moveTo(14, 48)
-      ..lineTo(26, 48)
-      ..lineTo(34, 34)
-      ..lineTo(46, 26)
-      ..lineTo(70, 26)
-      ..lineTo(82, 36)
-      ..lineTo(92, 36)
-      ..lineTo(92, 48)
-      ..lineTo(80, 48)
-      ..close();
-    canvas.drawPath(body, fill..color = surface);
-    canvas.drawPath(body, stroke);
-    final glassPath = Path()
-      ..moveTo(40, 34)
-      ..lineTo(48, 28)
-      ..lineTo(68, 28)
-      ..lineTo(76, 36)
-      ..close();
-    canvas.drawPath(glassPath, fill..color = glass);
-    canvas.drawLine(const Offset(58, 28), const Offset(58, 36), stroke);
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(20, 40, 10, 6),
+      RRect.fromLTRBR(13.5, 24, 26.5, 31, const Radius.circular(2)),
+      fill..color = glass.withValues(alpha: 0.85),
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(12, 18.5, 28, 21.5, const Radius.circular(1)),
+      fill..color = accent,
+    );
+  }
+
+  void _keke(Canvas canvas, Paint fill) {
+    canvas.drawCircle(const Offset(20, 7), 3.2, fill..color = ink);
+    canvas.drawCircle(const Offset(9, 33), 3.4, fill..color = ink);
+    canvas.drawCircle(const Offset(31, 33), 3.4, fill..color = ink);
+    canvas.drawRRect(
+      RRect.fromLTRBR(10, 12, 30, 32, const Radius.circular(6)),
+      fill..color = accent,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(13, 16, 27, 24, const Radius.circular(3)),
+      fill..color = glass,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(12, 26, 28, 34, const Radius.circular(3)),
+      fill..color = ink,
+    );
+  }
+
+  void _okada(Canvas canvas, Paint fill) {
+    canvas.drawCircle(const Offset(20, 8), 4.2, fill..color = ink);
+    canvas.drawCircle(const Offset(20, 8), 2.1, fill..color = glass);
+    canvas.drawCircle(const Offset(20, 32), 4.4, fill..color = ink);
+    canvas.drawCircle(const Offset(20, 32), 2.2, fill..color = glass);
+    canvas.drawRRect(
+      RRect.fromLTRBR(16.5, 10, 23.5, 30, const Radius.circular(3)),
+      fill..color = ink,
+    );
+    canvas.drawOval(const Rect.fromLTWH(14, 16, 12, 10), fill..color = accent);
+  }
+
+  void _van(Canvas canvas, Paint fill, {required bool long}) {
+    final top = long ? 2.0 : 4.0;
+    final bottom = long ? 38.0 : 36.0;
+    canvas.drawRRect(
+      RRect.fromLTRBR(9, top, 31, bottom, const Radius.circular(6)),
+      fill..color = ink,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(
+        17.5,
+        top + 3,
+        22.5,
+        bottom - 3,
         const Radius.circular(2),
       ),
       fill..color = accent,
     );
-    _wheel(canvas, fill, const Offset(32, 50), 8);
-    _wheel(canvas, fill, const Offset(74, 50), 8);
-  }
-
-  void _danfo(Canvas canvas, Paint fill, Paint stroke) {
-    final body = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(6, 20, 88, 30),
-      const Radius.circular(6),
-    );
-    canvas.drawRRect(body, fill..color = surface);
-    canvas.drawRRect(body, stroke);
-    canvas.drawRect(const Rect.fromLTWH(6, 32, 88, 7), fill..color = accent);
-    for (var i = 0; i < 4; i++) {
+    final windows = long ? 5 : 4;
+    final span = bottom - top - 12;
+    for (var i = 0; i < windows; i++) {
+      final y = top + 6 + span * i / windows;
       canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(14 + i * 18, 24, 12, 8),
-          const Radius.circular(2),
-        ),
+        RRect.fromLTRBR(11.5, y, 16.2, y + 3.2, const Radius.circular(1)),
+        fill..color = glass,
+      );
+      canvas.drawRRect(
+        RRect.fromLTRBR(23.8, y, 28.5, y + 3.2, const Radius.circular(1)),
         fill..color = glass,
       );
     }
-    _wheel(canvas, fill, const Offset(24, 54), 8);
-    _wheel(canvas, fill, const Offset(78, 54), 8);
-  }
-
-  void _bus(Canvas canvas, Paint fill, Paint stroke) {
-    final body = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(8, 12, 84, 40),
-      const Radius.circular(8),
-    );
-    canvas.drawRRect(body, fill..color = surface);
-    canvas.drawRRect(body, stroke);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(14, 18, 16, 16),
-        const Radius.circular(2),
-      ),
-      fill..color = glass,
-    );
-    for (var i = 0; i < 3; i++) {
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(36 + i * 16, 18, 12, 10),
-          const Radius.circular(2),
-        ),
-        fill..color = glass,
-      );
-    }
-    canvas.drawLine(const Offset(32, 18), const Offset(32, 52), stroke);
-    _wheel(canvas, fill, const Offset(26, 56), 8);
-    _wheel(canvas, fill, const Offset(74, 56), 8);
   }
 
   @override
-  bool shouldRepaint(covariant _VehicleSidePainter oldDelegate) {
+  bool shouldRepaint(covariant _TopDownPainter oldDelegate) {
     return oldDelegate.kind != kind ||
         oldDelegate.ink != ink ||
-        oldDelegate.accent != accent ||
-        oldDelegate.surface != surface;
+        oldDelegate.accent != accent;
   }
+}
+
+/// Heading from one map fraction toward the next. Zero points up.
+double alongHeading(Offset from, Offset to) {
+  return math.atan2(to.dx - from.dx, -(to.dy - from.dy));
 }
