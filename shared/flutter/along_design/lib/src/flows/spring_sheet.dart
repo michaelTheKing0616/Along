@@ -16,12 +16,17 @@ class AlongSpringSheet extends StatefulWidget {
     required this.child,
     this.restingHeight,
     this.fraction,
+    this.snaps,
     this.title,
-  }) : assert(restingHeight != null || fraction != null);
+  }) : assert(restingHeight != null || fraction != null || snaps != null);
 
   final Widget child;
   final double? restingHeight;
   final double? fraction;
+
+  /// Resting fractions, collapsed first. A flick on the handle moves one snap.
+  /// Tests and the gallery stay on the first snap.
+  final List<double>? snaps;
   final String? title;
 
   @override
@@ -31,6 +36,7 @@ class AlongSpringSheet extends StatefulWidget {
 class _AlongSpringSheetState extends State<AlongSpringSheet>
     with SingleTickerProviderStateMixin {
   late final AnimationController _motion;
+  int _snap = 0;
 
   @override
   void initState() {
@@ -72,9 +78,13 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
     final palette = AlongPalette.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
+        final snaps = widget.snaps;
+        final snapFraction = (snaps != null && snaps.isNotEmpty)
+            ? snaps[_snap.clamp(0, snaps.length - 1)]
+            : widget.fraction;
         final rest =
             widget.restingHeight ??
-            constraints.maxHeight * (widget.fraction ?? 0.42);
+            constraints.maxHeight * (snapFraction ?? 0.42);
         return AnimatedBuilder(
           animation: _motion,
           builder: (context, _) {
@@ -109,13 +119,42 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                         width: double.infinity,
                         child: Column(
                           children: [
-                            const SizedBox(height: 8),
-                            Container(
-                              width: 36,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: palette.ink.withValues(alpha: 0.18),
-                                borderRadius: BorderRadius.circular(999),
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onVerticalDragEnd: (details) {
+                                final points = widget.snaps;
+                                if (points == null || points.length < 2) {
+                                  return;
+                                }
+                                final velocity = details.primaryVelocity ?? 0;
+                                setState(() {
+                                  if (velocity < -80) {
+                                    _snap = (_snap + 1).clamp(
+                                      0,
+                                      points.length - 1,
+                                    );
+                                  } else if (velocity > 80) {
+                                    _snap = (_snap - 1).clamp(
+                                      0,
+                                      points.length - 1,
+                                    );
+                                  }
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Center(
+                                  child: Container(
+                                    width: 36,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: palette.ink.withValues(
+                                        alpha: 0.18,
+                                      ),
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             if (widget.title != null)
