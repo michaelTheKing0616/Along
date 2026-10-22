@@ -122,7 +122,7 @@ create or replace function cluster_candidate_parks(p_city_id uuid default null)
 returns jsonb
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_job_id uuid;
@@ -272,7 +272,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_city_id uuid;

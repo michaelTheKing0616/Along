@@ -43,7 +43,7 @@ on conflict (key) do nothing;
 create or replace function audit_admin_write() returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_actor_id uuid := auth.uid();
@@ -101,7 +101,7 @@ returns void
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_schema jsonb;
@@ -163,7 +163,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_meta app_config_keys%rowtype;
@@ -237,7 +237,7 @@ create or replace function _admin_graph_source(p_note text)
 returns uuid
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_id uuid;
@@ -269,7 +269,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_id uuid;
@@ -405,7 +405,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_city_id uuid;
@@ -457,7 +457,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_city_id uuid;
@@ -524,7 +524,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_line text;
@@ -586,7 +586,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_row jsonb;

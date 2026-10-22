@@ -46,16 +46,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Positioned.fill(
             child: AlongMap(
               key: const Key('home_map'),
-              styleUrl: config.tilesBaseUrl == null
-                  ? null
-                  : AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
-                      .remoteStyleUrl(citySlug: state.citySlug),
-              offlineStyleJson: config.tilesBaseUrl == null
+              styleUrl: config.hasTiles
+                  ? AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
+                      .remoteStyleUrl(citySlug: state.citySlug)
+                  : (config.allowsDemoMapFallback
+                      ? AlongStyleLoader.demoStyleUrl
+                      : null),
+              // Prefer demotiles on non-prod when CDN unset; only attempt the
+              // offline fixture on prod (hard empty-state path) while loading.
+              offlineStyleJson: (!config.hasTiles &&
+                      !config.allowsDemoMapFallback)
                   ? ref.watch(homeOfflineStyleProvider).maybeWhen(
                         data: (value) => value,
                         orElse: () => null,
                       )
                   : null,
+              allowDemoStyleFallback: config.allowsDemoMapFallback,
               maxZoom: lowData.enabled ? lowData.maxTileZoom.toDouble() : null,
               initialCameraPosition: state.mapCenter == null
                   ? null

@@ -1,0 +1,173 @@
+[
+  {
+    "osm_type": "node",
+    "osm_id": 5986883885,
+    "name": "God is Good",
+    "lat": 9.0654954,
+    "lng": 7.4380756,
+    "kind": "bus_station",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 13383633683,
+    "name": "Mabushi Bus Terminal",
+    "lat": 9.0865699,
+    "lng": 7.4565142,
+    "kind": "bus_station",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 5234383123,
+    "name": "Nyanya bus station",
+    "lat": 9.0234192,
+    "lng": 7.5706346,
+    "kind": "bus_station",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 4465077889,
+    "name": "Zuba",
+    "lat": 9.0932366,
+    "lng": 7.2159666,
+    "kind": "bus_station",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364207,
+    "name": "Area 10 Bus Stop",
+    "lat": 9.0392796,
+    "lng": 7.48575,
+    "kind": "named_stop",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364171,
+    "name": "Area 3 Junction",
+    "lat": 9.0252468,
+    "lng": 7.4755472,
+    "kind": "named_stop",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364192,
+    "name": "Area 8 Bus Station",
+    "lat": 9.0348838,
+    "lng": 7.4879229,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364180,
+    "name": "El-Rufai Bus Station",
+    "lat": 9.1476363,
+    "lng": 7.3246863,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364161,
+    "name": "G.U.O Transport - Zuba(Fct) Terminal",
+    "lat": 9.090515,
+    "lng": 7.2149626,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364217,
+    "name": "Gwarinpa Bus Stop",
+    "lat": 9.1191519,
+    "lng": 7.405881,
+    "kind": "named_stop",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364118,
+    "name": "Jabi Central Bus Station",
+    "lat": 9.0648698,
+    "lng": 7.4344173,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364181,
+    "name": "Jabi Motor Park",
+    "lat": 9.0638305,
+    "lng": 7.432691,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024356443,
+    "name": "Kuje",
+    "lat": 8.8940844,
+    "lng": 7.1860591,
+    "kind": "named_stop",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364186,
+    "name": "Life Camp Bus Station",
+    "lat": 9.0680098,
+    "lng": 7.4029022,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024356419,
+    "name": "Lugbe Bus Stop",
+    "lat": 8.9808369,
+    "lng": 7.3799952,
+    "kind": "named_stop",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364126,
+    "name": "Lugbe By Car Wash Bridge",
+    "lat": 8.9641787,
+    "lng": 7.3813367,
+    "kind": "named_stop",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364201,
+    "name": "Nnpc Bus Station",
+    "lat": 9.056011,
+    "lng": 7.4858844,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364183,
+    "name": "Wuse Bus Station",
+    "lat": 9.0660504,
+    "lng": 7.4649292,
+    "kind": "named_park",
+    "aliases": []
+  },
+  {
+    "osm_type": "node",
+    "osm_id": 14024364174,
+    "name": "Wuse District Hospital Bus Stop",
+    "lat": 9.06292,
+    "lng": 7.46807,
+    "kind": "named_stop",
+    "aliases": []
+  }
+]

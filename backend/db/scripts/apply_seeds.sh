@@ -23,6 +23,9 @@ case "${1:-all}" in
   abuja)
     apply seed_abuja_pilot seed_abuja_pilot/load.sql
     ;;
+  abuja-osm)
+    apply seed_abuja_osm_parks seed_abuja_osm_parks/load.sql
+    ;;
   testcity)
     apply seed_testcity_fixture seed_testcity_fixture/load.sql
     ;;
@@ -36,7 +39,7 @@ case "${1:-all}" in
     apply seed_test_scenarios seed_test_scenarios/load.sql
     ;;
   *)
-    echo "Usage: $0 [core|abuja|testcity|scenarios|all]"
+    echo "Usage: $0 [core|abuja|abuja-osm|testcity|scenarios|all]"
     exit 1
     ;;
 esac

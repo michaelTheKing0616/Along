@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:io';
 
 import 'package:along_map/src/cache/tile_cache_manager.dart';
 import 'package:along_map/src/camera/map_camera.dart';
 import 'package:along_map/src/layers/layer_ids.dart';
 import 'package:along_map/src/layers/map_layer_controller.dart';
+import 'package:along_map/src/style/along_map_colors.dart';
 import 'package:along_map/src/style/along_style_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -25,6 +27,7 @@ class AlongMap extends StatefulWidget {
     this.gestureRecognizers,
     this.myLocationEnabled = false,
     this.maxZoom,
+    this.allowDemoStyleFallback = true,
   });
 
   /// Remote style URL (`${TILES_BASE}/styles/along-light.json`). Ignored when
@@ -42,6 +45,11 @@ class AlongMap extends StatefulWidget {
   final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
   final bool myLocationEnabled;
   final double? maxZoom;
+
+  /// When style URL / offline JSON are missing, fall back to MapLibre demotiles
+  /// instead of the historical `tiles-staging.along.ng` default (often DNS-dead
+  /// → black map). Disable on prod builds that must show a hard empty-state.
+  final bool allowDemoStyleFallback;
 
   /// Creates an [AlongMap] configured for offline Abuja fixture tiles.
   static Future<AlongMapOfflineConfig> bootstrapOffline({
@@ -69,38 +77,154 @@ class AlongMap extends StatefulWidget {
 class _AlongMapState extends State<AlongMap> {
   MapLayerController? _layerController;
   final _controllerCompleter = Completer<MapLibreMapController>();
+  bool _styleLoaded = false;
+
+  @override
+  void didUpdateWidget(covariant AlongMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.styleUrl != widget.styleUrl ||
+        oldWidget.offlineStyleJson != widget.offlineStyleJson) {
+      _styleLoaded = false;
+    }
+  }
+
+  String? _resolveStyleString() {
+    final offline = widget.offlineStyleJson;
+    if (offline != null && offline.isNotEmpty) return offline;
+    final remote = widget.styleUrl;
+    if (remote != null && remote.isNotEmpty) return remote;
+    if (widget.allowDemoStyleFallback) {
+      return AlongStyleLoader.demoStyleUrl;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final styleString = widget.offlineStyleJson ??
-        widget.styleUrl ??
-        const AlongStyleLoader().remoteStyleUrl();
+    final styleString = _resolveStyleString();
+    if (styleString == null) {
+      return const _AlongMapUnavailablePlaceholder();
+    }
 
-    return MapLibreMap(
-      styleString: styleString,
-      initialCameraPosition:
-          widget.initialCameraPosition ??
-          MapCamera.forCenter(lat: 0, lng: 0, zoom: 2),
-      myLocationEnabled: widget.myLocationEnabled,
-      minMaxZoomPreference: MinMaxZoomPreference(
-        0,
-        widget.maxZoom ?? 22,
+    final usingDemo = AlongStyleLoader.isDemoStyle(styleString);
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Land colour behind MapLibre so a failed/slow style never paints black.
+        const ColoredBox(color: AlongMapColors.land),
+        MapLibreMap(
+          styleString: styleString,
+          initialCameraPosition:
+              widget.initialCameraPosition ??
+              MapCamera.forCenter(lat: 0, lng: 0, zoom: 2),
+          myLocationEnabled: widget.myLocationEnabled,
+          attributionButtonPosition: AttributionButtonPosition.bottomLeft,
+          attributionButtonMargins: const math.Point(8, 96),
+          logoViewMargins: const math.Point(8, 96),
+          minMaxZoomPreference: MinMaxZoomPreference(
+            0,
+            widget.maxZoom ?? 22,
+          ),
+          gestureRecognizers: widget.gestureRecognizers,
+          onMapClick: widget.onMapClick,
+          onMapCreated: (controller) {
+            if (!_controllerCompleter.isCompleted) {
+              _controllerCompleter.complete(controller);
+            }
+            widget.onMapCreated?.call(controller);
+          },
+          onStyleLoadedCallback: () {
+            if (mounted) {
+              setState(() => _styleLoaded = true);
+            }
+            _controllerCompleter.future.then((controller) {
+              _layerController = MapLayerController(controller);
+              widget.onLayerControllerReady?.call(_layerController!);
+            });
+            widget.onStyleLoaded?.call();
+          },
+        ),
+        if (!_styleLoaded)
+          const ColoredBox(
+            color: AlongMapColors.land,
+            child: Center(
+              child: SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(strokeWidth: 2.5),
+              ),
+            ),
+          ),
+        if (usingDemo)
+          const Positioned(
+            left: 12,
+            right: 12,
+            top: 12,
+            child: _AlongMapDemoBanner(),
+          ),
+      ],
+    );
+  }
+}
+
+class _AlongMapUnavailablePlaceholder extends StatelessWidget {
+  const _AlongMapUnavailablePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return const ColoredBox(
+      color: AlongMapColors.land,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.map_outlined, size: 48, color: Color(0xFF6B6B6B)),
+              SizedBox(height: 12),
+              Text(
+                'Map unavailable',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'TILES_BASE_URL is not configured for this build. '
+                'Set it via --dart-define-from-file (env/staging.json) '
+                'or env/staging.json TILES_BASE then re-run wire_staging.sh.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Color(0xFF6B6B6B)),
+              ),
+            ],
+          ),
+        ),
       ),
-      gestureRecognizers: widget.gestureRecognizers,
-      onMapClick: widget.onMapClick,
-      onMapCreated: (controller) {
-        if (!_controllerCompleter.isCompleted) {
-          _controllerCompleter.complete(controller);
-        }
-        widget.onMapCreated?.call(controller);
-      },
-      onStyleLoadedCallback: () {
-        _controllerCompleter.future.then((controller) {
-          _layerController = MapLayerController(controller);
-          widget.onLayerControllerReady?.call(_layerController!);
-        });
-        widget.onStyleLoaded?.call();
-      },
+    );
+  }
+}
+
+class _AlongMapDemoBanner extends StatelessWidget {
+  const _AlongMapDemoBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 1,
+      color: const Color(0xE6FFF8E1),
+      borderRadius: BorderRadius.circular(8),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Text(
+          'Demo basemap — set TILES_BASE_URL (or TILES_BASE) to load Along tiles.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12, color: Color(0xFF5D4037)),
+        ),
+      ),
     );
   }
 }

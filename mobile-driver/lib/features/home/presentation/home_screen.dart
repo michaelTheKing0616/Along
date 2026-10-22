@@ -75,16 +75,20 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
           Positioned.fill(
             child: AlongMap(
               key: const Key('driver_home_map'),
-              styleUrl: config.tilesBaseUrl == null
-                  ? null
-                  : AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
-                      .remoteStyleUrl(citySlug: state.citySlug),
-              offlineStyleJson: config.tilesBaseUrl == null
+              styleUrl: config.hasTiles
+                  ? AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
+                      .remoteStyleUrl(citySlug: state.citySlug)
+                  : (config.allowsDemoMapFallback
+                      ? AlongStyleLoader.demoStyleUrl
+                      : null),
+              offlineStyleJson: (!config.hasTiles &&
+                      !config.allowsDemoMapFallback)
                   ? ref.watch(driverHomeOfflineStyleProvider).maybeWhen(
                         data: (value) => value,
                         orElse: () => null,
                       )
                   : null,
+              allowDemoStyleFallback: config.allowsDemoMapFallback,
               initialCameraPosition: state.mapCenter == null
                   ? null
                   : MapCamera.forCenter(

@@ -11,7 +11,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_url text;
@@ -73,7 +73,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_sos sos_alerts%rowtype;

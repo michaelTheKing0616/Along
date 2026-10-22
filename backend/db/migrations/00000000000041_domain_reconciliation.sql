@@ -158,7 +158,7 @@ returns geography(Point,4326)[]
 language sql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
   with sample_locs as (
     select s.location
@@ -223,7 +223,7 @@ returns int
 language sql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
   select count(*)::int
   from trips peer
@@ -249,7 +249,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_t trips%rowtype;

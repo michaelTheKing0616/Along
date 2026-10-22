@@ -5,7 +5,11 @@ import '../tokens.g.dart';
 /// Bottom sheet snap sizes (doc 05 §9 `BottomSheet`).
 enum AlongBottomSheetSize { collapsed, half, full }
 
-/// Along bottom sheet shell — grabber, fixed snap points, scroll at full only.
+/// Along bottom sheet shell — grabber, fixed snap points.
+///
+/// Collapsed height is 168 dp so R-05 peek (search + plan day + recents) fits
+/// small Android viewports; full size scrolls. Half/collapsed leave scrolling
+/// to the child (e.g. ListView) so nested scrollables stay valid.
 class AlongBottomSheet extends StatelessWidget {
   const AlongBottomSheet({
     super.key,
@@ -19,7 +23,7 @@ class AlongBottomSheet extends StatelessWidget {
   final String? title;
 
   double _heightFactor() => switch (size) {
-        AlongBottomSheetSize.collapsed => 96 / 640,
+        AlongBottomSheetSize.collapsed => 168 / 640,
         AlongBottomSheetSize.half => 0.5,
         AlongBottomSheetSize.full => 0.92,
       };
@@ -58,6 +62,7 @@ class AlongBottomSheet extends StatelessWidget {
               Expanded(
                 child: size == AlongBottomSheetSize.full
                     ? SingleChildScrollView(
+                        primary: false,
                         padding: const EdgeInsets.symmetric(
                           horizontal: AlongSpace.s16,
                         ),

@@ -101,7 +101,7 @@ returns text
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_thresholds jsonb;
@@ -177,7 +177,7 @@ returns text
 language plpgsql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_endpoints record;
@@ -288,7 +288,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 begin
   perform realtime.send(
@@ -427,7 +427,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_uid uuid := auth.uid();
@@ -476,7 +476,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_rider record;
@@ -581,7 +581,7 @@ returns text[]
 language sql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
   select coalesce(array_agg(distinct violation), '{}'::text[])
   from (
@@ -1006,7 +1006,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_t trips%rowtype;
@@ -1140,7 +1140,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_t trips%rowtype;

@@ -14,7 +14,7 @@ create or replace function record_log_otp(p_phone text, p_otp text)
 returns void
 language plpgsql
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   provider text;
@@ -35,7 +35,7 @@ returns text
 language plpgsql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   provider text;

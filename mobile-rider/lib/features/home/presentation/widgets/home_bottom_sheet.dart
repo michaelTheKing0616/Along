@@ -26,43 +26,48 @@ class HomePeekSheet extends StatelessWidget {
 
     return AlongBottomSheet(
       size: AlongBottomSheetSize.collapsed,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: AlongSpace.s8),
-          GestureDetector(
-            onTap: onSearchTap,
-            child: AbsorbPointer(
-              child: SearchField(
-                variant: SearchFieldVariant.home,
-                hint: l10n.homeSearchHint,
+      child: SingleChildScrollView(
+        primary: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: AlongSpace.s8),
+            GestureDetector(
+              onTap: onSearchTap,
+              child: AbsorbPointer(
+                child: SearchField(
+                  variant: SearchFieldVariant.home,
+                  hint: l10n.homeSearchHint,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: AlongSpace.s12),
-          TextButton(
-            key: const Key('home_plan_day'),
-            onPressed: () => context.push(AppRoutes.itineraryEntry),
-            child: Text(l10n.homePlanYourDay),
-          ),
-          const SizedBox(height: AlongSpace.s12),
-          if (state.recents.isNotEmpty)
-            SizedBox(
-              height: 36,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: state.recents.take(3).length,
-                separatorBuilder: (_, __) => const SizedBox(width: AlongSpace.s8),
-                itemBuilder: (context, index) {
-                  final recent = state.recents[index];
-                  return ActionChip(
-                    label: Text(recent.label),
-                    onPressed: () => onRecentTap(recent),
-                  );
-                },
-              ),
+            const SizedBox(height: AlongSpace.s12),
+            TextButton(
+              key: const Key('home_plan_day'),
+              onPressed: () => context.push(AppRoutes.itineraryEntry),
+              child: Text(l10n.homePlanYourDay),
             ),
-        ],
+            const SizedBox(height: AlongSpace.s12),
+            if (state.recents.isNotEmpty)
+              SizedBox(
+                height: 36,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.recents.take(3).length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(width: AlongSpace.s8),
+                  itemBuilder: (context, index) {
+                    final recent = state.recents[index];
+                    return ActionChip(
+                      label: Text(recent.label),
+                      onPressed: () => onRecentTap(recent),
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

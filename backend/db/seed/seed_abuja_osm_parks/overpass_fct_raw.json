@@ -1,0 +1,4914 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.4 2390de5a",
+  "osm3s": {
+    "timestamp_osm_base": "2026-09-21T15:55:51Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 889068210,
+  "lat": 9.0675379,
+  "lon": 7.4041828,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Life Camp Junction",
+    "name:en": "Life Camp Junction",
+    "public_transport": "platform"
+  }
+},
+{
+  "type": "node",
+  "id": 2176898978,
+  "lat": 9.0504383,
+  "lon": 7.4717895,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Abuja Metro",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "light_rail",
+    "wikidata": "Q109884527"
+  }
+},
+{
+  "type": "node",
+  "id": 4465077889,
+  "lat": 9.0932366,
+  "lon": 7.2159666,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Zuba",
+    "name:en": "Zuba"
+  }
+},
+{
+  "type": "node",
+  "id": 4597112606,
+  "lat": 9.1639788,
+  "lon": 7.3252676,
+  "tags": {
+    "name": "Kubwa",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5234383123,
+  "lat": 9.0234192,
+  "lon": 7.5706346,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Nyanya bus station"
+  }
+},
+{
+  "type": "node",
+  "id": 5234383127,
+  "lat": 9.0460325,
+  "lon": 7.5368389,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Okada riders",
+    "public_transport": "platform",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5754031515,
+  "lat": 9.0246825,
+  "lon": 7.3948998,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Wupa",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail"
+  }
+},
+{
+  "type": "node",
+  "id": 5754032230,
+  "lat": 9.0307647,
+  "lon": 7.4226634,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Kukwaba II",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "light_rail",
+    "train": "yes",
+    "wikidata": "Q109886376"
+  }
+},
+{
+  "type": "node",
+  "id": 5754032240,
+  "lat": 9.0402465,
+  "lon": 7.4410513,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Kukwaba I",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail",
+    "wikidata": "Q109886465"
+  }
+},
+{
+  "type": "node",
+  "id": 5754152726,
+  "lat": 9.0067099,
+  "lon": 7.2723953,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Airport",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "light_rail"
+  }
+},
+{
+  "type": "node",
+  "id": 5986883885,
+  "lat": 9.0654954,
+  "lon": 7.4380756,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "God is Good",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 10660799201,
+  "lat": 9.0898296,
+  "lon": 7.2851857,
+  "tags": {
+    "name": "Gwagwa",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10660799202,
+  "lat": 9.1062273,
+  "lon": 7.2872913,
+  "tags": {
+    "name": "Deidei",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10660799203,
+  "lat": 9.1245854,
+  "lon": 7.2921222,
+  "tags": {
+    "name": "Kagini",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10660799204,
+  "lat": 9.1538239,
+  "lon": 7.3111296,
+  "tags": {
+    "name": "Gbazango",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "light_rail",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10660810222,
+  "lat": 9.0469758,
+  "lon": 7.3425060,
+  "tags": {
+    "name": "Idu",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes",
+    "wikidata": "Q110556255"
+  }
+},
+{
+  "type": "node",
+  "id": 10660849726,
+  "lat": 9.0138057,
+  "lon": 7.2825035,
+  "tags": {
+    "name": "Bassanjiwa",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10678648884,
+  "lat": 9.0463803,
+  "lon": 7.3428412,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Idu",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "light_rail",
+    "wikidata": "Q109885955"
+  }
+},
+{
+  "type": "node",
+  "id": 12969590090,
+  "lat": 9.0459071,
+  "lon": 7.4517151,
+  "tags": {
+    "light_rail": "yes",
+    "name": "Stadium",
+    "public_transport": "station",
+    "railway": "halt",
+    "station": "light_rail",
+    "wikidata": "Q109886591"
+  }
+},
+{
+  "type": "node",
+  "id": 13383633683,
+  "lat": 9.0865699,
+  "lon": 7.4565142,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Mabushi Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356415,
+  "lat": 8.9638448,
+  "lon": 7.3920714,
+  "tags": {
+    "addr:full": "Store 21 Raaglos Mall, by Diamond Junction, ring road 3, off Pyakasa road Lugbe, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Drestone Studio",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000251",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356416,
+  "lat": 8.9879392,
+  "lon": 7.3690985,
+  "tags": {
+    "addr:full": "A9/111 OLD REDEEM JUNCTION FHA LUGBE, FHA, Phase 1, Abuja 900701, Federal Capital Territory Lugbe, FHA, ABUJA 900701, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Litertif Lounge And Bar",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000250",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356417,
+  "lat": 8.9690778,
+  "lon": 7.3600059,
+  "tags": {
+    "addr:full": "By Voice of Nigeria junction along, Emmanuel Mbaka Blvd, adjacent NIPCO filling station, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Annyâ€™S Agoyin",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000248",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356418,
+  "lat": 8.9820188,
+  "lon": 7.3626614,
+  "tags": {
+    "addr:full": "1st Ave Fha, Lugbe, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Natura Juice Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000247",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356419,
+  "lat": 8.9808369,
+  "lon": 7.3799952,
+  "tags": {
+    "addr:full": "Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Lugbe Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000246",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356420,
+  "lat": 8.9686132,
+  "lon": 7.3588504,
+  "tags": {
+    "addr:full": "Oliver Twist Supermarket, Nipco filling station, VON junction, By trademore Estate, Emmanuel Mbaka Blvd, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Doncent Electronics (Oliver Twist Supermarket )",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000245",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356421,
+  "lat": 8.9674344,
+  "lon": 7.3519862,
+  "tags": {
+    "addr:full": "Umaru Musa Yar'Adua Road, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Conoil Petrol Station Junction Akin Mabogunje Drive",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000244",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356422,
+  "lat": 8.9444909,
+  "lon": 7.3237104,
+  "tags": {
+    "addr:full": "Umaru Musa Yar'Adua Road, Abuja 900102, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Fisas Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000243",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356423,
+  "lat": 8.9552187,
+  "lon": 7.3732838,
+  "tags": {
+    "addr:full": "Big Abia street phase 3 junction, Trade more estate Lugbe, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Life Gate Foods And Catering Services",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000242",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356424,
+  "lat": 8.9688740,
+  "lon": 7.3581469,
+  "tags": {
+    "addr:full": "Plot 102, behind bukarock Spc Global Resources, by Emmanuel Mbaka Blvd, Trademore Junction, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Barbados (Garden And Relaxation Spot)",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000241",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356425,
+  "lat": 9.0163805,
+  "lon": 7.4123295,
+  "tags": {
+    "addr:full": "Ring Rd 2, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Fed Med Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000240",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356426,
+  "lat": 9.1176526,
+  "lon": 7.4548454,
+  "tags": {
+    "addr:full": "Kado, Gwarinpa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jahi Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000239",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356427,
+  "lat": 9.0087048,
+  "lon": 7.3731223,
+  "tags": {
+    "addr:full": "Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tcn Sub Station, Zhidu Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000238",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356428,
+  "lat": 9.0006145,
+  "lon": 7.3461455,
+  "tags": {
+    "addr:full": "Winners Hwy, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "After The Idu Railway Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000237",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356429,
+  "lat": 8.8763513,
+  "lon": 7.2437105,
+  "tags": {
+    "addr:full": "along gwagwalada, Kuje, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Preson Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000236",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356430,
+  "lat": 8.9603686,
+  "lon": 7.4334273,
+  "tags": {
+    "addr:full": "Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gbuduwyi Keke Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000235",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356431,
+  "lat": 9.0301961,
+  "lon": 7.5000056,
+  "tags": {
+    "addr:full": "Mohammadu Buhari Wy, Garki, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Junction Park/ Garki",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000234",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356432,
+  "lat": 8.9808856,
+  "lon": 7.3769800,
+  "tags": {
+    "addr:full": "House 1 federal housing, Lugbe, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Federal Housing Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000233",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356433,
+  "lat": 9.1374397,
+  "lon": 7.3840109,
+  "tags": {
+    "addr:full": "109 Panaf Dr, opp. Nitel Junction, Dawaki, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Stephtrina Daycare",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000232",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356434,
+  "lat": 9.1194591,
+  "lon": 7.3921928,
+  "tags": {
+    "addr:full": "House 17 6th Ave, Junction, Kubwa 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Seven Star Laundry",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000231",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356435,
+  "lat": 9.1405786,
+  "lon": 7.3762121,
+  "tags": {
+    "addr:full": "Opp. Silver Rose Nur/Pry Sch., Zone 6, Okada Junction, Dutse Alhaji, Abuja, FCT 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Emcee Veterinary Services",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000230",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356436,
+  "lat": 8.8940691,
+  "lon": 7.1860402,
+  "tags": {
+    "addr:full": "Liberty Junction, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nike Garden",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000229",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356437,
+  "lat": 9.1204894,
+  "lon": 7.3925493,
+  "tags": {
+    "addr:full": "Behind Bricks n more plaza Gwarimpa 7th avenue junction, Municipal, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Beenish Auto Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000228",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356438,
+  "lat": 9.1806328,
+  "lon": 7.3901870,
+  "tags": {
+    "addr:full": "Along Obasanjo Road, opp. Freedom Avenue Junction, off Old Bwari Road, Bwari 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Living Faith Church, Obasanjo Road, Baupma, Abuja, Fct (A.K.A Winner'S Chapel Int'L)",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000227",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356439,
+  "lat": 9.1201397,
+  "lon": 7.3922398,
+  "tags": {
+    "addr:full": "6th Ave, Auwalu Anwar Cl, junction, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Golden Beauty SalÃ³n And Spa",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000225",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356440,
+  "lat": 9.1157490,
+  "lon": 7.3825243,
+  "tags": {
+    "addr:full": "69 road junction, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Homico_Hmc",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000224",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356441,
+  "lat": 9.1209827,
+  "lon": 7.3864742,
+  "tags": {
+    "addr:full": "6th avenue gwarinpa, off Auwalu Anwar Cl, junction, Kubwa, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ambassador Kingsley Motors Nig Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000223",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356442,
+  "lat": 9.1329542,
+  "lon": 7.3881613,
+  "tags": {
+    "addr:full": "Plot 9C, Dawaki Layout, Kubwa Express Way, near Dawaki, Junction, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Boss Special Systems Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000222",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356443,
+  "lat": 8.8940844,
+  "lon": 7.1860591,
+  "tags": {
+    "addr:full": "Wassa Market road Municipal Wassa market, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kuje",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000221",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356445,
+  "lat": 9.1431987,
+  "lon": 7.3767401,
+  "tags": {
+    "addr:full": "Zone 4, Okada Junction, Dutse, Abuja, FCT 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jesus Is Lord Mechanics",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000218",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356446,
+  "lat": 9.1312797,
+  "lon": 7.3890365,
+  "tags": {
+    "addr:full": "Sulaiman junction junior secondary School dawaki Abuja Bwari Area Council Abuja, Dawaki 700233, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "construction": "house",
+    "highway": "bus_stop",
+    "name": "Kabo Communication Center",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000217",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356447,
+  "lat": 9.1418800,
+  "lon": 7.3740900,
+  "tags": {
+    "addr:full": "Zone 4, Okada Junction, Dutse, Abuja, FCT, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sodamo Rentals",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000216",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356448,
+  "lat": 9.1206932,
+  "lon": 7.3922720,
+  "tags": {
+    "addr:full": "7th Avenue Junction, By The Express Rd, behind Bricks N More Plaza, Gwarinpa Estate, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Questline Cars",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000215",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356449,
+  "lat": 9.1374271,
+  "lon": 7.3849159,
+  "tags": {
+    "addr:full": "Area cancel, okada junction, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Preshy Cakes & Confectioneries",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000214",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356450,
+  "lat": 9.1409084,
+  "lon": 7.3795942,
+  "tags": {
+    "addr:full": "Aso Pure Water Junction, Zone 6 Dutse Alhaji, Abuja, FCT 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Adex Global Furniture",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000213",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356451,
+  "lat": 9.1284823,
+  "lon": 7.3906309,
+  "tags": {
+    "addr:full": "1 Lagos Street, 16 16 Junction, Abuja, Federal Capital Territory, Nigeria;Lagos St, opposite Hill groove hotel mpape, junction, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Afoson And Company;Usman Fashion Store",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000212;FCT-ABJ-BS-000188",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356452,
+  "lat": 9.1341231,
+  "lon": 7.3878709,
+  "tags": {
+    "addr:full": "Okada junction zone 7, Panaf Dr, Buari, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "construction": "house",
+    "highway": "bus_stop",
+    "name": "Ifiesta Cosmetics House",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000211",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356453,
+  "lat": 9.1242083,
+  "lon": 7.3908950,
+  "tags": {
+    "addr:full": "Galadima Junction, opposite Charley Boy, Kubwa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sagama Orchids Estate",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000210",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356454,
+  "lat": 9.1406059,
+  "lon": 7.3763041,
+  "tags": {
+    "addr:full": "Plot 119, Zone 5, Dutse Alhaji, Through Zone 6, Okada Junction, Abuja, FCT 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Unique Angels Montessori School",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000209",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356456,
+  "lat": 9.1386674,
+  "lon": 7.3840667,
+  "tags": {
+    "addr:full": "7 cosmos avenue dutse Allahji okada junction Zone7, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kj-Plus System Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000206",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356457,
+  "lat": 9.1203680,
+  "lon": 7.3925051,
+  "tags": {
+    "addr:full": "4th Avenue Gwarinpa, Off Auwalu Anwar Cl, Junction, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jiggy Barbers",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000205",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356458,
+  "lat": 9.1092220,
+  "lon": 7.3770363,
+  "tags": {
+    "addr:full": "Smarth Sports Arena, along manglobal junction, Gwarinpa, Our sport arean is btw AlD estate and manglobal junction, Abuja 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Smarth Sports Academy/Arena",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000204",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356459,
+  "lat": 9.1202212,
+  "lon": 7.3910052,
+  "tags": {
+    "addr:full": "61 road junction, 6th Ave, Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aveli Luxe",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000203",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356460,
+  "lat": 9.1205659,
+  "lon": 7.3882667,
+  "tags": {
+    "addr:full": "House 49, 63 road junction 6th Avenue, opposite CLASSIC SUPERMARKET LTD., Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Cynzi Stitches",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000202",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356461,
+  "lat": 9.1214869,
+  "lon": 7.3866861,
+  "tags": {
+    "addr:full": "Galadima junction opposite Dawaki modern market, Kubwa, express Road, Galadima, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Shola Autos",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000201",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356462,
+  "lat": 9.1257843,
+  "lon": 7.3892234,
+  "tags": {
+    "addr:full": "1, Mega Street, Dawaki, Galadima Junction Extension, Gwarinpa Estate, Kubwa, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Project City",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000199",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356463,
+  "lat": 9.1121193,
+  "lon": 7.3775866,
+  "tags": {
+    "addr:full": "Prime Mall, SF01, 96 Road Junction, 6th Ave, Gwarinpa Estate, Kubwa 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Heritage Computers",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000198",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356464,
+  "lat": 9.1416300,
+  "lon": 7.3723400,
+  "tags": {
+    "addr:full": "Zone 4, Okada Junction, Dutse, Abuja, FCT, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Squareroot Multy Services Company Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000197",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356465,
+  "lat": 9.1205053,
+  "lon": 7.3925857,
+  "tags": {
+    "addr:full": "4th Ave, Gwarinpa Estate, Gwarinpa 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bricks N More Plaza - 4Th Avenue",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000196",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356466,
+  "lat": 9.1254316,
+  "lon": 7.3794236,
+  "tags": {
+    "addr:full": "Address is close to big cele junction, Haruna Yole St, Galadima, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Elite Building Tech Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000195",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356467,
+  "lat": 9.1101691,
+  "lon": 7.4042306,
+  "tags": {
+    "addr:full": "35 Road Junction, 32 Cres, opposite Maltida Samsung Electronics Stores, Gwarinpa Estate, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Just Clothing - Male & Female Boutique Clothing Dresses, Accessories Women'S Fashion, Store, Gwarinpa In Abuja Fct",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000194",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356468,
+  "lat": 9.1418757,
+  "lon": 7.3741184,
+  "tags": {
+    "addr:full": "Zone 4, Okada Junction, Dutse, Abuja, FCT, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Mum'S Kitchen",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000193",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356469,
+  "lat": 9.1272598,
+  "lon": 7.3895478,
+  "tags": {
+    "addr:full": "Area Council, 56, Ezekiel Avenue, Living faith junction, Dawaki, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Larringtoncollectionz",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000192",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356470,
+  "lat": 9.1202328,
+  "lon": 7.3905539,
+  "tags": {
+    "addr:full": "19, 6th Avenue, by 61 road junction. Abuja, Municipal, Estate 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Fosh Studio",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000191",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356471,
+  "lat": 9.1685448,
+  "lon": 7.3858188,
+  "tags": {
+    "addr:full": "Unnamed Road, Kubwa, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Living Faith Church, Mai Suya Junction, New Jerusalem, Dutse Makaranta",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000190",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356472,
+  "lat": 9.1096506,
+  "lon": 7.3837012,
+  "tags": {
+    "addr:full": "lungu Junction, Off 69 Rd, Gwarinpa Estate, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Global Tech Computers",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000189",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356474,
+  "lat": 9.1111185,
+  "lon": 7.3764577,
+  "tags": {
+    "addr:full": "Map Global junction, 813C 64 Cres, 2nd Estate, Gwarinpa Estate, Kubwa 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Louis Pasteur Hospital Complex Limited, Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000187",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356475,
+  "lat": 9.1174121,
+  "lon": 7.3920088,
+  "tags": {
+    "addr:full": "Suit A1, Bricks and More Plaze, 6th Avenue by 7th Avenue Junction, Gwarinpa, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gig Logistics Gwarinpa 2",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000186",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356476,
+  "lat": 9.1196463,
+  "lon": 7.3727826,
+  "tags": {
+    "addr:full": "MabGlobal/Ipent Junction, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Siteni Grills",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000185",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356477,
+  "lat": 9.1214969,
+  "lon": 7.3848633,
+  "tags": {
+    "addr:full": "Before Phase 4 Police Station Junction, Kubwa, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sunrise Restaurant",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000184",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356478,
+  "lat": 9.0815516,
+  "lon": 7.3974326,
+  "tags": {
+    "addr:full": "Abubakar Koko Ave, Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Akara Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000182",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356479,
+  "lat": 8.8133177,
+  "lon": 7.0338884,
+  "tags": {
+    "addr:full": "market, junction, Kwali 904103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kwali Market Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000181",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356480,
+  "lat": 9.0085428,
+  "lon": 7.4612953,
+  "tags": {
+    "addr:full": "Durumi, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ecwa Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000180",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356481,
+  "lat": 9.0556395,
+  "lon": 7.4118471,
+  "tags": {
+    "addr:full": "Plot 5 ICS Dr, Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Off Airport Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000179",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356482,
+  "lat": 8.9399839,
+  "lon": 7.0877591,
+  "tags": {
+    "addr:full": "Park Rd, Gwagwalada 902101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "W3Qq+X4R By Demonstration Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000178",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356483,
+  "lat": 8.9740794,
+  "lon": 7.4860922,
+  "tags": {
+    "addr:full": "Ring Rd 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wumba Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000177",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356484,
+  "lat": 9.1137504,
+  "lon": 7.2589726,
+  "tags": {
+    "addr:full": "Madalla 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Narto Park, Dei-Dei Junction, Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000176",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356485,
+  "lat": 8.9730991,
+  "lon": 7.4859471,
+  "tags": {
+    "addr:full": "Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wumba Cashew Garden Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000175",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356486,
+  "lat": 9.0089750,
+  "lon": 7.4680117,
+  "tags": {
+    "addr:full": "Phase II, behind Police Station, Durumi, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Keke Junction, Durumi 2",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000174",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356487,
+  "lat": 9.0091246,
+  "lon": 7.4595770,
+  "tags": {
+    "addr:full": "Oladipo Diya St, Durumi, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Prince And Princess Estate Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000173",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356488,
+  "lat": 8.9594317,
+  "lon": 7.3429773,
+  "tags": {
+    "addr:full": "Aso junction, opposite fota sabon lugbe 2, abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aso Junction Opposite Fota Church",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000172",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356489,
+  "lat": 9.0027090,
+  "lon": 7.4885513,
+  "tags": {
+    "addr:full": "Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "2F3Q+3Cg Between Apo Roundabout And Nepa Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000171",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356490,
+  "lat": 8.9843050,
+  "lon": 7.4520382,
+  "tags": {
+    "addr:full": "Lokogoma, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Xfm2+Prw Mobil Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000170",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356491,
+  "lat": 9.0663574,
+  "lon": 7.4116119,
+  "tags": {
+    "addr:full": "9 Alex Ekwueme Wy, beside Nisa premier Hospital, Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Airport Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000169",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356492,
+  "lat": 9.0574628,
+  "lon": 7.5241320,
+  "tags": {
+    "addr:full": "Villa Jct, Asokoro, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Villa Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000168",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356493,
+  "lat": 9.0627921,
+  "lon": 7.4786051,
+  "tags": {
+    "addr:full": "Sheraton Junction, Herbert Macaulay Wy, Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Abuja Continental Hotel Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000167",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356494,
+  "lat": 8.9645558,
+  "lon": 7.4959511,
+  "tags": {
+    "addr:full": "Apo Way, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Arab Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000166",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356495,
+  "lat": 9.1204831,
+  "lon": 7.3917982,
+  "tags": {
+    "addr:full": "Plot 1138A 6th Ave, Gwarinpa Estate, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Avenue Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000165",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356496,
+  "lat": 9.0367300,
+  "lon": 7.4125734,
+  "tags": {
+    "addr:full": "Idu Junction, Jabi Airport road, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ojuelegba Amala Point Idu Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000164",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356497,
+  "lat": 9.0957404,
+  "lon": 7.4753112,
+  "tags": {
+    "addr:full": "Kado, Mabushipe 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nicon Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000163",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356498,
+  "lat": 9.0365638,
+  "lon": 7.4116382,
+  "tags": {
+    "addr:full": "B10 Leisure Park, Ring Rd 2, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Scc Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000162",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356499,
+  "lat": 8.9796503,
+  "lon": 7.4444503,
+  "tags": {
+    "addr:full": "5 Rd 2, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Dakwo Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000161",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024356500,
+  "lat": 8.9945125,
+  "lon": 7.3733281,
+  "tags": {
+    "addr:full": "Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sector F Junction To Lugbe Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000160",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364101,
+  "lat": 8.9739255,
+  "lon": 7.4957058,
+  "tags": {
+    "addr:full": "junction, Garki 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kabusa Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000159",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364102,
+  "lat": 9.0955954,
+  "lon": 7.4755274,
+  "tags": {
+    "addr:full": "no 4 nnamdi azikiwe road, by nicon junction, Extension, Kado, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nicon Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000158",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364103,
+  "lat": 8.9910911,
+  "lon": 7.4092746,
+  "tags": {
+    "addr:full": "Airport Rd, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Chika Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000157",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364104,
+  "lat": 9.0228105,
+  "lon": 7.4110307,
+  "tags": {
+    "addr:full": "Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gongola Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000156",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364105,
+  "lat": 8.9483979,
+  "lon": 7.3288325,
+  "tags": {
+    "addr:full": "Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jedo Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000155",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364106,
+  "lat": 8.9679070,
+  "lon": 7.3593747,
+  "tags": {
+    "addr:full": "Suite A114, Aiben Citimall Plaza, By Trademall Junction, Before VON, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Landmark Gadgets Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000154",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364107,
+  "lat": 8.9681020,
+  "lon": 7.3684767,
+  "tags": {
+    "addr:full": "Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Voice Of Nigeria Estate, Doctors Quarters, Phase 2",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000152",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364108,
+  "lat": 8.9633565,
+  "lon": 7.3945646,
+  "tags": {
+    "addr:full": "ATV junction, 3, off Ringroad, off Airport Road, Pyakasa, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tnt Events",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000151",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364109,
+  "lat": 8.9764756,
+  "lon": 7.3628419,
+  "tags": {
+    "addr:full": "GF Plaza, Voice of Nigeria Junction, Airport Rd, Lugbe, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Oliver Twist Super Store",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000150",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364110,
+  "lat": 8.9572191,
+  "lon": 7.3650906,
+  "tags": {
+    "addr:full": "Trademore Estate phase 1 by voice of Nigeria Junction, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Lily'Snatural",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000149",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364111,
+  "lat": 8.9641887,
+  "lon": 7.3813365,
+  "tags": {
+    "addr:full": "Peace village junction, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Engineer Abubakar Generator Makanek Lugbe Airport Road Fct Abuja Pesvileg Johnson",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000148",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364112,
+  "lat": 8.9574377,
+  "lon": 7.3672039,
+  "tags": {
+    "addr:full": "39 Gloria Kennedy St, udeh road, Abuja 910100, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "New Police Station Road Mpape",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000146",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364113,
+  "lat": 9.0012435,
+  "lon": 7.3922864,
+  "tags": {
+    "addr:full": "Piwoyi Primary School, Dzhidu 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Okada Junction By Mama Abdul",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000145",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364114,
+  "lat": 8.9735240,
+  "lon": 7.4956691,
+  "tags": {
+    "addr:full": "Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kabusa Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000144",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364115,
+  "lat": 9.0669025,
+  "lon": 7.4537364,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Berger Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000143",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364116,
+  "lat": 9.0493360,
+  "lon": 7.5266647,
+  "tags": {
+    "addr:full": "Asokoro, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aya Bus Stop, Abuja, Nigeria",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000142",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364117,
+  "lat": 8.9979664,
+  "lon": 7.5710821,
+  "tags": {
+    "addr:full": "New Karu 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Cbn Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000141",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364118,
+  "lat": 9.0648698,
+  "lon": 7.4344173,
+  "tags": {
+    "addr:full": "Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jabi Central Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000140",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364119,
+  "lat": 9.0863979,
+  "lon": 7.4575460,
+  "tags": {
+    "addr:full": "Ahmadu Bello Wy, Kado, Mobushipe 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Mobil Filling Station - Mabushi Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000139",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364120,
+  "lat": 8.9732024,
+  "lon": 7.3639770,
+  "tags": {
+    "addr:full": "Lugbe police barracks Lugbe police barracks block C flat 8 Lugbe, Lugbe, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Phebe Wigs",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000138",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364121,
+  "lat": 8.9641887,
+  "lon": 7.3813364,
+  "tags": {
+    "addr:full": "zone 5, phase 2 Car Wash Bus Stop, Car Wash, Lugbe, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Delight Electricals",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000137",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364122,
+  "lat": 9.0829650,
+  "lon": 7.4676904,
+  "tags": {
+    "addr:full": "Shop G4, ground floor, Omega Center, Plot 527 Aminu Kano Cres, Wuse 2, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "The School Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000136",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364123,
+  "lat": 8.9654503,
+  "lon": 7.3804143,
+  "tags": {
+    "addr:full": "Penthouse Estate, 376 Calabar Street, Airport Rd, Lugbe, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Beauty&Katz Multi Collections",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000135",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364124,
+  "lat": 8.8791717,
+  "lon": 7.2403017,
+  "tags": {
+    "addr:full": "Tipper Garrage Bus Stop, Kuje 900105, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Car Drop Tipper Garage Kuje",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000134",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364125,
+  "lat": 9.0666185,
+  "lon": 7.4426995,
+  "tags": {
+    "addr:full": "Gouba Plaza, 15 A.E. Ekukinam St, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Guo Logistics - Utako Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000133",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364126,
+  "lat": 8.9641787,
+  "lon": 7.3813367,
+  "tags": {
+    "addr:full": "Plot R416, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Lugbe By Car Wash Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000132",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364127,
+  "lat": 9.0496102,
+  "lon": 7.4870592,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, adjacent Unity Street, Central Business District, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Corolla Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000131",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364128,
+  "lat": 9.0651417,
+  "lon": 7.4328033,
+  "tags": {
+    "addr:full": "Suit A4, Plot 93 Rukayyat Plaza, Opp Zenith Bank Plc Obafemi Awolowo Way, Jabi, District, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Utako Motor Park",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000130",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364129,
+  "lat": 8.9721464,
+  "lon": 7.3624802,
+  "tags": {
+    "addr:full": "by berger bus stop, Opposite L.E.A Primary School lugbe, Airport Rd, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Father Otis Communication",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000129",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364130,
+  "lat": 9.0152434,
+  "lon": 7.4929475,
+  "tags": {
+    "addr:full": "Murtala Mohammed Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "30 Signboard Bustop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000128",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364131,
+  "lat": 9.0260625,
+  "lon": 7.3995625,
+  "tags": {
+    "addr:full": "Industrial Area, Paipe Amac Idu, Mbora, District, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "De Muzik Bus Stop Concept & Entertainment (Deejay Prezzy)",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000127",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364132,
+  "lat": 9.0635221,
+  "lon": 7.4321888,
+  "tags": {
+    "addr:full": "Transpharm Plaza, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anids Mass Transit Company",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000126",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364133,
+  "lat": 9.0666875,
+  "lon": 7.4445179,
+  "tags": {
+    "addr:full": "After Berger, E A.E. Ekukinam St, beside Utako Ultra Modern Market, Flyover, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "E.Ekesons & Bros Transport Nig. Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000125",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364134,
+  "lat": 8.9694175,
+  "lon": 7.3535851,
+  "tags": {
+    "addr:full": "Airport Rd, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nnpc Limited - Lugbe",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000124",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364135,
+  "lat": 8.9931660,
+  "lon": 7.4017823,
+  "tags": {
+    "addr:full": "Lugbe 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Chika Bridge Across",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000123",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364136,
+  "lat": 9.0629084,
+  "lon": 7.4785244,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sheraton Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000122",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364137,
+  "lat": 9.0662772,
+  "lon": 7.4386531,
+  "tags": {
+    "addr:full": "7 A.E. Ekukinam St, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Abc Park Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000121",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364138,
+  "lat": 9.0656845,
+  "lon": 7.4377325,
+  "tags": {
+    "addr:full": "1 I V. W. Osisidgwu Cres, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Landstar Express",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000120",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364139,
+  "lat": 9.0705028,
+  "lon": 7.4492793,
+  "tags": {
+    "addr:full": "62 Moses Majekodunmi Cres, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Big Joe Ventures Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000119",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364140,
+  "lat": 9.0546329,
+  "lon": 7.4678551,
+  "tags": {
+    "addr:full": "510 Olusegun Obasanjo Wy, Wuse, Wupa 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gsm Village Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000118",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364141,
+  "lat": 9.0248155,
+  "lon": 7.4746734,
+  "tags": {
+    "addr:full": "Area 3, Trinity Garden, Nnamdi Azikiwe Expy, Junction, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "E-Bus Terminal (Techlogix) Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000117",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364142,
+  "lat": 9.0683777,
+  "lon": 7.4329230,
+  "tags": {
+    "addr:full": "Plot 925 Ishaya Audu Road, beside GTBank, Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aktc Jabi",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000116",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364143,
+  "lat": 9.0131188,
+  "lon": 7.4913950,
+  "tags": {
+    "addr:full": "Nnamdi Azikiwe Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Apo Roundabout Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000115",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364144,
+  "lat": 8.9793337,
+  "lon": 7.5604991,
+  "tags": {
+    "addr:full": "Nyanya-Karshi Road, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jikwoyi Phase 2 Cele Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000114",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364145,
+  "lat": 9.0278256,
+  "lon": 7.5494773,
+  "tags": {
+    "addr:full": "Kugbo, Boi 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kugbo Second Gate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000113",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364146,
+  "lat": 8.8782991,
+  "lon": 7.2394603,
+  "tags": {
+    "addr:full": "Shadadi Road, Kuje 900105, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tipper Garage Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000112",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364147,
+  "lat": 8.9347151,
+  "lon": 7.0917698,
+  "tags": {
+    "addr:full": "beside Wazobia Park, Dagiri, Gwagwalada 902101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Peace Mass Transit Gwagwalada, Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000111",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364148,
+  "lat": 9.0866197,
+  "lon": 7.4567867,
+  "tags": {
+    "addr:full": "Mabushi, Mobushipe 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Mabushi Bus Terminal",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000110",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364149,
+  "lat": 9.0633362,
+  "lon": 7.4357441,
+  "tags": {
+    "addr:full": "Tunde Idiagbon Street, Jabi, AMAC 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Delta Line - Jabi/Utako",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000109",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364150,
+  "lat": 8.9451537,
+  "lon": 7.0981513,
+  "tags": {
+    "addr:full": "Kaduna Lokoja Rd, Gwagwalada 902101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sdp Junction Gwagwalada",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000108",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364151,
+  "lat": 9.0600126,
+  "lon": 7.4663425,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Customs Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000107",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364152,
+  "lat": 9.0676313,
+  "lon": 7.4466286,
+  "tags": {
+    "addr:full": "Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Arab Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000106",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364153,
+  "lat": 8.9554846,
+  "lon": 7.4436701,
+  "tags": {
+    "addr:full": "Unnamed Road, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kabusa Park - To Gudu Market",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000105",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364154,
+  "lat": 9.0557691,
+  "lon": 7.4976903,
+  "tags": {
+    "addr:full": "816 Ahmadu Bello Wy, Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Finance Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000104",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364155,
+  "lat": 9.0287949,
+  "lon": 7.5026610,
+  "tags": {
+    "addr:full": "Murtala Mohammed Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Cbn Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000103",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364156,
+  "lat": 9.0651340,
+  "lon": 7.4397343,
+  "tags": {
+    "addr:full": "Beside Utako Police Station, Plot 113 I.V.W. Osisiogu Street, Utako, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gig Mobility (Gigm) Utako",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000102",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364157,
+  "lat": 9.0682746,
+  "lon": 7.4406463,
+  "tags": {
+    "addr:full": "Obafemi Awolowo Wy, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Peace Park",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000101",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364158,
+  "lat": 9.0502067,
+  "lon": 7.5187261,
+  "tags": {
+    "addr:full": "Murtala Mohammed Express Way, Asokoro, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Waterboard Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000100",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364159,
+  "lat": 9.0443632,
+  "lon": 7.5113478,
+  "tags": {
+    "addr:full": "Shehu Shagari Wy, Asokoro, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Deeper Life Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000099",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364160,
+  "lat": 9.0479970,
+  "lon": 7.5154883,
+  "tags": {
+    "addr:full": "Yakubu Gowon Cres, Asokoro, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Powerhouse Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000098",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364161,
+  "lat": 9.0905150,
+  "lon": 7.2149626,
+  "tags": {
+    "addr:full": "Madalla 902101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "G.U.O Transport - Zuba(Fct) Terminal",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000097",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364162,
+  "lat": 9.0670668,
+  "lon": 7.4543202,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Berger",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000096",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364163,
+  "lat": 8.9441518,
+  "lon": 7.0808440,
+  "tags": {
+    "addr:full": "Gwagwalada 902101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "El Rufai Park Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000095",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364164,
+  "lat": 9.1203898,
+  "lon": 7.3908930,
+  "tags": {
+    "addr:full": "No 17, 61 Road, 6th Ave, Gwarinpa Estate, Kubwa, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Near Charley Boy Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000094",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364165,
+  "lat": 9.0279303,
+  "lon": 7.5488449,
+  "tags": {
+    "addr:full": "Kugbo, Abuja 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kugbo Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000093",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364166,
+  "lat": 9.0577781,
+  "lon": 7.5025500,
+  "tags": {
+    "addr:full": "Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Head Of Service Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000092",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364167,
+  "lat": 9.0670640,
+  "lon": 7.4543292,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Berger Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000091",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364168,
+  "lat": 9.0571185,
+  "lon": 7.4826125,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, Wuse, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Central Mosque - Masalachi Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000090",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364169,
+  "lat": 9.0665888,
+  "lon": 7.4426990,
+  "tags": {
+    "addr:full": "Gouba Plaza, 15 A.E. Ekukinam St, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Guo Transport - Utako",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000089",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364170,
+  "lat": 9.0689510,
+  "lon": 7.4423126,
+  "tags": {
+    "addr:full": "Ide Plaza, Plot 484, Ajose Adeogun St, Utako, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Greener Line Transport Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000088",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364171,
+  "lat": 9.0252468,
+  "lon": 7.4755472,
+  "tags": {
+    "addr:full": "Nnamdi Azikiwe Express Way, Garki 1, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Area 3 Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000087",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364172,
+  "lat": 8.8787222,
+  "lon": 7.2400439,
+  "tags": {
+    "addr:full": "Kuje, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tipper Garrage Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000086",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364173,
+  "lat": 9.1452349,
+  "lon": 7.3473928,
+  "tags": {
+    "addr:full": "Inec quarters welder bus stop, Kubwa, Bwari 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Welder Bus Stop Kubwa",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000085",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364174,
+  "lat": 9.0629200,
+  "lon": 7.4680700,
+  "tags": {
+    "addr:full": "Zone 5, 1 Damba Cl, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse District Hospital Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000084",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364175,
+  "lat": 9.0456505,
+  "lon": 7.5372625,
+  "tags": {
+    "addr:full": "Aso 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Barracks Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000083",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364176,
+  "lat": 9.0664822,
+  "lon": 7.4386286,
+  "tags": {
+    "addr:full": "Berger Junction, No. 36 A.E. Ekukinam St, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Abc Transport",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000082",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364177,
+  "lat": 9.0204130,
+  "lon": 7.4973877,
+  "tags": {
+    "addr:full": "Murtala Mohammed Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gilmore Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000081",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364178,
+  "lat": 9.0674684,
+  "lon": 7.4040774,
+  "tags": {
+    "addr:full": "Zuba Garki Rd, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Life Camp Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000080",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364179,
+  "lat": 9.0495128,
+  "lon": 7.4876342,
+  "tags": {
+    "addr:full": "Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "War College Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000079",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364180,
+  "lat": 9.1476363,
+  "lon": 7.3246863,
+  "tags": {
+    "addr:full": "Gado Nasko Rd, Kubwa, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "El-Rufai Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000078",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364181,
+  "lat": 9.0638305,
+  "lon": 7.4326910,
+  "tags": {
+    "addr:full": "92 Bimbo Akintola, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jabi Motor Park",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000077",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364182,
+  "lat": 9.0675077,
+  "lon": 7.4644497,
+  "tags": {
+    "addr:full": "Zone 5, Rochas Plaza Herbert Marcauley way, opp. Wuse Market, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000076",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364183,
+  "lat": 9.0660504,
+  "lon": 7.4649292,
+  "tags": {
+    "addr:full": "Douala Cres, Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000075",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364184,
+  "lat": 9.0289024,
+  "lon": 7.4694961,
+  "tags": {
+    "addr:full": "Nnamdi Azikiwe Expy, Garki 1, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Area One",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000074",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364185,
+  "lat": 9.0542055,
+  "lon": 7.5116125,
+  "tags": {
+    "addr:full": "Yakubu Gowon Cres, Asokoro, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Villa Bridge Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000073",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364186,
+  "lat": 9.0680098,
+  "lon": 7.4029022,
+  "tags": {
+    "addr:full": "Zuba Garki Rd, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Life Camp Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000072",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364187,
+  "lat": 9.0589913,
+  "lon": 7.4967520,
+  "tags": {
+    "addr:full": "Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Eagle Square Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000071",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364188,
+  "lat": 9.0565643,
+  "lon": 7.4992794,
+  "tags": {
+    "addr:full": "Independence Ave, Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Finance Bridge Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000070",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364189,
+  "lat": 9.0467049,
+  "lon": 7.5002245,
+  "tags": {
+    "addr:full": "Garki 2, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Public Transport Hub",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000069",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364190,
+  "lat": 9.1416304,
+  "lon": 7.3237395,
+  "tags": {
+    "addr:full": "A234, Kubwa, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "2Nd Gate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000068",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364191,
+  "lat": 9.0166201,
+  "lon": 7.4873343,
+  "tags": {
+    "addr:full": "Nnamdi Azikiwe Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Transformer Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000067",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364192,
+  "lat": 9.0348838,
+  "lon": 7.4879229,
+  "tags": {
+    "addr:full": "Tafawa Balewa Rd, Garki 1, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Area 8 Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000066",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364193,
+  "lat": 9.0208038,
+  "lon": 7.4816834,
+  "tags": {
+    "addr:full": "Ahmadu Bello Wy, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Under Bridge Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000065",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364194,
+  "lat": 9.0685947,
+  "lon": 7.4409571,
+  "tags": {
+    "addr:full": "Plot 480, 483 Ajose Adeogun St, Utako, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Peace Mass Transport",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000064",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364195,
+  "lat": 9.0516922,
+  "lon": 7.4862224,
+  "tags": {
+    "addr:full": "Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nnpc Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000063",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364196,
+  "lat": 9.0623730,
+  "lon": 7.4680352,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse General Hospital First Gate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000062",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364197,
+  "lat": 9.0681823,
+  "lon": 7.4448376,
+  "tags": {
+    "addr:full": "Obafemi Awolowo Wy, Mabushi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Arab Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000061",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364198,
+  "lat": 9.0301157,
+  "lon": 7.4676669,
+  "tags": {
+    "addr:full": "Nnamdi Azikiwe Express Way, Garki 1, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Area One",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000060",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364199,
+  "lat": 9.0633639,
+  "lon": 7.4719477,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Zone 3 Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000059",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364200,
+  "lat": 8.9996831,
+  "lon": 7.5563782,
+  "tags": {
+    "addr:full": "Old Karu, New Karu 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Central Road Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000058",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364201,
+  "lat": 9.0560110,
+  "lon": 7.4858844,
+  "tags": {
+    "addr:full": "Central Business District, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nnpc Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000057",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364202,
+  "lat": 9.0545591,
+  "lon": 7.4661735,
+  "tags": {
+    "addr:full": "Olusegun Obasanjo Wy, Wuse, Wupa 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000056",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364203,
+  "lat": 9.0636255,
+  "lon": 7.4749075,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Zone 4 Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000055",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364204,
+  "lat": 9.0676516,
+  "lon": 7.4634934,
+  "tags": {
+    "addr:full": "4 Windhoek Close, Zone 5, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Zone 6 Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000054",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364205,
+  "lat": 9.0177130,
+  "lon": 7.4859273,
+  "tags": {
+    "addr:full": "Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Barracks Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000053",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364206,
+  "lat": 8.9973200,
+  "lon": 7.4670875,
+  "tags": {
+    "addr:full": "Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Last Keke Napep Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000052",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364207,
+  "lat": 9.0392796,
+  "lon": 7.4857500,
+  "tags": {
+    "addr:full": "Garki 1, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Area 10 Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000051",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364208,
+  "lat": 9.0657905,
+  "lon": 7.4350120,
+  "tags": {
+    "addr:full": "Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Utako Motor And Bus Terminal",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000050",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364209,
+  "lat": 9.0228465,
+  "lon": 7.5701772,
+  "tags": {
+    "addr:full": "Murtala Mohammed Rd, Karu, Ado 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Before Bridge Bus Stop Nyanya",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000049",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364210,
+  "lat": 9.0611255,
+  "lon": 7.4671609,
+  "tags": {
+    "addr:full": "Total Filling Station, Sultan Abubakar Wy, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Rocha'S Plaza Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000048",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364211,
+  "lat": 9.0636500,
+  "lon": 7.4748552,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Zone 4 Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000047",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364212,
+  "lat": 9.0641215,
+  "lon": 7.4710733,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bus Stop After Bridge Zone 3",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000046",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364213,
+  "lat": 9.0663627,
+  "lon": 7.4569838,
+  "tags": {
+    "addr:full": "2302 Herbert Macaulay Wy, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sky Memorial Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000045",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364214,
+  "lat": 9.0541675,
+  "lon": 7.4539876,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000044",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364215,
+  "lat": 9.0675198,
+  "lon": 7.4654728,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse Market Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000043",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364216,
+  "lat": 9.0045655,
+  "lon": 7.4657520,
+  "tags": {
+    "addr:full": "Markus Kangye Boulevard, Gudu, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gaduwa Estate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000042",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364217,
+  "lat": 9.1191519,
+  "lon": 7.4058810,
+  "tags": {
+    "addr:full": "B4 4th Ave, Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gwarinpa Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000041",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364218,
+  "lat": 8.9936018,
+  "lon": 7.3490351,
+  "tags": {
+    "addr:full": "Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Iron Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000040",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364219,
+  "lat": 9.0820697,
+  "lon": 7.4556338,
+  "tags": {
+    "addr:full": "Plot 943 Trinity House, Cadastral Zone Bo6 Abuja, Mabushi, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bridge Advocats",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000039",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364220,
+  "lat": 8.9577141,
+  "lon": 7.2519906,
+  "tags": {
+    "addr:full": "Sauka 900102, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sauka Pedestrian Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000038",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364221,
+  "lat": 8.9413088,
+  "lon": 7.2986517,
+  "tags": {
+    "addr:full": "Unnamed Road, Abuja 900102, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gosa Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000037",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364222,
+  "lat": 9.0848020,
+  "lon": 7.4652056,
+  "tags": {
+    "addr:full": "Kado, Mobushipe 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Banex Pedestrian Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000036",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364223,
+  "lat": 9.0764250,
+  "lon": 7.3985678,
+  "tags": {
+    "addr:full": "Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Main Bridge Computer Network Nig Ltd.",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000035",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364224,
+  "lat": 9.1137989,
+  "lon": 7.2784869,
+  "tags": {
+    "addr:full": "Deidei, Saburi Residential district dei dei Ist Gate After Saburi One Gate, before the Saburi One Bridge Saburi 2, AMAC 010009, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Mr Putty Screeding Plasters Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000034",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364225,
+  "lat": 9.1144977,
+  "lon": 7.2542279,
+  "tags": {
+    "addr:full": "Amana plaza Along dei dei, before the small bridge, Dakwa Rd, Madalla 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Almustapha Mosque",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000033",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364226,
+  "lat": 9.1122513,
+  "lon": 7.4135543,
+  "tags": {
+    "addr:full": "House 4 A Cl, off 1st Avenue, Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bridge Clinic",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000032",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364227,
+  "lat": 9.0936224,
+  "lon": 7.4084613,
+  "tags": {
+    "addr:full": "19 A.G.F Abdulrazaq St, Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Canadian Bridge Academy Abuja",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000031",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364228,
+  "lat": 9.1465711,
+  "lon": 7.3350996,
+  "tags": {
+    "addr:full": "PW Bridge, 209 Bakori Rd, Kubwa, 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gruzplace",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000030",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364229,
+  "lat": 9.0206024,
+  "lon": 7.4813711,
+  "tags": {
+    "addr:full": "Abdulsalami Abubakar Rd, Garki, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Apo Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000029",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364230,
+  "lat": 9.0595032,
+  "lon": 7.4553218,
+  "tags": {
+    "addr:full": "Zone 5, Anbeez Plaza, Suite 329, 16 Ndola Cres, Abuja 900008, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Stone Bridge Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000028",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364231,
+  "lat": 9.0993795,
+  "lon": 7.4234900,
+  "tags": {
+    "addr:full": "Gwarinpa, Kadobunkuro 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Zinq Bridge Aparments - Family Apartment, Balcony, City View",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000027",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364236,
+  "lat": 8.9420243,
+  "lon": 7.0947898,
+  "tags": {
+    "addr:full": "Lokoja-kaduna Express, Gwagwalada 902101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "W3Rv+Rw4 After The Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000022",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364238,
+  "lat": 9.0571674,
+  "lon": 7.4478016,
+  "tags": {
+    "addr:full": "1099 Umar Shuaibu Ave, Wuye, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bridge Waters Hotel",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000020",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364239,
+  "lat": 9.0718769,
+  "lon": 7.4338468,
+  "tags": {
+    "addr:full": "off Solomon Lar road, Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Digital Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000019",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364240,
+  "lat": 9.0787532,
+  "lon": 7.4817023,
+  "tags": {
+    "addr:full": "Plot 122y Morija Cl, Wuse, Abuja 900211, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ace Bridge Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000018",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364241,
+  "lat": 9.0640496,
+  "lon": 7.4768079,
+  "tags": {
+    "addr:full": "Willands Plaza, no 25 sfax street wuse zone, fct, Abuja 900281, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sahara Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000017",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364242,
+  "lat": 9.0998200,
+  "lon": 7.4109810,
+  "tags": {
+    "addr:full": "New Banex Plaza, Suite SA90, Aminu Kano Cres, Wuse 2, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tower Bridge Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000016",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364243,
+  "lat": 9.2107723,
+  "lon": 7.3951105,
+  "tags": {
+    "addr:full": "Ushapa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ushafa Bridge New Market",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000015",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364244,
+  "lat": 9.0721855,
+  "lon": 7.4445807,
+  "tags": {
+    "addr:full": "22 Williams Cres, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "The Bridge Concepts Nigeria Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000014",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364245,
+  "lat": 9.0813202,
+  "lon": 7.4767919,
+  "tags": {
+    "addr:full": "2 Eldoret Street, Wuse 2, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "The Bridge 360 Show",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000013",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364246,
+  "lat": 9.1052238,
+  "lon": 7.4853043,
+  "tags": {
+    "addr:full": "Oyi River Street, Maitama, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "The Bridge Office",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000012",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364247,
+  "lat": 9.0449610,
+  "lon": 7.4121512,
+  "tags": {
+    "addr:full": "citec Abuja, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Strong Bridge It Solutions",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000011",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364248,
+  "lat": 9.1467915,
+  "lon": 7.3353259,
+  "tags": {
+    "addr:full": "208 Bakori Rd, Kubwa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "48Wp+M4P Pw Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000010",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364249,
+  "lat": 9.1465157,
+  "lon": 7.3350944,
+  "tags": {
+    "addr:full": "Kubwa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Pw Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000009",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364250,
+  "lat": 9.1141743,
+  "lon": 7.2603636,
+  "tags": {
+    "addr:full": "Unnamed Road, Madalla 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Dei Dei Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000008",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364251,
+  "lat": 9.0871775,
+  "lon": 7.4738527,
+  "tags": {
+    "addr:full": "Plot 1195 Aminu Kano Cres, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Maitama - Wuse Ii Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000007",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364252,
+  "lat": 9.0679038,
+  "lon": 7.4352482,
+  "tags": {
+    "addr:full": "8 P.O.W. Mafemi Cres, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Digital Bridge Institute",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000006",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364253,
+  "lat": 9.1058437,
+  "lon": 7.3638241,
+  "tags": {
+    "addr:full": "Stone Bridge, Karsana 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Stone Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000005",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364254,
+  "lat": 9.0715621,
+  "lon": 7.4374759,
+  "tags": {
+    "addr:full": "Smart bridge plaza, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Smart Bridge Plaza",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000004",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024364255,
+  "lat": 9.1308351,
+  "lon": 7.3649299,
+  "tags": {
+    "addr:full": "Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Dutsen Alhaji",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000003",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422937,
+  "lat": 9.0764250,
+  "lon": 7.3985679,
+  "tags": {
+    "addr:full": "Plot 2 G.R.A, First Gate Mpape, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bridge Global Services Solutions",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000026",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422938,
+  "lat": 9.0755419,
+  "lon": 7.4301909,
+  "tags": {
+    "addr:full": "111 Ebitu Ukiwe St, Jabi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Rich-Bridge Hotel And Restaurant",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000025",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422939,
+  "lat": 9.1541062,
+  "lon": 7.3461861,
+  "tags": {
+    "addr:full": "Shop 5 Phase 4 Bridge Plaza Abuja, Kubwa, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jewel Iykson Nigeria Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000024",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422940,
+  "lat": 9.0473683,
+  "lon": 7.4129936,
+  "tags": {
+    "addr:full": "94, 95 B10 Cadastral Zone, Plot 93, Dakibiu, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Southern Bridge Estate",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000023",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422942,
+  "lat": 9.1457859,
+  "lon": 7.3542798,
+  "tags": {
+    "addr:full": "10 Opaha street, FCDA, Abuja Bwari, Area Council, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "The Bridge Academy",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000021",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422961,
+  "lat": 9.1392096,
+  "lon": 7.3519225,
+  "tags": {
+    "addr:full": "Unnamed Road, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Federal Housing Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000002",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024422962,
+  "lat": 9.1373103,
+  "lon": 7.3685952,
+  "tags": {
+    "addr:full": "Kubwa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Leg Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000001",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430010,
+  "lat": 8.9686132,
+  "lon": 7.3588504,
+  "tags": {
+    "addr:full": "Oliver Twist Supermarket, Nipco filling station, VON junction, By trademore Estate, Emmanuel Mbaka Blvd, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Doncent Electronics (Oliver Twist Supermarket )",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000245",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430018,
+  "lat": 9.0006145,
+  "lon": 7.3461455,
+  "tags": {
+    "addr:full": "Winners Hwy, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "After The Idu Railway Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000237",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430019,
+  "lat": 8.8763513,
+  "lon": 7.2437105,
+  "tags": {
+    "addr:full": "along gwagwalada, Kuje, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Preson Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000236",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430029,
+  "lat": 9.1201397,
+  "lon": 7.3922398,
+  "tags": {
+    "addr:full": "6th Ave, Auwalu Anwar Cl, junction, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Golden Beauty SalÃ³n And Spa",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000225",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430033,
+  "lat": 8.8940844,
+  "lon": 7.1860591,
+  "tags": {
+    "addr:full": "Wassa Market road Municipal Wassa market, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kuje",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000221",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430037,
+  "lat": 9.1418800,
+  "lon": 7.3740900,
+  "tags": {
+    "addr:full": "Zone 4, Okada Junction, Dutse, Abuja, FCT, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sodamo Rentals",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000216",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430049,
+  "lat": 9.1202212,
+  "lon": 7.3910052,
+  "tags": {
+    "addr:full": "61 road junction, 6th Ave, Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aveli Luxe",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000203",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430050,
+  "lat": 9.1205659,
+  "lon": 7.3882667,
+  "tags": {
+    "addr:full": "House 49, 63 road junction 6th Avenue, opposite CLASSIC SUPERMARKET LTD., Gwarinpa, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Cynzi Stitches",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000202",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430053,
+  "lat": 9.1121193,
+  "lon": 7.3775866,
+  "tags": {
+    "addr:full": "Prime Mall, SF01, 96 Road Junction, 6th Ave, Gwarinpa Estate, Kubwa 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Heritage Computers",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000198",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430054,
+  "lat": 9.1416300,
+  "lon": 7.3723400,
+  "tags": {
+    "addr:full": "Zone 4, Okada Junction, Dutse, Abuja, FCT, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Squareroot Multy Services Company Limited",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000197",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430066,
+  "lat": 9.1196463,
+  "lon": 7.3727826,
+  "tags": {
+    "addr:full": "MabGlobal/Ipent Junction, Abuja, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Siteni Grills",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000185",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430070,
+  "lat": 9.0085428,
+  "lon": 7.4612953,
+  "tags": {
+    "addr:full": "Durumi, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ecwa Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000180",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430075,
+  "lat": 8.9730991,
+  "lon": 7.4859471,
+  "tags": {
+    "addr:full": "Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wumba Cashew Garden Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000175",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430077,
+  "lat": 9.0091246,
+  "lon": 7.4595770,
+  "tags": {
+    "addr:full": "Oladipo Diya St, Durumi, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Prince And Princess Estate Junction",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000173",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024430098,
+  "lat": 8.9633565,
+  "lon": 7.3945646,
+  "tags": {
+    "addr:full": "ATV junction, 3, off Ringroad, off Airport Road, Pyakasa, Abuja 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tnt Events",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000151",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431504,
+  "lat": 8.9735240,
+  "lon": 7.4956691,
+  "tags": {
+    "addr:full": "Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kabusa Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000144",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431508,
+  "lat": 9.0648698,
+  "lon": 7.4344173,
+  "tags": {
+    "addr:full": "Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jabi Central Bus Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000140",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431513,
+  "lat": 8.9654503,
+  "lon": 7.3804143,
+  "tags": {
+    "addr:full": "Penthouse Estate, 376 Calabar Street, Airport Rd, Lugbe, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Beauty&Katz Multi Collections",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000135",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431514,
+  "lat": 8.8791717,
+  "lon": 7.2403017,
+  "tags": {
+    "addr:full": "Tipper Garrage Bus Stop, Kuje 900105, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Car Drop Tipper Garage Kuje",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000134",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431515,
+  "lat": 9.0666185,
+  "lon": 7.4426995,
+  "tags": {
+    "addr:full": "Gouba Plaza, 15 A.E. Ekukinam St, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Guo Logistics - Utako Station",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000133",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431516,
+  "lat": 8.9641787,
+  "lon": 7.3813367,
+  "tags": {
+    "addr:full": "Plot R416, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Lugbe By Car Wash Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000132",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431518,
+  "lat": 9.0651417,
+  "lon": 7.4328033,
+  "tags": {
+    "addr:full": "Suit A4, Plot 93 Rukayyat Plaza, Opp Zenith Bank Plc Obafemi Awolowo Way, Jabi, District, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Utako Motor Park",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000130",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431520,
+  "lat": 9.0152434,
+  "lon": 7.4929475,
+  "tags": {
+    "addr:full": "Murtala Mohammed Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "30 Signboard Bustop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000128",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431523,
+  "lat": 9.0666875,
+  "lon": 7.4445179,
+  "tags": {
+    "addr:full": "After Berger, E A.E. Ekukinam St, beside Utako Ultra Modern Market, Flyover, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "E.Ekesons & Bros Transport Nig. Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000125",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431524,
+  "lat": 8.9694175,
+  "lon": 7.3535851,
+  "tags": {
+    "addr:full": "Airport Rd, Lugbe 900107, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nnpc Limited - Lugbe",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000124",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431535,
+  "lat": 9.0278256,
+  "lon": 7.5494773,
+  "tags": {
+    "addr:full": "Kugbo, Boi 900101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kugbo Second Gate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000113",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431546,
+  "lat": 9.0651340,
+  "lon": 7.4397343,
+  "tags": {
+    "addr:full": "Beside Utako Police Station, Plot 113 I.V.W. Osisiogu Street, Utako, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gig Mobility (Gigm) Utako",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000102",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431557,
+  "lat": 9.0670640,
+  "lon": 7.4543292,
+  "tags": {
+    "addr:full": "Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Berger Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000091",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431558,
+  "lat": 9.0571185,
+  "lon": 7.4826125,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, Wuse, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Central Mosque - Masalachi Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000090",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431559,
+  "lat": 9.0665888,
+  "lon": 7.4426990,
+  "tags": {
+    "addr:full": "Gouba Plaza, 15 A.E. Ekukinam St, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Guo Transport - Utako",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000089",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431564,
+  "lat": 9.0629200,
+  "lon": 7.4680700,
+  "tags": {
+    "addr:full": "Zone 5, 1 Damba Cl, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse District Hospital Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000084",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431569,
+  "lat": 9.0495128,
+  "lon": 7.4876342,
+  "tags": {
+    "addr:full": "Central Business Dis, Abuja 900103, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "War College Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000079",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431571,
+  "lat": 9.0638305,
+  "lon": 7.4326910,
+  "tags": {
+    "addr:full": "92 Bimbo Akintola, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Jabi Motor Park",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000077",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431580,
+  "lat": 9.1416304,
+  "lon": 7.3237395,
+  "tags": {
+    "addr:full": "A234, Kubwa, Abuja 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "2Nd Gate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000068",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431581,
+  "lat": 9.0166201,
+  "lon": 7.4873343,
+  "tags": {
+    "addr:full": "Nnamdi Azikiwe Express Way, Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Transformer Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000067",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431584,
+  "lat": 9.0685947,
+  "lon": 7.4409571,
+  "tags": {
+    "addr:full": "Plot 480, 483 Ajose Adeogun St, Utako, Abuja 900001, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Peace Mass Transport",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000064",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431587,
+  "lat": 9.0681823,
+  "lon": 7.4448376,
+  "tags": {
+    "addr:full": "Obafemi Awolowo Wy, Mabushi, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Arab Junction Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000061",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431595,
+  "lat": 9.0177130,
+  "lon": 7.4859273,
+  "tags": {
+    "addr:full": "Garki 2, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Barracks Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000053",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431600,
+  "lat": 9.0611255,
+  "lon": 7.4671609,
+  "tags": {
+    "addr:full": "Total Filling Station, Sultan Abubakar Wy, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Rocha'S Plaza Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000048",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431603,
+  "lat": 9.0663627,
+  "lon": 7.4569838,
+  "tags": {
+    "addr:full": "2302 Herbert Macaulay Wy, Wuse, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sky Memorial Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000045",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431605,
+  "lat": 9.0675198,
+  "lon": 7.4654728,
+  "tags": {
+    "addr:full": "Herbert Macaulay Wy, Wuse 1, Abuja 904101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Wuse Market Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000043",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431606,
+  "lat": 9.0045655,
+  "lon": 7.4657520,
+  "tags": {
+    "addr:full": "Markus Kangye Boulevard, Gudu, Abuja 900110, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gaduwa Estate Bus Stop",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000042",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431609,
+  "lat": 9.0820697,
+  "lon": 7.4556338,
+  "tags": {
+    "addr:full": "Plot 943 Trinity House, Cadastral Zone Bo6 Abuja, Mabushi, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bridge Advocats",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000039",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431611,
+  "lat": 8.9413088,
+  "lon": 7.2986517,
+  "tags": {
+    "addr:full": "Unnamed Road, Abuja 900102, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gosa Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000037",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431628,
+  "lat": 9.0571674,
+  "lon": 7.4478016,
+  "tags": {
+    "addr:full": "1099 Umar Shuaibu Ave, Wuye, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Bridge Waters Hotel",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000020",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431632,
+  "lat": 9.0998200,
+  "lon": 7.4109810,
+  "tags": {
+    "addr:full": "New Banex Plaza, Suite SA90, Aminu Kano Cres, Wuse 2, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Tower Bridge Ltd",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000016",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431639,
+  "lat": 9.1465157,
+  "lon": 7.3350944,
+  "tags": {
+    "addr:full": "Kubwa 901101, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Pw Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000009",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431642,
+  "lat": 9.0679038,
+  "lon": 7.4352482,
+  "tags": {
+    "addr:full": "8 P.O.W. Mafemi Cres, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Digital Bridge Institute",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000006",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431643,
+  "lat": 9.1058437,
+  "lon": 7.3638241,
+  "tags": {
+    "addr:full": "Stone Bridge, Karsana 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Stone Bridge",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000005",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 14024431644,
+  "lat": 9.0715621,
+  "lon": 7.4374759,
+  "tags": {
+    "addr:full": "Smart bridge plaza, Utako, Abuja 900108, Federal Capital Territory, Nigeria",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Smart Bridge Plaza",
+    "public_transport": "platform",
+    "public_transport:version": "2",
+    "ref": "FCT-ABJ-BS-000004",
+    "source": "survey"
+  }
+}
+
+  ]
+}

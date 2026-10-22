@@ -11,7 +11,7 @@ create or replace function _intelligence_source(
 returns uuid
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_id uuid;
@@ -33,7 +33,7 @@ create or replace function _snap_or_create_intelligence_park(
 returns uuid
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_merge_radius numeric;
@@ -85,7 +85,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_row candidate_park_clusters%rowtype;
@@ -193,7 +193,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_row route_inference_candidates%rowtype;
@@ -329,7 +329,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_row road_geometry_corrections%rowtype;

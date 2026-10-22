@@ -16,7 +16,7 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select exists (
     select 1
@@ -50,7 +50,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_corridor corridors%rowtype;

@@ -153,7 +153,7 @@ returns api_keys
 language plpgsql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_key api_keys%rowtype;
@@ -182,7 +182,7 @@ create or replace function private.api_enforce_rate_limit(p_key api_keys)
 returns void
 language plpgsql
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_window timestamptz := date_trunc('minute', now());
@@ -487,7 +487,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_key api_keys%rowtype;
@@ -585,7 +585,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_key api_keys%rowtype;

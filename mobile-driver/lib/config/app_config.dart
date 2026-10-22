@@ -33,12 +33,22 @@ class AppConfig {
     return url.startsWith('http://') || url.startsWith('https://');
   }
 
+  /// True when a real Along tiles CDN base was wired into the build.
+  bool get hasTiles {
+    final tiles = tilesBaseUrl?.trim() ?? '';
+    return tiles.isNotEmpty;
+  }
+
+  /// Non-prod builds may fall back to MapLibre demotiles when [hasTiles] is false.
+  bool get allowsDemoMapFallback => flavor != 'prod';
+
   static AppConfig fromEnvironment() {
     const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
     const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
     const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
     const sentryDsn = String.fromEnvironment('SENTRY_DSN');
     const tilesBaseUrl = String.fromEnvironment('TILES_BASE_URL');
+    const tilesBaseAlias = String.fromEnvironment('TILES_BASE');
     const otpResendCooldownS = int.fromEnvironment(
       'OTP_RESEND_COOLDOWN_S',
       defaultValue: 30,
@@ -61,7 +71,9 @@ class AppConfig {
       supabaseUrl: supabaseUrl,
       supabaseAnonKey: supabaseAnonKey,
       sentryDsn: sentryDsn.isEmpty ? null : sentryDsn,
-      tilesBaseUrl: tilesBaseUrl.isEmpty ? null : tilesBaseUrl,
+      tilesBaseUrl: tilesBaseUrl.isNotEmpty
+          ? tilesBaseUrl
+          : (tilesBaseAlias.isNotEmpty ? tilesBaseAlias : null),
       otpResendCooldownS: otpResendCooldownS,
       otpRateLimitRetryS: otpRateLimitRetryS,
       sentryTracesSampleRate:

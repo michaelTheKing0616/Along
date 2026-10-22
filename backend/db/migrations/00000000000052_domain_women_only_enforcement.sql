@@ -8,7 +8,7 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select coalesce(
     (c.regulatory_flags->>'women_only_matching')::boolean,
@@ -27,7 +27,7 @@ returns void
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   if not coalesce(p_women_only, false) then
@@ -48,7 +48,7 @@ returns void
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   if not coalesce(p_women_only, false) then
@@ -84,7 +84,7 @@ returns table (driver_id uuid, vehicle_id uuid, profile_id uuid)
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_supply jsonb := coalesce(p_leg->'supply', '{}'::jsonb);

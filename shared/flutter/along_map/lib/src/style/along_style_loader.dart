@@ -12,6 +12,10 @@ class AlongStyleLoader {
     this.glyphsUrl,
   });
 
+  /// Public MapLibre demotiles style — used when TILES_BASE_URL is unset on
+  /// non-prod builds. Do NOT use as a tiles *base* (it is a full style URL).
+  static const demoStyleUrl = 'https://demotiles.maplibre.org/style.json';
+
   final String tilesBase;
   final String? spriteUrl;
   final String? glyphsUrl;
@@ -25,6 +29,10 @@ class AlongStyleLoader {
     if (citySlug == null || citySlug.isEmpty) return base;
     return '$base?city=$citySlug';
   }
+
+  /// True when [styleString] is the demotiles fallback (not Along CDN).
+  static bool isDemoStyle(String? styleString) =>
+      styleString == demoStyleUrl;
 
   /// Resolves placeholders in a style JSON string for the given PMTiles location.
   ///

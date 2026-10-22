@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "ng.along.rider"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     buildFeatures {

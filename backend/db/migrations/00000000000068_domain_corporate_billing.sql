@@ -129,7 +129,7 @@ returns uuid
 language sql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select a.corporate_account_id
   from admin_users a
@@ -145,7 +145,7 @@ create or replace function private.corporate_policy_applies(
 returns boolean
 language plpgsql
 stable
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_at timestamptz := coalesce(p_trip.ended_at, now());
@@ -240,7 +240,7 @@ returns uuid
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_t trips%rowtype;
@@ -472,7 +472,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_account corporate_accounts%rowtype;
@@ -550,7 +550,7 @@ returns jsonb
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_period_end timestamptz := date_trunc('month', now() at time zone 'UTC') at time zone 'UTC';
@@ -568,7 +568,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_invoice corporate_invoices%rowtype;

@@ -72,3 +72,7 @@ data-collection/raw/
 
 # Logs
 *.log
+
+# Local geo downloads (Tier-A open data)
+data/
+

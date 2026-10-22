@@ -102,7 +102,7 @@ returns itinerary_stops
 language sql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select s.*
   from itinerary_stops s
@@ -274,7 +274,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_itin itineraries%rowtype;
@@ -484,7 +484,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_user_id uuid := auth.uid();
@@ -520,7 +520,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_stop itinerary_stops%rowtype;
@@ -784,7 +784,7 @@ returns void
 language plpgsql
 volatile
 security definer
-set search_path = public, private
+set search_path = public, private, extensions
 as $$
 declare
   v_t trips%rowtype;
