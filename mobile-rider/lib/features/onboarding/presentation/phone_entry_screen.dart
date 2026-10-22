@@ -41,7 +41,8 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
       ref.read(onboardingControllerProvider),
     );
     if (message == null) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   String? _localizedError(AppLocalizations l10n, OnboardingState state) {
@@ -51,8 +52,8 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
       'invalid_phone' => l10n.errorInvalidPhone,
       'not_configured' => l10n.errorAuthNotConfigured,
       'rate_limited' => l10n.errorRateLimited(
-          state.rateLimitRetrySeconds ?? config.otpRateLimitRetryS,
-        ),
+        state.rateLimitRetrySeconds ?? config.otpRateLimitRetryS,
+      ),
       _ => l10n.errorGeneric,
     };
   }
@@ -121,18 +122,18 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                             TextSpan(text: l10n.legalPrefix),
                             TextSpan(
                               text: l10n.termsLink,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 decoration: TextDecoration.underline,
-                                color: AlongColors.ink900,
+                                color: AlongPalette.of(context).ink,
                               ),
                               recognizer: TapGestureRecognizer()..onTap = () {},
                             ),
                             TextSpan(text: l10n.legalMiddle),
                             TextSpan(
                               text: l10n.privacyLink,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 decoration: TextDecoration.underline,
-                                color: AlongColors.ink900,
+                                color: AlongPalette.of(context).ink,
                               ),
                               recognizer: TapGestureRecognizer()..onTap = () {},
                             ),

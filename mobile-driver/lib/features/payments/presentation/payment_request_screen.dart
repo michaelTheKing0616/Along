@@ -23,7 +23,7 @@ class PaymentRequestScreen extends ConsumerWidget {
       key: const Key('payment_request_screen'),
       appBar: AppBar(
         title: Text(l10n.paymentRequestTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: Padding(

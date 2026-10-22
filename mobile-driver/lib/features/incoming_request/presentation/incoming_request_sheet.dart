@@ -33,7 +33,7 @@ class IncomingRequestSheet extends StatelessWidget {
         : state.remainingSeconds / state.requestTtlS;
 
     return Material(
-      color: AlongColors.surface0,
+      color: AlongPalette.of(context).surface,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AlongSpace.s16),

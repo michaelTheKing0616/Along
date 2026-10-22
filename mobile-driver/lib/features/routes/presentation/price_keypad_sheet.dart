@@ -26,7 +26,7 @@ class PriceKeypadSheet extends StatefulWidget {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AlongColors.surface0,
+      backgroundColor: AlongPalette.of(context).bg,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AlongRadius.lg.x)),
       ),

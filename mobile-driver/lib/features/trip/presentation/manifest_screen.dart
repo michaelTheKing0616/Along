@@ -22,7 +22,7 @@ class ManifestScreen extends ConsumerWidget {
       key: const Key('manifest_screen'),
       appBar: AppBar(
         title: Text(l10n.manifestTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: state.isLoading

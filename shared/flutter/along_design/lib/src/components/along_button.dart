@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../branding/branding_overrides.dart';
+import '../motion.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 
 /// Visual button variants (doc 05 §9 `AlongButton`).
@@ -45,7 +47,8 @@ class AlongButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final branding = alongBrandingOf(context);
-    final style = _styleForVariant(branding);
+    final palette = AlongPalette.of(context);
+    final style = _styleForVariant(branding, palette);
     final child = _isLoading
         ? SizedBox(
             width: AlongSpace.s24,
@@ -55,20 +58,30 @@ class AlongButton extends StatelessWidget {
               color: style.foregroundColor,
             ),
           )
-        : Text(label, style: AlongText.buttonPrimary.copyWith(color: style.foregroundColor));
+        : Text(
+            label,
+            style: AlongText.buttonPrimary.copyWith(
+              color: style.foregroundColor,
+            ),
+          );
 
     final button = Material(
       color: style.backgroundColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        borderRadius: BorderRadius.circular(AlongRadius.md.x),
         side: style.borderSide,
       ),
       child: InkWell(
-        onTap: _isDisabled || _isLoading ? null : onPressed,
+        onTap: _isDisabled || _isLoading
+            ? null
+            : () {
+                AlongHaptics.confirm(context);
+                onPressed?.call();
+              },
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        borderRadius: BorderRadius.circular(AlongRadius.md.x),
         child: SizedBox(
           height: _height,
           width: fullWidth ? double.infinity : null,
@@ -88,8 +101,12 @@ class AlongButton extends StatelessWidget {
               child: IgnorePointer(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: _pressedOverlay(style.backgroundColor, branding),
-                    borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+                    color: _pressedOverlay(
+                      style.backgroundColor,
+                      branding,
+                      palette,
+                    ),
+                    borderRadius: BorderRadius.circular(AlongRadius.md.x),
                   ),
                 ),
               ),
@@ -99,36 +116,40 @@ class AlongButton extends StatelessWidget {
     );
   }
 
-  Color _pressedOverlay(Color base, AlongBranding branding) {
+  Color _pressedOverlay(
+    Color base,
+    AlongBranding branding,
+    AlongPalette palette,
+  ) {
     if (variant == AlongButtonVariant.yellow) {
       return branding.brandYellowPressed.withValues(alpha: 0.35);
     }
-    return AlongColors.ink900.withValues(alpha: 0.08);
+    return palette.ink.withValues(alpha: 0.08);
   }
 
-  _ButtonStyle _styleForVariant(AlongBranding branding) {
+  _ButtonStyle _styleForVariant(AlongBranding branding, AlongPalette palette) {
     return switch (variant) {
       AlongButtonVariant.primary => _ButtonStyle(
-          backgroundColor: AlongColors.ink900,
-          foregroundColor: AlongColors.surface0,
-        ),
+        backgroundColor: palette.ink,
+        foregroundColor: palette.onInk,
+      ),
       AlongButtonVariant.secondary => _ButtonStyle(
-          backgroundColor: AlongColors.surface0,
-          foregroundColor: AlongColors.ink900,
-          borderSide: const BorderSide(color: AlongColors.ink900),
-        ),
+        backgroundColor: palette.surface,
+        foregroundColor: palette.ink,
+        borderSide: BorderSide(color: palette.ink),
+      ),
       AlongButtonVariant.tertiary => _ButtonStyle(
-          backgroundColor: Colors.transparent,
-          foregroundColor: AlongColors.ink900,
-        ),
+        backgroundColor: Colors.transparent,
+        foregroundColor: palette.ink,
+      ),
       AlongButtonVariant.danger => _ButtonStyle(
-          backgroundColor: AlongColors.semanticDangerFill,
-          foregroundColor: AlongColors.surface0,
-        ),
+        backgroundColor: palette.danger,
+        foregroundColor: palette.dangerOn,
+      ),
       AlongButtonVariant.yellow => _ButtonStyle(
-          backgroundColor: branding.brandYellow,
-          foregroundColor: branding.brandYellowOn,
-        ),
+        backgroundColor: branding.brandYellow,
+        foregroundColor: branding.brandYellowOn,
+      ),
     };
   }
 }

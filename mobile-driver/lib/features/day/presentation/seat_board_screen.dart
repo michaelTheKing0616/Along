@@ -136,7 +136,7 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.seatMapTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: _loading

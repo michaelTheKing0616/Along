@@ -53,14 +53,14 @@
     {
       "id": "background",
       "type": "background",
-      "paint": { "background-color": "#F4F4F2" }
+      "paint": { "background-color": "#F3EFE6" }
     },
     {
       "id": "water",
       "type": "fill",
       "source": "basemap",
       "source-layer": "water",
-      "paint": { "fill-color": "#CFE3EA" }
+      "paint": { "fill-color": "#D4E2E2" }
     },
     {
       "id": "landcover-grass",
@@ -68,7 +68,7 @@
       "source": "basemap",
       "source-layer": "landcover",
       "filter": ["==", "class", "grass"],
-      "paint": { "fill-color": "#E6EEE3" }
+      "paint": { "fill-color": "#E4EBD8" }
     },
     {
       "id": "landcover-wood",
@@ -76,7 +76,7 @@
       "source": "basemap",
       "source-layer": "landcover",
       "filter": ["==", "class", "wood"],
-      "paint": { "fill-color": "#E6EEE3" }
+      "paint": { "fill-color": "#E4EBD8" }
     },
     {
       "id": "landuse-park",
@@ -84,7 +84,7 @@
       "source": "basemap",
       "source-layer": "landuse",
       "filter": ["in", "class", "park", "national_park"],
-      "paint": { "fill-color": "#E6EEE3" }
+      "paint": { "fill-color": "#E4EBD8" }
     },
     {
       "id": "road-minor",
@@ -93,7 +93,7 @@
       "source-layer": "transportation",
       "filter": ["in", "class", "minor", "service", "path"],
       "paint": {
-        "line-color": "#E8E8E6",
+        "line-color": "#D5C9B8",
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.5, 16, 2]
       }
     },
@@ -104,7 +104,7 @@
       "source-layer": "transportation",
       "filter": ["in", "class", "primary", "secondary", "tertiary"],
       "paint": {
-        "line-color": "#DEDEDC",
+        "line-color": "#C4B7A4",
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 16, 4]
       }
     },
@@ -115,7 +115,7 @@
       "source-layer": "transportation",
       "filter": ["==", "class", "motorway"],
       "paint": {
-        "line-color": "#D8D8D6",
+        "line-color": "#B7AA96",
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 16, 6]
       }
     },
@@ -132,7 +132,7 @@
       },
       "paint": {
         "text-color": "#6B6B6B",
-        "text-halo-color": "#F4F4F2",
+        "text-halo-color": "#F3EFE6",
         "text-halo-width": 1
       }
     },
@@ -142,7 +142,7 @@
       "source": "basemap",
       "source-layer": "building",
       "minzoom": 15,
-      "paint": { "fill-color": "#EBEBE9", "fill-opacity": 0.8 }
+      "paint": { "fill-color": "#D5C9B8", "fill-opacity": 0.8 }
     },
     {
       "id": "along-route-walk-casing",
@@ -241,7 +241,7 @@
       },
       "paint": {
         "text-color": "#0A0A0A",
-        "text-halo-color": "#F4F4F2",
+        "text-halo-color": "#F3EFE6",
         "text-halo-width": 1
       }
     },

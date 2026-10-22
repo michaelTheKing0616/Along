@@ -68,7 +68,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AlongColors.ink900),

@@ -159,7 +159,7 @@ class _VehicleCardsScreenState extends ConsumerState<VehicleCardsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.vehiclesTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: _loading

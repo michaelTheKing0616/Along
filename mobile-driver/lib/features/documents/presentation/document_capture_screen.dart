@@ -95,7 +95,7 @@ class _DocumentCaptureScreenState extends ConsumerState<DocumentCaptureScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.captureTitle(widget.args.label)),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: SafeArea(

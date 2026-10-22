@@ -7,9 +7,13 @@ void main() {
     expect(alongDesignVersion, '0.0.1');
   });
 
-  test('alongTheme uses ink primary, not fromSeed olive', () {
+  test('alongTheme uses warm ink, not a seeded olive', () {
     final theme = alongTheme();
-    expect(theme.colorScheme.primary, AlongColors.ink900);
+    expect(theme.colorScheme.primary, AlongPalette.light.ink);
+    expect(theme.extension<AlongPalette>(), AlongPalette.light);
+    final dusk = alongTheme(brightness: Brightness.dark);
+    expect(dusk.colorScheme.primary, AlongPalette.dark.ink);
+    expect(dusk.brightness, Brightness.dark);
     expect(theme.useMaterial3, isTrue);
     expect(theme.splashFactory, NoSplash.splashFactory);
   });

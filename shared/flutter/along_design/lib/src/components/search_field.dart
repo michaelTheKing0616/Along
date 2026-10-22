@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../palette.dart';
 import '../tokens.g.dart';
 
 /// Search field layout variants (doc 05 §9 `SearchField`).
@@ -25,6 +26,7 @@ class SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
     return Semantics(
       textField: true,
       label: hint,
@@ -32,26 +34,26 @@ class SearchField extends StatelessWidget {
         height: AlongSpace.sizeListRowMin,
         decoration: BoxDecoration(
           color: variant == SearchFieldVariant.home
-              ? AlongColors.surface100
-              : AlongColors.surface0,
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+              ? palette.recessed
+              : palette.surface,
+          borderRadius: BorderRadius.circular(AlongRadius.md.x),
           border: variant == SearchFieldVariant.full
-              ? Border.all(color: AlongColors.ink100)
+              ? Border.all(color: palette.line)
               : null,
         ),
         padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s12),
         child: Row(
           children: [
-            Icon(Icons.search_rounded, color: AlongColors.ink500),
+            Icon(Icons.search_rounded, color: palette.muted),
             const SizedBox(width: AlongSpace.s8),
             Expanded(
               child: TextField(
                 controller: controller,
                 onChanged: onChanged,
-                style: AlongText.body,
+                style: AlongText.body.copyWith(color: palette.ink),
                 decoration: InputDecoration(
                   hintText: hint,
-                  hintStyle: AlongText.body.copyWith(color: AlongColors.ink500),
+                  hintStyle: AlongText.body.copyWith(color: palette.muted),
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
@@ -61,7 +63,7 @@ class SearchField extends StatelessWidget {
             if (variant == SearchFieldVariant.home && onRecentsTap != null)
               IconButton(
                 onPressed: onRecentsTap,
-                icon: Icon(Icons.history_rounded, color: AlongColors.ink700),
+                icon: Icon(Icons.history_rounded, color: palette.ink),
                 tooltip: 'Recent searches',
               ),
           ],
@@ -91,6 +93,7 @@ class PhoneField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasError = errorText != null && errorText!.isNotEmpty;
+    final palette = AlongPalette.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,20 +101,22 @@ class PhoneField extends StatelessWidget {
         Container(
           height: AlongSpace.sizeListRowMin,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-            border: Border.all(
-              color: hasError ? AlongColors.semanticDangerFill : AlongColors.ink100,
-            ),
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(AlongRadius.md.x),
+            border: Border.all(color: hasError ? palette.danger : palette.line),
           ),
           padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s12),
           child: Row(
             children: [
-              Text(countryCode, style: AlongText.bodyStrong),
+              Text(
+                countryCode,
+                style: AlongText.bodyStrong.copyWith(color: palette.ink),
+              ),
               Container(
                 width: 1,
                 height: AlongSpace.s24,
                 margin: const EdgeInsets.symmetric(horizontal: AlongSpace.s12),
-                color: AlongColors.ink100,
+                color: palette.line,
               ),
               Expanded(
                 child: TextField(
@@ -121,10 +126,10 @@ class PhoneField extends StatelessWidget {
                   textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  style: AlongText.body,
+                  style: AlongText.body.copyWith(color: palette.ink),
                   decoration: InputDecoration(
                     hintText: '801 234 5678',
-                    hintStyle: AlongText.body.copyWith(color: AlongColors.ink500),
+                    hintStyle: AlongText.body.copyWith(color: palette.muted),
                     border: InputBorder.none,
                     isDense: true,
                   ),
@@ -137,7 +142,7 @@ class PhoneField extends StatelessWidget {
           const SizedBox(height: AlongSpace.s4),
           Text(
             errorText!,
-            style: AlongText.caption.copyWith(color: AlongColors.semanticDanger),
+            style: AlongText.caption.copyWith(color: palette.danger),
           ),
         ],
       ],
@@ -163,6 +168,7 @@ class OtpField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasError = errorText != null && errorText!.isNotEmpty;
+    final palette = AlongPalette.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,10 +176,9 @@ class OtpField extends StatelessWidget {
         Container(
           height: AlongSpace.sizeListRowMin,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-            border: Border.all(
-              color: hasError ? AlongColors.semanticDangerFill : AlongColors.ink100,
-            ),
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(AlongRadius.md.x),
+            border: Border.all(color: hasError ? palette.danger : palette.line),
           ),
           alignment: Alignment.center,
           child: TextField(
@@ -183,7 +188,10 @@ class OtpField extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLength: length,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: AlongText.heading2.copyWith(letterSpacing: 8),
+            style: AlongText.heading2.copyWith(
+              letterSpacing: 8,
+              color: palette.ink,
+            ),
             decoration: InputDecoration(
               hintText: '·' * length,
               counterText: '',
@@ -198,7 +206,7 @@ class OtpField extends StatelessWidget {
           const SizedBox(height: AlongSpace.s4),
           Text(
             errorText!,
-            style: AlongText.caption.copyWith(color: AlongColors.semanticDanger),
+            style: AlongText.caption.copyWith(color: palette.danger),
           ),
         ],
       ],

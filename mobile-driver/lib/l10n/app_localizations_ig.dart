@@ -16,7 +16,8 @@ class AppLocalizationsIg extends AppLocalizations {
   String get phoneEntryTitle => 'Drive with Along';
 
   @override
-  String get phoneEntrySubtitle => 'Enter your number to get started';
+  String get phoneEntrySubtitle =>
+      'We text a code to this number so your day stays yours.';
 
   @override
   String get continueButton => 'Gaa n\'ihu';

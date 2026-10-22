@@ -1,8 +1,16 @@
 export 'src/branding/branding_overrides.dart';
 export 'src/brand_assets.dart';
 export 'src/components/components.dart';
+export 'src/elevation.dart';
+export 'src/icons.dart';
+export 'src/motion.dart';
+export 'src/palette.dart';
 export 'src/theme.dart';
 export 'src/tokens.g.dart';
+export 'src/type.dart';
+export 'src/flows/flow_stages.dart';
+export 'src/flows/map_sketch.dart';
+export 'src/flows/spring_sheet.dart';
 export 'src/utils/fare_tier.dart';
 export 'src/utils/format_money.dart';
 export 'src/utils/name_signal.dart';

@@ -298,7 +298,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AlongColors.surface0,
+      backgroundColor: AlongPalette.of(context).bg,
       builder: (context) => ParkPickerSheet(l10n: l10n),
     );
   }

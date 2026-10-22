@@ -27,7 +27,7 @@ class EarningsScreen extends ConsumerWidget {
       key: const Key('earnings_screen'),
       appBar: AppBar(
         title: Text(l10n.navEarnings),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
         actions: [
           TextButton(
@@ -196,11 +196,11 @@ class EarningsScreen extends ConsumerWidget {
   }
 
   LedgerRowKind _kindFor(String entryType) => switch (entryType) {
-        'cash_commission_debit' || 'deposit_drawdown' || 'payout_debit' =>
-          LedgerRowKind.debit,
-        'digital_settlement_credit' || 'onboarding_deposit' =>
-          LedgerRowKind.credit,
-        'manual_adjustment' => LedgerRowKind.adjustment,
-        _ => LedgerRowKind.settlement,
-      };
+    'cash_commission_debit' ||
+    'deposit_drawdown' ||
+    'payout_debit' => LedgerRowKind.debit,
+    'digital_settlement_credit' || 'onboarding_deposit' => LedgerRowKind.credit,
+    'manual_adjustment' => LedgerRowKind.adjustment,
+    _ => LedgerRowKind.settlement,
+  };
 }

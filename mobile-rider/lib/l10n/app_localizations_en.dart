@@ -13,7 +13,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneEntryTitle => 'Move around. Your way.';
 
   @override
-  String get phoneEntrySubtitle => 'Enter your number to continue';
+  String get phoneEntrySubtitle =>
+      'We text a code to this number so the ride stays yours.';
 
   @override
   String get continueButton => 'Continue';
@@ -90,6 +91,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeSearchHint => 'Where to?';
+
+  @override
+  String get homeMenu => 'Menu';
+
+  @override
+  String get homeVehicles => 'Vehicles';
+
+  @override
+  String get homeRecenter => 'Recenter';
+
+  @override
+  String get guardianIntro =>
+      'A check-in on this ride, only when you ask for it.';
 
   @override
   String get homeLocationDeniedBanner =>

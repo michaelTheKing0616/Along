@@ -165,7 +165,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
       key: const Key('settle_screen'),
       appBar: AppBar(
         title: Text(l10n.settleTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: ListView(

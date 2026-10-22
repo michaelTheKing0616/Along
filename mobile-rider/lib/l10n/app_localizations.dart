@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// R-02 body copy
   ///
   /// In en, this message translates to:
-  /// **'Enter your number to continue'**
+  /// **'We text a code to this number so the ride stays yours.'**
   String get phoneEntrySubtitle;
 
   /// Primary CTA on phone and name screens
@@ -253,6 +253,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Where to?'**
   String get homeSearchHint;
+
+  /// Home map menu button
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get homeMenu;
+
+  /// Home map vehicles button
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles'**
+  String get homeVehicles;
+
+  /// Home map recenter button
+  ///
+  /// In en, this message translates to:
+  /// **'Recenter'**
+  String get homeRecenter;
+
+  /// Guardian screen explanation
+  ///
+  /// In en, this message translates to:
+  /// **'A check-in on this ride, only when you ask for it.'**
+  String get guardianIntro;
 
   /// R-05 location denied banner
   ///

@@ -20,7 +20,7 @@ class VehicleScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.vehicleTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       bottomNavigationBar: asyncState.maybeWhen(

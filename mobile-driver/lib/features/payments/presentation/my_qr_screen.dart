@@ -21,7 +21,7 @@ class MyQrScreen extends ConsumerWidget {
       key: const Key('my_qr_screen'),
       appBar: AppBar(
         title: Text(l10n.myQrTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: state.isLoading

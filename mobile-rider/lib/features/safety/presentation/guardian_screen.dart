@@ -87,6 +87,11 @@ class _GuardianScreenState extends ConsumerState<GuardianScreen> {
       body: ListView(
         padding: const EdgeInsets.all(AlongSpace.s16),
         children: [
+          Text(
+            l10n.guardianIntro,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AlongSpace.s12),
           SwitchListTile(
             key: const Key('guardian_enabled'),
             contentPadding: EdgeInsets.zero,

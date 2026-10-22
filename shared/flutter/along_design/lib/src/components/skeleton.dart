@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../motion.dart';
 import '../tokens.g.dart';
 
 /// Skeleton placeholder variants (doc 05 §9 `Skeleton`).
@@ -80,6 +81,8 @@ class _AlongSkeletonState extends State<AlongSkeleton>
         ),
       ),
     };
+
+    if (AlongMotionPolicy.reduced(context)) return child;
 
     return AnimatedBuilder(
       animation: _controller,

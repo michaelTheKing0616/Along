@@ -4,7 +4,7 @@
   "@phoneEntryTitle": {
     "description": "R-02 heading"
   },
-  "phoneEntrySubtitle": "Enter your number to continue",
+  "phoneEntrySubtitle": "We text a code to this number so the ride stays yours.",
   "@phoneEntrySubtitle": {
     "description": "R-02 body copy"
   },
@@ -117,6 +117,22 @@
   "homeSearchHint": "Where to?",
   "@homeSearchHint": {
     "description": "R-05 search field hint"
+  },
+  "homeMenu": "Menu",
+  "@homeMenu": {
+    "description": "Home map menu button"
+  },
+  "homeVehicles": "Vehicles",
+  "@homeVehicles": {
+    "description": "Home map vehicles button"
+  },
+  "homeRecenter": "Recenter",
+  "@homeRecenter": {
+    "description": "Home map recenter button"
+  },
+  "guardianIntro": "A check-in on this ride, only when you ask for it.",
+  "@guardianIntro": {
+    "description": "Guardian screen explanation"
   },
   "homeLocationDeniedBanner": "Enable location to see nearby vehicles",
   "@homeLocationDeniedBanner": {

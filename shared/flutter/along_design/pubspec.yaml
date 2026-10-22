@@ -35,7 +35,14 @@ flutter:
     - assets/icons/android/drawable-xxxhdpi/
     - assets/icons/ios/AppIcon.appiconset/
     - assets/splash/
+    - assets/map/
   fonts:
+    - family: Onest
+      fonts:
+        - asset: assets/fonts/Onest.ttf
+          weight: 100
+        - asset: assets/fonts/Onest.ttf
+          weight: 900
     - family: Inter
       fonts:
         # Variable font (wght 100–900); min/max entries enable weight interpolation.

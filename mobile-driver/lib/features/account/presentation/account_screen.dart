@@ -38,7 +38,7 @@ class AccountScreen extends ConsumerWidget {
       key: const Key('account_screen'),
       appBar: AppBar(
         title: Text(l10n.navAccount),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: asyncState.when(

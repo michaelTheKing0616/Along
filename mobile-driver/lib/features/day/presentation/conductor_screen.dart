@@ -67,7 +67,7 @@ class _ConductorScreenState extends ConsumerState<ConductorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.conductorTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: ListView(

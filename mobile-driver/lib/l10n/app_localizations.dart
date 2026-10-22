@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// D-02 body
   ///
   /// In en, this message translates to:
-  /// **'Enter your number to get started'**
+  /// **'We text a code to this number so your day stays yours.'**
   String get phoneEntrySubtitle;
 
   /// No description provided for @continueButton.
