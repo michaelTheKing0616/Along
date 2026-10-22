@@ -8,10 +8,10 @@ Place
 - Onboarding skyline (assets/photos/abuja-skyline.jpg). King Buwa, “High angle photo of cityscape”, Abuja, Nigeria. Unsplash, https://unsplash.com/photos/high-angle-photo-of-cityscape-bQAJj93bOn0. Unsplash License.
 
 Plate
-- assets/photos/plate-abuja.jpg is a rendered camera-style frame of the fictional plate ABC-123-XY, not a photograph of a real vehicle.
+- Camera frame (assets/photos/plate-abuja.jpg). Sarah Sheedy, “A close up of a license plate on a car”, Kailua-Kona. Unsplash, https://unsplash.com/photos/a-close-up-of-a-license-plate-on-a-car-j7fKhMSqbmU. Unsplash License. The original plate area is replaced with the fictional plate ABC-123-XY.
 
 Maps
-- Basemap tiles are rendered from OpenFreeMap vector tiles (OpenMapTiles schema) and cached in the package. © OpenMapTiles © OpenStreetMap contributors. https://openfreemap.org https://www.openstreetmap.org/copyright
+- Basemap tiles are a 3× render of a Protomaps daily planet extract for the Federal Capital Territory, max zoom 15 in the public build (neighborhood frames are the z16 grid, overzoomed from that vector). © OpenStreetMap contributors. https://protomaps.com https://www.openstreetmap.org/copyright. Extract steps: tool/extract_abuja_pmtiles.sh. The PMTiles archive is not committed.
 
 Type
 - Geist variable font, Vercel, SIL Open Font License. See assets/fonts/Geist-OFL.txt.

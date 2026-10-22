@@ -92,42 +92,42 @@ class SeatMap extends StatelessWidget {
                 ..setEntry(3, 2, 0.0011)
                 ..rotateX(0.2),
               child: CustomPaint(
-              painter: _CabinPainter(body: body, palette: palette),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  8,
-                  body == 'bike' ? 16 : 28,
-                  8,
-                  18,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (final row in rows)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Row(
-                          children: [
-                            for (final seat in row.seats) ...[
-                              if (seat.isDriver && body != 'bike')
-                                const _SteeringWheel(),
-                              Expanded(
-                                child: _SeatButton(
-                                  seat: seat,
-                                  onTap: seat.isClaimable ? onSeatTap : null,
-                                  onLongPress: seat.isClaimable
-                                      ? onSeatLongPress
-                                      : null,
+                painter: _CabinPainter(body: body, palette: palette),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    8,
+                    body == 'bike' ? 16 : 28,
+                    8,
+                    18,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final row in rows)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Row(
+                            children: [
+                              for (final seat in row.seats) ...[
+                                if (seat.isDriver && body != 'bike')
+                                  const _SteeringWheel(),
+                                Expanded(
+                                  child: _SeatButton(
+                                    seat: seat,
+                                    onTap: seat.isClaimable ? onSeatTap : null,
+                                    onLongPress: seat.isClaimable
+                                        ? onSeatLongPress
+                                        : null,
+                                  ),
                                 ),
-                              ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
             ),
           ],
         ),
@@ -507,15 +507,22 @@ class _SeatPainter extends CustomPainter {
       pad,
       Paint()
         ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            Color.lerp(cushion, palette.surface, 0.28)!,
+            Color.lerp(cushion, palette.surface, 0.42)!,
             cushion,
-            Color.lerp(cushion, palette.ink, 0.22)!,
+            Color.lerp(cushion, palette.ink, 0.28)!,
           ],
-          stops: const [0, 0.45, 1],
+          stops: const [0, 0.42, 1],
         ).createShader(rect),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(rect.left + 8, rect.top + 3, rect.width * 0.28, 4),
+        const Radius.circular(2),
+      ),
+      Paint()..color = const Color(0x66FFFFFF),
     );
     final bolster = Paint()..color = palette.ink.withValues(alpha: 0.14);
     canvas.drawRRect(

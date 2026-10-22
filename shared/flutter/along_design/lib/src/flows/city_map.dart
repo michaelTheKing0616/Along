@@ -16,12 +16,13 @@ enum AlongCityMapMode { browse, trip, online, routeHero, search }
 
 /// Muted Abuja maps.
 ///
-/// Tiles are pre-rendered at 3× from an OpenFreeMap / OpenMapTiles vector
-/// style (positron-like light, dark-matter-like dark): grey land, white
-/// roads, soft parks and water, few labels. The corridor uses native zoom-12
-/// tiles, displayed at 11.6 so both ends fit without scaling a lower zoom up.
-/// Neighborhood tiles are zoom 16, rasterized from the z14 vector max so the
-/// strokes stay sharp. Demand is a separate alpha tile, not a blob overlay.
+/// Tiles are pre-rendered at 3× from a Protomaps basemap extract of Abuja
+/// (FCT bbox, see tool/extract_abuja_pmtiles.sh). The daily planet stops at
+/// z15; neighborhood frames are the z16 slippy grid, drawn by overzooming
+/// that z15 vector so building footprints stay sharp. Grey land, white roads,
+/// soft parks and water, few labels. The corridor uses native zoom-12 tiles,
+/// displayed at 11.6 so both ends fit without scaling a lower zoom up.
+/// Demand is a separate alpha tile, not a blob overlay.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -81,7 +82,9 @@ class AlongCityMap extends StatelessWidget {
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.none,
         ),
-        backgroundColor: dark ? const Color(0xFF16171A) : const Color(0xFFE6E7EA),
+        backgroundColor: dark
+            ? const Color(0xFF16171A)
+            : const Color(0xFFE6E7EA),
       ),
       children: [
         TileLayer(
@@ -112,10 +115,7 @@ class AlongCityMap extends StatelessWidget {
               palette: palette,
             ),
           ),
-        MarkerLayer(
-          rotate: true,
-          markers: _markers(palette, drawn),
-        ),
+        MarkerLayer(rotate: true, markers: _markers(palette, drawn)),
         Positioned(
           top: 8,
           left: 0,
@@ -153,8 +153,12 @@ class AlongCityMap extends StatelessWidget {
     }
     if (mode == AlongCityMapMode.search) {
       markers.add(_radar(wuseMarket, palette));
-      markers.add(_driver(const LatLng(9.06902, 7.46662), '4 min', false, palette));
-      markers.add(_driver(const LatLng(9.06805, 7.46515), '6 min', true, palette));
+      markers.add(
+        _driver(const LatLng(9.06902, 7.46662), '4 min', false, palette),
+      );
+      markers.add(
+        _driver(const LatLng(9.06805, 7.46515), '6 min', true, palette),
+      );
     }
     if (mode == AlongCityMapMode.online) {
       markers.add(
@@ -331,11 +335,9 @@ class AlongCityMap extends StatelessWidget {
                   '$seats',
                   maxLines: 1,
                   softWrap: false,
-                  style: AlongType.numeric(palette).copyWith(
-                    fontSize: 11,
-                    height: 1,
-                    color: palette.accentInk,
-                  ),
+                  style: AlongType.numeric(
+                    palette,
+                  ).copyWith(fontSize: 11, height: 1, color: palette.accentInk),
                 ),
               ),
             ),
@@ -364,7 +366,9 @@ class AlongCityMap extends StatelessWidget {
         children: [
           AlongDriverPortrait(
             size: 36,
-            asset: rider ? AlongDriverPortrait.adaeze : AlongDriverPortrait.chinedu,
+            asset: rider
+                ? AlongDriverPortrait.adaeze
+                : AlongDriverPortrait.chinedu,
             verified: true,
           ),
           const SizedBox(height: 2),
@@ -427,7 +431,7 @@ class _Attribution extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         child: Text(
-          '© OSM · OpenMapTiles',
+          '© OpenStreetMap',
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
@@ -515,12 +519,12 @@ class _PulsePainter extends CustomPainter {
           ..color = color.withValues(alpha: (1 - phase) * 0.55),
       );
     }
-    canvas.drawCircle(center, 16, Paint()..color = color.withValues(alpha: 0.22));
     canvas.drawCircle(
       center,
-      7,
-      Paint()..color = ink,
+      16,
+      Paint()..color = color.withValues(alpha: 0.22),
     );
+    canvas.drawCircle(center, 7, Paint()..color = ink);
     canvas.drawCircle(
       center,
       7,
@@ -672,4 +676,3 @@ class _RoutePainter extends CustomPainter {
         oldDelegate.palette.brightness != palette.brightness;
   }
 }
-
