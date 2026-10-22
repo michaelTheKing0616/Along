@@ -190,8 +190,9 @@ class _SchematicBody extends StatelessWidget {
   }
 }
 
-/// Photograph is 864×1152. Three front cushions sit near 32% down, the rear
-/// bench near 54%. Markers are ours; the row list decides how many.
+/// Photograph is 864×1152. The shell shows the cabin only (the white margin
+/// is cropped) so the three front cushions and the rear bench fill the card.
+/// Markers are ours; the row list decides how many.
 class _CabinShell extends StatelessWidget {
   const _CabinShell({
     required this.rows,
@@ -203,7 +204,13 @@ class _CabinShell extends StatelessWidget {
   final ValueChanged<String>? onSeatTap;
   final ValueChanged<String>? onSeatLongPress;
 
-  static const _photoAspect = 864 / 1152;
+  /// Interior window, as fractions of the 864×1152 photograph.
+  static const _cropL = 0.18;
+  static const _cropT = 0.14;
+  static const _cropR = 0.82;
+  static const _cropB = 0.80;
+  static const _cropAspect =
+      ((_cropR - _cropL) * 864) / ((_cropB - _cropT) * 1152);
 
   @override
   Widget build(BuildContext context) {
@@ -212,10 +219,10 @@ class _CabinShell extends StatelessWidget {
         final maxW = constraints.maxWidth;
         final maxH = constraints.maxHeight;
         var width = maxW;
-        var height = width / _photoAspect;
+        var height = width / _cropAspect;
         if (maxH.isFinite && height > maxH) {
           height = maxH;
-          width = height * _photoAspect;
+          width = height * _cropAspect;
         }
         return Align(
           alignment: Alignment.topCenter,
@@ -234,12 +241,13 @@ class _CabinShell extends StatelessWidget {
     for (var r = 0; r < rows.length; r++) {
       final seats = _driverFirst(rows[r].seats);
       final count = seats.length;
-      final seatH = 64.0;
-      // The leather sits in the middle half. Four rear markers share that
-      // bench evenly, so a row may be narrower than the 48dp floor.
-      final span = math.min(width * 0.50, width - 8);
+      final seatH = 48.0;
+      // Markers stay in the 44–48dp band so the label and price stay readable
+      // without covering the next cushion.
+      final span = math.min(width * 0.90, width - 8);
       var seatW = span / count;
-      if (seatW > 64) seatW = 64;
+      if (seatW > 48) seatW = 48;
+      if (seatW < 44 && 44 * count <= span) seatW = 44;
       if (seatW < 48 && 48 * count <= span) seatW = 48;
       final gap = count <= 1
           ? 0.0
@@ -269,15 +277,7 @@ class _CabinShell extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/photos/car-cabin-top.jpg',
-              package: 'along_design',
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.medium,
-              excludeFromSemantics: true,
-            ),
-          ),
+          Positioned.fill(child: _cabinPhoto()),
           ...markers,
         ],
       ),
@@ -294,15 +294,49 @@ class _CabinShell extends StatelessWidget {
   }
 
   static double _bandTop(int index, int count, double height, double seatH) {
-    double frac;
+    // Fractions are of the full photograph, then mapped into the crop.
+    double photo;
     if (count <= 1) {
-      frac = 0.55;
+      photo = 0.46;
     } else if (count == 2) {
-      frac = index == 0 ? 0.32 : 0.54;
+      photo = index == 0 ? 0.33 : 0.55;
     } else {
-      frac = 0.32 + 0.42 * (index / (count - 1));
+      photo = 0.30 + 0.40 * (index / (count - 1));
     }
+    final frac = (photo - _cropT) / (_cropB - _cropT);
     return (frac * height - seatH / 2).clamp(4.0, height - seatH - 4);
+  }
+
+  static Widget _cabinPhoto() {
+    const photoW = 864.0;
+    const photoH = 1152.0;
+    return FittedBox(
+      fit: BoxFit.fill,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: (_cropR - _cropL) * photoW,
+        height: (_cropB - _cropT) * photoH,
+        child: OverflowBox(
+          alignment: Alignment.topLeft,
+          minWidth: photoW,
+          maxWidth: photoW,
+          minHeight: photoH,
+          maxHeight: photoH,
+          child: Transform.translate(
+            offset: const Offset(-_cropL * photoW, -_cropT * photoH),
+            child: Image.asset(
+              'assets/photos/car-cabin-top.jpg',
+              package: 'along_design',
+              width: photoW,
+              height: photoH,
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.medium,
+              excludeFromSemantics: true,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -448,15 +482,28 @@ class _SeatButtonState extends State<_SeatButton>
                       pulse: seat.status == 'yours' ? _pulse.value : 0,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(6, 20, 6, 4),
+                      padding: const EdgeInsets.fromLTRB(2, 6, 2, 3),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          const Spacer(),
                           if (seat.isCargo)
-                            Icon(Icons.luggage_outlined, size: 18, color: ink)
+                            Icon(Icons.luggage_outlined, size: 16, color: ink)
                           else if (!seat.isDriver)
                             Text(
                               seat.label.trim(),
+                              maxLines: 1,
+                              softWrap: false,
+                              style: AlongText.caption.copyWith(
+                                color: ink,
+                                fontSize: 13,
+                                height: 1,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          if (showPrice) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              price,
                               maxLines: 1,
                               softWrap: false,
                               style: AlongText.caption.copyWith(
@@ -469,41 +516,7 @@ class _SeatButtonState extends State<_SeatButton>
                                 ],
                               ),
                             ),
-                          const Spacer(),
-                          if (showPrice)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 1,
-                              ),
-                              decoration: BoxDecoration(
-                                color: seat.status == 'yours'
-                                    ? palette.ink
-                                    : palette.surface,
-                                borderRadius: BorderRadius.circular(99),
-                                border: Border.all(
-                                  color: palette.ink.withValues(alpha: 0.12),
-                                ),
-                              ),
-                              child: Text(
-                                price,
-                                maxLines: 1,
-                                softWrap: false,
-                                style: AlongText.caption.copyWith(
-                                  color: seat.status == 'yours'
-                                      ? palette.surface
-                                      : ink,
-                                  fontSize: 10,
-                                  height: 1.2,
-                                  fontWeight: FontWeight.w700,
-                                  fontFeatures: const [
-                                    FontFeature.tabularFigures(),
-                                  ],
-                                ),
-                              ),
-                            )
-                          else
-                            const SizedBox(height: 14),
+                          ],
                         ],
                       ),
                     ),
@@ -562,16 +575,12 @@ class _SeatPainter extends CustomPainter {
     final selected = seat.status == 'yours';
     final ink = palette.ink;
     final head = RRect.fromRectAndRadius(
-      Rect.fromLTWH(size.width * 0.32, 2, size.width * 0.36, 12),
-      const Radius.circular(6),
-    );
-    final back = RRect.fromRectAndRadius(
-      Rect.fromLTWH(size.width * 0.10, 18, size.width * 0.80, 14),
-      const Radius.circular(5),
+      Rect.fromLTWH(size.width * 0.28, 3, size.width * 0.44, 8),
+      const Radius.circular(4),
     );
     final pad = RRect.fromRectAndRadius(
-      Rect.fromLTWH(size.width * 0.16, 36, size.width * 0.68, size.height - 44),
-      const Radius.circular(10),
+      Rect.fromLTWH(2, 12, size.width - 4, size.height - 15),
+      const Radius.circular(8),
     );
     if (selected) {
       canvas.drawRRect(
@@ -583,20 +592,17 @@ class _SeatPainter extends CustomPainter {
       );
     }
     final shadow = Paint()..color = ink.withValues(alpha: 0.08);
-    canvas.drawRRect(back.shift(const Offset(0, 1)), shadow);
     canvas.drawRRect(pad.shift(const Offset(0, 1)), shadow);
     canvas.drawRRect(pad, Paint()..color = cushion);
-    canvas.drawRRect(back, Paint()..color = Color.lerp(cushion, ink, 0.22)!);
     canvas.drawRRect(
       head,
       Paint()..color = Color.lerp(cushion, ink, selected ? 0.4 : 0.32)!,
     );
     final stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = ink.withValues(alpha: selected ? 0.55 : 0.22);
+      ..strokeWidth = 1.4
+      ..color = ink.withValues(alpha: selected ? 0.7 : 0.28);
     canvas.drawRRect(pad, stroke);
-    canvas.drawRRect(back, stroke);
     canvas.drawRRect(head, stroke);
   }
 

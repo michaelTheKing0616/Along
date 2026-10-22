@@ -70,6 +70,11 @@ Future<void> _pump(
   Brightness brightness = Brightness.light,
   bool legacy = false,
 }) async {
+  // The previous screen's decoded tiles stay in the cache after their
+  // ImageInfo is disposed. The next map then waits forever on those three
+  // edge tiles (rides 320 after rides 360).
+  imageCache.clear();
+  imageCache.clearLiveImages();
   await tester.binding.setSurfaceSize(size);
   addTearDown(() => tester.binding.setSurfaceSize(null));
   final theme = legacy
@@ -96,27 +101,28 @@ Future<void> _pump(
     await tester.runAsync(() => precacheImage(image.image, context));
   }
   if (find.byType(FlutterMap).evaluate().isNotEmpty) {
-    for (var attempt = 0; attempt < 8; attempt++) {
-      final raw = find.byType(RawImage).evaluate();
-      final pending = raw.where((element) {
-        return (element.widget as RawImage).image == null;
-      }).length;
-      if (raw.isNotEmpty && pending == 0) break;
+    for (var attempt = 0; attempt < 12; attempt++) {
       await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 40)),
       );
       await tester.pump();
+      if (_rawImagesMissing(tester) != 0) continue;
+      await tester.pump();
+      if (_rawImagesMissing(tester) == 0) break;
     }
   }
   await tester.pump();
   final overflow = tester.takeException();
   expect(overflow, isNull, reason: 'layout overflow');
   if (find.byType(FlutterMap).evaluate().isNotEmpty) {
-    final missing = find.byType(RawImage).evaluate().where((element) {
-      return (element.widget as RawImage).image == null;
-    });
-    expect(missing, isEmpty, reason: 'map tile failed to paint');
+    expect(_rawImagesMissing(tester), 0, reason: 'map tile failed to paint');
   }
+}
+
+int _rawImagesMissing(WidgetTester tester) {
+  return find.byType(RawImage).evaluate().where((element) {
+    return (element.widget as RawImage).image == null;
+  }).length;
 }
 
 /// Short labels stay on one line. Ellipsis is allowed. A wrapped chip,

@@ -230,83 +230,76 @@ class AlongFlowSeats extends StatelessWidget {
           const SizedBox(height: 4),
           Text('Sedan · ABC-123-XY', style: AlongType.bodyMuted(palette)),
           const SizedBox(height: 8),
-          Expanded(
-            child: FittedBox(
-              fit: BoxFit.contain,
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 328,
-                child: const SeatMap(
-                  body: 'cabin',
-                  rows: [
-                    SeatMapRowView(
-                      id: 'front',
-                      seats: [
-                        SeatMapSeat(
-                          id: 'fl',
-                          label: 'FL',
-                          role: 'passenger',
-                          status: 'yours',
-                          statusWord: 'Yours',
-                          price: '₦1,200',
-                        ),
-                        SeatMapSeat(
-                          id: 'fr',
-                          label: 'FR',
-                          role: 'passenger',
-                          status: 'held',
-                          statusWord: 'Held',
-                          price: '₦900',
-                        ),
-                        SeatMapSeat(
-                          id: 'drv',
-                          label: 'Driver',
-                          role: 'driver',
-                          status: 'occupied',
-                          statusWord: 'Driver',
-                        ),
-                      ],
+          const Expanded(
+            child: SeatMap(
+              body: 'cabin',
+              rows: [
+                SeatMapRowView(
+                  id: 'front',
+                  seats: [
+                    SeatMapSeat(
+                      id: 'fl',
+                      label: 'FL',
+                      role: 'passenger',
+                      status: 'yours',
+                      statusWord: 'Yours',
+                      price: '₦1,200',
                     ),
-                    SeatMapRowView(
-                      id: 'back',
-                      ruleTitle: 'Window stays open',
-                      seats: [
-                        SeatMapSeat(
-                          id: 'b1',
-                          label: 'BL',
-                          role: 'passenger',
-                          status: 'free',
-                          statusWord: 'Free',
-                          price: '₦700',
-                        ),
-                        SeatMapSeat(
-                          id: 'b2',
-                          label: 'ML',
-                          role: 'passenger',
-                          status: 'occupied',
-                          statusWord: 'Taken',
-                        ),
-                        SeatMapSeat(
-                          id: 'b3',
-                          label: 'MR',
-                          role: 'passenger',
-                          status: 'free',
-                          statusWord: 'Free',
-                          price: '₦700',
-                        ),
-                        SeatMapSeat(
-                          id: 'b4',
-                          label: 'BR',
-                          role: 'passenger',
-                          status: 'held',
-                          statusWord: 'Held',
-                          price: '₦800',
-                        ),
-                      ],
+                    SeatMapSeat(
+                      id: 'fr',
+                      label: 'FR',
+                      role: 'passenger',
+                      status: 'held',
+                      statusWord: 'Held',
+                      price: '₦900',
+                    ),
+                    SeatMapSeat(
+                      id: 'drv',
+                      label: 'Driver',
+                      role: 'driver',
+                      status: 'occupied',
+                      statusWord: 'Driver',
                     ),
                   ],
                 ),
-              ),
+                SeatMapRowView(
+                  id: 'back',
+                  ruleTitle: 'Window stays open',
+                  seats: [
+                    SeatMapSeat(
+                      id: 'b1',
+                      label: 'BL',
+                      role: 'passenger',
+                      status: 'free',
+                      statusWord: 'Free',
+                      price: '₦700',
+                    ),
+                    SeatMapSeat(
+                      id: 'b2',
+                      label: 'ML',
+                      role: 'passenger',
+                      status: 'occupied',
+                      statusWord: 'Taken',
+                    ),
+                    SeatMapSeat(
+                      id: 'b3',
+                      label: 'MR',
+                      role: 'passenger',
+                      status: 'free',
+                      statusWord: 'Free',
+                      price: '₦700',
+                    ),
+                    SeatMapSeat(
+                      id: 'b4',
+                      label: 'BR',
+                      role: 'passenger',
+                      status: 'held',
+                      statusWord: 'Held',
+                      price: '₦800',
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           const _Fold(
@@ -503,7 +496,7 @@ class AlongFlowSos extends StatelessWidget {
                 style: AlongType.bodyMuted(palette),
               ),
               SizedBox(height: short ? 8 : 12),
-              Center(child: _HoldRing(size: short ? 108 : 128)),
+              Center(child: _HoldRing(size: short ? 152 : 176)),
               const SizedBox(height: 12),
               Expanded(
                 child: DecoratedBox(
@@ -584,13 +577,7 @@ class AlongFlowPlate extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/photos/plate-abuja.jpg',
-            package: 'along_design',
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.medium,
-            excludeFromSemantics: true,
-          ),
+          const _PlateFrame(),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -603,24 +590,6 @@ class AlongFlowPlate extends StatelessWidget {
                 ],
                 stops: [0, 0.42, 1],
               ),
-            ),
-          ),
-          Positioned.fill(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final height = constraints.maxHeight;
-                // The Abuja plate sits just below the bumper, about 60% down
-                // the cover-fit photo. A fixed offset framed the windshield.
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    36,
-                    height * 0.50,
-                    36,
-                    height * 0.32,
-                  ),
-                  child: const _ViewfinderCorners(),
-                );
-              },
             ),
           ),
           SafeArea(
@@ -1191,12 +1160,12 @@ class AlongFlowRating extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return _Page(
-      bottom: const AlongButton(label: 'Send thanks', onPressed: _noop),
+      bottom: const SizedBox.shrink(),
       child: Column(
         children: [
-          const Spacer(),
-          const AlongDriverPortrait(size: 128, verified: true),
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
+          const AlongDriverPortrait(size: 96, verified: true),
+          const SizedBox(height: 12),
           Text(
             'How was Chinedu?',
             maxLines: 1,
@@ -1210,25 +1179,26 @@ class AlongFlowRating extends StatelessWidget {
             softWrap: false,
             style: AlongType.meta(palette),
           ),
-          const SizedBox(height: 20),
-          const _Stars(filled: 4, size: 44),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
+          const _Stars(filled: 4, size: 40),
+          const SizedBox(height: 6),
           Text('Great', style: AlongType.title(palette)),
-          const Spacer(),
+          const SizedBox(height: 16),
+          const Row(
+            children: [
+              _TipChip('₦100'),
+              SizedBox(width: 8),
+              _TipChip('₦200', selected: true),
+              SizedBox(width: 8),
+              _TipChip('₦500'),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const AlongButton(label: 'Send thanks', onPressed: _noop),
           const _Fold(
-            label: 'Add tip',
+            label: 'Receipt',
             child: Column(
               children: [
-                Row(
-                  children: [
-                    _TipChip('₦100'),
-                    SizedBox(width: 8),
-                    _TipChip('₦200', selected: true),
-                    SizedBox(width: 8),
-                    _TipChip('₦500'),
-                  ],
-                ),
-                SizedBox(height: 8),
                 _TipAdded(),
                 SizedBox(height: 8),
                 _ReceiptCard(),
@@ -1395,12 +1365,20 @@ class _HoldRingState extends State<_HoldRing>
                 track: palette.surface,
               ),
               child: Center(
-                child: Text(
-                  'Hold to alert',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.title(palette)
-                      .copyWith(color: const Color(0xFFF7F7F8)),
+                child: SizedBox(
+                  width: widget.size * 0.70,
+                  child: Text(
+                    'Hold to alert',
+                    maxLines: 1,
+                    softWrap: false,
+                    textAlign: TextAlign.center,
+                    style: AlongType.caption(palette).copyWith(
+                      color: const Color(0xFFF7F7F8),
+                      fontSize: 13,
+                      height: 1,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -2150,7 +2128,7 @@ class _RideLine extends StatelessWidget {
                   badge == null ? '$eta · $seats' : '$badge · $eta',
                   maxLines: 1,
                   softWrap: false,
-                  style: AlongType.meta(palette).copyWith(fontSize: 13),
+                  style: AlongType.meta(palette),
                 ),
               ],
             ),
@@ -3027,6 +3005,62 @@ class _HeatLegend extends StatelessWidget {
           Text('Busy', maxLines: 1, softWrap: false, style: label),
         ],
       ),
+    );
+  }
+}
+
+/// Puts the whole fictional plate inside the brackets. Cover-fit on a
+/// portrait phone was cropping ABC-123-XY down to C-123-X.
+class _PlateFrame extends StatelessWidget {
+  const _PlateFrame();
+
+  /// Source pixels of plate-abuja.jpg (1040×760) that contain the full plate.
+  static const _photoW = 1040.0;
+  static const _photoH = 760.0;
+  static const _plate = Rect.fromLTRB(250, 400, 760, 540);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = constraints.biggest;
+        final frame = Rect.fromLTWH(
+          16,
+          size.height * 0.40,
+          size.width - 32,
+          size.height * 0.20,
+        );
+        final scale = math.min(
+          frame.width / _plate.width,
+          frame.height / _plate.height,
+        );
+        final imageLeft =
+            frame.center.dx - (_plate.left + _plate.width / 2) * scale;
+        final imageTop =
+            frame.center.dy - (_plate.top + _plate.height / 2) * scale;
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned(
+              left: imageLeft,
+              top: imageTop,
+              width: _photoW * scale,
+              height: _photoH * scale,
+              child: Image.asset(
+                'assets/photos/plate-abuja.jpg',
+                package: 'along_design',
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.medium,
+                excludeFromSemantics: true,
+              ),
+            ),
+            Positioned.fromRect(
+              rect: frame.inflate(22),
+              child: const _ViewfinderCorners(),
+            ),
+          ],
+        );
+      },
     );
   }
 }

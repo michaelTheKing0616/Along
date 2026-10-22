@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -93,14 +94,14 @@ class AlongCityMap extends StatelessWidget {
                 bounds: LatLngBounds.fromPoints(_drawnRoute(route, drawn)),
                 padding: trip
                     ? EdgeInsets.fromLTRB(
-                        36,
-                        64,
-                        36,
-                        constraints.maxHeight * 0.48,
+                        48,
+                        72,
+                        56,
+                        constraints.maxHeight * 0.46 + 28,
                       )
-                    : const EdgeInsets.fromLTRB(28, 28, 28, 28),
-                // Stay on cached z12 tiles. 12.4 rounds to 12; 12.5 would not.
-                minZoom: 12,
+                    : const EdgeInsets.fromLTRB(36, 36, 36, 36),
+                // z12 tiles scale down when the corridor needs a wider frame.
+                minZoom: trip ? 10 : 12,
                 maxZoom: trip ? 12 : 12.4,
               )
             : null;
@@ -109,7 +110,7 @@ class AlongCityMap extends StatelessWidget {
             initialCenter: _wide ? corridorCenter : neighborhoodCenter,
             initialZoom: _wide ? 12 : 16,
             initialCameraFit: fit,
-            minZoom: _wide ? 12 : 16,
+            minZoom: _wide ? (trip ? 10 : 12) : 16,
             maxZoom: _wide ? (trip ? 12 : 12.4) : 16,
             interactionOptions: const InteractionOptions(
               flags: InteractiveFlag.none,
@@ -126,20 +127,12 @@ class AlongCityMap extends StatelessWidget {
               userAgentPackageName: 'app.along.design',
               tileDisplay: const TileDisplay.instantaneous(),
               retinaMode: false,
+              minNativeZoom: 12,
               maxNativeZoom: 16,
               keepBuffer: 1,
               panBuffer: 0,
             ),
-            if (mode == AlongCityMapMode.online)
-              TileLayer(
-                urlTemplate: 'assets/map/tiles/heat/{z}_{x}_{y}.png',
-                tileProvider: AssetTileProvider(),
-                userAgentPackageName: 'app.along.design',
-                tileDisplay: const TileDisplay.instantaneous(),
-                retinaMode: false,
-                keepBuffer: 1,
-                panBuffer: 0,
-              ),
+            if (mode == AlongCityMapMode.online) _HeatWash(),
             if (showRoute)
               Positioned.fill(
                 child: _RouteOverlay(
@@ -633,6 +626,59 @@ _RoutePoint _along(List<LatLng> route, double progress) {
     b.latitude - a.latitude,
   );
   return _RoutePoint(point, heading);
+}
+
+/// Demand as a soft wash. The heat tiles recolor roads orange; this keeps
+/// the muted basemap and lets only the warm demand through.
+class _HeatWash extends StatelessWidget {
+  const _HeatWash();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Opacity(
+        opacity: 0.72,
+        child: ImageFiltered(
+          imageFilter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: ColorFiltered(
+            colorFilter: const ColorFilter.matrix(<double>[
+              0,
+              0,
+              0,
+              0,
+              232,
+              0,
+              0,
+              0,
+              0,
+              132,
+              0,
+              0,
+              0,
+              0,
+              28,
+              0.85,
+              -0.22,
+              -0.62,
+              0,
+              -12,
+            ]),
+            child: TileLayer(
+              urlTemplate: 'assets/map/tiles/heat/{z}_{x}_{y}.png',
+              tileProvider: AssetTileProvider(),
+              userAgentPackageName: 'app.along.design',
+              tileDisplay: const TileDisplay.instantaneous(),
+              retinaMode: false,
+              minNativeZoom: 12,
+              maxNativeZoom: 16,
+              keepBuffer: 1,
+              panBuffer: 0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _RouteOverlay extends StatelessWidget {
