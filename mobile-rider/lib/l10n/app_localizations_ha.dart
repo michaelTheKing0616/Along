@@ -947,4 +947,45 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get emergencyContactSaveFailed => 'Could not save that contact';
+
+  @override
+  String get vehiclesTitle => 'Vehicles';
+
+  @override
+  String freeSeatCount(int count) {
+    return '$count free';
+  }
+
+  @override
+  String get seatStale => 'Seat map is more than a minute old';
+
+  @override
+  String get seatMapTitle => 'Seat map';
+
+  @override
+  String get filterRulesHint => 'Search a driver\'s rules';
+
+  @override
+  String get seatTaken => 'That seat was just taken';
+
+  @override
+  String get acknowledgeToClaim => 'I agree';
+
+  @override
+  String get noVehicles => 'No vehicles match these rules';
+
+  @override
+  String get seatFree => 'free';
+
+  @override
+  String get seatOccupied => 'occupied';
+
+  @override
+  String get seatHeld => 'held';
+
+  @override
+  String get seatBlocked => 'blocked';
+
+  @override
+  String get seatDriver => 'driver';
 }

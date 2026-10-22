@@ -1792,6 +1792,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not save that contact'**
   String get emergencyContactSaveFailed;
+
+  /// No description provided for @vehiclesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles'**
+  String get vehiclesTitle;
+
+  /// No description provided for @freeSeatCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free'**
+  String freeSeatCount(int count);
+
+  /// No description provided for @seatStale.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat map is more than a minute old'**
+  String get seatStale;
+
+  /// No description provided for @seatMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat map'**
+  String get seatMapTitle;
+
+  /// No description provided for @filterRulesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a driver\'s rules'**
+  String get filterRulesHint;
+
+  /// No description provided for @seatTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That seat was just taken'**
+  String get seatTaken;
+
+  /// No description provided for @acknowledgeToClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree'**
+  String get acknowledgeToClaim;
+
+  /// No description provided for @noVehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'No vehicles match these rules'**
+  String get noVehicles;
+
+  /// No description provided for @seatFree.
+  ///
+  /// In en, this message translates to:
+  /// **'free'**
+  String get seatFree;
+
+  /// No description provided for @seatOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'occupied'**
+  String get seatOccupied;
+
+  /// No description provided for @seatHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'held'**
+  String get seatHeld;
+
+  /// No description provided for @seatBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'blocked'**
+  String get seatBlocked;
+
+  /// No description provided for @seatDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'driver'**
+  String get seatDriver;
 }
 
 class _AppLocalizationsDelegate

@@ -27,12 +27,12 @@ void main() {
       fakeSupabase = FakeAlongSupabase(
         countryConfig: {
           'code': 'NG',
+          'phone_prefix': '+234',
+          'currency_code': 'NGN',
+          'currency_symbol': '₦',
+          'currency_minor_units': 2,
           'verification_schema': [
-            {
-              'type': 'nin',
-              'label': 'NIN',
-              'pattern': r'^\d{11}$',
-            },
+            {'type': 'nin', 'label': 'NIN', 'pattern': r'^\d{11}$'},
           ],
           'regulatory_flags': {
             'plate_pattern': r'^[A-Za-z]{3}[-\s]?\d{3}[A-Za-z]{2}$',
@@ -69,7 +69,9 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 900));
     }
 
-    testWidgets('auth → profile → vehicle → documents → pending', (tester) async {
+    testWidgets('auth → profile → vehicle → documents → pending', (
+      tester,
+    ) async {
       await pumpDriverApp(tester);
       expect(find.byType(PhoneEntryScreen), findsOneWidget);
 
@@ -95,8 +97,6 @@ void main() {
         find.byKey(const Key('vehicle_plate_field')),
         'ABC-123DE',
       );
-      await tester.ensureVisible(find.byKey(const Key('vehicle_continue_button')));
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('vehicle_continue_button')));
       await tester.pumpAndSettle();
 
@@ -106,7 +106,9 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('OCR never pre-fills sensitive fields before confirm', (tester) async {
+    testWidgets('OCR never pre-fills sensitive fields before confirm', (
+      tester,
+    ) async {
       final ocrFakeSupabase = FakeAlongSupabase(
         signedInUser: User(
           id: 'test-driver-id',

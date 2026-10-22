@@ -532,6 +532,80 @@ export type Database = {
           },
         ]
       }
+      driver_day_plans: {
+        Row: {
+          active: boolean
+          corridor_id: string
+          created_at: string
+          driver_id: string
+          id: string
+          layout_id: string
+          route_id: string | null
+          vehicle_id: string
+        }
+        Insert: {
+          active?: boolean
+          corridor_id: string
+          created_at?: string
+          driver_id: string
+          id?: string
+          layout_id: string
+          route_id?: string | null
+          vehicle_id: string
+        }
+        Update: {
+          active?: boolean
+          corridor_id?: string
+          created_at?: string
+          driver_id?: string
+          id?: string
+          layout_id?: string
+          route_id?: string | null
+          vehicle_id?: string
+        }
+        Relationships: [
+        Relationships: [
+          {
+            foreignKeyName: "driver_day_plans_corridor_id_fkey"
+            columns: ["corridor_id"]
+            isOneToOne: false
+            referencedRelation: "corridors"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "driver_day_plans_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "driver_day_plans_layout_id_fkey"
+            columns: ["layout_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle_layouts"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "driver_day_plans_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "driver_day_plans_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       driver_ledger_entries: {
         Row: {
           amount: number
@@ -919,6 +993,79 @@ export type Database = {
           ts?: string
         }
         Relationships: []
+      }
+      driver_ride_rules: {
+        Row: {
+          body: string | null
+          created_at: string
+          driver_id: string
+          effect: string
+          enabled: boolean
+          id: string
+          params: Json
+          preset_id: string | null
+          target_ref: string | null
+          target_scope: string
+          title: string
+          updated_at: string
+          vehicle_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          driver_id: string
+          effect: string
+          enabled?: boolean
+          id?: string
+          params?: Json
+          preset_id?: string | null
+          target_ref?: string | null
+          target_scope: string
+          title: string
+          updated_at?: string
+          vehicle_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          driver_id?: string
+          effect?: string
+          enabled?: boolean
+          id?: string
+          params?: Json
+          preset_id?: string | null
+          target_ref?: string | null
+          target_scope?: string
+          title?: string
+          updated_at?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+        Relationships: [
+          {
+            foreignKeyName: "driver_ride_rules_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "driver_ride_rules_preset_id_fkey"
+            columns: ["preset_id"]
+            isOneToOne: false
+            referencedRelation: "ride_rule_presets"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "driver_ride_rules_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       driver_risk_scores: {
         Row: {
@@ -2256,7 +2403,9 @@ export type Database = {
           icon_key: string
           label: string
           label_i18n: Json
+          layout_preset: Json | null
           load_capacity: string
+          review_seat_max: number | null
           sort_order: number
           updated_at: string
         }
@@ -2271,7 +2420,9 @@ export type Database = {
           icon_key: string
           label: string
           label_i18n?: Json
+          layout_preset?: Json | null
           load_capacity: string
+          review_seat_max?: number | null
           sort_order?: number
           updated_at?: string
         }
@@ -2286,7 +2437,9 @@ export type Database = {
           icon_key?: string
           label?: string
           label_i18n?: Json
+          layout_preset?: Json | null
           load_capacity?: string
+          review_seat_max?: number | null
           sort_order?: number
           updated_at?: string
         }
@@ -2892,6 +3045,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ride_rule_presets: {
+        Row: {
+          active: boolean
+          body: string | null
+          created_at: string
+          default_params: Json
+          effect: string
+          id: string
+          sort_order: number
+          target_scope: string
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          body?: string | null
+          created_at?: string
+          default_params?: Json
+          effect: string
+          id: string
+          sort_order?: number
+          target_scope: string
+          title: string
+        }
+        Update: {
+          active?: boolean
+          body?: string | null
+          created_at?: string
+          default_params?: Json
+          effect?: string
+          id?: string
+          sort_order?: number
+          target_scope?: string
+          title?: string
+        }
+        Relationships: []
       }
       rider_payment_methods: {
         Row: {
@@ -4375,6 +4564,109 @@ export type Database = {
           },
         ]
       }
+      vehicle_layouts: {
+        Row: {
+          created_at: string
+          driver_id: string
+          id: string
+          is_active: boolean
+          layout: Json
+          name: string
+          over_capacity: boolean
+          passenger_seats: number
+          updated_at: string
+          vehicle_id: string
+        }
+        Insert: {
+          created_at?: string
+          driver_id: string
+          id?: string
+          is_active?: boolean
+          layout: Json
+          name: string
+          over_capacity?: boolean
+          passenger_seats: number
+          updated_at?: string
+          vehicle_id: string
+        }
+        Update: {
+          created_at?: string
+          driver_id?: string
+          id?: string
+          is_active?: boolean
+          layout?: Json
+          name?: string
+          over_capacity?: boolean
+          passenger_seats?: number
+          updated_at?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_layouts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_layouts_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicle_seat_states: {
+        Row: {
+          hold_until: string | null
+          holder_profile_id: string | null
+          layout_id: string
+          seat_id: string
+          status: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          hold_until?: string | null
+          holder_profile_id?: string | null
+          layout_id: string
+          seat_id: string
+          status?: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          hold_until?: string | null
+          holder_profile_id?: string | null
+          layout_id?: string
+          seat_id?: string
+          status?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_seat_states_holder_profile_id_fkey"
+            columns: ["holder_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_seat_states_layout_id_fkey"
+            columns: ["layout_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle_layouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           color: string | null
@@ -5428,6 +5720,15 @@ export type Database = {
         Returns: string
       }
       city_for_point: { Args: { p: unknown }; Returns: string }
+      claim_seat: {
+        Args: {
+          p_ack_rule_ids?: string[]
+          p_expected_version: number
+          p_layout_id: string
+          p_seat_id: string
+        }
+        Returns: Json
+      }
       col_is_null:
         | {
             Args: {
@@ -5528,6 +5829,12 @@ export type Database = {
       current_profile_id: { Args: never; Returns: string }
       deactivate_route_profile: { Args: { p_id: string }; Returns: undefined }
       decay_confidence: { Args: never; Returns: undefined }
+      delete_ride_rule: {
+        Args: {
+          p_rule_id: string
+        }
+        Returns: Json
+      }
       diag:
         | {
             Args: { msg: unknown }
@@ -5814,6 +6121,7 @@ export type Database = {
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_boarded: { Args: { p_trip_id: string }; Returns: Json }
       mark_no_show: { Args: { p_trip_id: string }; Returns: Json }
+      my_day_setup: { Args: never; Returns: Json }
       my_route_profiles: { Args: never; Returns: Json }
       my_standing_history: { Args: never; Returns: Json }
       my_verifications: { Args: never; Returns: Json }
@@ -5830,6 +6138,14 @@ export type Database = {
         Returns: string
       }
       num_failed: { Args: never; Returns: number }
+      online_vehicle_cards: {
+        Args: {
+          p_city_id: string
+          p_preset_ids?: string[]
+          p_query?: string
+        }
+        Returns: Json
+      }
       open_negotiation: {
         Args: {
           p_candidate_token?: string
@@ -6096,6 +6412,13 @@ export type Database = {
         Returns: Json
       }
       release_match: { Args: { p_trip_id: string }; Returns: Json }
+      release_seat: {
+        Args: {
+          p_layout_id: string
+          p_seat_id: string
+        }
+        Returns: Json
+      }
       remove_rider_payment_method: {
         Args: { p_payment_method_id: string }
         Returns: undefined
@@ -6180,6 +6503,34 @@ export type Database = {
       runtests:
         | { Args: never; Returns: string[] }
         | { Args: { "": string }; Returns: string[] }
+      save_ride_rule: {
+        Args: {
+          p_body?: string
+          p_enabled?: boolean
+          p_params?: Json
+          p_preset_id?: string
+          p_rule_id?: string
+          p_target_ref?: string
+          p_title?: string
+          p_vehicle_id: string
+        }
+        Returns: Json
+      }
+      save_vehicle_layout: {
+        Args: {
+          p_activate?: boolean
+          p_layout: Json
+          p_name: string
+          p_vehicle_id: string
+        }
+        Returns: Json
+      }
+      seat_board: {
+        Args: {
+          p_layout_id?: string
+        }
+        Returns: Json
+      }
       sector8: { Args: { p_bearing: number }; Returns: number }
       segment_speed_profiles_lookup: {
         Args: {
@@ -6195,6 +6546,13 @@ export type Database = {
         }[]
       }
       set_accepts_digital: { Args: { p_enabled: boolean }; Returns: Json }
+      set_all_seats: {
+        Args: {
+          p_layout_id: string
+          p_status: string
+        }
+        Returns: Json
+      }
       set_default_rider_payment_method: {
         Args: { p_payment_method_id: string }
         Returns: undefined
@@ -6207,6 +6565,14 @@ export type Database = {
           p_location: Json
           p_park_id?: string
           p_seats_available: number
+          p_status: string
+        }
+        Returns: Json
+      }
+      set_seat_status: {
+        Args: {
+          p_layout_id: string
+          p_seat_id: string
           p_status: string
         }
         Returns: Json
@@ -6824,6 +7190,15 @@ export type Database = {
           name: string
         }[]
       }
+      start_driver_day: {
+        Args: {
+          p_corridor_id: string
+          p_layout_id: string
+          p_route_id?: string
+          p_vehicle_id: string
+        }
+        Returns: Json
+      }
       start_trip: { Args: { p_trip_id: string }; Returns: Json }
       store_itinerary_prepared_plan: {
         Args: { p_prepared_plan: Json; p_stop_id: string }
@@ -6934,6 +7309,12 @@ export type Database = {
         Returns: string
       }
       upsert_route_profile: { Args: { p_profile: Json }; Returns: Json }
+      vehicle_card_for_trip: {
+        Args: {
+          p_trip_id: string
+        }
+        Returns: Json
+      }
       verification_doc_type_allowed: {
         Args: { p_country_code: string; p_document_type: string }
         Returns: boolean

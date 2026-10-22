@@ -13,7 +13,7 @@ Commercial use is OK for the sources below with the stated attribution and share
 
 ## Applied on staging (2026-09-21)
 
-- `seed_abuja_pilot` — field_verified parks/routes
+- `seed_abuja_pilot` — field_verified parks/routes. Corridor linestrings in `09_osm_corridor_geometry.sql` are OSRM routes on OSM: Lugbe bus stop (node 14024356419) to Area 1 Shopping Complex (way 542896139), Nyanya bus station (node 5234383123) to the National Mosque in CBD (relation 12186054), Kubwa Welder bus stop (node 14024364173) to Wuse bus station (node 14024364183).
 - `seed_abuja_osm_parks` — OSM Overpass FCT park/terminal **candidates** (`verification_status=candidate`)
 
 ## Do not use without clearance

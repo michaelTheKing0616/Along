@@ -19,6 +19,7 @@ export 'negotiation_sheet.dart';
 export 'option_card.dart';
 export 'request_sheet.dart';
 export 'search_field.dart';
+export 'seat_map.dart';
 export 'skeleton.dart';
 export 'sort_chips.dart';
 export 'status_toggle.dart';

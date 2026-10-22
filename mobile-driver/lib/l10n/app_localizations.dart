@@ -2083,6 +2083,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not save that contact'**
   String get emergencyContactSaveFailed;
+
+  /// No description provided for @buildMyDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build my day'**
+  String get buildMyDayTitle;
+
+  /// No description provided for @buildMyDayStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and use this day'**
+  String get buildMyDayStart;
+
+  /// No description provided for @buildMyDayCorridor.
+  ///
+  /// In en, this message translates to:
+  /// **'Corridor'**
+  String get buildMyDayCorridor;
+
+  /// No description provided for @saveLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Save layout'**
+  String get saveLayout;
+
+  /// No description provided for @layoutName.
+  ///
+  /// In en, this message translates to:
+  /// **'Layout name'**
+  String get layoutName;
+
+  /// No description provided for @addRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add row'**
+  String get addRow;
+
+  /// No description provided for @addSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Add seat'**
+  String get addSeat;
+
+  /// No description provided for @removeRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove row'**
+  String get removeRow;
+
+  /// No description provided for @overCapacityNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This is over the usual seat count. It is saved and flagged for review.'**
+  String get overCapacityNote;
+
+  /// No description provided for @seatMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat map'**
+  String get seatMapTitle;
+
+  /// No description provided for @seatFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get seatFull;
+
+  /// No description provided for @seatEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get seatEmpty;
+
+  /// No description provided for @seatFree.
+  ///
+  /// In en, this message translates to:
+  /// **'free'**
+  String get seatFree;
+
+  /// No description provided for @seatOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'occupied'**
+  String get seatOccupied;
+
+  /// No description provided for @seatHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'held'**
+  String get seatHeld;
+
+  /// No description provided for @seatBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'blocked'**
+  String get seatBlocked;
+
+  /// No description provided for @seatDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'driver'**
+  String get seatDriver;
+
+  /// No description provided for @rideRulesHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride rules'**
+  String get rideRulesHeading;
+
+  /// No description provided for @customRuleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule title'**
+  String get customRuleHint;
+
+  /// No description provided for @customRuleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What riders should know'**
+  String get customRuleBody;
+
+  /// No description provided for @customRuleSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Add my rule'**
+  String get customRuleSave;
+
+  /// No description provided for @holdMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold minutes'**
+  String get holdMinutes;
+
+  /// No description provided for @capMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat cap'**
+  String get capMax;
+
+  /// No description provided for @deleteRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove rule'**
+  String get deleteRule;
+
+  /// No description provided for @dayNeedsCorridor.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a corridor'**
+  String get dayNeedsCorridor;
+
+  /// No description provided for @seatStale.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat map is more than a minute old'**
+  String get seatStale;
+
+  /// No description provided for @freeSeatCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free'**
+  String freeSeatCount(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -57,6 +57,8 @@ class ModeConfigRow {
     required this.loadCapacity,
     required this.defaultSeatCapacity,
     required this.sortOrder,
+    this.layoutPreset,
+    this.reviewSeatMax,
   });
 
   final String code;
@@ -67,12 +69,16 @@ class ModeConfigRow {
   final String loadCapacity;
   final int defaultSeatCapacity;
   final int sortOrder;
+  final Map<String, dynamic>? layoutPreset;
+  final int? reviewSeatMax;
+
+  int get reviewSeatLimit => reviewSeatMax ?? defaultSeatCapacity;
 
   String displayLabel(String locale) => resolveModeLabel(
-        labelI18n: labelI18n,
-        fallbackLabel: label,
-        locale: locale,
-      );
+    labelI18n: labelI18n,
+    fallbackLabel: label,
+    locale: locale,
+  );
 
   factory ModeConfigRow.fromJson(Map<String, dynamic> json) {
     final rawI18n = json['label_i18n'] as Map<String, dynamic>? ?? const {};
@@ -87,6 +93,12 @@ class ModeConfigRow {
       loadCapacity: json['load_capacity'] as String? ?? 'none',
       defaultSeatCapacity: (json['default_seat_capacity'] as num).toInt(),
       sortOrder: (json['sort_order'] as num?)?.toInt() ?? 0,
+      layoutPreset: json['layout_preset'] is Map
+          ? (json['layout_preset'] as Map).map(
+              (key, value) => MapEntry(key.toString(), value),
+            )
+          : null,
+      reviewSeatMax: (json['review_seat_max'] as num?)?.toInt(),
     );
   }
 }
@@ -193,9 +205,11 @@ class CatalogRepository {
         throw StateError('Country not found: $countryCode');
       }
       final row = rows.first;
-      final schemaJson = row['verification_schema'] as List<dynamic>? ?? const [];
+      final schemaJson =
+          row['verification_schema'] as List<dynamic>? ?? const [];
       final regulatory = row['regulatory_flags'] as Map<String, dynamic>? ?? {};
-      final platePattern = regulatory['plate_pattern'] as String? ??
+      final platePattern =
+          regulatory['plate_pattern'] as String? ??
           r'^[A-Za-z]{3}[-\s]?\d{3}[A-Za-z]{2}$';
 
       return CountryConfig(
@@ -225,9 +239,7 @@ class CatalogRepository {
       if (rows.isEmpty) {
         throw StateError('No active country configured');
       }
-      rows.sort(
-        (a, b) => (a['code'] as String).compareTo(b['code'] as String),
-      );
+      rows.sort((a, b) => (a['code'] as String).compareTo(b['code'] as String));
       return countryConfig(rows.first['code'] as String);
     } catch (e) {
       throw mapSupabaseError(e);
@@ -268,7 +280,9 @@ class CatalogRepository {
   }
 
   /// `deployments.branding_config` for the tenant owning [countryCode].
-  Future<Map<String, dynamic>> brandingConfigForCountry(String countryCode) async {
+  Future<Map<String, dynamic>> brandingConfigForCountry(
+    String countryCode,
+  ) async {
     try {
       final countryRows = await _gateway.selectRows(
         'countries',

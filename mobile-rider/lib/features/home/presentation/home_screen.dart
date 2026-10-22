@@ -83,6 +83,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           Positioned(
             top: state.showLocationBanner ? 72 : AlongSpace.s16,
+            left: 72,
+            child: IconButton.filled(
+              key: const Key('home_vehicles_button'),
+              onPressed: () => context.push(AppRoutes.vehicles),
+              icon: const Icon(Icons.airline_seat_recline_normal),
+            ),
+          ),
+          Positioned(
+            top: state.showLocationBanner ? 72 : AlongSpace.s16,
             right: AlongSpace.s16,
             child: IconButton.filled(
               key: const Key('home_recenter_button'),

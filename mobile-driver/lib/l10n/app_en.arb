@@ -588,5 +588,37 @@
   },
   "emergencyContactInvalidPhone": "Use a phone number like +2348012345678",
   "emergencyContactLimit": "You can save up to 5 contacts",
-  "emergencyContactSaveFailed": "Could not save that contact"
+  "emergencyContactSaveFailed": "Could not save that contact",
+  "buildMyDayTitle": "Build my day",
+  "buildMyDayStart": "Save and use this day",
+  "buildMyDayCorridor": "Corridor",
+  "saveLayout": "Save layout",
+  "layoutName": "Layout name",
+  "addRow": "Add row",
+  "addSeat": "Add seat",
+  "removeRow": "Remove row",
+  "overCapacityNote": "This is over the usual seat count. It is saved and flagged for review.",
+  "seatMapTitle": "Seat map",
+  "seatFull": "Full",
+  "seatEmpty": "Empty",
+  "seatFree": "free",
+  "seatOccupied": "occupied",
+  "seatHeld": "held",
+  "seatBlocked": "blocked",
+  "seatDriver": "driver",
+  "rideRulesHeading": "Ride rules",
+  "customRuleHint": "Rule title",
+  "customRuleBody": "What riders should know",
+  "customRuleSave": "Add my rule",
+  "holdMinutes": "Hold minutes",
+  "capMax": "Seat cap",
+  "deleteRule": "Remove rule",
+  "dayNeedsCorridor": "Choose a corridor",
+  "seatStale": "Seat map is more than a minute old",
+  "freeSeatCount": "{count} free",
+  "@freeSeatCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

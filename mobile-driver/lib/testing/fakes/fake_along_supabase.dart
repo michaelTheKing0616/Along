@@ -224,6 +224,13 @@ class FakeAlongSupabase implements AlongSupabase {
       onStartDriverOnboarding?.call(params ?? {});
       return {};
     }
+    if (fn == 'save_vehicle_layout') {
+      return {
+        'id': 'test-layout-id',
+        'passenger_seats': 3,
+        'over_capacity': false,
+      };
+    }
     if (fn == 'register_vehicle') {
       final request = RegisterVehicleRequest.fromJson(params ?? {});
       onRegisterVehicle?.call(request);

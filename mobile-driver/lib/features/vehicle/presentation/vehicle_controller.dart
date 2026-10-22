@@ -11,6 +11,19 @@ class VehicleFormState {
     this.selectedModeCode,
     this.plateNumber = '',
     this.seatCapacity = 4,
+    this.layout = const SeatLayout(
+      body: 'cabin',
+      rows: [
+        SeatRow(
+          id: 'cab',
+          seats: [SeatSpec(id: 'drv', role: 'driver', label: 'Driver')],
+        ),
+        SeatRow(
+          id: 'r1',
+          seats: [SeatSpec(id: 's1', role: 'passenger', label: 'Seat 1')],
+        ),
+      ],
+    ),
     this.color = '',
     this.makeModel = '',
     this.ownerIsMe = true,
@@ -26,6 +39,7 @@ class VehicleFormState {
   final String? selectedModeCode;
   final String plateNumber;
   final int seatCapacity;
+  final SeatLayout layout;
   final String color;
   final String makeModel;
   final bool ownerIsMe;
@@ -41,6 +55,7 @@ class VehicleFormState {
     String? selectedModeCode,
     String? plateNumber,
     int? seatCapacity,
+    SeatLayout? layout,
     String? color,
     String? makeModel,
     bool? ownerIsMe,
@@ -57,6 +72,7 @@ class VehicleFormState {
       selectedModeCode: selectedModeCode ?? this.selectedModeCode,
       plateNumber: plateNumber ?? this.plateNumber,
       seatCapacity: seatCapacity ?? this.seatCapacity,
+      layout: layout ?? this.layout,
       color: color ?? this.color,
       makeModel: makeModel ?? this.makeModel,
       ownerIsMe: ownerIsMe ?? this.ownerIsMe,
@@ -71,8 +87,8 @@ class VehicleFormState {
 
 final vehicleControllerProvider =
     AsyncNotifierProvider<VehicleController, VehicleFormState>(
-  VehicleController.new,
-);
+      VehicleController.new,
+    );
 
 class VehicleController extends AsyncNotifier<VehicleFormState> {
   CatalogRepository get _catalog => ref.read(catalogRepositoryProvider);
@@ -87,22 +103,48 @@ class VehicleController extends AsyncNotifier<VehicleFormState> {
     final country = await _catalog.countryConfig(countryCode);
     final defaultMode = modes.isNotEmpty ? modes.first : null;
 
+    final layout = layoutForMode(defaultMode);
     return VehicleFormState(
       modes: modes,
       country: country,
       selectedModeCode: defaultMode?.code,
-      seatCapacity: defaultMode?.defaultSeatCapacity ?? 4,
+      seatCapacity: layout.passengerCount,
+      layout: layout,
       isLoading: false,
     );
+  }
+
+  static SeatLayout layoutForMode(ModeConfigRow? mode) {
+    final preset = mode?.layoutPreset;
+    if (preset != null) {
+      try {
+        return SeatLayout.fromJson(preset);
+      } on FormatException {
+        // A broken preset falls back to a generic cabin, not a mode fork.
+      }
+    }
+    return SeatLayout.starter(passengerSeats: mode?.defaultSeatCapacity ?? 4);
   }
 
   void setMode(String code) {
     final current = state.requireValue;
     final mode = current.modes.firstWhere((m) => m.code == code);
+    final layout = layoutForMode(mode);
     state = AsyncData(
       current.copyWith(
         selectedModeCode: code,
-        seatCapacity: mode.defaultSeatCapacity,
+        seatCapacity: layout.passengerCount,
+        layout: layout,
+        clearError: true,
+      ),
+    );
+  }
+
+  void setLayout(SeatLayout layout) {
+    state = AsyncData(
+      state.requireValue.copyWith(
+        layout: layout,
+        seatCapacity: layout.passengerCount,
         clearError: true,
       ),
     );
@@ -115,8 +157,13 @@ class VehicleController extends AsyncNotifier<VehicleFormState> {
   }
 
   void setSeatCapacity(int value) {
+    final layout = SeatLayout.starter(passengerSeats: value);
     state = AsyncData(
-      state.requireValue.copyWith(seatCapacity: value, clearError: true),
+      state.requireValue.copyWith(
+        seatCapacity: layout.passengerCount,
+        layout: layout,
+        clearError: true,
+      ),
     );
   }
 
@@ -180,25 +227,37 @@ class VehicleController extends AsyncNotifier<VehicleFormState> {
         RegisterVehicleRequest(
           mode_code: mode,
           plate_number: current.plateNumber.trim(),
-          seat_capacity: current.seatCapacity,
+          seat_capacity: current.layout.passengerCount,
           color: current.color.trim().isEmpty ? null : current.color.trim(),
-          make_model:
-              current.makeModel.trim().isEmpty ? null : current.makeModel.trim(),
+          make_model: current.makeModel.trim().isEmpty
+              ? null
+              : current.makeModel.trim(),
           owner_is_me: current.ownerIsMe,
           owner_name: current.ownerIsMe ? null : current.ownerName.trim(),
           owner_phone: current.ownerIsMe ? null : current.ownerPhone.trim(),
         ),
       );
+      await ref
+          .read(seatRepositoryProvider)
+          .saveVehicleLayout(
+            vehicleId: vehicleId,
+            name: 'Default',
+            layout: current.layout,
+          );
       await _prefs.setVehicleId(vehicleId);
       await _prefs.setStep(DriverOnboardingStep.documents);
-      state = AsyncData(current.copyWith(isSubmitting: false, clearError: true));
+      state = AsyncData(
+        current.copyWith(isSubmitting: false, clearError: true),
+      );
       ref.invalidate(driverOnboardingStepProvider);
       return true;
     } on AlongException catch (e) {
       state = AsyncData(
         current.copyWith(
           isSubmitting: false,
-          errorMessage: e.code == AlongErrorCode.conflict ? 'conflict' : 'generic',
+          errorMessage: e.code == AlongErrorCode.conflict
+              ? 'conflict'
+              : 'generic',
         ),
       );
       return false;

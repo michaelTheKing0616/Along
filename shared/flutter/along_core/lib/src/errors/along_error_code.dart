@@ -5,6 +5,8 @@ enum AlongErrorCode {
   notFound('NOT_FOUND'),
   validation('VALIDATION'),
   conflict('CONFLICT'),
+  ruleCap('RULE_CAP'),
+  ruleAck('RULE_ACK'),
   rateLimited('RATE_LIMITED'),
   stateInvalid('STATE_INVALID'),
   driverNotMatchable('DRIVER_NOT_MATCHABLE'),

@@ -1136,4 +1136,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emergencyContactSaveFailed => 'Could not save that contact';
+
+  @override
+  String get buildMyDayTitle => 'Build my day';
+
+  @override
+  String get buildMyDayStart => 'Save and use this day';
+
+  @override
+  String get buildMyDayCorridor => 'Corridor';
+
+  @override
+  String get saveLayout => 'Save layout';
+
+  @override
+  String get layoutName => 'Layout name';
+
+  @override
+  String get addRow => 'Add row';
+
+  @override
+  String get addSeat => 'Add seat';
+
+  @override
+  String get removeRow => 'Remove row';
+
+  @override
+  String get overCapacityNote =>
+      'This is over the usual seat count. It is saved and flagged for review.';
+
+  @override
+  String get seatMapTitle => 'Seat map';
+
+  @override
+  String get seatFull => 'Full';
+
+  @override
+  String get seatEmpty => 'Empty';
+
+  @override
+  String get seatFree => 'free';
+
+  @override
+  String get seatOccupied => 'occupied';
+
+  @override
+  String get seatHeld => 'held';
+
+  @override
+  String get seatBlocked => 'blocked';
+
+  @override
+  String get seatDriver => 'driver';
+
+  @override
+  String get rideRulesHeading => 'Ride rules';
+
+  @override
+  String get customRuleHint => 'Rule title';
+
+  @override
+  String get customRuleBody => 'What riders should know';
+
+  @override
+  String get customRuleSave => 'Add my rule';
+
+  @override
+  String get holdMinutes => 'Hold minutes';
+
+  @override
+  String get capMax => 'Seat cap';
+
+  @override
+  String get deleteRule => 'Remove rule';
+
+  @override
+  String get dayNeedsCorridor => 'Choose a corridor';
+
+  @override
+  String get seatStale => 'Seat map is more than a minute old';
+
+  @override
+  String freeSeatCount(int count) {
+    return '$count free';
+  }
 }

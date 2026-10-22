@@ -211,6 +211,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             ),
                           ],
                           const SizedBox(height: AlongSpace.s16),
+                          AlongButton(
+                            key: const Key('active_trip_seat_map'),
+                            label: l10n.seatMapTitle,
+                            variant: AlongButtonVariant.secondary,
+                            onPressed: () => context.push(AppRoutes.seatBoard),
+                          ),
+                          const SizedBox(height: AlongSpace.s8),
                           if (status == TripStatus.accepted) ...[
                             AlongButton(
                               key: const Key('active_trip_release'),
