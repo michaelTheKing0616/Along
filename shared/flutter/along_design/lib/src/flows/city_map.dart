@@ -40,13 +40,15 @@ class AlongCityMap extends StatelessWidget {
   static const wuseMarket = LatLng(9.068555, 7.465938);
   static const nyanya = LatLng(9.023418, 7.570635);
 
-  /// Short run along the streets by Wuse Market. Visible above the ride sheet.
+  /// East-west street in the cached Wuse grid, south of the reservoir.
+  /// Long enough that the drawn portion fills the band above the sheet.
   static const neighborhoodRoute = <LatLng>[
-    LatLng(9.06832, 7.46470),
-    LatLng(9.06846, 7.46530),
-    LatLng(9.068555, 7.465938),
-    LatLng(9.06864, 7.46655),
-    LatLng(9.06874, 7.46720),
+    LatLng(9.058278, 7.462292),
+    LatLng(9.058278, 7.462871),
+    LatLng(9.058278, 7.463450),
+    LatLng(9.058278, 7.464030),
+    LatLng(9.058278, 7.464609),
+    LatLng(9.058278, 7.465189),
   ];
 
   /// Driving trace from Wuse Market to Nyanya bus station (OSRM, simplified).
@@ -73,56 +75,79 @@ class AlongCityMap extends StatelessWidget {
     final route = _corridor ? corridorRoute : neighborhoodRoute;
     final showRoute =
         mode == AlongCityMapMode.trip || mode == AlongCityMapMode.routeHero;
-    return FlutterMap(
-      options: MapOptions(
-        initialCenter: _corridor ? corridorCenter : neighborhoodCenter,
-        initialZoom: _corridor ? 11.6 : 16,
-        minZoom: _corridor ? 11.6 : 16,
-        maxZoom: _corridor ? 11.6 : 16,
-        interactionOptions: const InteractionOptions(
-          flags: InteractiveFlag.none,
-        ),
-        backgroundColor: dark
-            ? const Color(0xFF16171A)
-            : const Color(0xFFE6E7EA),
-      ),
-      children: [
-        TileLayer(
-          urlTemplate:
-              'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
-          tileProvider: AssetTileProvider(),
-          userAgentPackageName: 'app.along.design',
-          tileDisplay: const TileDisplay.instantaneous(),
-          retinaMode: false,
-          keepBuffer: 1,
-          panBuffer: 0,
-        ),
-        if (mode == AlongCityMapMode.online)
-          TileLayer(
-            urlTemplate: 'assets/map/tiles/heat/{z}_{x}_{y}.png',
-            tileProvider: AssetTileProvider(),
-            userAgentPackageName: 'app.along.design',
-            tileDisplay: const TileDisplay.instantaneous(),
-            retinaMode: false,
-            keepBuffer: 1,
-            panBuffer: 0,
-          ),
-        if (showRoute)
-          Positioned.fill(
-            child: _RouteOverlay(
-              route: route,
-              progress: drawn,
-              palette: palette,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final trip = mode == AlongCityMapMode.trip;
+        final fit = showRoute
+            ? CameraFit.bounds(
+                bounds: LatLngBounds.fromPoints(_drawnRoute(route, drawn)),
+                padding: trip
+                    ? EdgeInsets.fromLTRB(
+                        48,
+                        88,
+                        48,
+                        constraints.maxHeight * 0.60,
+                      )
+                    : const EdgeInsets.fromLTRB(36, 36, 36, 36),
+                minZoom: trip ? 15 : 11.5,
+                // 3× rasters stay sharp through about zoom 17.6.
+                maxZoom: trip ? 17.6 : 12.4,
+              )
+            : null;
+        return FlutterMap(
+          options: MapOptions(
+            initialCenter: _corridor ? corridorCenter : neighborhoodCenter,
+            initialZoom: _corridor ? 12 : 16,
+            initialCameraFit: fit,
+            minZoom: trip ? 15 : (_corridor ? 11.5 : 16),
+            maxZoom: trip ? 17.6 : (_corridor ? 12.4 : 16),
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.none,
             ),
+            backgroundColor: dark
+                ? const Color(0xFF16171A)
+                : const Color(0xFFE6E7EA),
           ),
-        MarkerLayer(rotate: true, markers: _markers(palette, drawn)),
-        Positioned(
-          top: 8,
-          left: 0,
-          right: 0,
-          child: Center(child: _Attribution(palette: palette)),
-        ),
-      ],
+          children: [
+            TileLayer(
+              urlTemplate:
+                  'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
+              tileProvider: AssetTileProvider(),
+              userAgentPackageName: 'app.along.design',
+              tileDisplay: const TileDisplay.instantaneous(),
+              retinaMode: false,
+              maxNativeZoom: 16,
+              keepBuffer: 1,
+              panBuffer: 0,
+            ),
+            if (mode == AlongCityMapMode.online)
+              TileLayer(
+                urlTemplate: 'assets/map/tiles/heat/{z}_{x}_{y}.png',
+                tileProvider: AssetTileProvider(),
+                userAgentPackageName: 'app.along.design',
+                tileDisplay: const TileDisplay.instantaneous(),
+                retinaMode: false,
+                keepBuffer: 1,
+                panBuffer: 0,
+              ),
+            if (showRoute)
+              Positioned.fill(
+                child: _RouteOverlay(
+                  route: route,
+                  progress: drawn,
+                  palette: palette,
+                ),
+              ),
+            MarkerLayer(rotate: true, markers: _markers(palette, drawn)),
+            Positioned(
+              top: 8,
+              left: 0,
+              right: 0,
+              child: Center(child: _Attribution(palette: palette)),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -544,6 +569,26 @@ class _RoutePoint {
 
   final LatLng point;
   final double heading;
+}
+
+/// The part of [route] the painter has actually stroked. Fitting the full
+/// line leaves the undrawn tail as empty map.
+List<LatLng> _drawnRoute(List<LatLng> route, double progress) {
+  if (route.length < 2 || progress >= 0.999) return route;
+  final segments = route.length - 1;
+  final scaled = (segments * progress).clamp(0.0, segments.toDouble());
+  if (scaled < 0.05) return route;
+  final last = scaled.floor().clamp(0, segments - 1);
+  final t = scaled - last;
+  final a = route[last];
+  final b = route[last + 1];
+  return [
+    ...route.take(last + 1),
+    LatLng(
+      a.latitude + (b.latitude - a.latitude) * t,
+      a.longitude + (b.longitude - a.longitude) * t,
+    ),
+  ];
 }
 
 _RoutePoint _along(List<LatLng> route, double progress) {

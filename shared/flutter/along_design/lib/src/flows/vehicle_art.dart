@@ -128,11 +128,17 @@ class _SidePainter extends CustomPainter {
 /// near side, z up. Every vehicle is built in this frame.
 class _Iso {
   _Iso(Canvas canvas, Size size) : _canvas = canvas {
-    final sx = size.width / 118;
-    final sy = size.height / 70;
+    // Vehicles sit in logical x 2..120 and y 28..76. Fit that box so the
+    // body fills the widget instead of floating in the lower half.
+    const left = 2.0;
+    const top = 28.0;
+    const contentW = 118.0;
+    const contentH = 48.0;
+    final sx = size.width / contentW;
+    final sy = size.height / contentH;
     _scale = math.min(sx, sy);
-    _ox = (size.width - 118 * _scale) / 2;
-    _oy = (size.height - 70 * _scale) / 2 + _scale;
+    _ox = (size.width - contentW * _scale) / 2 - left * _scale;
+    _oy = (size.height - contentH * _scale) / 2 - top * _scale;
   }
 
   final Canvas _canvas;
@@ -201,8 +207,6 @@ class _Iso {
   void car() {
     // 4-door sedan, 2+2. Nose at x = 0.
     shadow(2, 86, 0, 24);
-    wheel(16, 25);
-    wheel(70, 25);
     face([(2, 1, 7), (2, 23, 7), (2, 23, 18), (2, 1, 18)], _Ink.lo);
     face([(2, 23, 7), (84, 23, 7), (84, 23, 18), (2, 23, 18)], _Ink.mid);
     face([(2, 1, 18), (30, 1, 18), (30, 23, 18), (2, 23, 18)], _Ink.hi);
@@ -228,6 +232,8 @@ class _Iso {
       (46, 23, 30),
       (36, 23, 30),
     ], _Ink.glassHi);
+    wheel(16, 25);
+    wheel(70, 25);
   }
 
   void keke() {

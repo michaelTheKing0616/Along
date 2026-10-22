@@ -88,24 +88,22 @@ class SeatMap extends StatelessWidget {
                 ),
             Transform(
               alignment: Alignment.bottomCenter,
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.0011)
-                ..rotateX(0.2),
+              transform: Matrix4.identity()..rotateX(0.04),
               child: CustomPaint(
                 painter: _CabinPainter(body: body, palette: palette),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
-                    8,
-                    body == 'bike' ? 16 : 28,
-                    8,
                     18,
+                    body == 'bike' ? 20 : 36,
+                    18,
+                    22,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       for (final row in rows)
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
+                          padding: const EdgeInsets.only(bottom: 12),
                           child: Row(
                             children: [
                               for (final seat in row.seats) ...[
@@ -217,65 +215,21 @@ class _CabinPainter extends CustomPainter {
       _wheel(canvas, Offset(size.width / 2, size.height - 10), 8, ink);
       return;
     }
-    final rect = Rect.fromLTWH(10, 2, size.width - 20, size.height - 4);
-    // Front of the cabin is narrower, so the body reads in perspective.
-    final topInset = size.width * 0.08;
-    final path = Path()
-      ..moveTo(rect.left + topInset, rect.top + 16)
-      ..lineTo(rect.right - topInset, rect.top + 16)
-      ..lineTo(rect.right, rect.bottom)
-      ..lineTo(rect.left, rect.bottom)
-      ..close();
+    final rect = Rect.fromLTWH(18, 8, size.width - 36, size.height - 16);
+    final bodyPath = Path()
+      ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(28)));
     canvas.drawPath(
-      path.shift(const Offset(0, 4)),
-      Paint()..color = ink.withValues(alpha: 0.14),
+      bodyPath.shift(const Offset(0, 2)),
+      Paint()..color = ink.withValues(alpha: 0.06),
     );
-    final shell = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color.lerp(palette.surface, palette.recessed, 0.2)!,
-          Color.lerp(palette.recessed, ink, 0.16)!,
-        ],
-      ).createShader(rect);
-    canvas.drawPath(path, shell);
+    canvas.drawPath(bodyPath, Paint()..color = palette.bg);
     canvas.drawPath(
-      path,
+      bodyPath,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.8
-        ..color = ink.withValues(alpha: 0.55),
+        ..strokeWidth = 1.25
+        ..color = ink.withValues(alpha: 0.35),
     );
-    final glass = Path()
-      ..moveTo(rect.left + topInset + 16, rect.top + 22)
-      ..lineTo(rect.right - topInset - 16, rect.top + 22)
-      ..lineTo(rect.right - topInset - 8, rect.top + 40)
-      ..lineTo(rect.left + topInset + 8, rect.top + 40)
-      ..close();
-    canvas.drawPath(
-      glass,
-      Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            palette.mapWater,
-            Color.lerp(palette.mapWater, palette.ink, 0.2)!,
-          ],
-        ).createShader(rect),
-    );
-    canvas.drawPath(
-      glass,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
-        ..color = ink.withValues(alpha: 0.28),
-    );
-    _wheel(canvas, Offset(22, size.height - 10), 7, ink);
-    _wheel(canvas, Offset(size.width - 22, size.height - 10), 7, ink);
-    _wheel(canvas, Offset(rect.left + topInset + 8, 28), 5.5, ink);
-    _wheel(canvas, Offset(rect.right - topInset - 8, 28), 5.5, ink);
   }
 
   void _wheel(Canvas canvas, Offset at, double radius, Color ink) {
@@ -485,81 +439,42 @@ class _SeatPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final cushion = _SeatButtonState._fill(seat, palette);
-    final ink = _SeatButtonState._ink(seat, palette);
     final selected = seat.status == 'yours';
-    final held = seat.status == 'held';
-    final rect = Rect.fromLTWH(8, 4, size.width - 16, size.height - 22);
-    final pad = RRect.fromRectAndRadius(rect, const Radius.circular(16));
+    final rect = Rect.fromLTWH(12, 10, size.width - 24, size.height - 30);
+    final pad = RRect.fromRectAndRadius(rect, const Radius.circular(12));
     if (selected) {
       canvas.drawRRect(
-        pad.inflate(3 + pulse * 3),
+        pad.inflate(2 + pulse * 1.5),
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 2.4
-          ..color = palette.accent.withValues(alpha: 0.35 + pulse * 0.45),
+          ..strokeWidth = 1.5
+          ..color = palette.accent.withValues(alpha: 0.45 + pulse * 0.35),
       );
     }
     canvas.drawRRect(
-      pad.shift(const Offset(0, 1.5)),
-      Paint()..color = palette.ink.withValues(alpha: 0.12),
+      pad.shift(const Offset(0, 1)),
+      Paint()..color = palette.ink.withValues(alpha: 0.06),
     );
+    canvas.drawRRect(pad, Paint()..color = cushion);
     canvas.drawRRect(
       pad,
       Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color.lerp(cushion, palette.surface, 0.42)!,
-            cushion,
-            Color.lerp(cushion, palette.ink, 0.28)!,
-          ],
-          stops: const [0, 0.42, 1],
-        ).createShader(rect),
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(rect.left + 8, rect.top + 3, rect.width * 0.28, 4),
-        const Radius.circular(2),
-      ),
-      Paint()..color = const Color(0x66FFFFFF),
-    );
-    final bolster = Paint()..color = palette.ink.withValues(alpha: 0.14);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(rect.left + 2, rect.top + 8, 5, rect.height - 16),
-        const Radius.circular(4),
-      ),
-      bolster,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(rect.right - 7, rect.top + 8, 5, rect.height - 16),
-        const Radius.circular(4),
-      ),
-      bolster,
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = palette.ink.withValues(alpha: selected ? 0.55 : 0.22),
     );
     final head = RRect.fromRectAndRadius(
       Rect.fromCenter(
-        center: Offset(size.width / 2, rect.top + 8),
-        width: size.width * 0.42,
-        height: 12,
+        center: Offset(size.width / 2, rect.top + 6),
+        width: size.width * 0.36,
+        height: 7,
       ),
-      const Radius.circular(6),
+      const Radius.circular(3),
     );
-    final headColor = selected
-        ? Color.lerp(palette.accent, palette.accentInk, 0.28)!
-        : Color.lerp(ink, palette.ink, 0.35)!;
-    canvas.drawRRect(head, Paint()..color = headColor);
-    if (selected || held) {
-      canvas.drawRRect(
-        pad.inflate(1.5),
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = selected ? 2.4 : 1.8
-          ..color = selected ? palette.ink : palette.accent,
-      );
-    }
+    canvas.drawRRect(
+      head,
+      Paint()..color = palette.ink.withValues(alpha: selected ? 0.28 : 0.16),
+    );
   }
 
   @override
