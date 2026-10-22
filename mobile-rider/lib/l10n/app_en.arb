@@ -1123,5 +1123,13 @@
   "seatOccupied": "occupied",
   "seatHeld": "held",
   "seatBlocked": "blocked",
-  "seatDriver": "driver"
+  "seatDriver": "driver",
+  "seatLuggage": "luggage",
+  "voiceBookingHint": "Say it, for example Wuse to Berger",
+  "textMapTitle": "Vehicles nearby",
+  "textMapEmpty": "No vehicles in this direction yet",
+  "plateCheck": "I see this plate",
+  "plateMatches": "Plate matches",
+  "holdNotOffered": "This driver has not turned on seat holds",
+  "walkExtension": "Minutes you need to walk"
 }

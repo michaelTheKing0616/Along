@@ -111,6 +111,7 @@ class VehicleScreen extends ConsumerWidget {
                     addSeatLabel: l10n.addSeat,
                     removeRowLabel: l10n.removeRow,
                     overCapacityLabel: l10n.overCapacityNote,
+                    luggageLabel: l10n.seatLuggage,
                   ),
                   const SizedBox(height: AlongSpace.s16),
                   TextField(

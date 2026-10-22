@@ -179,7 +179,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                   type: HoldButtonType.naMe,
                                   onFired: () => context.push(
                                     AppRoutes.naMe,
-                                    extra: NaMeRouteArgs(tripId: args.tripId),
+                                    extra: NaMeRouteArgs(
+                                      tripId: args.tripId,
+                                      plateNumber: trip?.vehicle.plateNumber,
+                                    ),
                                   ),
                                 ),
                               ],

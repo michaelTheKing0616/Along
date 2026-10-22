@@ -98,7 +98,9 @@ void main() {
     expect(find.textContaining('Medium load'), findsOneWidget);
   });
 
-  testWidgets('shows approach band labels without metres or walk ETA', (tester) async {
+  testWidgets('shows approach band labels without metres or walk ETA', (
+    tester,
+  ) async {
     for (final entry in [
       (TripApproachBand.under2, 'under 2 min'),
       (TripApproachBand.m2_5, '2–5 min'),
@@ -109,7 +111,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('incoming_request_approach_band')), findsOneWidget);
+      expect(
+        find.byKey(const Key('incoming_request_approach_band')),
+        findsOneWidget,
+      );
       expect(find.text(entry.$2), findsOneWidget);
       expect(find.textContaining('400 m'), findsNothing);
       expect(find.textContaining('walk_eta'), findsNothing);
@@ -121,10 +126,7 @@ void main() {
   testWidgets('accept is one tap', (tester) async {
     var acceptTaps = 0;
     await tester.pumpWidget(
-      buildSheet(
-        state: sampleState(),
-        onAccept: () => acceptTaps++,
-      ),
+      buildSheet(state: sampleState(), onAccept: () => acceptTaps++),
     );
     await tester.pumpAndSettle();
 
@@ -220,6 +222,30 @@ void main() {
       expect(captured?['p_trip_id'], 'trip-1');
       expect(container.read(incomingRequestNotifierProvider), isNull);
     });
+  });
+
+  testWidgets('offer card fits 320dp and a voice phrase accepts', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 640));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    var accepted = 0;
+    await tester.pumpWidget(
+      buildSheet(
+        state: sampleState(loadFlagged: false),
+        onAccept: () => accepted++,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('incoming_request_accept')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.enterText(
+      find.byKey(const Key('incoming_voice_command')),
+      'gree',
+    );
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    expect(accepted, 1);
   });
 }
 

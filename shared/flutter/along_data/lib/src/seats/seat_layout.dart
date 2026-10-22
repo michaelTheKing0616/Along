@@ -80,6 +80,7 @@ class SeatLayout {
     final seen = <String>{};
     var drivers = 0;
     var passengers = 0;
+    var total = 0;
     for (final raw in rawRows) {
       if (raw is! Map) throw const FormatException('VALIDATION');
       final row = SeatRow.fromJson(Map<String, dynamic>.from(raw));
@@ -96,12 +97,15 @@ class SeatLayout {
             !seen.add(seat.id) ||
             seat.label.trim().isEmpty ||
             seat.label.length > 40 ||
-            (seat.role != 'driver' && seat.role != 'passenger')) {
+            seat.role != 'driver' &&
+                seat.role != 'passenger' &&
+                seat.role != 'cargo') {
           throw const FormatException('VALIDATION');
         }
+        total += 1;
         if (seat.role == 'driver') {
           drivers += 1;
-        } else {
+        } else if (seat.role == 'passenger') {
           passengers += 1;
         }
       }
@@ -111,7 +115,7 @@ class SeatLayout {
         rows.length > maxRows ||
         drivers != 1 ||
         passengers < 1 ||
-        drivers + passengers > maxTotalSeats) {
+        total > maxTotalSeats) {
       throw const FormatException('VALIDATION');
     }
     return SeatLayout(version: version, body: body, rows: rows);
@@ -220,6 +224,30 @@ class SeatLayout {
     return next.passengerCount >= 1 ? next : this;
   }
 
+  /// Toggles a passenger seat to cargo and back. The last passenger seat stays.
+  SeatLayout markCargo(String seatId) {
+    final seat = seatById(seatId);
+    if (seat == null || seat.role == 'driver') return this;
+    final nextRole = seat.role == 'cargo' ? 'passenger' : 'cargo';
+    if (nextRole == 'cargo' && passengerCount <= 1) return this;
+    return SeatLayout(
+      body: body,
+      rows: [
+        for (final row in rows)
+          SeatRow(
+            id: row.id,
+            seats: [
+              for (final item in row.seats)
+                if (item.id == seatId)
+                  SeatSpec(id: item.id, label: item.label, role: nextRole)
+                else
+                  item,
+            ],
+          ),
+      ],
+    );
+  }
+
   SeatLayout markDriver(String seatId) {
     if (seatById(seatId) == null) return this;
     return SeatLayout(
@@ -233,7 +261,13 @@ class SeatLayout {
                 SeatSpec(
                   id: seat.id,
                   label: seat.label,
-                  role: seat.id == seatId ? 'driver' : 'passenger',
+                  role: seat.id == seatId
+                      ? 'driver'
+                      : seat.role == 'cargo'
+                      ? 'cargo'
+                      : seat.role == 'driver'
+                      ? 'passenger'
+                      : seat.role,
                 ),
             ],
           ),
@@ -289,6 +323,8 @@ class SeatSpec {
   final String label;
 
   bool get isPassenger => role == 'passenger';
+
+  bool get isCargo => role == 'cargo';
 
   factory SeatSpec.fromJson(Map<String, dynamic> json) {
     return SeatSpec(

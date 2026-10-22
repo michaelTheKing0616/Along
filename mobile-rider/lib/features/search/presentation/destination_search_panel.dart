@@ -23,18 +23,18 @@ class DestinationPick {
   final String kind;
 
   factory DestinationPick.fromPlace(PlaceResult place) => DestinationPick(
-        name: place.name,
-        location: place.location,
-        referenceId: place.id,
-        kind: place.kind,
-      );
+    name: place.name,
+    location: place.location,
+    referenceId: place.id,
+    kind: place.kind,
+  );
 
   factory DestinationPick.fromRecent(RecentPlace recent) => DestinationPick(
-        name: recent.label,
-        location: recent.location,
-        referenceId: recent.id,
-        kind: recent.kind,
-      );
+    name: recent.label,
+    location: recent.location,
+    referenceId: recent.id,
+    kind: recent.kind,
+  );
 
   PlacementContext? toPlacementContext() {
     final id = referenceId;
@@ -49,11 +49,11 @@ class DestinationPick {
   }
 
   Map<String, dynamic> toNewAlightPayload() => {
-        if (referenceId != null && kind == 'stage') 'stage_id': referenceId,
-        'lat': location.lat,
-        'lng': location.lng,
-        'name': name,
-      };
+    if (referenceId != null && kind == 'stage') 'stage_id': referenceId,
+    'lat': location.lat,
+    'lng': location.lng,
+    'name': name,
+  };
 }
 
 /// Reusable R-06 search field + recents + places-search results.
@@ -63,24 +63,46 @@ class DestinationSearchPanel extends ConsumerStatefulWidget {
     required this.onDestinationSelected,
     this.hint,
     this.embedded = false,
+    this.initialQuery,
   });
 
   final ValueChanged<DestinationPick> onDestinationSelected;
   final String? hint;
   final bool embedded;
+  final String? initialQuery;
 
   @override
   ConsumerState<DestinationSearchPanel> createState() =>
       _DestinationSearchPanelState();
 }
 
-class _DestinationSearchPanelState extends ConsumerState<DestinationSearchPanel> {
+class _DestinationSearchPanelState
+    extends ConsumerState<DestinationSearchPanel> {
   late final TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.initialQuery ?? '');
+    final seeded = widget.initialQuery?.trim() ?? '';
+    if (seeded.length >= 2) {
+      Future.microtask(
+        () =>
+            ref.read(searchControllerProvider.notifier).onQueryChanged(seeded),
+      );
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant DestinationSearchPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final next = widget.initialQuery;
+    if (next != null &&
+        next != oldWidget.initialQuery &&
+        next != _controller.text) {
+      _controller.text = next;
+      ref.read(searchControllerProvider.notifier).onQueryChanged(next);
+    }
   }
 
   @override

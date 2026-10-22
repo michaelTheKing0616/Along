@@ -2240,6 +2240,78 @@ abstract class AppLocalizations {
   /// **'Seat map is more than a minute old'**
   String get seatStale;
 
+  /// No description provided for @shiftStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift starts'**
+  String get shiftStart;
+
+  /// No description provided for @shiftEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift ends'**
+  String get shiftEnd;
+
+  /// No description provided for @homeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Home-bound stop'**
+  String get homeLabel;
+
+  /// No description provided for @walkExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra hold minutes for a walking rider'**
+  String get walkExtension;
+
+  /// No description provided for @seatLuggage.
+  ///
+  /// In en, this message translates to:
+  /// **'luggage'**
+  String get seatLuggage;
+
+  /// No description provided for @voiceCommandHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Say accept, full, or seat back left free'**
+  String get voiceCommandHint;
+
+  /// No description provided for @conductorOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Conductor code'**
+  String get conductorOpen;
+
+  /// No description provided for @conductorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conductor'**
+  String get conductorTitle;
+
+  /// No description provided for @conductorCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code from the driver'**
+  String get conductorCode;
+
+  /// No description provided for @conductorJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the seat map'**
+  String get conductorJoin;
+
+  /// No description provided for @ghostSeatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Still taken after the drop?'**
+  String get ghostSeatTitle;
+
+  /// No description provided for @ghostSeatFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free it'**
+  String get ghostSeatFree;
+
   /// No description provided for @freeSeatCount.
   ///
   /// In en, this message translates to:

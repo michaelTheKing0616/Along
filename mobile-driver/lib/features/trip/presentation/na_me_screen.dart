@@ -7,16 +7,19 @@ import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 
 class NaMeRouteArgs {
-  const NaMeRouteArgs({required this.tripId});
+  const NaMeRouteArgs({required this.tripId, this.plateNumber});
 
   final String tripId;
+  final String? plateNumber;
 
   @override
   bool operator ==(Object other) =>
-      other is NaMeRouteArgs && other.tripId == tripId;
+      other is NaMeRouteArgs &&
+      other.tripId == tripId &&
+      other.plateNumber == plateNumber;
 
   @override
-  int get hashCode => tripId.hashCode;
+  int get hashCode => Object.hash(tripId, plateNumber);
 }
 
 class DriverNaMeEffects implements NaMeEffects {
@@ -65,6 +68,7 @@ class NaMeScreen extends ConsumerWidget {
           colorToken: pairing.colorToken,
           shapeToken: pairing.shape,
           label: pairing.label,
+          plateNumber: args.plateNumber,
           timing: configAsync.value!.naMeTiming,
           effects: DriverNaMeEffects(),
           onClose: () => Navigator.of(context).maybePop(),

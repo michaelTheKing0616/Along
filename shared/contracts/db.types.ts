@@ -538,9 +538,12 @@ export type Database = {
           corridor_id: string
           created_at: string
           driver_id: string
+          home_label: string | null
           id: string
           layout_id: string
           route_id: string | null
+          shift_end: string | null
+          shift_start: string | null
           vehicle_id: string
         }
         Insert: {
@@ -548,9 +551,12 @@ export type Database = {
           corridor_id: string
           created_at?: string
           driver_id: string
+          home_label?: string | null
           id?: string
           layout_id: string
           route_id?: string | null
+          shift_end?: string | null
+          shift_start?: string | null
           vehicle_id: string
         }
         Update: {
@@ -558,12 +564,14 @@ export type Database = {
           corridor_id?: string
           created_at?: string
           driver_id?: string
+          home_label?: string | null
           id?: string
           layout_id?: string
           route_id?: string | null
+          shift_end?: string | null
+          shift_start?: string | null
           vehicle_id?: string
         }
-        Relationships: [
         Relationships: [
           {
             foreignKeyName: "driver_day_plans_corridor_id_fkey"
@@ -572,7 +580,6 @@ export type Database = {
             referencedRelation: "corridors"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "driver_day_plans_driver_id_fkey"
             columns: ["driver_id"]
@@ -580,7 +587,6 @@ export type Database = {
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "driver_day_plans_layout_id_fkey"
             columns: ["layout_id"]
@@ -588,7 +594,6 @@ export type Database = {
             referencedRelation: "vehicle_layouts"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "driver_day_plans_route_id_fkey"
             columns: ["route_id"]
@@ -596,7 +601,6 @@ export type Database = {
             referencedRelation: "routes"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "driver_day_plans_vehicle_id_fkey"
             columns: ["vehicle_id"]
@@ -1041,7 +1045,6 @@ export type Database = {
           vehicle_id?: string
         }
         Relationships: [
-        Relationships: [
           {
             foreignKeyName: "driver_ride_rules_driver_id_fkey"
             columns: ["driver_id"]
@@ -1049,7 +1052,6 @@ export type Database = {
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "driver_ride_rules_preset_id_fkey"
             columns: ["preset_id"]
@@ -1057,7 +1059,6 @@ export type Database = {
             referencedRelation: "ride_rule_presets"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "driver_ride_rules_vehicle_id_fkey"
             columns: ["vehicle_id"]
@@ -4602,7 +4603,6 @@ export type Database = {
           vehicle_id?: string
         }
         Relationships: [
-        Relationships: [
           {
             foreignKeyName: "vehicle_layouts_driver_id_fkey"
             columns: ["driver_id"]
@@ -4610,7 +4610,6 @@ export type Database = {
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "vehicle_layouts_vehicle_id_fkey"
             columns: ["vehicle_id"]
@@ -4649,7 +4648,6 @@ export type Database = {
           version?: number
         }
         Relationships: [
-        Relationships: [
           {
             foreignKeyName: "vehicle_seat_states_holder_profile_id_fkey"
             columns: ["holder_profile_id"]
@@ -4657,7 +4655,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-        Relationships: [
           {
             foreignKeyName: "vehicle_seat_states_layout_id_fkey"
             columns: ["layout_id"]
@@ -5720,6 +5717,14 @@ export type Database = {
         Returns: string
       }
       city_for_point: { Args: { p: unknown }; Returns: string }
+      claim_bundle: {
+        Args: {
+          p_ack_rule_ids?: string[]
+          p_layout_id: string
+          p_rule_id: string
+        }
+        Returns: Json
+      }
       claim_seat: {
         Args: {
           p_ack_rule_ids?: string[]
@@ -5791,6 +5796,14 @@ export type Database = {
       }
       confirm_agent_settlement: {
         Args: { p_agent_code: string; p_amount: number }
+        Returns: Json
+      }
+      conductor_board: {
+        Args: { p_code: string }
+        Returns: Json
+      }
+      conductor_set_seat: {
+        Args: { p_code: string; p_seat_id: string; p_status: string }
         Returns: Json
       }
       confirm_fare: {
@@ -6055,6 +6068,16 @@ export type Database = {
       has_admin_role: { Args: { roles: string[] }; Returns: boolean }
       has_unique: { Args: { "": string }; Returns: string }
       heading_sector_counts: { Args: { p_sectors: number[] }; Returns: Json }
+      hold_seat: {
+        Args: {
+          p_ack_rule_ids?: string[]
+          p_expected_version: number
+          p_layout_id: string
+          p_seat_id: string
+          p_walk_minutes?: number
+        }
+        Returns: Json
+      }
       identity_hash_pepper: { Args: never; Returns: string }
       in_todo: { Args: never; Returns: boolean }
       infer_confirmer_role: { Args: { p_profile_id: string }; Returns: string }
@@ -6146,6 +6169,7 @@ export type Database = {
         }
         Returns: Json
       }
+      open_conductor_session: { Args: never; Returns: Json }
       open_negotiation: {
         Args: {
           p_candidate_token?: string
@@ -7193,8 +7217,11 @@ export type Database = {
       start_driver_day: {
         Args: {
           p_corridor_id: string
+          p_home_label?: string
           p_layout_id: string
           p_route_id?: string
+          p_shift_end?: string
+          p_shift_start?: string
           p_vehicle_id: string
         }
         Returns: Json

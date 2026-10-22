@@ -1870,6 +1870,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'driver'**
   String get seatDriver;
+
+  /// No description provided for @seatLuggage.
+  ///
+  /// In en, this message translates to:
+  /// **'luggage'**
+  String get seatLuggage;
+
+  /// No description provided for @voiceBookingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Say it, for example Wuse to Berger'**
+  String get voiceBookingHint;
+
+  /// No description provided for @textMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles nearby'**
+  String get textMapTitle;
+
+  /// No description provided for @textMapEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No vehicles in this direction yet'**
+  String get textMapEmpty;
+
+  /// No description provided for @plateCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'I see this plate'**
+  String get plateCheck;
+
+  /// No description provided for @plateMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate matches'**
+  String get plateMatches;
+
+  /// No description provided for @holdNotOffered.
+  ///
+  /// In en, this message translates to:
+  /// **'This driver has not turned on seat holds'**
+  String get holdNotOffered;
+
+  /// No description provided for @walkExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes you need to walk'**
+  String get walkExtension;
 }
 
 class _AppLocalizationsDelegate

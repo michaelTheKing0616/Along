@@ -38,6 +38,8 @@ export 'src/supabase/along_supabase.dart';
 export 'src/supabase/error_mapper.dart';
 export 'src/trips/trips_repository.dart';
 export 'src/verification/verification_repository.dart';
+export 'src/voice/booking_phrase.dart';
+export 'src/voice/driver_command.dart';
 export 'src/wayfinding/walking_directions_repository.dart';
 
 const String alongDataVersion = '0.0.1';

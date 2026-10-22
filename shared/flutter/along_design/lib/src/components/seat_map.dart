@@ -14,12 +14,16 @@ class SeatMapSeat {
   final String id;
   final String label;
 
-  /// `driver` or `passenger`. The driver seat is shown and is not claimable.
+  /// `driver`, `passenger`, or `cargo`. Driver and cargo seats are not claimable.
   final String role;
   final String status;
   final String statusWord;
 
   bool get isDriver => role == 'driver';
+
+  bool get isCargo => role == 'cargo';
+
+  bool get isClaimable => role == 'passenger';
 }
 
 class SeatMapRowView {
@@ -88,8 +92,10 @@ class SeatMap extends StatelessWidget {
                         ),
                         child: _SeatButton(
                           seat: seat,
-                          onTap: seat.isDriver ? null : onSeatTap,
-                          onLongPress: seat.isDriver ? null : onSeatLongPress,
+                          onTap: seat.isClaimable ? onSeatTap : null,
+                          onLongPress: seat.isClaimable
+                              ? onSeatLongPress
+                              : null,
                         ),
                       ),
                   ],
@@ -181,10 +187,12 @@ class _SeatButton extends StatelessWidget {
                   ? null
                   : () => onLongPress!(seat.id),
               child: Center(
-                child: Text(
-                  seat.isDriver ? 'D' : _short(seat.label),
-                  style: AlongText.caption.copyWith(color: _ink(seat)),
-                ),
+                child: seat.isCargo
+                    ? Icon(Icons.luggage_outlined, size: 20, color: _ink(seat))
+                    : Text(
+                        seat.isDriver ? 'D' : _short(seat.label),
+                        style: AlongText.caption.copyWith(color: _ink(seat)),
+                      ),
               ),
             ),
           ),
@@ -201,7 +209,7 @@ class _SeatButton extends StatelessWidget {
   }
 
   static Color _fill(SeatMapSeat seat) {
-    if (seat.isDriver) return AlongColors.ink900;
+    if (seat.isDriver || seat.isCargo) return AlongColors.ink900;
     switch (seat.status) {
       case 'occupied':
         return AlongColors.ink900;
@@ -215,7 +223,9 @@ class _SeatButton extends StatelessWidget {
   }
 
   static Color _ink(SeatMapSeat seat) {
-    if (seat.isDriver || seat.status == 'occupied') return AlongColors.surface0;
+    if (seat.isDriver || seat.isCargo || seat.status == 'occupied') {
+      return AlongColors.surface0;
+    }
     return AlongColors.ink900;
   }
 }

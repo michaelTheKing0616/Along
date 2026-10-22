@@ -20,6 +20,7 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
   SeatBoard? _board;
   var _loading = true;
   String? _error;
+  String? _conductorCode;
 
   @override
   void initState() {
@@ -59,6 +60,64 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
       setState(() => _error = 'delta');
     }
     await _load();
+  }
+
+  Future<void> _openConductor() async {
+    try {
+      final code = await ref
+          .read(seatRepositoryProvider)
+          .openConductorSession();
+      if (!mounted) return;
+      setState(() => _conductorCode = code);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _error = error is AlongException ? error.code.apiValue : 'error';
+      });
+    }
+  }
+
+  Future<void> _voice(String raw, SeatBoard board) async {
+    final command = parseDriverVoice(raw);
+    if (command == null) return;
+    if (command.intent == DriverVoiceIntent.full) {
+      await ref
+          .read(seatRepositoryProvider)
+          .setAllSeats(layoutId: board.layoutId, status: 'occupied');
+      await _load();
+      return;
+    }
+    if (command.intent == DriverVoiceIntent.empty) {
+      await ref
+          .read(seatRepositoryProvider)
+          .setAllSeats(layoutId: board.layoutId, status: 'free');
+      await _load();
+      return;
+    }
+    if (command.intent != DriverVoiceIntent.seat) return;
+    final refName = command.seatRef?.toLowerCase();
+    SeatSpec? seat;
+    for (final row in board.layout.rows) {
+      for (final item in row.seats) {
+        if (!item.isPassenger) continue;
+        if (item.id.toLowerCase() == refName ||
+            item.label.toLowerCase() == refName) {
+          seat = item;
+        }
+      }
+    }
+    if (seat == null || command.seatStatus == null) return;
+    await _set(seat.id, command.seatStatus!);
+  }
+
+  List<String> _ghosts(SeatBoard board) {
+    return ghostSeatIds(
+      layout: board.layout,
+      states: {
+        for (final seat in board.seats)
+          seat.seatId: SeatOccupancy(status: seat.status),
+      },
+    );
   }
 
   String _word(AppLocalizations l10n, String status) {
@@ -121,7 +180,9 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
                               label: seat.label,
                               role: seat.role,
                               status: _status(board, seat.id),
-                              statusWord: seat.isPassenger
+                              statusWord: seat.isCargo
+                                  ? l10n.seatLuggage
+                                  : seat.isPassenger
                                   ? _word(l10n, _status(board, seat.id))
                                   : l10n.seatDriver,
                             ),
@@ -172,6 +233,38 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: AlongSpace.s16),
+                TextField(
+                  key: const Key('seat_voice_command'),
+                  decoration: InputDecoration(hintText: l10n.voiceCommandHint),
+                  onSubmitted: (value) => _voice(value, board),
+                ),
+                const SizedBox(height: AlongSpace.s8),
+                AlongButton(
+                  key: const Key('seat_board_conductor'),
+                  label: l10n.conductorOpen,
+                  variant: AlongButtonVariant.secondary,
+                  onPressed: _openConductor,
+                ),
+                if (_conductorCode != null)
+                  Text(
+                    _conductorCode!,
+                    key: const Key('conductor_code'),
+                    style: AlongText.numericL,
+                  ),
+                if (_ghosts(board).isNotEmpty) ...[
+                  const SizedBox(height: AlongSpace.s12),
+                  Text(l10n.ghostSeatTitle, style: AlongText.label),
+                  for (final id in _ghosts(board))
+                    ListTile(
+                      title: Text(board.layout.seatById(id)?.label ?? id),
+                      trailing: TextButton(
+                        key: Key('ghost_free_$id'),
+                        onPressed: () => _set(id, 'free'),
+                        child: Text(l10n.ghostSeatFree),
+                      ),
+                    ),
+                ],
                 const SizedBox(height: AlongSpace.s16),
                 Text(l10n.rideRulesHeading, style: AlongText.label),
                 for (final rule in board.rules)

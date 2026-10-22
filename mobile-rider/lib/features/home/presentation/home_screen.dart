@@ -42,26 +42,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: AlongMap(
-              key: const Key('home_map'),
-              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(
-                tilesBase: config.tilesBaseUrl,
-                citySlug: state.citySlug,
-              ),
-              allowDemoStyleFallback: false,
-              maxZoom: lowData.enabled ? lowData.maxTileZoom.toDouble() : null,
-              initialCameraPosition: state.mapCenter == null
-                  ? null
-                  : MapCamera.forCenter(
-                      lat: state.mapCenter!.lat,
-                      lng: state.mapCenter!.lng,
+            child: lowData.enabled
+                ? TextMapBoard(
+                    key: const Key('home_text_map'),
+                    title: l10n.textMapTitle,
+                    emptyLabel: l10n.textMapEmpty,
+                    rows: [
+                      for (final row in state.nearbyRows)
+                        TextMapEntry(
+                          id: row.modeCode,
+                          title: row.modeLabel,
+                          detail: l10n.homeNearbyRow(
+                            row.countBucket,
+                            row.modeLabel,
+                            row.headingLabel,
+                            row.etaMinutes,
+                          ),
+                          heading: row.headingLabel,
+                        ),
+                    ],
+                    onRowTap: (id) {
+                      for (final row in state.nearbyRows) {
+                        if (row.modeCode == id) {
+                          _onNearbyRowTap(row);
+                          return;
+                        }
+                      }
+                    },
+                  )
+                : AlongMap(
+                    key: const Key('home_map'),
+                    styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(
+                      tilesBase: config.tilesBaseUrl,
+                      citySlug: state.citySlug,
                     ),
-              myLocationEnabled: state.locationGranted,
-              onLayerControllerReady: (controller) {
-                _layerController = controller;
-                _syncMapLayers(state);
-              },
-            ),
+                    allowDemoStyleFallback: false,
+                    initialCameraPosition: state.mapCenter == null
+                        ? null
+                        : MapCamera.forCenter(
+                            lat: state.mapCenter!.lat,
+                            lng: state.mapCenter!.lng,
+                          ),
+                    myLocationEnabled: state.locationGranted,
+                    onLayerControllerReady: (controller) {
+                      _layerController = controller;
+                      _syncMapLayers(state);
+                    },
+                  ),
           ),
           if (state.showLocationBanner)
             Positioned(

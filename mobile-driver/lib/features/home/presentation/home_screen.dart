@@ -232,13 +232,20 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                     ),
                     const SizedBox(height: AlongSpace.s8),
                   ],
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ActionChip(
-                      key: const Key('build_my_day_button'),
-                      label: Text(l10n.buildMyDayTitle),
-                      onPressed: () => context.push(AppRoutes.buildMyDay),
-                    ),
+                  Wrap(
+                    spacing: AlongSpace.s8,
+                    children: [
+                      ActionChip(
+                        key: const Key('build_my_day_button'),
+                        label: Text(l10n.buildMyDayTitle),
+                        onPressed: () => context.push(AppRoutes.buildMyDay),
+                      ),
+                      ActionChip(
+                        key: const Key('conductor_entry_button'),
+                        label: Text(l10n.conductorTitle),
+                        onPressed: () => context.push(AppRoutes.conductor),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: AlongSpace.s8),
                   AbsorbPointer(

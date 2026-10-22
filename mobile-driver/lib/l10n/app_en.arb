@@ -615,6 +615,18 @@
   "deleteRule": "Remove rule",
   "dayNeedsCorridor": "Choose a corridor",
   "seatStale": "Seat map is more than a minute old",
+  "shiftStart": "Shift starts",
+  "shiftEnd": "Shift ends",
+  "homeLabel": "Home-bound stop",
+  "walkExtension": "Extra hold minutes for a walking rider",
+  "seatLuggage": "luggage",
+  "voiceCommandHint": "Say accept, full, or seat back left free",
+  "conductorOpen": "Conductor code",
+  "conductorTitle": "Conductor",
+  "conductorCode": "Code from the driver",
+  "conductorJoin": "Open the seat map",
+  "ghostSeatTitle": "Still taken after the drop?",
+  "ghostSeatFree": "Free it",
   "freeSeatCount": "{count} free",
   "@freeSeatCount": {
     "placeholders": {

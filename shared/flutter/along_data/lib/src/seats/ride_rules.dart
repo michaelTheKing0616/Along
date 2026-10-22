@@ -173,6 +173,45 @@ class SeatRuleEngine {
     return (best?.params['duration_minutes'] as num?)?.toInt();
   }
 
+  /// Extra hold minutes the driver allows for a walking rider. Zero means none.
+  int walkExtensionMinutes({
+    required List<RideRule> rules,
+    required String seatId,
+    required String? rowId,
+  }) {
+    RideRule? best;
+    var rank = 4;
+    for (final rule in rules) {
+      if (!rule.enabled || rule.effect != 'hold_minutes') continue;
+      if (!appliesTo(rule: rule, seatId: seatId, rowId: rowId)) continue;
+      final next = switch (rule.targetScope) {
+        'seat' => 1,
+        'row' => 2,
+        _ => 3,
+      };
+      if (next < rank) {
+        rank = next;
+        best = rule;
+      }
+    }
+    return (best?.params['walk_extension_minutes'] as num?)?.toInt() ?? 0;
+  }
+
+  /// Passenger seats covered by one bundle rule.
+  List<String> bundleSeatIds({
+    required RideRule rule,
+    required SeatLayout layout,
+  }) {
+    if (!rule.enabled || rule.effect != 'bundle') return const [];
+    return [
+      for (final row in layout.rows)
+        for (final seat in row.seats)
+          if (seat.isPassenger &&
+              appliesTo(rule: rule, seatId: seat.id, rowId: row.id))
+            seat.id,
+    ];
+  }
+
   int _nonFreeInTarget({
     required RideRule rule,
     required SeatLayout layout,
@@ -228,6 +267,18 @@ bool seatStateIsHidden(DateTime updatedAt, DateTime now) =>
 
 int seatDeltaPayloadBytes(Map<String, dynamic> payload) =>
     utf8.encode(jsonEncode(payload)).length;
+
+/// Occupied passenger seats the driver should confirm after a drop.
+List<String> ghostSeatIds({
+  required SeatLayout layout,
+  required Map<String, SeatOccupancy> states,
+}) {
+  return [
+    for (final row in layout.rows)
+      for (final seat in row.seats)
+        if (seat.isPassenger && states[seat.id]?.status == 'occupied') seat.id,
+  ];
+}
 
 Map<String, dynamic> _map(Object? raw) {
   if (raw is Map<String, dynamic>) return raw;
