@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../components/along_button.dart';
 import '../components/seat_map.dart';
+import '../elevation.dart';
 import '../icons.dart';
 import '../palette.dart';
 import '../type.dart';
@@ -44,7 +45,7 @@ class AlongFlowOnboarding extends StatelessWidget {
                 : 'We text a code to this number so the ride stays yours.',
             style: AlongType.bodyMuted(palette),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           _Field(
             fill: palette.recessed,
             bordered: false,
@@ -68,7 +69,7 @@ class AlongFlowOnboarding extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           const _FactRow(icon: AlongIcons.shield, label: 'Code by text'),
           const _FactRow(
             icon: AlongIcons.seat,
@@ -124,7 +125,7 @@ class _HomeSheetBody extends StatelessWidget {
       padding: EdgeInsets.zero,
       children: [
         Text('Good evening, Adaeze', style: AlongType.title(palette)),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         _Field(
           fill: palette.recessed,
           bordered: false,
@@ -133,7 +134,7 @@ class _HomeSheetBody extends StatelessWidget {
               Icon(AlongIcons.search, color: palette.ink, size: 22),
               const SizedBox(width: 10),
               Expanded(
-                child: Text('Where to?', style: AlongType.title(palette)),
+                child: Text('Where to?', style: AlongType.heading(palette)),
               ),
             ],
           ),
@@ -251,11 +252,11 @@ class AlongFlowSeats extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           Text('Choose a seat', style: AlongType.display(palette)),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text('Hiace · ABC-123-XY', style: AlongType.bodyMuted(palette)),
           const SizedBox(height: 4),
           Text(
-            '4.9  ·  Trust 86',
+            '4.9 · Trust 86',
             style: AlongType.caption(palette).copyWith(
               fontFeatures: const [FontFeature.tabularFigures()],
               fontWeight: FontWeight.w700,
@@ -393,7 +394,7 @@ class _LiveSheet extends StatelessWidget {
             color: palette.accent,
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 16),
         Row(
           children: [
             const AlongDriverPortrait(size: 56),
@@ -404,7 +405,7 @@ class _LiveSheet extends StatelessWidget {
                 children: [
                   Text('Chinedu', style: AlongType.title(palette)),
                   Text(
-                    '4.9  ·  Trust 86',
+                    '4.9 · Trust 86',
                     style: AlongType.caption(palette).copyWith(
                       fontFeatures: const [FontFeature.tabularFigures()],
                       color: palette.ink,
@@ -617,7 +618,7 @@ class AlongFlowDay extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           Text('Build my day', style: AlongType.display(palette)),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text('Abuja, morning run', style: AlongType.bodyMuted(palette)),
           const SizedBox(height: 16),
           const _Stop(time: '06:30', title: 'Wuse park', detail: 'Start'),
@@ -645,6 +646,11 @@ class AlongFlowOnline extends StatelessWidget {
         children: [
           const Positioned.fill(
             child: AlongCityMap(mode: AlongCityMapMode.online),
+          ),
+          const Positioned(
+            top: 16,
+            left: 16,
+            child: _MapChip(label: 'Seat demand · Nyanya'),
           ),
           Positioned.fill(
             child: AlongSpringSheet(
@@ -674,7 +680,7 @@ class AlongFlowOnline extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     '₦18,400',
-                    style: AlongType.numeric(palette).copyWith(fontSize: 36),
+                    style: AlongType.numeric(palette).copyWith(fontSize: 40),
                   ),
                   Text(
                     'So far today · 6 trips',
@@ -722,10 +728,34 @@ class AlongFlowOffer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: const SizedBox(
+              height: 188,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AlongCityMap(mode: AlongCityMapMode.routeHero),
+                  ),
+                  Positioned(
+                    left: 10,
+                    bottom: 10,
+                    child: _MapChip(label: '4.2 km · 18 min'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
-                child: Text('New ride', style: AlongType.display(palette)),
+                child: Text(
+                  'New ride',
+                  style: AlongType.caption(
+                    palette,
+                  ).copyWith(fontWeight: FontWeight.w700, color: palette.ink),
+                ),
               ),
               Container(
                 width: 48,
@@ -742,18 +772,18 @@ class AlongFlowOffer extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             '₦1,800',
             style: AlongType.numeric(palette).copyWith(fontSize: 40),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           const _Stop(time: '6 min', title: 'Wuse Market', detail: 'Pickup'),
           const _Stop(time: '4.2 km', title: 'Nyanya', detail: 'Dropoff'),
           const SizedBox(height: 8),
           const _RuleRow(label: 'Seats', value: '2'),
           const _RuleRow(label: 'Vehicle', value: 'Hiace'),
-          const _RuleRow(label: 'Rider', value: 'Adaeze'),
+          const _RiderRow(),
           const _RuleRow(label: 'Trust', value: '86'),
         ],
       ),
@@ -914,7 +944,7 @@ class _FactRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return SizedBox(
-      height: 44,
+      height: 48,
       child: Row(
         children: [
           Icon(icon, size: 20, color: palette.ink),
@@ -1160,6 +1190,56 @@ class _SafetyAction extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(label, style: AlongType.caption(palette)),
+        ],
+      ),
+    );
+  }
+}
+
+class _MapChip extends StatelessWidget {
+  const _MapChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(99),
+        boxShadow: AlongElevation.float(palette.ink),
+      ),
+      child: Text(
+        label,
+        style: AlongType.caption(palette).copyWith(
+          fontWeight: FontWeight.w700,
+          color: palette.ink,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
+    );
+  }
+}
+
+class _RiderRow extends StatelessWidget {
+  const _RiderRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      height: 56,
+      child: Row(
+        children: [
+          const AlongDriverPortrait(
+            size: 40,
+            asset: AlongDriverPortrait.adaeze,
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Text('Adaeze', style: AlongType.title(palette))),
+          Text('Rider', style: AlongType.caption(palette)),
         ],
       ),
     );

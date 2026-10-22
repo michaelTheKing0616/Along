@@ -36,6 +36,7 @@ flutter:
     - assets/icons/ios/AppIcon.appiconset/
     - assets/splash/
     - assets/map/
+    - assets/avatars/
   fonts:
     - family: Satoshi
       fonts:
