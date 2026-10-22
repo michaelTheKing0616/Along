@@ -11,10 +11,12 @@ class SeatMapSeat {
     required this.role,
     required this.status,
     required this.statusWord,
+    this.price,
   });
 
   final String id;
   final String label;
+  final String? price;
 
   /// `driver`, `passenger`, or `cargo`. Driver and cargo seats are not claimable.
   final String role;
@@ -99,15 +101,11 @@ class SeatMap extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 6),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             for (final seat in row.seats) ...[
                               if (seat.isDriver && body != 'bike')
                                 const _SteeringWheel(),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
+                              Expanded(
                                 child: _SeatButton(
                                   seat: seat,
                                   onTap: seat.isClaimable ? onSeatTap : null,
@@ -265,8 +263,8 @@ class _SeatButton extends StatelessWidget {
       child: ExcludeSemantics(
         child: SizedBox(
           key: Key('seat_${seat.id}'),
-          width: AlongSpace.sizeTouchMin,
-          height: 52,
+          width: double.infinity,
+          height: 64,
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
@@ -278,34 +276,58 @@ class _SeatButton extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Container(
-                      width: 40,
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(horizontal: 6),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: color,
                         borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(10),
-                          bottom: Radius.circular(8),
+                          top: Radius.circular(14),
+                          bottom: Radius.circular(10),
                         ),
                         border: Border.fromBorderSide(_side(seat, palette)),
                       ),
                       child: seat.isCargo
                           ? Icon(Icons.luggage_outlined, size: 18, color: ink)
-                          : Text(
-                              seat.isDriver ? 'D' : _short(seat.label),
-                              style: AlongText.caption.copyWith(
-                                color: ink,
-                                fontWeight: FontWeight.w700,
-                              ),
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  seat.isDriver ? 'D' : _short(seat.label),
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: AlongText.caption.copyWith(
+                                    color: ink,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                if (seat.price != null)
+                                  Text(
+                                    seat.price!,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: AlongText.caption.copyWith(
+                                      color: ink,
+                                      fontSize: 11,
+                                      height: 1.1,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                              ],
                             ),
                     ),
                   ),
                   const SizedBox(height: 3),
-                  Container(
-                    width: 32,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: ink.withValues(alpha: seat.isDriver ? 0.9 : 0.45),
-                      borderRadius: BorderRadius.circular(4),
+                  FractionallySizedBox(
+                    widthFactor: 0.62,
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: ink.withValues(
+                          alpha: seat.isDriver ? 0.9 : 0.45,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
                 ],

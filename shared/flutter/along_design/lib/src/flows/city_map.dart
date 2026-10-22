@@ -8,11 +8,11 @@ import '../palette.dart';
 import '../type.dart';
 import 'vehicle_art.dart';
 
-/// How the Abuja snapshot is dressed. Widget tests paint this asset, not MapLibre.
+/// How the painted Wuse map is dressed. The city is vector paint, not a photo.
 enum AlongCityMapMode { browse, trip, online, routeHero }
 
-/// Pre-rendered along-paper / along-dusk tiles for Wuse, with the Accra Street
-/// route projected from the same camera.
+/// A drawn Abuja neighborhood: blocks, streets, parks, and the Wuse–Nyanya road.
+/// Widget tests paint this directly so frames stay stable without a tile server.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -23,37 +23,15 @@ class AlongCityMap extends StatelessWidget {
   final AlongCityMapMode mode;
   final double progress;
 
-  static const imageWidth = 800.0;
-  static const imageHeight = 1400.0;
-
-  /// Image fractions for Accra Street, zoom 15.15, from the render camera.
+  /// Fractions of the painted city. The trip follows Accra Street.
   static const route = <Offset>[
-    Offset(0.2806, 0.3233),
-    Offset(0.3027, 0.3338),
-    Offset(0.3114, 0.3383),
-    Offset(0.3190, 0.3442),
-    Offset(0.3686, 0.4049),
-    Offset(0.3932, 0.4338),
-    Offset(0.4019, 0.4435),
-    Offset(0.4123, 0.4531),
-    Offset(0.4213, 0.4604),
-    Offset(0.4314, 0.4675),
-    Offset(0.4498, 0.4780),
-    Offset(0.4692, 0.4881),
-    Offset(0.4855, 0.4948),
-    Offset(0.5000, 0.5000),
-    Offset(0.5354, 0.5117),
-    Offset(0.5763, 0.5238),
-    Offset(0.6308, 0.5377),
-    Offset(0.6994, 0.5537),
-    Offset(0.7157, 0.5571),
-    Offset(0.7996, 0.5725),
-    Offset(0.8100, 0.5741),
-    Offset(0.8222, 0.5745),
-    Offset(0.8339, 0.5733),
-    Offset(0.8437, 0.5709),
-    Offset(0.8589, 0.5648),
-    Offset(0.9477, 0.5212),
+    Offset(0.14, 0.16),
+    Offset(0.26, 0.18),
+    Offset(0.38, 0.15),
+    Offset(0.50, 0.13),
+    Offset(0.62, 0.15),
+    Offset(0.74, 0.12),
+    Offset(0.88, 0.10),
   ];
 
   @override
@@ -62,9 +40,6 @@ class AlongCityMap extends StatelessWidget {
     final drawn = AlongMotionPolicy.reduced(context)
         ? 1.0
         : progress.clamp(0.0, 1.0);
-    final asset = palette.brightness == Brightness.dark
-        ? 'assets/map/abuja_dusk.png'
-        : 'assets/map/abuja_paper.png';
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
@@ -79,14 +54,9 @@ class AlongCityMap extends StatelessWidget {
         return ClipRect(
           child: Stack(
             children: [
-              Positioned(
-                left: frame.origin.dx,
-                top: frame.origin.dy,
-                width: frame.drawnSize.width,
-                height: frame.drawnSize.height,
-                child: _MapRaster(
-                  asset: asset,
-                  cool: palette.brightness == Brightness.light,
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _VectorCityPainter(frame: frame, palette: palette),
                 ),
               ),
               if (mode == AlongCityMapMode.online)
@@ -139,9 +109,9 @@ class AlongCityMap extends StatelessWidget {
 
   List<_Pin> _pins() {
     return const [
-      _Pin(Offset(0.1831, 0.6171), 'Sky Memorial', false),
-      _Pin(Offset(0.6966, 0.6054), 'Wuse Stn', false),
-      _Pin(Offset(0.1634, 0.6783), 'Park', true),
+      _Pin(Offset(0.20, 0.24), 'Wuse', false),
+      _Pin(Offset(0.72, 0.22), 'Nyanya', false),
+      _Pin(Offset(0.16, 0.40), 'Park', true),
     ];
   }
 
@@ -155,14 +125,14 @@ class AlongCityMap extends StatelessWidget {
     }
     if (mode == AlongCityMapMode.online) {
       return const [
-        _Marker(Offset(0.4019, 0.4435), AlongVehicleKind.keke, 2, -0.4),
-        _Marker(Offset(0.5354, 0.5117), AlongVehicleKind.danfo, 6, 0.9),
+        _Marker(Offset(0.36, 0.22), AlongVehicleKind.keke, 2, -0.4),
+        _Marker(Offset(0.58, 0.18), AlongVehicleKind.danfo, 6, 0.8),
       ];
     }
     return const [
-      _Marker(Offset(0.4019, 0.4435), AlongVehicleKind.keke, 2, -0.7),
-      _Marker(Offset(0.4855, 0.4948), AlongVehicleKind.car, 3, 0.35),
-      _Marker(Offset(0.7157, 0.5571), AlongVehicleKind.danfo, 8, 1.15),
+      _Marker(Offset(0.30, 0.22), AlongVehicleKind.keke, 2, -0.5),
+      _Marker(Offset(0.48, 0.28), AlongVehicleKind.car, 3, 0.3),
+      _Marker(Offset(0.66, 0.20), AlongVehicleKind.danfo, 8, 1.0),
     ];
   }
 
@@ -314,7 +284,7 @@ class AlongCityMap extends StatelessWidget {
   }
 
   Widget _puck(_MapFrame frame, AlongPalette palette) {
-    final at = frame.project(const Offset(0.3686, 0.4049));
+    final at = frame.project(const Offset(0.40, 0.20));
     return Positioned(
       left: at.dx - 9,
       top: at.dy - 9,
@@ -332,97 +302,242 @@ class AlongCityMap extends StatelessWidget {
   }
 }
 
-class _MapRaster extends StatelessWidget {
-  const _MapRaster({required this.asset, required this.cool});
-
-  final String asset;
-  final bool cool;
-
-  static const _cool = ColorFilter.matrix(<double>[
-    0.78,
-    0.12,
-    0.06,
-    0,
-    8,
-    0.04,
-    0.86,
-    0.08,
-    0,
-    8,
-    0.00,
-    0.08,
-    1.12,
-    0,
-    16,
-    0,
-    0,
-    0,
-    1,
-    0,
-  ]);
-
-  @override
-  Widget build(BuildContext context) {
-    final image = Image.asset(
-      asset,
-      package: 'along_design',
-      fit: BoxFit.fill,
-      filterQuality: FilterQuality.medium,
-      gaplessPlayback: true,
-      excludeFromSemantics: true,
-    );
-    if (!cool) return image;
-    return ColorFiltered(colorFilter: _cool, child: image);
-  }
-}
-
 class _MapFrame {
   _MapFrame(this.size, {this.fitRoute = false});
 
   final Size size;
   final bool fitRoute;
 
-  static const zoom = 1.15;
-  static const focal = Offset(0.48, 0.50);
-  static const anchor = Offset(0.50, 0.18);
-
-  /// Accra Street bbox in image fractions, including the southward bulge.
-  static const routeMinX = 0.2806;
-  static const routeMaxX = 0.9477;
-  static const routeMinY = 0.3233;
-  static const routeMaxY = 0.5745;
-
-  double get scale {
-    if (!fitRoute) return size.height * zoom / AlongCityMap.imageHeight;
-    const pad = 36.0;
-    final spanX = (routeMaxX - routeMinX) * AlongCityMap.imageWidth;
-    final spanY = (routeMaxY - routeMinY) * AlongCityMap.imageHeight;
-    final sx = (size.width - pad * 2) / spanX;
-    final sy = (size.height - pad * 2) / spanY;
-    return math.min(sx, sy);
-  }
-
-  Size get drawnSize =>
-      Size(AlongCityMap.imageWidth * scale, AlongCityMap.imageHeight * scale);
-
-  Offset get origin {
-    if (!fitRoute) {
-      return Offset(
-        size.width * anchor.dx - focal.dx * drawnSize.width,
-        size.height * anchor.dy - focal.dy * drawnSize.height,
-      );
-    }
-    return Offset(
-      size.width / 2 - (routeMinX + routeMaxX) / 2 * drawnSize.width,
-      size.height / 2 - (routeMinY + routeMaxY) / 2 * drawnSize.height,
-    );
-  }
+  static const routeMinX = 0.14;
+  static const routeMaxX = 0.88;
+  static const routeMinY = 0.10;
+  static const routeMaxY = 0.18;
 
   Offset project(Offset fraction) {
-    return Offset(
-      origin.dx + fraction.dx * drawnSize.width,
-      origin.dy + fraction.dy * drawnSize.height,
+    if (!fitRoute) {
+      return Offset(fraction.dx * size.width, fraction.dy * size.height);
+    }
+    const pad = 24.0;
+    final spanX = routeMaxX - routeMinX;
+    final spanY = routeMaxY - routeMinY;
+    final sx = (size.width - pad * 2) / spanX;
+    final sy = (size.height - pad * 2) / spanY;
+    final scale = math.min(sx, sy);
+    final origin = Offset(
+      size.width / 2 - (routeMinX + routeMaxX) / 2 * scale,
+      size.height / 2 - (routeMinY + routeMaxY) / 2 * scale,
     );
+    return Offset(
+      origin.dx + fraction.dx * scale,
+      origin.dy + fraction.dy * scale,
+    );
+  }
+}
+
+class _VectorCityPainter extends CustomPainter {
+  _VectorCityPainter({required this.frame, required this.palette});
+
+  final _MapFrame frame;
+  final AlongPalette palette;
+
+  static const _avenues = <double>[
+    0.07,
+    0.15,
+    0.26,
+    0.35,
+    0.47,
+    0.56,
+    0.68,
+    0.81,
+    0.93,
+  ];
+  static const _streets = <double>[
+    0.05,
+    0.17,
+    0.28,
+    0.40,
+    0.54,
+    0.66,
+    0.78,
+    0.92,
+  ];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final dark = palette.brightness == Brightness.dark;
+    final land = dark ? const Color(0xFF16181C) : const Color(0xFFE7E4DC);
+    final block = dark ? const Color(0xFF22262C) : const Color(0xFFF7F6F2);
+    final park = dark ? const Color(0xFF1C3328) : const Color(0xFFD5E6D0);
+    final water = dark ? const Color(0xFF1A3344) : const Color(0xFFC5D8E8);
+    final minor = dark ? const Color(0xFF3A4048) : const Color(0xFFFFFFFF);
+    final major = dark ? const Color(0xFF4A525C) : const Color(0xFFFFFDF8);
+    final casing = dark ? const Color(0xFF0E1014) : const Color(0xFFD4D0C8);
+
+    canvas.drawRect(Offset.zero & size, Paint()..color = land);
+
+    _poly(canvas, water, const [
+      Offset(0.00, 0.00),
+      Offset(0.10, 0.00),
+      Offset(0.07, 0.22),
+      Offset(0.12, 0.40),
+      Offset(0.06, 0.62),
+      Offset(0.11, 1.00),
+      Offset(0.00, 1.00),
+    ]);
+
+    _round(canvas, park, const Offset(0.10, 0.50), const Offset(0.24, 0.70));
+    _round(canvas, park, const Offset(0.66, 0.58), const Offset(0.90, 0.78));
+    _round(canvas, water, const Offset(0.78, 0.08), const Offset(0.94, 0.16));
+
+    for (var r = 0; r < _avenues.length - 1; r++) {
+      for (var c = 0; c < _streets.length - 1; c++) {
+        if ((c == 0 && r >= 3 && r <= 4) || (c >= 4 && r >= 4 && r <= 5)) {
+          continue;
+        }
+        final x0 = _streets[c] + 0.015;
+        final y0 = _avenues[r] + 0.012;
+        final x1 = _streets[c + 1] - 0.015;
+        final y1 = _avenues[r + 1] - 0.012;
+        final mid = (x0 + x1) / 2;
+        _building(canvas, block, x0, y0, mid - 0.008, y1 - 0.004, c + r);
+        _building(canvas, block, mid + 0.008, y0 + 0.008, x1, y1, c * 3 + r);
+      }
+    }
+
+    final minorPaint = Paint()
+      ..color = minor
+      ..strokeWidth = dark ? 3 : 4
+      ..strokeCap = StrokeCap.round;
+    final casePaint = Paint()
+      ..color = casing
+      ..strokeWidth = 8
+      ..strokeCap = StrokeCap.round;
+    final majorPaint = Paint()
+      ..color = major
+      ..strokeWidth = 6
+      ..strokeCap = StrokeCap.round;
+
+    for (final y in _avenues) {
+      _line(canvas, casePaint, Offset(0.08, y), Offset(0.96, y));
+      _line(canvas, minorPaint, Offset(0.08, y), Offset(0.96, y));
+    }
+    for (final x in _streets) {
+      _line(canvas, casePaint, Offset(x, 0.06), Offset(x, 0.96));
+      _line(canvas, minorPaint, Offset(x, 0.06), Offset(x, 0.96));
+    }
+    for (var i = 1; i < AlongCityMap.route.length; i++) {
+      _line(
+        canvas,
+        casePaint,
+        AlongCityMap.route[i - 1],
+        AlongCityMap.route[i],
+      );
+    }
+    for (var i = 1; i < AlongCityMap.route.length; i++) {
+      _line(
+        canvas,
+        majorPaint,
+        AlongCityMap.route[i - 1],
+        AlongCityMap.route[i],
+      );
+    }
+    final bend = Path()
+      ..moveTo(
+        _at(const Offset(0.18, 0.47)).dx,
+        _at(const Offset(0.18, 0.47)).dy,
+      )
+      ..quadraticBezierTo(
+        _at(const Offset(0.42, 0.62)).dx,
+        _at(const Offset(0.42, 0.62)).dy,
+        _at(const Offset(0.78, 0.52)).dx,
+        _at(const Offset(0.78, 0.52)).dy,
+      );
+    canvas.drawPath(bend, casePaint);
+    canvas.drawPath(bend, majorPaint);
+
+    final label = dark ? const Color(0xFFB7BCC6) : const Color(0xFF5E6570);
+    _label(canvas, 'Wuse', const Offset(0.24, 0.28), label);
+    _label(canvas, 'Accra St', const Offset(0.48, 0.22), label);
+    _label(canvas, 'Nyanya Rd', const Offset(0.74, 0.26), label);
+    _label(canvas, 'Park', const Offset(0.16, 0.58), label);
+  }
+
+  void _poly(Canvas canvas, Color color, List<Offset> points) {
+    final path = Path()..moveTo(_at(points.first).dx, _at(points.first).dy);
+    for (final point in points.skip(1)) {
+      final at = _at(point);
+      path.lineTo(at.dx, at.dy);
+    }
+    path.close();
+    canvas.drawPath(path, Paint()..color = color);
+  }
+
+  void _round(Canvas canvas, Color color, Offset a, Offset b) {
+    final start = _at(a);
+    final end = _at(b);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromPoints(start, end),
+        const Radius.circular(12),
+      ),
+      Paint()..color = color,
+    );
+  }
+
+  void _building(
+    Canvas canvas,
+    Color color,
+    double x0,
+    double y0,
+    double x1,
+    double y1,
+    int salt,
+  ) {
+    final inset = (salt % 3) * 0.004;
+    final start = _at(Offset(x0 + inset, y0));
+    final end = _at(Offset(x1 - inset, y1));
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromPoints(start, end),
+        const Radius.circular(2),
+      ),
+      Paint()..color = color,
+    );
+  }
+
+  void _line(Canvas canvas, Paint paint, Offset a, Offset b) {
+    final start = _at(a);
+    final end = _at(b);
+    canvas.drawLine(start, end, paint);
+  }
+
+  void _label(Canvas canvas, String text, Offset at, Color color) {
+    final painter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Satoshi',
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final point = _at(at);
+    painter.paint(
+      canvas,
+      point - Offset(painter.width / 2, painter.height / 2),
+    );
+  }
+
+  Offset _at(Offset fraction) => frame.project(fraction);
+
+  @override
+  bool shouldRepaint(covariant _VectorCityPainter oldDelegate) {
+    return oldDelegate.palette.brightness != palette.brightness ||
+        oldDelegate.frame.size != frame.size ||
+        oldDelegate.frame.fitRoute != frame.fitRoute;
   }
 }
 
@@ -444,8 +559,8 @@ class _RoutePainter extends CustomPainter {
     if (!showRoute) return;
     final path = _smooth(_points());
     final casing = palette.brightness == Brightness.dark
-        ? palette.ink.withValues(alpha: 0.55)
-        : const Color(0xFF2A3340);
+        ? const Color(0xFF0B0D10)
+        : const Color(0xFF243040);
     canvas.drawPath(
       path,
       Paint()
@@ -501,8 +616,8 @@ class _RoutePainter extends CustomPainter {
     final path = Path();
     if (points.isEmpty) return path;
     path.moveTo(points.first.dx, points.first.dy);
-    if (points.length == 2) {
-      path.lineTo(points.last.dx, points.last.dy);
+    if (points.length < 3) {
+      if (points.length == 2) path.lineTo(points.last.dx, points.last.dy);
       return path;
     }
     for (var i = 1; i < points.length - 1; i++) {
@@ -524,68 +639,48 @@ class _RoutePainter extends CustomPainter {
   }
 }
 
-/// Seat-demand cells. A blue-to-rust ramp with gaps, not one amber wash.
+/// Soft demand sitting on junctions, not a cell grid or a flat wash.
 class _DemandPainter extends CustomPainter {
   _DemandPainter({required this.frame, required this.palette});
 
   final _MapFrame frame;
   final AlongPalette palette;
 
-  static const _hot = <(Offset, double)>[
-    (Offset(0.40, 0.44), 1),
-    (Offset(0.52, 0.50), 0.9),
-    (Offset(0.66, 0.55), 0.72),
-    (Offset(0.33, 0.39), 0.55),
-    (Offset(0.58, 0.42), 0.48),
-    (Offset(0.46, 0.57), 0.4),
+  static const _blobs = <(Offset, double, double)>[
+    (Offset(0.32, 0.18), 0.18, 0.55),
+    (Offset(0.48, 0.24), 0.22, 1),
+    (Offset(0.64, 0.16), 0.16, 0.78),
+    (Offset(0.40, 0.32), 0.14, 0.35),
+    (Offset(0.58, 0.30), 0.15, 0.48),
   ];
-
-  static const low = Color(0xFF2F6F8F);
-  static const mid = Color(0xFFE39B2B);
-  static const high = Color(0xFFB93815);
-
-  static Color ramp(double t) {
-    final clamped = t.clamp(0.0, 1.0);
-    if (clamped < 0.55) {
-      return Color.lerp(low, mid, clamped / 0.55)!;
-    }
-    return Color.lerp(mid, high, (clamped - 0.55) / 0.45)!;
-  }
-
-  double _demand(Offset at) {
-    var sum = 0.0;
-    for (final spot in _hot) {
-      final dx = at.dx - spot.$1.dx;
-      final dy = (at.dy - spot.$1.dy) * 1.35;
-      final dist = dx * dx + dy * dy;
-      sum += spot.$2 * math.exp(-dist / 0.0032);
-    }
-    return sum.clamp(0.0, 1.0);
-  }
 
   @override
   void paint(Canvas canvas, Size size) {
-    const cols = 11;
-    const rows = 14;
-    const origin = Offset(0.22, 0.32);
-    const step = Offset(0.052, 0.024);
-    final cell = math.min(frame.drawnSize.width * 0.034, 22.0);
-    for (var row = 0; row < rows; row++) {
-      for (var col = 0; col < cols; col++) {
-        final at = Offset(origin.dx + col * step.dx, origin.dy + row * step.dy);
-        final demand = _demand(at);
-        if (demand < 0.14) continue;
-        final center = frame.project(at);
-        final paint = Paint()
-          ..color = ramp(demand).withValues(alpha: 0.22 + 0.62 * demand);
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromCenter(center: center, width: cell, height: cell * 0.82),
-            Radius.circular(cell * 0.22),
-          ),
-          paint,
-        );
-      }
+    for (final blob in _blobs) {
+      final center = frame.project(blob.$1);
+      final radius = blob.$2 * size.shortestSide;
+      final t = blob.$3;
+      final color = t < 0.55
+          ? Color.lerp(
+              const Color(0xFF2F6F8F),
+              const Color(0xFFE39B2B),
+              t / 0.55,
+            )!
+          : Color.lerp(
+              const Color(0xFFE39B2B),
+              const Color(0xFFB93815),
+              (t - 0.55) / 0.45,
+            )!;
+      final paint = Paint()
+        ..shader = RadialGradient(
+          colors: [
+            color.withValues(alpha: 0.42),
+            color.withValues(alpha: 0.18),
+            color.withValues(alpha: 0),
+          ],
+          stops: const [0.0, 0.45, 1.0],
+        ).createShader(Rect.fromCircle(center: center, radius: radius));
+      canvas.drawCircle(center, radius, paint);
     }
   }
 
