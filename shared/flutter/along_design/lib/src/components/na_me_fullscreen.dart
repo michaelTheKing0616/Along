@@ -46,6 +46,7 @@ class NaMeFullscreen extends StatefulWidget {
     required this.timing,
     required this.effects,
     this.bearingDegrees,
+    this.plateNumber,
     this.onClose,
     this.visualState,
   });
@@ -56,6 +57,7 @@ class NaMeFullscreen extends StatefulWidget {
   final NaMeTimingConfig timing;
   final NaMeEffects effects;
   final double? bearingDegrees;
+  final String? plateNumber;
   final VoidCallback? onClose;
 
   /// When set, renders a static snapshot (goldens) instead of live strobe.
@@ -75,14 +77,15 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
 
   bool get _isPreview => widget.visualState != null;
 
-  bool get _effectiveStrobing =>
-      _isPreview ? widget.visualState != NaMeFullscreenVisualState.idle : _isStrobing;
+  bool get _effectiveStrobing => _isPreview
+      ? widget.visualState != NaMeFullscreenVisualState.idle
+      : _isStrobing;
 
   bool get _effectiveStrobeOn => switch (widget.visualState) {
-        NaMeFullscreenVisualState.strobeOff => false,
-        NaMeFullscreenVisualState.strobeOn => true,
-        NaMeFullscreenVisualState.idle || null => _strobeOn,
-      };
+    NaMeFullscreenVisualState.strobeOff => false,
+    NaMeFullscreenVisualState.strobeOn => true,
+    NaMeFullscreenVisualState.idle || null => _strobeOn,
+  };
 
   @override
   void dispose() {
@@ -189,7 +192,8 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
               alignment: Alignment.centerLeft,
               child: IconButton(
                 icon: const Icon(Icons.close, color: AlongColors.surface0),
-                onPressed: widget.onClose ?? () => Navigator.of(context).maybePop(),
+                onPressed:
+                    widget.onClose ?? () => Navigator.of(context).maybePop(),
               ),
             ),
             Expanded(
@@ -224,6 +228,18 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (widget.plateNumber != null &&
+                        widget.plateNumber!.trim().isNotEmpty) ...[
+                      const SizedBox(height: AlongSpace.s8),
+                      Text(
+                        widget.plateNumber!,
+                        key: const Key('na_me_plate'),
+                        style: AlongText.numericL.copyWith(
+                          color: AlongColors.surface0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                     const SizedBox(height: AlongSpace.s8),
                     Text(
                       'Hold to strobe',

@@ -28,21 +28,25 @@ class NaMeRouteArgs {
     required this.tripId,
     this.counterpartLocation,
     this.userLocation,
+    this.plateNumber,
   });
 
   final String tripId;
   final GeoPoint? counterpartLocation;
   final GeoPoint? userLocation;
+  final String? plateNumber;
 
   @override
   bool operator ==(Object other) =>
       other is NaMeRouteArgs &&
       other.tripId == tripId &&
       other.counterpartLocation == counterpartLocation &&
-      other.userLocation == userLocation;
+      other.userLocation == userLocation &&
+      other.plateNumber == plateNumber;
 
   @override
-  int get hashCode => Object.hash(tripId, counterpartLocation, userLocation);
+  int get hashCode =>
+      Object.hash(tripId, counterpartLocation, userLocation, plateNumber);
 }
 
 /// R-12 Na Me fullscreen — offline strobe from cached pairing (shared widget).
@@ -85,6 +89,7 @@ class NaMeScreen extends ConsumerWidget {
           colorToken: pairing.colorToken,
           shapeToken: pairing.shape,
           label: pairing.label,
+          plateNumber: args.plateNumber,
           timing: NaMeTimingConfig(
             strobeInterval: configAsync.value!.naMeStrobeMs,
             cycleDuration: configAsync.value!.naMeCycleDuration,

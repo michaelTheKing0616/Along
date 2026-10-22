@@ -24,4 +24,5 @@ export 'skeleton.dart';
 export 'sort_chips.dart';
 export 'status_toggle.dart';
 export 'step_list.dart';
+export 'text_map_board.dart';
 export 'tier_pill.dart';

@@ -32,7 +32,11 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
   final _customTitle = TextEditingController();
   final _customBody = TextEditingController();
   final _minutes = TextEditingController(text: '3');
+  final _walk = TextEditingController(text: '0');
   final _max = TextEditingController(text: '1');
+  final _shiftStart = TextEditingController();
+  final _shiftEnd = TextEditingController();
+  final _home = TextEditingController();
 
   @override
   void initState() {
@@ -48,7 +52,11 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
     _customTitle.dispose();
     _customBody.dispose();
     _minutes.dispose();
+    _walk.dispose();
     _max.dispose();
+    _shiftStart.dispose();
+    _shiftEnd.dispose();
+    _home.dispose();
     super.dispose();
   }
 
@@ -147,6 +155,7 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
     final params = Map<String, dynamic>.from(preset.defaultParams);
     if (preset.effect == 'hold_minutes') {
       params['duration_minutes'] = int.tryParse(_minutes.text) ?? 3;
+      params['walk_extension_minutes'] = int.tryParse(_walk.text) ?? 0;
     }
     if (preset.effect == 'cap_seats') {
       params['max'] = int.tryParse(_max.text) ?? 1;
@@ -240,6 +249,9 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
             layoutId: layoutId,
             corridorId: corridorId,
             routeId: _routeId,
+            shiftStart: _clock(_shiftStart.text),
+            shiftEnd: _clock(_shiftEnd.text),
+            homeLabel: _home.text.trim().isEmpty ? null : _home.text.trim(),
           );
       if (mounted) Navigator.of(context).pop();
     } catch (error) {
@@ -334,6 +346,7 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
                       addSeatLabel: l10n.addSeat,
                       removeRowLabel: l10n.removeRow,
                       overCapacityLabel: l10n.overCapacityNote,
+                      luggageLabel: l10n.seatLuggage,
                     ),
                   const SizedBox(height: AlongSpace.s12),
                   AlongButton(
@@ -371,9 +384,30 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
                       ],
                     ),
                   TextField(
+                    key: const Key('day_shift_start'),
+                    decoration: InputDecoration(labelText: l10n.shiftStart),
+                    controller: _shiftStart,
+                  ),
+                  TextField(
+                    key: const Key('day_shift_end'),
+                    decoration: InputDecoration(labelText: l10n.shiftEnd),
+                    controller: _shiftEnd,
+                  ),
+                  TextField(
+                    key: const Key('day_home_label'),
+                    decoration: InputDecoration(labelText: l10n.homeLabel),
+                    controller: _home,
+                  ),
+                  TextField(
                     decoration: InputDecoration(labelText: l10n.holdMinutes),
                     keyboardType: TextInputType.number,
                     controller: _minutes,
+                  ),
+                  TextField(
+                    key: const Key('day_walk_minutes'),
+                    decoration: InputDecoration(labelText: l10n.walkExtension),
+                    keyboardType: TextInputType.number,
+                    controller: _walk,
                   ),
                   TextField(
                     decoration: InputDecoration(labelText: l10n.capMax),
@@ -436,4 +470,17 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
             ),
     );
   }
+}
+
+String? _clock(String raw) {
+  final text = raw.trim();
+  if (text.isEmpty) return null;
+  final match = RegExp(r'^(\d{1,2}):(\d{2})$').firstMatch(text);
+  if (match == null) return null;
+  final hour = int.parse(match.group(1)!);
+  final minute = int.parse(match.group(2)!);
+  if (hour > 23 || minute > 59) return null;
+  final hh = hour.toString().padLeft(2, '0');
+  final mm = minute.toString().padLeft(2, '0');
+  return '$hh:$mm:00';
 }

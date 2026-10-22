@@ -14,11 +14,21 @@ import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 
 /// R-06 Destination search (doc 06).
-class DestinationSearchScreen extends ConsumerWidget {
+class DestinationSearchScreen extends ConsumerStatefulWidget {
   const DestinationSearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DestinationSearchScreen> createState() =>
+      _DestinationSearchScreenState();
+}
+
+class _DestinationSearchScreenState
+    extends ConsumerState<DestinationSearchScreen> {
+  String? _voiceQuery;
+  String? _voiceOrigin;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final hail = ref.watch(hailIntentProvider);
 
@@ -32,8 +42,31 @@ class DestinationSearchScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            TextField(
+              key: const Key('voice_booking_field'),
+              decoration: InputDecoration(hintText: l10n.voiceBookingHint),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (value) {
+                final phrase = parseBookingPhrase(value);
+                setState(() {
+                  _voiceQuery = phrase?.destination;
+                  _voiceOrigin = phrase?.origin;
+                });
+              },
+            ),
+            if (_voiceOrigin != null)
+              Padding(
+                padding: const EdgeInsets.only(top: AlongSpace.s8),
+                child: Text(
+                  _voiceOrigin!,
+                  key: const Key('voice_booking_origin'),
+                  style: AlongText.caption,
+                ),
+              ),
+            const SizedBox(height: AlongSpace.s8),
             Expanded(
               child: DestinationSearchPanel(
+                initialQuery: _voiceQuery,
                 onDestinationSelected: (pick) {
                   _startTripPlan(ref, pick);
                   if (context.mounted) {

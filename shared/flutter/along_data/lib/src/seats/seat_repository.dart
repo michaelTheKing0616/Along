@@ -357,12 +357,18 @@ class SeatRepository {
     required String layoutId,
     required String corridorId,
     String? routeId,
+    String? shiftStart,
+    String? shiftEnd,
+    String? homeLabel,
   }) {
     return _call('start_driver_day', {
       'p_vehicle_id': vehicleId,
       'p_layout_id': layoutId,
       'p_corridor_id': corridorId,
       'p_route_id': routeId,
+      'p_shift_start': shiftStart,
+      'p_shift_end': shiftEnd,
+      'p_home_label': homeLabel,
     });
   }
 
@@ -406,6 +412,59 @@ class SeatRepository {
       'p_seat_id': seatId,
       'p_expected_version': expectedVersion,
       'p_ack_rule_ids': ackRuleIds,
+    });
+    return SeatClaimResult.fromJson(raw);
+  }
+
+  Future<SeatClaimResult> holdSeat({
+    required String layoutId,
+    required String seatId,
+    required int expectedVersion,
+    int? walkMinutes,
+    List<String> ackRuleIds = const [],
+  }) async {
+    final raw = await _call('hold_seat', {
+      'p_layout_id': layoutId,
+      'p_seat_id': seatId,
+      'p_expected_version': expectedVersion,
+      'p_walk_minutes': walkMinutes,
+      'p_ack_rule_ids': ackRuleIds,
+    });
+    return SeatClaimResult.fromJson(raw);
+  }
+
+  Future<SeatClaimResult> claimBundle({
+    required String layoutId,
+    required String ruleId,
+    List<String> ackRuleIds = const [],
+  }) async {
+    final raw = await _call('claim_bundle', {
+      'p_layout_id': layoutId,
+      'p_rule_id': ruleId,
+      'p_ack_rule_ids': ackRuleIds,
+    });
+    return SeatClaimResult.fromJson(raw);
+  }
+
+  Future<String> openConductorSession() async {
+    final raw = await _call('open_conductor_session', {});
+    return raw['code'] as String? ?? '';
+  }
+
+  Future<SeatBoard> conductorBoard(String code) async {
+    final raw = await _call('conductor_board', {'p_code': code});
+    return SeatBoard.fromJson(raw);
+  }
+
+  Future<SeatClaimResult> conductorSetSeat({
+    required String code,
+    required String seatId,
+    required String status,
+  }) async {
+    final raw = await _call('conductor_set_seat', {
+      'p_code': code,
+      'p_seat_id': seatId,
+      'p_status': status,
     });
     return SeatClaimResult.fromJson(raw);
   }

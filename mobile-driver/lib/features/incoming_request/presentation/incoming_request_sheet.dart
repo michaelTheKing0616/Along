@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:along_core/along_core.dart';
+import 'package:along_data/along_data.dart'
+    show DriverVoiceIntent, parseDriverVoice;
 import 'package:along_design/along_design.dart' hide FareTier, formatMoney;
 import 'package:along_design/src/utils/fare_tier.dart' as design_fare;
 import 'package:flutter/material.dart';
@@ -38,161 +40,198 @@ class IncomingRequestSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  Text(
-                    l10n.incomingRequestTitle,
-                    style: AlongText.heading2,
-                  ),
-                  if (state.trip.dispatchAttempt > 1) ...[
-                    const SizedBox(width: AlongSpace.s8),
-                    Container(
-                      key: const Key('incoming_request_cascade_badge'),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AlongSpace.s8,
-                        vertical: AlongSpace.s4,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              l10n.incomingRequestTitle,
+                              style: AlongText.heading2,
+                            ),
+                          ),
+                          if (state.trip.dispatchAttempt > 1) ...[
+                            const SizedBox(width: AlongSpace.s8),
+                            Container(
+                              key: const Key('incoming_request_cascade_badge'),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AlongSpace.s8,
+                                vertical: AlongSpace.s4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AlongColors.semanticInfoTint,
+                                borderRadius: BorderRadius.circular(
+                                  AlongRadius.xs.x,
+                                ),
+                              ),
+                              child: Text(
+                                l10n.incomingRequestCascade(
+                                  state.trip.dispatchAttempt,
+                                  state.maxCascade,
+                                ),
+                                style: AlongText.caption.copyWith(
+                                  color: AlongColors.semanticInfo,
+                                ),
+                              ),
+                            ),
+                          ],
+                          const Spacer(),
+                          SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: CustomPaint(
+                              painter: _CountdownRingPainter(
+                                progress: progress,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  l10n.incomingRequestCountdown(
+                                    state.remainingSeconds,
+                                  ),
+                                  style: AlongText.caption,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      decoration: BoxDecoration(
-                        color: AlongColors.semanticInfoTint,
-                        borderRadius: BorderRadius.circular(AlongRadius.xs.x),
+                      const SizedBox(height: AlongSpace.s12),
+                      Text(
+                        l10n.incomingRequestRiderLine(
+                          trip.rider.displayName,
+                          trip.rider.rating.toStringAsFixed(1),
+                          trip.rider.tripCount,
+                        ),
+                        style: AlongText.bodyStrong,
                       ),
-                      child: Text(
-                        l10n.incomingRequestCascade(
-                          state.trip.dispatchAttempt,
-                          state.maxCascade,
+                      if (trip.womenOnly) ...[
+                        const SizedBox(height: AlongSpace.s8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AlongSpace.s8,
+                            vertical: AlongSpace.s4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AlongColors.semanticInfoTint,
+                            borderRadius: BorderRadius.circular(
+                              AlongRadius.xs.x,
+                            ),
+                          ),
+                          child: Text(
+                            l10n.incomingRequestWomenOnly,
+                            style: AlongText.caption.copyWith(
+                              color: AlongColors.semanticInfo,
+                            ),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: AlongSpace.s16),
+                      _LocationRow(
+                        icon: Icons.trip_origin,
+                        label: state.trip.isRoamingHail
+                            ? l10n.incomingRequestRoamingPickup
+                            : l10n.incomingRequestPickup,
+                        value: trip.board.name,
+                        meta: trip.approachBand != null
+                            ? _approachBandLabel(l10n, trip.approachBand!)
+                            : state.trip.isRoamingHail
+                            ? l10n.incomingRequestRoamingPickupMeta
+                            : null,
+                        metaKey: trip.approachBand != null
+                            ? const Key('incoming_request_approach_band')
+                            : null,
+                      ),
+                      const SizedBox(height: AlongSpace.s8),
+                      _LocationRow(
+                        icon: Icons.place_outlined,
+                        label: l10n.incomingRequestDropoff,
+                        value: trip.alight.name,
+                      ),
+                      if (trip.load.flagged) ...[
+                        const SizedBox(height: AlongSpace.s12),
+                        Row(
+                          key: const Key('incoming_request_load_row'),
+                          children: [
+                            const Icon(
+                              Icons.inventory_2_outlined,
+                              color: AlongColors.semanticWarning,
+                              size: 20,
+                            ),
+                            const SizedBox(width: AlongSpace.s8),
+                            Expanded(
+                              child: Text(
+                                _loadLabel(l10n, trip.load),
+                                style: AlongText.bodyStrong.copyWith(
+                                  color: AlongColors.semanticWarning,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: AlongSpace.s16),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              l10n.incomingRequestFareLine(
+                                formatMoney(trip.totalFare),
+                                _fareTierLabel(l10n, trip.fare.tier),
+                              ),
+                              style: AlongText.body,
+                            ),
+                          ),
+                          if (trip.fare.unconfirmed)
+                            TierPill(
+                              key: const Key('incoming_request_estimate_pill'),
+                              tier: _designTier(trip.fare.tier),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: AlongSpace.s4),
+                      Text(
+                        l10n.incomingRequestAlongFee(
+                          formatMoney(state.alongFee),
+                          formatCommissionPercent(state.commissionRate),
                         ),
                         style: AlongText.caption.copyWith(
-                          color: AlongColors.semanticInfo,
+                          color: AlongColors.ink500,
                         ),
                       ),
-                    ),
-                  ],
-                  const Spacer(),
-                  SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: CustomPaint(
-                      painter: _CountdownRingPainter(progress: progress),
-                      child: Center(
-                        child: Text(
-                          l10n.incomingRequestCountdown(state.remainingSeconds),
-                          style: AlongText.caption,
+                      if (state.errorMessage != null) ...[
+                        const SizedBox(height: AlongSpace.s8),
+                        Text(
+                          l10n.errorGeneric,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AlongColors.semanticDanger,
+                          ),
                         ),
+                      ],
+                      const SizedBox(height: AlongSpace.s12),
+                      TextField(
+                        key: const Key('incoming_voice_command'),
+                        decoration: InputDecoration(
+                          hintText: l10n.voiceCommandHint,
+                        ),
+                        onSubmitted: (value) {
+                          final command = parseDriverVoice(value);
+                          if (command?.intent == DriverVoiceIntent.accept) {
+                            onAccept();
+                          }
+                          if (command?.intent == DriverVoiceIntent.decline) {
+                            onDecline();
+                          }
+                        },
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
               const SizedBox(height: AlongSpace.s12),
-              Text(
-                l10n.incomingRequestRiderLine(
-                  trip.rider.displayName,
-                  trip.rider.rating.toStringAsFixed(1),
-                  trip.rider.tripCount,
-                ),
-                style: AlongText.bodyStrong,
-              ),
-              if (trip.womenOnly) ...[
-                const SizedBox(height: AlongSpace.s8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AlongSpace.s8,
-                    vertical: AlongSpace.s4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AlongColors.semanticInfoTint,
-                    borderRadius: BorderRadius.circular(AlongRadius.xs.x),
-                  ),
-                  child: Text(
-                    l10n.incomingRequestWomenOnly,
-                    style: AlongText.caption.copyWith(
-                      color: AlongColors.semanticInfo,
-                    ),
-                  ),
-                ),
-              ],
-              const SizedBox(height: AlongSpace.s16),
-              _LocationRow(
-                icon: Icons.trip_origin,
-                label: state.trip.isRoamingHail
-                    ? l10n.incomingRequestRoamingPickup
-                    : l10n.incomingRequestPickup,
-                value: trip.board.name,
-                meta: trip.approachBand != null
-                    ? _approachBandLabel(l10n, trip.approachBand!)
-                    : state.trip.isRoamingHail
-                        ? l10n.incomingRequestRoamingPickupMeta
-                        : null,
-                metaKey: trip.approachBand != null
-                    ? const Key('incoming_request_approach_band')
-                    : null,
-              ),
-              const SizedBox(height: AlongSpace.s8),
-              _LocationRow(
-                icon: Icons.place_outlined,
-                label: l10n.incomingRequestDropoff,
-                value: trip.alight.name,
-              ),
-              if (trip.load.flagged) ...[
-                const SizedBox(height: AlongSpace.s12),
-                Row(
-                  key: const Key('incoming_request_load_row'),
-                  children: [
-                    const Icon(
-                      Icons.inventory_2_outlined,
-                      color: AlongColors.semanticWarning,
-                      size: 20,
-                    ),
-                    const SizedBox(width: AlongSpace.s8),
-                    Expanded(
-                      child: Text(
-                        _loadLabel(l10n, trip.load),
-                        style: AlongText.bodyStrong.copyWith(
-                          color: AlongColors.semanticWarning,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              const SizedBox(height: AlongSpace.s16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.incomingRequestFareLine(
-                        formatMoney(trip.totalFare),
-                        _fareTierLabel(l10n, trip.fare.tier),
-                      ),
-                      style: AlongText.body,
-                    ),
-                  ),
-                  if (trip.fare.unconfirmed)
-                    TierPill(
-                      key: const Key('incoming_request_estimate_pill'),
-                      tier: _designTier(trip.fare.tier),
-                    ),
-                ],
-              ),
-              const SizedBox(height: AlongSpace.s4),
-              Text(
-                l10n.incomingRequestAlongFee(
-                  formatMoney(state.alongFee),
-                  formatCommissionPercent(state.commissionRate),
-                ),
-                style: AlongText.caption.copyWith(color: AlongColors.ink500),
-              ),
-              if (state.errorMessage != null) ...[
-                const SizedBox(height: AlongSpace.s8),
-                Text(
-                  l10n.errorGeneric,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: AlongColors.semanticDanger,
-                  ),
-                ),
-              ],
-              const Spacer(),
               Row(
                 children: [
                   Expanded(
@@ -229,30 +268,26 @@ class IncomingRequestSheet extends StatelessWidget {
   String _loadLabel(AppLocalizations l10n, TripLoadInfo load) {
     final size = load.size?.trim();
     final note = load.note?.trim();
-    if (size != null &&
-        size.isNotEmpty &&
-        note != null &&
-        note.isNotEmpty) {
+    if (size != null && size.isNotEmpty && note != null && note.isNotEmpty) {
       return l10n.incomingRequestLoadDetail(size, note);
     }
     if (note != null && note.isNotEmpty) return note;
     return l10n.incomingRequestLoadDefault;
   }
 
-  String _fareTierLabel(AppLocalizations l10n, FareTier tier) =>
-      switch (tier) {
-        FareTier.throughFare => l10n.fareTierStandard,
-        FareTier.summedLegs => l10n.fareTierCommunity,
-        FareTier.driverProfile => l10n.fareTierProfile,
-        FareTier.unconfirmed => l10n.fareTierEstimate,
-      };
+  String _fareTierLabel(AppLocalizations l10n, FareTier tier) => switch (tier) {
+    FareTier.throughFare => l10n.fareTierStandard,
+    FareTier.summedLegs => l10n.fareTierCommunity,
+    FareTier.driverProfile => l10n.fareTierProfile,
+    FareTier.unconfirmed => l10n.fareTierEstimate,
+  };
 
   design_fare.FareTier _designTier(FareTier tier) => switch (tier) {
-        FareTier.throughFare => design_fare.FareTier.verified,
-        FareTier.summedLegs => design_fare.FareTier.crowd,
-        FareTier.driverProfile => design_fare.FareTier.candidate,
-        FareTier.unconfirmed => design_fare.FareTier.estimate,
-      };
+    FareTier.throughFare => design_fare.FareTier.verified,
+    FareTier.summedLegs => design_fare.FareTier.crowd,
+    FareTier.driverProfile => design_fare.FareTier.candidate,
+    FareTier.unconfirmed => design_fare.FareTier.estimate,
+  };
 
   String _approachBandLabel(AppLocalizations l10n, TripApproachBand band) =>
       switch (band) {

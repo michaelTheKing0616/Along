@@ -988,4 +988,28 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get seatDriver => 'driver';
+
+  @override
+  String get seatLuggage => 'luggage';
+
+  @override
+  String get voiceBookingHint => 'Say it, for example Wuse to Berger';
+
+  @override
+  String get textMapTitle => 'Vehicles nearby';
+
+  @override
+  String get textMapEmpty => 'No vehicles in this direction yet';
+
+  @override
+  String get plateCheck => 'I see this plate';
+
+  @override
+  String get plateMatches => 'Plate matches';
+
+  @override
+  String get holdNotOffered => 'This driver has not turned on seat holds';
+
+  @override
+  String get walkExtension => 'Minutes you need to walk';
 }

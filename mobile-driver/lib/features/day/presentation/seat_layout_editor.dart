@@ -13,6 +13,7 @@ class SeatLayoutEditor extends StatelessWidget {
     required this.addSeatLabel,
     required this.removeRowLabel,
     required this.overCapacityLabel,
+    this.luggageLabel = 'Luggage',
   });
 
   final SeatLayout layout;
@@ -22,6 +23,7 @@ class SeatLayoutEditor extends StatelessWidget {
   final String addSeatLabel;
   final String removeRowLabel;
   final String overCapacityLabel;
+  final String luggageLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +55,30 @@ class SeatLayoutEditor extends StatelessWidget {
             spacing: AlongSpace.s8,
             runSpacing: AlongSpace.s8,
             children: [
-              for (final seat in row.seats)
+              for (final seat in row.seats) ...[
                 ActionChip(
                   key: Key('layout_seat_${seat.id}'),
-                  label: Text(seat.isPassenger ? seat.label : seat.label),
+                  label: Text(seat.label),
                   avatar: Icon(
-                    seat.isPassenger
+                    seat.isCargo
+                        ? Icons.luggage_outlined
+                        : seat.isPassenger
                         ? Icons.event_seat
                         : Icons.airline_seat_recline_extra,
                     size: 18,
                   ),
                   onPressed: () => onChanged(layout.markDriver(seat.id)),
                 ),
+                if (seat.isPassenger || seat.isCargo)
+                  IconButton(
+                    key: Key('layout_luggage_${seat.id}'),
+                    tooltip: luggageLabel,
+                    onPressed: () => onChanged(layout.markCargo(seat.id)),
+                    icon: Icon(
+                      seat.isCargo ? Icons.luggage : Icons.luggage_outlined,
+                    ),
+                  ),
+              ],
             ],
           ),
           const SizedBox(height: AlongSpace.s8),

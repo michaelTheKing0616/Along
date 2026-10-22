@@ -38,6 +38,7 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
       LiveTripArgs(tripId: widget.trip.tripId, initialTrip: widget.trip);
 
   VehicleCard? _card;
+  var _plateConfirmed = false;
 
   @override
   void initState() {
@@ -175,6 +176,7 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                           extra: NaMeRouteArgs(
                             tripId: trip.tripId,
                             counterpartLocation: trip.live?.driver?.point,
+                            plateNumber: trip.vehicle.plateNumber,
                           ),
                         ),
                       ),
@@ -195,6 +197,17 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                       style: AlongText.caption.copyWith(
                         color: AlongColors.ink500,
                       ),
+                    ),
+                    const SizedBox(height: AlongSpace.s8),
+                    AlongButton(
+                      key: const Key('meet_vehicle_plate_match'),
+                      label: _plateConfirmed
+                          ? l10n.plateMatches
+                          : l10n.plateCheck,
+                      variant: _plateConfirmed
+                          ? AlongButtonVariant.secondary
+                          : AlongButtonVariant.yellow,
+                      onPressed: () => setState(() => _plateConfirmed = true),
                     ),
                     const SizedBox(height: AlongSpace.s8),
                     Text(etaLine, style: AlongText.bodyStrong),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/day/presentation/build_my_day_screen.dart';
+import 'package:mobile_driver/features/day/presentation/conductor_screen.dart';
 import 'package:mobile_driver/features/day/presentation/seat_board_screen.dart';
 import 'package:mobile_driver/features/documents/presentation/document_capture_screen.dart';
 import 'package:mobile_driver/features/documents/presentation/documents_screen.dart';
@@ -67,6 +68,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.seatBoard,
         builder: (context, state) => const SeatBoardScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.conductor,
+        builder: (context, state) => const ConductorScreen(),
       ),
       GoRoute(
         path: AppRoutes.documents,

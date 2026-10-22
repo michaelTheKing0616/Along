@@ -221,6 +221,16 @@ class _VehicleCardsScreenState extends ConsumerState<VehicleCardsScreen> {
                           : '${rule.title}. ${rule.body}',
                     ),
                   const SizedBox(height: AlongSpace.s8),
+                  for (final rule in card.rules)
+                    if (rule.effect == 'bundle')
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+                        child: AlongButton(
+                          key: Key('book_bundle_${rule.id}'),
+                          label: rule.title,
+                          onPressed: () => _claimBundle(card, rule),
+                        ),
+                      ),
                   SeatMap(
                     body: card.layout.body,
                     rows: [
@@ -235,7 +245,9 @@ class _VehicleCardsScreenState extends ConsumerState<VehicleCardsScreen> {
                                 label: seat.label,
                                 role: seat.role,
                                 status: _state(card, seat.id)?.status ?? 'free',
-                                statusWord: seat.isPassenger
+                                statusWord: seat.isCargo
+                                    ? l10n.seatLuggage
+                                    : seat.isPassenger
                                     ? _word(
                                         l10n,
                                         _state(card, seat.id)?.status ?? 'free',
@@ -246,6 +258,7 @@ class _VehicleCardsScreenState extends ConsumerState<VehicleCardsScreen> {
                         ),
                     ],
                     onSeatTap: (seatId) => _claim(card, seatId),
+                    onSeatLongPress: (seatId) => _hold(card, seatId),
                   ),
                 ],
                 if (_notice != null) ...[
@@ -259,6 +272,81 @@ class _VehicleCardsScreenState extends ConsumerState<VehicleCardsScreen> {
               ],
             ),
     );
+  }
+
+  Future<void> _claimBundle(VehicleCard card, RideRule rule) async {
+    try {
+      await ref
+          .read(seatRepositoryProvider)
+          .claimBundle(layoutId: card.layoutId, ruleId: rule.id);
+      await _load();
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _notice = error is AlongException ? error.message : rule.title;
+      });
+    }
+  }
+
+  Future<void> _hold(VehicleCard card, String seatId) async {
+    final l10n = AppLocalizations.of(context);
+    final engine = const SeatRuleEngine();
+    final rowId = card.layout.rowIdOf(seatId);
+    final minutes = engine.holdMinutes(
+      rules: card.rules,
+      seatId: seatId,
+      rowId: rowId,
+    );
+    if (minutes == null) {
+      setState(() => _notice = l10n.holdNotOffered);
+      return;
+    }
+    final cap = engine.walkExtensionMinutes(
+      rules: card.rules,
+      seatId: seatId,
+      rowId: rowId,
+    );
+    var walk = 0;
+    if (cap > 0) {
+      final controller = TextEditingController();
+      final accepted = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.walkExtension),
+          content: TextField(
+            key: const Key('walk_minutes_field'),
+            controller: controller,
+            keyboardType: TextInputType.number,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.acknowledgeToClaim),
+            ),
+          ],
+        ),
+      );
+      walk = int.tryParse(controller.text) ?? 0;
+      controller.dispose();
+      if (accepted != true) return;
+    }
+    final state = _state(card, seatId);
+    try {
+      await ref
+          .read(seatRepositoryProvider)
+          .holdSeat(
+            layoutId: card.layoutId,
+            seatId: seatId,
+            expectedVersion: state?.version ?? 1,
+            walkMinutes: walk,
+          );
+      await _load();
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _notice = error is AlongException ? error.message : l10n.seatTaken;
+      });
+    }
   }
 
   String _word(AppLocalizations l10n, String status) {

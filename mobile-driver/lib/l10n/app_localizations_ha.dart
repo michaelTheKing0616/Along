@@ -1218,6 +1218,42 @@ class AppLocalizationsHa extends AppLocalizations {
   String get seatStale => 'Seat map is more than a minute old';
 
   @override
+  String get shiftStart => 'Shift starts';
+
+  @override
+  String get shiftEnd => 'Shift ends';
+
+  @override
+  String get homeLabel => 'Home-bound stop';
+
+  @override
+  String get walkExtension => 'Extra hold minutes for a walking rider';
+
+  @override
+  String get seatLuggage => 'luggage';
+
+  @override
+  String get voiceCommandHint => 'Say accept, full, or seat back left free';
+
+  @override
+  String get conductorOpen => 'Conductor code';
+
+  @override
+  String get conductorTitle => 'Conductor';
+
+  @override
+  String get conductorCode => 'Code from the driver';
+
+  @override
+  String get conductorJoin => 'Open the seat map';
+
+  @override
+  String get ghostSeatTitle => 'Still taken after the drop?';
+
+  @override
+  String get ghostSeatFree => 'Free it';
+
+  @override
   String freeSeatCount(int count) {
     return '$count free';
   }
