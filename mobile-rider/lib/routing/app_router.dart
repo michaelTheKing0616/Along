@@ -21,6 +21,8 @@ import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/meet_vehicle_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/plate_scan_screen.dart';
+import 'package:mobile_rider/features/marketplace/presentation/fare_shield_screen.dart';
+import 'package:mobile_rider/features/marketplace/presentation/stage_radar_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/trip_thread_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
@@ -236,6 +238,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.guardian,
         builder: (context, state) => const GuardianScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.stageRadar,
+        builder: (context, state) {
+          final parkId = state.extra as String? ?? '';
+          return StageRadarPage(parkId: parkId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.fareShield,
+        builder: (context, state) {
+          final args =
+              state.extra as FareShieldArgs? ??
+              const FareShieldArgs(offeredLabel: '');
+          return FareShieldScreen(args: args);
+        },
       ),
       GoRoute(
         path: AppRoutes.tripMessages,

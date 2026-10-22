@@ -2359,6 +2359,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Priority dispatch until your rest window ends'**
   String get restPriority;
+
+  /// No description provided for @marketplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get marketplaceTitle;
+
+  /// No description provided for @marketplaceGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily target'**
+  String get marketplaceGoal;
+
+  /// No description provided for @marketplaceEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Already earned'**
+  String get marketplaceEarned;
+
+  /// No description provided for @marketplaceTypical.
+  ///
+  /// In en, this message translates to:
+  /// **'Usual seat fare'**
+  String get marketplaceTypical;
+
+  /// No description provided for @marketplaceSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} seats to go'**
+  String marketplaceSeats(int count);
+
+  /// No description provided for @marketplaceGoalMet.
+  ///
+  /// In en, this message translates to:
+  /// **'Target reached'**
+  String get marketplaceGoalMet;
+
+  /// No description provided for @marketplaceSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get marketplaceSave;
+
+  /// No description provided for @marketplaceCorridor.
+  ///
+  /// In en, this message translates to:
+  /// **'Corridor you watch'**
+  String get marketplaceCorridor;
+
+  /// No description provided for @marketplaceRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get marketplaceRequests;
+
+  /// No description provided for @marketplaceAddCorridor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get marketplaceAddCorridor;
+
+  /// No description provided for @marketplaceTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue toward {corridor}'**
+  String marketplaceTip(String corridor);
+
+  /// No description provided for @marketplaceFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per litre'**
+  String get marketplaceFuel;
+
+  /// No description provided for @marketplaceFuelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pump'**
+  String get marketplaceFuelLabel;
+
+  /// No description provided for @marketplaceFuelSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save price'**
+  String get marketplaceFuelSave;
+
+  /// No description provided for @marketplaceEventName.
+  ///
+  /// In en, this message translates to:
+  /// **'Event name'**
+  String get marketplaceEventName;
+
+  /// No description provided for @marketplaceEventHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours the point stays open'**
+  String get marketplaceEventHours;
+
+  /// No description provided for @marketplaceEventSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the point'**
+  String get marketplaceEventSave;
 }
 
 class _AppLocalizationsDelegate

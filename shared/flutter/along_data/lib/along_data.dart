@@ -29,6 +29,7 @@ export 'src/planner/planner_repository.dart';
 export 'src/presence/presence_repository.dart';
 export 'src/profile/rider_profile_repository.dart';
 export 'src/routes/routes_repository.dart';
+export 'src/marketplace/phase_e_rules.dart';
 export 'src/safety/phase_d_rules.dart';
 export 'src/safety/plate_match.dart';
 export 'src/safety/phase_d_store.dart';

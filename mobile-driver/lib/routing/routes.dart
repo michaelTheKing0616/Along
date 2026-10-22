@@ -13,6 +13,7 @@ abstract final class AppRoutes {
   static const seatBoard = '/seats';
   static const conductor = '/conductor';
   static const rest = '/rest';
+  static const marketplace = '/today';
   static const routesTab = '/routes';
   static const earnings = '/earnings';
   static const settle = '/earnings/settle';

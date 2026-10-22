@@ -1158,5 +1158,34 @@
   "tripMessagesHint": "A note about something left behind",
   "tripMessagesSend": "Send",
   "holdNotOffered": "This driver has not turned on seat holds",
-  "walkExtension": "Minutes you need to walk"
+  "walkExtension": "Minutes you need to walk",
+  "stageRadarTitle": "Park board",
+  "stageRadarLeaving": "Leaves next",
+  "stageRadarSeats": "{free} of {total} free",
+  "@stageRadarSeats": {
+    "placeholders": {
+      "free": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "stageRadarEmpty": "No car is loading here yet",
+  "stageRadarVerified": "Verified",
+  "stageRadarFavourite": "Save driver",
+  "fareShieldTitle": "Fair fare",
+  "fareShieldQuiet": "Not enough trips on this corridor yet",
+  "fareShieldDispute": "This fare is high",
+  "fareShieldAnchored": "One offer, open for {seconds} seconds",
+  "@fareShieldAnchored": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "fareHistoryTitle": "By hour",
+  "fareHistoryRow": "{hour}:00 · {amount}",
+  "@fareHistoryRow": {
+    "placeholders": {
+      "hour": {"type": "int"},
+      "amount": {"type": "String"}
+    }
+  }
 }

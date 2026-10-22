@@ -1097,4 +1097,46 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get walkExtension => 'Minutes you need to walk';
+
+  @override
+  String get stageRadarTitle => 'Park board';
+
+  @override
+  String get stageRadarLeaving => 'Leaves next';
+
+  @override
+  String stageRadarSeats(int free, int total) {
+    return '$free of $total free';
+  }
+
+  @override
+  String get stageRadarEmpty => 'No car is loading here yet';
+
+  @override
+  String get stageRadarVerified => 'Verified';
+
+  @override
+  String get stageRadarFavourite => 'Save driver';
+
+  @override
+  String get fareShieldTitle => 'Fair fare';
+
+  @override
+  String get fareShieldQuiet => 'Not enough trips on this corridor yet';
+
+  @override
+  String get fareShieldDispute => 'This fare is high';
+
+  @override
+  String fareShieldAnchored(int seconds) {
+    return 'One offer, open for $seconds seconds';
+  }
+
+  @override
+  String get fareHistoryTitle => 'By hour';
+
+  @override
+  String fareHistoryRow(int hour, String amount) {
+    return '$hour:00 · $amount';
+  }
 }

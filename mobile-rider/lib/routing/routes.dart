@@ -30,4 +30,6 @@ abstract final class AppRoutes {
   static const plateScan = '/plate-scan';
   static const guardian = '/guardian';
   static const tripMessages = '/trip-messages';
+  static const stageRadar = '/stage-radar';
+  static const fareShield = '/fare-shield';
 }

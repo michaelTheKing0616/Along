@@ -639,5 +639,32 @@
   "restSave": "Save",
   "restStart": "Start rest",
   "restFinish": "Finish rest",
-  "restPriority": "Priority dispatch until your rest window ends"
+  "restPriority": "Priority dispatch until your rest window ends",
+  "marketplaceTitle": "Today",
+  "marketplaceGoal": "Daily target",
+  "marketplaceEarned": "Already earned",
+  "marketplaceTypical": "Usual seat fare",
+  "marketplaceSeats": "{count} seats to go",
+  "@marketplaceSeats": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "marketplaceGoalMet": "Target reached",
+  "marketplaceSave": "Save",
+  "marketplaceCorridor": "Corridor you watch",
+  "marketplaceRequests": "Requests",
+  "marketplaceAddCorridor": "Add",
+  "marketplaceTip": "Queue toward {corridor}",
+  "@marketplaceTip": {
+    "placeholders": {
+      "corridor": {"type": "String"}
+    }
+  },
+  "marketplaceFuel": "Price per litre",
+  "marketplaceFuelLabel": "Pump",
+  "marketplaceFuelSave": "Save price",
+  "marketplaceEventName": "Event name",
+  "marketplaceEventHours": "Hours the point stays open",
+  "marketplaceEventSave": "Open the point"
 }

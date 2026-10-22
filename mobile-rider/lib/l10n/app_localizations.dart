@@ -2080,6 +2080,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Minutes you need to walk'**
   String get walkExtension;
+
+  /// No description provided for @stageRadarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Park board'**
+  String get stageRadarTitle;
+
+  /// No description provided for @stageRadarLeaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaves next'**
+  String get stageRadarLeaving;
+
+  /// No description provided for @stageRadarSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'{free} of {total} free'**
+  String stageRadarSeats(int free, int total);
+
+  /// No description provided for @stageRadarEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No car is loading here yet'**
+  String get stageRadarEmpty;
+
+  /// No description provided for @stageRadarVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get stageRadarVerified;
+
+  /// No description provided for @stageRadarFavourite.
+  ///
+  /// In en, this message translates to:
+  /// **'Save driver'**
+  String get stageRadarFavourite;
+
+  /// No description provided for @fareShieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair fare'**
+  String get fareShieldTitle;
+
+  /// No description provided for @fareShieldQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough trips on this corridor yet'**
+  String get fareShieldQuiet;
+
+  /// No description provided for @fareShieldDispute.
+  ///
+  /// In en, this message translates to:
+  /// **'This fare is high'**
+  String get fareShieldDispute;
+
+  /// No description provided for @fareShieldAnchored.
+  ///
+  /// In en, this message translates to:
+  /// **'One offer, open for {seconds} seconds'**
+  String fareShieldAnchored(int seconds);
+
+  /// No description provided for @fareHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'By hour'**
+  String get fareHistoryTitle;
+
+  /// No description provided for @fareHistoryRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{hour}:00 · {amount}'**
+  String fareHistoryRow(int hour, String amount);
 }
 
 class _AppLocalizationsDelegate
