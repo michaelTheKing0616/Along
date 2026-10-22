@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { containsIdNumber, extractNormalizedId, redactOcrFields } from '../_shared/redact_ids.ts';
 import {
-  extractNormalizedId,
-  redactOcrFields,
-  containsIdNumber,
-} from '../_shared/redact_ids.ts';
+  forbiddenUnlessServiceRole,
+  type ServiceCaller,
+  serviceCallerFromAuthorization,
+} from '../_shared/authz.ts';
 import { errorResponse, jsonResponse, requestId } from '../_shared/http.ts';
 import { createServiceClient } from '../_shared/supabase.ts';
 import { resolveVerificationProvider } from '../_shared/verification/registry.ts';
@@ -28,7 +29,12 @@ export type OcrUpstreamResult = VerificationProviderResult;
 
 export type VerificationOcrDeps = {
   service: SupabaseClient;
-  ocrUpstream?: (path: string, documentType: string, providerName: string) => Promise<OcrUpstreamResult>;
+  caller?: ServiceCaller;
+  ocrUpstream?: (
+    path: string,
+    documentType: string,
+    providerName: string,
+  ) => Promise<OcrUpstreamResult>;
   resolveProviderName?: (countryCode: string, documentType: string) => Promise<string>;
   computeHash?: (
     documentType: string,
@@ -92,6 +98,9 @@ export async function handleVerificationOcr(
   deps: VerificationOcrDeps,
 ): Promise<Response> {
   const rid = requestId();
+  const denied = forbiddenUnlessServiceRole(deps.caller, rid);
+  if (denied) return denied;
+
   const service = deps.service;
 
   const { data: row, error: fetchError } = await service
@@ -109,9 +118,8 @@ export async function handleVerificationOcr(
     return errorResponse('VALIDATION', 'Missing storage path', 400, { request_id: rid });
   }
 
-  const resolveProviderName = deps.resolveProviderName
-    ?? ((countryCode, documentType) =>
-      defaultResolveProviderName(service, countryCode, documentType));
+  const resolveProviderName = deps.resolveProviderName ??
+    ((countryCode, documentType) => defaultResolveProviderName(service, countryCode, documentType));
 
   let providerName: string;
   try {
@@ -148,8 +156,8 @@ export async function handleVerificationOcr(
 
   let idHashB64: string | null = null;
   if (normalizedId) {
-    const computeHash = deps.computeHash
-      ?? ((docType, normId) => defaultComputeHash(service, docType, normId));
+    const computeHash = deps.computeHash ??
+      ((docType, normId) => defaultComputeHash(service, docType, normId));
     idHashB64 = await computeHash(verification.document_type, normalizedId);
   }
 
@@ -191,6 +199,10 @@ export async function handleVerificationOcr(
 
 export function handleVerificationOcrDefault(
   body: VerificationOcrRequest,
+  authorization: string | null,
 ): Promise<Response> {
-  return handleVerificationOcr(body, { service: createServiceClient() });
+  return handleVerificationOcr(body, {
+    service: createServiceClient(),
+    caller: serviceCallerFromAuthorization(authorization),
+  });
 }

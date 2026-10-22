@@ -32,10 +32,11 @@ function createMockService(
         }),
       };
     },
-    rpc: () => Promise.resolve({
-      data: 'deadbeef'.repeat(8),
-      error: null,
-    }),
+    rpc: () =>
+      Promise.resolve({
+        data: 'deadbeef'.repeat(8),
+        error: null,
+      }),
   } as unknown as SupabaseClient;
 }
 
@@ -64,6 +65,7 @@ async function runOcr(
         provider_reference: 'mock-ref',
       }),
     computeHash: () => Promise.resolve('aabbccdd'.repeat(8)),
+    caller: { serviceRole: true },
   });
 
   assertEquals(res.status, 200);
@@ -107,4 +109,19 @@ Deno.test('verification-ocr: upstream with embedded digits in notes is redacted'
 
   assertEquals(hints.note?.includes('98765432109') ?? false, false);
   assertEquals(containsIdNumber(JSON.stringify(hints)), false);
+});
+
+Deno.test('verification-ocr: non-service caller is rejected', async () => {
+  const res = await handleVerificationOcr(
+    { verification_id: VERIFICATION_ID },
+    {
+      service: {
+        from: () => {
+          throw new Error('should not read documents');
+        },
+      } as never,
+      caller: { serviceRole: false },
+    },
+  );
+  assertEquals(res.status, 403);
 });

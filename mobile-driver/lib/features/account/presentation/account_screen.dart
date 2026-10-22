@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/account/presentation/account_controller.dart';
+import 'package:mobile_driver/features/account/presentation/emergency_contacts_section.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
 
@@ -21,9 +22,7 @@ class AccountScreen extends ConsumerWidget {
       };
 
   String _verifiedLabel(AppLocalizations l10n, String? status) =>
-      status == 'verified'
-          ? l10n.accountVerified
-          : l10n.accountUnverified;
+      status == 'verified' ? l10n.accountVerified : l10n.accountUnverified;
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
     await ref.read(authRepositoryProvider).signOut();
@@ -50,7 +49,9 @@ class AccountScreen extends ConsumerWidget {
             return Center(child: Text(l10n.errorGeneric));
           }
 
-          final activeVehicle = state.vehicles.where((v) => v.active).firstOrNull;
+          final activeVehicle = state.vehicles
+              .where((v) => v.active)
+              .firstOrNull;
 
           return ListView(
             padding: const EdgeInsets.all(AlongSpace.s16),
@@ -64,10 +65,7 @@ class AccountScreen extends ConsumerWidget {
                   state.displayName ?? l10n.accountProfileUnknown,
                   style: AlongText.title,
                 ),
-                subtitle: Text(
-                  state.phoneE164 ?? '—',
-                  style: AlongText.body,
-                ),
+                subtitle: Text(state.phoneE164 ?? '—', style: AlongText.body),
                 trailing: Text(
                   _verifiedLabel(l10n, state.verifiedStatus),
                   style: AlongText.caption,
@@ -84,7 +82,10 @@ class AccountScreen extends ConsumerWidget {
                   leading: const Icon(Icons.directions_car_outlined),
                   title: Text(activeVehicle.plate, style: AlongText.bodyStrong),
                   subtitle: state.hasMultipleVehicles
-                      ? Text(l10n.accountVehicleActiveHint, style: AlongText.caption)
+                      ? Text(
+                          l10n.accountVehicleActiveHint,
+                          style: AlongText.caption,
+                        )
                       : null,
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => context.push(AppRoutes.vehicle),
@@ -122,7 +123,10 @@ class AccountScreen extends ConsumerWidget {
                 key: const Key('account_payout_tile'),
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.account_balance_outlined),
-                title: Text(l10n.accountPayoutBank, style: AlongText.bodyStrong),
+                title: Text(
+                  l10n.accountPayoutBank,
+                  style: AlongText.bodyStrong,
+                ),
                 subtitle: Text(
                   state.hasPayoutSubaccount
                       ? l10n.accountPayoutConfigured(
@@ -139,7 +143,10 @@ class AccountScreen extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.qr_code_2_outlined),
                 title: Text(l10n.myQrTitle, style: AlongText.bodyStrong),
-                subtitle: Text(l10n.myQrAccountSubtitle, style: AlongText.caption),
+                subtitle: Text(
+                  l10n.myQrAccountSubtitle,
+                  style: AlongText.caption,
+                ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push(AppRoutes.myQr),
               ),
@@ -151,10 +158,9 @@ class AccountScreen extends ConsumerWidget {
                 const SizedBox(height: AlongSpace.s8),
                 DropdownButtonFormField<String>(
                   key: const Key('account_city_dropdown'),
+                  isExpanded: true,
                   value: state.cityId,
-                  decoration: InputDecoration(
-                    hintText: l10n.accountCityHint,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.accountCityHint),
                   items: state.cities
                       .map(
                         (city) => DropdownMenuItem(
@@ -177,7 +183,10 @@ class AccountScreen extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.language_outlined),
                 title: Text(l10n.accountLanguage, style: AlongText.bodyStrong),
-                subtitle: Text(l10n.accountLanguageValue, style: AlongText.caption),
+                subtitle: Text(
+                  l10n.accountLanguageValue,
+                  style: AlongText.caption,
+                ),
               ),
               const SizedBox(height: AlongSpace.s24),
               Text(l10n.accountSafetyHeading, style: AlongText.overline),
@@ -185,8 +194,14 @@ class AccountScreen extends ConsumerWidget {
               ListTile(
                 key: const Key('account_safety_tile'),
                 contentPadding: EdgeInsets.zero,
-                title: Text(l10n.accountSafetyHowSos, style: AlongText.bodyStrong),
-                subtitle: Text(l10n.accountSafetyHowSosBody, style: AlongText.caption),
+                title: Text(
+                  l10n.accountSafetyHowSos,
+                  style: AlongText.bodyStrong,
+                ),
+                subtitle: Text(
+                  l10n.accountSafetyHowSosBody,
+                  style: AlongText.caption,
+                ),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -196,6 +211,8 @@ class AccountScreen extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 title: Text(l10n.accountLegal, style: AlongText.bodyStrong),
               ),
+              const SizedBox(height: AlongSpace.s24),
+              const EmergencyContactsSection(),
               const SizedBox(height: AlongSpace.s16),
               AlongButton(
                 key: const Key('account_sign_out'),

@@ -33,7 +33,9 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startPaymentListener());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _startPaymentListener(),
+    );
   }
 
   Future<void> _startPaymentListener() async {
@@ -75,20 +77,11 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
           Positioned.fill(
             child: AlongMap(
               key: const Key('driver_home_map'),
-              styleUrl: config.hasTiles
-                  ? AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
-                      .remoteStyleUrl(citySlug: state.citySlug)
-                  : (config.allowsDemoMapFallback
-                      ? AlongStyleLoader.demoStyleUrl
-                      : null),
-              offlineStyleJson: (!config.hasTiles &&
-                      !config.allowsDemoMapFallback)
-                  ? ref.watch(driverHomeOfflineStyleProvider).maybeWhen(
-                        data: (value) => value,
-                        orElse: () => null,
-                      )
-                  : null,
-              allowDemoStyleFallback: config.allowsDemoMapFallback,
+              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(
+                tilesBase: config.tilesBaseUrl,
+                citySlug: state.citySlug,
+              ),
+              allowDemoStyleFallback: false,
               initialCameraPosition: state.mapCenter == null
                   ? null
                   : MapCamera.forCenter(
@@ -114,9 +107,8 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                 key: const Key('incoming_request_sheet'),
                 state: incoming,
                 l10n: l10n,
-                onAccept: () => ref
-                    .read(incomingRequestNotifierProvider.notifier)
-                    .accept(),
+                onAccept: () =>
+                    ref.read(incomingRequestNotifierProvider.notifier).accept(),
                 onDecline: () => ref
                     .read(incomingRequestNotifierProvider.notifier)
                     .openDeclineReasons(),
@@ -129,9 +121,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
               ),
             ),
           if (incoming == null && pricing.isVisible)
-            Positioned.fill(
-              child: const DriverPricingSheet(),
-            ),
+            Positioned.fill(child: const DriverPricingSheet()),
           Positioned(
             top: 0,
             left: 0,
@@ -225,13 +215,17 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                             seats: state.seatsAvailable,
                             onDecrement: state.toggleEnabled
                                 ? () => ref
-                                    .read(driverHomeControllerProvider.notifier)
-                                    .adjustSeats(-1)
+                                      .read(
+                                        driverHomeControllerProvider.notifier,
+                                      )
+                                      .adjustSeats(-1)
                                 : null,
                             onIncrement: state.toggleEnabled
                                 ? () => ref
-                                    .read(driverHomeControllerProvider.notifier)
-                                    .adjustSeats(1)
+                                      .read(
+                                        driverHomeControllerProvider.notifier,
+                                      )
+                                      .adjustSeats(1)
                                 : null,
                           ),
                         ),
@@ -241,7 +235,9 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                             direction: state.roamingDirection,
                             onRouteLabel: l10n.homeDirectionOnRoute,
                             noneLabel: l10n.homeDirectionNone,
-                            onTap: state.toggleEnabled ? _toggleDirection : null,
+                            onTap: state.toggleEnabled
+                                ? _toggleDirection
+                                : null,
                           ),
                         ),
                       ],
@@ -280,11 +276,11 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   }
 
   String _errorText(AppLocalizations l10n, String key) => switch (key) {
-        'select_park' => l10n.homeErrorSelectPark,
-        'location_required' => l10n.homeErrorLocation,
-        'ledger_blocked' => l10n.homeLedgerBlockedBanner,
-        _ => l10n.errorGeneric,
-      };
+    'select_park' => l10n.homeErrorSelectPark,
+    'location_required' => l10n.homeErrorLocation,
+    'ledger_blocked' => l10n.homeLedgerBlockedBanner,
+    _ => l10n.errorGeneric,
+  };
 
   Future<void> _openParkPicker() async {
     await ref.read(parkPickerControllerProvider.notifier).loadNearby();
@@ -303,7 +299,9 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
     final next = current == RoamingDirection.onRoute
         ? RoamingDirection.none
         : RoamingDirection.onRoute;
-    await ref.read(driverHomeControllerProvider.notifier).setRoamingDirection(next);
+    await ref
+        .read(driverHomeControllerProvider.notifier)
+        .setRoamingDirection(next);
   }
 
   Future<void> _openDeclineReasons(AppLocalizations l10n) async {
@@ -334,12 +332,6 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
     controller.clearVehicle();
   }
 }
-
-final driverHomeOfflineStyleProvider = FutureProvider<String>((ref) async {
-  final dir = await ref.watch(mapCacheDirectoryProvider.future);
-  final config = await AlongMap.bootstrapOffline(cacheDirectory: dir);
-  return config.styleJson;
-});
 
 class _InfoBanner extends StatelessWidget {
   const _InfoBanner({required this.message});
@@ -420,10 +412,7 @@ class _ParkChip extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AlongSpace.s8),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: ActionChip(
-          label: Text(label),
-          onPressed: onTap,
-        ),
+        child: ActionChip(label: Text(label), onPressed: onTap),
       ),
     );
   }
@@ -451,15 +440,9 @@ class _SeatsChip extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            onPressed: onDecrement,
-            icon: const Icon(Icons.remove),
-          ),
+          IconButton(onPressed: onDecrement, icon: const Icon(Icons.remove)),
           Text('$seats', style: AlongText.label),
-          IconButton(
-            onPressed: onIncrement,
-            icon: const Icon(Icons.add),
-          ),
+          IconButton(onPressed: onIncrement, icon: const Icon(Icons.add)),
         ],
       ),
     );
@@ -481,11 +464,9 @@ class _DirectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label =
-        direction == RoamingDirection.onRoute ? onRouteLabel : noneLabel;
-    return ActionChip(
-      label: Text(label),
-      onPressed: onTap,
-    );
+    final label = direction == RoamingDirection.onRoute
+        ? onRouteLabel
+        : noneLabel;
+    return ActionChip(label: Text(label), onPressed: onTap);
   }
 }

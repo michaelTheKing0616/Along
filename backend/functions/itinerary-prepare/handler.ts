@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import {
+  forbiddenUnlessServiceRole,
+  type ServiceCaller,
+  serviceCallerFromAuthorization,
+} from '../_shared/authz.ts';
 import { jsonResponse, requestId } from '../_shared/http.ts';
 import { handlePlanTrip } from '../plan-trip/handler.ts';
 import { createServiceClient } from '../_shared/supabase.ts';
@@ -9,6 +14,11 @@ export const itineraryPrepareRequestSchema = z.object({
 });
 
 export type ItineraryPrepareRequest = z.infer<typeof itineraryPrepareRequestSchema>;
+
+function planLoadSize(raw: string | undefined): 'small' | 'medium' | 'large' | undefined {
+  if (raw === 'small' || raw === 'medium' || raw === 'large') return raw;
+  return undefined;
+}
 
 type PrepareContext = {
   eligible: boolean;
@@ -29,6 +39,7 @@ type PrepareContext = {
 export type ItineraryPrepareDeps = {
   service: SupabaseClient;
   planTrip?: typeof handlePlanTrip;
+  caller: ServiceCaller;
 };
 
 export async function handleItineraryPrepare(
@@ -36,6 +47,8 @@ export async function handleItineraryPrepare(
   deps: ItineraryPrepareDeps,
 ): Promise<Response> {
   const rid = requestId();
+  const denied = forbiddenUnlessServiceRole(deps.caller, rid);
+  if (denied) return denied;
 
   const { data: ctxRaw, error: ctxError } = await deps.service.rpc('itinerary_prepare_context', {
     p_trip_id: body.trip_id,
@@ -66,7 +79,10 @@ export async function handleItineraryPrepare(
 
   const filters = {
     women_only: ctx.filters?.women_only ?? false,
-    load: ctx.filters?.load ?? { flagged: false },
+    load: {
+      flagged: ctx.filters?.load?.flagged ?? false,
+      size: planLoadSize(ctx.filters?.load?.size),
+    },
     modes: null,
   };
 
@@ -122,8 +138,12 @@ export async function handleItineraryPrepare(
   });
 }
 
-export function handleItineraryPrepareDefault(body: ItineraryPrepareRequest): Promise<Response> {
+export function handleItineraryPrepareDefault(
+  body: ItineraryPrepareRequest,
+  authorization: string | null,
+): Promise<Response> {
   return handleItineraryPrepare(body, {
     service: createServiceClient(),
+    caller: serviceCallerFromAuthorization(authorization),
   });
 }

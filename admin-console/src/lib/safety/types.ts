@@ -30,6 +30,8 @@ export type SosBoardRow = {
   driver_name: string | null;
   vehicle_plate: string | null;
   destination_label: string | null;
+  /** True when raise_sos minted a trip share. The token itself is not stored. */
+  share_issued: boolean;
 };
 
 export type IncidentQueueRow = {

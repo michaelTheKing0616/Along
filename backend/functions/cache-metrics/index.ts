@@ -1,3 +1,4 @@
+import { serviceCallerFromAuthorization } from '../_shared/authz.ts';
 import { corsHeaders, errorResponse, requestId } from '../_shared/http.ts';
 import { handleCacheMetrics } from './handler.ts';
 
@@ -12,7 +13,8 @@ Deno.serve((req) => {
     return errorResponse('VALIDATION', 'Method not allowed', 405, { request_id: rid });
   }
 
-  return handleCacheMetrics();
+  const authorization = req.headers.get('Authorization');
+  return handleCacheMetrics(serviceCallerFromAuthorization(authorization));
 });
 
 export { handleCacheMetrics } from './handler.ts';

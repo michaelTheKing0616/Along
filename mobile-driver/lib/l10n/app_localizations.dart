@@ -206,7 +206,10 @@ abstract class AppLocalizations {
   /// **'Something went wrong. Please try again.'**
   String get errorGeneric;
 
-  /// Staging APK missing Supabase dart-defines.
+  /// No description provided for @errorAuthNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'This build is not connected to Along. Rebuild the staging APK with env/staging.json.'**
   String get errorAuthNotConfigured;
 
   /// No description provided for @errorValidation.
@@ -1984,6 +1987,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Digital · {source}'**
   String earningsDigitalRow(String source);
+
+  /// No description provided for @sosQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone. We\'ll alert the safety team when you\'re back online.'**
+  String get sosQueued;
+
+  /// No description provided for @sosLiveLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy live location link'**
+  String get sosLiveLink;
+
+  /// No description provided for @sosLiveLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Live location link copied'**
+  String get sosLiveLinkCopied;
+
+  /// No description provided for @sosContactsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell someone you trust'**
+  String get sosContactsHeading;
+
+  /// No description provided for @sosContactWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp {name}'**
+  String sosContactWhatsapp(String name);
+
+  /// No description provided for @sosContactSms.
+  ///
+  /// In en, this message translates to:
+  /// **'Text {name}'**
+  String sosContactSms(String name);
+
+  /// No description provided for @emergencyContactsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'EMERGENCY CONTACTS'**
+  String get emergencyContactsHeading;
+
+  /// No description provided for @emergencyContactsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We notify these people if you raise SOS. Up to 5. WhatsApp or a text opens on your phone.'**
+  String get emergencyContactsHint;
+
+  /// No description provided for @emergencyContactsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No emergency contacts yet'**
+  String get emergencyContactsEmpty;
+
+  /// No description provided for @emergencyContactName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get emergencyContactName;
+
+  /// No description provided for @emergencyContactPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get emergencyContactPhone;
+
+  /// No description provided for @emergencyContactAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get emergencyContactAdd;
+
+  /// No description provided for @emergencyContactRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String emergencyContactRemove(String name);
+
+  /// No description provided for @emergencyContactInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a phone number like +2348012345678'**
+  String get emergencyContactInvalidPhone;
+
+  /// No description provided for @emergencyContactLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You can save up to 5 contacts'**
+  String get emergencyContactLimit;
+
+  /// No description provided for @emergencyContactSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save that contact'**
+  String get emergencyContactSaveFailed;
 }
 
 class _AppLocalizationsDelegate

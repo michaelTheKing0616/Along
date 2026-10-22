@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import {
+  forbiddenUnlessServiceRole,
+  type ServiceCaller,
+  serviceCallerFromAuthorization,
+} from '../_shared/authz.ts';
 import { jsonResponse, requestId } from '../_shared/http.ts';
 import { handleWalkingDirections } from '../walking-directions/handler.ts';
 import { createOsrmClient, type OsrmClient } from '../_shared/osrm.ts';
@@ -24,6 +29,7 @@ type PrefetchContext = {
 export type TransferPrefetchDeps = {
   service: SupabaseClient;
   osrm?: OsrmClient;
+  caller: ServiceCaller;
 };
 
 export async function handleTransferPrefetch(
@@ -31,6 +37,8 @@ export async function handleTransferPrefetch(
   deps: TransferPrefetchDeps,
 ): Promise<Response> {
   const rid = requestId();
+  const denied = forbiddenUnlessServiceRole(deps.caller, rid);
+  if (denied) return denied;
 
   const { data: ctxRaw, error: ctxError } = await deps.service.rpc('transfer_prefetch_context', {
     p_trip_id: body.trip_id,
@@ -52,9 +60,7 @@ export async function handleTransferPrefetch(
     p_city: ctx.city_id ?? null,
   });
   if (walkSpeedError) throw walkSpeedError;
-  const walkSpeedMps = typeof walkSpeedRaw === 'number'
-    ? walkSpeedRaw
-    : Number(walkSpeedRaw);
+  const walkSpeedMps = typeof walkSpeedRaw === 'number' ? walkSpeedRaw : Number(walkSpeedRaw);
 
   const modePref = ctx.wayfinding_mode ?? 'text';
   const mockUser = {
@@ -78,7 +84,10 @@ export async function handleTransferPrefetch(
     const errBody = await walkRes.json().catch(() => ({}));
     throw new Error(
       typeof errBody === 'object' && errBody && 'error' in errBody
-        ? String((errBody as { error?: { message?: string } }).error?.message ?? 'walking-directions failed')
+        ? String(
+          (errBody as { error?: { message?: string } }).error?.message ??
+            'walking-directions failed',
+        )
         : 'walking-directions failed',
     );
   }
@@ -105,8 +114,12 @@ export async function handleTransferPrefetch(
   });
 }
 
-export function handleTransferPrefetchDefault(body: TransferPrefetchRequest): Promise<Response> {
+export function handleTransferPrefetchDefault(
+  body: TransferPrefetchRequest,
+  authorization: string | null,
+): Promise<Response> {
   return handleTransferPrefetch(body, {
     service: createServiceClient(),
+    caller: serviceCallerFromAuthorization(authorization),
   });
 }

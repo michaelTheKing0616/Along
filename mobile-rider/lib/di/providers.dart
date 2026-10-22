@@ -24,7 +24,9 @@ final appConfigProvider = Provider<AppConfig>((ref) {
 
 /// Supabase gateway — overridden in tests.
 final alongSupabaseProvider = Provider<AlongSupabase>((ref) {
-  throw UnimplementedError('alongSupabaseProvider must be overridden at startup');
+  throw UnimplementedError(
+    'alongSupabaseProvider must be overridden at startup',
+  );
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -35,7 +37,9 @@ final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
   return CatalogRepository(ref.watch(alongSupabaseProvider));
 });
 
-final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((ref) async {
+final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((
+  ref,
+) async {
   try {
     final country = await ref
         .read(catalogRepositoryProvider)
@@ -84,7 +88,9 @@ final graphCacheStoreProvider = Provider<GraphCacheStore>((ref) {
   );
 });
 
-final corridorTilePrecacheProvider = Provider<CorridorTilePrecacheService>((ref) {
+final corridorTilePrecacheProvider = Provider<CorridorTilePrecacheService>((
+  ref,
+) {
   throw UnimplementedError(
     'corridorTilePrecacheProvider must be overridden at startup',
   );
@@ -116,11 +122,11 @@ final negotiationChannelProvider = Provider<NegotiationChannel>((ref) {
 
 final walkingDirectionsRepositoryProvider =
     Provider<WalkingDirectionsRepository>((ref) {
-  return WalkingDirectionsRepository(
-    ref.watch(alongSupabaseProvider),
-    ref.watch(alongDatabaseProvider),
-  );
-});
+      return WalkingDirectionsRepository(
+        ref.watch(alongSupabaseProvider),
+        ref.watch(alongDatabaseProvider),
+      );
+    });
 
 final journeyRepositoryProvider = Provider<JourneyRepository>((ref) {
   return JourneyRepository(
@@ -131,6 +137,21 @@ final journeyRepositoryProvider = Provider<JourneyRepository>((ref) {
 
 final safetyRepositoryProvider = Provider<SafetyRepository>((ref) {
   return SafetyRepository(ref.watch(alongSupabaseProvider));
+});
+
+final emergencyContactStoreProvider = Provider<EmergencyContactStore>((ref) {
+  return EmergencyContactStore(ref.watch(alongDatabaseProvider));
+});
+
+final sosOutboxProvider = Provider<SosOutbox>((ref) {
+  return SosOutbox(PendingActionQueue(ref.watch(alongDatabaseProvider)));
+});
+
+final sosRaiseCoordinatorProvider = Provider<SosRaiseCoordinator>((ref) {
+  return SosRaiseCoordinator(
+    repository: ref.watch(safetyRepositoryProvider),
+    outbox: ref.watch(sosOutboxProvider),
+  );
 });
 
 final riderProfileRepositoryProvider = Provider<RiderProfileRepository>((ref) {
@@ -192,20 +213,19 @@ List<Override> buildProviderOverrides({
     negotiationChannelProvider.overrideWithValue(
       negotiationChannel ?? FakeNegotiationChannel(),
     ),
-    alongDatabaseProvider.overrideWithValue(
-      database ?? AlongDatabase.memory(),
-    ),
+    alongDatabaseProvider.overrideWithValue(database ?? AlongDatabase.memory()),
     networkConditionsProbeProvider.overrideWithValue(
-      networkProbe ?? FakeNetworkConditionsProbe(
-        const NetworkConditionsSnapshot(),
-      ),
+      networkProbe ??
+          FakeNetworkConditionsProbe(const NetworkConditionsSnapshot()),
     ),
     if (corridorTilePrecache != null)
       corridorTilePrecacheProvider.overrideWithValue(corridorTilePrecache)
     else
       corridorTilePrecacheProvider.overrideWithValue(
         CorridorTilePrecacheService(
-          cacheDirectory: Directory.systemTemp.createTempSync('along_map_cache'),
+          cacheDirectory: Directory.systemTemp.createTempSync(
+            'along_map_cache',
+          ),
         ),
       ),
     if (onboardingPreferences != null)

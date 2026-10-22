@@ -12,9 +12,40 @@ class AlongStyleLoader {
     this.glyphsUrl,
   });
 
-  /// Public MapLibre demotiles style — used when TILES_BASE_URL is unset on
-  /// non-prod builds. Do NOT use as a tiles *base* (it is a full style URL).
+  /// Public MapLibre demotiles style. A full style URL, not a tiles base.
+  /// Misleading as a production basemap (world demo, not Nigeria).
   static const demoStyleUrl = 'https://demotiles.maplibre.org/style.json';
+
+  /// Free vector basemap. No API key. Used when Along PMTiles are unset or
+  /// the configured host is one of the retired along.ng tile domains.
+  static const openFreeMapStyleUrl =
+      'https://tiles.openfreemap.org/styles/positron';
+
+  /// Hosts that were written into env files before a tile CDN existed.
+  static const unreachableTileHosts = <String>{
+    'tiles.along.ng',
+    'tiles.dev.along.ng',
+    'tiles-staging.along.ng',
+  };
+
+  /// True when [tilesBase] is an http(s) origin we can request a style from.
+  static bool isReachableTilesBase(String? tilesBase) {
+    final trimmed = tilesBase?.trim() ?? '';
+    if (trimmed.isEmpty) return false;
+    final uri = Uri.tryParse(trimmed);
+    if (uri == null || uri.host.isEmpty) return false;
+    if (uri.scheme != 'https' && uri.scheme != 'http') return false;
+    if (uri.host.contains('placeholder')) return false;
+    return !unreachableTileHosts.contains(uri.host);
+  }
+
+  /// Along style when a real tiles base is configured, otherwise OpenFreeMap.
+  static String resolveBasemapStyleUrl({String? tilesBase, String? citySlug}) {
+    final trimmed = tilesBase?.trim() ?? '';
+    if (!isReachableTilesBase(trimmed)) return openFreeMapStyleUrl;
+    return AlongStyleLoader(tilesBase: trimmed)
+        .remoteStyleUrl(citySlug: citySlug);
+  }
 
   final String tilesBase;
   final String? spriteUrl;
@@ -31,8 +62,7 @@ class AlongStyleLoader {
   }
 
   /// True when [styleString] is the demotiles fallback (not Along CDN).
-  static bool isDemoStyle(String? styleString) =>
-      styleString == demoStyleUrl;
+  static bool isDemoStyle(String? styleString) => styleString == demoStyleUrl;
 
   /// Resolves placeholders in a style JSON string for the given PMTiles location.
   ///

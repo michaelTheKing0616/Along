@@ -6,8 +6,7 @@ import 'package:drift/drift.dart';
 
 /// FIFO offline action queue with idempotent replay via `p_client_ref`.
 class PendingActionQueue {
-  PendingActionQueue(this._db, {Clock? clock})
-      : _clock = clock ?? Clock.system;
+  PendingActionQueue(this._db, {Clock? clock}) : _clock = clock ?? Clock.system;
 
   final AlongDatabase _db;
   final Clock _clock;
@@ -20,7 +19,9 @@ class PendingActionQueue {
     required String type,
     required Map<String, dynamic> payload,
   }) async {
-    await _db.into(_db.pendingActions).insertOnConflictUpdate(
+    await _db
+        .into(_db.pendingActions)
+        .insertOnConflictUpdate(
           PendingActionsCompanion.insert(
             id: id,
             type: type,
@@ -32,9 +33,9 @@ class PendingActionQueue {
 
   Future<List<QueuedAction>> pendingFifo() async {
     await _dropExpired();
-    final rows = await (_db.select(_db.pendingActions)
-          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
-        .get();
+    final rows = await (_db.select(
+      _db.pendingActions,
+    )..orderBy([(t) => OrderingTerm.asc(t.createdAt)])).get();
     return rows
         .map(
           (row) => QueuedAction(
@@ -48,16 +49,14 @@ class PendingActionQueue {
         .toList();
   }
 
-  Future<int> replay(
-    Future<void> Function(QueuedAction action) handler,
-  ) async {
+  Future<int> replay(Future<void> Function(QueuedAction action) handler) async {
     var processed = 0;
     for (final action in await pendingFifo()) {
       try {
         await handler(action);
-        await (_db.delete(_db.pendingActions)
-              ..where((t) => t.id.equals(action.id)))
-            .go();
+        await (_db.delete(
+          _db.pendingActions,
+        )..where((t) => t.id.equals(action.id))).go();
         processed++;
       } catch (_) {
         await _incrementAttempts(action.id);
@@ -67,9 +66,9 @@ class PendingActionQueue {
   }
 
   Future<void> _incrementAttempts(String id) async {
-    final row = await (_db.select(_db.pendingActions)
-          ..where((t) => t.id.equals(id)))
-        .getSingle();
+    final row = await (_db.select(
+      _db.pendingActions,
+    )..where((t) => t.id.equals(id))).getSingle();
     await (_db.update(_db.pendingActions)..where((t) => t.id.equals(id))).write(
       PendingActionsCompanion(
         attempts: Value(row.attempts + 1),
@@ -78,11 +77,15 @@ class PendingActionQueue {
     );
   }
 
+  Future<void> remove(String id) async {
+    await (_db.delete(_db.pendingActions)..where((t) => t.id.equals(id))).go();
+  }
+
   Future<void> _dropExpired() async {
     final cutoff = _clock.now().subtract(maxAge);
-    await (_db.delete(_db.pendingActions)
-          ..where((t) => t.createdAt.isSmallerThanValue(cutoff)))
-        .go();
+    await (_db.delete(
+      _db.pendingActions,
+    )..where((t) => t.createdAt.isSmallerThanValue(cutoff))).go();
   }
 }
 

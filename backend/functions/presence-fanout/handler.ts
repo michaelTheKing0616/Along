@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { loadPresenceFanoutCfg } from '../_shared/cfg.ts';
+import {
+  forbiddenUnlessServiceRole,
+  type ServiceCaller,
+  serviceCallerFromAuthorization,
+} from '../_shared/authz.ts';
 import { jsonResponse, requestId } from '../_shared/http.ts';
 import {
   createRealtimeBroadcastClient,
@@ -32,6 +37,7 @@ type AmbientCellsPayload = {
 export type PresenceFanoutDeps = {
   service: SupabaseClient;
   realtime: RealtimeBroadcastClient;
+  caller: ServiceCaller;
 };
 
 export async function handlePresenceFanout(
@@ -39,6 +45,9 @@ export async function handlePresenceFanout(
   deps: PresenceFanoutDeps,
 ): Promise<Response> {
   const rid = requestId();
+  const denied = forbiddenUnlessServiceRole(deps.caller, rid);
+  if (denied) return denied;
+
   const cfg = await loadPresenceFanoutCfg(deps.service, req.city_id ?? null);
 
   const { data: targets, error: targetsError } = await deps.service.rpc(
@@ -49,9 +58,7 @@ export async function handlePresenceFanout(
   }
 
   const rows = (targets ?? []) as FanoutTarget[];
-  const filtered = req.city_id
-    ? rows.filter((r) => r.city_id === req.city_id)
-    : rows;
+  const filtered = req.city_id ? rows.filter((r) => r.city_id === req.city_id) : rows;
 
   let published = 0;
 
@@ -121,9 +128,11 @@ export async function handlePresenceFanout(
 
 export function handlePresenceFanoutDefault(
   req: PresenceFanoutRequest,
+  authorization: string | null,
 ): Promise<Response> {
   return handlePresenceFanout(req, {
     service: createServiceClient(),
     realtime: createRealtimeBroadcastClient(),
+    caller: serviceCallerFromAuthorization(authorization),
   });
 }

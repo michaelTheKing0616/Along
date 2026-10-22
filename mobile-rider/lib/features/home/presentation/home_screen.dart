@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maplibre_gl/maplibre_gl.dart' hide GeoPoint;
-import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
@@ -34,10 +33,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(homeControllerProvider);
     final config = ref.watch(appConfigProvider);
-    final lowData = ref.watch(lowDataModeProvider).maybeWhen(
-          data: (mode) => mode,
-          orElse: () => LowDataMode.disabled(),
-        );
+    final lowData = ref
+        .watch(lowDataModeProvider)
+        .maybeWhen(data: (mode) => mode, orElse: () => LowDataMode.disabled());
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
@@ -46,22 +44,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Positioned.fill(
             child: AlongMap(
               key: const Key('home_map'),
-              styleUrl: config.hasTiles
-                  ? AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
-                      .remoteStyleUrl(citySlug: state.citySlug)
-                  : (config.allowsDemoMapFallback
-                      ? AlongStyleLoader.demoStyleUrl
-                      : null),
-              // Prefer demotiles on non-prod when CDN unset; only attempt the
-              // offline fixture on prod (hard empty-state path) while loading.
-              offlineStyleJson: (!config.hasTiles &&
-                      !config.allowsDemoMapFallback)
-                  ? ref.watch(homeOfflineStyleProvider).maybeWhen(
-                        data: (value) => value,
-                        orElse: () => null,
-                      )
-                  : null,
-              allowDemoStyleFallback: config.allowsDemoMapFallback,
+              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(
+                tilesBase: config.tilesBaseUrl,
+                citySlug: state.citySlug,
+              ),
+              allowDemoStyleFallback: false,
               maxZoom: lowData.enabled ? lowData.maxTileZoom.toDouble() : null,
               initialCameraPosition: state.mapCenter == null
                   ? null
@@ -127,9 +114,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               bottom: 180,
               child: TextButton(
                 key: const Key('home_expand_nearby'),
-                onPressed: () => setState(() => _expandedNearby = !_expandedNearby),
+                onPressed: () =>
+                    setState(() => _expandedNearby = !_expandedNearby),
                 child: Text(
-                  _expandedNearby ? l10n.homeCollapseNearby : l10n.homeExpandNearby,
+                  _expandedNearby
+                      ? l10n.homeCollapseNearby
+                      : l10n.homeExpandNearby,
                 ),
               ),
             ),
@@ -149,7 +139,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final controller = _layerController;
     if (controller == null) return;
 
-    assert(HomeMapLayerPolicy.isVehicleLayerAllowed(state.activeLayers) == false);
+    assert(
+      HomeMapLayerPolicy.isVehicleLayerAllowed(state.activeLayers) == false,
+    );
 
     if (state.userLocation != null &&
         state.activeLayers.contains(HomeMapOverlayLayer.puck)) {
@@ -184,9 +176,3 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     context.push(AppRoutes.search);
   }
 }
-
-final homeOfflineStyleProvider = FutureProvider<String>((ref) async {
-  final dir = await ref.watch(mapCacheDirectoryProvider.future);
-  final config = await AlongMap.bootstrapOffline(cacheDirectory: dir);
-  return config.styleJson;
-});

@@ -6,6 +6,11 @@ import {
   createRealtimeBroadcastClient,
   type RealtimeBroadcastClient,
 } from '../_shared/realtime.ts';
+import {
+  forbiddenUnlessServiceRole,
+  type ServiceCaller,
+  serviceCallerFromAuthorization,
+} from '../_shared/authz.ts';
 import { createServiceClient } from '../_shared/supabase.ts';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -41,6 +46,7 @@ export type NotifyDeps = {
   realtime: RealtimeBroadcastClient;
   fcm: FcmClient;
   log?: (entry: Record<string, unknown>) => void;
+  caller: ServiceCaller;
 };
 
 function phoneSuffix(phone: string | null | undefined): string {
@@ -70,7 +76,9 @@ async function notifySafetyOnCall(
     throw new Error(adminError.message);
   }
 
-  const adminRows = (admins ?? []) as Array<{ id: string; profiles: { phone_e164: string | null } | { phone_e164: string | null }[] }>;
+  const adminRows = (admins ?? []) as Array<
+    { id: string; profiles: { phone_e164: string | null } | { phone_e164: string | null }[] }
+  >;
   const safetyAdmins: SafetyAdminRow[] = adminRows.map((row) => {
     const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
     return { id: row.id, phone_e164: profile?.phone_e164 ?? null };
@@ -204,6 +212,8 @@ export async function handleNotify(
   deps: NotifyDeps,
 ): Promise<Response> {
   const rid = requestId();
+  const denied = forbiddenUnlessServiceRole(deps.caller, rid);
+  if (denied) return denied;
 
   if (body.kind === 'trip_request') {
     const { driverId, cityId, expiresAt } = await tripDriverId(deps.service, body.trip_id);
@@ -277,6 +287,7 @@ export async function handleNotify(
     }
 
     const delivery = await notifySafetyOnCall(deps, body.sos_id);
+    const contacts = await notifyEmergencyContacts(deps, body.sos_id);
 
     return jsonResponse({
       data: {
@@ -284,6 +295,7 @@ export async function handleNotify(
         sos_id: body.sos_id,
         fcm_sent: delivery.fcm_sent,
         sms_sent: delivery.sms_sent,
+        contact_fcm_sent: contacts.fcm_sent,
       },
       meta: { request_id: rid },
     });
@@ -305,7 +317,65 @@ export async function handleNotify(
   throw new Error(`Unsupported notify kind`);
 }
 
-export function handleNotifyDefault(body: NotifyRequest): Promise<Response> {
+async function notifyEmergencyContacts(
+  deps: NotifyDeps,
+  sosId: string,
+): Promise<{ fcm_sent: number }> {
+  const { data: sosRow, error: sosError } = await deps.service
+    .from('sos_alerts')
+    .select('id, raised_by')
+    .eq('id', sosId)
+    .single();
+
+  if (sosError || !sosRow) return { fcm_sent: 0 };
+  const raisedBy = (sosRow as { raised_by?: string }).raised_by;
+  if (!raisedBy) return { fcm_sent: 0 };
+
+  const { data: contacts, error: contactError } = await deps.service
+    .from('emergency_contacts')
+    .select('display_name, phone_e164')
+    .eq('profile_id', raisedBy);
+
+  if (contactError) {
+    throw new Error(contactError.message);
+  }
+
+  let fcmSent = 0;
+  for (const contact of (contacts ?? []) as Array<{ phone_e164: string }>) {
+    const { data: profiles, error: profileError } = await deps.service
+      .from('profiles')
+      .select('id')
+      .eq('phone_e164', contact.phone_e164);
+
+    if (profileError) throw new Error(profileError.message);
+    const profileId = (profiles as Array<{ id: string }> | null)?.[0]?.id;
+    if (!profileId) continue;
+
+    const { data: tokens, error: tokenError } = await deps.service
+      .from('device_tokens')
+      .select('token, platform')
+      .eq('profile_id', profileId);
+
+    if (tokenError) throw new Error(tokenError.message);
+    for (const row of (tokens ?? []) as DeviceTokenRow[]) {
+      await deps.fcm.sendDataMessage({
+        token: row.token,
+        data: { type: 'sos_contact', sos_id: sosId },
+        ttlSeconds: 300,
+        collapseKey: `sos_contact_${sosId}`,
+        priority: 'high',
+      });
+      fcmSent += 1;
+    }
+  }
+
+  return { fcm_sent: fcmSent };
+}
+
+export function handleNotifyDefault(
+  body: NotifyRequest,
+  authorization: string | null,
+): Promise<Response> {
   return handleNotify(body, {
     service: createServiceClient(),
     realtime: createRealtimeBroadcastClient(),
@@ -313,5 +383,6 @@ export function handleNotifyDefault(body: NotifyRequest): Promise<Response> {
       const res = await fetch(url, init);
       return { ok: res.ok, status: res.status, body: await res.text() };
     }),
+    caller: serviceCallerFromAuthorization(authorization),
   });
 }

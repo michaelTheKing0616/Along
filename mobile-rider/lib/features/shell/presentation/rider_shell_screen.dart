@@ -6,10 +6,7 @@ import 'package:mobile_rider/routing/routes.dart';
 
 /// Bottom nav shell — Home / Trips / Account (doc 06 R-05).
 class RiderShellScreen extends StatelessWidget {
-  const RiderShellScreen({
-    super.key,
-    required this.navigationShell,
-  });
+  const RiderShellScreen({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
@@ -41,25 +38,5 @@ class RiderShellScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class TripsStubScreen extends StatelessWidget {
-  const TripsStubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Center(child: Text(l10n.tripsStubBody));
-  }
-}
-
-class AccountStubScreen extends StatelessWidget {
-  const AccountStubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Center(child: Text(l10n.accountStubBody));
   }
 }

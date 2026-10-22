@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    return await handleNotifyDefault(parsed.data);
+    return await handleNotifyDefault(parsed.data, authHeader);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal error';
     const status = message === 'NOT_FOUND' ? 404 : 500;

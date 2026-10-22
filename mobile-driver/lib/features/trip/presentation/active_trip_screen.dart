@@ -1,4 +1,10 @@
-import 'package:along_core/along_core.dart' show TripStatus, TripSummary, TripWaitApproach, computeAlongCommission, formatMoney;
+import 'package:along_core/along_core.dart'
+    show
+        TripStatus,
+        TripSummary,
+        TripWaitApproach,
+        computeAlongCommission,
+        formatMoney;
 import 'package:along_design/along_design.dart' hide formatMoney;
 import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +44,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
       if (next.completeResult != null &&
           previous?.completeResult == null &&
           context.mounted) {
-        final paidDigitally = next.digitalPayment != null ||
+        final paidDigitally =
+            next.digitalPayment != null ||
             next.completeResult!.trip.paymentMethod == 'digital';
         TripCompleteSheet.show(
           context,
@@ -54,8 +61,9 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     final l10n = AppLocalizations.of(context);
     final configAsync = ref.watch(driverTripConfigProvider);
     final state = ref.watch(activeTripControllerFamilyProvider(args));
-    final controller =
-        ref.read(activeTripControllerFamilyProvider(args).notifier);
+    final controller = ref.read(
+      activeTripControllerFamilyProvider(args).notifier,
+    );
     final appConfig = ref.watch(appConfigProvider);
     final home = ref.watch(driverHomeControllerProvider);
     final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider);
@@ -80,10 +88,11 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
           Positioned.fill(
             child: AlongMap(
               key: const Key('active_trip_map'),
-              styleUrl: appConfig.tilesBaseUrl == null
-                  ? null
-                  : AlongStyleLoader(tilesBase: appConfig.tilesBaseUrl!)
-                      .remoteStyleUrl(citySlug: home.citySlug),
+              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(
+                tilesBase: appConfig.tilesBaseUrl,
+                citySlug: home.citySlug,
+              ),
+              allowDemoStyleFallback: false,
               initialCameraPosition: home.mapCenter == null
                   ? null
                   : MapCamera.forCenter(
@@ -138,7 +147,9 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                           if (trip?.wait != null) ...[
                             const SizedBox(height: AlongSpace.s8),
                             Text(
-                              l10n.activeTripWalkEta(trip!.wait!.walkEtaMinutes),
+                              l10n.activeTripWalkEta(
+                                trip!.wait!.walkEtaMinutes,
+                              ),
                               key: const Key('active_trip_walk_eta'),
                               style: AlongText.numericM,
                             ),
@@ -243,12 +254,16 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                               data: (enabled) {
                                 if (!enabled) return const SizedBox.shrink();
                                 return Padding(
-                                  padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+                                  padding: const EdgeInsets.only(
+                                    bottom: AlongSpace.s8,
+                                  ),
                                   child: Row(
                                     children: [
                                       Expanded(
                                         child: AlongButton(
-                                          key: const Key('active_trip_request_payment'),
+                                          key: const Key(
+                                            'active_trip_request_payment',
+                                          ),
                                           label: l10n.requestPayment,
                                           variant: AlongButtonVariant.yellow,
                                           onPressed: () => context.push(
@@ -263,7 +278,9 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                       const SizedBox(width: AlongSpace.s8),
                                       Expanded(
                                         child: AlongButton(
-                                          key: const Key('active_trip_complete'),
+                                          key: const Key(
+                                            'active_trip_complete',
+                                          ),
                                           label: l10n.activeTripComplete,
                                           visualState: state.isSubmitting
                                               ? AlongButtonVisualState.loading

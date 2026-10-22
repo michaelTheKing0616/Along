@@ -30,6 +30,7 @@ export 'src/presence/presence_repository.dart';
 export 'src/profile/rider_profile_repository.dart';
 export 'src/routes/routes_repository.dart';
 export 'src/safety/safety_repository.dart';
+export 'src/safety/sos_delivery.dart';
 export 'src/supabase/along_supabase.dart';
 export 'src/supabase/error_mapper.dart';
 export 'src/trips/trips_repository.dart';

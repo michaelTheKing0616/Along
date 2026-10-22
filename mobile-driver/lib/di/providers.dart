@@ -24,7 +24,9 @@ final appConfigProvider = Provider<AppConfig>((ref) {
 });
 
 final alongSupabaseProvider = Provider<AlongSupabase>((ref) {
-  throw UnimplementedError('alongSupabaseProvider must be overridden at startup');
+  throw UnimplementedError(
+    'alongSupabaseProvider must be overridden at startup',
+  );
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -43,8 +45,12 @@ final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
   return CatalogRepository(ref.watch(alongSupabaseProvider));
 });
 
-final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((ref) async {
-  final country = await ref.read(catalogRepositoryProvider).defaultActiveCountry();
+final phoneFormatterProvider = FutureProvider<PhoneNumberFormatter>((
+  ref,
+) async {
+  final country = await ref
+      .read(catalogRepositoryProvider)
+      .defaultActiveCountry();
   return PhoneNumberFormatter(phonePrefix: country.phonePrefix);
 });
 
@@ -71,6 +77,21 @@ final safetyRepositoryProvider = Provider<SafetyRepository>((ref) {
   return SafetyRepository(ref.watch(alongSupabaseProvider));
 });
 
+final emergencyContactStoreProvider = Provider<EmergencyContactStore>((ref) {
+  return EmergencyContactStore(ref.watch(alongDatabaseProvider));
+});
+
+final sosOutboxProvider = Provider<SosOutbox>((ref) {
+  return SosOutbox(PendingActionQueue(ref.watch(alongDatabaseProvider)));
+});
+
+final sosRaiseCoordinatorProvider = Provider<SosRaiseCoordinator>((ref) {
+  return SosRaiseCoordinator(
+    repository: ref.watch(safetyRepositoryProvider),
+    outbox: ref.watch(sosOutboxProvider),
+  );
+});
+
 final negotiationRepositoryProvider = Provider<NegotiationRepository>((ref) {
   return NegotiationRepository(ref.watch(alongSupabaseProvider));
 });
@@ -88,9 +109,7 @@ final driverChannelProvider = Provider<DriverChannel>((ref) {
 });
 
 final pushServiceProvider = Provider<PushService>((ref) {
-  throw UnimplementedError(
-    'pushServiceProvider must be overridden at startup',
-  );
+  throw UnimplementedError('pushServiceProvider must be overridden at startup');
 });
 
 final placesRepositoryProvider = Provider<PlacesRepository>((ref) {
@@ -105,14 +124,14 @@ final alongDatabaseProvider = Provider<AlongDatabase>((ref) {
 
 final driverOnboardingPreferencesProvider =
     Provider<DriverOnboardingPreferences>((ref) {
-  return DriverOnboardingPreferences();
-});
+      return DriverOnboardingPreferences();
+    });
 
-final driverOnboardingStepProvider = FutureProvider<DriverOnboardingStep>(
-  (ref) async {
-    return ref.watch(driverOnboardingPreferencesProvider).currentStep();
-  },
-);
+final driverOnboardingStepProvider = FutureProvider<DriverOnboardingStep>((
+  ref,
+) async {
+  return ref.watch(driverOnboardingPreferencesProvider).currentStep();
+});
 
 final locationStreamSourceProvider = Provider<LocationStreamSource>((ref) {
   return GeolocatorLocationSource();
@@ -122,11 +141,11 @@ final batteryMonitorProvider = Provider<BatteryMonitor>((ref) {
   return DeviceBatteryMonitor();
 });
 
-final driverForegroundNotifierProvider = Provider<DriverForegroundNotifier>(
-  (ref) {
-    return InMemoryDriverForegroundNotifier();
-  },
-);
+final driverForegroundNotifierProvider = Provider<DriverForegroundNotifier>((
+  ref,
+) {
+  return InMemoryDriverForegroundNotifier();
+});
 
 final presencePingSchedulerProvider = Provider<PresencePingScheduler>((ref) {
   final config = ref.watch(appConfigProvider);
@@ -136,12 +155,11 @@ final presencePingSchedulerProvider = Provider<PresencePingScheduler>((ref) {
     batteryGuardPercent: config.batteryGuardPercent,
     onPing: (sample) async {
       final home = ref.read(driverHomeControllerProvider);
-      await ref.read(presenceRepositoryProvider).presencePing(
+      await ref
+          .read(presenceRepositoryProvider)
+          .presencePing(
             PresencePingRequest(
-              p_location: Point(
-                lat: sample.point.lat,
-                lng: sample.point.lng,
-              ),
+              p_location: Point(lat: sample.point.lat, lng: sample.point.lng),
               p_heading: sample.headingDegrees ?? 0,
               p_speed_mps: sample.speedMps ?? 0,
               p_accuracy_m: sample.accuracyM,
@@ -187,18 +205,14 @@ List<Override> buildProviderOverrides({
   return [
     appConfigProvider.overrideWithValue(config),
     alongSupabaseProvider.overrideWithValue(supabase),
-    alongDatabaseProvider.overrideWithValue(
-      database ?? AlongDatabase.memory(),
-    ),
+    alongDatabaseProvider.overrideWithValue(database ?? AlongDatabase.memory()),
     driverChannelProvider.overrideWithValue(
       driverChannel ?? FakeDriverChannel(),
     ),
     negotiationChannelProvider.overrideWithValue(
       negotiationChannel ?? FakeNegotiationChannel(),
     ),
-    pushServiceProvider.overrideWithValue(
-      pushService ?? StubPushService(),
-    ),
+    pushServiceProvider.overrideWithValue(pushService ?? StubPushService()),
     if (onboardingPreferences != null)
       driverOnboardingPreferencesProvider.overrideWithValue(
         onboardingPreferences,
@@ -210,8 +224,7 @@ List<Override> buildProviderOverrides({
     if (foregroundNotifier != null)
       driverForegroundNotifierProvider.overrideWithValue(foregroundNotifier),
     if (clock != null) clockProvider.overrideWithValue(clock),
-    if (qrScanner != null)
-      qrScannerProvider.overrideWithValue(qrScanner),
+    if (qrScanner != null) qrScannerProvider.overrideWithValue(qrScanner),
     if (shareImagePort != null)
       shareImageProvider.overrideWithValue(shareImagePort),
   ];

@@ -61,7 +61,7 @@ function createMockService(): SupabaseClient {
 Deno.test('transfer-prefetch: stores walking directions when eligible', async () => {
   const res = await handleTransferPrefetch(
     { trip_id: TRIP_ID },
-    { service: createMockService(), osrm: mockOsrmClient() },
+    { service: createMockService(), osrm: mockOsrmClient(), caller: { serviceRole: true } },
   );
 
   assertEquals(res.status, 200);
@@ -80,8 +80,29 @@ Deno.test('transfer-prefetch: skips when not eligible', async () => {
     },
   } as unknown as SupabaseClient;
 
-  const res = await handleTransferPrefetch({ trip_id: TRIP_ID }, { service });
+  const res = await handleTransferPrefetch(
+    { trip_id: TRIP_ID },
+    { service, caller: { serviceRole: true } },
+  );
   assertEquals(res.status, 200);
   const body = await res.json();
   assertEquals(body.data.prefetched, false);
+});
+
+Deno.test('transfer-prefetch: non-owner caller is rejected', async () => {
+  let rpcCalled = false;
+  const res = await handleTransferPrefetch(
+    { trip_id: TRIP_ID },
+    {
+      service: {
+        rpc() {
+          rpcCalled = true;
+          return Promise.resolve({ data: { eligible: true }, error: null });
+        },
+      } as never,
+      caller: { serviceRole: false },
+    },
+  );
+  assertEquals(res.status, 403);
+  assertEquals(rpcCalled, false);
 });
