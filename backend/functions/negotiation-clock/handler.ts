@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import {
+  forbiddenUnlessServiceRole,
+  type ServiceCaller,
+  serviceCallerFromAuthorization,
+} from '../_shared/authz.ts';
 import { jsonResponse, requestId } from '../_shared/http.ts';
 import { createServiceClient } from '../_shared/supabase.ts';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -9,6 +14,7 @@ export type NegotiationClockRequest = z.infer<typeof negotiationClockRequestSche
 
 export type NegotiationClockDeps = {
   service: SupabaseClient;
+  caller: ServiceCaller;
 };
 
 export async function handleNegotiationClock(
@@ -16,6 +22,8 @@ export async function handleNegotiationClock(
   deps: NegotiationClockDeps,
 ): Promise<Response> {
   const rid = requestId();
+  const denied = forbiddenUnlessServiceRole(deps.caller, rid);
+  if (denied) return denied;
 
   const { data, error } = await deps.service.rpc('negotiation_clock_tick');
   if (error) {
@@ -30,8 +38,10 @@ export async function handleNegotiationClock(
 
 export function handleNegotiationClockDefault(
   req: NegotiationClockRequest,
+  authorization: string | null,
 ): Promise<Response> {
   return handleNegotiationClock(req, {
     service: createServiceClient(),
+    caller: serviceCallerFromAuthorization(authorization),
   });
 }

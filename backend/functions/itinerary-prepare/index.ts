@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    return await handleItineraryPrepareDefault(parsed.data);
+    return await handleItineraryPrepareDefault(parsed.data, authHeader);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal error';
     return errorResponse('VALIDATION', message, 500, { request_id: rid });

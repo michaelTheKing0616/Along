@@ -269,6 +269,15 @@ export function SafetyBoard({
               <dt style={{ fontWeight: 600 }}>Destination</dt>
               <dd style={{ margin: 0 }}>{selectedSos.destination_label ?? '—'}</dd>
             </div>
+            {selectedSos.share_issued ? (
+              <div>
+                <dt style={{ fontWeight: 600 }}>Live trip link</dt>
+                <dd style={{ margin: 0 }} data-testid="safety-sos-share-issued">
+                  Issued with this alert. The link was sent to the rider&apos;s emergency
+                  contacts. The token is not stored on this desk.
+                </dd>
+              </div>
+            ) : null}
             <div>
               <dt style={{ fontWeight: 600 }}>Live location</dt>
               <dd style={{ margin: 0 }}>

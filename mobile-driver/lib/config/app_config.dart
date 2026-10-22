@@ -1,3 +1,5 @@
+import 'package:along_map/along_map.dart';
+
 /// Flavour and runtime configuration from `--dart-define-from-file`.
 class AppConfig {
   const AppConfig({
@@ -22,8 +24,7 @@ class AppConfig {
   final double sentryTracesSampleRate;
   final int batteryGuardPercent;
 
-  bool get hasSentry =>
-      sentryDsn != null && sentryDsn!.trim().isNotEmpty;
+  bool get hasSentry => sentryDsn != null && sentryDsn!.trim().isNotEmpty;
 
   bool get hasBackend {
     final url = supabaseUrl.trim();
@@ -33,13 +34,12 @@ class AppConfig {
     return url.startsWith('http://') || url.startsWith('https://');
   }
 
-  /// True when a real Along tiles CDN base was wired into the build.
-  bool get hasTiles {
-    final tiles = tilesBaseUrl?.trim() ?? '';
-    return tiles.isNotEmpty;
-  }
+  /// True when the build points at a tiles host that exists.
+  /// Empty values and the retired along.ng tile domains are not reachable.
+  bool get hasTiles => AlongStyleLoader.isReachableTilesBase(tilesBaseUrl);
 
-  /// Non-prod builds may fall back to MapLibre demotiles when [hasTiles] is false.
+  /// Retained for callers that still opt into MapLibre demotiles.
+  /// Home and trip maps use OpenFreeMap instead of that world demo.
   bool get allowsDemoMapFallback => flavor != 'prod';
 
   static AppConfig fromEnvironment() {
@@ -76,8 +76,7 @@ class AppConfig {
           : (tilesBaseAlias.isNotEmpty ? tilesBaseAlias : null),
       otpResendCooldownS: otpResendCooldownS,
       otpRateLimitRetryS: otpRateLimitRetryS,
-      sentryTracesSampleRate:
-          double.tryParse(sentryTracesSampleRateRaw) ?? 0.2,
+      sentryTracesSampleRate: double.tryParse(sentryTracesSampleRateRaw) ?? 0.2,
       batteryGuardPercent: batteryGuardPercent,
     );
   }

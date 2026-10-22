@@ -1079,4 +1079,61 @@ class AppLocalizationsPcm extends AppLocalizations {
   String earningsDigitalRow(String source) {
     return 'Digital · $source';
   }
+
+  @override
+  String get sosQueued =>
+      'Saved on this phone. We\'ll alert the safety team when you\'re back online.';
+
+  @override
+  String get sosLiveLink => 'Copy live location link';
+
+  @override
+  String get sosLiveLinkCopied => 'Live location link copied';
+
+  @override
+  String get sosContactsHeading => 'Tell someone you trust';
+
+  @override
+  String sosContactWhatsapp(String name) {
+    return 'WhatsApp $name';
+  }
+
+  @override
+  String sosContactSms(String name) {
+    return 'Text $name';
+  }
+
+  @override
+  String get emergencyContactsHeading => 'EMERGENCY CONTACTS';
+
+  @override
+  String get emergencyContactsHint =>
+      'We notify these people if you raise SOS. Up to 5. WhatsApp or a text opens on your phone.';
+
+  @override
+  String get emergencyContactsEmpty => 'No emergency contacts yet';
+
+  @override
+  String get emergencyContactName => 'Name';
+
+  @override
+  String get emergencyContactPhone => 'Phone';
+
+  @override
+  String get emergencyContactAdd => 'Add contact';
+
+  @override
+  String emergencyContactRemove(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String get emergencyContactInvalidPhone =>
+      'Use a phone number like +2348012345678';
+
+  @override
+  String get emergencyContactLimit => 'You can save up to 5 contacts';
+
+  @override
+  String get emergencyContactSaveFailed => 'Could not save that contact';
 }

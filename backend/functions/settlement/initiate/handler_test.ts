@@ -1,9 +1,6 @@
 import { assertEquals } from 'jsr:@std/assert@1';
 import type { PaymentProvider } from '../../_shared/payments/mod.ts';
-import {
-  handleSettlementInitiate,
-  type SettlementInitiateRequest,
-} from './handler.ts';
+import { handleSettlementInitiate, type SettlementInitiateRequest } from './handler.ts';
 
 const DRIVER_ID = '0e200000-0000-4000-8000-000000000001';
 const SETTLEMENT_ID = '0e900000-0000-4000-8000-000000000001';
@@ -19,6 +16,7 @@ function createMockProvider(onCall?: () => void): PaymentProvider {
       });
     },
     initiateTripPayment: () => Promise.reject(new Error('not used in settlement')),
+    chargeAuthorization: () => Promise.reject(new Error('not used')),
     initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
     resolveAccountName: () => Promise.reject(new Error('not used')),
     createSubaccount: () => Promise.reject(new Error('not used')),
@@ -127,6 +125,7 @@ Deno.test('cash-trip gate: PaymentProvider not invoked when settlement/initiate 
       });
     },
     initiateTripPayment: () => Promise.reject(new Error('not used in settlement')),
+    chargeAuthorization: () => Promise.reject(new Error('not used')),
     initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
     resolveAccountName: () => Promise.reject(new Error('not used')),
     createSubaccount: () => Promise.reject(new Error('not used')),
@@ -151,7 +150,11 @@ Deno.test('cash-trip gate: fetch spy records zero Paystack calls during cash flo
   let paystackCalls = 0;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = (input, init) => {
-    const target = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    const target = typeof input === 'string'
+      ? input
+      : input instanceof URL
+      ? input.href
+      : input.url;
     if (target.includes('api.paystack.co')) paystackCalls += 1;
     return originalFetch(input, init);
   };

@@ -19,14 +19,63 @@ class TripShareRow {
   final DateTime? createdAt;
 
   factory TripShareRow.fromJson(Map<String, dynamic> json) => TripShareRow(
-        id: json['id'] as String,
-        journeyId: json['journey_id'] as String,
-        expiresAt: DateTime.parse(json['expires_at'] as String),
-        contactName: json['contact_name'] as String?,
-        createdAt: json['created_at'] != null
-            ? DateTime.parse(json['created_at'] as String)
-            : null,
-      );
+    id: json['id'] as String,
+    journeyId: json['journey_id'] as String,
+    expiresAt: DateTime.parse(json['expires_at'] as String),
+    contactName: json['contact_name'] as String?,
+    createdAt: json['created_at'] != null
+        ? DateTime.parse(json['created_at'] as String)
+        : null,
+  );
+}
+
+/// Someone the rider or driver asked us to reach during SOS.
+class EmergencyContact {
+  const EmergencyContact({
+    required this.id,
+    required this.name,
+    required this.phoneE164,
+  });
+
+  final String id;
+  final String name;
+  final String phoneE164;
+
+  factory EmergencyContact.fromJson(Map<String, dynamic> json) {
+    return EmergencyContact(
+      id: json['id'] as String,
+      name: (json['name'] ?? json['display_name']) as String,
+      phoneE164: json['phone_e164'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'phone_e164': phoneE164,
+  };
+}
+
+/// Result of [SafetyRepository.raiseSos].
+class SosRaiseResult {
+  const SosRaiseResult({
+    required this.sosId,
+    required this.emergencyNumber,
+    this.shareUrl,
+  });
+
+  final String sosId;
+  final String emergencyNumber;
+  final String? shareUrl;
+
+  factory SosRaiseResult.fromJson(Map<String, dynamic> json) {
+    final share = json['share_url'] as String?;
+    return SosRaiseResult(
+      sosId: json['sos_id'] as String,
+      emergencyNumber: json['emergency_number'] as String? ?? '112',
+      shareUrl: share == null || share.isEmpty ? null : share,
+    );
+  }
 }
 
 /// Result of [SafetyRepository.createTripShare].
@@ -48,7 +97,7 @@ class SafetyRepository {
 
   final AlongSupabase _gateway;
 
-  Future<dto.RaiseSosResponse> raiseSos({
+  Future<SosRaiseResult> raiseSos({
     String? tripId,
     String? journeyId,
     required dto.Point location,
@@ -64,7 +113,47 @@ class SafetyRepository {
           p_accuracy_m: accuracyM ?? 25,
         ).toJson(),
       );
-      return dto.RaiseSosResponse.fromJson(raw as Map<String, dynamic>);
+      return SosRaiseResult.fromJson(raw as Map<String, dynamic>);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<List<EmergencyContact>> listEmergencyContacts() async {
+    try {
+      final raw = await _gateway.rpc('list_emergency_contacts');
+      if (raw is! List) return const [];
+      return [
+        for (final row in raw)
+          if (row is Map<String, dynamic>)
+            EmergencyContact.fromJson(row)
+          else if (row is Map)
+            EmergencyContact.fromJson(Map<String, dynamic>.from(row)),
+      ];
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<EmergencyContact> upsertEmergencyContact({
+    required String name,
+    required String phoneE164,
+    String? id,
+  }) async {
+    try {
+      final raw = await _gateway.rpc(
+        'upsert_emergency_contact',
+        params: {'p_display_name': name, 'p_phone_e164': phoneE164, 'p_id': id},
+      );
+      return EmergencyContact.fromJson(raw as Map<String, dynamic>);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  Future<void> deleteEmergencyContact(String id) async {
+    try {
+      await _gateway.rpc('delete_emergency_contact', params: {'p_id': id});
     } catch (e) {
       throw mapSupabaseError(e);
     }
@@ -146,9 +235,11 @@ class SafetyRepository {
       );
       final now = DateTime.now().toUtc();
       return rows
-          .where((row) =>
-              row['revoked_at'] == null &&
-              DateTime.parse(row['expires_at'] as String).isAfter(now))
+          .where(
+            (row) =>
+                row['revoked_at'] == null &&
+                DateTime.parse(row['expires_at'] as String).isAfter(now),
+          )
           .map(TripShareRow.fromJson)
           .toList(growable: false);
     } catch (e) {

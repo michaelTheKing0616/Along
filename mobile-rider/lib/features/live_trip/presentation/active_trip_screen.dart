@@ -31,22 +31,20 @@ class ActiveTripScreen extends ConsumerStatefulWidget {
 }
 
 class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
-  LiveTripArgs get _args => LiveTripArgs(
-        tripId: widget.trip.tripId,
-        initialTrip: widget.trip,
-      );
+  LiveTripArgs get _args =>
+      LiveTripArgs(tripId: widget.trip.tripId, initialTrip: widget.trip);
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(liveTripControllerFamilyProvider(_args));
-    final controller =
-        ref.read(liveTripControllerFamilyProvider(_args).notifier);
+    final controller = ref.read(
+      liveTripControllerFamilyProvider(_args).notifier,
+    );
     final liveTrip = state.trip;
-    final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider).maybeWhen(
-          data: (value) => value,
-          orElse: () => false,
-        );
+    final digitalEnabled = ref
+        .watch(digitalPaymentsEnabledProvider)
+        .maybeWhen(data: (value) => value, orElse: () => false);
 
     ref.listen(liveTripControllerFamilyProvider(_args), (previous, next) {
       if (next.showCompleteSheet &&
@@ -73,13 +71,16 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     });
 
     final heading = liveTrip.live?.driver?.headingDegrees;
-    final showNaMe = liveTrip.status == TripStatus.accepted ||
+    final showNaMe =
+        liveTrip.status == TripStatus.accepted ||
         liveTrip.status == TripStatus.boarded;
     final colour = naMeColourFromToken(liveTrip.naMe.colorToken);
     final shape = naMeShapeFromToken(liveTrip.naMe.shape);
     final eta = liveTrip.etaMinutes ?? 14;
     final fare = liveTrip.totalFare;
-    final holdDuration = ref.watch(liveTripConfigProvider).maybeWhen(
+    final holdDuration = ref
+        .watch(liveTripConfigProvider)
+        .maybeWhen(
           data: (cfg) => cfg.sosHoldDurationMs,
           orElse: () => const Duration(milliseconds: 600),
         );
@@ -91,6 +92,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
             child: VehicleMarkerPanel(
               headingDegrees: heading,
               showWalkingLine: false,
+              lat: liveTrip.live?.driver?.lat ?? liveTrip.live?.rider?.lat,
+              lng: liveTrip.live?.driver?.lng ?? liveTrip.live?.rider?.lng,
             ),
           ),
           Positioned(
@@ -120,7 +123,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    l10n.activeTripStatus(eta, formatAppMoney(ref, liveTrip.totalFare)),
+                    l10n.activeTripStatus(
+                      eta,
+                      formatAppMoney(ref, liveTrip.totalFare),
+                    ),
                     style: AlongText.heading2,
                   ),
                   const SizedBox(height: AlongSpace.s12),
@@ -175,7 +181,9 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                         Expanded(
                           child: AlongButton(
                             key: const Key('active_trip_pay'),
-                            label: l10n.payDriverCta(formatAppMoney(ref, liveTrip.totalFare)),
+                            label: l10n.payDriverCta(
+                              formatAppMoney(ref, liveTrip.totalFare),
+                            ),
                             variant: AlongButtonVariant.yellow,
                             onPressed: () => PayDriverSheet.show(
                               context,
@@ -195,12 +203,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                           key: const Key('active_trip_extend'),
                           label: l10n.activeTripExtend,
                           variant: AlongButtonVariant.secondary,
-                          onPressed: liveTrip.status == TripStatus.inTransit ||
+                          onPressed:
+                              liveTrip.status == TripStatus.inTransit ||
                                   liveTrip.status == TripStatus.boarded
                               ? () => ExtendTripSheet.show(
-                                    context,
-                                    trip: liveTrip,
-                                  )
+                                  context,
+                                  trip: liveTrip,
+                                )
                               : null,
                         ),
                       ),
@@ -241,8 +250,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
 }
 
 design.TransportMode _designMode(String code) => switch (code) {
-      'keke' => design.TransportMode.keke,
-      'okada' => design.TransportMode.okada,
-      'minibus' => design.TransportMode.minibus,
-      _ => design.TransportMode.car,
-    };
+  'keke' => design.TransportMode.keke,
+  'okada' => design.TransportMode.okada,
+  'minibus' => design.TransportMode.minibus,
+  _ => design.TransportMode.car,
+};

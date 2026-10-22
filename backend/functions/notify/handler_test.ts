@@ -65,6 +65,7 @@ Deno.test('notify: kind=sos pushes FCM and logs SMS for safety admins', async ()
         },
       },
       log: (entry) => logs.push(entry),
+      caller: { serviceRole: true },
     },
   );
 
@@ -125,9 +126,33 @@ Deno.test('notify: kind=sos_ack pushes FCM to raiser', async () => {
           return { messageId: 'stub' };
         },
       },
+      caller: { serviceRole: true },
     },
   );
 
   assertEquals(res.status, 200);
   assertEquals(fcmPayload, { type: 'sos_ack', sos_id: SOS_ID });
+});
+
+Deno.test('notify: non-service caller is rejected before any send', async () => {
+  let sent = 0;
+  const res = await handleNotify(
+    { kind: 'sos', sos_id: SOS_ID },
+    {
+      service: createMockService(),
+      realtime: { send: () => Promise.resolve() },
+      fcm: {
+        sendDataMessage: async () => {
+          sent += 1;
+          return { messageId: 'nope' };
+        },
+      },
+      caller: { serviceRole: false },
+    },
+  );
+
+  assertEquals(res.status, 403);
+  const body = await res.json();
+  assertEquals(body.error.code, 'FORBIDDEN');
+  assertEquals(sent, 0);
 });

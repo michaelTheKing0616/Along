@@ -90,14 +90,20 @@ void main() {
 
       expect(find.byKey(const Key('account_profile_tile')), findsOneWidget);
       expect(find.byKey(const Key('account_my_qr_link')), findsOneWidget);
+      final accountList = find.byWidgetPredicate(
+        (widget) =>
+            widget is Scrollable && widget.axisDirection == AxisDirection.down,
+      );
       await tester.scrollUntilVisible(
         find.byKey(const Key('account_safety_tile')),
         500,
+        scrollable: accountList,
       );
       expect(find.byKey(const Key('account_safety_tile')), findsOneWidget);
       await tester.scrollUntilVisible(
         find.byKey(const Key('account_sign_out')),
         500,
+        scrollable: accountList,
       );
       expect(find.byKey(const Key('account_sign_out')), findsOneWidget);
 

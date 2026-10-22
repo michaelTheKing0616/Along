@@ -78,6 +78,7 @@ Deno.test('presence-fanout: publishes ambient cells and reports cfg interval ≤
   const res = await handlePresenceFanout({}, {
     service: createMockFanoutService(),
     realtime,
+    caller: { serviceRole: true },
   });
 
   assertEquals(res.status, 200);
@@ -93,13 +94,28 @@ Deno.test('presence-fanout: publishes ambient cells and reports cfg interval ≤
   assertExists(body.meta.request_id);
 });
 
+Deno.test('presence-fanout: non-service caller is rejected', async () => {
+  let rpcCalled = false;
+  const res = await handlePresenceFanout({}, {
+    service: {
+      rpc() {
+        rpcCalled = true;
+        return Promise.resolve({ data: [], error: null });
+      },
+    } as never,
+    realtime: { send: () => Promise.resolve() },
+    caller: { serviceRole: false },
+  });
+  assertEquals(res.status, 403);
+  assertEquals(rpcCalled, false);
+});
+
 Deno.test('loadPresenceFanoutCfg: fanout interval comes from app_config', async () => {
   const cfg = await loadPresenceFanoutCfg(createMockFanoutService(), null);
   assertEquals(cfg.fanoutIntervalS, 10);
   assertEquals(cfg.fanoutIntervalS <= 10, true);
   assertEquals(cfg.fanoutRadiusM, 3000);
 });
-
 
 function createMockNotifyService(): SupabaseClient {
   return {
@@ -128,14 +144,15 @@ function createMockNotifyService(): SupabaseClient {
         return {
           select: () => ({
             eq: () => ({
-              single: () => Promise.resolve({
-                data: {
-                  driver_id: DRIVER_ID,
-                  expires_at: '2026-09-04T12:00:25.000Z',
-                  journeys: { city_id: CITY_ID },
-                },
-                error: null,
-              }),
+              single: () =>
+                Promise.resolve({
+                  data: {
+                    driver_id: DRIVER_ID,
+                    expires_at: '2026-09-04T12:00:25.000Z',
+                    journeys: { city_id: CITY_ID },
+                  },
+                  error: null,
+                }),
             }),
           }),
         };
@@ -144,12 +161,11 @@ function createMockNotifyService(): SupabaseClient {
         return {
           select: () => ({
             eq: (_col: string, val: unknown) => ({
-              eq: () => Promise.resolve({
-                data: val === DRIVER_ID
-                  ? [{ token: 'fcm-token-1', platform: 'android' }]
-                  : [],
-                error: null,
-              }),
+              eq: () =>
+                Promise.resolve({
+                  data: val === DRIVER_ID ? [{ token: 'fcm-token-1', platform: 'android' }] : [],
+                  error: null,
+                }),
             }),
           }),
         };
@@ -187,6 +203,7 @@ Deno.test('notify: trip_request broadcasts to driver channel and sends FCM data 
         return Promise.resolve({ messageId: 'fcm-1' });
       },
     },
+    caller: { serviceRole: true },
   });
 
   assertEquals(res.status, 200);

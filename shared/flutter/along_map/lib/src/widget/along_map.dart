@@ -99,8 +99,23 @@ class _AlongMapState extends State<AlongMap> {
     return null;
   }
 
+  /// Widget tests must not mount a MapLibre platform view.
+  /// `bool.fromEnvironment('FLUTTER_TEST')` is not set by current `flutter test`.
+  static bool get inFlutterTest {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return true;
+    try {
+      return Platform.environment['FLUTTER_TEST'] == 'true';
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (inFlutterTest) {
+      return const ColoredBox(color: AlongMapColors.land);
+    }
+
     final styleString = _resolveStyleString();
     if (styleString == null) {
       return const _AlongMapUnavailablePlaceholder();
@@ -122,10 +137,7 @@ class _AlongMapState extends State<AlongMap> {
           attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           attributionButtonMargins: const math.Point(8, 96),
           logoViewMargins: const math.Point(8, 96),
-          minMaxZoomPreference: MinMaxZoomPreference(
-            0,
-            widget.maxZoom ?? 22,
-          ),
+          minMaxZoomPreference: MinMaxZoomPreference(0, widget.maxZoom ?? 22),
           gestureRecognizers: widget.gestureRecognizers,
           onMapClick: widget.onMapClick,
           onMapCreated: (controller) {

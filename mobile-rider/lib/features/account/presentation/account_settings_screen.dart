@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/account/presentation/emergency_contacts_section.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -62,9 +63,9 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   Future<void> _updateWayfinding(WayfindingMode mode) async {
     setState(() => _saving = true);
     try {
-      await ref.read(riderProfileRepositoryProvider).updatePrefs(
-            wayfindingMode: mode,
-          );
+      await ref
+          .read(riderProfileRepositoryProvider)
+          .updatePrefs(wayfindingMode: mode);
       await ref.read(riderPrefsStoreProvider).setWayfindingMode(mode);
       await _load();
     } finally {
@@ -75,9 +76,9 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   Future<void> _updateSort(SortCriterion sort) async {
     setState(() => _saving = true);
     try {
-      await ref.read(riderProfileRepositoryProvider).updatePrefs(
-            savedSort: sort,
-          );
+      await ref
+          .read(riderProfileRepositoryProvider)
+          .updatePrefs(savedSort: sort);
       await ref.read(riderPrefsStoreProvider).setSavedSort(sort);
       await _load();
     } finally {
@@ -88,9 +89,9 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   Future<void> _updateWomenOnly(bool value) async {
     setState(() => _saving = true);
     try {
-      await ref.read(riderProfileRepositoryProvider).updatePrefs(
-            womenOnlyPref: value,
-          );
+      await ref
+          .read(riderProfileRepositoryProvider)
+          .updatePrefs(womenOnlyPref: value);
       await _load();
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -121,10 +122,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           key: const Key('account_profile_name'),
           contentPadding: EdgeInsets.zero,
           title: Text(profile?.displayName ?? '—', style: AlongText.title),
-          subtitle: Text(
-            profile?.phoneE164 ?? '—',
-            style: AlongText.body,
-          ),
+          subtitle: Text(profile?.phoneE164 ?? '—', style: AlongText.body),
         ),
         const SizedBox(height: AlongSpace.s24),
         Text(l10n.accountPreferencesHeading, style: AlongText.overline),
@@ -134,16 +132,13 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           const SizedBox(height: AlongSpace.s8),
           DropdownButtonFormField<String>(
             key: const Key('account_city_dropdown'),
+            isExpanded: true,
             value: profile?.homeCityId,
-            decoration: InputDecoration(
-              hintText: l10n.accountCityHint,
-            ),
+            decoration: InputDecoration(hintText: l10n.accountCityHint),
             items: _cities
                 .map(
-                  (city) => DropdownMenuItem(
-                    value: city.id,
-                    child: Text(city.name),
-                  ),
+                  (city) =>
+                      DropdownMenuItem(value: city.id, child: Text(city.name)),
                 )
                 .toList(),
             onChanged: _saving ? null : _updateHomeCity,
@@ -188,7 +183,10 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           SwitchListTile(
             key: const Key('account_women_only'),
             contentPadding: EdgeInsets.zero,
-            title: Text(l10n.accountWomenOnlyLabel, style: AlongText.bodyStrong),
+            title: Text(
+              l10n.accountWomenOnlyLabel,
+              style: AlongText.bodyStrong,
+            ),
             subtitle: Text(l10n.accountWomenOnlyHint, style: AlongText.caption),
             value: profile?.womenOnlyPref ?? false,
             onChanged: _saving ? null : _updateWomenOnly,
@@ -201,7 +199,10 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           key: const Key('account_payment_cash'),
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.payments_outlined),
-          title: Text(l10n.accountPaymentCashDefault, style: AlongText.bodyStrong),
+          title: Text(
+            l10n.accountPaymentCashDefault,
+            style: AlongText.bodyStrong,
+          ),
           subtitle: Text(l10n.accountPaymentCashHint, style: AlongText.caption),
         ),
         const SizedBox(height: AlongSpace.s24),
@@ -210,7 +211,10 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(l10n.accountSafetyHowSos, style: AlongText.bodyStrong),
-          subtitle: Text(l10n.accountSafetyHowSosBody, style: AlongText.caption),
+          subtitle: Text(
+            l10n.accountSafetyHowSosBody,
+            style: AlongText.caption,
+          ),
         ),
         const SizedBox(height: AlongSpace.s24),
         ListTile(
@@ -221,6 +225,8 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           contentPadding: EdgeInsets.zero,
           title: Text(l10n.accountLegal, style: AlongText.bodyStrong),
         ),
+        const SizedBox(height: AlongSpace.s24),
+        const EmergencyContactsSection(),
         const SizedBox(height: AlongSpace.s16),
         AlongButton(
           key: const Key('account_sign_out'),
@@ -233,16 +239,16 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   }
 
   SortOption _sortOption(SortCriterion? sort) => switch (sort) {
-        SortCriterion.cheapest => SortOption.cheapest,
-        SortCriterion.fastest => SortOption.fastest,
-        SortCriterion.leastStrenuous => SortOption.leastStrenuous,
-        _ => SortOption.recommended,
-      };
+    SortCriterion.cheapest => SortOption.cheapest,
+    SortCriterion.fastest => SortOption.fastest,
+    SortCriterion.leastStrenuous => SortOption.leastStrenuous,
+    _ => SortOption.recommended,
+  };
 
   SortCriterion _sortCriterion(SortOption option) => switch (option) {
-        SortOption.cheapest => SortCriterion.cheapest,
-        SortOption.fastest => SortCriterion.fastest,
-        SortOption.leastStrenuous => SortCriterion.leastStrenuous,
-        SortOption.recommended => SortCriterion.recommended,
-      };
+    SortOption.cheapest => SortCriterion.cheapest,
+    SortOption.fastest => SortCriterion.fastest,
+    SortOption.leastStrenuous => SortCriterion.leastStrenuous,
+    SortOption.recommended => SortCriterion.recommended,
+  };
 }

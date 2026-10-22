@@ -1,9 +1,6 @@
 import { assertEquals } from 'jsr:@std/assert@1';
 import type { PaymentProvider, TripPaymentInitiateParams } from '../../_shared/payments/mod.ts';
-import {
-  handleSetPayoutBank,
-  setPayoutBankSchema,
-} from './handler.ts';
+import { handleSetPayoutBank, setPayoutBankSchema } from './handler.ts';
 
 const DRIVER_ID = '0f200000-0000-4000-8000-000000000050';
 const ACCOUNT_NUMBER = '0123456789';
@@ -12,6 +9,7 @@ function createMockProvider(): PaymentProvider {
   return {
     initiateSettlement: () => Promise.reject(new Error('not used')),
     initiateTripPayment: () => Promise.reject(new Error('not used')),
+    chargeAuthorization: () => Promise.reject(new Error('not used')),
     initiatePayoutTransfer: () => Promise.reject(new Error('not used')),
     resolveAccountName: () => Promise.resolve({ accountName: 'Test Driver Account' }),
     createSubaccount: () => Promise.resolve({ subaccountCode: 'ACCT_sub_test_001' }),

@@ -1,5 +1,6 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -110,7 +111,9 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
         steps: [
           for (var i = 0; i < widget.directions.steps.length; i++)
             WayfindingStep(
-              maneuverIcon: _iconForManeuver(widget.directions.steps[i].maneuver),
+              maneuverIcon: _iconForManeuver(
+                widget.directions.steps[i].maneuver,
+              ),
               instruction: widget.directions.steps[i].instruction,
               distance: _formatDistance(widget.directions.steps[i].distanceM),
               isActive: i == _activeStepIndex,
@@ -121,26 +124,26 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
   }
 
   Widget _buildMapMode(AppLocalizations l10n) {
+    final polyline = widget.directions.polyline;
+    final camera = polyline.isNotEmpty ? polyline.first : widget.userLocation;
     return Stack(
       children: [
-        Container(
+        ClipRRect(
           key: const Key('wayfinding_map'),
-          decoration: BoxDecoration(
-            color: AlongColors.surface100,
-            borderRadius: BorderRadius.circular(AlongRadius.lg.x),
-          ),
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.map_outlined, size: 48, color: AlongColors.ink500),
-              const SizedBox(height: AlongSpace.s8),
-              Text(
-                l10n.wayfindingMapHint(widget.directions.polyline.length),
-                style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          borderRadius: BorderRadius.circular(AlongRadius.lg.x),
+          child: AlongMap(
+            styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
+            allowDemoStyleFallback: false,
+            initialCameraPosition: camera == null
+                ? null
+                : MapCamera.forCenter(
+                    lat: camera.lat,
+                    lng: camera.lng,
+                    zoom: 16,
+                  ),
+            onLayerControllerReady: (controller) {
+              controller.setWalkRoute(polyline);
+            },
           ),
         ),
         if (widget.directions.degraded)
@@ -171,11 +174,14 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
     final currentText = script.isNotEmpty && _activeStepIndex < script.length
         ? script[_activeStepIndex]
         : widget.directions.steps.isNotEmpty
-            ? widget.directions.steps[_activeStepIndex.clamp(
+        ? widget
+              .directions
+              .steps[_activeStepIndex.clamp(
                 0,
                 widget.directions.steps.length - 1,
-              )].instruction
-            : l10n.wayfindingNoSteps;
+              )]
+              .instruction
+        : l10n.wayfindingNoSteps;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -188,10 +194,13 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
             steps: [
               for (var i = 0; i < widget.directions.steps.length; i++)
                 WayfindingStep(
-                  maneuverIcon:
-                      _iconForManeuver(widget.directions.steps[i].maneuver),
+                  maneuverIcon: _iconForManeuver(
+                    widget.directions.steps[i].maneuver,
+                  ),
                   instruction: widget.directions.steps[i].instruction,
-                  distance: _formatDistance(widget.directions.steps[i].distanceM),
+                  distance: _formatDistance(
+                    widget.directions.steps[i].distanceM,
+                  ),
                   isActive: _audioPlaying && i == _activeStepIndex,
                 ),
             ],
@@ -245,11 +254,11 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
   }
 
   IconData _iconForManeuver(String? maneuver) => switch (maneuver) {
-        'turn-left' || 'left' => Icons.turn_left_rounded,
-        'turn-right' || 'right' => Icons.turn_right_rounded,
-        'arrive' => Icons.flag_rounded,
-        _ => Icons.straight_rounded,
-      };
+    'turn-left' || 'left' => Icons.turn_left_rounded,
+    'turn-right' || 'right' => Icons.turn_right_rounded,
+    'arrive' => Icons.flag_rounded,
+    _ => Icons.straight_rounded,
+  };
 
   String _formatDistance(int meters) {
     if (meters >= 1000) {

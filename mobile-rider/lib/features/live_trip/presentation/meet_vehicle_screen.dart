@@ -12,6 +12,7 @@ import 'package:mobile_rider/features/live_trip/presentation/live_trip_controlle
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
+import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -33,17 +34,16 @@ class MeetVehicleScreen extends ConsumerStatefulWidget {
 }
 
 class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
-  LiveTripArgs get _args => LiveTripArgs(
-        tripId: widget.trip.tripId,
-        initialTrip: widget.trip,
-      );
+  LiveTripArgs get _args =>
+      LiveTripArgs(tripId: widget.trip.tripId, initialTrip: widget.trip);
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(liveTripControllerFamilyProvider(_args));
-    final controller =
-        ref.read(liveTripControllerFamilyProvider(_args).notifier);
+    final controller = ref.read(
+      liveTripControllerFamilyProvider(_args).notifier,
+    );
     final trip = state.trip;
 
     ref.listen(liveTripControllerFamilyProvider(_args), (prev, next) {
@@ -69,6 +69,8 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
             child: VehicleMarkerPanel(
               headingDegrees: heading,
               showWalkingLine: trip.board.walkM > 0,
+              lat: trip.live?.driver?.lat ?? trip.live?.rider?.lat,
+              lng: trip.live?.driver?.lng ?? trip.live?.rider?.lng,
             ),
           ),
           Flexible(
@@ -83,116 +85,118 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                  if (state.driverSignalLost)
-                    Text(
-                      l10n.meetVehicleDriverSignalLost,
-                      style: AlongText.bodyStrong.copyWith(
-                        color: AlongColors.semanticWarning,
+                    if (state.driverSignalLost)
+                      Text(
+                        l10n.meetVehicleDriverSignalLost,
+                        style: AlongText.bodyStrong.copyWith(
+                          color: AlongColors.semanticWarning,
+                        ),
+                      ),
+                    if (state.livePaused)
+                      Text(
+                        l10n.meetVehicleLivePaused,
+                        style: AlongText.caption.copyWith(
+                          color: AlongColors.ink500,
+                        ),
+                      ),
+                    Row(
+                      children: [
+                        NaMeChip(colour: colour, shape: shape),
+                        const SizedBox(width: AlongSpace.s8),
+                        Expanded(
+                          child: Text(
+                            l10n.meetVehicleNaMeHint(trip.naMe.label),
+                            style: AlongText.caption,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AlongSpace.s12),
+                    Center(
+                      child: HoldButton(
+                        key: const Key('meet_vehicle_na_me_button'),
+                        type: HoldButtonType.naMe,
+                        onFired: () => context.push(
+                          AppRoutes.naMe,
+                          extra: NaMeRouteArgs(
+                            tripId: trip.tripId,
+                            counterpartLocation: trip.live?.driver?.point,
+                          ),
+                        ),
                       ),
                     ),
-                  if (state.livePaused)
+                    const SizedBox(height: AlongSpace.s16),
                     Text(
-                      l10n.meetVehicleLivePaused,
+                      '${trip.driver.displayName} · ${trip.driver.rating.toStringAsFixed(1)} · ${trip.driver.tripCount} trips',
+                      style: AlongText.body,
+                    ),
+                    const SizedBox(height: AlongSpace.s4),
+                    Text(
+                      trip.vehicle.plateNumber,
+                      key: const Key('meet_vehicle_plate'),
+                      style: AlongText.numericL,
+                    ),
+                    Text(
+                      '${trip.vehicle.color} · ${trip.vehicle.makeModel}',
                       style: AlongText.caption.copyWith(
                         color: AlongColors.ink500,
                       ),
                     ),
-                  Row(
-                    children: [
-                      NaMeChip(colour: colour, shape: shape),
-                      const SizedBox(width: AlongSpace.s8),
-                      Expanded(
-                        child: Text(
-                          l10n.meetVehicleNaMeHint(trip.naMe.label),
-                          style: AlongText.caption,
-                        ),
+                    const SizedBox(height: AlongSpace.s8),
+                    Text(etaLine, style: AlongText.bodyStrong),
+                    if (trip.board.walkM > 0) ...[
+                      const SizedBox(height: AlongSpace.s12),
+                      AlongButton(
+                        key: const Key('meet_vehicle_wayfinding'),
+                        label: l10n.wayfindingTitle,
+                        variant: AlongButtonVariant.secondary,
+                        onPressed: () => _openWayfinding(context, trip, l10n),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: AlongSpace.s12),
-                  Center(
-                    child: HoldButton(
-                      key: const Key('meet_vehicle_na_me_button'),
-                      type: HoldButtonType.naMe,
-                      onFired: () => context.push(
-                        AppRoutes.naMe,
-                        extra: NaMeRouteArgs(
-                          tripId: trip.tripId,
-                          counterpartLocation: trip.live?.driver?.point,
+                    const SizedBox(height: AlongSpace.s16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AlongButton(
+                            key: const Key('meet_vehicle_share'),
+                            label: l10n.meetVehicleShare,
+                            variant: AlongButtonVariant.secondary,
+                            onPressed: () => ShareTripSheet.show(
+                              context,
+                              journeyId: trip.journeyId,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: AlongSpace.s8),
+                        Expanded(
+                          child: AlongButton(
+                            key: const Key('meet_vehicle_cancel'),
+                            label: l10n.meetVehicleCancel,
+                            variant: AlongButtonVariant.secondary,
+                            onPressed: state.driverSignalLost
+                                ? () async {
+                                    await controller.cancelTrip();
+                                    if (context.mounted)
+                                      context.go(AppRoutes.home);
+                                  }
+                                : null,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: AlongSpace.s16),
-                  Text(
-                    '${trip.driver.displayName} · ${trip.driver.rating.toStringAsFixed(1)} · ${trip.driver.tripCount} trips',
-                    style: AlongText.body,
-                  ),
-                  const SizedBox(height: AlongSpace.s4),
-                  Text(
-                    trip.vehicle.plateNumber,
-                    key: const Key('meet_vehicle_plate'),
-                    style: AlongText.numericL,
-                  ),
-                  Text(
-                    '${trip.vehicle.color} · ${trip.vehicle.makeModel}',
-                    style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                  ),
-                  const SizedBox(height: AlongSpace.s8),
-                  Text(etaLine, style: AlongText.bodyStrong),
-                  if (trip.board.walkM > 0) ...[
-                    const SizedBox(height: AlongSpace.s12),
+                    const SizedBox(height: AlongSpace.s8),
                     AlongButton(
-                      key: const Key('meet_vehicle_wayfinding'),
-                      label: l10n.wayfindingTitle,
-                      variant: AlongButtonVariant.secondary,
-                      onPressed: () => _openWayfinding(context, trip, l10n),
+                      key: const Key('meet_vehicle_boarded'),
+                      label: l10n.meetVehicleBoarded,
+                      variant: AlongButtonVariant.tertiary,
+                      onPressed: () async {
+                        await controller.markBoarded();
+                      },
                     ),
                   ],
-                  const SizedBox(height: AlongSpace.s16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AlongButton(
-                          key: const Key('meet_vehicle_share'),
-                          label: l10n.meetVehicleShare,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.sharePlaceholder)),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: AlongSpace.s8),
-                      Expanded(
-                        child: AlongButton(
-                          key: const Key('meet_vehicle_cancel'),
-                          label: l10n.meetVehicleCancel,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: state.driverSignalLost
-                              ? () async {
-                                  await controller.cancelTrip();
-                                  if (context.mounted) context.go(AppRoutes.home);
-                                }
-                              : null,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AlongSpace.s8),
-                  AlongButton(
-                    key: const Key('meet_vehicle_boarded'),
-                    label: l10n.meetVehicleBoarded,
-                    variant: AlongButtonVariant.tertiary,
-                    onPressed: () async {
-                      await controller.markBoarded();
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
           ),
         ],
       ),
@@ -206,13 +210,13 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
   ) {
     final destination = trip.board.location;
     if (destination == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.wayfindingNoSteps)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.wayfindingNoSteps)));
       return;
     }
 
-    final userLocation = trip.live?.rider?.point ??
+    final userLocation =
+        trip.live?.rider?.point ??
         ref.read(homeControllerProvider).userLocation;
     final origin = userLocation ?? destination;
 

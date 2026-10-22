@@ -1,8 +1,5 @@
 import { corsHeaders, errorResponse, requestId } from '../_shared/http.ts';
-import {
-  handleNegotiationClockDefault,
-  negotiationClockRequestSchema,
-} from './handler.ts';
+import { handleNegotiationClockDefault, negotiationClockRequestSchema } from './handler.ts';
 
 Deno.serve(async (req) => {
   const rid = requestId();
@@ -37,7 +34,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    return await handleNegotiationClockDefault(parsed.data);
+    return await handleNegotiationClockDefault(parsed.data, authHeader);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal error';
     return errorResponse('VALIDATION', message, 500, { request_id: rid });

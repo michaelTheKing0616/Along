@@ -1,6 +1,7 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:along_data/along_data.dart';
+import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -73,8 +74,20 @@ class AdjustPickupScreen extends ConsumerWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Container(color: AlongColors.surface100),
-                Icon(Icons.place, size: 48, color: AlongColors.ink900),
+                Positioned.fill(
+                  child: AlongMap(
+                    styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
+                    allowDemoStyleFallback: false,
+                    initialCameraPosition: state.center == null
+                        ? null
+                        : MapCamera.forCenter(
+                            lat: state.center!.lat,
+                            lng: state.center!.lng,
+                            zoom: 16,
+                          ),
+                  ),
+                ),
+                const Icon(Icons.place, size: 48, color: AlongColors.ink900),
                 if (state.isLoading)
                   const Positioned(
                     top: AlongSpace.s16,
@@ -124,7 +137,9 @@ class AdjustPickupScreen extends ConsumerWidget {
                 final home = ref.read(homeControllerProvider);
                 final origin = home.userLocation ?? home.mapCenter;
                 if (origin == null || state.center == null) return;
-                ref.read(tripPlanSessionProvider.notifier).setSession(
+                ref
+                    .read(tripPlanSessionProvider.notifier)
+                    .setSession(
                       TripPlanSession(
                         origin: origin,
                         destination: state.center!,
@@ -146,7 +161,9 @@ void _startTripPlan(WidgetRef ref, DestinationPick pick) {
   final hail = ref.read(hailIntentProvider);
   final origin = home.userLocation ?? home.mapCenter;
   if (origin == null) return;
-  ref.read(tripPlanSessionProvider.notifier).setSession(
+  ref
+      .read(tripPlanSessionProvider.notifier)
+      .setSession(
         TripPlanSession(
           origin: origin,
           destination: pick.location,

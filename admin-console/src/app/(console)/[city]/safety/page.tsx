@@ -29,6 +29,7 @@ type RawSos = {
   acknowledged_at: string | null;
   location: unknown;
   accuracy_m: number | null;
+  share_id: string | null;
   profiles: { display_name: string | null } | null;
   trips: {
     id: string;
@@ -93,6 +94,7 @@ async function loadOpenSos(cityId: string): Promise<SosBoardRow[]> {
       acknowledged_at,
       location,
       accuracy_m,
+      share_id,
       profiles!sos_alerts_raised_by_fkey ( display_name ),
       trips (
         id,
@@ -143,6 +145,7 @@ async function loadOpenSos(cityId: string): Promise<SosBoardRow[]> {
         vehicle_plate: row.trips?.vehicles?.plate_number ?? null,
         destination_label:
           row.trips?.journeys?.destination_label ?? row.journeys?.destination_label ?? null,
+        share_issued: row.share_id != null,
       };
     });
 }

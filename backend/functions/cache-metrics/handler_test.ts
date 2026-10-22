@@ -1,8 +1,5 @@
 import { assertEquals } from 'jsr:@std/assert@1';
-import {
-  getPlanTripCache,
-  resetEdgeCachesForTests,
-} from '../_shared/edge_cache.ts';
+import { getPlanTripCache, resetEdgeCachesForTests } from '../_shared/edge_cache.ts';
 import { handleCacheMetrics } from './handler.ts';
 
 Deno.test('cache-metrics: reports hit ratio after cache activity', async () => {
@@ -12,7 +9,7 @@ Deno.test('cache-metrics: reports hit ratio after cache activity', async () => {
   cache.get('k');
   cache.get('missing');
 
-  const res = handleCacheMetrics();
+  const res = handleCacheMetrics({ serviceRole: true });
   assertEquals(res.status, 200);
   const body = await res.json();
   assertEquals(body.data.plan_trip.hits, 1);
@@ -20,4 +17,9 @@ Deno.test('cache-metrics: reports hit ratio after cache activity', async () => {
   assertEquals(body.data.plan_trip.hit_ratio, 0.5);
   assertEquals(typeof body.data.places_search.hits, 'number');
   assertEquals(typeof body.data.graph_bundle.misses, 'number');
+});
+
+Deno.test('cache-metrics: non-service caller is rejected', () => {
+  const res = handleCacheMetrics({ serviceRole: false });
+  assertEquals(res.status, 403);
 });

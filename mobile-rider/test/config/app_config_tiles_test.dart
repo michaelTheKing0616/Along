@@ -28,5 +28,21 @@ void main() {
       tilesBaseUrl: 'https://tiles-staging.example',
     );
     expect(wired.hasTiles, isTrue);
+
+    const retired = AppConfig(
+      flavor: 'prod',
+      supabaseUrl: 'https://example.supabase.co',
+      supabaseAnonKey: 'anon',
+      tilesBaseUrl: 'https://tiles.along.ng',
+    );
+    expect(retired.hasTiles, isFalse);
+
+    const devRetired = AppConfig(
+      flavor: 'dev',
+      supabaseUrl: 'https://example.supabase.co',
+      supabaseAnonKey: 'anon',
+      tilesBaseUrl: 'https://tiles.dev.along.ng',
+    );
+    expect(devRetired.hasTiles, isFalse);
   });
 }

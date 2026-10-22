@@ -31,8 +31,9 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
     final config = ref.watch(appConfigProvider);
     final home = ref.watch(driverHomeControllerProvider);
     final state = ref.watch(drawRouteControllerProvider(widget.args));
-    final controller =
-        ref.read(drawRouteControllerProvider(widget.args).notifier);
+    final controller = ref.read(
+      drawRouteControllerProvider(widget.args).notifier,
+    );
     final validation = state.priceValidation;
 
     return Scaffold(
@@ -47,10 +48,11 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
             flex: 5,
             child: AlongMap(
               key: const Key('draw_route_map'),
-              styleUrl: config.tilesBaseUrl == null
-                  ? null
-                  : AlongStyleLoader(tilesBase: config.tilesBaseUrl!)
-                      .remoteStyleUrl(citySlug: home.citySlug),
+              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(
+                tilesBase: config.tilesBaseUrl,
+                citySlug: home.citySlug,
+              ),
+              allowDemoStyleFallback: false,
               initialCameraPosition: home.mapCenter == null
                   ? null
                   : MapCamera.forCenter(
@@ -97,16 +99,13 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
                                   key: ValueKey('draw_stop_${stop.sequence}'),
                                   index: index,
                                   stop: stop,
-                                  onPriceTap: () => _editPrice(
-                                    context,
-                                    stop,
-                                    controller,
-                                  ),
+                                  onPriceTap: () =>
+                                      _editPrice(context, stop, controller),
                                   onLabelChanged: stop.isNewStop
                                       ? (label) => controller.updateStopLabel(
-                                            stop.sequence,
-                                            label,
-                                          )
+                                          stop.sequence,
+                                          label,
+                                        )
                                       : null,
                                 );
                               },

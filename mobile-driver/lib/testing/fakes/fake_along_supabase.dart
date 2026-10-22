@@ -1095,6 +1095,10 @@ List<Map<String, dynamic>> defaultTestModes() => [
 
 Map<String, dynamic> defaultTestCountry() => {
       'code': 'NG',
+      'phone_prefix': '+234',
+      'currency_code': 'NGN',
+      'currency_symbol': '₦',
+      'currency_minor_units': 2,
       'verification_schema': defaultVerificationSchema(),
       'regulatory_flags': {
         'plate_pattern': r'^[A-Za-z]{3}[-\s]?\d{3}[A-Za-z]{2}$',

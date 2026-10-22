@@ -46,6 +46,7 @@ FETCH_GEOFABRIK=1 FETCH_PMTILES=1 ./scripts/geo/download_tier_a.sh
 
 ## Basemap
 
+- Rider and driver apps resolve the map style in `AlongStyleLoader.resolveBasemapStyleUrl`. A reachable `TILES_BASE_URL` (Supabase Storage PMTiles, as in staging) loads `along-light.json`. An empty value, or the retired hosts `tiles.along.ng`, `tiles.dev.along.ng`, and `tiles-staging.along.ng`, falls back to OpenFreeMap positron (`https://tiles.openfreemap.org/styles/positron`). Prod and dev env files leave `TILES_BASE_URL` empty until a PMTiles archive is published.
 - Staging style currently uses **OpenFreeMap planet** (OpenMapTiles-compatible) so the map works without unresolved `{{PMTILES_URL}}` placeholders.
 - Correct long-term Along basemap: **Planetiler OpenMapTiles PMTiles** built from Geofabrik Nigeria PBF (`backend/routing/scripts/build_tiles.sh`), uploaded to `tiles-staging/ng/abuja.pmtiles` or `nigeria.pmtiles`.
 - BBBike Shortbread PMTiles uses a **different schema** — keep as an offline tooling archive, do not swap into `along-light` without a Shortbread style.

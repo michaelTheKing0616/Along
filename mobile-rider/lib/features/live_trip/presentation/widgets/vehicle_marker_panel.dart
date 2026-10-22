@@ -1,29 +1,42 @@
-import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 
-/// Map placeholder with a heading-rotated vehicle marker (Tier B, doc 06 R-11).
+/// Live map with a heading-rotated vehicle marker.
 class VehicleMarkerPanel extends StatelessWidget {
   const VehicleMarkerPanel({
     super.key,
     this.headingDegrees,
     this.showWalkingLine = true,
+    this.lat,
+    this.lng,
   });
 
   final int? headingDegrees;
   final bool showWalkingLine;
+  final double? lat;
+  final double? lng;
 
   @override
   Widget build(BuildContext context) {
+    final hasFix = lat != null && lng != null;
     return Stack(
+      fit: StackFit.expand,
       alignment: Alignment.center,
       children: [
-        Container(color: AlongColors.surface100),
+        AlongMap(
+          styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
+          allowDemoStyleFallback: false,
+          initialCameraPosition: MapCamera.forCenter(
+            lat: hasFix ? lat! : 9.0579,
+            lng: hasFix ? lng! : 7.4951,
+            zoom: hasFix ? 15 : 11,
+          ),
+        ),
         if (showWalkingLine)
-          CustomPaint(
+          const CustomPaint(
             size: Size.infinite,
             painter: _WalkingLinePainter(),
           ),
@@ -60,6 +73,8 @@ class _VehicleArrowPainter extends CustomPainter {
 }
 
 class _WalkingLinePainter extends CustomPainter {
+  const _WalkingLinePainter();
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
