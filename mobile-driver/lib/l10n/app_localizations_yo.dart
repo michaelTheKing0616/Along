@@ -1256,4 +1256,25 @@ class AppLocalizationsYo extends AppLocalizations {
   String freeSeatCount(int count) {
     return '$count free';
   }
+
+  @override
+  String get restTitle => 'Rest';
+
+  @override
+  String get restDriveMinutes => 'Drive minutes before a rest';
+
+  @override
+  String get restMinutes => 'Rest minutes';
+
+  @override
+  String get restSave => 'Save';
+
+  @override
+  String get restStart => 'Start rest';
+
+  @override
+  String get restFinish => 'Finish rest';
+
+  @override
+  String get restPriority => 'Priority dispatch until your rest window ends';
 }

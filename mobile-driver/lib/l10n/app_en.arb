@@ -632,5 +632,12 @@
     "placeholders": {
       "count": {"type": "int"}
     }
-  }
+  },
+  "restTitle": "Rest",
+  "restDriveMinutes": "Drive minutes before a rest",
+  "restMinutes": "Rest minutes",
+  "restSave": "Save",
+  "restStart": "Start rest",
+  "restFinish": "Finish rest",
+  "restPriority": "Priority dispatch until your rest window ends"
 }

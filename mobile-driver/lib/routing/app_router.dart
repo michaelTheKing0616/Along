@@ -22,6 +22,7 @@ import 'package:mobile_driver/features/account/presentation/account_screen.dart'
 import 'package:mobile_driver/features/payments/presentation/my_qr_screen.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_screen.dart';
+import 'package:mobile_driver/features/safety/presentation/rest_screen.dart';
 import 'package:mobile_driver/features/safety/presentation/report_incident_screen.dart';
 import 'package:mobile_driver/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_driver/features/shell/presentation/driver_shell_screen.dart';
@@ -72,6 +73,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.conductor,
         builder: (context, state) => const ConductorScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.rest,
+        builder: (context, state) => const RestScreen(),
       ),
       GoRoute(
         path: AppRoutes.documents,

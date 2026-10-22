@@ -209,6 +209,13 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         Text(l10n.accountSafetyHeading, style: AlongText.overline),
         const SizedBox(height: AlongSpace.s8),
         ListTile(
+          key: const Key('account_guardian'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.guardianTitle, style: AlongText.bodyStrong),
+          subtitle: Text(l10n.guardianEnabled, style: AlongText.caption),
+          onTap: () => context.push(AppRoutes.guardian),
+        ),
+        ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(l10n.accountSafetyHowSos, style: AlongText.bodyStrong),
           subtitle: Text(

@@ -11,6 +11,7 @@ import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/plate_scan_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
@@ -200,6 +201,25 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                     ),
                     const SizedBox(height: AlongSpace.s8),
                     AlongButton(
+                      key: const Key('meet_vehicle_plate_scan'),
+                      label: l10n.plateScan,
+                      variant: AlongButtonVariant.secondary,
+                      onPressed: () async {
+                        final confirmed = await context.push<bool>(
+                          AppRoutes.plateScan,
+                          extra: PlateScanArgs(
+                            expectedPlate: trip.vehicle.plateNumber,
+                            tripId: trip.tripId,
+                            trip: trip,
+                          ),
+                        );
+                        if (confirmed == true && mounted) {
+                          setState(() => _plateConfirmed = true);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: AlongSpace.s8),
+                    AlongButton(
                       key: const Key('meet_vehicle_plate_match'),
                       label: _plateConfirmed
                           ? l10n.plateMatches
@@ -280,8 +300,9 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
                             onPressed: state.driverSignalLost
                                 ? () async {
                                     await controller.cancelTrip();
-                                    if (context.mounted)
+                                    if (context.mounted) {
                                       context.go(AppRoutes.home);
+                                    }
                                   }
                                 : null,
                           ),

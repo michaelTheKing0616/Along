@@ -2317,6 +2317,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} free'**
   String freeSeatCount(int count);
+
+  /// No description provided for @restTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest'**
+  String get restTitle;
+
+  /// No description provided for @restDriveMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive minutes before a rest'**
+  String get restDriveMinutes;
+
+  /// No description provided for @restMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest minutes'**
+  String get restMinutes;
+
+  /// No description provided for @restSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get restSave;
+
+  /// No description provided for @restStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start rest'**
+  String get restStart;
+
+  /// No description provided for @restFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish rest'**
+  String get restFinish;
+
+  /// No description provided for @restPriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority dispatch until your rest window ends'**
+  String get restPriority;
 }
 
 class _AppLocalizationsDelegate

@@ -52,17 +52,40 @@ class PendingActionQueue {
   Future<int> replay(Future<void> Function(QueuedAction action) handler) async {
     var processed = 0;
     for (final action in await pendingFifo()) {
+      if (action.attempts >= maxAttempts) {
+        await remove(action.id);
+        continue;
+      }
       try {
         await handler(action);
         await (_db.delete(
           _db.pendingActions,
         )..where((t) => t.id.equals(action.id))).go();
         processed++;
+      } on AlongException catch (error) {
+        if (_terminal(error)) {
+          await remove(action.id);
+          continue;
+        }
+        await _incrementAttempts(action.id);
       } catch (_) {
         await _incrementAttempts(action.id);
       }
     }
     return processed;
+  }
+
+  /// Validation and state errors will not succeed on a retry.
+  bool _terminal(AlongException error) {
+    return switch (error.code) {
+      AlongErrorCode.validation ||
+      AlongErrorCode.forbidden ||
+      AlongErrorCode.notFound ||
+      AlongErrorCode.stateInvalid ||
+      AlongErrorCode.conflict ||
+      AlongErrorCode.unauthenticated => true,
+      _ => false,
+    };
   }
 
   Future<void> _incrementAttempts(String id) async {

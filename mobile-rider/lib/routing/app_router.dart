@@ -20,6 +20,9 @@ import 'package:mobile_rider/features/pricing/presentation/pricing_sheet_screen.
 import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/meet_vehicle_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/plate_scan_screen.dart';
+import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
+import 'package:mobile_rider/features/safety/presentation/trip_thread_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
@@ -221,6 +224,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final existingId = state.extra as String?;
           return ItineraryEntryScreen(existingItineraryId: existingId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.plateScan,
+        builder: (context, state) {
+          final args = state.extra! as PlateScanArgs;
+          return PlateScanScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.guardian,
+        builder: (context, state) => const GuardianScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.tripMessages,
+        builder: (context, state) {
+          final args = state.extra! as TripThreadArgs;
+          return TripThreadScreen(args: args);
         },
       ),
     ],

@@ -1,0 +1,22 @@
+-- Contract for trip_transition (migration 53) and the Dart mirror
+-- shared/flutter/along_data/lib/src/trips/trip_transition.dart.
+-- Run with the database tests when Postgres is available.
+--
+-- Legal edges (actor must be that party; accepted requires a matchable driver):
+--   requested -> accepted            driver
+--   requested -> declined            driver
+--   requested -> expired             system
+--   requested -> cancelled_by_rider  rider
+--   accepted  -> cancelled_by_rider  rider
+--   accepted  -> cancelled_by_driver driver
+--   accepted  -> no_show             driver
+--   accepted  -> released_before_arrival driver
+--   accepted  -> boarded             system | rider | driver
+--   boarded   -> in_transit          system | driver
+--   boarded   -> cancelled_by_driver driver
+--   boarded   -> cancelled_by_rider  rider
+--   in_transit -> completed          driver
+--   in_transit -> cancelled_by_driver driver
+--   in_transit -> cancelled_by_rider rider
+--
+-- Every other pair, including a repeated status, raises STATE_INVALID.

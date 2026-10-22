@@ -27,4 +27,7 @@ abstract final class AppRoutes {
   static const reportIncident = '/report-incident';
   static const dayPlanner = '/day-planner';
   static const itineraryEntry = '/itinerary-entry';
+  static const plateScan = '/plate-scan';
+  static const guardian = '/guardian';
+  static const tripMessages = '/trip-messages';
 }

@@ -240,7 +240,10 @@ void main() {
       var now = DateTime.utc(2026, 9, 4, 10);
       final queue = PendingActionQueue(
         db,
-        clock: _SteppingClock(() => now, () => now = now.add(const Duration(seconds: 1))),
+        clock: _SteppingClock(
+          () => now,
+          () => now = now.add(const Duration(seconds: 1)),
+        ),
       );
 
       await queue.enqueue(
@@ -266,7 +269,10 @@ void main() {
 
     test('retains failed actions and increments attempts', () async {
       final db = AlongDatabase.memory();
-      final queue = PendingActionQueue(db, clock: Clock.fixed(DateTime.utc(2026, 9, 4)));
+      final queue = PendingActionQueue(
+        db,
+        clock: Clock.fixed(DateTime.utc(2026, 9, 4)),
+      );
 
       await queue.enqueue(
         id: 'fail1',
@@ -281,6 +287,53 @@ void main() {
       final pending = await queue.pendingFifo();
       expect(pending, hasLength(1));
       expect(pending.first.attempts, 1);
+    });
+
+    test('drops a row after the attempt cap', () async {
+      final db = AlongDatabase.memory();
+      final queue = PendingActionQueue(
+        db,
+        clock: Clock.fixed(DateTime.utc(2026, 9, 4)),
+      );
+      await queue.enqueue(
+        id: 'cap',
+        type: 'submit_correction',
+        payload: {'p_idempotency_key': 'cap'},
+      );
+      for (var i = 0; i < PendingActionQueue.maxAttempts; i++) {
+        await queue.replay((_) async {
+          throw Exception('offline');
+        });
+      }
+      expect(
+        (await queue.pendingFifo()).single.attempts,
+        PendingActionQueue.maxAttempts,
+      );
+      await queue.replay((_) async {
+        throw Exception('offline');
+      });
+      expect(await queue.pendingFifo(), isEmpty);
+    });
+
+    test('drops a validation failure instead of retrying it', () async {
+      final db = AlongDatabase.memory();
+      final queue = PendingActionQueue(
+        db,
+        clock: Clock.fixed(DateTime.utc(2026, 9, 4)),
+      );
+      await queue.enqueue(
+        id: 'bad',
+        type: 'submit_correction',
+        payload: {'p_idempotency_key': 'bad'},
+      );
+      final count = await queue.replay((_) async {
+        throw const AlongException(
+          code: AlongErrorCode.validation,
+          message: 'bad payload',
+        );
+      });
+      expect(count, 0);
+      expect(await queue.pendingFifo(), isEmpty);
     });
   });
 }
