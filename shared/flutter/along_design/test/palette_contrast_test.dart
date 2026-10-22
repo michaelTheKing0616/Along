@@ -4,7 +4,7 @@ import 'package:flutter/physics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('paper and dusk text pairs clear WCAG AA', () {
+  test('light and dark text pairs clear WCAG AA', () {
     void pair(Color fg, Color bg, {double min = 4.5}) {
       expect(AlongPalette.contrast(fg, bg), greaterThanOrEqualTo(min));
     }

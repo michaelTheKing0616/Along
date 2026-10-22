@@ -13,10 +13,10 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 32,
+      fontSize: 34,
       height: 1.05,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.96,
+      letterSpacing: -1.02,
       color: palette.ink,
     );
   }
@@ -25,10 +25,10 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 22,
-      height: 1.15,
+      fontSize: 24,
+      height: 1.12,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.55,
+      letterSpacing: -0.72,
       color: palette.ink,
     );
   }

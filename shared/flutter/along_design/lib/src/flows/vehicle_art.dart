@@ -5,29 +5,35 @@ import 'package:flutter/material.dart';
 import '../elevation.dart';
 import '../palette.dart';
 
-/// Shared vehicle set. Cards use Fluent Emoji 3D. Map pins are top-down.
+/// Shared vehicle set. Cards use one studio product render. Map pins are top-down.
 enum AlongVehicleKind { keke, okada, car, danfo, bus }
 
-/// Hero illustration for cards. Fluent Emoji 3D, MIT, not a hand drawing.
+/// Side product shot. Same camera and lighting for every vehicle.
 class AlongVehicleMark extends StatelessWidget {
-  const AlongVehicleMark({super.key, required this.kind, this.width = 64});
+  const AlongVehicleMark({
+    super.key,
+    required this.kind,
+    this.width = 112,
+    this.height,
+  });
 
   final AlongVehicleKind kind;
   final double width;
+  final double? height;
 
   static const _asset = <AlongVehicleKind, String>{
-    AlongVehicleKind.keke: 'assets/vehicles/auto_rickshaw_3d.png',
-    AlongVehicleKind.okada: 'assets/vehicles/motorcycle_3d.png',
-    AlongVehicleKind.car: 'assets/vehicles/automobile_3d.png',
-    AlongVehicleKind.danfo: 'assets/vehicles/minibus_3d.png',
-    AlongVehicleKind.bus: 'assets/vehicles/bus_3d.png',
+    AlongVehicleKind.keke: 'assets/vehicles/keke_product.png',
+    AlongVehicleKind.okada: 'assets/vehicles/okada_product.png',
+    AlongVehicleKind.car: 'assets/vehicles/car_product.png',
+    AlongVehicleKind.danfo: 'assets/vehicles/danfo_product.png',
+    AlongVehicleKind.bus: 'assets/vehicles/bus_product.png',
   };
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: width,
+      height: height ?? width * 9 / 16,
       child: Image.asset(
         _asset[kind]!,
         package: 'along_design',

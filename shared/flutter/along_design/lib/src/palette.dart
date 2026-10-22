@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 /// Semantic colour roles for Along.
 ///
-/// Light is warm paper for an Abuja commute in daylight. Dark is the same ink
-/// family at dusk. Yellow is the only accent: the live thing (you, the seat,
-/// the selected ride), never a second brand hue. [jk-colors] [taste]
+/// Light is near-white surfaces and near-black ink. Dark is a deep neutral,
+/// not a brown dusk. Yellow is the only accent, used for the live thing
+/// (you, the seat, the selected ride), never as a wash behind a card.
+/// [jk-colors] [taste]
 @immutable
 class AlongPalette extends ThemeExtension<AlongPalette> {
   const AlongPalette({
@@ -51,43 +52,43 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
 
   static const light = AlongPalette(
     brightness: Brightness.light,
-    bg: Color(0xFFF3EFE6),
-    surface: Color(0xFFFFFCF6),
-    recessed: Color(0xFFF3EFE6),
-    ink: Color(0xFF1A1612),
-    onInk: Color(0xFFFFFCF6),
-    muted: Color(0xFF5E574C),
-    line: Color(0xFF8F8576),
+    bg: Color(0xFFF4F5F7),
+    surface: Color(0xFFFFFFFF),
+    recessed: Color(0xFFEEF0F3),
+    ink: Color(0xFF111111),
+    onInk: Color(0xFFFFFFFF),
+    muted: Color(0xFF5C5C66),
+    line: Color(0xFF6E6E76),
     accent: Color(0xFFF7D117),
-    accentInk: Color(0xFF1A1612),
+    accentInk: Color(0xFF111111),
     danger: Color(0xFFB91C1C),
-    dangerOn: Color(0xFFFFFCF6),
+    dangerOn: Color(0xFFFFFFFF),
     success: Color(0xFF157A3A),
-    mapLand: Color(0xFFF3EFE6),
-    mapWater: Color(0xFFD4E2E2),
-    mapPark: Color(0xFFE4EBD8),
-    mapRoad: Color(0xFF9C907E),
+    mapLand: Color(0xFFF4F5F7),
+    mapWater: Color(0xFFD5E3EE),
+    mapPark: Color(0xFFE3EBE4),
+    mapRoad: Color(0xFF8B9098),
     fontFamily: 'Satoshi',
   );
 
   static const dark = AlongPalette(
     brightness: Brightness.dark,
-    bg: Color(0xFF141210),
-    surface: Color(0xFF211E19),
-    recessed: Color(0xFF141210),
-    ink: Color(0xFFF6F1E8),
-    onInk: Color(0xFF1A1612),
-    muted: Color(0xFFD2C7B8),
-    line: Color(0xFF8A8175),
+    bg: Color(0xFF0E0E10),
+    surface: Color(0xFF1C1C1F),
+    recessed: Color(0xFF121214),
+    ink: Color(0xFFF5F5F7),
+    onInk: Color(0xFF111111),
+    muted: Color(0xFFA8A8B3),
+    line: Color(0xFF8E8E98),
     accent: Color(0xFFF7D117),
-    accentInk: Color(0xFF1A1612),
+    accentInk: Color(0xFF111111),
     danger: Color(0xFFF87171),
-    dangerOn: Color(0xFF1A1612),
+    dangerOn: Color(0xFF111111),
     success: Color(0xFF7DCEA0),
-    mapLand: Color(0xFF1C1916),
-    mapWater: Color(0xFF243438),
-    mapPark: Color(0xFF243028),
-    mapRoad: Color(0xFF6A6156),
+    mapLand: Color(0xFF0E0E10),
+    mapWater: Color(0xFF1A2C36),
+    mapPark: Color(0xFF1A2820),
+    mapRoad: Color(0xFF5C6168),
     fontFamily: 'Satoshi',
   );
 

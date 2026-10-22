@@ -111,10 +111,10 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                           children: [
                             const SizedBox(height: 8),
                             Container(
-                              width: 32,
+                              width: 36,
                               height: 4,
                               decoration: BoxDecoration(
-                                color: palette.line,
+                                color: palette.ink.withValues(alpha: 0.18),
                                 borderRadius: BorderRadius.circular(999),
                               ),
                             ),

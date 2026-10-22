@@ -84,13 +84,9 @@ class AlongCityMap extends StatelessWidget {
                 top: frame.origin.dy,
                 width: frame.drawnSize.width,
                 height: frame.drawnSize.height,
-                child: Image.asset(
-                  asset,
-                  package: 'along_design',
-                  fit: BoxFit.fill,
-                  filterQuality: FilterQuality.medium,
-                  gaplessPlayback: true,
-                  excludeFromSemantics: true,
+                child: _MapRaster(
+                  asset: asset,
+                  cool: palette.brightness == Brightness.light,
                 ),
               ),
               if (mode == AlongCityMapMode.online)
@@ -320,6 +316,50 @@ class AlongCityMap extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _MapRaster extends StatelessWidget {
+  const _MapRaster({required this.asset, required this.cool});
+
+  final String asset;
+  final bool cool;
+
+  static const _cool = ColorFilter.matrix(<double>[
+    0.78,
+    0.12,
+    0.06,
+    0,
+    8,
+    0.04,
+    0.86,
+    0.08,
+    0,
+    8,
+    0.00,
+    0.08,
+    1.12,
+    0,
+    16,
+    0,
+    0,
+    0,
+    1,
+    0,
+  ]);
+
+  @override
+  Widget build(BuildContext context) {
+    final image = Image.asset(
+      asset,
+      package: 'along_design',
+      fit: BoxFit.fill,
+      filterQuality: FilterQuality.medium,
+      gaplessPlayback: true,
+      excludeFromSemantics: true,
+    );
+    if (!cool) return image;
+    return ColorFiltered(colorFilter: _cool, child: image);
   }
 }
 

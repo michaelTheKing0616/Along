@@ -1,3 +1,4 @@
+import 'package:along_design/src/elevation.dart';
 import 'package:along_design/src/palette.dart';
 import 'package:along_design/src/tokens.g.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class SeatMap extends StatelessWidget {
       decoration: BoxDecoration(
         color: chrome.fill,
         borderRadius: BorderRadius.circular(chrome.radius),
-        border: Border.all(color: chrome.border, width: 2),
+        boxShadow: AlongElevation.card(palette.ink),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -78,7 +79,6 @@ class SeatMap extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: palette.mapWater,
                   borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: palette.ink, width: 1.5),
                 ),
               ),
             for (final row in rows) ...[
@@ -139,29 +139,16 @@ class SeatMap extends StatelessWidget {
       case 'bench':
         return _BodyChrome(
           fill: palette.accent.withValues(alpha: 0.28),
-          border: palette.accentInk,
           radius: 28,
         );
       case 'bike':
-        return _BodyChrome(
-          fill: palette.recessed,
-          border: palette.ink,
-          radius: 40,
-        );
+        return _BodyChrome(fill: palette.recessed, radius: 40);
       case 'coach':
       case 'danfo':
-        return _BodyChrome(
-          fill: palette.surface,
-          border: palette.ink,
-          radius: 12,
-        );
+        return _BodyChrome(fill: palette.surface, radius: 18);
       case 'cabin':
       default:
-        return _BodyChrome(
-          fill: palette.surface,
-          border: palette.ink,
-          radius: 28,
-        );
+        return _BodyChrome(fill: palette.surface, radius: 28);
     }
   }
 }
@@ -187,14 +174,9 @@ class _Wheel extends StatelessWidget {
 }
 
 class _BodyChrome {
-  const _BodyChrome({
-    required this.fill,
-    required this.border,
-    required this.radius,
-  });
+  const _BodyChrome({required this.fill, required this.radius});
 
   final Color fill;
-  final Color border;
   final double radius;
 }
 
@@ -274,22 +256,16 @@ class _SeatButton extends StatelessWidget {
         return palette.recessed;
       default:
         return palette.success.withValues(
-          alpha: palette.brightness == Brightness.dark ? 0.38 : 0.16,
+          alpha: palette.brightness == Brightness.dark ? 0.38 : 0.22,
         );
     }
   }
 
   static BorderSide _side(SeatMapSeat seat, AlongPalette palette) {
-    if (seat.status == 'yours') {
-      return BorderSide(color: palette.accentInk, width: 2);
-    }
     if (seat.status == 'held') {
       return BorderSide(color: palette.accent, width: 2);
     }
-    if (seat.status == 'free') {
-      return BorderSide(color: palette.success, width: 1.5);
-    }
-    return BorderSide(color: palette.ink);
+    return BorderSide.none;
   }
 
   static Color _ink(SeatMapSeat seat, AlongPalette palette) {
