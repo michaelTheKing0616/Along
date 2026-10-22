@@ -1159,55 +1159,168 @@ class AlongFlowRating extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _Page(
-      bottom: const SizedBox.shrink(),
-      child: Column(
-        children: [
-          const SizedBox(height: 4),
-          const AlongDriverPortrait(size: 96, verified: true),
-          const SizedBox(height: 12),
-          Text(
-            'How was Chinedu?',
-            maxLines: 1,
-            softWrap: false,
-            textAlign: TextAlign.center,
-            style: AlongType.heading(palette),
-          ),
-          Text(
-            'Wuse to Nyanya',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.meta(palette),
-          ),
-          const SizedBox(height: 12),
-          const _Stars(filled: 4, size: 40),
-          const SizedBox(height: 6),
-          Text('Great', style: AlongType.title(palette)),
-          const SizedBox(height: 16),
-          const Row(
-            children: [
-              _TipChip('₦100'),
-              SizedBox(width: 8),
-              _TipChip('₦200', selected: true),
-              SizedBox(width: 8),
-              _TipChip('₦500'),
-            ],
-          ),
-          const SizedBox(height: 12),
-          const AlongButton(label: 'Send thanks', onPressed: _noop),
-          const _Fold(
-            label: 'Receipt',
-            child: Column(
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        top: false,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final short = constraints.maxHeight < 700;
+            final portrait = short ? 72.0 : 88.0;
+            final star = short ? 40.0 : 48.0;
+            return Column(
               children: [
-                _TipAdded(),
-                SizedBox(height: 8),
-                _ReceiptCard(),
-                SizedBox(height: 8),
-                _MapHero(height: 120, label: '4.2 km'),
+                const Expanded(
+                  child: AlongCityMap(mode: AlongCityMapMode.completed),
+                ),
+                Transform.translate(
+                  offset: Offset(0, -portrait / 2),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    child: Column(
+                      children: [
+                        AlongDriverPortrait(size: portrait, verified: true),
+                        SizedBox(height: short ? 8 : 10),
+                        Text(
+                          'Chinedu',
+                          maxLines: 1,
+                          softWrap: false,
+                          textAlign: TextAlign.center,
+                          style: AlongType.heading(palette),
+                        ),
+                        Text(
+                          'Wuse to Nyanya',
+                          maxLines: 1,
+                          softWrap: false,
+                          textAlign: TextAlign.center,
+                          style: AlongType.meta(palette),
+                        ),
+                        SizedBox(height: short ? 8 : 12),
+                        _Stars(filled: 4, size: star),
+                        SizedBox(height: short ? 10 : 14),
+                        const _ComplimentWrap(),
+                        SizedBox(height: short ? 10 : 14),
+                        const Row(
+                          children: [
+                            _TipChip('₦100'),
+                            SizedBox(width: 6),
+                            _TipChip('₦200', selected: true),
+                            SizedBox(width: 6),
+                            _TipChip('₦500'),
+                            SizedBox(width: 6),
+                            _TipChip('Custom'),
+                          ],
+                        ),
+                        SizedBox(height: short ? 10 : 12),
+                        const AlongButton(
+                          label: 'Send thanks',
+                          onPressed: _noop,
+                        ),
+                        const SizedBox(height: 4),
+                        const _ViewReceipt(),
+                      ],
+                    ),
+                  ),
+                ),
               ],
-            ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Two rows, always. The long labels share the second row so a narrow
+/// phone does not drop "On time" onto a third line.
+class _ComplimentWrap extends StatelessWidget {
+  const _ComplimentWrap();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ComplimentChip('Smooth ride', selected: true),
+            SizedBox(width: 8),
+            _ComplimentChip('Clean car'),
+            SizedBox(width: 8),
+            _ComplimentChip('On time'),
+          ],
+        ),
+        SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ComplimentChip('Great conversation'),
+            SizedBox(width: 8),
+            _ComplimentChip('Safe driving'),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ComplimentChip extends StatelessWidget {
+  const _ComplimentChip(this.label, {this.selected = false});
+
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      height: 34,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: selected ? palette.ink : palette.surface,
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(
+          color: selected ? palette.ink : palette.line.withValues(alpha: 0.45),
+        ),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        softWrap: false,
+        style: AlongType.meta(palette).copyWith(
+          color: selected ? palette.onInk : palette.ink,
+          fontWeight: FontWeight.w600,
+          height: 1,
+        ),
+      ),
+    );
+  }
+}
+
+class _ViewReceipt extends StatelessWidget {
+  const _ViewReceipt();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return GestureDetector(
+      onTap: _noop,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Text(
+          'View receipt',
+          maxLines: 1,
+          softWrap: false,
+          textAlign: TextAlign.center,
+          style: AlongType.title(palette).copyWith(
+            fontSize: 16,
+            height: 1.2,
+            decoration: TextDecoration.underline,
+            decorationColor: palette.ink,
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1967,57 +2080,6 @@ class _VehicleChip extends StatelessWidget {
             softWrap: false,
             style: AlongType.numeric(palette)
                 .copyWith(fontSize: 13, height: 1.1, letterSpacing: 0),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TipAdded extends StatelessWidget {
-  const _TipAdded();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          palette.success.withValues(alpha: 0.18),
-          palette.surface,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: palette.success.withValues(alpha: 0.55)),
-      ),
-      child: Row(
-        children: [
-          Icon(AlongIcons.check, size: 16, color: palette.success),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              'Tip added',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.title(palette).copyWith(
-                fontSize: 15,
-                height: 1.1,
-                fontWeight: FontWeight.w700,
-                color: palette.success,
-              ),
-            ),
-          ),
-          Text(
-            '₦200',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette).copyWith(
-              fontSize: 15,
-              height: 1.1,
-              letterSpacing: 0,
-              color: palette.success,
-            ),
           ),
         ],
       ),
@@ -4172,56 +4234,6 @@ class _MapDriver extends StatelessWidget {
   }
 }
 
-class _ReceiptCard extends StatelessWidget {
-  const _ReceiptCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Row(
-        children: [
-          Icon(AlongIcons.receipt, color: palette.ink, size: 22),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Receipt',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.title(palette),
-                ),
-                Text(
-                  'Wuse to Nyanya',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '₦1,400',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: 22, letterSpacing: -0.44),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _QuickActions extends StatelessWidget {
   const _QuickActions();
 
@@ -4535,7 +4547,7 @@ class _TipChip extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return Expanded(
       child: Container(
-        height: 48,
+        height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: selected ? palette.ink : palette.surface,
@@ -4551,8 +4563,10 @@ class _TipChip extends StatelessWidget {
           label,
           maxLines: 1,
           softWrap: false,
-          style: AlongType.title(palette).copyWith(
+          style: AlongType.meta(palette).copyWith(
             color: selected ? palette.onInk : palette.ink,
+            fontWeight: FontWeight.w700,
+            height: 1,
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
         ),

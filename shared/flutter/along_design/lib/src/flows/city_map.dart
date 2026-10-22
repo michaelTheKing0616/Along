@@ -13,7 +13,7 @@ import 'driver_portrait.dart';
 import 'vehicle_art.dart';
 
 /// How the Abuja map is dressed.
-enum AlongCityMapMode { browse, trip, online, routeHero, search }
+enum AlongCityMapMode { browse, trip, online, routeHero, search, completed }
 
 /// Muted Abuja maps.
 ///
@@ -74,7 +74,9 @@ class AlongCityMap extends StatelessWidget {
   ];
 
   bool get _wide =>
-      mode == AlongCityMapMode.routeHero || mode == AlongCityMapMode.trip;
+      mode == AlongCityMapMode.routeHero ||
+      mode == AlongCityMapMode.trip ||
+      mode == AlongCityMapMode.completed;
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +87,13 @@ class AlongCityMap extends StatelessWidget {
         : progress.clamp(0.0, 1.0);
     final route = _wide ? corridorRoute : neighborhoodRoute;
     final showRoute =
-        mode == AlongCityMapMode.trip || mode == AlongCityMapMode.routeHero;
+        mode == AlongCityMapMode.trip ||
+        mode == AlongCityMapMode.routeHero ||
+        mode == AlongCityMapMode.completed;
     return LayoutBuilder(
       builder: (context, constraints) {
         final trip = mode == AlongCityMapMode.trip;
+        final completed = mode == AlongCityMapMode.completed;
         final fit = showRoute
             ? CameraFit.bounds(
                 bounds: LatLngBounds.fromPoints(_drawnRoute(route, drawn)),
@@ -99,10 +104,12 @@ class AlongCityMap extends StatelessWidget {
                         56,
                         constraints.maxHeight * 0.46 + 28,
                       )
+                    : completed
+                    ? const EdgeInsets.fromLTRB(32, 28, 40, 64)
                     : const EdgeInsets.fromLTRB(36, 36, 36, 36),
                 // z12 tiles scale down when the corridor needs a wider frame.
-                minZoom: trip ? 10 : 12,
-                maxZoom: trip ? 12 : 12.4,
+                minZoom: trip || completed ? 10 : 12,
+                maxZoom: trip || completed ? 12 : 12.4,
               )
             : null;
         return FlutterMap(
@@ -110,8 +117,8 @@ class AlongCityMap extends StatelessWidget {
             initialCenter: _wide ? corridorCenter : neighborhoodCenter,
             initialZoom: _wide ? 12 : 16,
             initialCameraFit: fit,
-            minZoom: _wide ? (trip ? 10 : 12) : 16,
-            maxZoom: _wide ? (trip ? 12 : 12.4) : 16,
+            minZoom: _wide ? (trip || completed ? 10 : 12) : 16,
+            maxZoom: _wide ? (trip || completed ? 12 : 12.4) : 16,
             interactionOptions: const InteractionOptions(
               flags: InteractiveFlag.none,
             ),
@@ -156,7 +163,8 @@ class AlongCityMap extends StatelessWidget {
 
   List<Marker> _markers(AlongPalette palette, double drawn) {
     final markers = <Marker>[];
-    if (mode == AlongCityMapMode.routeHero) {
+    if (mode == AlongCityMapMode.routeHero ||
+        mode == AlongCityMapMode.completed) {
       markers.add(_endpoint(wuseMarket, 'Wuse', true, palette));
       markers.add(_endpoint(nyanya, 'Nyanya', false, palette));
       if (liveMarker) {
