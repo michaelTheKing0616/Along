@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
@@ -78,56 +80,83 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
           builder: (context, _) {
             final t = _motion.value.clamp(0.0, 1.15);
             final height = rest * (0.90 + 0.10 * t.clamp(0.0, 1.0));
+            final reduce = AlongMotionPolicy.reduced(context);
+            final veil = reduce
+                ? palette.surface
+                : palette.surface.withValues(alpha: 0.90);
             return Align(
               alignment: Alignment.bottomCenter,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: palette.surface,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
                   boxShadow: AlongElevation.sheet(palette.ink),
                 ),
-                child: SizedBox(
-                  height: height,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 8),
-                      Container(
-                        width: 32,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: palette.line,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                      ),
-                      if (widget.title != null)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              widget.title!,
-                              style: TextStyle(
-                                fontFamily: palette.fontFamily,
-                                fontFamilyFallback: const ['Inter'],
-                                fontSize: 20,
-                                height: 1.25,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.4,
-                                color: palette.ink,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: reduce ? 0 : 16,
+                      sigmaY: reduce ? 0 : 16,
+                    ),
+                    child: ColoredBox(
+                      color: veil,
+                      child: SizedBox(
+                        height: height,
+                        width: double.infinity,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 8),
+                            Container(
+                              width: 32,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: palette.line,
+                                borderRadius: BorderRadius.circular(999),
                               ),
                             ),
-                          ),
-                        ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          child: widget.child,
+                            if (widget.title != null)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  12,
+                                  16,
+                                  0,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    widget.title!,
+                                    style: TextStyle(
+                                      fontFamily: palette.fontFamily,
+                                      fontFamilyFallback: const ['Inter'],
+                                      fontSize: 20,
+                                      height: 1.25,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: -0.4,
+                                      color: palette.ink,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  12,
+                                  16,
+                                  12,
+                                ),
+                                child: widget.child,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

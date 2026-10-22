@@ -1,3 +1,4 @@
+import 'package:along_design/src/palette.dart';
 import 'package:along_design/src/tokens.g.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +54,8 @@ class SeatMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chrome = _chromeFor(body);
+    final palette = AlongPalette.of(context);
+    final chrome = _chromeFor(body, palette);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: chrome.fill,
@@ -68,6 +70,17 @@ class SeatMap extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (body == 'cabin' || body == 'coach' || body == 'danfo')
+              Container(
+                width: body == 'coach' || body == 'danfo' ? 96 : 64,
+                height: 16,
+                margin: const EdgeInsets.only(bottom: AlongSpace.s8),
+                decoration: BoxDecoration(
+                  color: palette.mapWater,
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: palette.ink, width: 1.5),
+                ),
+              ),
             for (final row in rows) ...[
               if (row.ruleTitle != null && row.ruleTitle!.trim().isNotEmpty)
                 Padding(
@@ -76,7 +89,9 @@ class SeatMap extends StatelessWidget {
                     row.ruleTitle!,
                     key: Key('seat_row_rule_${row.id}'),
                     style: AlongText.caption.copyWith(
-                      color: AlongColors.semanticWarning,
+                      color: palette.brightness == Brightness.dark
+                          ? palette.accent
+                          : AlongColors.semanticWarning,
                     ),
                   ),
                 ),
@@ -102,40 +117,72 @@ class SeatMap extends StatelessWidget {
                 ),
               ),
             ],
+            const SizedBox(height: AlongSpace.s8),
+            Row(
+              mainAxisAlignment: body == 'bike'
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.spaceBetween,
+              children: [
+                _Wheel(color: palette.ink, hub: palette.surface),
+                if (body != 'bike')
+                  _Wheel(color: palette.ink, hub: palette.surface),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  static _BodyChrome _chromeFor(String body) {
+  static _BodyChrome _chromeFor(String body, AlongPalette palette) {
     switch (body) {
       case 'bench':
-        return const _BodyChrome(
-          fill: AlongColors.brandYellowTint,
-          border: AlongColors.brandYellow,
+        return _BodyChrome(
+          fill: palette.accent.withValues(alpha: 0.28),
+          border: palette.accentInk,
           radius: 28,
         );
       case 'bike':
-        return const _BodyChrome(
-          fill: AlongColors.surface200,
-          border: AlongColors.ink900,
+        return _BodyChrome(
+          fill: palette.recessed,
+          border: palette.ink,
           radius: 40,
         );
       case 'coach':
-        return const _BodyChrome(
-          fill: AlongColors.surface0,
-          border: AlongColors.ink900,
+      case 'danfo':
+        return _BodyChrome(
+          fill: palette.surface,
+          border: palette.ink,
           radius: 12,
         );
       case 'cabin':
       default:
-        return const _BodyChrome(
-          fill: AlongColors.surface0,
-          border: AlongColors.ink500,
-          radius: 24,
+        return _BodyChrome(
+          fill: palette.surface,
+          border: palette.ink,
+          radius: 28,
         );
     }
+  }
+}
+
+class _Wheel extends StatelessWidget {
+  const _Wheel({required this.color, required this.hub});
+
+  final Color color;
+  final Color hub;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 18,
+      height: 18,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: hub, width: 4),
+      ),
+    );
   }
 }
 
@@ -164,7 +211,8 @@ class _SeatButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _fill(seat);
+    final palette = AlongPalette.of(context);
+    final color = _fill(seat, palette);
     return Semantics(
       button: onTap != null,
       label: '${seat.label}, ${seat.statusWord}',
@@ -176,9 +224,7 @@ class _SeatButton extends StatelessWidget {
             color: color,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-              side: BorderSide(
-                color: seat.isDriver ? AlongColors.ink900 : AlongColors.ink500,
-              ),
+              side: _side(seat, palette),
             ),
             child: InkWell(
               key: Key('seat_${seat.id}'),
@@ -188,10 +234,17 @@ class _SeatButton extends StatelessWidget {
                   : () => onLongPress!(seat.id),
               child: Center(
                 child: seat.isCargo
-                    ? Icon(Icons.luggage_outlined, size: 20, color: _ink(seat))
+                    ? Icon(
+                        Icons.luggage_outlined,
+                        size: 20,
+                        color: _ink(seat, palette),
+                      )
                     : Text(
                         seat.isDriver ? 'D' : _short(seat.label),
-                        style: AlongText.caption.copyWith(color: _ink(seat)),
+                        style: AlongText.caption.copyWith(
+                          color: _ink(seat, palette),
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
               ),
             ),
@@ -208,24 +261,43 @@ class _SeatButton extends StatelessWidget {
     return parts.take(2).map((part) => part.substring(0, 1)).join();
   }
 
-  static Color _fill(SeatMapSeat seat) {
-    if (seat.isDriver || seat.isCargo) return AlongColors.ink900;
+  static Color _fill(SeatMapSeat seat, AlongPalette palette) {
+    if (seat.isDriver || seat.isCargo || seat.status == 'occupied') {
+      return palette.ink;
+    }
     switch (seat.status) {
-      case 'occupied':
-        return AlongColors.ink900;
       case 'held':
-        return AlongColors.brandYellow;
+        return palette.surface;
+      case 'yours':
+        return palette.accent;
       case 'blocked':
-        return AlongColors.surface200;
+        return palette.recessed;
       default:
-        return AlongColors.semanticSuccessTint;
+        return palette.success.withValues(
+          alpha: palette.brightness == Brightness.dark ? 0.38 : 0.16,
+        );
     }
   }
 
-  static Color _ink(SeatMapSeat seat) {
-    if (seat.isDriver || seat.isCargo || seat.status == 'occupied') {
-      return AlongColors.surface0;
+  static BorderSide _side(SeatMapSeat seat, AlongPalette palette) {
+    if (seat.status == 'yours') {
+      return BorderSide(color: palette.accentInk, width: 2);
     }
-    return AlongColors.ink900;
+    if (seat.status == 'held') {
+      return BorderSide(color: palette.accent, width: 2);
+    }
+    if (seat.status == 'free') {
+      return BorderSide(color: palette.success, width: 1.5);
+    }
+    return BorderSide(color: palette.ink);
+  }
+
+  static Color _ink(SeatMapSeat seat, AlongPalette palette) {
+    if (seat.isDriver || seat.isCargo || seat.status == 'occupied') {
+      return palette.onInk;
+    }
+    if (seat.status == 'yours') return palette.accentInk;
+    if (seat.status == 'blocked') return palette.muted;
+    return palette.ink;
   }
 }

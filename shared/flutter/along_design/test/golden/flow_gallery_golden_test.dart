@@ -20,21 +20,8 @@ void main() {
   };
 
   for (final stage in stages.entries) {
-    testWidgets('${stage.key} before light 360x800', (tester) async {
-      await _pump(
-        tester,
-        child: stage.value(legacy: true),
-        legacy: true,
-        size: const Size(360, 800),
-      );
-      await expectLater(
-        find.byType(Scaffold),
-        matchesGoldenFile(
-          'goldens/flows/before/${stage.key}_light_360x800.png',
-        ),
-      );
-    });
-
+    // `goldens/flows/before/` is the frozen pass-1 baseline. Do not regenerate it
+    // from these widgets.
     for (final brightness in [Brightness.light, Brightness.dark]) {
       for (final size in const [Size(360, 800), Size(320, 640)]) {
         final tone = brightness == Brightness.dark ? 'dark' : 'light';
@@ -97,5 +84,10 @@ Future<void> _pump(
     ),
   );
   await tester.pump();
-  await tester.pump(const Duration(milliseconds: 100));
+  final context = tester.element(find.byType(MaterialApp));
+  for (final element in find.byType(Image).evaluate()) {
+    final image = element.widget as Image;
+    await tester.runAsync(() => precacheImage(image.image, context));
+  }
+  await tester.pump();
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
+import 'city_map.dart';
 
 /// Painted stand-in for the brand basemap. Widget tests must not mount MapLibre.
 class AlongMapSketch extends StatelessWidget {
@@ -186,10 +187,6 @@ class AlongRouteMotion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlongMapSketch(
-      progress: progress,
-      showRoute: true,
-      showVehicle: true,
-    );
+    return AlongCityMap(mode: AlongCityMapMode.trip, progress: progress);
   }
 }

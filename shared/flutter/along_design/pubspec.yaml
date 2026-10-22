@@ -37,12 +37,16 @@ flutter:
     - assets/splash/
     - assets/map/
   fonts:
-    - family: Onest
+    - family: Satoshi
       fonts:
-        - asset: assets/fonts/Onest.ttf
-          weight: 100
-        - asset: assets/fonts/Onest.ttf
-          weight: 900
+        - asset: assets/fonts/Satoshi-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Satoshi-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Satoshi-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Satoshi-Bold.ttf
+          weight: 700
     - family: Inter
       fonts:
         # Variable font (wght 100–900); min/max entries enable weight interpolation.

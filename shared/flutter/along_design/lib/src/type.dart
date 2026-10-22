@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'palette.dart';
 
-/// Brand type. Onest carries display and UI. Inter is the naira fallback
-/// because Onest has no U+20A6. [jk-typography] [imp/typeset]
+/// Brand type. Satoshi (Fontshare, ITF Free Font License) carries display
+/// and UI. Inter is the naira fallback because Satoshi has no U+20A6.
+/// Display tracking is tight so headlines read like a transport grotesque.
+/// [jk-typography] [imp/typeset]
 abstract final class AlongType {
   static const fallback = ['Inter'];
 
@@ -12,7 +14,7 @@ abstract final class AlongType {
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
       fontSize: 32,
-      height: 1.08,
+      height: 1.05,
       fontWeight: FontWeight.w700,
       letterSpacing: -0.96,
       color: palette.ink,
@@ -24,9 +26,9 @@ abstract final class AlongType {
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
       fontSize: 22,
-      height: 1.2,
+      height: 1.15,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.44,
+      letterSpacing: -0.55,
       color: palette.ink,
     );
   }
@@ -55,6 +57,17 @@ abstract final class AlongType {
 
   static TextStyle bodyMuted(AlongPalette palette) {
     return body(palette).copyWith(color: palette.muted);
+  }
+
+  static TextStyle caption(AlongPalette palette) {
+    return TextStyle(
+      fontFamily: palette.fontFamily,
+      fontFamilyFallback: fallback,
+      fontSize: 13,
+      height: 1.35,
+      fontWeight: FontWeight.w500,
+      color: palette.muted,
+    );
   }
 
   static TextStyle button(AlongPalette palette) {
