@@ -28,10 +28,14 @@ class AlongCityMap extends StatelessWidget {
     super.key,
     this.mode = AlongCityMapMode.browse,
     this.progress = 1,
+    this.liveMarker = false,
   });
 
   final AlongCityMapMode mode;
   final double progress;
+
+  /// Drops a vehicle on the corridor. Guardian uses this for the live fix.
+  final bool liveMarker;
 
   /// Sits about one tile south of Wuse Market, so the market stays in the
   /// strip above a full-screen sheet on both 360×800 and 320×640.
@@ -51,19 +55,25 @@ class AlongCityMap extends StatelessWidget {
     LatLng(9.058278, 7.465189),
   ];
 
-  /// Driving trace from Wuse Market to Nyanya bus station (OSRM, simplified).
+  /// Wuse Market to Nyanya, snapped to the white roads on the z12 tiles.
+  /// The line bends with the highway instead of a single straight street.
   static const corridorRoute = <LatLng>[
-    LatLng(9.068635, 7.465950),
-    LatLng(9.067955, 7.478710),
-    LatLng(9.049603, 7.494781),
-    LatLng(9.054443, 7.510700),
-    LatLng(9.050663, 7.528593),
-    LatLng(9.033038, 7.544055),
-    LatLng(9.026961, 7.555911),
-    LatLng(9.023418, 7.570635),
+    LatLng(9.068704, 7.465725),
+    LatLng(9.051074, 7.461262),
+    LatLng(9.048022, 7.463322),
+    LatLng(9.045649, 7.478771),
+    LatLng(9.048700, 7.483921),
+    LatLng(9.051074, 7.505894),
+    LatLng(9.041580, 7.522373),
+    LatLng(9.040224, 7.538853),
+    LatLng(9.042258, 7.544346),
+    LatLng(9.034121, 7.558422),
+    LatLng(9.036494, 7.570438),
+    LatLng(9.026661, 7.575932),
   ];
 
-  bool get _corridor => mode == AlongCityMapMode.routeHero;
+  bool get _wide =>
+      mode == AlongCityMapMode.routeHero || mode == AlongCityMapMode.trip;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +82,7 @@ class AlongCityMap extends StatelessWidget {
     final drawn = AlongMotionPolicy.reduced(context)
         ? 1.0
         : progress.clamp(0.0, 1.0);
-    final route = _corridor ? corridorRoute : neighborhoodRoute;
+    final route = _wide ? corridorRoute : neighborhoodRoute;
     final showRoute =
         mode == AlongCityMapMode.trip || mode == AlongCityMapMode.routeHero;
     return LayoutBuilder(
@@ -83,24 +93,24 @@ class AlongCityMap extends StatelessWidget {
                 bounds: LatLngBounds.fromPoints(_drawnRoute(route, drawn)),
                 padding: trip
                     ? EdgeInsets.fromLTRB(
-                        48,
-                        88,
-                        48,
-                        constraints.maxHeight * 0.60,
+                        36,
+                        64,
+                        36,
+                        constraints.maxHeight * 0.48,
                       )
-                    : const EdgeInsets.fromLTRB(36, 36, 36, 36),
-                minZoom: trip ? 15 : 11.5,
-                // 3× rasters stay sharp through about zoom 17.6.
-                maxZoom: trip ? 17.6 : 12.4,
+                    : const EdgeInsets.fromLTRB(28, 28, 28, 28),
+                // Stay on cached z12 tiles. 12.4 rounds to 12; 12.5 would not.
+                minZoom: 12,
+                maxZoom: trip ? 12 : 12.4,
               )
             : null;
         return FlutterMap(
           options: MapOptions(
-            initialCenter: _corridor ? corridorCenter : neighborhoodCenter,
-            initialZoom: _corridor ? 12 : 16,
+            initialCenter: _wide ? corridorCenter : neighborhoodCenter,
+            initialZoom: _wide ? 12 : 16,
             initialCameraFit: fit,
-            minZoom: trip ? 15 : (_corridor ? 11.5 : 16),
-            maxZoom: trip ? 17.6 : (_corridor ? 12.4 : 16),
+            minZoom: _wide ? 12 : 16,
+            maxZoom: _wide ? (trip ? 12 : 12.4) : 16,
             interactionOptions: const InteractionOptions(
               flags: InteractiveFlag.none,
             ),
@@ -156,10 +166,23 @@ class AlongCityMap extends StatelessWidget {
     if (mode == AlongCityMapMode.routeHero) {
       markers.add(_endpoint(wuseMarket, 'Wuse', true, palette));
       markers.add(_endpoint(nyanya, 'Nyanya', false, palette));
+      if (liveMarker) {
+        final at = _along(corridorRoute, 0.62);
+        markers.add(
+          _vehicle(
+            at.point,
+            AlongVehicleKind.car,
+            null,
+            at.heading,
+            palette,
+            emphasized: true,
+          ),
+        );
+      }
       return markers;
     }
     if (mode == AlongCityMapMode.trip) {
-      final at = _along(neighborhoodRoute, drawn);
+      final at = _along(corridorRoute, drawn);
       markers.add(
         _vehicle(
           at.point,

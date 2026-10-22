@@ -86,17 +86,28 @@ class SeatMap extends StatelessWidget {
                     ),
                   ),
                 ),
-            Transform(
-              alignment: Alignment.bottomCenter,
-              transform: Matrix4.identity()..rotateX(0.04),
-              child: CustomPaint(
-                painter: _CabinPainter(body: body, palette: palette),
-                child: Padding(
+            Stack(
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(6, 0, 6, 4),
+                    child: Image.asset(
+                      _silhouetteAsset(body),
+                      package: 'along_design',
+                      fit: BoxFit.fitWidth,
+                      alignment: Alignment.center,
+                      filterQuality: FilterQuality.medium,
+                      excludeFromSemantics: true,
+                      opacity: const AlwaysStoppedAnimation(0.9),
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: EdgeInsets.fromLTRB(
-                    18,
-                    body == 'bike' ? 20 : 36,
-                    18,
-                    22,
+                    28,
+                    body == 'bike' ? 28 : 48,
+                    28,
+                    28,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -125,12 +136,25 @@ class SeatMap extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+String _silhouetteAsset(String body) {
+  switch (body) {
+    case 'bike':
+      return 'assets/vehicles/okada_top.png';
+    case 'coach':
+      return 'assets/vehicles/bus_top.png';
+    case 'bench':
+      return 'assets/vehicles/keke_top.png';
+    default:
+      return 'assets/vehicles/danfo_top.png';
   }
 }
 
@@ -186,66 +210,6 @@ class _WheelPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _WheelPainter oldDelegate) =>
       oldDelegate.ink != ink;
-}
-
-class _CabinPainter extends CustomPainter {
-  _CabinPainter({required this.body, required this.palette});
-
-  final String body;
-  final AlongPalette palette;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final ink = palette.ink;
-    final outline = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.6
-      ..color = ink.withValues(alpha: 0.55);
-    final fill = Paint()..color = palette.recessed.withValues(alpha: 0.65);
-    if (body == 'bike') {
-      final rect = Rect.fromLTWH(
-        size.width * 0.28,
-        4,
-        size.width * 0.44,
-        size.height - 8,
-      );
-      final r = RRect.fromRectAndRadius(rect, const Radius.circular(28));
-      canvas.drawRRect(r, fill);
-      canvas.drawRRect(r, outline);
-      _wheel(canvas, Offset(size.width / 2, size.height - 10), 8, ink);
-      return;
-    }
-    final rect = Rect.fromLTWH(18, 8, size.width - 36, size.height - 16);
-    final bodyPath = Path()
-      ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(28)));
-    canvas.drawPath(
-      bodyPath.shift(const Offset(0, 2)),
-      Paint()..color = ink.withValues(alpha: 0.06),
-    );
-    canvas.drawPath(bodyPath, Paint()..color = palette.bg);
-    canvas.drawPath(
-      bodyPath,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.25
-        ..color = ink.withValues(alpha: 0.35),
-    );
-  }
-
-  void _wheel(Canvas canvas, Offset at, double radius, Color ink) {
-    canvas.drawCircle(at, radius, Paint()..color = ink);
-    canvas.drawCircle(
-      at,
-      radius * 0.52,
-      Paint()..color = Color.lerp(palette.surface, ink, 0.35)!,
-    );
-    canvas.drawCircle(at, radius * 0.2, Paint()..color = palette.surface);
-  }
-
-  @override
-  bool shouldRepaint(covariant _CabinPainter oldDelegate) =>
-      oldDelegate.body != body ||
-      oldDelegate.palette.brightness != palette.brightness;
 }
 
 class _SeatButton extends StatefulWidget {
@@ -327,13 +291,15 @@ class _SeatButtonState extends State<_SeatButton>
                           const Spacer(),
                           if (seat.isCargo)
                             Icon(Icons.luggage_outlined, size: 18, color: ink)
-                          else
+                          else if (!seat.isDriver)
                             Text(
-                              seat.isDriver ? 'DRV' : _short(seat.label),
+                              seat.label.trim(),
                               maxLines: 1,
                               softWrap: false,
                               style: AlongText.caption.copyWith(
                                 color: ink,
+                                fontSize: 11,
+                                height: 1,
                                 fontWeight: FontWeight.w700,
                                 fontFeatures: const [
                                   FontFeature.tabularFigures(),
@@ -388,15 +354,6 @@ class _SeatButtonState extends State<_SeatButton>
     );
   }
 
-  static String _short(String label) {
-    final trimmed = label.trim();
-    if (trimmed.length <= 3) return trimmed;
-    final parts = trimmed.split(' ').where((part) => part.isNotEmpty).toList();
-    if (parts.isEmpty) return '';
-    if (parts.length == 1) return parts.first.substring(0, 1);
-    return parts.take(2).map((part) => part.substring(0, 1)).join();
-  }
-
   static Color _fill(SeatMapSeat seat, AlongPalette palette) {
     if (seat.isDriver || seat.isCargo || seat.status == 'occupied') {
       return palette.ink;
@@ -440,8 +397,19 @@ class _SeatPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cushion = _SeatButtonState._fill(seat, palette);
     final selected = seat.status == 'yours';
-    final rect = Rect.fromLTWH(12, 10, size.width - 24, size.height - 30);
-    final pad = RRect.fromRectAndRadius(rect, const Radius.circular(12));
+    final ink = palette.ink;
+    final head = RRect.fromRectAndRadius(
+      Rect.fromLTWH(size.width * 0.32, 2, size.width * 0.36, 12),
+      const Radius.circular(6),
+    );
+    final back = RRect.fromRectAndRadius(
+      Rect.fromLTWH(size.width * 0.10, 18, size.width * 0.80, 14),
+      const Radius.circular(5),
+    );
+    final pad = RRect.fromRectAndRadius(
+      Rect.fromLTWH(size.width * 0.16, 36, size.width * 0.68, size.height - 44),
+      const Radius.circular(10),
+    );
     if (selected) {
       canvas.drawRRect(
         pad.inflate(2 + pulse * 1.5),
@@ -451,30 +419,25 @@ class _SeatPainter extends CustomPainter {
           ..color = palette.accent.withValues(alpha: 0.45 + pulse * 0.35),
       );
     }
-    canvas.drawRRect(
-      pad.shift(const Offset(0, 1)),
-      Paint()..color = palette.ink.withValues(alpha: 0.06),
-    );
+    final shadow = Paint()..color = ink.withValues(alpha: 0.08);
+    canvas.drawRRect(back.shift(const Offset(0, 1)), shadow);
+    canvas.drawRRect(pad.shift(const Offset(0, 1)), shadow);
     canvas.drawRRect(pad, Paint()..color = cushion);
     canvas.drawRRect(
-      pad,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
-        ..color = palette.ink.withValues(alpha: selected ? 0.55 : 0.22),
-    );
-    final head = RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: Offset(size.width / 2, rect.top + 6),
-        width: size.width * 0.36,
-        height: 7,
-      ),
-      const Radius.circular(3),
+      back,
+      Paint()..color = Color.lerp(cushion, ink, 0.22)!,
     );
     canvas.drawRRect(
       head,
-      Paint()..color = palette.ink.withValues(alpha: selected ? 0.28 : 0.16),
+      Paint()..color = Color.lerp(cushion, ink, selected ? 0.4 : 0.32)!,
     );
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = ink.withValues(alpha: selected ? 0.55 : 0.22);
+    canvas.drawRRect(pad, stroke);
+    canvas.drawRRect(back, stroke);
+    canvas.drawRRect(head, stroke);
   }
 
   @override

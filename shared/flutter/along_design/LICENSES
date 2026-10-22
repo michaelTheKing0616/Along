@@ -10,6 +10,9 @@ Place
 Plate
 - Camera frame (assets/photos/plate-abuja.jpg). Sarah Sheedy, “A close up of a license plate on a car”, Kailua-Kona. Unsplash, https://unsplash.com/photos/a-close-up-of-a-license-plate-on-a-car-j7fKhMSqbmU. Unsplash License. The original plate area is replaced with the fictional plate ABC-123-XY.
 
+Vehicles
+- Studio renders in assets/vehicles/. Sedan, Hiace-style minibus (yellow danfo), and motorcycle follow the proportions of Kenney CC0 kits: Car Kit sedan and van, and the motorcycle from Kenney Starter Kit Racing (https://kenney.nl, CC0). Those source meshes are low-poly game models, so the gallery ships smooth Blender studio renders in the same soft light instead of the raw kits. The keke and the city bus are original meshes built in the same studio. Rendered headless with Blender 4.0 Eevee, transparent PNG.
+
 Maps
 - Basemap tiles are a 3× render of a Protomaps daily planet extract for the Federal Capital Territory, max zoom 15 in the public build (neighborhood frames are the z16 grid, overzoomed from that vector). © OpenStreetMap contributors. https://protomaps.com https://www.openstreetmap.org/copyright. Extract steps: tool/extract_abuja_pmtiles.sh. The PMTiles archive is not committed.
 

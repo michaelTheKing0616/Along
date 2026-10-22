@@ -46,6 +46,7 @@ flutter:
     - assets/map/tiles/heat/
     - assets/photos/
     - assets/avatars/
+    - assets/vehicles/
     - assets/motion/
   fonts:
     - family: Geist

@@ -586,25 +586,7 @@ class AlongFlowSos extends StatelessWidget {
             ),
           ),
           const Center(child: _HoldRing()),
-          const Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: Column(
-              children: [
-                _PlaceRow(
-                  icon: AlongIcons.shield,
-                  title: 'Adaeze',
-                  detail: 'Mum',
-                ),
-                _PlaceRow(
-                  icon: AlongIcons.shield,
-                  title: 'Chidi',
-                  detail: 'Brother',
-                ),
-              ],
-            ),
-          ),
+          const Positioned(left: 16, right: 16, bottom: 16, child: _SosPanel()),
         ],
       ),
     );
@@ -632,46 +614,12 @@ class AlongFlowGuardian extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Expanded(
-            child: _MapHero(height: double.infinity, label: 'Wuse to Nyanya'),
+            child: _MapHero(height: double.infinity, label: 'Live', live: true),
           ),
           const SizedBox(height: 8),
-          const _GuardRule(
-            icon: AlongIcons.navigate,
-            title: 'Off the route',
-            detail: 'If the car leaves',
-            value: '400 m',
-          ),
-          const _GuardRule(
-            icon: AlongIcons.schedule,
-            title: 'Still for',
-            detail: 'A long stop',
-            value: '3 min',
-          ),
-          const _GuardRule(
-            icon: AlongIcons.shield,
-            title: 'Check-in every',
-            detail: 'When you ask',
-            value: '15 min',
-          ),
-          const _GuardRule(
-            icon: AlongIcons.verified,
-            title: 'Safe word',
-            detail: 'Ends the check',
-            value: 'Set',
-          ),
+          const _TrustedRow(),
           const SizedBox(height: 8),
-          const _PersonCard(
-            name: 'Adaeze',
-            detail: 'Mum · watching',
-            trailing: '14:02',
-            verified: false,
-          ),
-          const _PersonCard(
-            name: 'Chidi',
-            detail: 'Brother · notified',
-            trailing: 'On',
-            verified: false,
-          ),
+          const _RuleStrip(),
         ],
       ),
     );
@@ -764,8 +712,12 @@ class AlongFlowWallet extends StatelessWidget {
         children: [
           const _BalanceCard(),
           const SizedBox(height: 12),
-          const _CreditNote(),
+          const _WalletTiles(),
           const SizedBox(height: 12),
+          const _CreditNote(),
+          const SizedBox(height: 4),
+          Text('Activity', style: AlongType.title(AlongPalette.of(context))),
+          const SizedBox(height: 4),
           const _TxnRow(
             icon: AlongIcons.wallet,
             title: 'Wallet',
@@ -830,20 +782,15 @@ class AlongFlowDay extends StatelessWidget {
           const SizedBox(height: 8),
           const _WeekStrip(),
           const SizedBox(height: 8),
-          const Expanded(
+          const SizedBox(
+            height: 108,
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: BorderRadius.all(Radius.circular(16)),
               child: AlongCityMap(mode: AlongCityMapMode.routeHero),
             ),
           ),
-          const SizedBox(height: 6),
-          const _RunLine(day: 'Thu', route: 'Wuse to Nyanya', fare: '₦1,400'),
-          const _RunLine(day: 'Wed', route: 'Berger to Garki', fare: '₦900'),
-          const _RunLine(day: 'Tue', route: 'Jabi to Wuse', fare: '₦1,200'),
-          const _RunLine(day: 'Mon', route: 'Nyanya to Wuse', fare: '₦1,600'),
-          const _RunLine(day: 'Sun', route: 'Garki to Jabi', fare: '₦700'),
-          const _RunLine(day: 'Sat', route: 'Wuse to Berger', fare: '₦1,100'),
-          const _RunLine(day: 'Fri', route: 'Airport to Wuse', fare: '₦2,400'),
+          const SizedBox(height: 8),
+          const Expanded(child: _DayRuns()),
         ],
       ),
     );
@@ -1243,33 +1190,48 @@ class AlongFlowSearch extends StatelessWidget {
           ),
           Positioned.fill(
             child: AlongSpringSheet(
-              restingHeight: 280,
+              restingHeight: 372,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Finding a keke',
+                    '3 offers',
                     maxLines: 1,
                     softWrap: false,
                     style: AlongType.heading(palette),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
-                    'Usually 4 min in Wuse',
+                    'Wuse · keke',
                     maxLines: 1,
                     softWrap: false,
                     style: AlongType.meta(palette),
                   ),
-                  const SizedBox(height: 10),
-                  const _MatchCard(
+                  const SizedBox(height: 8),
+                  const _BidRow(
                     name: 'Chinedu',
-                    detail: 'Keke · 4 min · ₦400',
+                    rating: '4.9',
+                    vehicle: 'Keke',
+                    eta: '4 min',
+                    fare: '₦400',
                   ),
-                  const _MatchCard(
+                  const _BidRow(
                     name: 'Adaeze',
-                    detail: 'Keke · 6 min · ₦500',
+                    rating: '4.8',
+                    vehicle: 'Keke',
+                    eta: '6 min',
+                    fare: '₦450',
                     rider: true,
                   ),
+                  const _BidRow(
+                    name: 'Ife',
+                    rating: '4.7',
+                    vehicle: 'Keke',
+                    eta: '8 min',
+                    fare: '₦380',
+                    initials: 'IF',
+                  ),
+                  const Spacer(),
                   const AlongButton(
                     label: 'Cancel',
                     variant: AlongButtonVariant.secondary,
@@ -1354,10 +1316,15 @@ class AlongFlowRating extends StatelessWidget {
 }
 
 class _MapHero extends StatelessWidget {
-  const _MapHero({required this.height, required this.label});
+  const _MapHero({
+    required this.height,
+    required this.label,
+    this.live = false,
+  });
 
   final double height;
   final String label;
+  final bool live;
 
   @override
   Widget build(BuildContext context) {
@@ -1366,8 +1333,11 @@ class _MapHero extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          const Positioned.fill(
-            child: AlongCityMap(mode: AlongCityMapMode.routeHero),
+          Positioned.fill(
+            child: AlongCityMap(
+              mode: AlongCityMapMode.routeHero,
+              liveMarker: live,
+            ),
           ),
           Positioned(left: 10, bottom: 10, child: _MapChip(label: label)),
         ],
@@ -2760,78 +2730,107 @@ class _HoldAlertState extends State<_HoldAlert>
   }
 }
 
-class _GuardRule extends StatelessWidget {
-  const _GuardRule({
-    required this.icon,
-    required this.title,
-    required this.detail,
-    required this.value,
-  });
+class _TrustedRow extends StatelessWidget {
+  const _TrustedRow();
 
-  final IconData icon;
-  final String title;
-  final String detail;
-  final String value;
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        _ContactFace(name: 'Adaeze', asset: AlongDriverPortrait.adaeze),
+        SizedBox(width: 16),
+        _ContactFace(name: 'Chidi', initials: 'CH'),
+        SizedBox(width: 16),
+        _ContactFace(name: 'Ngozi', initials: 'NG'),
+      ],
+    );
+  }
+}
+
+class _ContactFace extends StatelessWidget {
+  const _ContactFace({required this.name, this.asset, this.initials});
+
+  final String name;
+  final String? asset;
+  final String? initials;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Column(
+      children: [
+        if (asset != null)
+          AlongDriverPortrait(size: 44, asset: asset!, verified: true)
+        else
+          _Monogram(initials: initials ?? '', size: 44),
+        const SizedBox(height: 4),
+        Text(
+          name,
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.caption(palette)
+              .copyWith(fontWeight: FontWeight.w700),
+        ),
+      ],
+    );
+  }
+}
+
+class _RuleStrip extends StatelessWidget {
+  const _RuleStrip();
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       decoration: BoxDecoration(
         color: palette.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: AlongElevation.card(palette.ink),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          Container(
-            width: 36,
-            height: 36,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.recessed,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 18, color: palette.ink),
+          _RuleTile(icon: AlongIcons.navigate, value: '400 m', label: 'Route'),
+          _RuleTile(icon: AlongIcons.schedule, value: '3 min', label: 'Stop'),
+          _RuleTile(icon: AlongIcons.shield, value: '15 min', label: 'Ping'),
+          _RuleTile(icon: AlongIcons.verified, value: 'Set', label: 'Word'),
+        ],
+      ),
+    );
+  }
+}
+
+class _RuleTile extends StatelessWidget {
+  const _RuleTile({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, size: 16, color: palette.ink),
+          Text(
+            value,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette)
+                .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.title(palette)
-                      .copyWith(fontSize: 16, height: 1.15),
-                ),
-                Text(
-                  detail,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: AlongType.meta(palette),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: palette.ink,
-              borderRadius: BorderRadius.circular(99),
-            ),
-            child: Text(
-              value,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette)
-                  .copyWith(color: palette.onInk, fontWeight: FontWeight.w700),
-            ),
+          Text(
+            label,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.meta(palette),
           ),
         ],
       ),
@@ -2847,20 +2846,47 @@ class _BalanceCard extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
       decoration: BoxDecoration(
         color: palette.ink,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: AlongElevation.float(palette.ink),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 26,
+                decoration: BoxDecoration(
+                  color: palette.accent,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                'Along',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.caption(
+                  palette,
+                ).copyWith(color: palette.onInk, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
           Text(
             'Trip fare',
+            maxLines: 1,
+            softWrap: false,
             style: AlongType.meta(palette).copyWith(color: palette.onInk),
           ),
           Text(
             '₦1,200',
+            maxLines: 1,
+            softWrap: false,
             style: AlongType.numeric(palette)
                 .copyWith(fontSize: 36, color: palette.onInk),
           ),
@@ -2870,6 +2896,95 @@ class _BalanceCard extends StatelessWidget {
             softWrap: false,
             style: AlongType.meta(palette)
                 .copyWith(color: palette.accent, fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WalletTiles extends StatelessWidget {
+  const _WalletTiles();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        _IconTile(icon: AlongIcons.earnings, label: 'Top up'),
+        SizedBox(width: 8),
+        _IconTile(icon: AlongIcons.share, label: 'Send'),
+        SizedBox(width: 8),
+        _IconTile(icon: AlongIcons.receipt, label: 'Card'),
+      ],
+    );
+  }
+}
+
+class _IconTile extends StatelessWidget {
+  const _IconTile({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Expanded(
+      child: Container(
+        height: 72,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: palette.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AlongElevation.card(palette.ink),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20, color: palette.ink),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette)
+                  .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SosPanel extends StatelessWidget {
+  const _SosPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: AlongElevation.float(palette.ink),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Goes to', style: AlongType.title(palette)),
+          const SizedBox(height: 8),
+          const Row(
+            children: [
+              _IconTile(icon: AlongIcons.shield, label: 'Mum'),
+              SizedBox(width: 8),
+              _IconTile(icon: AlongIcons.shield, label: 'Chidi'),
+              SizedBox(width: 8),
+              _IconTile(icon: AlongIcons.share, label: 'Share'),
+              SizedBox(width: 8),
+              _IconTile(icon: AlongIcons.call, label: 'Call'),
+            ],
           ),
         ],
       ),
@@ -2981,32 +3096,41 @@ class _WeekStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
+    const dots = [true, true, false, true, true, false, true];
     return Row(
       children: [
-        for (final day in days)
+        for (var i = 0; i < days.length; i++)
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Container(
-                height: 44,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: day == 'Th' ? palette.ink : palette.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: day == 'Th'
-                      ? null
-                      : AlongElevation.card(palette.ink),
-                ),
-                child: Text(
-                  day,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette).copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: day == 'Th' ? palette.onInk : palette.ink,
+            child: Column(
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: days[i] == 'Th' ? palette.ink : palette.surface,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    days[i],
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette).copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: days[i] == 'Th' ? palette.onInk : palette.ink,
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 4),
+                Container(
+                  width: 4,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: dots[i] ? palette.accent : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ],
             ),
           ),
       ],
@@ -3014,49 +3138,142 @@ class _WeekStrip extends StatelessWidget {
   }
 }
 
-class _RunLine extends StatelessWidget {
-  const _RunLine({required this.day, required this.route, required this.fare});
+class _DayRuns extends StatelessWidget {
+  const _DayRuns();
 
-  final String day;
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: const [
+        _RunCard(route: 'Wuse to Nyanya', seats: '4 of 6', fare: '₦1,400'),
+        _RunCard(route: 'Berger to Garki', seats: '6 of 6', fare: '₦900'),
+        _RunCard(route: 'Jabi to Wuse', seats: '3 of 6', fare: '₦1,200'),
+        _RunCard(route: 'Nyanya to Wuse', seats: '5 of 6', fare: '₦1,600'),
+        _RunCard(route: 'Garki to Jabi', seats: '2 of 6', fare: '₦700'),
+        _RunCard(route: 'Wuse to Berger', seats: '4 of 6', fare: '₦1,100'),
+        _RunCard(route: 'Airport to Wuse', seats: '6 of 6', fare: '₦2,400'),
+      ],
+    );
+  }
+}
+
+class _RunCard extends StatelessWidget {
+  const _RunCard({
+    required this.route,
+    required this.seats,
+    required this.fare,
+  });
+
   final String route;
+  final String seats;
   final String fare;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 30,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: AlongElevation.card(palette.ink),
+      ),
       child: Row(
         children: [
-          SizedBox(
-            width: 32,
-            child: Text(
-              day,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette)
-                  .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
-            ),
-          ),
           Expanded(
-            child: Text(
-              route,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.body(palette).copyWith(height: 1.1),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  route,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.title(palette)
+                      .copyWith(fontSize: 16, height: 1.1),
+                ),
+                const SizedBox(height: 4),
+                const SizedBox(
+                  height: 16,
+                  width: double.infinity,
+                  child: _MiniRoute(),
+                ),
+                Text(
+                  seats,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.meta(palette),
+                ),
+              ],
             ),
           ),
+          const SizedBox(width: 8),
           Text(
             fare,
             maxLines: 1,
             softWrap: false,
             style: AlongType.numeric(palette)
-                .copyWith(fontSize: 15, height: 1.1, letterSpacing: 0),
+                .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
           ),
         ],
       ),
     );
   }
+}
+
+class _MiniRoute extends StatelessWidget {
+  const _MiniRoute();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return CustomPaint(
+      painter: _MiniRoutePainter(ink: palette.ink, accent: palette.accent),
+    );
+  }
+}
+
+class _MiniRoutePainter extends CustomPainter {
+  _MiniRoutePainter({required this.ink, required this.accent});
+
+  final Color ink;
+  final Color accent;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(2, size.height * 0.7)
+      ..quadraticBezierTo(
+        size.width * 0.35,
+        size.height * 0.1,
+        size.width * 0.62,
+        size.height * 0.55,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.82,
+        size.height * 0.9,
+        size.width - 2,
+        size.height * 0.25,
+      );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..strokeCap = StrokeCap.round
+        ..color = accent,
+    );
+    canvas.drawCircle(Offset(2, size.height * 0.7), 2.5, Paint()..color = ink);
+    canvas.drawCircle(
+      Offset(size.width - 2, size.height * 0.25),
+      2.5,
+      Paint()..color = accent,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _MiniRoutePainter oldDelegate) => false;
 }
 
 class _CountdownRing extends StatefulWidget {
@@ -3123,16 +3340,24 @@ class _CountdownRingState extends State<_CountdownRing>
   }
 }
 
-class _MatchCard extends StatelessWidget {
-  const _MatchCard({
+class _BidRow extends StatelessWidget {
+  const _BidRow({
     required this.name,
-    required this.detail,
+    required this.rating,
+    required this.vehicle,
+    required this.eta,
+    required this.fare,
     this.rider = false,
+    this.initials,
   });
 
   final String name;
-  final String detail;
+  final String rating;
+  final String vehicle;
+  final String eta;
+  final String fare;
   final bool rider;
+  final String? initials;
 
   @override
   Widget build(BuildContext context) {
@@ -3141,21 +3366,30 @@ class _MatchCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          AlongDriverPortrait(
-            size: 44,
-            asset: rider
-                ? AlongDriverPortrait.adaeze
-                : AlongDriverPortrait.chinedu,
-            verified: true,
-          ),
-          const SizedBox(width: 10),
+          if (initials != null)
+            _Monogram(initials: initials!, size: 40)
+          else
+            AlongDriverPortrait(
+              size: 40,
+              asset: rider
+                  ? AlongDriverPortrait.adaeze
+                  : AlongDriverPortrait.chinedu,
+              verified: true,
+            ),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: AlongType.title(palette)),
                 Text(
-                  detail,
+                  name,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.title(palette)
+                      .copyWith(fontSize: 16, height: 1.1),
+                ),
+                Text(
+                  '$rating · $vehicle · $eta',
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.meta(palette).copyWith(
@@ -3165,22 +3399,67 @@ class _MatchCard extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: palette.accent,
-              borderRadius: BorderRadius.circular(99),
-            ),
-            child: Text(
-              'Match',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(
-                palette,
-              ).copyWith(color: palette.accentInk, fontWeight: FontWeight.w700),
-            ),
+          const SizedBox(width: 6),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                fare,
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.numeric(palette)
+                    .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
+              ),
+              const SizedBox(height: 4),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: palette.accent,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    'Accept',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette).copyWith(
+                      color: palette.accentInk,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Monogram extends StatelessWidget {
+  const _Monogram({required this.initials, required this.size});
+
+  final String initials;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(color: palette.ink, shape: BoxShape.circle),
+      child: Text(
+        initials,
+        maxLines: 1,
+        softWrap: false,
+        style: AlongType.caption(palette)
+            .copyWith(color: palette.onInk, fontWeight: FontWeight.w700),
       ),
     );
   }
