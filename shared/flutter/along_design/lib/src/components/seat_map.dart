@@ -56,128 +56,191 @@ class SeatMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final chrome = _chromeFor(body, palette);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: chrome.fill,
-        borderRadius: BorderRadius.circular(chrome.radius),
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(body == 'bike' ? 36 : 24),
         boxShadow: AlongElevation.card(palette.ink),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AlongSpace.s12,
-          vertical: AlongSpace.s16,
-        ),
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (body == 'cabin' || body == 'coach' || body == 'danfo')
-              Container(
-                width: body == 'coach' || body == 'danfo' ? 96 : 64,
-                height: 16,
-                margin: const EdgeInsets.only(bottom: AlongSpace.s8),
-                decoration: BoxDecoration(
-                  color: palette.mapWater,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-            for (final row in rows) ...[
+            for (final row in rows)
               if (row.ruleTitle != null && row.ruleTitle!.trim().isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: AlongSpace.s4),
+                  padding: const EdgeInsets.only(bottom: AlongSpace.s8),
                   child: Text(
                     row.ruleTitle!,
                     key: Key('seat_row_rule_${row.id}'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
                     style: AlongText.caption.copyWith(
-                      color: palette.brightness == Brightness.dark
-                          ? palette.accent
-                          : AlongColors.semanticWarning,
+                      color: palette.ink,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: AlongSpace.s8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            CustomPaint(
+              painter: _CabinPainter(body: body, palette: palette),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  8,
+                  body == 'bike' ? 16 : 28,
+                  8,
+                  18,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    for (final seat in row.seats)
+                    for (final row in rows)
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AlongSpace.s4,
-                        ),
-                        child: _SeatButton(
-                          seat: seat,
-                          onTap: seat.isClaimable ? onSeatTap : null,
-                          onLongPress: seat.isClaimable
-                              ? onSeatLongPress
-                              : null,
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (final seat in row.seats) ...[
+                              if (seat.isDriver && body != 'bike')
+                                const _SteeringWheel(),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: _SeatButton(
+                                  seat: seat,
+                                  onTap: seat.isClaimable ? onSeatTap : null,
+                                  onLongPress: seat.isClaimable
+                                      ? onSeatLongPress
+                                      : null,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                   ],
                 ),
               ),
-            ],
-            const SizedBox(height: AlongSpace.s8),
-            Row(
-              mainAxisAlignment: body == 'bike'
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.spaceBetween,
-              children: [
-                _Wheel(color: palette.ink, hub: palette.surface),
-                if (body != 'bike')
-                  _Wheel(color: palette.ink, hub: palette.surface),
-              ],
             ),
           ],
         ),
       ),
     );
   }
-
-  static _BodyChrome _chromeFor(String body, AlongPalette palette) {
-    switch (body) {
-      case 'bench':
-        return _BodyChrome(
-          fill: palette.accent.withValues(alpha: 0.28),
-          radius: 28,
-        );
-      case 'bike':
-        return _BodyChrome(fill: palette.recessed, radius: 40);
-      case 'coach':
-      case 'danfo':
-        return _BodyChrome(fill: palette.surface, radius: 18);
-      case 'cabin':
-      default:
-        return _BodyChrome(fill: palette.surface, radius: 28);
-    }
-  }
 }
 
-class _Wheel extends StatelessWidget {
-  const _Wheel({required this.color, required this.hub});
-
-  final Color color;
-  final Color hub;
+class _SteeringWheel extends StatelessWidget {
+  const _SteeringWheel();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 18,
-      height: 18,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(color: hub, width: 4),
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      width: 28,
+      height: 28,
+      child: CustomPaint(
+        painter: _WheelPainter(ink: palette.ink, hub: palette.surface),
       ),
     );
   }
 }
 
-class _BodyChrome {
-  const _BodyChrome({required this.fill, required this.radius});
+class _WheelPainter extends CustomPainter {
+  _WheelPainter({required this.ink, required this.hub});
 
-  final Color fill;
-  final double radius;
+  final Color ink;
+  final Color hub;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 1;
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.4
+      ..color = ink;
+    canvas.drawCircle(center, radius, ring);
+    canvas.drawCircle(center, 3.2, Paint()..color = ink);
+    final spoke = Paint()
+      ..strokeWidth = 1.6
+      ..strokeCap = StrokeCap.round
+      ..color = ink;
+    canvas.drawLine(center, Offset(center.dx, 3), spoke);
+    canvas.drawLine(center, Offset(4, size.height - 5), spoke);
+    canvas.drawLine(center, Offset(size.width - 4, size.height - 5), spoke);
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = hub.withValues(alpha: 0),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _WheelPainter oldDelegate) =>
+      oldDelegate.ink != ink;
+}
+
+class _CabinPainter extends CustomPainter {
+  _CabinPainter({required this.body, required this.palette});
+
+  final String body;
+  final AlongPalette palette;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final ink = palette.ink;
+    final outline = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.6
+      ..color = ink.withValues(alpha: 0.55);
+    final fill = Paint()..color = palette.recessed.withValues(alpha: 0.65);
+    if (body == 'bike') {
+      final rect = Rect.fromLTWH(
+        size.width * 0.28,
+        4,
+        size.width * 0.44,
+        size.height - 8,
+      );
+      final r = RRect.fromRectAndRadius(rect, const Radius.circular(28));
+      canvas.drawRRect(r, fill);
+      canvas.drawRRect(r, outline);
+      _wheel(canvas, Offset(size.width / 2, size.height - 10), ink);
+      return;
+    }
+    final rect = Rect.fromLTWH(6, 2, size.width - 12, size.height - 4);
+    final cabin = RRect.fromRectAndRadius(rect, const Radius.circular(22));
+    canvas.drawRRect(cabin, fill);
+    canvas.drawRRect(cabin, outline);
+    final glass = RRect.fromRectAndRadius(
+      Rect.fromLTWH(size.width * 0.22, 8, size.width * 0.56, 14),
+      const Radius.circular(7),
+    );
+    canvas.drawRRect(glass, Paint()..color = palette.mapWater);
+    canvas.drawRRect(
+      glass,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = ink.withValues(alpha: 0.25),
+    );
+    _wheel(canvas, Offset(18, size.height - 8), ink);
+    _wheel(canvas, Offset(size.width - 18, size.height - 8), ink);
+  }
+
+  void _wheel(Canvas canvas, Offset at, Color ink) {
+    canvas.drawCircle(at, 7, Paint()..color = ink);
+    canvas.drawCircle(at, 3, Paint()..color = palette.surface);
+  }
+
+  @override
+  bool shouldRepaint(covariant _CabinPainter oldDelegate) =>
+      oldDelegate.body != body ||
+      oldDelegate.palette.brightness != palette.brightness;
 }
 
 class _SeatButton extends StatelessWidget {
@@ -195,39 +258,57 @@ class _SeatButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final color = _fill(seat, palette);
+    final ink = _ink(seat, palette);
     return Semantics(
       button: onTap != null,
       label: '${seat.label}, ${seat.statusWord}',
       child: ExcludeSemantics(
         child: SizedBox(
+          key: Key('seat_${seat.id}'),
           width: AlongSpace.sizeTouchMin,
-          height: AlongSpace.sizeTouchMin,
+          height: 52,
           child: Material(
-            color: color,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: _side(seat, palette),
-            ),
+            type: MaterialType.transparency,
             child: InkWell(
-              key: Key('seat_${seat.id}'),
               onTap: onTap == null ? null : () => onTap!(seat.id),
               onLongPress: onLongPress == null
                   ? null
                   : () => onLongPress!(seat.id),
-              child: Center(
-                child: seat.isCargo
-                    ? Icon(
-                        Icons.luggage_outlined,
-                        size: 20,
-                        color: _ink(seat, palette),
-                      )
-                    : Text(
-                        seat.isDriver ? 'D' : _short(seat.label),
-                        style: AlongText.caption.copyWith(
-                          color: _ink(seat, palette),
-                          fontWeight: FontWeight.w700,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(10),
+                          bottom: Radius.circular(8),
                         ),
+                        border: Border.fromBorderSide(_side(seat, palette)),
                       ),
+                      child: seat.isCargo
+                          ? Icon(Icons.luggage_outlined, size: 18, color: ink)
+                          : Text(
+                              seat.isDriver ? 'D' : _short(seat.label),
+                              style: AlongText.caption.copyWith(
+                                color: ink,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Container(
+                    width: 32,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: ink.withValues(alpha: seat.isDriver ? 0.9 : 0.45),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -59,6 +59,18 @@ abstract final class AlongType {
     return body(palette).copyWith(color: palette.muted);
   }
 
+  /// Secondary line under a name: 14sp, one step under body.
+  static TextStyle meta(AlongPalette palette) {
+    return TextStyle(
+      fontFamily: palette.fontFamily,
+      fontFamilyFallback: fallback,
+      fontSize: 14,
+      height: 1.25,
+      fontWeight: FontWeight.w500,
+      color: palette.muted,
+    );
+  }
+
   static TextStyle caption(AlongPalette palette) {
     return TextStyle(
       fontFamily: palette.fontFamily,

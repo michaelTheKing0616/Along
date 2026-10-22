@@ -218,19 +218,32 @@ class AlongCityMap extends StatelessWidget {
 
   Widget _markerWidget(_MapFrame frame, _Marker marker, AlongPalette palette) {
     final at = frame.project(marker.at);
+    final trip = mode == AlongCityMapMode.trip;
+    final plate = trip ? 58.0 : 52.0;
     return Positioned(
-      left: at.dx - 22,
-      top: at.dy - 22,
+      left: at.dx - plate / 2,
+      top: at.dy - plate / 2,
       child: SizedBox(
-        width: 52,
-        height: 52,
+        width: plate,
+        height: plate,
         child: Stack(
           clipBehavior: Clip.none,
+          alignment: Alignment.center,
           children: [
+            if (trip)
+              Container(
+                width: plate,
+                height: plate,
+                decoration: BoxDecoration(
+                  color: palette.surface,
+                  shape: BoxShape.circle,
+                  boxShadow: AlongElevation.float(palette.ink),
+                ),
+              ),
             AlongTopDownMark(
               kind: marker.kind,
               heading: marker.heading,
-              size: 40,
+              size: trip ? 40 : 36,
             ),
             if (marker.seats != null)
               Positioned(
@@ -429,25 +442,10 @@ class _RoutePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (!showRoute) return;
-    final last = ((AlongCityMap.route.length - 1) * progress).floor();
-    final path = Path();
-    final first = frame.project(AlongCityMap.route.first);
-    path.moveTo(first.dx, first.dy);
-    for (var i = 1; i <= last; i++) {
-      final point = frame.project(AlongCityMap.route[i]);
-      path.lineTo(point.dx, point.dy);
-    }
-    if (last < AlongCityMap.route.length - 1) {
-      final start = AlongCityMap.route[last];
-      final end = AlongCityMap.route[last + 1];
-      final t = (AlongCityMap.route.length - 1) * progress - last;
-      final mid = Offset(
-        start.dx + (end.dx - start.dx) * t,
-        start.dy + (end.dy - start.dy) * t,
-      );
-      final point = frame.project(mid);
-      path.lineTo(point.dx, point.dy);
-    }
+    final path = _smooth(_points());
+    final casing = palette.brightness == Brightness.dark
+        ? palette.ink.withValues(alpha: 0.55)
+        : const Color(0xFF2A3340);
     canvas.drawPath(
       path,
       Paint()
@@ -455,18 +453,67 @@ class _RoutePainter extends CustomPainter {
         ..strokeWidth = 10
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
-        ..color = palette.accent.withValues(alpha: 0.45)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
+        ..color = casing,
     );
     canvas.drawPath(
       path,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.5
+        ..strokeWidth = 5
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
-        ..color = palette.ink,
+        ..color = palette.surface,
     );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.5
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round
+        ..color = palette.accent,
+    );
+  }
+
+  List<Offset> _points() {
+    final count = AlongCityMap.route.length;
+    final last = ((count - 1) * progress).floor().clamp(0, count - 1);
+    final points = <Offset>[
+      for (var i = 0; i <= last; i++) frame.project(AlongCityMap.route[i]),
+    ];
+    if (last < count - 1) {
+      final start = AlongCityMap.route[last];
+      final end = AlongCityMap.route[last + 1];
+      final t = (count - 1) * progress - last;
+      points.add(
+        frame.project(
+          Offset(
+            start.dx + (end.dx - start.dx) * t,
+            start.dy + (end.dy - start.dy) * t,
+          ),
+        ),
+      );
+    }
+    return points;
+  }
+
+  Path _smooth(List<Offset> points) {
+    final path = Path();
+    if (points.isEmpty) return path;
+    path.moveTo(points.first.dx, points.first.dy);
+    if (points.length == 2) {
+      path.lineTo(points.last.dx, points.last.dy);
+      return path;
+    }
+    for (var i = 1; i < points.length - 1; i++) {
+      final mid = Offset(
+        (points[i].dx + points[i + 1].dx) / 2,
+        (points[i].dy + points[i + 1].dy) / 2,
+      );
+      path.quadraticBezierTo(points[i].dx, points[i].dy, mid.dx, mid.dy);
+    }
+    path.lineTo(points.last.dx, points.last.dy);
+    return path;
   }
 
   @override
@@ -477,38 +524,68 @@ class _RoutePainter extends CustomPainter {
   }
 }
 
-/// Soft seat-demand wash. Warm amber over the tiles, not a hex grid.
+/// Seat-demand cells. A blue-to-rust ramp with gaps, not one amber wash.
 class _DemandPainter extends CustomPainter {
   _DemandPainter({required this.frame, required this.palette});
 
   final _MapFrame frame;
   final AlongPalette palette;
 
-  static const _spots = <(Offset, double, double)>[
-    (Offset(0.42, 0.46), 0.24, 0.28),
-    (Offset(0.55, 0.51), 0.28, 0.20),
-    (Offset(0.68, 0.56), 0.20, 0.16),
-    (Offset(0.36, 0.40), 0.18, 0.12),
-    (Offset(0.62, 0.44), 0.16, 0.14),
+  static const _hot = <(Offset, double)>[
+    (Offset(0.40, 0.44), 1),
+    (Offset(0.52, 0.50), 0.9),
+    (Offset(0.66, 0.55), 0.72),
+    (Offset(0.33, 0.39), 0.55),
+    (Offset(0.58, 0.42), 0.48),
+    (Offset(0.46, 0.57), 0.4),
   ];
+
+  static const low = Color(0xFF2F6F8F);
+  static const mid = Color(0xFFE39B2B);
+  static const high = Color(0xFFB93815);
+
+  static Color ramp(double t) {
+    final clamped = t.clamp(0.0, 1.0);
+    if (clamped < 0.55) {
+      return Color.lerp(low, mid, clamped / 0.55)!;
+    }
+    return Color.lerp(mid, high, (clamped - 0.55) / 0.45)!;
+  }
+
+  double _demand(Offset at) {
+    var sum = 0.0;
+    for (final spot in _hot) {
+      final dx = at.dx - spot.$1.dx;
+      final dy = (at.dy - spot.$1.dy) * 1.35;
+      final dist = dx * dx + dy * dy;
+      sum += spot.$2 * math.exp(-dist / 0.0032);
+    }
+    return sum.clamp(0.0, 1.0);
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
-    const warm = Color(0xFFE8A23A);
-    for (final spot in _spots) {
-      final center = frame.project(spot.$1);
-      final radius = spot.$2 * frame.drawnSize.width;
-      final alpha = spot.$3;
-      final paint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            palette.accent.withValues(alpha: alpha),
-            warm.withValues(alpha: alpha * 0.45),
-            palette.accent.withValues(alpha: 0),
-          ],
-          stops: const [0.0, 0.42, 1.0],
-        ).createShader(Rect.fromCircle(center: center, radius: radius));
-      canvas.drawCircle(center, radius, paint);
+    const cols = 11;
+    const rows = 14;
+    const origin = Offset(0.22, 0.32);
+    const step = Offset(0.052, 0.024);
+    final cell = math.min(frame.drawnSize.width * 0.034, 22.0);
+    for (var row = 0; row < rows; row++) {
+      for (var col = 0; col < cols; col++) {
+        final at = Offset(origin.dx + col * step.dx, origin.dy + row * step.dy);
+        final demand = _demand(at);
+        if (demand < 0.14) continue;
+        final center = frame.project(at);
+        final paint = Paint()
+          ..color = ramp(demand).withValues(alpha: 0.22 + 0.62 * demand);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(center: center, width: cell, height: cell * 0.82),
+            Radius.circular(cell * 0.22),
+          ),
+          paint,
+        );
+      }
     }
   }
 

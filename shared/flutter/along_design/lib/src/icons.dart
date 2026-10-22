@@ -23,6 +23,7 @@ abstract final class AlongIcons {
   static const receipt = Symbols.receipt_long_rounded;
   static const verified = Symbols.verified_rounded;
   static const check = Symbols.check_rounded;
+  static const info = Symbols.info_rounded;
   static const close = Symbols.close_rounded;
   static const navigate = Symbols.navigation_rounded;
   static const keke = Symbols.electric_rickshaw_rounded;

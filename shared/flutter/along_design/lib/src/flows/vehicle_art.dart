@@ -38,7 +38,7 @@ class AlongVehicleMark extends StatelessWidget {
         _asset[kind]!,
         package: 'along_design',
         fit: BoxFit.contain,
-        filterQuality: FilterQuality.medium,
+        filterQuality: FilterQuality.high,
         gaplessPlayback: true,
         excludeFromSemantics: true,
       ),
