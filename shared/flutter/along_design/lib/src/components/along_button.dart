@@ -60,6 +60,9 @@ class AlongButton extends StatelessWidget {
           )
         : Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
             style: AlongText.buttonPrimary.copyWith(
               color: style.foregroundColor,
             ),

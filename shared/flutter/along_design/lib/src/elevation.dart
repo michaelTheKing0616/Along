@@ -45,18 +45,13 @@ abstract final class AlongElevation {
     ];
   }
 
-  /// Selected card. Same family as [card], lifted further.
+  /// Selected card. One tight shadow so it does not paint a second card.
   static List<BoxShadow> lifted(Color ink) {
     return [
       BoxShadow(
-        color: ink.withValues(alpha: 0.08),
+        color: ink.withValues(alpha: 0.12),
         offset: const Offset(0, 2),
-        blurRadius: 4,
-      ),
-      BoxShadow(
-        color: ink.withValues(alpha: 0.16),
-        offset: const Offset(0, 14),
-        blurRadius: 32,
+        blurRadius: 8,
       ),
     ];
   }

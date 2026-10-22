@@ -43,7 +43,8 @@ class AlongFlowOnboarding extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Move around. Your way.', style: AlongType.display(palette)),
+          Text('Move around.', style: AlongType.display(palette)),
+          Text('Your way.', style: AlongType.display(palette)),
           const SizedBox(height: 8),
           Text(
             legacyCopy
@@ -390,8 +391,13 @@ class _LiveSheet extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Left seat · ABC-123-XY',
-                    style: AlongType.caption(palette),
+                    'ABC-123-XY',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: AlongType.caption(palette).copyWith(
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
                   ),
                 ],
               ),
@@ -1383,7 +1389,7 @@ class _RadarCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          AlongVehicleMark(kind: kind, width: 96),
+          AlongVehicleMark(kind: kind, width: 72),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -1392,13 +1398,25 @@ class _RadarCard extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                   style: AlongType.title(palette).copyWith(fontSize: 15),
                 ),
-                Text(detail, style: AlongType.caption(palette)),
+                Text(
+                  detail,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: AlongType.caption(palette),
+                ),
                 Text(
                   fare,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                   style: AlongType.numeric(palette)
-                      .copyWith(fontSize: 14, height: 1.2),
+                      .copyWith(fontSize: 14, height: 1.2, letterSpacing: 0),
                 ),
               ],
             ),
@@ -1433,75 +1451,196 @@ class _RideRow extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.fromLTRB(10, 10, 12, 10),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
       decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(18),
+        color: selected ? palette.surface : palette.recessed,
+        borderRadius: BorderRadius.circular(16),
         border: selected ? Border.all(color: palette.accent, width: 2) : null,
-        boxShadow: selected
-            ? AlongElevation.lifted(palette.ink)
-            : AlongElevation.card(palette.ink),
+        boxShadow: selected ? AlongElevation.lifted(palette.ink) : null,
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          AlongVehicleMark(kind: kind, width: 108),
+          AlongVehicleMark(kind: kind, width: 64),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text(
-                        title,
-                        style: AlongType.title(palette)
-                            .copyWith(fontWeight: FontWeight.w700),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  title,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: AlongType.title(palette).copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ),
+                              if (selected) ...[
+                                const SizedBox(width: 4),
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: palette.accent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    AlongIcons.check,
+                                    size: 12,
+                                    color: palette.accentInk,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          Text(
+                            seats,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: AlongType.caption(palette).copyWith(
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
+                              height: 1.2,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    if (selected)
-                      Container(
-                        width: 22,
-                        height: 22,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: palette.accent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          AlongIcons.check,
-                          size: 16,
-                          color: palette.accentInk,
-                        ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 104,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            fare,
+                            maxLines: 1,
+                            softWrap: false,
+                            textAlign: TextAlign.right,
+                            style: AlongType.numeric(palette).copyWith(
+                              fontSize: 13,
+                              height: 1.15,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                          Text(
+                            eta,
+                            maxLines: 1,
+                            softWrap: false,
+                            textAlign: TextAlign.right,
+                            style: AlongType.caption(palette).copyWith(
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
+                              height: 1.2,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
                   ],
                 ),
-                Text(
-                  '$eta · $seats',
-                  style: AlongType.caption(palette).copyWith(
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
                 const SizedBox(height: 6),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: [for (final chip in chips) _Chip(chip)],
-                ),
+                _ChipLine(chips: chips),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            fare,
-            style: AlongType.numeric(
-              palette,
-            ).copyWith(fontSize: 16, height: 1.1, fontWeight: FontWeight.w700),
           ),
         ],
       ),
     );
   }
+}
+
+/// One row of chips under the name. At most two labels that fit whole, then `+n`.
+/// Measured a pixel tight of the real glyph width so the row cannot overflow.
+class _ChipLine extends StatelessWidget {
+  const _ChipLine({required this.chips});
+
+  static const _gap = 4.0;
+  static const _pad = 5.0;
+
+  final List<String> chips;
+
+  @override
+  Widget build(BuildContext context) {
+    if (chips.isEmpty) return const SizedBox(height: 24);
+    final palette = AlongPalette.of(context);
+    final style = AlongType.caption(palette).copyWith(
+      fontSize: 12,
+      height: 1,
+      fontWeight: FontWeight.w600,
+      color: palette.ink,
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final limit = constraints.maxWidth;
+        final shown = <String>[];
+        var used = 0.0;
+        for (final chip in chips) {
+          if (shown.length == 2) break;
+          final remainingAfter = chips.length - shown.length - 1;
+          final badge = remainingAfter > 0
+              ? _chipWidth('+$remainingAfter', style) + _gap
+              : 0.0;
+          final width = _chipWidth(chip, style);
+          final gap = shown.isEmpty ? 0.0 : _gap;
+          if (used + gap + width + badge <= limit) {
+            shown.add(chip);
+            used += gap + width;
+          } else {
+            break;
+          }
+        }
+        if (shown.isEmpty && chips.isNotEmpty) {
+          // A single rule still has to paint. It ellipsizes inside the chip
+          // only when the label is wider than the whole row.
+          shown.add(chips.first);
+        }
+        final hidden = chips.length - shown.length;
+        return SizedBox(
+          height: 24,
+          width: limit,
+          child: Row(
+            children: [
+              for (var i = 0; i < shown.length; i++) ...[
+                if (i > 0) const SizedBox(width: _gap),
+                _Chip(shown[i]),
+              ],
+              if (hidden > 0) ...[
+                const SizedBox(width: _gap),
+                _Chip('+$hidden'),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+double _chipWidth(String label, TextStyle style) {
+  final painter = TextPainter(
+    text: TextSpan(text: label, style: style),
+    maxLines: 1,
+    textDirection: TextDirection.ltr,
+  )..layout();
+  // +1 covers the subpixel gap between TextPainter and the glyph run.
+  return painter.width + (_ChipLine._pad * 2) + 1;
 }
 
 class _Chip extends StatelessWidget {
@@ -1513,17 +1652,20 @@ class _Chip extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return Container(
-      height: 28,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      alignment: Alignment.center,
+      height: 24,
+      padding: const EdgeInsets.symmetric(horizontal: _ChipLine._pad),
+      alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: palette.recessed,
+        color: palette.ink.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(99),
       ),
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
         style: AlongType.caption(palette).copyWith(
-          fontSize: 13,
+          fontSize: 12,
           height: 1,
           fontWeight: FontWeight.w600,
           color: palette.ink,
@@ -1600,16 +1742,25 @@ class _Promo extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const AlongVehicleMark(kind: AlongVehicleKind.keke, width: 84),
+          const AlongVehicleMark(kind: AlongVehicleKind.keke, width: 56),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AlongType.title(palette)),
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: AlongType.title(palette),
+                ),
                 Text(
                   detail,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                   style: AlongType.caption(palette).copyWith(
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),

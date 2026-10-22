@@ -1,5 +1,6 @@
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -36,6 +37,7 @@ void main() {
             brightness: brightness,
             size: size,
           );
+          _expectNoLabelWrap(tester, '${stage.key} $tone $label');
           await expectLater(
             find.byType(Scaffold),
             matchesGoldenFile(
@@ -93,4 +95,33 @@ Future<void> _pump(
     await tester.runAsync(() => precacheImage(image.image, context));
   }
   await tester.pump();
+  final overflow = tester.takeException();
+  expect(overflow, isNull, reason: 'layout overflow');
+}
+
+/// Short labels stay on one line. Ellipsis is allowed. A wrapped chip,
+/// fare, or row label fails the golden run before the pixels are compared.
+void _expectNoLabelWrap(WidgetTester tester, String stage) {
+  final problems = <String>[];
+  for (final element in find.byType(Text).evaluate()) {
+    final render = element.renderObject;
+    if (render is! RenderParagraph) continue;
+    final plain = render.text.toPlainText();
+    if (plain.trim().isEmpty) continue;
+    if (render.didExceedMaxLines) {
+      problems.add('clipped: $plain');
+    }
+    if (plain.length > 40) continue;
+    final boxes = render.getBoxesForSelection(
+      TextSelection(baseOffset: 0, extentOffset: plain.length),
+    );
+    final tops = boxes.map((box) => box.top).toList()..sort();
+    var lines = tops.isEmpty ? 1 : 1;
+    for (var i = 1; i < tops.length; i++) {
+      // Fallback glyphs (the naira) sit a pixel off the Latin baseline.
+      if (tops[i] - tops[i - 1] > 6) lines++;
+    }
+    if (lines > 1) problems.add('wrapped: $plain');
+  }
+  expect(problems, isEmpty, reason: '$stage\n${problems.join('\n')}');
 }
