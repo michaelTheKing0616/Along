@@ -43,6 +43,8 @@ flutter:
     - assets/map/
     - assets/map/tiles/light/
     - assets/map/tiles/dark/
+    - assets/map/tiles/heat/
+    - assets/photos/
     - assets/avatars/
     - assets/vehicles/
     - assets/motion/

@@ -39,17 +39,25 @@ class AlongFlowOnboarding extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  const AlongCityMap(),
+                  Image.asset(
+                    'assets/photos/abuja-skyline.jpg',
+                    package: 'along_design',
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                    filterQuality: FilterQuality.medium,
+                    excludeFromSemantics: true,
+                  ),
                   DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          palette.bg.withValues(alpha: 0.02),
-                          palette.bg.withValues(alpha: 0.92),
+                          palette.bg.withValues(alpha: 0.15),
+                          palette.bg.withValues(alpha: 0.05),
+                          palette.bg.withValues(alpha: 0.88),
                         ],
-                        stops: const [0.42, 1],
+                        stops: const [0, 0.45, 1],
                       ),
                     ),
                   ),
@@ -69,8 +77,15 @@ class AlongFlowOnboarding extends StatelessWidget {
                         const Spacer(),
                         Text('Move around.', style: AlongType.display(palette)),
                         Text('Your way.', style: AlongType.display(palette)),
-                        const SizedBox(height: 8),
-                        const _FleetCard(multi: true, height: 84),
+                        const SizedBox(height: 10),
+                        const Row(
+                          children: [
+                            _SkylineRide(kind: AlongVehicleKind.keke, label: 'Keke'),
+                            _SkylineRide(kind: AlongVehicleKind.car, label: 'Car'),
+                            _SkylineRide(kind: AlongVehicleKind.danfo, label: 'Danfo'),
+                            _SkylineRide(kind: AlongVehicleKind.bus, label: 'Bus'),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -259,93 +274,91 @@ class AlongFlowSeats extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return _Page(
       bottom: const AlongButton(label: 'Hold this seat', onPressed: _noop),
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Choose a seat', style: AlongType.display(palette)),
-          const SizedBox(height: 8),
-          Text('Hiace · ABC-123-XY', style: AlongType.bodyMuted(palette)),
           const SizedBox(height: 4),
-          Text(
-            '4.9 · Trust 86',
-            style: AlongType.caption(palette).copyWith(
-              fontFeatures: const [FontFeature.tabularFigures()],
-              fontWeight: FontWeight.w700,
-              color: palette.ink,
+          Text('Hiace · ABC-123-XY', style: AlongType.bodyMuted(palette)),
+          const SizedBox(height: 8),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 328,
+                child: const SeatMap(
+                  body: 'cabin',
+                  rows: [
+                    SeatMapRowView(
+                      id: 'front',
+                      seats: [
+                        SeatMapSeat(
+                          id: 'd',
+                          label: 'Driver',
+                          role: 'driver',
+                          status: 'occupied',
+                          statusWord: 'Driver',
+                        ),
+                        SeatMapSeat(
+                          id: 'a',
+                          label: '1A',
+                          role: 'passenger',
+                          status: 'yours',
+                          statusWord: 'Yours',
+                          price: '₦1,200',
+                        ),
+                      ],
+                    ),
+                    SeatMapRowView(
+                      id: 'mid',
+                      ruleTitle: 'Window stays open',
+                      seats: [
+                        SeatMapSeat(
+                          id: 'b',
+                          label: '2A',
+                          role: 'passenger',
+                          status: 'held',
+                          statusWord: 'Held',
+                          price: '₦900',
+                        ),
+                        SeatMapSeat(
+                          id: 'c',
+                          label: '2B',
+                          role: 'passenger',
+                          status: 'occupied',
+                          statusWord: 'Taken',
+                        ),
+                      ],
+                    ),
+                    SeatMapRowView(
+                      id: 'back',
+                      seats: [
+                        SeatMapSeat(
+                          id: 'e',
+                          label: '3A',
+                          role: 'passenger',
+                          status: 'free',
+                          statusWord: 'Free',
+                          price: '₦700',
+                        ),
+                        SeatMapSeat(
+                          id: 'f',
+                          label: '3B',
+                          role: 'passenger',
+                          status: 'free',
+                          statusWord: 'Free',
+                          price: '₦700',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          const SeatMap(
-            body: 'cabin',
-            rows: [
-              SeatMapRowView(
-                id: 'front',
-                seats: [
-                  SeatMapSeat(
-                    id: 'd',
-                    label: 'Driver',
-                    role: 'driver',
-                    status: 'occupied',
-                    statusWord: 'Driver',
-                  ),
-                  SeatMapSeat(
-                    id: 'a',
-                    label: 'Front',
-                    role: 'passenger',
-                    status: 'yours',
-                    statusWord: 'Yours',
-                    price: '₦1,200',
-                  ),
-                ],
-              ),
-              SeatMapRowView(
-                id: 'mid',
-                ruleTitle: 'Window stays open',
-                seats: [
-                  SeatMapSeat(
-                    id: 'b',
-                    label: 'Left',
-                    role: 'passenger',
-                    status: 'held',
-                    statusWord: 'Held',
-                    price: 'Held',
-                  ),
-                  SeatMapSeat(
-                    id: 'c',
-                    label: 'Right',
-                    role: 'passenger',
-                    status: 'occupied',
-                    statusWord: 'Taken',
-                    price: 'Taken',
-                  ),
-                ],
-              ),
-              SeatMapRowView(
-                id: 'back',
-                seats: [
-                  SeatMapSeat(
-                    id: 'e',
-                    label: 'Back left',
-                    role: 'passenger',
-                    status: 'free',
-                    statusWord: 'Free',
-                    price: '₦700',
-                  ),
-                  SeatMapSeat(
-                    id: 'f',
-                    label: 'Back right',
-                    role: 'passenger',
-                    status: 'free',
-                    statusWord: 'Free',
-                    price: '₦700',
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
           const _Legend(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           const _PersonCard(
             name: 'Chinedu',
             detail: 'Hiace · ABC-123-XY',
@@ -472,36 +485,71 @@ class AlongFlowSos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _Page(
-      bottom: const _HoldAlert(),
-      child: ListView(
-        padding: EdgeInsets.zero,
+    return Scaffold(
+      backgroundColor: palette.mapLand,
+      body: Stack(
         children: [
-          Icon(AlongIcons.sos, color: palette.danger, size: 32),
-          const SizedBox(height: 12),
-          Text('We stay with you', style: AlongType.display(palette)),
-          const SizedBox(height: 8),
-          Text(
-            'Hold the button to alert the people you chose. Your location goes with the alert.',
-            style: AlongType.body(palette),
+          const Positioned.fill(child: AlongCityMap()),
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: palette.surface.withValues(alpha: 0.94),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: AlongElevation.float(palette.ink),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(AlongIcons.sos, color: palette.danger, size: 22),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'We stay with you',
+                            maxLines: 1,
+                            softWrap: false,
+                            style: AlongType.heading(palette),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Hold the ring. Your location goes with the alert.',
+                      maxLines: 2,
+                      style: AlongType.body(palette),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          const SizedBox(height: 16),
-          const _PlaceRow(
-            icon: AlongIcons.shield,
-            title: 'Adaeze',
-            detail: 'Mum',
+          const Center(child: _HoldRing()),
+          const Positioned(
+            left: 16,
+            right: 16,
+            bottom: 16,
+            child: Column(
+              children: [
+                _PlaceRow(
+                  icon: AlongIcons.shield,
+                  title: 'Adaeze',
+                  detail: 'Mum',
+                ),
+                _PlaceRow(
+                  icon: AlongIcons.shield,
+                  title: 'Chidi',
+                  detail: 'Brother',
+                ),
+              ],
+            ),
           ),
-          const _PlaceRow(
-            icon: AlongIcons.shield,
-            title: 'Chidi',
-            detail: 'Brother',
-          ),
-          const SizedBox(height: 12),
-          const _MapHero(height: 96, label: 'Location goes with the alert'),
-          const SizedBox(height: 12),
-          const _FactRow(icon: AlongIcons.locate, label: 'Live location'),
-          const _FactRow(icon: AlongIcons.share, label: 'The people you chose'),
-          const _FactRow(icon: AlongIcons.sos, label: 'Only while you hold'),
         ],
       ),
     );
@@ -592,32 +640,33 @@ class AlongFlowPlate extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: const Color(0xFF1C1916),
-                borderRadius: BorderRadius.circular(16),
-              ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
               child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  const _ViewfinderCorners(),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: palette.surface,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: palette.accent, width: 3),
-                      ),
-                      child: Text(
-                        'ABC-123-XY',
-                        style: AlongType.numeric(palette)
-                            .copyWith(fontSize: 22, letterSpacing: 1.2),
+                  Image.asset(
+                    'assets/photos/plate-abuja.jpg',
+                    package: 'along_design',
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.medium,
+                    excludeFromSemantics: true,
+                  ),
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0x22000000),
+                          Color(0x00000000),
+                          Color(0x66000000),
+                        ],
+                        stops: [0, 0.45, 1],
                       ),
                     ),
                   ),
+                  const _ViewfinderCorners(),
                 ],
               ),
             ),
@@ -1117,21 +1166,17 @@ class AlongFlowSearch extends StatelessWidget {
       backgroundColor: palette.mapLand,
       body: Stack(
         children: [
-          const Positioned.fill(child: AlongCityMap()),
+          const Positioned.fill(
+            child: AlongCityMap(mode: AlongCityMapMode.search),
+          ),
           const Positioned(
             top: 16,
             left: 16,
             child: AlongMapButton(icon: AlongIcons.back, tooltip: 'Back'),
           ),
-          const Positioned(
-            top: 56,
-            left: 0,
-            right: 0,
-            child: Center(child: _SearchRadar()),
-          ),
           Positioned.fill(
             child: AlongSpringSheet(
-              fraction: 0.50,
+              restingHeight: 280,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1148,7 +1193,7 @@ class AlongFlowSearch extends StatelessWidget {
                     softWrap: false,
                     style: AlongType.meta(palette),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   const _MatchCard(
                     name: 'Chinedu',
                     detail: 'Keke · 4 min · ₦400',
@@ -1158,7 +1203,6 @@ class AlongFlowSearch extends StatelessWidget {
                     detail: 'Keke · 6 min · ₦500',
                     rider: true,
                   ),
-                  const Spacer(),
                   const AlongButton(
                     label: 'Cancel',
                     variant: AlongButtonVariant.secondary,
@@ -1259,6 +1303,149 @@ class _MapHero extends StatelessWidget {
     if (!height.isFinite) return map;
     return SizedBox(height: height, width: double.infinity, child: map);
   }
+}
+
+class _SkylineRide extends StatelessWidget {
+  const _SkylineRide({required this.kind, required this.label});
+
+  final AlongVehicleKind kind;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Expanded(
+      child: Column(
+        children: [
+          AlongVehicleMark(kind: kind, width: 58),
+          Text(
+            label,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette).copyWith(
+              fontWeight: FontWeight.w700,
+              color: palette.ink,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HoldRing extends StatefulWidget {
+  const _HoldRing();
+
+  @override
+  State<_HoldRing> createState() => _HoldRingState();
+}
+
+class _HoldRingState extends State<_HoldRing> with SingleTickerProviderStateMixin {
+  late final AnimationController _fill;
+
+  @override
+  void initState() {
+    super.initState();
+    _fill = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+      value: 0.66,
+    );
+  }
+
+  @override
+  void dispose() {
+    _fill.dispose();
+    super.dispose();
+  }
+
+  void _down(PointerDownEvent _) => _fill.forward(from: 0);
+
+  void _up(PointerEvent _) {
+    if (_fill.value < 1) _fill.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Listener(
+      onPointerDown: _down,
+      onPointerUp: _up,
+      onPointerCancel: _up,
+      child: AnimatedBuilder(
+        animation: _fill,
+        builder: (context, _) {
+          return SizedBox(
+            width: 220,
+            height: 220,
+            child: CustomPaint(
+              painter: _HoldRingPainter(
+                progress: _fill.value,
+                color: palette.danger,
+                track: palette.surface,
+              ),
+              child: Center(
+                child: Text(
+                  'Hold to alert',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.title(palette).copyWith(
+                    color: const Color(0xFFF7F7F8),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _HoldRingPainter extends CustomPainter {
+  _HoldRingPainter({
+    required this.progress,
+    required this.color,
+    required this.track,
+  });
+
+  final double progress;
+  final Color color;
+  final Color track;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 14;
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()..color = const Color(0xCC1C1916),
+    );
+    canvas.drawCircle(
+      center,
+      radius - 8,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 10
+        ..color = track.withValues(alpha: 0.28),
+    );
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - 8),
+      -math.pi / 2,
+      math.pi * 2 * progress.clamp(0.0, 1.0),
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 10
+        ..strokeCap = StrokeCap.round
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _HoldRingPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }
 
 class _FleetCard extends StatelessWidget {

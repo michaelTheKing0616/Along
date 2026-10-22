@@ -1,0 +1,18 @@
+Photographs and map data used by the design gallery.
+
+People
+- Driver portrait (assets/avatars/avatar-chinedu.jpg). Abraham George, “A man in a suit”, Federal Capital Territory, Nigeria. Unsplash, https://unsplash.com/photos/a-man-in-a-suit-wwVtHt5Px18. Unsplash License.
+- Rider portrait (assets/avatars/avatar-adaeze.jpg). Theresa Ude, “A beautiful woman with unique earrings poses.”, Abuja, Nigeria. Unsplash, https://unsplash.com/photos/a-beautiful-woman-with-unique-earrings-poses-bFSMzNAij8I. Unsplash License.
+
+Place
+- Onboarding skyline (assets/photos/abuja-skyline.jpg). King Buwa, “High angle photo of cityscape”, Abuja, Nigeria. Unsplash, https://unsplash.com/photos/high-angle-photo-of-cityscape-bQAJj93bOn0. Unsplash License.
+
+Plate
+- assets/photos/plate-abuja.jpg is a rendered camera-style frame of the fictional plate ABC-123-XY, not a photograph of a real vehicle.
+
+Maps
+- Basemap tiles are rendered from OpenFreeMap vector tiles (OpenMapTiles schema) and cached in the package. © OpenMapTiles © OpenStreetMap contributors. https://openfreemap.org https://www.openstreetmap.org/copyright
+
+Type
+- Geist variable font, Vercel, SIL Open Font License. See assets/fonts/Geist-OFL.txt.
+- Inter remains the naira glyph fallback. See assets/fonts/OFL.txt.

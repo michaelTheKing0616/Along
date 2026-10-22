@@ -4,8 +4,7 @@ import '../elevation.dart';
 import '../icons.dart';
 import '../palette.dart';
 
-/// Photographic-style portrait of a fictional rider or driver.
-/// Generated artwork, not a photograph of a real person.
+/// Circle crop of a real photograph. See LICENSES for the Unsplash credit.
 class AlongDriverPortrait extends StatelessWidget {
   const AlongDriverPortrait({
     super.key,

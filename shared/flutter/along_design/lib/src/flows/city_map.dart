@@ -8,18 +8,20 @@ import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../type.dart';
+import 'driver_portrait.dart';
 import 'vehicle_art.dart';
 
-/// How the Abuja map is dressed. Tiles are cached OSM rasters, not painted blocks.
-enum AlongCityMapMode { browse, trip, online, routeHero }
+/// How the Abuja map is dressed.
+enum AlongCityMapMode { browse, trip, online, routeHero, search }
 
-/// Real Wuse and Wuse–Nyanya maps.
+/// Muted Abuja maps.
 ///
-/// Light tiles are OSM France rasters (© OpenStreetMap). Dark tiles are the
-/// same roads and labels restyled in the package so tests stay offline.
-/// They live under `assets/map/tiles`. Zoom 16 is the neighborhood camera.
-/// The corridor camera is 11.5 so both ends fit a phone and the layer still
-/// samples the zoom-12 cache.
+/// Tiles are pre-rendered at 3× from an OpenFreeMap / OpenMapTiles vector
+/// style (positron-like light, dark-matter-like dark): grey land, white
+/// roads, soft parks and water, few labels. The corridor uses native zoom-12
+/// tiles, displayed at 11.6 so both ends fit without scaling a lower zoom up.
+/// Neighborhood tiles are zoom 16, rasterized from the z14 vector max so the
+/// strokes stay sharp. Demand is a separate alpha tile, not a blob overlay.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -73,13 +75,13 @@ class AlongCityMap extends StatelessWidget {
     return FlutterMap(
       options: MapOptions(
         initialCenter: _corridor ? corridorCenter : neighborhoodCenter,
-        initialZoom: _corridor ? 11.5 : 16,
-        minZoom: _corridor ? 11.5 : 16,
-        maxZoom: _corridor ? 11.5 : 16,
+        initialZoom: _corridor ? 11.6 : 16,
+        minZoom: _corridor ? 11.6 : 16,
+        maxZoom: _corridor ? 11.6 : 16,
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.none,
         ),
-        backgroundColor: dark ? const Color(0xFF1C1E22) : const Color(0xFFF2EFE9),
+        backgroundColor: dark ? const Color(0xFF16171A) : const Color(0xFFE6E7EA),
       ),
       children: [
         TileLayer(
@@ -93,7 +95,15 @@ class AlongCityMap extends StatelessWidget {
           panBuffer: 0,
         ),
         if (mode == AlongCityMapMode.online)
-          Positioned.fill(child: _DemandOverlay(palette: palette)),
+          TileLayer(
+            urlTemplate: 'assets/map/tiles/heat/{z}_{x}_{y}.png',
+            tileProvider: AssetTileProvider(),
+            userAgentPackageName: 'app.along.design',
+            tileDisplay: const TileDisplay.instantaneous(),
+            retinaMode: false,
+            keepBuffer: 1,
+            panBuffer: 0,
+          ),
         if (showRoute)
           Positioned.fill(
             child: _RouteOverlay(
@@ -140,6 +150,11 @@ class AlongCityMap extends StatelessWidget {
     if (mode == AlongCityMapMode.browse) {
       markers.add(_pin(wuseMarket, 'Wuse', false, palette));
       markers.add(_pin(const LatLng(9.06905, 7.46485), 'Park', true, palette));
+    }
+    if (mode == AlongCityMapMode.search) {
+      markers.add(_radar(wuseMarket, palette));
+      markers.add(_driver(const LatLng(9.06902, 7.46662), '4 min', false, palette));
+      markers.add(_driver(const LatLng(9.06805, 7.46515), '6 min', true, palette));
     }
     if (mode == AlongCityMapMode.online) {
       markers.add(
@@ -189,7 +204,9 @@ class AlongCityMap extends StatelessWidget {
         ),
       );
     }
-    if (mode == AlongCityMapMode.browse || mode == AlongCityMapMode.online) {
+    if (mode == AlongCityMapMode.browse ||
+        mode == AlongCityMapMode.online ||
+        mode == AlongCityMapMode.search) {
       markers.add(_puck(const LatLng(9.06812, 7.46525), palette));
     }
     return markers;
@@ -327,6 +344,57 @@ class AlongCityMap extends StatelessWidget {
     );
   }
 
+  Marker _radar(LatLng at, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 210,
+      height: 210,
+      alignment: Alignment.center,
+      child: _PulseRadar(palette: palette),
+    );
+  }
+
+  Marker _driver(LatLng at, String eta, bool rider, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 74,
+      height: 58,
+      alignment: Alignment.bottomCenter,
+      child: Column(
+        children: [
+          AlongDriverPortrait(
+            size: 36,
+            asset: rider ? AlongDriverPortrait.adaeze : AlongDriverPortrait.chinedu,
+            verified: true,
+          ),
+          const SizedBox(height: 2),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: palette.surface,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: AlongElevation.float(palette.ink),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+              child: Text(
+                eta,
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.caption(palette).copyWith(
+                  fontSize: 11,
+                  height: 1.1,
+                  fontWeight: FontWeight.w700,
+                  color: palette.ink,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Marker _puck(LatLng at, AlongPalette palette) {
     return Marker(
       point: at,
@@ -359,7 +427,7 @@ class _Attribution extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         child: Text(
-          '© OpenStreetMap',
+          '© OSM · OpenMapTiles',
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
@@ -372,6 +440,99 @@ class _Attribution extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PulseRadar extends StatefulWidget {
+  const _PulseRadar({required this.palette});
+
+  final AlongPalette palette;
+
+  @override
+  State<_PulseRadar> createState() => _PulseRadarState();
+}
+
+class _PulseRadarState extends State<_PulseRadar>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    );
+    if (AlongMotionPolicy.inWidgetTest) {
+      _pulse.value = 0.42;
+    } else {
+      _pulse.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _pulse,
+      builder: (context, _) {
+        return CustomPaint(
+          painter: _PulsePainter(
+            t: _pulse.value,
+            color: widget.palette.accent,
+            ink: widget.palette.ink,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PulsePainter extends CustomPainter {
+  _PulsePainter({required this.t, required this.color, required this.ink});
+
+  final double t;
+  final Color color;
+  final Color ink;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final maxR = size.width / 2 - 2;
+    for (var i = 0; i < 3; i++) {
+      final phase = (t + i / 3) % 1.0;
+      final radius = 18 + phase * (maxR - 18);
+      canvas.drawCircle(
+        center,
+        radius,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = color.withValues(alpha: (1 - phase) * 0.55),
+      );
+    }
+    canvas.drawCircle(center, 16, Paint()..color = color.withValues(alpha: 0.22));
+    canvas.drawCircle(
+      center,
+      7,
+      Paint()..color = ink,
+    );
+    canvas.drawCircle(
+      center,
+      7,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _PulsePainter oldDelegate) => oldDelegate.t != t;
 }
 
 class _RoutePoint {
@@ -512,73 +673,3 @@ class _RoutePainter extends CustomPainter {
   }
 }
 
-class _DemandOverlay extends StatelessWidget {
-  const _DemandOverlay({required this.palette});
-
-  final AlongPalette palette;
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: CustomPaint(
-        painter: _DemandPainter(
-          camera: MapCamera.of(context),
-          palette: palette,
-        ),
-      ),
-    );
-  }
-}
-
-/// Soft demand on real junctions, not a cell grid.
-class _DemandPainter extends CustomPainter {
-  _DemandPainter({required this.camera, required this.palette});
-
-  final MapCamera camera;
-  final AlongPalette palette;
-
-  static const _blobs = <(LatLng, double, double)>[
-    (LatLng(9.06870, 7.46540), 78, 0.55),
-    (LatLng(9.06820, 7.46640), 96, 1),
-    (LatLng(9.06910, 7.46690), 70, 0.78),
-    (LatLng(9.06770, 7.46510), 64, 0.35),
-    (LatLng(9.06790, 7.46690), 72, 0.48),
-  ];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (final blob in _blobs) {
-      final center = camera.latLngToScreenOffset(blob.$1);
-      final radius = blob.$2;
-      final t = blob.$3;
-      final color = t < 0.55
-          ? Color.lerp(
-              const Color(0xFF2F6F8F),
-              const Color(0xFFE39B2B),
-              t / 0.55,
-            )!
-          : Color.lerp(
-              const Color(0xFFE39B2B),
-              const Color(0xFFB93815),
-              (t - 0.55) / 0.45,
-            )!;
-      final paint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            color.withValues(alpha: 0.45),
-            color.withValues(alpha: 0.18),
-            color.withValues(alpha: 0),
-          ],
-          stops: const [0.0, 0.45, 1.0],
-        ).createShader(Rect.fromCircle(center: center, radius: radius));
-      canvas.drawCircle(center, radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _DemandPainter oldDelegate) {
-    return oldDelegate.camera.center != camera.center ||
-        oldDelegate.camera.zoom != camera.zoom ||
-        oldDelegate.palette.brightness != palette.brightness;
-  }
-}
