@@ -113,112 +113,17 @@ class AlongMotion {
 /// Generated typography styles (doc 05 §3).
 class AlongText {
   AlongText._();
-  static TextStyle get displayXl => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 40,
-    height: 1.05,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -1.2,
-    fontFeatures: const [FontFeature.tabularFigures()],
-  );
-  static TextStyle get displayL => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 32,
-    height: 1.05,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.96,
-    fontFeatures: const [FontFeature.tabularFigures()],
-  );
-  static TextStyle get heading1 => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 24,
-    height: 1.2,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.6,
-  );
-  static TextStyle get heading2 => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 20,
-    height: 1.25,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.4,
-  );
-  static TextStyle get title => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 18,
-    height: 1.3333333333333333,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0,
-  );
-  static TextStyle get body => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 16,
-    height: 1.5,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0,
-  );
-  static TextStyle get bodyStrong => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 16,
-    height: 1.5,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0,
-  );
-  static TextStyle get label => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 14,
-    height: 1.4285714285714286,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0,
-  );
-  static TextStyle get caption => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 12,
-    height: 1.3333333333333333,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0,
-  );
-  static TextStyle get overline => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 12,
-    height: 1.3333333333333333,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.72,
-  );
-  static TextStyle get numericL => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 24,
-    height: 1.1666666666666667,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.24,
-    fontFeatures: const [FontFeature.tabularFigures()],
-  );
-  static TextStyle get numericM => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 18,
-    height: 1.2222222222222223,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0,
-    fontFeatures: const [FontFeature.tabularFigures()],
-  );
-  static TextStyle get buttonPrimary => TextStyle(
-    fontFamily: 'Satoshi',
-    fontFamilyFallback: const ['Inter'],
-    fontSize: 17,
-    height: 1.411764705882353,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0,
-  );
+  static TextStyle get displayXl => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 40, height: 1.1, fontWeight: FontWeight.w700, letterSpacing: -1.8, fontFeatures: const [FontFeature.tabularFigures()]);
+  static TextStyle get displayL => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 32, height: 1.125, fontWeight: FontWeight.w700, letterSpacing: -1.28, fontFeatures: const [FontFeature.tabularFigures()]);
+  static TextStyle get heading1 => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 24, height: 1.25, fontWeight: FontWeight.w700, letterSpacing: -0.48);
+  static TextStyle get heading2 => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 20, height: 1.3, fontWeight: FontWeight.w700, letterSpacing: -0.2);
+  static TextStyle get title => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 18, height: 1.3333333333333333, fontWeight: FontWeight.w600, letterSpacing: 0);
+  static TextStyle get body => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 16, height: 1.5, fontWeight: FontWeight.w400, letterSpacing: 0);
+  static TextStyle get bodyStrong => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 16, height: 1.5, fontWeight: FontWeight.w600, letterSpacing: 0);
+  static TextStyle get label => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 14, height: 1.4285714285714286, fontWeight: FontWeight.w600, letterSpacing: 0);
+  static TextStyle get caption => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 12, height: 1.3333333333333333, fontWeight: FontWeight.w500, letterSpacing: 0);
+  static TextStyle get overline => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 12, height: 1.3333333333333333, fontWeight: FontWeight.w700, letterSpacing: 0.72);
+  static TextStyle get numericL => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 24, height: 1.1666666666666667, fontWeight: FontWeight.w700, letterSpacing: -0.48, fontFeatures: const [FontFeature.tabularFigures()]);
+  static TextStyle get numericM => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 18, height: 1.2222222222222223, fontWeight: FontWeight.w700, letterSpacing: 0, fontFeatures: const [FontFeature.tabularFigures()]);
+  static TextStyle get buttonPrimary => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 17, height: 1.411764705882353, fontWeight: FontWeight.w700, letterSpacing: 0);
 }

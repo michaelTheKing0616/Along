@@ -68,7 +68,7 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     mapWater: Color(0xFFD5E3EE),
     mapPark: Color(0xFFE3EBE4),
     mapRoad: Color(0xFF8B9098),
-    fontFamily: 'Satoshi',
+    fontFamily: 'Geist',
   );
 
   static const dark = AlongPalette(
@@ -89,7 +89,7 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     mapWater: Color(0xFF1A2C36),
     mapPark: Color(0xFF1A2820),
     mapRoad: Color(0xFF5C6168),
-    fontFamily: 'Satoshi',
+    fontFamily: 'Geist',
   );
 
   /// Previous neutral system, kept so before/after gallery frames share a layout.

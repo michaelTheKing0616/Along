@@ -118,7 +118,7 @@
   --color-primary-hover: var(--color-ink-700);
   --color-danger: var(--color-semantic-danger-fill);
   --color-danger-bg: var(--color-semantic-danger-tint);
-  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+  --font-sans: Geist, Inter, system-ui, -apple-system, sans-serif;
   --space-1: calc(var(--space-4) / 4);
   --space-2: calc(var(--space-8) / 4);
   --space-3: calc(var(--space-12) / 4);

@@ -1,6 +1,7 @@
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -94,9 +95,28 @@ Future<void> _pump(
     final image = element.widget as Image;
     await tester.runAsync(() => precacheImage(image.image, context));
   }
+  if (find.byType(FlutterMap).evaluate().isNotEmpty) {
+    for (var attempt = 0; attempt < 8; attempt++) {
+      final raw = find.byType(RawImage).evaluate();
+      final pending = raw.where((element) {
+        return (element.widget as RawImage).image == null;
+      }).length;
+      if (raw.isNotEmpty && pending == 0) break;
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 40)),
+      );
+      await tester.pump();
+    }
+  }
   await tester.pump();
   final overflow = tester.takeException();
   expect(overflow, isNull, reason: 'layout overflow');
+  if (find.byType(FlutterMap).evaluate().isNotEmpty) {
+    final missing = find.byType(RawImage).evaluate().where((element) {
+      return (element.widget as RawImage).image == null;
+    });
+    expect(missing, isEmpty, reason: 'map tile failed to paint');
+  }
 }
 
 /// Short labels stay on one line. Ellipsis is allowed. A wrapped chip,

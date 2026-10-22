@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'palette.dart';
 
-/// Brand type. Satoshi (Fontshare, ITF Free Font License) carries display
-/// and UI. Inter is the naira fallback because Satoshi has no U+20A6.
-/// Display tracking is tight so headlines read like a transport grotesque.
+/// Brand type. Geist (Vercel, SIL OFL) carries display and UI.
+/// Inter is only the glyph fallback: Geist has no naira (U+20A6).
+/// Display tracking is tighter than the body; 24sp and up sit slightly negative.
+/// Fares and ETAs use [numeric], which turns on tabular figures.
 /// [jk-typography] [imp/typeset]
 abstract final class AlongType {
   static const fallback = ['Inter'];
@@ -16,7 +17,7 @@ abstract final class AlongType {
       fontSize: 34,
       height: 1.05,
       fontWeight: FontWeight.w700,
-      letterSpacing: -1.02,
+      letterSpacing: -1.53,
       color: palette.ink,
     );
   }
@@ -28,7 +29,7 @@ abstract final class AlongType {
       fontSize: 24,
       height: 1.12,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.72,
+      letterSpacing: -0.48,
       color: palette.ink,
     );
   }
@@ -100,7 +101,7 @@ abstract final class AlongType {
       fontSize: 32,
       height: 1.1,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.64,
+      letterSpacing: -0.96,
       fontFeatures: const [FontFeature.tabularFigures()],
       color: palette.ink,
     );
