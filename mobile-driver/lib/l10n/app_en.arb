@@ -323,8 +323,8 @@
   "activeTripStalledCaption": "not moving closer",
   "activeTripRelease": "Release",
   "activeTripReport": "Report",
-  "sosTeamAlerted": "Along safety team alerted",
-  "sosSharingDetails": "We're sharing your live location and trip details with our safety line",
+  "sosTeamAlerted": "Ready to call 112",
+  "sosSharingDetails": "Share your live location with your contacts",
   "sosCallEmergency": "Call {number}",
   "@sosCallEmergency": {
     "placeholders": {
@@ -332,8 +332,8 @@
     }
   },
   "sosHoldToCancel": "Hold to cancel",
-  "sosRaising": "Alerting safety team…",
-  "sosRaiseFailed": "Could not reach safety line",
+  "sosRaising": "Opening the 112 call…",
+  "sosRaiseFailed": "Could not open the 112 call",
   "sosRetry": "Try again",
   "reportIncidentTitle": "Report incident",
   "reportIncidentCategoryHeading": "What happened?",
@@ -344,7 +344,7 @@
   "reportIncidentSubmit": "Submit report",
   "reportIncidentPickCategory": "Pick a category",
   "reportIncidentDescriptionRequired": "Add a short description",
-  "reportIncidentSubmitted": "Report submitted — our safety team will review it",
+  "reportIncidentSubmitted": "Report saved on this phone",
   "incidentCategorySafety": "Safety concern",
   "incidentCategoryFareDispute": "Fare dispute",
   "incidentCategoryVehicleQuality": "Vehicle quality",
@@ -385,7 +385,7 @@
   "accountLanguageValue": "English",
   "accountSafetyHeading": "SAFETY",
   "accountSafetyHowSos": "How SOS works",
-  "accountSafetyHowSosBody": "Hold SOS during a trip to alert our safety team and share live location",
+  "accountSafetyHowSosBody": "Hold SOS to call 112 and share your location with contacts",
   "accountHelp": "Help & support",
   "accountLegal": "Legal",
   "accountSignOut": "Sign out",
@@ -558,7 +558,7 @@
   "@earningsDigitalRow": {
     "placeholders": { "source": {"type": "String"} }
   },
-  "sosQueued": "Saved on this phone. We'll alert the safety team when you're back online.",
+  "sosQueued": "Saved on this phone. Call 112 when you are back online.",
   "sosLiveLink": "Copy live location link",
   "sosLiveLinkCopied": "Live location link copied",
   "sosContactsHeading": "Tell someone you trust",

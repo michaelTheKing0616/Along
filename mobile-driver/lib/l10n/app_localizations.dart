@@ -1097,13 +1097,13 @@ abstract class AppLocalizations {
   /// No description provided for @sosTeamAlerted.
   ///
   /// In en, this message translates to:
-  /// **'Along safety team alerted'**
+  /// **'Ready to call 112'**
   String get sosTeamAlerted;
 
   /// No description provided for @sosSharingDetails.
   ///
   /// In en, this message translates to:
-  /// **'We\'re sharing your live location and trip details with our safety line'**
+  /// **'Share your live location with your contacts'**
   String get sosSharingDetails;
 
   /// No description provided for @sosCallEmergency.
@@ -1121,13 +1121,13 @@ abstract class AppLocalizations {
   /// No description provided for @sosRaising.
   ///
   /// In en, this message translates to:
-  /// **'Alerting safety team…'**
+  /// **'Opening the 112 call…'**
   String get sosRaising;
 
   /// No description provided for @sosRaiseFailed.
   ///
   /// In en, this message translates to:
-  /// **'Could not reach safety line'**
+  /// **'Could not open the 112 call'**
   String get sosRaiseFailed;
 
   /// No description provided for @sosRetry.
@@ -1193,7 +1193,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportIncidentSubmitted.
   ///
   /// In en, this message translates to:
-  /// **'Report submitted — our safety team will review it'**
+  /// **'Report saved on this phone'**
   String get reportIncidentSubmitted;
 
   /// No description provided for @incidentCategorySafety.
@@ -1385,7 +1385,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountSafetyHowSosBody.
   ///
   /// In en, this message translates to:
-  /// **'Hold SOS during a trip to alert our safety team and share live location'**
+  /// **'Hold SOS to call 112 and share your location with contacts'**
   String get accountSafetyHowSosBody;
 
   /// No description provided for @accountHelp.
@@ -1991,7 +1991,7 @@ abstract class AppLocalizations {
   /// No description provided for @sosQueued.
   ///
   /// In en, this message translates to:
-  /// **'Saved on this phone. We\'ll alert the safety team when you\'re back online.'**
+  /// **'Saved on this phone. Call 112 when you are back online.'**
   String get sosQueued;
 
   /// No description provided for @sosLiveLink.

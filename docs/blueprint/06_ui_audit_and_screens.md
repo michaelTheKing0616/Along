@@ -107,7 +107,7 @@ Global rules for every mobile screen: safe-area aware; back gesture always works
 
 **R-22 Trips (history)** — Grouped by day; row: date/time, mode chip(s), "Lugbe → Area 1", fare, status pill. Detail: map with materialised path, leg list, fare itemised (fare, load surcharge, tier), driver first name + plate, receipt share (PDF later; text now), "Report an issue" → R-24, "Fare was different" → `submit_correction` if not yet confirmed.
 
-**R-23 SOS active** — Full-screen danger tint: "Along safety team alerted" + "We're sharing your live location and trip details with our safety line"; big `Call 112` (tel:) button (number from `cfg.sos.emergency_number`); "Share with a contact" (1 → R-25); `Hold to cancel` (600 ms). Cannot be dismissed by back. Data: `raise_sos`, `update_sos`. Rules: honest copy; works with ≤ 300 B payload.
+**R-23 SOS active** — Full-screen danger tint: "Ready to call 112" + "Share your live location with your contacts"; big `Call 112` (tel:) button (number from `cfg.sos.emergency_number`); "Share with a contact" (1 → R-25); `Hold to cancel` (600 ms). Cannot be dismissed by back. Data: `raise_sos`, `update_sos`. Rules: honest copy; works with ≤ 300 B payload.
 
 **R-24 Report incident** — Category grid (6 icons + labels), description (2000), attach photo (optional), submit. Stitch ref: `rider_report_incident`.
 

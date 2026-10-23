@@ -864,11 +864,26 @@ class _LiveSheet extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            AlongTickingEta(label: '6 min', style: AlongType.display(palette)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AlongTickingEta(
+                  label: '4-6 min',
+                  style: AlongType.display(palette),
+                ),
+                Text(
+                  'Updated 40s ago',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette)
+                      .copyWith(color: palette.ink, height: 1.1),
+                ),
+              ],
+            ),
             const Spacer(),
             Text(
               'Nyanya',
@@ -879,13 +894,18 @@ class _LiveSheet extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         const Row(
           children: [
             _LiveAction(icon: AlongIcons.call, label: 'Call'),
             _LiveAction(icon: AlongIcons.chat, label: 'Message'),
             _LiveAction(icon: AlongIcons.share, label: 'Share'),
             _LiveAction(icon: AlongIcons.shield, label: 'Safety'),
+            _LiveAction(
+              icon: AlongIcons.receipt,
+              label: 'Report',
+              semanticsLabel: 'Report an issue',
+            ),
           ],
         ),
       ],
@@ -925,40 +945,52 @@ class _PlateChip extends StatelessWidget {
 }
 
 class _LiveAction extends StatelessWidget {
-  const _LiveAction({required this.icon, required this.label});
+  const _LiveAction({
+    required this.icon,
+    required this.label,
+    this.semanticsLabel,
+  });
 
   final IconData icon;
   final String label;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return Expanded(
-      child: Column(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.surface,
-              shape: BoxShape.circle,
-              border: AlongElevation.hairline(palette.ink),
-            ),
-            child: AlongIcon(icon, size: 20, color: palette.ink),
+      child: Semantics(
+        button: true,
+        label: semanticsLabel ?? label,
+        child: InkWell(
+          onTap: _noop,
+          child: Column(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: palette.surface,
+                  shape: BoxShape.circle,
+                  border: AlongElevation.hairline(palette.ink),
+                ),
+                child: AlongIcon(icon, size: 20, color: palette.ink),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.caption(palette).copyWith(
+                  color: palette.ink,
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(
-              color: palette.ink,
-              fontWeight: FontWeight.w600,
-              height: 1.1,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -978,7 +1010,7 @@ class AlongFlowSos extends StatelessWidget {
           Text('Safety', style: AlongType.display(palette)),
           const SizedBox(height: 4),
           Text(
-            'Ready · hold for 2 seconds',
+            'Call 112 · share with contacts',
             maxLines: 1,
             softWrap: false,
             style: AlongType.bodyMuted(palette),
@@ -1275,6 +1307,8 @@ class AlongFlowOffer extends StatelessWidget {
                                 style: AlongType.display(palette),
                               ),
                             ),
+                            const AlongSeatCount(count: 2, glyph: 14),
+                            const SizedBox(width: 8),
                             Text(
                               '4.2 km',
                               maxLines: 1,
@@ -1488,8 +1522,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.okada,
               title: 'Okada',
-              eta: '3 min',
-              seats: '1 left',
+              eta: '2-4 min',
+              seatCount: 1,
               fare: '₦300-500',
               badge: 'Fastest',
             ),
@@ -1499,8 +1533,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.car,
               title: 'Car',
-              eta: '6 min',
-              seats: '3 left',
+              eta: '6-8 min',
+              seatCount: 3,
               fare: '₦1,100-1,400',
             ),
           ),
@@ -1509,8 +1543,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.danfo,
               title: 'Danfo',
-              eta: '8 min',
-              seats: '8 left',
+              eta: '8-12 min',
+              seatCount: 8,
               fare: '₦200-350',
               badge: 'Cheapest',
             ),
@@ -1520,8 +1554,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.bus,
               title: 'Bus',
-              eta: '12 min',
-              seats: '14 left',
+              eta: '12-16 min',
+              seatCount: 14,
               fare: '₦500-800',
             ),
           ),
@@ -2228,7 +2262,7 @@ class _HoldRingState extends State<_HoldRing>
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      'Hold to alert',
+                      'Call 112',
                       maxLines: 1,
                       softWrap: false,
                       textAlign: TextAlign.center,
@@ -2658,8 +2692,8 @@ class _RecommendedRide extends StatelessWidget {
         child: _RideRow(
           kind: AlongVehicleKind.keke,
           title: 'Keke',
-          eta: '4 min',
-          seats: '2 left',
+          eta: '4-6 min',
+          seatCount: 2,
           fare: '₦400-600',
           rules: ['Window open', 'Women in back'],
           badge: 'For you',
@@ -2675,16 +2709,16 @@ class _RideLine extends StatelessWidget {
     required this.kind,
     required this.title,
     required this.eta,
-    required this.seats,
     required this.fare,
+    required this.seatCount,
     this.badge,
   });
 
   final AlongVehicleKind kind;
   final String title;
   final String eta;
-  final String seats;
   final String fare;
+  final int seatCount;
   final String? badge;
 
   @override
@@ -2714,11 +2748,21 @@ class _RideLine extends StatelessWidget {
                         style: AlongType.body(palette)
                             .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                       ),
-                      Text(
-                        badge == null ? '$eta · $seats' : '$badge · $eta',
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.caption(palette),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            Text(
+                              badge == null ? eta : '$badge · $eta',
+                              maxLines: 1,
+                              softWrap: false,
+                              style: AlongType.caption(palette),
+                            ),
+                            const SizedBox(width: 6),
+                            AlongSeatCount(count: seatCount, glyph: 10),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -2747,8 +2791,8 @@ class _RideRow extends StatelessWidget {
     required this.kind,
     required this.title,
     required this.eta,
-    required this.seats,
     required this.fare,
+    this.seatCount = 2,
     this.rules = const [],
     this.badge,
     this.selected = false,
@@ -2757,8 +2801,8 @@ class _RideRow extends StatelessWidget {
   final AlongVehicleKind kind;
   final String title;
   final String eta;
-  final String seats;
   final String fare;
+  final int seatCount;
   final List<String> rules;
   final String? badge;
   final bool selected;
@@ -2799,11 +2843,21 @@ class _RideRow extends StatelessWidget {
                       ],
                     ],
                   ),
-                  Text(
-                    '$eta · $seats',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          eta,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.caption(palette),
+                        ),
+                        const SizedBox(width: 6),
+                        AlongSeatCount(count: seatCount, glyph: 10),
+                      ],
+                    ),
                   ),
                   if (rulesLine.isNotEmpty)
                     FittedBox(
@@ -2893,6 +2947,7 @@ class _MapChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(boxShadow: AlongElevation.float(palette.ink)),
       child: AlongFrost(
+        solid: true,
         radius: 99,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         child: Text(
@@ -3427,6 +3482,7 @@ class _DemandHint extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return AlongFrost(
+      solid: true,
       radius: 99,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Text(
@@ -3497,6 +3553,7 @@ class _TodayPillState extends State<_TodayPill> {
               boxShadow: AlongElevation.float(palette.ink),
             ),
             child: AlongFrost(
+              solid: true,
               radius: 99,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               child: Text(
@@ -3796,7 +3853,7 @@ class _HoldAlertState extends State<_HoldAlert>
                   ),
                   Center(
                     child: Text(
-                      'Hold to alert',
+                      'Call 112',
                       maxLines: 1,
                       softWrap: false,
                       style: AlongType.button(palette)

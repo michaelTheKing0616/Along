@@ -1160,6 +1160,45 @@ class AlongSeatGlyph extends StatelessWidget {
   }
 }
 
+/// Open-seat count with the same cushion painter. Rides, offer, and the
+/// receipt use it so a seat is Along's mark, not a leftover word.
+class AlongSeatCount extends StatelessWidget {
+  const AlongSeatCount({super.key, required this.count, this.glyph = 12});
+
+  final int count;
+  final double glyph;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final shown = count.clamp(1, 3);
+    return Semantics(
+      label: '$count seats',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < shown; i++) ...[
+            if (i > 0) const SizedBox(width: 2),
+            AlongSeatGlyph(status: 'free', width: glyph),
+          ],
+          const SizedBox(width: 4),
+          Text(
+            '$count',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette).copyWith(
+              color: palette.ink,
+              fontWeight: FontWeight.w600,
+              height: 1,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Flat top-down seat. Width to height is about 1:1.1.
 class _CarSeatPainter extends CustomPainter {
   _CarSeatPainter({

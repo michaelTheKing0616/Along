@@ -44,11 +44,16 @@ abstract final class AlongMotionPolicy {
 abstract final class AlongHaptics {
   static int requested = 0;
 
+  /// Settings toggle. Off skips the platform call and the request count.
+  static bool enabled = true;
+
   static bool _skip(BuildContext context) {
+    if (!enabled) return true;
     return AlongMotionPolicy.reduced(context) || AlongMotionPolicy.inWidgetTest;
   }
 
   static Future<void> tick(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.selectionClick();
@@ -57,18 +62,21 @@ abstract final class AlongHaptics {
   static Future<void> selection(BuildContext context) => tick(context);
 
   static Future<void> confirm(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.lightImpact();
   }
 
   static Future<void> success(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.mediumImpact();
   }
 
   static Future<void> error(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.heavyImpact();
@@ -91,7 +99,8 @@ class _AlongPressableState extends State<AlongPressable> {
 
   @override
   Widget build(BuildContext context) {
-    final pressed = _down && AlongMotionPolicy.play(context);
+    final reduced = AlongMotionPolicy.reduced(context);
+    final pressed = _down && (reduced || AlongMotionPolicy.play(context));
     return Listener(
       onPointerDown: (_) {
         if (!_down) setState(() => _down = true);
@@ -102,9 +111,11 @@ class _AlongPressableState extends State<AlongPressable> {
       onPointerCancel: (_) {
         if (_down) setState(() => _down = false);
       },
-      child: pressed
-          ? Transform.scale(scale: 0.96, child: widget.child)
-          : widget.child,
+      child: !pressed
+          ? widget.child
+          : reduced
+          ? Opacity(opacity: 0.72, child: widget.child)
+          : Transform.scale(scale: 0.96, child: widget.child),
     );
   }
 }

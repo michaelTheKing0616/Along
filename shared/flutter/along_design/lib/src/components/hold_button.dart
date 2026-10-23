@@ -113,7 +113,7 @@ class _HoldButtonState extends State<HoldButton>
         : bg.withValues(alpha: 0.25);
     final progressColor = _isSos ? AlongColors.semanticDanger : bg;
     final label = widget.label ?? (_isSos ? 'Hold for SOS' : 'Na Me');
-    final firedLabel = _isSos ? 'SOS sent' : 'Fired';
+    final firedLabel = _isSos ? 'Call 112' : 'Fired';
     final firedLabelColor =
         _isSos ? AlongColors.semanticDanger : AlongColors.ink700;
 

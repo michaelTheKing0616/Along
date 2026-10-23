@@ -570,11 +570,11 @@ class AppLocalizationsIg extends AppLocalizations {
   String get activeTripReport => 'Report';
 
   @override
-  String get sosTeamAlerted => 'Along safety team alerted';
+  String get sosTeamAlerted => 'Ready to call 112';
 
   @override
   String get sosSharingDetails =>
-      'We\'re sharing your live location and trip details with our safety line';
+      'Share your live location with your contacts';
 
   @override
   String sosCallEmergency(String number) {
@@ -585,10 +585,10 @@ class AppLocalizationsIg extends AppLocalizations {
   String get sosHoldToCancel => 'Hold to cancel';
 
   @override
-  String get sosRaising => 'Alerting safety team…';
+  String get sosRaising => 'Opening the 112 call…';
 
   @override
-  String get sosRaiseFailed => 'Could not reach safety line';
+  String get sosRaiseFailed => 'Could not open the 112 call';
 
   @override
   String get sosRetry => 'Try again';
@@ -623,7 +623,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get reportIncidentSubmitted =>
-      'Report submitted — our safety team will review it';
+      'Report saved on this phone';
 
   @override
   String get incidentCategorySafety => 'Safety concern';
@@ -723,7 +723,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get accountSafetyHowSosBody =>
-      'Hold SOS during a trip to alert our safety team and share live location';
+      'Hold SOS to call 112 and share your location with contacts';
 
   @override
   String get accountHelp => 'Help & support';
@@ -1083,7 +1083,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get sosQueued =>
-      'Saved on this phone. We\'ll alert the safety team when you\'re back online.';
+      'Saved on this phone. Call 112 when you are back online.';
 
   @override
   String get sosLiveLink => 'Copy live location link';
