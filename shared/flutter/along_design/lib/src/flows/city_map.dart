@@ -39,11 +39,11 @@ enum AlongFix { precise, approximate, stale, hidden }
 /// white or `#C9CCD2` roads). They are drawn as baked, with no color matrix.
 /// The daily planet stops at z15; neighborhood frames are the z16 slippy
 /// grid, drawn by overzooming that z15 vector so building footprints stay
-/// sharp. Nav locks zoom 18, rotated so the street runs up the screen, and
-/// those z16 tiles overzoom to lane level. The corridor uses native zoom-12
-/// tiles. Online demand is one hex grid over the visible city: warm tint
-/// steps with no hairline, and only the two or three hottest cells in
-/// brand yellow.
+/// sharp. Nav locks zoom 17, rotated so the street runs up the screen, with
+/// footprints and side streets beside a 6dp ink route. The corridor uses
+/// native zoom-12 tiles. Online demand is a lattice of small hex outlines.
+/// Stroke alpha steps with demand. Only the three hottest cells are filled
+/// yellow.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -101,10 +101,10 @@ class AlongCityMap extends StatelessWidget {
   /// this. The screen pin stays fixed; these layers move with the map.
   final bool place;
 
-  /// Lane zoom. z16 tiles overzoom. Negative rotation puts east at the top:
-  /// a positive bearing rotates the map clockwise, which would point the
-  /// street down the screen.
-  static const navZoom = 18.0;
+  /// Lane zoom, inside 17–18. z16 tiles overzoom. Negative rotation puts
+  /// east at the top: a positive bearing rotates the map clockwise, which
+  /// would point the street down the screen.
+  static const navZoom = 17.0;
   static const navRotation = -90.0;
 
   /// Sits about one tile south of Wuse Market, so the market stays in the
@@ -171,7 +171,9 @@ class AlongCityMap extends StatelessWidget {
   /// the car rests above the speed bar.
   LatLng _navFocus(double progress) {
     final at = _along(neighborhoodRoute, progress);
-    return LatLng(at.point.latitude, at.point.longitude + 0.00072);
+    // Zoom 17 packs half as many pixels per degree as 18, so the eastward
+    // shift is larger and the car still sits above the speed bar.
+    return LatLng(at.point.latitude, at.point.longitude + 0.00128);
   }
 
   @override
@@ -281,8 +283,19 @@ class AlongCityMap extends StatelessWidget {
               keepBuffer: initialZoom >= 17 ? 0 : 1,
               panBuffer: 0,
             ),
-            if (mode == AlongCityMapMode.online)
-              PolygonLayer(polygons: _demandHexes(palette)),
+            if (mode == AlongCityMapMode.online) ...[
+              PolygonLayer(polygons: _demandOutlines(palette)),
+              Positioned.fill(
+                child: _DemandBreath(
+                  rings: _demandHotRings(),
+                  palette: palette,
+                ),
+              ),
+            ],
+            if (_nav) ...[
+              PolygonLayer(polygons: _navBlocks(palette)),
+              PolylineLayer(polylines: _navStreets(palette)),
+            ],
             if (place) ...[
               PolygonLayer(polygons: _placeBlocks(palette)),
               PolylineLayer(
@@ -1315,11 +1328,21 @@ List<Polygon> _placeBlocks(AlongPalette palette) {
   ];
 }
 
-/// One hex grid over the visible city. Steps are a warm tint, with no
-/// hairline. The three hottest cells are solid brand yellow. Cells do not
-/// overlap. The band under the GO button is left clear.
-List<Polygon> _demandHexes(AlongPalette palette) {
-  const radius = 1050.0;
+/// Lattice spacing. The drawn outline is smaller, so the cells stay apart
+/// and the map shows through the middle.
+const _hexRadius = 880.0;
+const _hexDraw = 0.70;
+
+class _HexCell {
+  const _HexCell(this.lat, this.lon, this.demand);
+
+  final double lat;
+  final double lon;
+  final double demand;
+}
+
+List<_HexCell> _hexCells() {
+  const radius = _hexRadius;
   const mPerLat = 111320.0;
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
   final dx = radius * math.sqrt(3);
@@ -1327,9 +1350,9 @@ List<Polygon> _demandHexes(AlongPalette palette) {
   const originLat = 9.04;
   const originLon = 7.49;
   const hotspots = <(double, double)>[(9.12, 7.45), (9.16, 7.56), (9.00, 7.50)];
-  final cells = <({double lat, double lon, double demand})>[];
-  for (var r = -16; r <= 16; r++) {
-    for (var q = -10; q <= 10; q++) {
+  final cells = <_HexCell>[];
+  for (var r = -20; r <= 20; r++) {
+    for (var q = -14; q <= 14; q++) {
       final x = dx * (q + r / 2);
       final y = dy * r;
       final lat = originLat + y / mPerLat;
@@ -1342,63 +1365,255 @@ List<Polygon> _demandHexes(AlongPalette palette) {
         final dist = math.sqrt(sLat * sLat + sLon * sLon);
         demand = math.max(demand, 1 - dist / 8500);
       }
-      cells.add((lat: lat, lon: lon, demand: demand));
+      cells.add(_HexCell(lat, lon, demand));
     }
   }
+  return cells;
+}
+
+List<_HexCell> _hotCells(List<_HexCell> cells) {
+  const mPerLat = 111320.0;
+  final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
   final ranked = [...cells]..sort((a, b) => b.demand.compareTo(a.demand));
-  final hot = <({double lat, double lon, double demand})>[];
+  final hot = <_HexCell>[];
   for (final cell in ranked) {
     if (hot.length == 3) break;
     final separated = hot.every((other) {
       final dLat = (cell.lat - other.lat) * mPerLat;
       final dLon = (cell.lon - other.lon) * mPerLon;
-      return math.sqrt(dLat * dLat + dLon * dLon) > radius * 2.6;
+      return math.sqrt(dLat * dLat + dLon * dLon) > _hexRadius * 2.6;
     });
     if (separated) hot.add(cell);
   }
-  bool isHot(({double lat, double lon, double demand}) cell) {
-    for (final mark in hot) {
-      if ((cell.lat - mark.lat).abs() < 1e-6 &&
-          (cell.lon - mark.lon).abs() < 1e-6) {
-        return true;
-      }
-    }
-    return false;
-  }
+  return hot;
+}
 
-  const warmAlpha = <double>[0.08, 0.14, 0.22, 0.32];
+bool _sameCell(_HexCell a, _HexCell b) {
+  return (a.lat - b.lat).abs() < 1e-6 && (a.lon - b.lon).abs() < 1e-6;
+}
+
+/// Outlines only. Stroke alpha is 6, 12, or 20 percent ink. The three hot
+/// cells are left to the breath layer so they can glow.
+List<Polygon> _demandOutlines(AlongPalette palette) {
+  const mPerLat = 111320.0;
+  final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
+  const stroke = <double>[0.06, 0.12, 0.20];
+  final cells = _hexCells();
+  final hot = _hotCells(cells);
   final polygons = <Polygon>[];
   for (final cell in cells) {
-    final at = LatLng(cell.lat, cell.lon);
-    final ring = _hexRing(at, radius * 0.96, mPerLat, mPerLon);
-    if (isHot(cell)) {
-      polygons.add(
-        Polygon(
-          points: ring,
-          color: palette.accent,
-          borderColor: palette.accentInk,
-          borderStrokeWidth: 1.25,
-        ),
-      );
-      continue;
-    }
-    final step = cell.demand < 0.22
+    if (hot.any((mark) => _sameCell(cell, mark))) continue;
+    final step = cell.demand < 0.34
         ? 0
-        : cell.demand < 0.45
+        : cell.demand < 0.62
         ? 1
-        : cell.demand < 0.7
-        ? 2
-        : 3;
+        : 2;
     polygons.add(
       Polygon(
-        points: ring,
-        color: palette.roles.warn.withValues(alpha: warmAlpha[step]),
-        borderColor: const Color(0x00000000),
-        borderStrokeWidth: 0,
+        points: _hexRing(
+          LatLng(cell.lat, cell.lon),
+          _hexRadius * _hexDraw,
+          mPerLat,
+          mPerLon,
+        ),
+        color: const Color(0x00000000),
+        borderColor: palette.ink.withValues(alpha: stroke[step]),
+        borderStrokeWidth: 1.15,
       ),
     );
   }
   return polygons;
+}
+
+List<List<LatLng>> _demandHotRings() {
+  const mPerLat = 111320.0;
+  final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
+  return [
+    for (final cell in _hotCells(_hexCells()))
+      _hexRing(
+        LatLng(cell.lat, cell.lon),
+        _hexRadius * _hexDraw,
+        mPerLat,
+        mPerLon,
+      ),
+  ];
+}
+
+/// Yellow fill at 85 percent, a soft glow, and a 2.4s breath. The controller
+/// stays stopped when motion does not play, so a golden is the rest glow.
+class _DemandBreath extends StatefulWidget {
+  const _DemandBreath({required this.rings, required this.palette});
+
+  final List<List<LatLng>> rings;
+  final AlongPalette palette;
+
+  @override
+  State<_DemandBreath> createState() => _DemandBreathState();
+}
+
+class _DemandBreathState extends State<_DemandBreath>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _breath;
+
+  @override
+  void initState() {
+    super.initState();
+    _breath = AnimationController(vsync: this, duration: AlongDurations.breath);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final animate = AlongMotionPolicy.play(context);
+    if (animate && !_breath.isAnimating) {
+      _breath.repeat(reverse: true);
+    } else if (!animate && _breath.isAnimating) {
+      _breath
+        ..stop()
+        ..value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _breath.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final camera = MapCamera.of(context);
+    return IgnorePointer(
+      child: AnimatedBuilder(
+        animation: _breath,
+        builder: (context, _) {
+          final t = AlongMotionPolicy.play(context)
+              ? Curves.easeInOut.transform(_breath.value)
+              : 0.0;
+          return CustomPaint(
+            painter: _DemandGlowPainter(
+              camera: camera,
+              rings: widget.rings,
+              palette: widget.palette,
+              breath: t,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DemandGlowPainter extends CustomPainter {
+  _DemandGlowPainter({
+    required this.camera,
+    required this.rings,
+    required this.palette,
+    required this.breath,
+  });
+
+  final MapCamera camera;
+  final List<List<LatLng>> rings;
+  final AlongPalette palette;
+  final double breath;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final glow = palette.accent.withValues(alpha: 0.22 + 0.16 * breath);
+    final blur = 8 + 5 * breath;
+    for (final ring in rings) {
+      final path = Path();
+      for (var i = 0; i < ring.length; i++) {
+        final at = camera.latLngToScreenOffset(ring[i]);
+        if (i == 0) {
+          path.moveTo(at.dx, at.dy);
+        } else {
+          path.lineTo(at.dx, at.dy);
+        }
+      }
+      path.close();
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = glow
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, blur),
+      );
+      canvas.drawPath(
+        path,
+        Paint()..color = palette.accent.withValues(alpha: 0.85),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DemandGlowPainter oldDelegate) {
+    return oldDelegate.breath != breath ||
+        oldDelegate.camera.center != camera.center ||
+        oldDelegate.camera.zoom != camera.zoom ||
+        oldDelegate.palette.brightness != palette.brightness;
+  }
+}
+
+/// Blocks and crossing streets around the nav road, inside the z16 extract.
+const _navRects = <(double, double, double, double)>[
+  (9.05891, 7.46030, 9.05876, 7.46055),
+  (9.05891, 7.46168, 9.05876, 7.46192),
+  (9.05931, 7.46122, 9.05915, 7.46146),
+  (9.05931, 7.46259, 9.05915, 7.46284),
+  (9.05970, 7.46351, 9.05955, 7.46375),
+  (9.05970, 7.46488, 9.05955, 7.46512),
+  (9.05891, 7.46442, 9.05876, 7.46467),
+  (9.05784, 7.46030, 9.05768, 7.46055),
+  (9.05784, 7.46168, 9.05768, 7.46192),
+  (9.05744, 7.46122, 9.05729, 7.46146),
+  (9.05744, 7.46305, 9.05729, 7.46329),
+  (9.05705, 7.46259, 9.05689, 7.46284),
+  (9.05705, 7.46442, 9.05689, 7.46467),
+  (9.05784, 7.46488, 9.05768, 7.46512),
+  (9.05665, 7.46122, 9.05650, 7.46146),
+  (9.05784, 7.45985, 9.05768, 7.46009),
+];
+
+List<Polygon> _navBlocks(AlongPalette palette) {
+  final dark = palette.brightness == Brightness.dark;
+  final fill = dark ? const Color(0xFF2C2A26) : const Color(0xFFF4F0E6);
+  final edge = dark ? const Color(0xFFB7AFA4) : const Color(0xFF6A5C48);
+  return [
+    for (final rect in _navRects)
+      Polygon(
+        points: [
+          LatLng(rect.$1, rect.$2),
+          LatLng(rect.$1, rect.$4),
+          LatLng(rect.$3, rect.$4),
+          LatLng(rect.$3, rect.$2),
+        ],
+        color: fill,
+        borderColor: edge,
+        borderStrokeWidth: 1,
+      ),
+  ];
+}
+
+List<Polyline> _navStreets(AlongPalette palette) {
+  final dark = palette.brightness == Brightness.dark;
+  const lines = <List<LatLng>>[
+    [LatLng(9.05640, 7.46073), LatLng(9.05995, 7.46073)],
+    [LatLng(9.05650, 7.46230), LatLng(9.06010, 7.46230)],
+    [LatLng(9.05660, 7.46374), LatLng(9.06005, 7.46374)],
+    [LatLng(9.05670, 7.46491), LatLng(9.05985, 7.46491)],
+    [LatLng(9.05695, 7.45920), LatLng(9.05695, 7.46580)],
+  ];
+  return [
+    for (final line in lines)
+      Polyline(
+        points: line,
+        strokeWidth: 11,
+        color: palette.mapRoad,
+        borderStrokeWidth: 2,
+        borderColor: dark ? const Color(0xFF3A3C44) : const Color(0xFFC5C7CE),
+        strokeCap: StrokeCap.round,
+      ),
+  ];
 }
 
 List<LatLng> _hexRing(
@@ -1430,7 +1645,7 @@ class _RouteOverlay extends StatefulWidget {
   final double progress;
   final AlongPalette palette;
 
-  /// Lane-level nav. The corridor stroke is a hairline at zoom 18.
+  /// Lane-level nav. The ink stroke is 6dp on a casing.
   final bool lane;
 
   @override
@@ -1504,16 +1719,19 @@ class _RoutePainter extends CustomPainter {
     final casing = roles.routeCasing;
     final full = _smooth(_screen(route));
     final grey = roles.stale.withValues(alpha: 0.55);
-    final casingW = lane ? 34.0 : 11.0;
-    final restW = lane ? 20.0 : 6.5;
-    final traveledCasing = lane ? 38.0 : 12.0;
-    final traveledW = lane ? 22.0 : 7.0;
+    // Nav is a 6dp ink line on a casing. The wider lane stroke read as a
+    // fat white road on the beige extract.
+    final casingW = lane ? 10.0 : 11.0;
+    final restW = lane ? 6.0 : 6.5;
+    final traveledCasing = lane ? 10.0 : 12.0;
+    final traveledW = lane ? 6.0 : 7.0;
+    final restColor = lane ? palette.ink.withValues(alpha: 0.45) : grey;
     canvas.drawPath(full, _stroke(casingW, casing));
-    canvas.drawPath(full, _stroke(restW, grey));
+    canvas.drawPath(full, _stroke(restW, restColor));
     if (progress > 0.02) {
       final traveled = _smooth(_points());
       canvas.drawPath(traveled, _stroke(traveledCasing, casing));
-      canvas.drawPath(traveled, _stroke(traveledW, roles.route));
+      canvas.drawPath(traveled, _stroke(traveledW, palette.ink));
       if (pulse > 0) {
         alongPaintRoutePulse(
           canvas,

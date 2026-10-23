@@ -15,6 +15,9 @@ abstract final class AlongDurations {
   static const routeDraw = Duration(milliseconds: 900);
   static const hold = Duration(milliseconds: 1400);
   static const scan = Duration(milliseconds: 1800);
+
+  /// Demand glow on the three hot cells. One breath, then back.
+  static const breath = Duration(milliseconds: 2400);
 }
 
 abstract final class AlongCurves {

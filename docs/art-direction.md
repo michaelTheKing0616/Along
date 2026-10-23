@@ -67,7 +67,7 @@ Route strokes use round caps and round joins. Casing is `routeCasing`. The remai
 
 The trip camera frames pickup and drop together. Padding clears the top labels and the sheet: 28 on the sides, 72 on top, and `sheetInset` plus 36 on the bottom. The corridor stays inside the z12 tiles (trip max zoom 12).
 
-Nav does not fit that corridor. It locks zoom 18 on the white east-west road in the z16 extract, rotated so that street runs up the screen. The route casing is the lane stroke. A maneuver banner (arrow, street, distance) sits on top. Speed and the ETA share the bottom bar. The car is shifted down the screen so it clears that bar. Wuse and Nyanya pins are not drawn on that local street.
+Nav does not fit that corridor. It locks zoom 17 on the white east-west road in the z16 extract, rotated so that street runs up the screen. Building footprints and side streets sit beside the road. The route is brand ink at 6dp on a casing. A maneuver banner (arrow, street, distance) sits on top. Speed and the ETA share the bottom bar. The car is shifted down the screen so it clears that bar. Wuse and Nyanya pins are not drawn on that local street.
 
 The pickup pin is fixed at the screen center. A drag pans the map under it. The pin lifts while the finger is down and drops on release. The address updates when the drag settles, and snaps to an entrance within 120 meters. The camera opens on Gate 2 at zoom 17 so the pin sits on the extract. Building footprints and the street names move with the map. A dashed walk ends on the pin.
 
@@ -75,7 +75,7 @@ The quote sheet is only as tall as the fare. Confirm fare sits on the cancel lin
 
 An approximate or stale fix is hollow and grey, with the words "Approx" or "Stale" and "Updated Xs ago". A precise fix is a filled dot and the word "You". Simulated positions say "Demo" in debug builds. A screen that already shows a Demo mark does not add a second one on the map.
 
-Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor, with footprints, street names, and a walk drawn under it. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is one hex grid over the visible city. Steps are a warm tint with no hairline. Two or three cells are solid brand yellow. The band under the GO button stays clear. The rider PIN map is a short neighborhood approach: the car sits on the street, short of the pickup dot, and the driver card follows the map.
+Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor, with footprints, street names, and a walk drawn under it. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is a lattice of small hex outlines over the visible city. The stroke is ink at 6, 12, or 20 percent by demand, with no fill, so the map stays legible. The three hottest cells are brand yellow at 85 percent, with a soft glow. The glow breathes over `breath` (2.4s) and holds still when motion does not play. The band under the GO button stays clear. The rider PIN map is a short neighborhood approach: the car sits on the street, short of the pickup dot, and the driver card follows the map.
 
 ## Motion
 
@@ -88,6 +88,7 @@ Named lengths live on `AlongDurations`. Curves live on `AlongCurves`. Springs li
 | Sheet | `AlongSprings.sheet` (mass 0.7, stiffness 520, damping 32). Visually at rest inside 300ms. `sheet` 280ms is the paired length. | The sheet position. | Where the page now sits. | Yes. A drag takes over. |
 | Pin | `sheet` 280ms, `AlongCurves.settle`. Duration zero when motion does not play, so the rest pose is the dropped pin. | The pin lifts while the finger drags and drops on release. The map pans under it. The address changes on settle. | The pickup is placed. A nearby entrance snaps. | Yes. Release settles it. |
 | Route | `routeDraw` 900ms, `AlongCurves.settle` (easeOutCubic), `AlongSprings.route` | The traveled stroke. | How far along the trip is. | Yes. A new progress replaces it. |
+| Breath | `breath` 2400ms, easeInOut, reverse. Reduced motion and gallery frames hold the rest glow. | The glow on the three hot hexes. | Demand is alive, quietly. | Yes. It stops when motion does not play. |
 | Refresh | `refresh` 480ms | The keke rocks, only while the refresh future is running. | The list is loading. | Yes. It stops when the future ends. |
 | Hold | `hold` 1400ms for a one-shot status. The SOS hold control is 600ms. | A bar fills while the finger stays down. | Keep holding to call 112. Release cancels. | Yes. |
 | Scan | `scan` 1800ms | Was a sweep. It now holds a rest pose. | Nothing. The words carry the status. | — |

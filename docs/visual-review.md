@@ -105,3 +105,12 @@ Checked at 360 and 320, light and dark.
 | Pickup | Zoom 17 looked like blank land. | Building footprints, Sani Abacha Way and Wuse Market Rd, and a dashed walk that ends on the center pin. The pin still pans the map underneath. |
 | Driver | Keypad digits sat on bare type. | Each key is a squircle with a hairline and a rest shadow. A press scales to 0.96 for 120ms, and the golden stays at full size. |
 | Notices and settings | Rows were flat stroke icons. | Each row uses a Phosphor duotone icon. |
+
+## Pass 8 — hex outlines and a dressed nav street
+
+Checked at 360 and 320, light and dark. The breath rests in gallery frames.
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| Online | The warn tint read as muddy stains. | Small hex outlines, evenly spaced, with no fill. Stroke alpha is ink at 6, 12, or 20 percent. The top three cells are brand yellow at 85 percent, with a soft glow. The glow breathes for 2.4s and holds still when motion does not play. Yellow is under 1.1 percent of the frame. |
+| Nav | Blank beige and a fat white road. | Zoom 17. Building footprints and side streets sit on the extract. The route is brand ink at 6dp on a casing. |

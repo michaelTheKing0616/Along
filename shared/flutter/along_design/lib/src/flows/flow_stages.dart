@@ -3694,9 +3694,10 @@ class _HeatLegend extends StatelessWidget {
               borderRadius: BorderRadius.circular(99),
               gradient: LinearGradient(
                 colors: [
-                  palette.ink.withValues(alpha: 0.10),
-                  palette.ink.withValues(alpha: 0.28),
-                  palette.accent,
+                  palette.ink.withValues(alpha: 0.06),
+                  palette.ink.withValues(alpha: 0.12),
+                  palette.ink.withValues(alpha: 0.20),
+                  palette.accent.withValues(alpha: 0.85),
                 ],
               ),
             ),
