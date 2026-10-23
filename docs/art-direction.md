@@ -42,20 +42,20 @@ Every screen has one thing to look at and one next action. Everything else is qu
 | Screen | Ride phase | Focal element | Next action | Density |
 | --- | --- | --- | --- | --- |
 | Home | idle | "Where to?" | Open search | Sheet over a quiet map |
-| Pickup | pickup | Hollow pin and the detected place | Pick a landmark | Map, one card, one chip list |
+| Pickup | pickup | Hollow pin and the detected place | Pick a landmark | Map with streets, footprints, and a walk, one card, one chip list |
 | Quote | quote | The total | Confirm fare | One list, one button |
 | Matching | matching | "Looking nearby" | Cancel search | Bare map, one card |
 | Recovery | no driver | "No driver yet" | Widen radius | Bare map, three actions, one primary |
 | Rides | quote | The selected ride | Confirm keke | One recommended row, a short list |
-| Seats | quote | The selected cushion | Hold this seat | Cabin, then one bar |
+| Seats | quote | The selected cushion | Hold this seat | High-contrast cabin, then one bar |
 | Offer | assigned | The fare | Accept | One card over the route |
-| PIN | arrived | The four digits | Share them with Chinedu | Driver card, car, plate, countdown, digits, centered |
-| Driver | arrived | The PIN step | Verify PIN | Steps, digits, keypad |
+| PIN | arrived | The four digits | Share them with Chinedu | Approach map, then driver card, car, plate, countdown, digits |
+| Driver | arrived | The PIN step | Verify PIN | Steps, digits, squircle keypad |
 | Live | in progress | The ETA range | Call, or Safety | Map, one sheet |
 | Nav | nav | The next maneuver | Keep driving | Banner, lane route, speed and ETA |
 | Receipt | receipt | The total and the seat | Report an issue | Map, fare, payment, seat, timeline, rating |
-| Notices | closed and the failures | The banner that applies | Try again | The gallery shows the catalog. Production shows one banner and one action. |
-| Settings | — | The haptics switch | Test haptic | Grouped account, payment, safety, access, haptics, language, about |
+| Notices | closed and the failures | The banner that applies | Try again | Duotone icon on each row. The gallery shows the catalog. Production shows one banner and one action. |
+| Settings | — | The haptics switch | Test haptic | Grouped lists. Each row has a duotone icon. |
 | SOS | any | Call 112 | Hold to call, or share with contacts | One hold. No promise of a staffed desk. |
 | Empty | — | The heading | The single action on the empty state | Icon, heading, body, one button |
 
@@ -69,13 +69,13 @@ The trip camera frames pickup and drop together. Padding clears the top labels a
 
 Nav does not fit that corridor. It locks zoom 18 on the white east-west road in the z16 extract, rotated so that street runs up the screen. The route casing is the lane stroke. A maneuver banner (arrow, street, distance) sits on top. Speed and the ETA share the bottom bar. The car is shifted down the screen so it clears that bar. Wuse and Nyanya pins are not drawn on that local street.
 
-The pickup pin is fixed at the screen center. A drag pans the map under it. The pin lifts while the finger is down and drops on release. The address updates when the drag settles, and snaps to an entrance within 120 meters. The camera opens on Gate 2 at zoom 17 so the pin sits on the extract.
+The pickup pin is fixed at the screen center. A drag pans the map under it. The pin lifts while the finger is down and drops on release. The address updates when the drag settles, and snaps to an entrance within 120 meters. The camera opens on Gate 2 at zoom 17 so the pin sits on the extract. Building footprints and the street names move with the map. A dashed walk ends on the pin.
 
 The quote sheet is only as tall as the fare. Confirm fare sits on the cancel line. The corridor is behind that sheet, and no car is drawn until the trip is moving.
 
 An approximate or stale fix is hollow and grey, with the words "Approx" or "Stale" and "Updated Xs ago". A precise fix is a filled dot and the word "You". Simulated positions say "Demo" in debug builds. A screen that already shows a Demo mark does not add a second one on the map.
 
-Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is one hex grid over the visible city. Steps are flat ink tints with a hairline edge. Two or three cells are solid brand yellow. The band under the GO button stays clear.
+Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor, with footprints, street names, and a walk drawn under it. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is one hex grid over the visible city. Steps are a warm tint with no hairline. Two or three cells are solid brand yellow. The band under the GO button stays clear. The rider PIN map is a short neighborhood approach: the car sits on the street, short of the pickup dot, and the driver card follows the map.
 
 ## Motion
 
@@ -83,7 +83,7 @@ Named lengths live on `AlongDurations`. Curves live on `AlongCurves`. Springs li
 
 | Animation | Token | What changes | What it tells the rider | Interruptible |
 | --- | --- | --- | --- | --- |
-| Press | `press` 120ms. Reduced motion uses opacity 0.72 instead of scale 0.96. | The control acknowledges the finger. | The press landed. | Yes. Release or cancel returns it. |
+| Press | `press` 120ms. Reduced motion uses opacity 0.72 instead of scale 0.96. The driver keypad uses the same length and rests at full size when motion does not play. | The control acknowledges the finger. | The press landed. | Yes. Release or cancel returns it. |
 | Fade | `fade` 180ms, `AlongCurves.fade` (easeOut) | Opacity of a status that cannot move. | Something settled without a slide. | Yes. |
 | Sheet | `AlongSprings.sheet` (mass 0.7, stiffness 520, damping 32). Visually at rest inside 300ms. `sheet` 280ms is the paired length. | The sheet position. | Where the page now sits. | Yes. A drag takes over. |
 | Pin | `sheet` 280ms, `AlongCurves.settle`. Duration zero when motion does not play, so the rest pose is the dropped pin. | The pin lifts while the finger drags and drops on release. The map pans under it. The address changes on settle. | The pickup is placed. A nearby entrance snaps. | Yes. Release settles it. |

@@ -92,3 +92,16 @@ Measured on the re-render at 360×800 light after the rejection.
 | Online | Scattered yellow splotches. | One hex grid. Ink tint steps with a hairline. Three solid yellow cells. Clear under GO. |
 | Plate | The bumper photo still read as stretched. | A front-on vector plate: green band, ABUJA, ABC-123-XY. The viewfinder stays. |
 | Offer | Pale grey cushions. | The seat painter at high contrast, selected yellow, inside the cabin outline. |
+
+## Pass 7 — warm hexes, rider seats, PIN map, pickup, keypad, duotone rows
+
+Checked at 360 and 320, light and dark.
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| Online | The accepted grid read grey and clinical. | Tint steps use the warn brown at low alpha. The hairline stroke is gone. Three yellow cells stay. Yellow is about 1% of the 360 frame. |
+| Seats | Rider cushions were still pale grey blobs. | The cabin uses the same high-contrast painter as offer, inside the bold cabin outline. Selected is yellow. Taken and the driver are near-black. Free seats are white. Cushion size and the 20px row gap are unchanged. |
+| PIN | The top 40% was empty paper. | A neighborhood map sits on top: the car is on the street, short of the pickup. The driver card, hint, 1:48, and digits follow it. |
+| Pickup | Zoom 17 looked like blank land. | Building footprints, Sani Abacha Way and Wuse Market Rd, and a dashed walk that ends on the center pin. The pin still pans the map underneath. |
+| Driver | Keypad digits sat on bare type. | Each key is a squircle with a hairline and a rest shadow. A press scales to 0.96 for 120ms, and the golden stays at full size. |
+| Notices and settings | Rows were flat stroke icons. | Each row uses a Phosphor duotone icon. |

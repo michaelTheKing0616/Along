@@ -41,8 +41,9 @@ enum AlongFix { precise, approximate, stale, hidden }
 /// grid, drawn by overzooming that z15 vector so building footprints stay
 /// sharp. Nav locks zoom 18, rotated so the street runs up the screen, and
 /// those z16 tiles overzoom to lane level. The corridor uses native zoom-12
-/// tiles. Online demand is one hex grid over the visible city: ink tint
-/// steps, and only the two or three hottest cells in brand yellow.
+/// tiles. Online demand is one hex grid over the visible city: warm tint
+/// steps with no hairline, and only the two or three hottest cells in
+/// brand yellow.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -57,6 +58,8 @@ class AlongCityMap extends StatelessWidget {
     this.center,
     this.zoom,
     this.nearby = false,
+    this.approach = false,
+    this.place = false,
   });
 
   final AlongCityMapMode mode;
@@ -91,6 +94,13 @@ class AlongCityMap extends StatelessWidget {
   /// the bare map is not an empty street.
   final bool nearby;
 
+  /// A short drive toward a pickup. The rider PIN map uses this.
+  final bool approach;
+
+  /// Building footprints, street names, and a walk to the pin. Pickup uses
+  /// this. The screen pin stays fixed; these layers move with the map.
+  final bool place;
+
   /// Lane zoom. z16 tiles overzoom. Negative rotation puts east at the top:
   /// a positive bearing rotates the map clockwise, which would point the
   /// street down the screen.
@@ -101,6 +111,21 @@ class AlongCityMap extends StatelessWidget {
   /// strip above a full-screen sheet on both 360×800 and 320×640.
   static const neighborhoodCenter = LatLng(9.063022, 7.465938);
   static const corridorCenter = LatLng(9.0460, 7.5183);
+
+  /// A neighborhood street inside the z16 extract, clear of the tile edge
+  /// so a short map at zoom 16 can keep a one-tile buffer.
+  static const approachCenter = LatLng(9.06185, 7.46690);
+  static const approachZoom = 16.0;
+  static const approachRoute = <LatLng>[
+    LatLng(9.06017, 7.46588),
+    LatLng(9.06068, 7.46616),
+    LatLng(9.06119, 7.46647),
+    LatLng(9.06170, 7.46678),
+    LatLng(9.06221, 7.46683),
+    LatLng(9.06271, 7.46715),
+    LatLng(9.06322, 7.46748),
+    LatLng(9.06339, 7.46759),
+  ];
 
   /// South of the busy cores so the GO button sits on quiet map.
   static const cityCenter = LatLng(9.012, 7.490);
@@ -258,6 +283,31 @@ class AlongCityMap extends StatelessWidget {
             ),
             if (mode == AlongCityMapMode.online)
               PolygonLayer(polygons: _demandHexes(palette)),
+            if (place) ...[
+              PolygonLayer(polygons: _placeBlocks(palette)),
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: _pickupWalk,
+                    strokeWidth: 4,
+                    color: palette.ink,
+                    strokeCap: StrokeCap.round,
+                    pattern: StrokePattern.dashed(segments: [8, 6]),
+                  ),
+                ],
+              ),
+            ],
+            if (approach)
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: approachRoute,
+                    strokeWidth: 5,
+                    color: palette.ink.withValues(alpha: 0.88),
+                    strokeCap: StrokeCap.round,
+                  ),
+                ],
+              ),
             if (showRoute)
               Positioned.fill(
                 child: _RouteOverlay(
@@ -309,6 +359,32 @@ class AlongCityMap extends StatelessWidget {
   ) {
     final markers = <Marker>[];
     if (bare) {
+      if (approach) {
+        final at = _along(approachRoute, drawn);
+        markers.add(
+          _vehicle(
+            context,
+            at.point,
+            AlongVehicleKind.car,
+            null,
+            at.heading,
+            palette,
+            emphasized: true,
+          ),
+        );
+        markers.add(_approachStop(approachRoute.last, palette));
+        return markers;
+      }
+      if (place) {
+        markers.add(_walker(_pickupWalk.first, palette));
+        markers.add(
+          _street(const LatLng(9.07842, 7.46279), 'Sani Abacha Way', palette),
+        );
+        markers.add(
+          _street(const LatLng(9.07455, 7.46455), 'Wuse Market Rd', palette),
+        );
+        return markers;
+      }
       if (nearby) {
         final pickup = center ?? wuseMarket;
         markers.add(_radar(pickup, palette));
@@ -467,6 +543,61 @@ class AlongCityMap extends StatelessWidget {
       markers.add(_puck(context, const LatLng(9.06812, 7.46525), palette));
     }
     return markers;
+  }
+
+  Marker _approachStop(LatLng at, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 16,
+      height: 16,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: palette.accent,
+          shape: BoxShape.circle,
+          border: Border.all(color: palette.surface, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Marker _walker(LatLng at, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 16,
+      height: 16,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: palette.ink,
+          shape: BoxShape.circle,
+          border: Border.all(color: palette.surface, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Marker _street(LatLng at, String name, AlongPalette palette) {
+    final dark = palette.brightness == Brightness.dark;
+    return Marker(
+      point: at,
+      width: 148,
+      height: 16,
+      child: Text(
+        name,
+        maxLines: 1,
+        softWrap: false,
+        textAlign: TextAlign.center,
+        style: AlongType.caption(palette).copyWith(
+          fontSize: 12,
+          height: 1,
+          fontWeight: FontWeight.w600,
+          color: dark ? const Color(0xFFE7E2D8) : const Color(0xFF3A342C),
+          shadows: [
+            Shadow(color: palette.mapLand, blurRadius: 2),
+            Shadow(color: palette.mapLand, offset: const Offset(0, 1)),
+          ],
+        ),
+      ),
+    );
   }
 
   Marker _endpoint(
@@ -1136,9 +1267,57 @@ _RoutePoint _along(List<LatLng> route, double progress) {
   return _RoutePoint(point, heading);
 }
 
-/// One hex grid over the visible city. Steps are flat ink tints. The three
-/// hottest cells are solid brand yellow. Cells do not overlap, so the edges
-/// stay crisp. The band under the GO button is left clear.
+/// Sidewalk from a nearby corner to Gate 2. The screen pin sits on the end.
+const _pickupWalk = <LatLng>[
+  LatLng(9.07570, 7.46255),
+  LatLng(9.07588, 7.46295),
+  LatLng(9.07610, 7.46340),
+];
+
+/// Footprints on the land around Gate 2. Each pair is north-west then
+/// south-east, kept off the white roads in the z16 extract.
+const _placeRects = <(double, double, double, double)>[
+  (9.07974, 7.46209, 9.07955, 7.46236),
+  (9.07924, 7.46377, 9.07906, 7.46404),
+  (9.07875, 7.46153, 9.07856, 7.46181),
+  (9.07825, 7.46432, 9.07807, 7.46460),
+  (9.07776, 7.46209, 9.07758, 7.46236),
+  (9.07726, 7.46377, 9.07708, 7.46404),
+  (9.07677, 7.46488, 9.07659, 7.46515),
+  (9.07628, 7.46153, 9.07609, 7.46181),
+  (9.07578, 7.46432, 9.07560, 7.46460),
+  (9.07529, 7.46153, 9.07510, 7.46181),
+  (9.07481, 7.46321, 9.07462, 7.46348),
+  (9.07431, 7.46488, 9.07413, 7.46515),
+  (9.07382, 7.46377, 9.07363, 7.46404),
+  (9.07332, 7.46153, 9.07314, 7.46181),
+  (9.07283, 7.46432, 9.07265, 7.46460),
+  (9.07233, 7.46209, 9.07215, 7.46236),
+];
+
+List<Polygon> _placeBlocks(AlongPalette palette) {
+  final dark = palette.brightness == Brightness.dark;
+  final fill = dark ? const Color(0xFF2C2A26) : const Color(0xFFF4F0E6);
+  final edge = dark ? const Color(0xFFB7AFA4) : const Color(0xFF6A5C48);
+  return [
+    for (final rect in _placeRects)
+      Polygon(
+        points: [
+          LatLng(rect.$1, rect.$2),
+          LatLng(rect.$1, rect.$4),
+          LatLng(rect.$3, rect.$4),
+          LatLng(rect.$3, rect.$2),
+        ],
+        color: fill,
+        borderColor: edge,
+        borderStrokeWidth: 1,
+      ),
+  ];
+}
+
+/// One hex grid over the visible city. Steps are a warm tint, with no
+/// hairline. The three hottest cells are solid brand yellow. Cells do not
+/// overlap. The band under the GO button is left clear.
 List<Polygon> _demandHexes(AlongPalette palette) {
   const radius = 1050.0;
   const mPerLat = 111320.0;
@@ -1187,8 +1366,7 @@ List<Polygon> _demandHexes(AlongPalette palette) {
     return false;
   }
 
-  const inkAlpha = <double>[0.045, 0.08, 0.12, 0.18];
-  final edge = palette.ink.withValues(alpha: 0.28);
+  const warmAlpha = <double>[0.08, 0.14, 0.22, 0.32];
   final polygons = <Polygon>[];
   for (final cell in cells) {
     final at = LatLng(cell.lat, cell.lon);
@@ -1214,9 +1392,9 @@ List<Polygon> _demandHexes(AlongPalette palette) {
     polygons.add(
       Polygon(
         points: ring,
-        color: palette.ink.withValues(alpha: inkAlpha[step]),
-        borderColor: edge,
-        borderStrokeWidth: 0.8,
+        color: palette.roles.warn.withValues(alpha: warmAlpha[step]),
+        borderColor: const Color(0x00000000),
+        borderStrokeWidth: 0,
       ),
     );
   }

@@ -229,7 +229,7 @@ class _CabinShell extends StatelessWidget {
     return ClipPath(
       clipper: _CabinClipper(),
       child: CustomPaint(
-        painter: _CabinOutlinePainter(palette: palette),
+        painter: _CabinOutlinePainter(palette: palette, bold: true),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 26, 8, 14),
           child: _SeatGrid(
@@ -869,7 +869,9 @@ class _SeatButtonState extends State<_SeatButton>
   Widget build(BuildContext context) {
     final seat = widget.seat;
     final palette = AlongPalette.of(context);
-    final ink = _ink(seat, palette);
+    final ink = widget.driverIcon
+        ? _contrastInk(seat, palette)
+        : _ink(seat, palette);
     final price = seat.price;
     final showPrice =
         price != null && price.contains('₦') && seat.status != 'occupied';
@@ -911,6 +913,8 @@ class _SeatButtonState extends State<_SeatButton>
                               seat: seat,
                               palette: palette,
                               held: seat.status == 'held' ? 0.66 : 0,
+                              contrast: true,
+                              drawWheel: false,
                             )
                           : _SeatPainter(seat: seat, palette: palette),
                       child: child,
@@ -933,7 +937,7 @@ class _SeatButtonState extends State<_SeatButton>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (showWheel)
-                                _SteeringWheel(ink: palette.ink, size: 16)
+                                _SteeringWheel(ink: ink, size: 16)
                               else if (seat.isCargo)
                                 Icon(AlongIcons.luggage, size: 14, color: ink)
                               else if (!widget.driverIcon &&
@@ -1039,6 +1043,15 @@ class _SeatButtonState extends State<_SeatButton>
     if (seat.status == 'occupied' || seat.status == 'blocked') {
       return palette.muted;
     }
+    return palette.ink;
+  }
+
+  /// Label ink for the high-contrast cabin. Taken cushions are near-black.
+  static Color _contrastInk(SeatMapSeat seat, AlongPalette palette) {
+    final taken =
+        seat.isDriver || seat.status == 'occupied' || seat.status == 'blocked';
+    if (seat.status == 'yours') return palette.accentInk;
+    if (taken) return const Color(0xFFF4F1EA);
     return palette.ink;
   }
 }
@@ -1247,12 +1260,14 @@ class _CarSeatPainter extends CustomPainter {
     required this.palette,
     required this.held,
     this.contrast = false,
+    this.drawWheel = true,
   });
 
   final SeatMapSeat seat;
   final AlongPalette palette;
   final double held;
   final bool contrast;
+  final bool drawWheel;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1355,7 +1370,7 @@ class _CarSeatPainter extends CustomPainter {
         ..strokeWidth = stroke
         ..color = hairline,
     );
-    if (contrast && seat.isDriver) {
+    if (contrast && drawWheel && seat.isDriver) {
       final hub = Offset(cushionRect.center.dx, cushionRect.center.dy);
       final wheel = Paint()
         ..style = PaintingStyle.stroke
@@ -1418,6 +1433,7 @@ class _CarSeatPainter extends CustomPainter {
     return oldDelegate.seat.status != seat.status ||
         oldDelegate.held != held ||
         oldDelegate.contrast != contrast ||
+        oldDelegate.drawWheel != drawWheel ||
         oldDelegate.palette.brightness != palette.brightness;
   }
 }

@@ -108,6 +108,7 @@ class _PickupBodyState extends State<_PickupBody> {
               zoom: 17,
               sheetInset: 0,
               bare: true,
+              place: true,
               demoLabel: false,
               fix: AlongFix.hidden,
             ),
@@ -606,8 +607,8 @@ class AlongFlowRecovery extends StatelessWidget {
   }
 }
 
-/// Rider side of the 4-digit start PIN. The handoff sits in the middle of
-/// the page: the driver, the car, the plate, then the digits.
+/// Rider side of the 4-digit start PIN. A live approach map sits on top.
+/// The driver card follows it, so the page does not open on empty paper.
 class AlongFlowTripPin extends StatelessWidget {
   const AlongFlowTripPin({super.key});
 
@@ -615,11 +616,30 @@ class AlongFlowTripPin extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final roomy = _roomy(context);
+    final short = MediaQuery.sizeOf(context).height < 700;
     final handoff = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        ClipPath(
+          clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
+          child: SizedBox(
+            height: short ? 156 : 196,
+            width: double.infinity,
+            child: const AlongCityMap(
+              center: AlongCityMap.approachCenter,
+              zoom: AlongCityMap.approachZoom,
+              progress: 0.52,
+              sheetInset: 0,
+              bare: true,
+              approach: true,
+              demoLabel: false,
+              fix: AlongFix.hidden,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
         const _PinDriverCard(),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Text(
           'Share this with Chinedu',
           maxLines: roomy ? 2 : 1,
@@ -634,7 +654,7 @@ class AlongFlowTripPin extends StatelessWidget {
           softWrap: false,
           style: AlongType.numeric(palette).copyWith(fontSize: 22),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         const _PinReadout(code: DemoAdapter.pin),
       ],
     );
@@ -642,10 +662,10 @@ class AlongFlowTripPin extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: roomy
               ? SingleChildScrollView(child: handoff)
-              : Center(child: handoff),
+              : Align(alignment: Alignment.topCenter, child: handoff),
         ),
       ),
     );
@@ -948,40 +968,81 @@ class _Keypad extends StatelessWidget {
   }
 }
 
-class _KeyCap extends StatelessWidget {
+class _KeyCap extends StatefulWidget {
   const _KeyCap({required this.label, required this.onKey});
 
   final String label;
   final ValueChanged<String> onKey;
 
   @override
+  State<_KeyCap> createState() => _KeyCapState();
+}
+
+class _KeyCapState extends State<_KeyCap> {
+  var _down = false;
+
+  @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final roomy = _roomy(context);
-    if (label.isEmpty) return const SizedBox(height: 48);
-    final del = label == 'del';
+    final play = AlongMotionPolicy.play(context);
+    if (widget.label.isEmpty) return const SizedBox(height: 48);
+    final del = widget.label == 'del';
+    final dark = palette.brightness == Brightness.dark;
+    final fill = dark ? const Color(0xFF3A342C) : const Color(0xFFFFFDF8);
+    final shape = AlongCraft.border(
+      16,
+      side: BorderSide(
+        color: palette.ink.withValues(alpha: dark ? 0.55 : 0.32),
+        width: 1,
+      ),
+    );
     return Semantics(
       button: true,
-      label: del ? 'Delete' : label,
-      child: Material(
-        color: palette.surface,
-        shape: AlongCraft.border(12),
-        child: InkWell(
-          customBorder: AlongCraft.border(12),
-          onTap: () => onKey(label),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: roomy ? 8 : 0),
-              child: Center(
-                child: del
-                    ? Icon(AlongIcons.close, size: 20, color: palette.ink)
-                    : Text(
-                        label,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.title(palette).copyWith(height: 1),
-                      ),
+      label: del ? 'Delete' : widget.label,
+      child: AnimatedScale(
+        scale: _down && play ? 0.96 : 1,
+        duration: play ? AlongDurations.press : Duration.zero,
+        curve: AlongCurves.settle,
+        child: DecoratedBox(
+          decoration: ShapeDecoration(
+            color: fill,
+            shadows: AlongElevation.rest(palette.ink),
+            shape: shape,
+          ),
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              customBorder: shape,
+              onTapDown: (_) {
+                if (!_down) setState(() => _down = true);
+              },
+              onTapCancel: () {
+                if (_down) setState(() => _down = false);
+              },
+              onTap: () {
+                if (_down) setState(() => _down = false);
+                widget.onKey(widget.label);
+              },
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: roomy ? 8 : 0),
+                  child: Center(
+                    child: del
+                        ? AlongIcon(
+                            AlongIcons.close,
+                            size: 20,
+                            color: palette.ink,
+                          )
+                        : Text(
+                            widget.label,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: AlongType.title(palette).copyWith(height: 1),
+                          ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -1494,7 +1555,7 @@ class _QuietNotice extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 36),
         child: Row(
           children: [
-            Icon(role.icon, size: 20, color: role.color),
+            AlongIcon(role.icon, size: 20, color: role.color),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -1538,7 +1599,7 @@ class _NoticeBanner extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(role.icon, size: 20, color: role.color),
+                AlongIcon(role.icon, size: 20, color: role.color),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -1738,7 +1799,7 @@ class _SettingsRow extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 48),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: palette.ink),
+          AlongIcon(icon, size: 20, color: palette.ink),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
