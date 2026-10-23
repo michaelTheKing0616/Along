@@ -142,6 +142,10 @@ Home, quote, live, and day stay as accepted in Pass 9. Checked again at 360 and 
 | Loading | Full-width grey slabs. | A map tile (land, roads, park, water, a warm sheen), then a card of round bones and text lines, then a button bone. Each bone keeps the warm shimmer. |
 | Refresh | No car, only bars. | The car sits mid-road on a lane. Under it is the ride list: keke, okada, car, danfo, and bus, then Confirm keke. |
 
+## Visual reset
+
+Type is five sizes, 13 and up, weights 400/500/600. Buttons are full-width rectangles, 56 tall, radius 16. Stadium chips are gone. Page gutters are 24. Pass days are a date and a check, not a bar. Home drops the service row and the promo. Rating keeps the stars and the note.
+
 ## Pass 11 — soft map, split filled
 
 Pass and refresh stay as accepted in Pass 10. Checked at 360 and 320, light and dark.

@@ -892,7 +892,7 @@ class _DriverBodyState extends State<_DriverBody> {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: SingleChildScrollView(child: column),
         ),
       ),
@@ -1263,7 +1263,7 @@ class AlongFlowReceipt extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1678,7 +1678,7 @@ class _SettingsBodyState extends State<_SettingsBody> {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1863,7 +1863,7 @@ class _TopCard extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: roomy
               ? SingleChildScrollView(child: child)
               : Align(alignment: Alignment.topCenter, child: child),

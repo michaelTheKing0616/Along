@@ -38,7 +38,7 @@ class AlongVehicleMark extends StatelessWidget {
               height: 8,
               decoration: BoxDecoration(
                 color: palette.ink.withValues(alpha: 0.001),
-                borderRadius: BorderRadius.circular(99),
+                borderRadius: BorderRadius.circular(4),
                 boxShadow: AlongElevation.rest(palette.ink),
               ),
             ),

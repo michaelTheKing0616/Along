@@ -600,7 +600,7 @@ class AlongCityMap extends StatelessWidget {
         softWrap: false,
         textAlign: TextAlign.center,
         style: AlongType.caption(palette).copyWith(
-          fontSize: 12,
+          fontSize: 13,
           height: 1,
           fontWeight: FontWeight.w600,
           color: dark ? const Color(0xFFE7E2D8) : const Color(0xFF3A342C),
@@ -659,7 +659,7 @@ class AlongCityMap extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         style: AlongType.caption(palette).copyWith(
-                          fontSize: 10,
+                          fontSize: 13,
                           height: 1.1,
                           fontWeight: FontWeight.w600,
                           color: palette.ink,
@@ -726,7 +726,7 @@ class AlongCityMap extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontSize: 10,
+                    fontSize: 13,
                     height: 1.1,
                     fontWeight: FontWeight.w600,
                     color: palette.ink,
@@ -817,7 +817,7 @@ class AlongCityMap extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         style: AlongType.numeric(palette).copyWith(
-                          fontSize: 11,
+                          fontSize: 13,
                           height: 1,
                           color: palette.accentInk,
                         ),
@@ -862,7 +862,7 @@ class AlongCityMap extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontSize: 10,
+                    fontSize: 13,
                     height: 1.1,
                     fontWeight: FontWeight.w600,
                     color: palette.ink,
@@ -931,7 +931,7 @@ class AlongCityMap extends StatelessWidget {
                 maxLines: 1,
                 softWrap: false,
                 style: AlongType.caption(palette).copyWith(
-                  fontSize: 11,
+                  fontSize: 13,
                   height: 1.1,
                   fontWeight: FontWeight.w600,
                   color: palette.ink,
@@ -968,7 +968,7 @@ class AlongCityMap extends StatelessWidget {
           '$count',
           maxLines: 1,
           softWrap: false,
-          style: AlongType.title(palette).copyWith(fontSize: 15, height: 1),
+          style: AlongType.label(palette).copyWith(height: 1),
         ),
       ),
     );
@@ -1043,7 +1043,7 @@ class _SolidWord extends StatelessWidget {
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
-            fontSize: 10,
+            fontSize: 13,
             height: 1.1,
             fontWeight: FontWeight.w600,
             color: palette.ink,
@@ -1099,7 +1099,7 @@ class _Attribution extends StatelessWidget {
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
-            fontSize: 10,
+            fontSize: 13,
             height: 1.1,
             fontWeight: FontWeight.w600,
             color: palette.ink,

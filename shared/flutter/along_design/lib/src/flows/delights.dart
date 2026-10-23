@@ -185,7 +185,7 @@ class AlongSuggestionChips extends StatelessWidget {
             child: AlongPressable(
               child: AlongFrost(
                 solid: true,
-                radius: 99,
+                radius: 12,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 6,
@@ -734,7 +734,7 @@ class AlongFareSplit extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(99),
+          borderRadius: BorderRadius.circular(3),
           child: SizedBox(
             height: 6,
             child: Row(
@@ -1318,7 +1318,7 @@ class AlongDriveTrack extends StatelessWidget {
                                         color: palette.ink.withValues(
                                           alpha: 0.35,
                                         ),
-                                        borderRadius: BorderRadius.circular(99),
+                                        borderRadius: BorderRadius.circular(1),
                                       ),
                                       child: const SizedBox(height: 3),
                                     ),

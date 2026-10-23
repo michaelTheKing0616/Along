@@ -243,115 +243,7 @@ class _HomeSheetBody extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        const _ServiceSlot(),
-        const SizedBox(height: 8),
-        const _RoutePromo(),
-      ],
-    );
-  }
-}
-
-class _RoutePromo extends StatelessWidget {
-  const _RoutePromo();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      height: 72,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-      child: Row(
-        children: [
-          const AlongVehicleMark(
-            kind: AlongVehicleKind.keke,
-            width: 64,
-            height: 40,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Evening along',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Wuse to Nyanya · ₦200 off',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ServiceSlot extends StatelessWidget {
-  const _ServiceSlot();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-      child: const Padding(
-        padding: EdgeInsets.fromLTRB(4, 8, 4, 8),
-        child: _ServiceRow(),
-      ),
-    );
-  }
-}
-
-class _ServiceRow extends StatelessWidget {
-  const _ServiceRow();
-
-  static const _items = <(AlongVehicleKind, String)>[
-    (AlongVehicleKind.keke, 'Keke'),
-    (AlongVehicleKind.okada, 'Okada'),
-    (AlongVehicleKind.car, 'Car'),
-    (AlongVehicleKind.danfo, 'Danfo'),
-    (AlongVehicleKind.bus, 'Bus'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    final label = AlongType.caption(palette)
-        .copyWith(fontWeight: FontWeight.w600, color: palette.ink, height: 1.1);
-    return Row(
-      children: [
-        for (final item in _items)
-          Expanded(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 56,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: AlongVehicleMark(
-                      kind: item.$1,
-                      width: 56,
-                      height: 36,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(item.$2, maxLines: 1, softWrap: false, style: label),
-              ],
-            ),
-          ),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -679,7 +571,7 @@ class _PerkChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: palette.recessed,
-        borderRadius: BorderRadius.circular(17),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -774,23 +666,12 @@ class _SeatChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.recessed,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        child: Text(
-          label,
-          maxLines: 1,
-          softWrap: false,
-          style: AlongType.caption(palette).copyWith(
-            fontWeight: FontWeight.w600,
-            height: 1.1,
-            fontFeatures: tabular ? const [FontFeature.tabularFigures()] : null,
-          ),
-        ),
+    return Text(
+      label,
+      maxLines: 1,
+      softWrap: false,
+      style: AlongType.label(palette).copyWith(
+        fontFeatures: tabular ? const [FontFeature.tabularFigures()] : null,
       ),
     );
   }
@@ -1136,7 +1017,7 @@ class AlongFlowPlate extends StatelessWidget {
           const _PlateFrame(),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1168,7 +1049,7 @@ class AlongFlowPlate extends StatelessWidget {
                       hairline: true,
                     ),
                     child: const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+                      padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -1258,7 +1139,7 @@ class AlongFlowDay extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: SingleChildScrollView(child: column),
         ),
       ),
@@ -1350,7 +1231,7 @@ class AlongFlowOffer extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1408,7 +1289,7 @@ class AlongFlowEarnings extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1794,11 +1675,7 @@ class AlongFlowRating extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     _Stars(filled: 4, size: star),
-                                    SizedBox(height: short ? 8 : 12),
-                                    const _ComplimentWrap(),
-                                    SizedBox(height: short ? 8 : 12),
-                                    const _TipSegments(),
-                                    SizedBox(height: short ? 8 : 12),
+                                    SizedBox(height: short ? 12 : 16),
                                     const _NoteField(),
                                   ],
                                 ),
@@ -1858,116 +1735,6 @@ class _NoteField extends StatelessWidget {
 }
 
 /// Content-width pills, two per row. A chip must not stretch.
-class _ComplimentWrap extends StatelessWidget {
-  const _ComplimentWrap();
-
-  @override
-  Widget build(BuildContext context) {
-    Widget row(List<Widget> chips) {
-      return FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Row(mainAxisSize: MainAxisSize.min, children: chips),
-      );
-    }
-
-    return Column(
-      children: [
-        row(const [
-          _ComplimentChip('Smooth ride', selected: true),
-          SizedBox(width: 8),
-          _ComplimentChip('Clean car'),
-        ]),
-        const SizedBox(height: 8),
-        row(const [
-          _ComplimentChip('On time'),
-          SizedBox(width: 8),
-          _ComplimentChip('Safe driving'),
-        ]),
-      ],
-    );
-  }
-}
-
-class _ComplimentChip extends StatelessWidget {
-  const _ComplimentChip(this.label, {this.selected = false});
-
-  final String label;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: selected ? palette.ink : palette.surface,
-        borderRadius: BorderRadius.circular(17),
-        border: Border.all(
-          color: selected ? palette.ink : palette.line.withValues(alpha: 0.45),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        child: Text(
-          label,
-          maxLines: 1,
-          softWrap: false,
-          style: AlongType.meta(palette).copyWith(
-            color: selected ? palette.onInk : palette.ink,
-            fontWeight: FontWeight.w600,
-            height: 1,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TipSegments extends StatelessWidget {
-  const _TipSegments();
-
-  static const _tips = ['₦100', '₦200', '₦500', 'Custom'];
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: palette.recessed,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          for (final tip in _tips)
-            Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: tip == '₦200'
-                      ? palette.accent
-                      : const Color(0x00000000),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    tip,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette).copyWith(
-                      color: palette.ink,
-                      fontWeight: FontWeight.w600,
-                      height: 1,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
 class _SendThanks extends StatefulWidget {
   const _SendThanks();
 
@@ -2128,13 +1895,13 @@ class _StepDots extends StatelessWidget {
         for (var i = 0; i < count; i++) ...[
           if (i > 0) const SizedBox(width: 8),
           Container(
-            width: i == index ? 18 : 8,
+            width: 8,
             height: 8,
             decoration: BoxDecoration(
               color: i == index
                   ? const Color(0xFFF7D117)
                   : const Color(0xE6FFFFFF),
-              borderRadius: BorderRadius.circular(99),
+              shape: BoxShape.circle,
             ),
           ),
         ],
@@ -2585,7 +2352,7 @@ class _Page extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -2665,31 +2432,24 @@ class _PlaceRow extends StatelessWidget {
             ),
           ),
           if (action != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Material(
-                color: palette.ink,
-                shape: const StadiumBorder(),
-                child: InkWell(
-                  key: actionKey,
-                  onTap: _noop,
-                  customBorder: const StadiumBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    child: Text(
-                      action!,
-                      maxLines: 1,
-                      softWrap: false,
-                      style: AlongType.caption(palette).copyWith(
-                        color: palette.onInk,
-                        fontWeight: FontWeight.w600,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
+            TextButton(
+              key: actionKey,
+              onPressed: _noop,
+              style: TextButton.styleFrom(
+                foregroundColor: palette.ink,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                action!,
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.label(palette).copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             )
@@ -2737,23 +2497,11 @@ class _RideBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-      decoration: BoxDecoration(
-        color: palette.accent,
-        borderRadius: BorderRadius.circular(99),
-      ),
-      child: Text(
-        label,
-        maxLines: 1,
-        softWrap: false,
-        style: AlongType.caption(palette).copyWith(
-          fontSize: 10,
-          height: 1.05,
-          fontWeight: FontWeight.w600,
-          color: palette.accentInk,
-        ),
-      ),
+    return Text(
+      label,
+      maxLines: 1,
+      softWrap: false,
+      style: AlongType.label(palette).copyWith(height: 1.2),
     );
   }
 }
@@ -3056,7 +2804,7 @@ class _MapChip extends StatelessWidget {
       decoration: BoxDecoration(boxShadow: AlongElevation.float(palette.ink)),
       child: AlongFrost(
         solid: true,
-        radius: 99,
+        radius: 12,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         child: Text(
           label,
@@ -3387,7 +3135,7 @@ class _WeekBars extends StatelessWidget {
       ('Su', 9, false),
     ];
     final axis = AlongType.caption(palette).copyWith(
-      fontSize: 10,
+      fontSize: 13,
       height: 1,
       fontWeight: FontWeight.w600,
       color: palette.muted,
@@ -3492,7 +3240,7 @@ class _WeekBar extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: palette.onInk,
                               height: 1,
-                              fontSize: 10,
+                              fontSize: 13,
                             ),
                           ),
                         ),
@@ -3512,7 +3260,7 @@ class _WeekBar extends StatelessWidget {
                       color: selected
                           ? palette.ink
                           : palette.ink.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(99),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -3566,7 +3314,7 @@ class _EarningTrip extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.title(palette).copyWith(
-                fontSize: 15,
+                fontSize: 16,
                 height: 1.1,
                 fontWeight: FontWeight.w600,
               ),
@@ -3579,7 +3327,7 @@ class _EarningTrip extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.meta(palette).copyWith(
-                fontSize: 12,
+                fontSize: 13,
                 height: 1.1,
                 color: palette.success,
                 fontWeight: FontWeight.w600,
@@ -3608,7 +3356,7 @@ class _DemandHint extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return AlongFrost(
       solid: true,
-      radius: 99,
+              radius: 12,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Text(
         'High demand near Wuse',
@@ -3679,14 +3427,14 @@ class _TodayPillState extends State<_TodayPill> {
             ),
             child: AlongFrost(
               solid: true,
-              radius: 99,
+              radius: 12,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               child: Text(
                 'Today · ₦18,400',
                 maxLines: 1,
                 softWrap: false,
                 style: AlongType.title(palette)
-                    .copyWith(fontSize: 15, height: 1.1),
+                    .copyWith(fontSize: 16, height: 1.2),
               ),
             ),
           ),
@@ -3720,7 +3468,7 @@ class _HeatLegend extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final label = AlongType.meta(palette).copyWith(
-      fontSize: 12,
+      fontSize: 13,
       height: 1.1,
       color: palette.ink,
       fontWeight: FontWeight.w600,
@@ -3729,7 +3477,7 @@ class _HeatLegend extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: palette.surface,
-        borderRadius: BorderRadius.circular(99),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: AlongElevation.float(palette.ink),
       ),
       child: Row(
@@ -3741,7 +3489,7 @@ class _HeatLegend extends StatelessWidget {
             width: 108,
             height: 12,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(99),
+              borderRadius: BorderRadius.circular(12),
               gradient: LinearGradient(
                 colors: [
                   palette.ink.withValues(alpha: 0.06),
@@ -3804,7 +3552,7 @@ class _NigeriaPlate extends StatelessWidget {
       fontFamily: font,
       fontFamilyFallback: AlongType.fallback,
       color: Colors.white,
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.4,
       height: 1,
@@ -5072,7 +4820,7 @@ class _MapDriver extends StatelessWidget {
             maxLines: 1,
             softWrap: false,
             style: AlongType.caption(palette).copyWith(
-              fontSize: 11,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: palette.ink,
             ),
@@ -5102,18 +4850,11 @@ class _GoalRow extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: palette.accent,
-            borderRadius: BorderRadius.circular(99),
-          ),
-          child: Text(
-            '4-day streak',
-            style: AlongType.caption(
-              palette,
-            ).copyWith(color: palette.accentInk, fontWeight: FontWeight.w600),
-          ),
+        Text(
+          '4-day streak',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.label(palette),
         ),
       ],
     );

@@ -501,7 +501,7 @@ class _RuleChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: palette.recessed,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -511,7 +511,7 @@ class _RuleChip extends StatelessWidget {
           softWrap: false,
           style: AlongText.caption.copyWith(
             color: palette.ink,
-            fontSize: 12,
+            fontSize: 13,
             height: 1.1,
             fontWeight: FontWeight.w600,
           ),
@@ -589,7 +589,7 @@ class _LegendMark extends StatelessWidget {
           softWrap: false,
           style: AlongText.caption.copyWith(
             color: palette.ink,
-            fontSize: 12,
+            fontSize: 13,
             height: 1,
             fontWeight: FontWeight.w600,
           ),
@@ -998,7 +998,7 @@ class _SeatButtonState extends State<_SeatButton>
                                   softWrap: false,
                                   style: AlongText.caption.copyWith(
                                     color: ink,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     height: 1,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -1012,7 +1012,7 @@ class _SeatButtonState extends State<_SeatButton>
                                   softWrap: false,
                                   style: AlongText.caption.copyWith(
                                     color: ink,
-                                    fontSize: 10,
+                                    fontSize: 13,
                                     height: 1,
                                     fontWeight: FontWeight.w600,
                                     fontFeatures: const [

@@ -208,7 +208,7 @@ class AlongDemoMark extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: palette.surface,
-          borderRadius: BorderRadius.circular(99),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: palette.ink.withValues(alpha: 0.14),
             width: 0.5,
