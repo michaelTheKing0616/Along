@@ -332,10 +332,10 @@ class AlongWordmark extends StatelessWidget {
           DecoratedBox(
             decoration: BoxDecoration(
               color: const Color(0xFFF7F4EF),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: CustomPaint(
-              size: const Size(36, 36),
+              size: const Size(56, 56),
               painter: _MarkPainter(color: color, progress: t),
             ),
           ),
@@ -384,7 +384,7 @@ class _MarkPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final ink = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
+      ..strokeWidth = size.width * 0.062
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..color = const Color(0xFF111111);
@@ -407,7 +407,7 @@ class _MarkPainter extends CustomPainter {
     canvas.drawPath(drawn, ink);
     canvas.drawCircle(
       Offset(size.width * 0.80, size.height * 0.36),
-      2.4,
+      size.width * 0.07,
       Paint()..color = const Color(0xFFF7D117),
     );
   }

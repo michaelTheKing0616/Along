@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -16,62 +15,16 @@ import 'vehicle_art.dart';
 /// How the Abuja map is dressed.
 enum AlongCityMapMode { browse, trip, online, routeHero, search, completed }
 
-/// Warms grey land, keeps roads near white, and pulls park green down.
-const _lightMapMatrix = <double>[
-  0.92,
-  0.08,
-  0.02,
-  0,
-  12,
-  0.04,
-  0.90,
-  0.02,
-  0,
-  6,
-  0.02,
-  0.08,
-  0.74,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-];
-
-const _darkMapMatrix = <double>[
-  0.94,
-  0.05,
-  0.02,
-  0,
-  4,
-  0.03,
-  0.92,
-  0.02,
-  0,
-  2,
-  0.02,
-  0.05,
-  0.84,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-];
-
 /// Muted Abuja maps.
 ///
-/// Tiles are pre-rendered at 3× from a Protomaps basemap extract of Abuja
-/// (FCT bbox, see tool/extract_abuja_pmtiles.sh). The daily planet stops at
-/// z15; neighborhood frames are the z16 slippy grid, drawn by overzooming
-/// that z15 vector so building footprints stay sharp. Grey land, white roads,
-/// soft parks and water, few labels. The corridor uses native zoom-12 tiles,
-/// displayed at 11.6 so both ends fit without scaling a lower zoom up.
-/// Demand is a separate alpha tile, not a blob overlay.
+/// Tiles are pre-rendered at 3× from the vector styles in
+/// `tool/map/style-light.json` and `style-dark.json` (land `#E6E7EA` /
+/// `#16171A`, parks `#E4EEE4` / `#1A2620`, water `#D4E2EE` / `#1A2A36`,
+/// white or `#C9CCD2` roads). They are drawn as baked, with no color matrix.
+/// The daily planet stops at z15; neighborhood frames are the z16 slippy
+/// grid, drawn by overzooming that z15 vector so building footprints stay
+/// sharp. The corridor uses native zoom-12 tiles. Online demand is a hex
+/// contour painted in map space, not a blurred heat tile.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -182,24 +135,20 @@ class AlongCityMap extends StatelessWidget {
                 : const Color(0xFFE6E7EA),
           ),
           children: [
-            ColorFiltered(
-              colorFilter: ColorFilter.matrix(
-                dark ? _darkMapMatrix : _lightMapMatrix,
-              ),
-              child: TileLayer(
-                urlTemplate:
-                    'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
-                tileProvider: AssetTileProvider(),
-                userAgentPackageName: 'app.along.design',
-                tileDisplay: const TileDisplay.instantaneous(),
-                retinaMode: false,
-                minNativeZoom: 12,
-                maxNativeZoom: 16,
-                keepBuffer: 1,
-                panBuffer: 0,
-              ),
+            TileLayer(
+              urlTemplate:
+                  'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
+              tileProvider: AssetTileProvider(),
+              userAgentPackageName: 'app.along.design',
+              tileDisplay: const TileDisplay.instantaneous(),
+              retinaMode: false,
+              minNativeZoom: 12,
+              maxNativeZoom: 16,
+              keepBuffer: 1,
+              panBuffer: 0,
             ),
-            if (mode == AlongCityMapMode.online) _HeatWash(),
+            if (mode == AlongCityMapMode.online)
+              PolygonLayer(polygons: _demandHexes(palette.accent)),
             if (showRoute)
               Positioned.fill(
                 child: _RouteOverlay(
@@ -765,57 +714,54 @@ _RoutePoint _along(List<LatLng> route, double progress) {
   return _RoutePoint(point, heading);
 }
 
-/// Demand as a soft wash. The heat tiles recolor roads orange; this keeps
-/// the muted basemap and lets only the warm demand through.
-class _HeatWash extends StatelessWidget {
-  const _HeatWash();
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Opacity(
-        opacity: 0.88,
-        child: ImageFiltered(
-          imageFilter: ui.ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-          child: ColorFiltered(
-            colorFilter: const ColorFilter.matrix(<double>[
-              0,
-              0,
-              0,
-              0,
-              232,
-              0,
-              0,
-              0,
-              0,
-              132,
-              0,
-              0,
-              0,
-              0,
-              28,
-              0.85,
-              -0.22,
-              -0.62,
-              0,
-              -12,
-            ]),
-            child: TileLayer(
-              urlTemplate: 'assets/map/tiles/heat/{z}_{x}_{y}.png',
-              tileProvider: AssetTileProvider(),
-              userAgentPackageName: 'app.along.design',
-              tileDisplay: const TileDisplay.instantaneous(),
-              retinaMode: false,
-              minNativeZoom: 12,
-              maxNativeZoom: 16,
-              keepBuffer: 1,
-              panBuffer: 0,
-            ),
-          ),
+/// Crisp hex contour around Wuse. Axial distance steps the fill and the
+/// stroke so the hot core reads as a contour, not a blur.
+List<Polygon> _demandHexes(Color accent) {
+  const hotspot = LatLng(9.0646, 7.4662);
+  const radius = 86.0;
+  const mPerLat = 111320.0;
+  final mPerLon = mPerLat * math.cos(hotspot.latitude * math.pi / 180);
+  final polygons = <Polygon>[];
+  for (var r = -3; r <= 3; r++) {
+    for (var q = -4; q <= 4; q++) {
+      final dist = math.sqrt(q * q + r * r + q * r);
+      if (dist > 3.05) continue;
+      final demand = (1 - dist / 3.15).clamp(0.0, 1.0);
+      final x = radius * math.sqrt(3) * (q + r / 2);
+      final y = radius * 1.5 * r;
+      final center = LatLng(
+        hotspot.latitude + y / mPerLat,
+        hotspot.longitude + x / mPerLon,
+      );
+      final hot = demand > 0.62;
+      polygons.add(
+        Polygon(
+          points: _hexRing(center, radius * 0.94, mPerLat, mPerLon),
+          color: accent.withValues(alpha: hot ? 0.55 : 0.16 + demand * 0.22),
+          borderColor: accent.withValues(alpha: hot ? 0.95 : 0.72),
+          borderStrokeWidth: hot ? 2 : 1.25,
         ),
-      ),
-    );
+      );
+    }
   }
+  return polygons;
+}
+
+List<LatLng> _hexRing(
+  LatLng center,
+  double radius,
+  double mPerLat,
+  double mPerLon,
+) {
+  return [
+    for (var i = 0; i < 6; i++)
+      LatLng(
+        center.latitude +
+            radius * math.cos(math.pi / 6 + i * math.pi / 3) / mPerLat,
+        center.longitude +
+            radius * math.sin(math.pi / 6 + i * math.pi / 3) / mPerLon,
+      ),
+  ];
 }
 
 class _RouteOverlay extends StatefulWidget {

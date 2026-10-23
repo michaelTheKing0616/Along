@@ -1087,6 +1087,39 @@ class _CornerBadge extends StatelessWidget {
   }
 }
 
+/// Small top-down seat. The cabin painter, without a hit target.
+class AlongSeatGlyph extends StatelessWidget {
+  const AlongSeatGlyph({super.key, required this.status, this.width = 36});
+
+  /// `yours`, `occupied`, `free`, `held`, or `driver`.
+  final String status;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final driver = status == 'driver';
+    final seat = SeatMapSeat(
+      id: status,
+      label: '',
+      role: driver ? 'driver' : 'passenger',
+      status: driver ? 'occupied' : status,
+      statusWord: status,
+    );
+    return SizedBox(
+      width: width,
+      height: width * 1.1,
+      child: CustomPaint(
+        painter: _CarSeatPainter(
+          seat: seat,
+          palette: palette,
+          held: status == 'held' ? 0.66 : 0,
+        ),
+      ),
+    );
+  }
+}
+
 /// Flat top-down seat. Width to height is about 1:1.1.
 class _CarSeatPainter extends CustomPainter {
   _CarSeatPainter({

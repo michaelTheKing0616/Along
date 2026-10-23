@@ -65,9 +65,9 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     dangerOn: Color(0xFFFFFFFF),
     success: Color(0xFF157A3A),
     mapLand: Color(0xFFE6E7EA),
-    mapWater: Color(0xFFD5E3EE),
-    mapPark: Color(0xFFE3EBE4),
-    mapRoad: Color(0xFF8B9098),
+    mapWater: Color(0xFFD4E2EE),
+    mapPark: Color(0xFFE4EEE4),
+    mapRoad: Color(0xFFFFFFFF),
     fontFamily: 'Geist',
   );
 
@@ -86,9 +86,9 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     dangerOn: Color(0xFF111111),
     success: Color(0xFF7DCEA0),
     mapLand: Color(0xFF16171A),
-    mapWater: Color(0xFF1A2C36),
-    mapPark: Color(0xFF1A2820),
-    mapRoad: Color(0xFF5C6168),
+    mapWater: Color(0xFF1A2A36),
+    mapPark: Color(0xFF1A2620),
+    mapRoad: Color(0xFFC9CCD2),
     fontFamily: 'Geist',
   );
 
