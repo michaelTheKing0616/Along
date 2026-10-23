@@ -229,98 +229,118 @@ class AlongFlowSeats extends StatelessWidget {
           Text('Choose a seat', style: AlongType.display(palette)),
           const SizedBox(height: 4),
           Text('Sedan · ABC-123-XY', style: AlongType.bodyMuted(palette)),
-          const SizedBox(height: 8),
-          const Expanded(
-            child: SeatMap(
-              body: 'cabin',
-              rows: [
-                SeatMapRowView(
-                  id: 'front',
-                  seats: [
-                    SeatMapSeat(
-                      id: 'fm',
-                      label: 'FM',
-                      role: 'passenger',
-                      status: 'yours',
-                      statusWord: 'Yours',
-                      price: '₦1,200',
-                    ),
-                    SeatMapSeat(
-                      id: 'fr',
-                      label: 'FR',
-                      role: 'passenger',
-                      status: 'held',
-                      statusWord: 'Held',
-                      price: '₦900',
-                    ),
-                    SeatMapSeat(
-                      id: 'drv',
-                      label: 'Driver',
-                      role: 'driver',
-                      status: 'occupied',
-                      statusWord: 'Driver',
-                    ),
-                  ],
-                ),
-                SeatMapRowView(
-                  id: 'back',
-                  ruleTitle: 'Window stays open',
-                  seats: [
-                    SeatMapSeat(
-                      id: 'b1',
-                      label: 'BL',
-                      role: 'passenger',
-                      status: 'free',
-                      statusWord: 'Free',
-                      price: '₦700',
-                    ),
-                    SeatMapSeat(
-                      id: 'b2',
-                      label: 'ML',
-                      role: 'passenger',
-                      status: 'occupied',
-                      statusWord: 'Taken',
-                    ),
-                    SeatMapSeat(
-                      id: 'b3',
-                      label: 'MR',
-                      role: 'passenger',
-                      status: 'free',
-                      statusWord: 'Free',
-                      price: '₦700',
-                    ),
-                    SeatMapSeat(
-                      id: 'b4',
-                      label: 'BR',
-                      role: 'passenger',
-                      status: 'held',
-                      statusWord: 'Held',
-                      price: '₦800',
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          const SizedBox(height: 16),
+          const SeatMap(
+            body: 'cabin',
+            rows: [
+              SeatMapRowView(
+                id: 'front',
+                seats: [
+                  SeatMapSeat(
+                    id: 'fm',
+                    label: 'FM',
+                    role: 'passenger',
+                    status: 'yours',
+                    statusWord: 'Yours',
+                    price: '₦1,200',
+                  ),
+                  SeatMapSeat(
+                    id: 'fr',
+                    label: 'FR',
+                    role: 'passenger',
+                    status: 'held',
+                    statusWord: 'Held',
+                    price: '₦900',
+                  ),
+                  SeatMapSeat(
+                    id: 'drv',
+                    label: 'Driver',
+                    role: 'driver',
+                    status: 'occupied',
+                    statusWord: 'Driver',
+                  ),
+                ],
+              ),
+              SeatMapRowView(
+                id: 'back',
+                seats: [
+                  SeatMapSeat(
+                    id: 'b1',
+                    label: 'BL',
+                    role: 'passenger',
+                    status: 'free',
+                    statusWord: 'Free',
+                    price: '₦700',
+                  ),
+                  SeatMapSeat(
+                    id: 'b2',
+                    label: 'ML',
+                    role: 'passenger',
+                    status: 'occupied',
+                    statusWord: 'Taken',
+                  ),
+                  SeatMapSeat(
+                    id: 'b3',
+                    label: 'MR',
+                    role: 'passenger',
+                    status: 'free',
+                    statusWord: 'Free',
+                    price: '₦700',
+                  ),
+                  SeatMapSeat(
+                    id: 'b4',
+                    label: 'BR',
+                    role: 'passenger',
+                    status: 'held',
+                    statusWord: 'Held',
+                    price: '₦800',
+                  ),
+                ],
+              ),
+            ],
           ),
-          // Card shadow offsets 8px and blurs 24. Without this gap the
-          // fold title sits in that shadow and reads as cut off.
-          const SizedBox(height: 20),
-          const _Fold(
-            label: 'Driver and key',
-            child: Column(
-              children: [
-                _Legend(),
-                SizedBox(height: 8),
-                _PersonCard(
-                  name: 'Chinedu',
-                  detail: 'Hiace · ABC-123-XY',
-                  trailing: '₦1,200',
-                ),
-              ],
-            ),
-          ),
+          const Spacer(),
+          const _SelectedSeat(),
         ],
       ),
+    );
+  }
+}
+
+class _SelectedSeat extends StatelessWidget {
+  const _SelectedSeat();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Front middle', style: AlongType.title(palette)),
+        const SizedBox(height: 2),
+        Text(
+          '₦1,200',
+          style: AlongType.body(palette)
+              .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+        ),
+        const SizedBox(height: 8),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: palette.recessed,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            child: Text(
+              'Window stays open',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette)
+                  .copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -2497,60 +2517,6 @@ class _Promo extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _Legend extends StatelessWidget {
-  const _Legend();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Wrap(
-      spacing: 12,
-      runSpacing: 8,
-      children: [
-        _LegendItem(label: 'Free', status: 'free'),
-        _LegendItem(label: 'Taken', status: 'occupied'),
-        _LegendItem(label: 'Held', status: 'held'),
-        _LegendItem(label: 'Yours', status: 'yours'),
-      ],
-    );
-  }
-}
-
-class _LegendItem extends StatelessWidget {
-  const _LegendItem({required this.label, required this.status});
-
-  final String label;
-  final String status;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    final color = switch (status) {
-      'occupied' => palette.ink,
-      'held' => palette.surface,
-      'yours' => palette.accent,
-      _ => palette.success.withValues(alpha: 0.2),
-    };
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: status == 'held' ? palette.accent : palette.ink,
-            ),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(label, style: AlongType.caption(palette)),
-      ],
     );
   }
 }
