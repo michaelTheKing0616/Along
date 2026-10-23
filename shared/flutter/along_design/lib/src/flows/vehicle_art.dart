@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
+import '../elevation.dart';
+import '../palette.dart';
+
 /// Shared vehicle set. Rows and onboarding use the project-owned 3/4
 /// photographs. Seats and map markers use the matching top-down renders.
 enum AlongVehicleKind { keke, okada, car, danfo, bus }
@@ -19,17 +23,38 @@ class AlongVehicleMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final h = height ?? width * 9 / 16;
     return SizedBox(
       width: width,
-      height: height ?? width * 9 / 16,
-      child: Image.asset(
-        'assets/vehicles/${kind.name}_three.png',
-        package: 'along_design',
-        fit: BoxFit.contain,
+      height: h,
+      child: Stack(
         alignment: Alignment.bottomCenter,
-        filterQuality: FilterQuality.medium,
-        excludeFromSemantics: true,
-        gaplessPlayback: true,
+        children: [
+          Positioned(
+            bottom: 1,
+            child: Container(
+              width: width * 0.62,
+              height: 8,
+              decoration: BoxDecoration(
+                color: palette.ink.withValues(alpha: 0.001),
+                borderRadius: BorderRadius.circular(99),
+                boxShadow: AlongElevation.rest(palette.ink),
+              ),
+            ),
+          ),
+          AlongGrade(
+            child: Image.asset(
+              'assets/vehicles/${kind.name}_three.png',
+              package: 'along_design',
+              fit: BoxFit.contain,
+              alignment: Alignment.bottomCenter,
+              filterQuality: FilterQuality.medium,
+              excludeFromSemantics: true,
+              gaplessPlayback: true,
+            ),
+          ),
+        ],
       ),
     );
   }

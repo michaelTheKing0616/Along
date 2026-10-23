@@ -1,6 +1,7 @@
 export 'src/branding/branding_overrides.dart';
 export 'src/brand_assets.dart';
 export 'src/components/components.dart';
+export 'src/craft.dart';
 export 'src/elevation.dart';
 export 'src/icons.dart';
 export 'src/motion.dart';

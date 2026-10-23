@@ -10,6 +10,7 @@ environment:
 dependencies:
   along_core:
     path: ../along_core
+  figma_squircle: ^0.6.3
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.2

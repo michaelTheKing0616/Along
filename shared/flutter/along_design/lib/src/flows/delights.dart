@@ -8,6 +8,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../craft.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
@@ -54,7 +55,7 @@ extension AlongDayPhaseCopy on AlongDayPhase {
 
 String alongNaira(int value) {
   final raw = value.abs().toString();
-  final buf = StringBuffer(value < 0 ? '-₦' : '₦');
+  final buf = StringBuffer(value < 0 ? '−₦' : '₦');
   for (var i = 0; i < raw.length; i++) {
     if (i > 0 && (raw.length - i) % 3 == 0) buf.write(',');
     buf.write(raw[i]);
@@ -94,7 +95,10 @@ class AlongFrost extends StatelessWidget {
       ),
     );
     if (circle) return ClipOval(child: blur);
-    return ClipRRect(borderRadius: BorderRadius.circular(radius), child: blur);
+    return ClipPath(
+      clipper: ShapeBorderClipper(shape: AlongCraft.border(radius)),
+      child: blur,
+    );
   }
 }
 
@@ -172,7 +176,7 @@ class AlongSuggestionChips extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     height: 1.1,
                     color: palette.ink,
                   ),
@@ -361,7 +365,7 @@ class AlongWordmark extends StatelessWidget {
                 softWrap: false,
                 style: AlongType.caption(palette).copyWith(
                   color: color.withValues(alpha: 0.82),
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 2.2,
                   height: 1.1,
                 ),
@@ -533,21 +537,11 @@ class AlongOdometerState extends State<AlongOdometer>
   @override
   Widget build(BuildContext context) {
     if (_roll.value >= 1 || !AlongMotionPolicy.play(context)) {
-      return Text(
-        alongNaira(_shown),
-        maxLines: 1,
-        softWrap: false,
-        style: widget.style,
-      );
+      return AlongMoney(value: _shown, style: widget.style);
     }
     final t = Curves.easeOutCubic.transform(_roll.value);
     final current = (_from + (widget.value - _from) * t).round();
-    return Text(
-      alongNaira(current),
-      maxLines: 1,
-      softWrap: false,
-      style: widget.style,
-    );
+    return AlongMoney(value: current, style: widget.style);
   }
 }
 
@@ -560,7 +554,7 @@ class AlongFareSplit extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final caption = AlongType.caption(palette).copyWith(
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       height: 1.1,
       fontFeatures: const [FontFeature.tabularFigures()],
     );
@@ -777,7 +771,7 @@ class AlongProgressRing extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     height: 1,
                     color: palette.ink,
                   ),

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 /// Semantic colour roles for Along.
 ///
-/// Light is near-white surfaces and near-black ink. Dark is a deep neutral,
-/// not a brown dusk. Yellow is the only accent, used for the live thing
-/// (you, the seat, the selected ride), never as a wash behind a card.
+/// Light is warm paper and warm ink, never pure grey or pure black.
+/// Dark climbs in surface steps from the same hue. It is not an inversion.
+/// Yellow is the only accent, under a tenth of any screen.
 /// [jk-colors] [taste]
 @immutable
 class AlongPalette extends ThemeExtension<AlongPalette> {
@@ -52,18 +52,18 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
 
   static const light = AlongPalette(
     brightness: Brightness.light,
-    bg: Color(0xFFF4F5F7),
-    surface: Color(0xFFFFFFFF),
-    recessed: Color(0xFFEEF0F3),
-    ink: Color(0xFF111111),
-    onInk: Color(0xFFFFFFFF),
-    muted: Color(0xFF5C5C66),
-    line: Color(0xFF6E6E76),
+    bg: Color(0xFFF6F4F1),
+    surface: Color(0xFFFBF9F6),
+    recessed: Color(0xFFEFEBE6),
+    ink: Color(0xFF141210),
+    onInk: Color(0xFFFBF9F6),
+    muted: Color(0xFF6A635C),
+    line: Color(0xFF6E675F),
     accent: Color(0xFFF7D117),
-    accentInk: Color(0xFF111111),
-    danger: Color(0xFFB91C1C),
-    dangerOn: Color(0xFFFFFFFF),
-    success: Color(0xFF157A3A),
+    accentInk: Color(0xFF141210),
+    danger: Color(0xFFB23A2F),
+    dangerOn: Color(0xFFFBF9F6),
+    success: Color(0xFF1C6B3C),
     mapLand: Color(0xFFE6E7EA),
     mapWater: Color(0xFFD4E2EE),
     mapPark: Color(0xFFE4EEE4),
@@ -73,18 +73,18 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
 
   static const dark = AlongPalette(
     brightness: Brightness.dark,
-    bg: Color(0xFF0E0E10),
-    surface: Color(0xFF1C1C1F),
-    recessed: Color(0xFF121214),
-    ink: Color(0xFFF5F5F7),
-    onInk: Color(0xFF111111),
-    muted: Color(0xFFA8A8B3),
-    line: Color(0xFF8E8E98),
+    bg: Color(0xFF100F0D),
+    surface: Color(0xFF26231F),
+    recessed: Color(0xFF1A1815),
+    ink: Color(0xFFF3EEE8),
+    onInk: Color(0xFF100F0D),
+    muted: Color(0xFFB7AFA6),
+    line: Color(0xFF9A9188),
     accent: Color(0xFFF7D117),
-    accentInk: Color(0xFF111111),
-    danger: Color(0xFFF87171),
-    dangerOn: Color(0xFF111111),
-    success: Color(0xFF7DCEA0),
+    accentInk: Color(0xFF141210),
+    danger: Color(0xFFF0A8A0),
+    dangerOn: Color(0xFF100F0D),
+    success: Color(0xFF8FCBAA),
     mapLand: Color(0xFF16171A),
     mapWater: Color(0xFF1A2A36),
     mapPark: Color(0xFF1A2620),

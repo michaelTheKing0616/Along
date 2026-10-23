@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
+import '../elevation.dart';
 import '../icons.dart';
 import '../palette.dart';
 import '../type.dart';
@@ -39,14 +41,11 @@ class AlongDriverPortrait extends StatelessWidget {
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: palette.ink.withValues(alpha: 0.12)),
+              color: palette.surface,
+              boxShadow: AlongElevation.float(palette.ink),
             ),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: palette.surface, width: 2),
-              ),
-              child: ClipOval(
+            child: ClipOval(
+              child: AlongGrade(
                 child: Image.asset(
                   asset,
                   package: 'along_design',
@@ -123,7 +122,7 @@ class AlongMonogram extends StatelessWidget {
           fontFamilyFallback: AlongType.fallback,
           fontSize: size * 0.34,
           height: 1,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           color: const Color(0xFFF7F4EF),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../components/along_button.dart';
+import '../craft.dart';
 import '../components/seat_map.dart';
 import '../elevation.dart';
 import '../icons.dart';
@@ -206,11 +207,7 @@ class _HomeSheetBody extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         DecoratedBox(
-          decoration: BoxDecoration(
-            color: palette.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: AlongElevation.hairline(palette.ink),
-          ),
+          decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
           child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
             child: Column(
@@ -252,11 +249,7 @@ class _RoutePromo extends StatelessWidget {
     return Container(
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: Row(
         children: [
           const AlongVehicleMark(
@@ -275,7 +268,7 @@ class _RoutePromo extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -300,11 +293,7 @@ class _ServiceSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: const Padding(
         padding: EdgeInsets.fromLTRB(4, 8, 4, 8),
         child: _ServiceRow(),
@@ -328,7 +317,7 @@ class _ServiceRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final label = AlongType.caption(palette)
-        .copyWith(fontWeight: FontWeight.w700, color: palette.ink, height: 1.1);
+        .copyWith(fontWeight: FontWeight.w600, color: palette.ink, height: 1.1);
     return Row(
       children: [
         for (final item in _items)
@@ -564,10 +553,7 @@ class _SeatDriver extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         DecoratedBox(
-          decoration: BoxDecoration(
-            color: palette.surface,
-            borderRadius: BorderRadius.circular(16),
-          ),
+          decoration: AlongCraft.surface(palette, radius: 16),
           child: const SizedBox(
             width: 56,
             height: 56,
@@ -595,10 +581,7 @@ class _SeatSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14, vertical: vertical),
         child: child,
@@ -614,11 +597,7 @@ class _SeatPerks extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: LayoutBuilder(
         builder: (context, constraints) {
           // A note only when the card is tall enough to close the page gap.
@@ -634,7 +613,7 @@ class _SeatPerks extends StatelessWidget {
                   softWrap: false,
                   style: AlongType.caption(
                     palette,
-                  ).copyWith(color: palette.ink, fontWeight: FontWeight.w700),
+                  ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 6),
                 const Row(
@@ -867,7 +846,7 @@ class _LiveSheet extends StatelessWidget {
                           softWrap: false,
                           style: AlongType.caption(palette).copyWith(
                             color: palette.ink,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                             height: 1,
                           ),
                         ),
@@ -936,7 +915,7 @@ class _PlateChip extends StatelessWidget {
         softWrap: false,
         style: AlongType.caption(palette).copyWith(
           color: palette.ink,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           height: 1,
           fontFeatures: const [FontFeature.tabularFigures()],
         ),
@@ -1016,7 +995,7 @@ class AlongFlowSos extends StatelessWidget {
             maxLines: 1,
             softWrap: false,
             style: AlongType.caption(palette)
-                .copyWith(color: palette.ink, fontWeight: FontWeight.w700),
+                .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           const _SosAvatars(),
@@ -1101,10 +1080,10 @@ class AlongFlowPlate extends StatelessWidget {
                   ),
                   const Spacer(),
                   DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: palette.surface,
-                      borderRadius: BorderRadius.circular(20),
-                      border: AlongElevation.hairline(palette.ink),
+                    decoration: AlongCraft.surface(
+                      palette,
+                      radius: 20,
+                      hairline: true,
                     ),
                     child: const Padding(
                       padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -1249,10 +1228,10 @@ class AlongFlowOffer extends StatelessWidget {
             right: 12,
             bottom: 12,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: AlongElevation.sheet(palette.ink),
+              decoration: AlongCraft.surface(
+                palette,
+                radius: 20,
+                shadow: AlongElevation.sheet(palette.ink),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -1302,7 +1281,7 @@ class AlongFlowOffer extends StatelessWidget {
                               softWrap: false,
                               style: AlongType.caption(palette).copyWith(
                                 color: palette.ink,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -1344,28 +1323,33 @@ class AlongFlowEarnings extends StatelessWidget {
               children: [
                 SizedBox(
                   height: constraints.maxHeight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
-                      Text('Today', style: AlongType.caption(palette)),
-                      AlongOdometer(
-                        value: 48200,
-                        style: AlongType.display(palette),
+                      const AlongNoise(opacity: 0.025),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Today', style: AlongType.caption(palette)),
+                          AlongOdometer(
+                            value: 48200,
+                            style: AlongType.display(palette),
+                          ),
+                          Text(
+                            '11 trips · goal ₦60,000',
+                            maxLines: 1,
+                            softWrap: false,
+                            style: AlongType.bodyMuted(palette),
+                          ),
+                          const SizedBox(height: 8),
+                          const _WeekCard(),
+                          const SizedBox(height: 8),
+                          const _EarnBreakdown(),
+                          const SizedBox(height: 8),
+                          const _PassUpsell(),
+                          const SizedBox(height: 8),
+                          const Expanded(child: _EarnList()),
+                        ],
                       ),
-                      Text(
-                        '11 trips · goal ₦60,000',
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.bodyMuted(palette),
-                      ),
-                      const SizedBox(height: 8),
-                      const _WeekCard(),
-                      const SizedBox(height: 8),
-                      const _EarnBreakdown(),
-                      const SizedBox(height: 8),
-                      const _PassUpsell(),
-                      const SizedBox(height: 8),
-                      const Expanded(child: _EarnList()),
                     ],
                   ),
                 ),
@@ -1894,7 +1878,7 @@ class _TipSegments extends StatelessWidget {
                     softWrap: false,
                     style: AlongType.caption(palette).copyWith(
                       color: palette.ink,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       height: 1,
                     ),
                   ),
@@ -1989,14 +1973,17 @@ class _Poster extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/photos/onboarding-fleet.jpg',
-            package: 'along_design',
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-            filterQuality: FilterQuality.high,
-            excludeFromSemantics: true,
+          AlongGrade(
+            child: Image.asset(
+              'assets/photos/onboarding-fleet.jpg',
+              package: 'along_design',
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              filterQuality: FilterQuality.high,
+              excludeFromSemantics: true,
+            ),
           ),
+          const AlongNoise(opacity: 0.03),
           const Positioned.fill(child: _PosterRoute()),
           const DecoratedBox(
             decoration: BoxDecoration(
@@ -2069,7 +2056,7 @@ class _StepDots extends StatelessWidget {
             decoration: BoxDecoration(
               color: i == index
                   ? const Color(0xFFF7D117)
-                  : const Color(0x66FFFFFF),
+                  : const Color(0xE6FFFFFF),
               borderRadius: BorderRadius.circular(99),
             ),
           ),
@@ -2154,9 +2141,17 @@ class _PosterRoutePainter extends CustomPainter {
       drawn,
       Paint()
         ..style = PaintingStyle.stroke
+        ..strokeWidth = 7
+        ..strokeCap = StrokeCap.round
+        ..color = const Color(0x660E0E10),
+    );
+    canvas.drawPath(
+      drawn,
+      Paint()
+        ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round
-        ..color = const Color(0xCCFFFFFF),
+        ..color = const Color(0xF2FFFFFF),
     );
     if (progress > 0.98) {
       canvas.drawCircle(
@@ -2240,7 +2235,7 @@ class _HoldRingState extends State<_HoldRing>
                       style: AlongType.body(palette).copyWith(
                         color: palette.onInk,
                         height: 1,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -2317,10 +2312,10 @@ class _PersonCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AlongElevation.card(palette.ink),
+      decoration: AlongCraft.surface(
+        palette,
+        radius: 18,
+        shadow: AlongElevation.card(palette.ink),
       ),
       child: Row(
         children: [
@@ -2333,7 +2328,7 @@ class _PersonCard extends StatelessWidget {
                 Text(
                   name,
                   style: AlongType.title(palette)
-                      .copyWith(fontWeight: FontWeight.w700),
+                      .copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(detail, style: AlongType.caption(palette)),
               ],
@@ -2379,7 +2374,7 @@ class _Face extends StatelessWidget {
       ),
       child: Text(
         name.substring(0, 1),
-        style: AlongType.title(palette).copyWith(fontWeight: FontWeight.w700),
+        style: AlongType.title(palette).copyWith(fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -2637,7 +2632,7 @@ class _RideBadge extends StatelessWidget {
         style: AlongType.caption(palette).copyWith(
           fontSize: 10,
           height: 1.05,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           color: palette.accentInk,
         ),
       ),
@@ -2698,11 +2693,7 @@ class _RideLine extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: palette.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: AlongElevation.hairline(palette.ink),
-        ),
+        decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
         child: SizedBox(
           height: 48,
           child: Padding(
@@ -2721,7 +2712,7 @@ class _RideLine extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         style: AlongType.body(palette)
-                            .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                            .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                       ),
                       Text(
                         badge == null ? '$eta · $seats' : '$badge · $eta',
@@ -2739,7 +2730,7 @@ class _RideLine extends StatelessWidget {
                     maxLines: 1,
                     softWrap: false,
                     style: AlongType.body(palette)
-                        .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                   ),
                 ),
               ],
@@ -2799,7 +2790,7 @@ class _RideRow extends StatelessWidget {
                           softWrap: false,
                           style: AlongType.body(
                             palette,
-                          ).copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                          ).copyWith(fontWeight: FontWeight.w600, height: 1.1),
                         ),
                       ),
                       if (badge != null) ...[
@@ -2837,7 +2828,7 @@ class _RideRow extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
             ),
           ],
         ),
@@ -2907,7 +2898,7 @@ class _MapChip extends StatelessWidget {
         child: Text(
           label,
           style: AlongType.caption(palette).copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             color: palette.ink,
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
@@ -2924,7 +2915,7 @@ class _OfferRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final place = AlongType.body(palette)
-        .copyWith(fontWeight: FontWeight.w700, height: 1.1);
+        .copyWith(fontWeight: FontWeight.w600, height: 1.1);
     return SizedBox(
       height: 44,
       child: Row(
@@ -3107,7 +3098,7 @@ class _EarnCell extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
             ),
             Text(
               label,
@@ -3130,11 +3121,7 @@ class _PassUpsell extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: Row(
         children: [
           AlongIcon(AlongIcons.receipt, size: 20, color: palette.ink),
@@ -3148,7 +3135,7 @@ class _PassUpsell extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                 ),
                 Text(
                   'Keep ₦200 more on each trip',
@@ -3172,11 +3159,7 @@ class _EarnList extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: const [
@@ -3199,11 +3182,7 @@ class _WeekCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: const Padding(
         padding: EdgeInsets.fromLTRB(8, 8, 10, 4),
         child: SizedBox(height: 132, child: _WeekBars()),
@@ -3291,7 +3270,7 @@ class _WeekBars extends StatelessWidget {
   }
 
   Widget _grid(AlongPalette palette) {
-    return Container(height: 1, color: palette.ink.withValues(alpha: 0.08));
+    return Container(height: 0.5, color: palette.ink.withValues(alpha: 0.10));
   }
 }
 
@@ -3330,7 +3309,7 @@ class _WeekBar extends StatelessWidget {
                             maxLines: 1,
                             softWrap: false,
                             style: AlongType.caption(palette).copyWith(
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                               color: palette.onInk,
                               height: 1,
                               fontSize: 10,
@@ -3365,7 +3344,7 @@ class _WeekBar extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.caption(palette).copyWith(
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 color: selected ? palette.ink : palette.muted,
               ),
             ),
@@ -3423,7 +3402,7 @@ class _EarningTrip extends StatelessWidget {
                 fontSize: 12,
                 height: 1.1,
                 color: palette.success,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -3638,12 +3617,14 @@ class _PlateFrame extends StatelessWidget {
               top: imageTop,
               width: imageW,
               height: imageH,
-              child: Image.asset(
-                'assets/photos/plate-abuja.jpg',
-                package: 'along_design',
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-                excludeFromSemantics: true,
+              child: AlongGrade(
+                child: Image.asset(
+                  'assets/photos/plate-abuja.jpg',
+                  package: 'along_design',
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                  excludeFromSemantics: true,
+                ),
               ),
             ),
             Positioned.fill(child: _Viewfinder(hole: frame)),
@@ -3851,7 +3832,7 @@ class _PlateMatch extends StatelessWidget {
               softWrap: false,
               style: AlongType.body(palette).copyWith(
                 color: palette.success,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 height: 1.1,
               ),
             ),
@@ -3987,7 +3968,7 @@ class _AvatarStack extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
             ),
           ),
         ],
@@ -4080,6 +4061,7 @@ class _BalanceCard extends StatelessWidget {
       child: Stack(
         children: [
           const Positioned.fill(child: CustomPaint(painter: _CardNoise())),
+          const Positioned.fill(child: AlongNoise(opacity: 0.03)),
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: _BalanceFace(),
@@ -4117,7 +4099,7 @@ class _BalanceFace extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.caption(palette)
-                  .copyWith(color: paper, fontWeight: FontWeight.w700),
+                  .copyWith(color: paper, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -4215,10 +4197,10 @@ class _IconTile extends StatelessWidget {
       child: Container(
         height: 72,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: palette.surface,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: AlongElevation.card(palette.ink),
+        decoration: AlongCraft.surface(
+          palette,
+          radius: 16,
+          shadow: AlongElevation.card(palette.ink),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -4230,7 +4212,7 @@ class _IconTile extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.caption(palette)
-                  .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
+                  .copyWith(fontWeight: FontWeight.w600, color: palette.ink),
             ),
           ],
         ),
@@ -4246,11 +4228,7 @@ class _ActivityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
         children: const [
@@ -4319,7 +4297,7 @@ class _TxnGroup extends StatelessWidget {
             maxLines: 1,
             softWrap: false,
             style: AlongType.caption(palette)
-                .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
+                .copyWith(fontWeight: FontWeight.w600, color: palette.ink),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -4429,11 +4407,7 @@ class _DayStat extends StatelessWidget {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          color: palette.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: AlongElevation.hairline(palette.ink),
-        ),
+        decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4480,11 +4454,7 @@ class _DayBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-      ),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: const Padding(
         padding: EdgeInsets.fromLTRB(12, 4, 12, 8),
         child: Column(
@@ -4573,7 +4543,7 @@ class _DayBand extends StatelessWidget {
             maxLines: 1,
             softWrap: false,
             style: AlongType.caption(palette)
-                .copyWith(color: palette.ink, fontWeight: FontWeight.w700),
+                .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
           ),
         ),
         Stack(
@@ -4625,7 +4595,7 @@ class _DayStop extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final route = AlongType.caption(palette)
-        .copyWith(color: palette.ink, fontWeight: FontWeight.w700, height: 1.1);
+        .copyWith(color: palette.ink, fontWeight: FontWeight.w600, height: 1.1);
     return SizedBox(
       height: 56,
       child: Row(
@@ -4657,7 +4627,7 @@ class _DayStop extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     height: 1.1,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
@@ -4759,7 +4729,7 @@ class _BidRow extends StatelessWidget {
                           softWrap: false,
                           style: AlongType.body(
                             palette,
-                          ).copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                          ).copyWith(fontWeight: FontWeight.w600, height: 1.1),
                         ),
                         Text(
                           '${bid.rating} · ${bid.eta}',
@@ -4777,7 +4747,7 @@ class _BidRow extends StatelessWidget {
                     maxLines: 1,
                     softWrap: false,
                     style: AlongType.body(palette)
-                        .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                   ),
                 ],
               ),
@@ -4870,7 +4840,7 @@ class _MapDriver extends StatelessWidget {
             softWrap: false,
             style: AlongType.caption(palette).copyWith(
               fontSize: 11,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               color: palette.ink,
             ),
           ),
@@ -4909,7 +4879,7 @@ class _GoalRow extends StatelessWidget {
             '4-day streak',
             style: AlongType.caption(
               palette,
-            ).copyWith(color: palette.accentInk, fontWeight: FontWeight.w700),
+            ).copyWith(color: palette.accentInk, fontWeight: FontWeight.w600),
           ),
         ),
       ],

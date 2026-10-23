@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../branding/branding_overrides.dart';
+import '../craft.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../tokens.g.dart';
@@ -62,27 +63,40 @@ class AlongButton extends StatelessWidget {
             ),
           );
 
-    final button = Material(
-      color: style.backgroundColor,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        side: style.borderSide,
+    final shape = AlongCraft.border(
+      AlongRadius.md.x,
+      side: style.borderSide,
+    );
+    final yellow = variant == AlongButtonVariant.yellow;
+    final button = DecoratedBox(
+      decoration: ShapeDecoration(
+        color: yellow ? null : style.backgroundColor,
+        gradient: yellow ? AlongCraft.cta(style.backgroundColor) : null,
+        shape: shape,
       ),
-      child: InkWell(
-        onTap: _isDisabled || _isLoading
-            ? null
-            : () {
-                AlongHaptics.confirm(context);
-                onPressed?.call();
-              },
-        splashFactory: NoSplash.splashFactory,
-        highlightColor: Colors.transparent,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        child: SizedBox(
-          height: _height,
-          width: fullWidth ? double.infinity : null,
-          child: Center(child: child),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: _isDisabled || _isLoading
+              ? null
+              : () {
+                  AlongHaptics.confirm(context);
+                  onPressed?.call();
+                },
+          customBorder: shape,
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
+          child: SizedBox(
+            height: _height,
+            width: fullWidth ? double.infinity : null,
+            child: Stack(
+              children: [
+                Center(child: child),
+                if (variant == AlongButtonVariant.primary || yellow)
+                  const AlongSheen(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -135,7 +149,10 @@ class AlongButton extends StatelessWidget {
       AlongButtonVariant.secondary => _ButtonStyle(
         backgroundColor: palette.surface,
         foregroundColor: palette.ink,
-        borderSide: BorderSide(color: palette.ink),
+        borderSide: BorderSide(
+          color: palette.ink.withValues(alpha: 0.28),
+          width: 0.5,
+        ),
       ),
       AlongButtonVariant.tertiary => _ButtonStyle(
         backgroundColor: Colors.transparent,

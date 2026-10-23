@@ -198,7 +198,8 @@ void main() {
     await tester.tap(find.text('roll'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 700));
-    expect(find.text('₦1,200'), findsOneWidget);
+    expect(find.text('₦'), findsWidgets);
+    expect(find.text('1,200'), findsOneWidget);
   });
 
   testWidgets('splash mark finishes into the handoff', (tester) async {

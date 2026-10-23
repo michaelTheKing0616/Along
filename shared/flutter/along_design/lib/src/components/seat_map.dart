@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:along_design/src/craft.dart';
 import 'package:along_design/src/elevation.dart';
 import 'package:along_design/src/flows/driver_portrait.dart';
 import 'package:along_design/src/icons.dart';
@@ -397,7 +398,7 @@ class _CabinOutlinePainter extends CustomPainter {
       path,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
+        ..strokeWidth = 0.5
         ..color = line,
     );
     _doorSeams(canvas, size, line);
@@ -931,7 +932,7 @@ class _SeatButtonState extends State<_SeatButton>
                                     color: ink,
                                     fontSize: 12,
                                     height: 1,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -1188,25 +1189,33 @@ class _CarSeatPainter extends CustomPainter {
     final headW = seatW * 0.46;
     final backH = seatH * 0.16;
     final backW = seatW * 0.74;
-    final cushion = RRect.fromRectAndRadius(
-      Rect.fromLTWH(left, top + seatH * 0.24, seatW, seatH * 0.76),
-      Radius.circular(seatW * 0.22),
+    final cushionRect = Rect.fromLTWH(
+      left,
+      top + seatH * 0.24,
+      seatW,
+      seatH * 0.76,
     );
-    canvas.drawRRect(cushion, Paint()..color = fill);
+    final cushion = AlongCraft.path(cushionRect, seatW * 0.32);
+    canvas.drawPath(cushion, Paint()..color = fill);
     canvas.save();
-    canvas.clipRRect(cushion);
+    canvas.clipPath(cushion);
     canvas.drawRect(
-      Rect.fromLTWH(cushion.left, cushion.top, cushion.width, seatH * 0.10),
+      Rect.fromLTWH(
+        cushionRect.left,
+        cushionRect.top,
+        cushionRect.width,
+        seatH * 0.10,
+      ),
       Paint()..color = ink.withValues(alpha: 0.07),
     );
     final bolster = Paint()..color = ink.withValues(alpha: 0.08);
     final bolsterW = seatW * 0.13;
-    final bolsterH = cushion.height * 0.62;
-    final bolsterTop = cushion.top + cushion.height * 0.22;
+    final bolsterH = cushionRect.height * 0.62;
+    final bolsterTop = cushionRect.top + cushionRect.height * 0.22;
     final bolsterRadius = Radius.circular(bolsterW / 2);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(cushion.left + 2, bolsterTop, bolsterW, bolsterH),
+        Rect.fromLTWH(cushionRect.left + 2, bolsterTop, bolsterW, bolsterH),
         bolsterRadius,
       ),
       bolster,
@@ -1214,7 +1223,7 @@ class _CarSeatPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(
-          cushion.right - bolsterW - 2,
+          cushionRect.right - bolsterW - 2,
           bolsterTop,
           bolsterW,
           bolsterH,
@@ -1224,17 +1233,17 @@ class _CarSeatPainter extends CustomPainter {
       bolster,
     );
     canvas.restore();
-    canvas.drawRRect(
+    canvas.drawPath(
       cushion,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
+        ..strokeWidth = 0.5
         ..color = hairline,
     );
     final back = RRect.fromRectAndRadius(
       Rect.fromLTWH(
         left + (seatW - backW) / 2,
-        cushion.top - backH * 0.62,
+        cushionRect.top - backH * 0.62,
         backW,
         backH,
       ),
@@ -1266,12 +1275,8 @@ class _CarSeatPainter extends CustomPainter {
         ..color = hairline,
     );
     if (held > 0) {
-      final ringRect = cushion.outerRect.deflate(3.2);
-      final ring = RRect.fromRectAndRadius(
-        ringRect,
-        Radius.circular(math.max(4, seatW * 0.22 - 3.2)),
-      );
-      final path = Path()..addRRect(ring);
+      final ringRect = cushionRect.deflate(3.2);
+      final path = AlongCraft.path(ringRect, math.max(4, seatW * 0.32 - 3.2));
       final metric = path.computeMetrics().first;
       canvas.drawPath(
         metric.extractPath(0, metric.length * held.clamp(0.0, 1.0)),
@@ -1386,7 +1391,7 @@ class AlongWhosRiding extends StatelessWidget {
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             height: 1.1,
             color: palette.ink,
           ),

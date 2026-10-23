@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../motion.dart';
 import '../tokens.g.dart';
 import 'along_button.dart';
@@ -20,22 +21,22 @@ class EmptyState extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
-  ({IconData icon, String heading, String body, String defaultAction})
+  ({AlongSpotKind spot, String heading, String body, String defaultAction})
   get _content => switch (variant) {
     EmptyStateVariant.coverageGap => (
-      icon: Icons.map_outlined,
+      spot: AlongSpotKind.route,
       heading: 'No routes here yet',
       body: 'Along does not have verified routes for this area. Try a nearby park or check back soon.',
       defaultAction: 'Report a route',
     ),
     EmptyStateVariant.noHistory => (
-      icon: Icons.history_rounded,
+      spot: AlongSpotKind.ticket,
       heading: 'No trips yet',
       body: 'Your completed trips will appear here.',
       defaultAction: 'Find a ride',
     ),
     EmptyStateVariant.offline => (
-      icon: Icons.wifi_off_rounded,
+      spot: AlongSpotKind.offline,
       heading: 'You are offline',
       body: 'Connect to the internet to search routes. Saved trips and Na Me still work.',
       defaultAction: 'Retry',
@@ -50,7 +51,7 @@ class EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _EmptyMark(icon: content.icon),
+          _EmptyMark(kind: content.spot),
           const SizedBox(height: AlongSpace.s16),
           Text(
             content.heading,
@@ -77,9 +78,9 @@ class EmptyState extends StatelessWidget {
 }
 
 class _EmptyMark extends StatefulWidget {
-  const _EmptyMark({required this.icon});
+  const _EmptyMark({required this.kind});
 
-  final IconData icon;
+  final AlongSpotKind kind;
 
   @override
   State<_EmptyMark> createState() => _EmptyMarkState();
@@ -115,25 +116,9 @@ class _EmptyMarkState extends State<_EmptyMark>
       animation: _float,
       builder: (context, _) {
         final dy = AlongMotionPolicy.play(context) ? -4 * _float.value : 0.0;
-        return SizedBox(
-          width: 72,
-          height: 72,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              const DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AlongColors.brandYellowTint,
-                  shape: BoxShape.circle,
-                ),
-                child: SizedBox(width: 72, height: 72),
-              ),
-              Transform.translate(
-                offset: Offset(0, dy),
-                child: Icon(widget.icon, size: 32, color: AlongColors.ink700),
-              ),
-            ],
-          ),
+        return Transform.translate(
+          offset: Offset(0, dy),
+          child: AlongSpot(kind: widget.kind),
         );
       },
     );

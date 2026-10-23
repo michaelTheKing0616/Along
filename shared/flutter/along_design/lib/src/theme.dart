@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'branding/branding_overrides.dart';
+import 'craft.dart';
 import 'motion.dart';
 import 'palette.dart';
 import 'tokens.g.dart';
@@ -44,6 +45,13 @@ ThemeData alongTheme({
     fontFamily: palette.fontFamily,
     fontFamilyFallback: AlongType.fallback,
     textTheme: text,
+    iconTheme: IconThemeData(color: palette.ink, size: 20),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: palette.ink,
+      selectionColor: palette.accent.withValues(alpha: 0.28),
+      selectionHandleColor: palette.ink,
+    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(color: palette.ink),
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         minimumSize: const Size(
@@ -67,9 +75,7 @@ ThemeData alongTheme({
         textStyle: AlongText.buttonPrimary,
         backgroundColor: palette.ink,
         foregroundColor: palette.onInk,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        ),
+        shape: AlongCraft.border(AlongRadius.md.x),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -83,23 +89,32 @@ ThemeData alongTheme({
       hintStyle: text.bodyLarge?.copyWith(color: palette.muted),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        borderSide: BorderSide(color: palette.line),
+        borderSide: BorderSide(
+          color: palette.ink.withValues(alpha: 0.14),
+          width: 0.5,
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        borderSide: BorderSide(color: palette.line),
+        borderSide: BorderSide(
+          color: palette.ink.withValues(alpha: 0.14),
+          width: 0.5,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        borderSide: BorderSide(color: palette.ink, width: 1.5),
+        borderSide: BorderSide(color: palette.ink, width: 1),
       ),
     ),
     cardTheme: CardThemeData(
       color: palette.surface,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        side: BorderSide(color: palette.line),
+      shape: AlongCraft.border(
+        AlongRadius.lg.x,
+        side: BorderSide(
+          color: palette.ink.withValues(alpha: 0.14),
+          width: 0.5,
+        ),
       ),
       margin: EdgeInsets.zero,
     ),

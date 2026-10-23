@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
+import '../craft.dart';
 import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
@@ -47,6 +48,7 @@ class AlongCityMap extends StatelessWidget {
   /// strip above a full-screen sheet on both 360×800 and 320×640.
   static const neighborhoodCenter = LatLng(9.063022, 7.465938);
   static const corridorCenter = LatLng(9.0460, 7.5183);
+
   /// South of the busy cores so the GO button sits on quiet map.
   static const cityCenter = LatLng(9.012, 7.490);
   static const wuseMarket = LatLng(9.068555, 7.465938);
@@ -183,6 +185,7 @@ class AlongCityMap extends StatelessWidget {
               right: 0,
               child: Center(child: _Attribution(palette: palette)),
             ),
+            const Positioned.fill(child: AlongVignette()),
           ],
         );
       },
@@ -287,11 +290,11 @@ class AlongCityMap extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.caption(palette).copyWith(
-                fontSize: 11,
+                fontSize: 10,
                 height: 1.1,
-                fontWeight: FontWeight.w700,
-                color: palette.ink,
-                backgroundColor: palette.surface.withValues(alpha: 0.92),
+                fontWeight: FontWeight.w600,
+                color: palette.muted,
+                backgroundColor: palette.surface.withValues(alpha: 0.72),
               ),
             ),
           ],
@@ -324,11 +327,11 @@ class AlongCityMap extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               style: AlongType.caption(palette).copyWith(
-                fontSize: 11,
+                fontSize: 10,
                 height: 1.1,
-                fontWeight: FontWeight.w700,
-                color: palette.ink,
-                backgroundColor: palette.surface.withValues(alpha: 0.92),
+                fontWeight: FontWeight.w600,
+                color: palette.muted,
+                backgroundColor: palette.surface.withValues(alpha: 0.72),
               ),
             ),
           ],
@@ -465,7 +468,7 @@ class AlongCityMap extends StatelessWidget {
                 style: AlongType.caption(palette).copyWith(
                   fontSize: 11,
                   height: 1.1,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   color: palette.ink,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
@@ -729,12 +732,12 @@ List<Polygon> _demandHexes(Color accent) {
   const mPerLat = 111320.0;
   const hotspots = <(double, double, double)>[
     (9.076, 7.458, 1),
-    (9.062, 7.492, 0.55),
-    (9.088, 7.498, 0.72),
-    (9.070, 7.430, 0.48),
-    (9.084, 7.418, 0.36),
-    (9.058, 7.530, 0.28),
-    (9.094, 7.470, 0.22),
+    (9.062, 7.492, 0.62),
+    (9.088, 7.498, 0.84),
+    (9.070, 7.430, 0.5),
+    (9.084, 7.418, 0.4),
+    (9.058, 7.530, 0.34),
+    (9.094, 7.470, 0.28),
   ];
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
   final dx = radius * math.sqrt(3);
@@ -751,27 +754,27 @@ List<Polygon> _demandHexes(Color accent) {
       final dLat = (lat - originLat) * mPerLat;
       final dLon = (lon - originLon) * mPerLon;
       final fromCore = math.sqrt(dLat * dLat + dLon * dLon);
-      final edgeT = ((fromCore - 2800) / 5200).clamp(0.0, 1.0);
+      final edgeT = ((fromCore - 900) / 7200).clamp(0.0, 1.0);
       final feather = 1 - edgeT * edgeT * (3 - 2 * edgeT);
-      // Fade before the southern band the GO button covers.
-      final south = ((lat - 9.028) / 0.028).clamp(0.0, 1.0);
+      // Die north of the GO button so the control sits on quiet map.
+      final south = ((lat - 9.042) / 0.018).clamp(0.0, 1.0);
       var demand = 0.0;
       for (final spot in hotspots) {
         final sLat = (lat - spot.$1) * mPerLat;
         final sLon = (lon - spot.$2) * mPerLon;
         final dist = math.sqrt(sLat * sLat + sLon * sLon);
-        demand += spot.$3 * math.exp(-dist / 1500);
+        demand += spot.$3 * math.exp(-(dist * dist) / (2 * 2100 * 2100));
       }
-      demand = (demand * _hexJitter(q, r)).clamp(0.0, 1.2);
-      final alpha = feather * south * (0.04 + demand * 0.42);
-      if (alpha < 0.045) continue;
-      final hot = demand > 0.72 && feather > 0.8;
+      demand = (demand * _hexJitter(q, r)).clamp(0.0, 1.4);
+      final alpha = feather * south * (0.04 + demand.clamp(0.0, 1.0) * 0.62);
+      if (alpha < 0.05 || lat < 9.045) continue;
+      final hot = demand > 0.85 && feather > 0.85;
       polygons.add(
         Polygon(
-          points: _hexRing(LatLng(lat, lon), radius * 0.86, mPerLat, mPerLon),
-          color: accent.withValues(alpha: alpha.clamp(0.0, 0.62)),
-          borderColor: accent.withValues(alpha: hot ? 0.55 : 0),
-          borderStrokeWidth: hot ? 1.2 : 0,
+          points: _hexRing(LatLng(lat, lon), radius * 0.98, mPerLat, mPerLon),
+          color: accent.withValues(alpha: alpha.clamp(0.0, 0.7)),
+          borderColor: accent.withValues(alpha: hot ? 0.35 : 0),
+          borderStrokeWidth: hot ? 1 : 0,
         ),
       );
     }
@@ -781,7 +784,7 @@ List<Polygon> _demandHexes(Color accent) {
 
 double _hexJitter(int q, int r) {
   final n = (q * 73856093) ^ (r * 19349663);
-  return 0.7 + 0.3 * ((n & 0xFFFF) / 65535);
+  return 0.72 + 0.28 * ((n & 0xFFFF) / 65535);
 }
 
 List<LatLng> _hexRing(

@@ -62,7 +62,7 @@ class AmbientCluster extends StatelessWidget {
               '$count',
               style: AlongText.label.copyWith(
                 color: textColor,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
