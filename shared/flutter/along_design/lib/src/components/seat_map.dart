@@ -190,9 +190,11 @@ class _SchematicBody extends StatelessWidget {
   }
 }
 
-/// Photograph is 864×1152. The shell shows the cabin only (the white margin
-/// is cropped) so the three front cushions and the rear bench fill the card.
-/// Markers are ours; the row list decides how many.
+/// Photograph is 864×1152, nose up. The steering wheel is on the left.
+/// The shell crops to the cabin. Front row of the photo is two buckets
+/// (centers 0.37 and 0.62); the rear is one bench. Marker count still
+/// comes from the row list, so a three-across front row puts the middle
+/// marker on the console between those buckets.
 class _CabinShell extends StatelessWidget {
   const _CabinShell({
     required this.rows,
@@ -205,10 +207,11 @@ class _CabinShell extends StatelessWidget {
   final ValueChanged<String>? onSeatLongPress;
 
   /// Interior window, as fractions of the 864×1152 photograph.
+  /// Top includes the wheel; bottom includes the rear cushion.
   static const _cropL = 0.18;
   static const _cropT = 0.14;
   static const _cropR = 0.82;
-  static const _cropB = 0.80;
+  static const _cropB = 0.72;
   static const _cropAspect =
       ((_cropR - _cropL) * 864) / ((_cropB - _cropT) * 1152);
 
@@ -241,25 +244,23 @@ class _CabinShell extends StatelessWidget {
     for (var r = 0; r < rows.length; r++) {
       final seats = _driverFirst(rows[r].seats);
       final count = seats.length;
-      final seatH = 48.0;
-      // Markers stay in the 44–48dp band so the label and price stay readable
-      // without covering the next cushion.
-      final span = math.min(width * 0.90, width - 8);
-      var seatW = span / count;
-      if (seatW > 48) seatW = 48;
-      if (seatW < 44 && 44 * count <= span) seatW = 44;
-      if (seatW < 48 && 48 * count <= span) seatW = 48;
-      final gap = count <= 1
-          ? 0.0
-          : math.max(0.0, (span - seatW * count) / (count - 1));
-      final rowWidth = seatW * count + gap * (count - 1);
-      final left0 = (width - rowWidth) / 2;
-      final top = _bandTop(r, rows.length, height, seatH);
+      const seatH = 48.0;
+      // 48dp keeps the hit target at AlongSpace.sizeTouchMin. The painted
+      // cushion is inset inside that box.
+      const seatW = 48.0;
+      final xs = _photoXs(r, rows.length, count);
+      final photoY = _photoY(r, rows.length);
+      final top = (_mapY(photoY, height) - seatH / 2)
+          .clamp(0.0, math.max(0.0, height - seatH))
+          .toDouble();
       for (var s = 0; s < count; s++) {
         final seat = seats[s];
+        final left = (_mapX(xs[s], width) - seatW / 2)
+            .clamp(0.0, math.max(0.0, width - seatW))
+            .toDouble();
         markers.add(
           Positioned(
-            left: left0 + s * (seatW + gap),
+            left: left,
             top: top,
             width: seatW,
             height: seatH,
@@ -293,19 +294,33 @@ class _CabinShell extends StatelessWidget {
     ];
   }
 
-  static double _bandTop(int index, int count, double height, double seatH) {
-    // Fractions are of the full photograph, then mapped into the crop.
-    double photo;
-    if (count <= 1) {
-      photo = 0.46;
-    } else if (count == 2) {
-      photo = index == 0 ? 0.33 : 0.55;
-    } else {
-      photo = 0.30 + 0.40 * (index / (count - 1));
-    }
-    final frac = (photo - _cropT) / (_cropB - _cropT);
-    return (frac * height - seatH / 2).clamp(4.0, height - seatH - 4);
+  /// Cushion centers in full-photo fractions, left to right.
+  /// Driver is sorted first, so the left front center is the wheel side.
+  static List<double> _photoXs(int index, int rowCount, int count) {
+    final front = rowCount <= 1 || index == 0;
+    if (front && count == 2) return const [0.37, 0.62];
+    if (front && count == 3) return const [0.37, 0.50, 0.62];
+    if (!front && count == 4) return const [0.33, 0.44, 0.54, 0.65];
+    final start = front ? 0.32 : 0.30;
+    final end = front ? 0.68 : 0.70;
+    if (count <= 1) return [(start + end) / 2];
+    return [
+      for (var i = 0; i < count; i++) start + (end - start) * i / (count - 1),
+    ];
   }
+
+  static double _photoY(int index, int rowCount) {
+    if (rowCount <= 1) return 0.385;
+    if (rowCount == 2) return index == 0 ? 0.385 : 0.548;
+    final t = index / (rowCount - 1);
+    return 0.385 + (0.548 - 0.385) * t;
+  }
+
+  static double _mapX(double photo, double width) =>
+      (photo - _cropL) / (_cropR - _cropL) * width;
+
+  static double _mapY(double photo, double height) =>
+      (photo - _cropT) / (_cropB - _cropT) * height;
 
   static Widget _cabinPhoto() {
     const photoW = 864.0;
