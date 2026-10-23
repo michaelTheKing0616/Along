@@ -84,6 +84,115 @@ void main() {
     }
   });
 
+  testWidgets('cabin rows share a column grid and fill a tall phone', (
+    tester,
+  ) async {
+    const rows = [
+      SeatMapRowView(
+        id: 'front',
+        seats: [
+          SeatMapSeat(
+            id: 'fm',
+            label: 'FM',
+            role: 'passenger',
+            status: 'yours',
+            statusWord: 'Yours',
+            price: '₦1,200',
+          ),
+          SeatMapSeat(
+            id: 'fr',
+            label: 'FR',
+            role: 'passenger',
+            status: 'free',
+            statusWord: 'Free',
+            price: '₦900',
+          ),
+          SeatMapSeat(
+            id: 'drv',
+            label: 'Driver',
+            role: 'driver',
+            status: 'occupied',
+            statusWord: 'Driver',
+          ),
+        ],
+      ),
+      SeatMapRowView(
+        id: 'back',
+        seats: [
+          SeatMapSeat(
+            id: 'bl',
+            label: 'BL',
+            role: 'passenger',
+            status: 'free',
+            statusWord: 'Free',
+            price: '₦700',
+          ),
+          SeatMapSeat(
+            id: 'ml',
+            label: 'ML',
+            role: 'passenger',
+            status: 'occupied',
+            statusWord: 'Taken',
+          ),
+          SeatMapSeat(
+            id: 'mr',
+            label: 'MR',
+            role: 'passenger',
+            status: 'free',
+            statusWord: 'Free',
+            price: '₦700',
+          ),
+          SeatMapSeat(
+            id: 'br',
+            label: 'BR',
+            role: 'passenger',
+            status: 'free',
+            statusWord: 'Free',
+            price: '₦700',
+          ),
+        ],
+      ),
+    ];
+
+    for (final size in const [Size(320, 640), Size(360, 800)]) {
+      await tester.binding.setSurfaceSize(size);
+      await tester.pumpWidget(
+        MediaQuery(
+          data: MediaQueryData(size: size),
+          child: MaterialApp(
+            home: Scaffold(
+              body: SeatMap(body: 'cabin', rows: rows),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+
+      final drv = tester.getRect(find.byKey(const Key('seat_drv')));
+      final fm = tester.getRect(find.byKey(const Key('seat_fm')));
+      final fr = tester.getRect(find.byKey(const Key('seat_fr')));
+      final bl = tester.getRect(find.byKey(const Key('seat_bl')));
+      final ml = tester.getRect(find.byKey(const Key('seat_ml')));
+      final br = tester.getRect(find.byKey(const Key('seat_br')));
+      final legend = tester.getRect(find.text('Available'));
+
+      expect(drv.left, closeTo(bl.left, 0.6), reason: '$size flush left');
+      expect(fr.right, closeTo(br.right, 0.6), reason: '$size flush right');
+      expect(bl.width, greaterThanOrEqualTo(56), reason: '$size cushion');
+      expect(bl.width, lessThanOrEqualTo(76.5), reason: '$size cap');
+      expect(bl.height, closeTo(bl.width, 0.6), reason: '$size square');
+      expect(drv.height, closeTo(bl.height, 0.6));
+      expect(fm.width, greaterThan(bl.width));
+      final frontPitch = fm.left - drv.left;
+      final backPitch = ml.left - bl.left;
+      expect(frontPitch / backPitch, closeTo(4 / 3, 0.02));
+      expect(legend.bottom, greaterThan(size.height - 40));
+      expect(br.bottom, greaterThan(legend.top - 48));
+    }
+    await tester.binding.setSurfaceSize(null);
+  });
+
   testWidgets('cabin layouts 2+3 and 3+3 fit 320 and 360', (tester) async {
     const layouts = [
       [

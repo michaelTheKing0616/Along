@@ -224,82 +224,84 @@ class AlongFlowSeats extends StatelessWidget {
     return _Page(
       bottom: const AlongButton(label: 'Hold this seat', onPressed: _noop),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text('Choose a seat', style: AlongType.display(palette)),
           const SizedBox(height: 4),
           Text('Sedan · ABC-123-XY', style: AlongType.bodyMuted(palette)),
           const SizedBox(height: 16),
-          const SeatMap(
-            body: 'cabin',
-            rows: [
-              SeatMapRowView(
-                id: 'front',
-                seats: [
-                  SeatMapSeat(
-                    id: 'fm',
-                    label: 'FM',
-                    role: 'passenger',
-                    status: 'yours',
-                    statusWord: 'Yours',
-                    price: '₦1,200',
-                  ),
-                  SeatMapSeat(
-                    id: 'fr',
-                    label: 'FR',
-                    role: 'passenger',
-                    status: 'held',
-                    statusWord: 'Held',
-                    price: '₦900',
-                  ),
-                  SeatMapSeat(
-                    id: 'drv',
-                    label: 'Driver',
-                    role: 'driver',
-                    status: 'occupied',
-                    statusWord: 'Driver',
-                  ),
-                ],
-              ),
-              SeatMapRowView(
-                id: 'back',
-                seats: [
-                  SeatMapSeat(
-                    id: 'b1',
-                    label: 'BL',
-                    role: 'passenger',
-                    status: 'free',
-                    statusWord: 'Free',
-                    price: '₦700',
-                  ),
-                  SeatMapSeat(
-                    id: 'b2',
-                    label: 'ML',
-                    role: 'passenger',
-                    status: 'occupied',
-                    statusWord: 'Taken',
-                  ),
-                  SeatMapSeat(
-                    id: 'b3',
-                    label: 'MR',
-                    role: 'passenger',
-                    status: 'free',
-                    statusWord: 'Free',
-                    price: '₦700',
-                  ),
-                  SeatMapSeat(
-                    id: 'b4',
-                    label: 'BR',
-                    role: 'passenger',
-                    status: 'held',
-                    statusWord: 'Held',
-                    price: '₦800',
-                  ),
-                ],
-              ),
-            ],
+          const Expanded(
+            child: SeatMap(
+              body: 'cabin',
+              rows: [
+                SeatMapRowView(
+                  id: 'front',
+                  seats: [
+                    SeatMapSeat(
+                      id: 'fm',
+                      label: 'FM',
+                      role: 'passenger',
+                      status: 'yours',
+                      statusWord: 'Yours',
+                      price: '₦1,200',
+                    ),
+                    SeatMapSeat(
+                      id: 'fr',
+                      label: 'FR',
+                      role: 'passenger',
+                      status: 'held',
+                      statusWord: 'Held',
+                      price: '₦900',
+                    ),
+                    SeatMapSeat(
+                      id: 'drv',
+                      label: 'Driver',
+                      role: 'driver',
+                      status: 'occupied',
+                      statusWord: 'Driver',
+                    ),
+                  ],
+                ),
+                SeatMapRowView(
+                  id: 'back',
+                  seats: [
+                    SeatMapSeat(
+                      id: 'b1',
+                      label: 'BL',
+                      role: 'passenger',
+                      status: 'free',
+                      statusWord: 'Free',
+                      price: '₦700',
+                    ),
+                    SeatMapSeat(
+                      id: 'b2',
+                      label: 'ML',
+                      role: 'passenger',
+                      status: 'occupied',
+                      statusWord: 'Taken',
+                    ),
+                    SeatMapSeat(
+                      id: 'b3',
+                      label: 'MR',
+                      role: 'passenger',
+                      status: 'free',
+                      statusWord: 'Free',
+                      price: '₦700',
+                    ),
+                    SeatMapSeat(
+                      id: 'b4',
+                      label: 'BR',
+                      role: 'passenger',
+                      status: 'held',
+                      statusWord: 'Held',
+                      price: '₦800',
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          const Spacer(),
+          const SizedBox(height: 16),
           const _SelectedSeat(),
         ],
       ),

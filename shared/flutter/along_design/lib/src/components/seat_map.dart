@@ -90,27 +90,34 @@ class SeatMap extends StatelessWidget {
             onSeatTap: onSeatTap,
             onSeatLongPress: onSeatLongPress,
           );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(body == 'bike' ? 36 : 24),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ...rules,
-            diagram,
-            if (body == 'cabin') ...[
-              const SizedBox(height: 14),
-              const _SeatLegend(),
-            ],
-          ],
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Fill a bounded height (the product screen, the gallery).
+        // A scrolling list passes an unbounded height and stays shrink-wrapped.
+        final fill = constraints.hasBoundedHeight && body == 'cabin';
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(body == 'bike' ? 36 : 24),
+            boxShadow: AlongElevation.card(palette.ink),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            child: Column(
+              mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...rules,
+                if (fill) Expanded(child: diagram) else diagram,
+                if (body == 'cabin') ...[
+                  const SizedBox(height: 14),
+                  const _SeatLegend(),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -180,8 +187,9 @@ class _SchematicBody extends StatelessWidget {
   }
 }
 
-/// Hairline cabin. Seats stay near-square and share one gap, so a
-/// 2+4 sedan, a 3+3, a 2+3, and a 4-row danfo all use the same grid.
+/// Hairline cabin. Every row shares the widest row's columns.
+/// A 3-seat row over 4 columns gives each seat a 4/3 span, flush
+/// to the same left and right edges.
 class _CabinShell extends StatelessWidget {
   const _CabinShell({
     required this.rows,
@@ -199,7 +207,7 @@ class _CabinShell extends StatelessWidget {
     return CustomPaint(
       painter: _CabinOutlinePainter(palette: palette),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 22, 14, 14),
+        padding: const EdgeInsets.fromLTRB(10, 22, 10, 12),
         child: _SeatGrid(
           rows: rows,
           onSeatTap: onSeatTap,
@@ -207,6 +215,65 @@ class _CabinShell extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Width-fit and height-fit for one square cushion, capped at 76.
+/// Four-across rows keep the cushion at about 56 by tightening the
+/// gap, and still run edge to edge inside the cabin.
+class _CabinFit {
+  const _CabinFit({required this.seat, required this.gap});
+
+  final double seat;
+  final double gap;
+
+  static const maxSeat = 76.0;
+  static const minSeat = 56.0;
+  static const preferredGap = 10.0;
+
+  static _CabinFit solve({
+    required double maxWidth,
+    required double maxHeight,
+    required int columns,
+    required int rowCount,
+  }) {
+    final cols = math.max(1, columns);
+    final rows = math.max(1, rowCount);
+    final width = maxWidth.isFinite ? math.max(0.0, maxWidth) : cols * maxSeat;
+    var seat = maxSeat;
+    if (cols == 1) {
+      seat = math.min(maxSeat, width);
+    } else {
+      final preferred = (width - (cols - 1) * preferredGap) / cols;
+      if (preferred >= minSeat) {
+        seat = math.min(maxSeat, preferred);
+      } else if (width >= cols * minSeat) {
+        seat = minSeat;
+      } else {
+        seat = width / cols;
+      }
+    }
+
+    if (maxHeight.isFinite) {
+      final gaps = math.max(0, rows - 1);
+      final heightBudget = math.max(0.0, maxHeight - 0.5);
+      var heightFit = gaps == 0
+          ? heightBudget
+          : (heightBudget - gaps * preferredGap) / rows;
+      if (heightFit < 0) heightFit = heightBudget / rows;
+      if (heightFit < seat) seat = math.max(0.0, heightFit);
+      if (rows * seat > heightBudget) seat = heightBudget / rows;
+    }
+
+    var gap = 0.0;
+    if (cols > 1) {
+      gap = (width - cols * seat) / (cols - 1);
+      if (gap < 0) {
+        seat = width / cols;
+        gap = 0;
+      }
+    }
+    return _CabinFit(seat: seat, gap: gap);
   }
 }
 
@@ -221,9 +288,6 @@ class _SeatGrid extends StatelessWidget {
   final ValueChanged<String>? onSeatTap;
   final ValueChanged<String>? onSeatLongPress;
 
-  static const _maxSeat = 64.0;
-  static const _gap = 10.0;
-
   @override
   Widget build(BuildContext context) {
     final cols = rows.fold<int>(
@@ -232,19 +296,27 @@ class _SeatGrid extends StatelessWidget {
     );
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gaps = _gap * math.max(0, cols - 1);
-        final fromW = cols == 0
-            ? _maxSeat
-            : (constraints.maxWidth - gaps) / cols;
-        final seat = math.min(_maxSeat, math.max(0.0, fromW));
+        final tight = constraints.hasBoundedHeight;
+        final fit = _CabinFit.solve(
+          maxWidth: constraints.maxWidth,
+          maxHeight: constraints.maxHeight,
+          columns: cols,
+          rowCount: rows.length,
+        );
         return Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: tight ? MainAxisSize.max : MainAxisSize.min,
+          mainAxisAlignment: tight && rows.length > 1
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.start,
           children: [
             for (var r = 0; r < rows.length; r++) ...[
-              if (r > 0) const SizedBox(height: _gap),
+              if (!tight && r > 0)
+                const SizedBox(height: _CabinFit.preferredGap),
               _SeatGridRow(
                 row: rows[r],
-                seat: seat,
+                seat: fit.seat,
+                gap: fit.gap,
+                width: constraints.maxWidth,
                 onSeatTap: onSeatTap,
                 onSeatLongPress: onSeatLongPress,
               ),
@@ -260,12 +332,16 @@ class _SeatGridRow extends StatelessWidget {
   const _SeatGridRow({
     required this.row,
     required this.seat,
+    required this.gap,
+    required this.width,
     required this.onSeatTap,
     required this.onSeatLongPress,
   });
 
   final SeatMapRowView row;
   final double seat;
+  final double gap;
+  final double width;
   final ValueChanged<String>? onSeatTap;
   final ValueChanged<String>? onSeatLongPress;
 
@@ -273,26 +349,44 @@ class _SeatGridRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final seats = _driverFirst(row.seats);
     final badge = _badgeFor(row.ruleTitle);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for (var i = 0; i < seats.length; i++) ...[
-          if (i > 0) const SizedBox(width: _SeatGrid._gap),
-          SizedBox(
-            width: seat,
-            height: seat,
-            child: _SeatButton(
-              seat: seats[i],
-              markHeight: seat,
-              driverIcon: true,
-              badge: seats[i].isDriver ? null : badge,
-              onTap: seats[i].isClaimable ? onSeatTap : null,
-              onLongPress: seats[i].isClaimable ? onSeatLongPress : null,
+    final bounded = width.isFinite;
+    final span = bounded ? width : null;
+    return SizedBox(
+      width: span,
+      height: seat,
+      child: Row(
+        mainAxisSize: bounded ? MainAxisSize.max : MainAxisSize.min,
+        children: [
+          for (var i = 0; i < seats.length; i++) ...[
+            if (i > 0) SizedBox(width: seats.length == 1 ? 0 : gap),
+            if (seats.length == 1 && bounded) const Spacer(),
+            SizedBox(
+              width: _seatWidth(i, seats.length),
+              height: seat,
+              child: _SeatButton(
+                seat: seats[i],
+                markHeight: seat,
+                driverIcon: true,
+                badge: seats[i].isDriver ? null : badge,
+                onTap: seats[i].isClaimable ? onSeatTap : null,
+                onLongPress: seats[i].isClaimable ? onSeatLongPress : null,
+              ),
             ),
-          ),
+            if (seats.length == 1 && bounded) const Spacer(),
+          ],
         ],
-      ],
+      ),
     );
+  }
+
+  /// Widest row: one column each, square. Narrower rows: each seat
+  /// spans `columns / count` and the row stays flush left and right.
+  double _seatWidth(int index, int count) {
+    if (count <= 1 || !width.isFinite) return seat;
+    final raw = (width - (count - 1) * gap) / count;
+    if (index < count - 1) return math.max(0.0, raw);
+    final leading = (count - 1) * (raw + gap);
+    return math.max(0.0, width - leading);
   }
 
   static List<SeatMapSeat> _driverFirst(List<SeatMapSeat> seats) {
