@@ -871,12 +871,12 @@ class _RoutePainter extends CustomPainter {
         : const Color(0xFFFFFFFF);
     final full = _smooth(_screen(route));
     final grey = palette.muted.withValues(alpha: 0.45);
-    canvas.drawPath(full, _stroke(8, casing));
-    canvas.drawPath(full, _stroke(4.5, grey));
+    canvas.drawPath(full, _stroke(11, casing));
+    canvas.drawPath(full, _stroke(6.5, grey));
     if (progress > 0.02) {
       final traveled = _smooth(_points());
-      canvas.drawPath(traveled, _stroke(9, casing));
-      canvas.drawPath(traveled, _stroke(4.5, palette.ink));
+      canvas.drawPath(traveled, _stroke(12, casing));
+      canvas.drawPath(traveled, _stroke(7, palette.ink));
       if (pulse > 0) {
         alongPaintRoutePulse(
           canvas,
