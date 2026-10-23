@@ -161,15 +161,17 @@ class AlongMapButton extends StatelessWidget {
         message: tooltip ?? '',
         child: DecoratedBox(
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(12),
             boxShadow: AlongElevation.float(palette.ink),
           ),
           child: AlongFrost(
-            circle: true,
+            radius: 12,
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                customBorder: const CircleBorder(),
+                customBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 onTap: onPressed,
                 child: SizedBox(
                   width: 48,

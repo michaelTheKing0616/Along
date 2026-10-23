@@ -144,7 +144,9 @@ Home, quote, live, and day stay as accepted in Pass 9. Checked again at 360 and 
 
 ## Visual reset
 
-Type is five sizes, 13 and up, weights 400/500/600. Buttons are full-width rectangles, 56 tall, radius 16. Stadium chips are gone. Page gutters are 24. Pass days are a date and a check, not a bar. Home drops the service row and the promo. Rating keeps the stars and the note.
+Type is five sizes, 13 and up, weights 400/500/600. `AlongText.caption` and `overline` are 13. Secondary lines use ink at 72% opacity. Buttons are full-width rectangles, 56 tall, radius 16. Stadium chips are gone. Page gutters are 24. Pass days are a date and a check, not a bar.
+
+The sheet is one surface. Home is Where to? and three saved places. Seats, wallet, day, and earnings use list rows and hairlines. Earnings is the total, the week chart, and the trip list. Seats are six: two in front, four in back. The price sits under the cushion. Offer uses the same seat painter. Rating tags are a two-column outline grid, radius 12. Tips are outline rectangles. Perks are one line: AC · Window · Luggage.
 
 ## Pass 11 — soft map, split filled
 

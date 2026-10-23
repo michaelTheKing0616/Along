@@ -23,10 +23,12 @@ bool _roomy(BuildContext context) =>
     MediaQuery.textScalerOf(context).scale(1) > 1.15;
 
 Widget _oneLine(String text, TextStyle style) {
-  return FittedBox(
-    fit: BoxFit.scaleDown,
-    alignment: Alignment.centerLeft,
-    child: Text(text, maxLines: 1, softWrap: false, style: style),
+  return Text(
+    text,
+    maxLines: 1,
+    softWrap: false,
+    overflow: TextOverflow.ellipsis,
+    style: style,
   );
 }
 
@@ -66,11 +68,9 @@ class AlongDepartureBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
-        child: Column(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -89,7 +89,6 @@ class AlongDepartureBoard extends StatelessWidget {
             const SizedBox(height: 6),
             for (final item in departures) _DepartureRow(item: item),
           ],
-        ),
       ),
     );
   }
@@ -1148,16 +1147,14 @@ class _RefreshRide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final decoration = ride.selected
-        ? ShapeDecoration(
-            color: palette.surface,
-            shadows: AlongElevation.rest(palette.ink),
-            shape: AlongCraft.border(
-              16,
-              side: BorderSide(color: palette.ink, width: 1.5),
-            ),
-          )
-        : AlongCraft.surface(palette, radius: 16, hairline: true);
+    final decoration = BoxDecoration(
+      border: Border(
+        bottom: BorderSide(color: palette.ink.withValues(alpha: 0.12)),
+        left: ride.selected
+            ? BorderSide(color: palette.ink, width: 2)
+            : BorderSide.none,
+      ),
+    );
     final row = Row(
       children: [
         AlongVehicleMark(kind: ride.kind, width: 48, height: 30),
@@ -1200,7 +1197,7 @@ class _RefreshRide extends StatelessWidget {
                       style: AlongType.caption(palette),
                     ),
                     const SizedBox(width: 6),
-                    AlongSeatCount(count: ride.seats, glyph: 10),
+                    AlongSeatCount(count: ride.seats, glyph: 14),
                   ],
                 ),
               ),

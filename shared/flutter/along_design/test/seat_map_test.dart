@@ -185,7 +185,11 @@ void main() {
       expect(drv.width, closeTo(bl.width, 0.6));
       expect(bl.height, closeTo(bl.width, 0.6), reason: '$size square');
       expect(drv.height, closeTo(bl.height, 0.6));
-      expect(bl.top - fm.bottom, closeTo(20, 0.6), reason: '$size row gap');
+      expect(
+        bl.top - fm.bottom,
+        closeTo(44, 3),
+        reason: '$size price sits under the cushion',
+      );
       expect(bl.width, lessThanOrEqualTo(72.5));
       if (size.width == 360) {
         expect(bl.width, inInclusiveRange(68, 72), reason: '360 cushion');

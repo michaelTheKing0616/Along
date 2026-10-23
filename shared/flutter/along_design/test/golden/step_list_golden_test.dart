@@ -29,7 +29,7 @@ void main() {
       testWidgets('${variant.name}_scale_1_0', (tester) async {
         await pumpAlongGolden(
           tester,
-          surfaceSize: Size(400, variant == StepListVariant.audioPlaying ? 360 : 280),
+          surfaceSize: Size(400, variant == StepListVariant.audioPlaying ? 400 : 280),
           child: StepList(variant: variant, steps: steps),
         );
         await expectAlongGolden(

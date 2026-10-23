@@ -67,7 +67,7 @@ abstract final class AlongType {
 
   /// Secondary sentence. Same size as body, darker than the old grey.
   static TextStyle bodyMuted(AlongPalette palette) {
-    return body(palette).copyWith(color: palette.muted);
+    return body(palette).copyWith(color: palette.ink.withValues(alpha: 0.72));
   }
 
   /// Row label. 14 / 500.
