@@ -752,7 +752,7 @@ class AlongFlowLive extends StatelessWidget {
           Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final fraction = constraints.maxHeight >= 760 ? 0.38 : 0.48;
+                final fraction = constraints.maxHeight >= 760 ? 0.38 : 0.47;
                 return AlongSpringSheet(
                   fraction: fraction,
                   snaps: [fraction, 0.72],
@@ -888,7 +888,7 @@ class _TripTrack extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6),
                   child: SizedBox(
-                    height: 12,
+                    height: 16,
                     width: double.infinity,
                     child: Stack(
                       fit: StackFit.expand,
@@ -1669,40 +1669,59 @@ class AlongFlowRating extends StatelessWidget {
                 const Expanded(
                   child: AlongCityMap(mode: AlongCityMapMode.completed),
                 ),
-                Transform.translate(
-                  offset: Offset(0, -portrait / 2),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                    child: Column(
-                      children: [
-                        AlongDriverPortrait(size: portrait, verified: true),
-                        SizedBox(height: short ? 8 : 10),
-                        Text(
-                          'Chinedu',
-                          maxLines: 1,
-                          softWrap: false,
-                          textAlign: TextAlign.center,
-                          style: AlongType.heading(palette),
+                ColoredBox(
+                  color: palette.bg,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          portrait / 2 + (short ? 8 : 10),
+                          16,
+                          12,
                         ),
-                        Text(
-                          'Wuse to Nyanya',
-                          maxLines: 1,
-                          softWrap: false,
-                          textAlign: TextAlign.center,
-                          style: AlongType.meta(palette),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Chinedu',
+                              maxLines: 1,
+                              softWrap: false,
+                              textAlign: TextAlign.center,
+                              style: AlongType.heading(palette),
+                            ),
+                            Text(
+                              'Wuse to Nyanya',
+                              maxLines: 1,
+                              softWrap: false,
+                              textAlign: TextAlign.center,
+                              style: AlongType.meta(palette),
+                            ),
+                            SizedBox(height: short ? 8 : 12),
+                            _Stars(filled: 4, size: star),
+                            SizedBox(height: short ? 10 : 14),
+                            const _ComplimentWrap(),
+                            SizedBox(height: short ? 10 : 14),
+                            const _TipSegments(),
+                            SizedBox(height: short ? 10 : 12),
+                            const _SendThanks(),
+                            const SizedBox(height: 4),
+                            const _ViewReceipt(),
+                          ],
                         ),
-                        SizedBox(height: short ? 8 : 12),
-                        _Stars(filled: 4, size: star),
-                        SizedBox(height: short ? 10 : 14),
-                        const _ComplimentWrap(),
-                        SizedBox(height: short ? 10 : 14),
-                        const _TipSegments(),
-                        SizedBox(height: short ? 10 : 12),
-                        const _SendThanks(),
-                        const SizedBox(height: 4),
-                        const _ViewReceipt(),
-                      ],
-                    ),
+                      ),
+                      Positioned(
+                        top: -portrait / 2,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: AlongDriverPortrait(
+                            size: portrait,
+                            verified: true,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
