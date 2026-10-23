@@ -1,7 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:along_design/src/craft.dart';
-import 'package:along_design/src/elevation.dart';
 import 'package:along_design/src/flows/driver_portrait.dart';
 import 'package:along_design/src/icons.dart';
 import 'package:along_design/src/motion.dart';
@@ -223,16 +221,23 @@ class _CabinShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return ClipPath(
-      clipper: _CabinClipper(),
-      child: CustomPaint(
-        painter: _CabinOutlinePainter(palette: palette, bold: true),
+    return CustomPaint(
+      painter: _CabinOutlinePainter(palette: palette, bold: true),
+      child: ClipPath(
+        clipper: _CabinClipper(),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 26, 8, 14),
-          child: _SeatGrid(
-            rows: rows,
-            onSeatTap: onSeatTap,
-            onSeatLongPress: onSeatLongPress,
+          padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: _CabinFit.nose),
+              _SeatGrid(
+                rows: rows,
+                onSeatTap: onSeatTap,
+                onSeatLongPress: onSeatLongPress,
+              ),
+              const SizedBox(height: _CabinFit.tail),
+            ],
           ),
         ),
       ),
@@ -256,6 +261,11 @@ class _CabinFit {
   /// Label and price sit under the cushion, not inside it.
   static const captionGap = 4.0;
   static const captionSlot = 36.0;
+
+  /// Empty nose and tail so the cushions sit in the door section,
+  /// past the taper in [_cabinOutline].
+  static const nose = 48.0;
+  static const tail = 28.0;
 
   static _CabinFit solve({required double maxWidth, required int columns}) {
     final cols = math.max(1, columns);
@@ -440,7 +450,10 @@ class _SeatCaption extends StatelessWidget {
   }
 }
 
-/// Rounded cabin, slightly narrower at the nose. No wheels, no mirrors.
+/// One stroke weight for the cabin, the door seams, and every seat.
+const _vectorStroke = 1.25;
+
+/// Car body from above: tapered nose, straight doors, tapered rear.
 class _CabinOutlinePainter extends CustomPainter {
   _CabinOutlinePainter({required this.palette, this.bold = false});
 
@@ -450,62 +463,51 @@ class _CabinOutlinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final dark = palette.brightness == Brightness.dark;
-    final fill = bold
-        ? (dark ? const Color(0xFF1C1E22) : const Color(0xFFE7E9EE))
-        : (dark ? const Color(0xFF16171A) : const Color(0xFFF6F7F9));
-    final line = bold
-        ? (dark ? const Color(0xFFC8CAD2) : const Color(0xFF2A2C31))
-        : (dark ? const Color(0xFF4A4C54) : const Color(0xFFD0D2D8));
+    final fill = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
+    final line = dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210);
     final path = _cabinOutline(size);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _vectorStroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..color = line;
     canvas.drawPath(path, Paint()..color = fill);
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = bold ? 1.6 : 0.5
-        ..color = line,
-    );
-    _doorSeams(canvas, size, line);
-    final dashW = math.min(72.0, size.width * 0.28);
-    final dash = RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: Offset(size.width / 2, 11),
-        width: dashW,
-        height: 3,
-      ),
-      const Radius.circular(2),
-    );
-    canvas.drawRRect(dash, Paint()..color = line);
+    canvas.drawPath(path, stroke);
+    _doorSeams(canvas, size, stroke);
+    final nose = math.min(28.0, size.height * 0.16);
+    final glass = Path()
+      ..moveTo(size.width * 0.34, nose * 0.62)
+      ..quadraticBezierTo(
+        size.width * 0.50,
+        nose * 0.28,
+        size.width * 0.66,
+        nose * 0.62,
+      );
+    canvas.drawPath(glass, stroke);
+    final tail = math.min(18.0, size.height * 0.12);
+    final deck = Path()
+      ..moveTo(size.width * 0.32, size.height - tail * 0.55)
+      ..quadraticBezierTo(
+        size.width * 0.50,
+        size.height - tail * 0.85,
+        size.width * 0.68,
+        size.height - tail * 0.55,
+      );
+    canvas.drawPath(deck, stroke);
   }
 
-  void _doorSeams(Canvas canvas, Size size, Color line) {
-    final seam = Paint()
-      ..color = line
-      ..strokeWidth = 1.4
-      ..strokeCap = StrokeCap.round;
-    final pillar = Paint()..color = line;
+  void _doorSeams(Canvas canvas, Size size, Paint seam) {
+    final top = _CabinFit.nose + 6;
+    final bottom = size.height - _CabinFit.tail - 6;
+    if (bottom - top < 16) return;
     for (final left in [true, false]) {
-      final x = left ? 4.0 : size.width - 4;
+      final x = left ? 8.0 : size.width - 8;
+      canvas.drawLine(Offset(x, top), Offset(x, top + (bottom - top) * 0.42), seam);
       canvas.drawLine(
-        Offset(x, size.height * 0.22),
-        Offset(x, size.height * 0.44),
+        Offset(x, top + (bottom - top) * 0.58),
+        Offset(x, bottom),
         seam,
-      );
-      canvas.drawLine(
-        Offset(x, size.height * 0.56),
-        Offset(x, size.height * 0.90),
-        seam,
-      );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(x, size.height * 0.50),
-            width: 4,
-            height: math.max(10, size.height * 0.08),
-          ),
-          const Radius.circular(2),
-        ),
-        pillar,
       );
     }
   }
@@ -520,18 +522,21 @@ class _CabinOutlinePainter extends CustomPainter {
 Path _cabinOutline(Size size) {
   final w = size.width;
   final h = size.height;
-  final taper = math.min(14.0, w * 0.045);
-  final r = math.min(22.0, w * 0.08);
+  final nose = math.min(28.0, h * 0.16);
+  final tail = math.min(18.0, h * 0.12);
+  final side = math.max(1.5, w * 0.008);
   final path = Path();
-  path.moveTo(taper + r, 0.5);
-  path.lineTo(w - taper - r, 0.5);
-  path.arcToPoint(Offset(w - taper, r), radius: Radius.circular(r));
-  path.lineTo(w - 0.5, h - r);
-  path.arcToPoint(Offset(w - r - 0.5, h - 0.5), radius: Radius.circular(r));
-  path.lineTo(r, h - 0.5);
-  path.arcToPoint(Offset(0.5, h - r), radius: Radius.circular(r));
-  path.lineTo(taper, r);
-  path.arcToPoint(Offset(taper + r, 0.5), radius: Radius.circular(r));
+  path.moveTo(w * 0.50, 1.2);
+  path.cubicTo(w * 0.66, 1.2, w * 0.78, nose * 0.22, w * 0.88, nose * 0.70);
+  path.cubicTo(w * 0.96, nose * 0.92, w - side, nose + 2, w - side, nose + 14);
+  path.lineTo(w - side, h - tail - 8);
+  path.cubicTo(w - side, h - tail * 0.35, w * 0.84, h - 7, w * 0.72, h - 3.5);
+  path.quadraticBezierTo(w * 0.61, h - 1.2, w * 0.50, h - 1.2);
+  path.quadraticBezierTo(w * 0.39, h - 1.2, w * 0.28, h - 3.5);
+  path.cubicTo(w * 0.16, h - 7, side, h - tail * 0.35, side, h - tail - 8);
+  path.lineTo(side, nose + 14);
+  path.cubicTo(side, nose + 2, w * 0.04, nose * 0.92, w * 0.12, nose * 0.70);
+  path.cubicTo(w * 0.22, nose * 0.22, w * 0.34, 1.2, w * 0.50, 1.2);
   path.close();
   return path;
 }
@@ -1103,20 +1108,14 @@ class _SeatButtonState extends State<_SeatButton>
     );
   }
 
-  static bool _dark(AlongPalette palette) =>
-      palette.brightness == Brightness.dark;
+  static Color available(AlongPalette palette) => const Color(0xFFFFFFFF);
 
-  static Color available(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF2A2B30) : const Color(0xFFFFFFFF);
+  /// Brand ink, in both themes, so a taken seat stays a filled mark.
+  static Color taken(AlongPalette palette) => const Color(0xFF141210);
 
-  static Color taken(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF32343A) : const Color(0xFFE8E9ED);
+  static Color driver(AlongPalette palette) => taken(palette);
 
-  static Color driver(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF3A3C44) : const Color(0xFFE2E3E8);
-
-  static Color hairline(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF5A5C66) : const Color(0xFFD0D2D8);
+  static Color hairline(AlongPalette palette) => const Color(0xFF141210);
 
   static Color _fill(SeatMapSeat seat, AlongPalette palette) {
     if (seat.isDriver) return driver(palette);
@@ -1249,21 +1248,26 @@ class AlongCabinDiagram extends StatelessWidget {
     final span = columns * seat + (columns - 1) * 8;
     return CustomPaint(
       painter: _CabinOutlinePainter(palette: palette, bold: contrast),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var r = 0; r < rows.length; r++) ...[
-              if (r > 0) const SizedBox(height: 8),
-              _OfferSeatRow(
-                statuses: rows[r],
-                seat: seat,
-                span: span,
-                contrast: contrast,
-              ),
+      child: ClipPath(
+        clipper: _CabinClipper(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: _CabinFit.nose),
+              for (var r = 0; r < rows.length; r++) ...[
+                if (r > 0) const SizedBox(height: 8),
+                _OfferSeatRow(
+                  statuses: rows[r],
+                  seat: seat,
+                  span: span,
+                  contrast: contrast,
+                ),
+              ],
+              const SizedBox(height: _CabinFit.tail),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -1404,99 +1408,107 @@ class _CarSeatPainter extends CustomPainter {
     final selected = seat.status == 'yours';
     final taken =
         seat.isDriver || seat.status == 'occupied' || seat.status == 'blocked';
-    final dark = palette.brightness == Brightness.dark;
-    final Color fill;
-    final Color ink;
-    final Color hairline;
-    final double stroke;
-    if (contrast) {
-      if (selected) {
-        fill = palette.accent;
-        ink = palette.accentInk;
-        hairline = palette.accentInk;
-      } else if (taken) {
-        fill = dark ? const Color(0xFF3A3C44) : const Color(0xFF2C2E33);
-        ink = const Color(0xFFF4F1EA);
-        hairline = dark ? const Color(0xFFC8CAD2) : const Color(0xFF141210);
-      } else {
-        fill = dark ? const Color(0xFF1A1C20) : const Color(0xFFFFFFFF);
-        ink = palette.ink;
-        hairline = palette.ink.withValues(alpha: 0.78);
-      }
-      stroke = 1.6;
-    } else {
-      fill = _SeatButtonState._fill(seat, palette);
-      ink = _SeatButtonState._ink(seat, palette);
-      hairline = selected
-          ? palette.accentInk.withValues(alpha: 0.22)
-          : _SeatButtonState.hairline(palette);
-      stroke = 0.5;
-    }
-    final backColor = contrast
-        ? (selected
-              ? palette.accentInk.withValues(alpha: 0.18)
-              : Color.alphaBlend(
-                  ink.withValues(alpha: taken ? 0.22 : 0.16),
-                  fill,
-                ))
-        : Color.alphaBlend(ink.withValues(alpha: 0.10), fill);
-    final inset = 3.0;
-    final seatW = size.width - inset * 2;
-    final seatH = size.height - inset * 2;
-    final left = inset;
-    final top = inset;
-    final backH = seatH * 0.22;
-    final cushionRect = Rect.fromLTWH(left, top + backH + 3, seatW, seatH - backH - 3);
-    final backRect = Rect.fromLTWH(left + seatW * 0.08, top, seatW * 0.84, backH);
-    const corner = Radius.circular(8);
-    final cushion = RRect.fromRectAndRadius(cushionRect, corner);
-    final back = RRect.fromRectAndRadius(backRect, const Radius.circular(6));
+    final fill = selected
+        ? palette.accent
+        : taken
+        ? _SeatButtonState.taken(palette)
+        : _SeatButtonState.available(palette);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _vectorStroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..color = const Color(0xFF141210);
+    final inset = _vectorStroke;
+    final bounds = Rect.fromLTWH(
+      inset,
+      inset,
+      size.width - inset * 2,
+      size.height - inset * 2,
+    );
+    final backH = bounds.height * 0.22;
+    final back = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        bounds.left + bounds.width * 0.10,
+        bounds.top,
+        bounds.width * 0.80,
+        backH,
+      ),
+      Radius.circular(backH / 2),
+    );
+    final pan = _seatPan(
+      Rect.fromLTWH(
+        bounds.left,
+        bounds.top + backH + bounds.height * 0.06,
+        bounds.width,
+        bounds.height - backH - bounds.height * 0.06,
+      ),
+    );
     final squash = depress.clamp(0.0, 1.0);
     if (squash > 0) {
-      final pivot = Offset(cushionRect.center.dx, cushionRect.bottom);
+      final pivot = Offset(bounds.center.dx, bounds.bottom);
       canvas.save();
       canvas.translate(pivot.dx, pivot.dy);
       canvas.scale(1, 1 - 0.12 * squash);
       canvas.translate(-pivot.dx, -pivot.dy);
     }
-    canvas.drawRRect(back, Paint()..color = backColor);
-    canvas.drawRRect(
-      back,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..color = hairline,
-    );
-    canvas.drawRRect(cushion, Paint()..color = fill);
-    canvas.drawRRect(
-      cushion,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..color = hairline,
-    );
-    if (contrast && drawWheel && seat.isDriver) {
-      final hub = Offset(cushionRect.center.dx, cushionRect.center.dy);
+    final fillPaint = Paint()..color = fill;
+    canvas.drawRRect(back, fillPaint);
+    canvas.drawRRect(back, stroke);
+    canvas.drawPath(pan, fillPaint);
+    canvas.drawPath(pan, stroke);
+    if (drawWheel && seat.isDriver) {
+      final hub = pan.getBounds().center;
       final wheel = Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = math.max(1.4, seatW * 0.06)
-        ..color = ink;
-      canvas.drawCircle(hub, seatW * 0.16, wheel);
-      canvas.drawCircle(hub, seatW * 0.04, Paint()..color = ink);
+        ..strokeWidth = _vectorStroke
+        ..color = const Color(0xFFF7F4EF);
+      canvas.drawCircle(hub, bounds.width * 0.12, wheel);
+      canvas.drawCircle(hub, bounds.width * 0.035, Paint()..color = wheel.color);
     }
     if (squash > 0) canvas.restore();
     if (held > 0) {
-      final ring = RRect.fromRectAndRadius(cushionRect.deflate(3), corner);
-      final metric = (Path()..addRRect(ring)).computeMetrics().first;
+      final metric = pan.computeMetrics().first;
       canvas.drawPath(
         metric.extractPath(0, metric.length * held.clamp(0.0, 1.0)),
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 2
+          ..strokeWidth = _vectorStroke
           ..strokeCap = StrokeCap.round
           ..color = palette.accent,
       );
     }
+  }
+
+  /// Rounded pan. The sides step out for the armrests, then back in.
+  Path _seatPan(Rect rect) {
+    final w = rect.width;
+    final h = rect.height;
+    final l = rect.left;
+    final t = rect.top;
+    final r = rect.right;
+    final b = rect.bottom;
+    final path = Path();
+    path.moveTo(l + w * 0.20, t);
+    path.lineTo(r - w * 0.20, t);
+    path.quadraticBezierTo(r - w * 0.02, t, r, t + h * 0.14);
+    path.lineTo(r, t + h * 0.32);
+    path.quadraticBezierTo(
+      r - w * 0.12,
+      t + h * 0.42,
+      r - w * 0.05,
+      t + h * 0.54,
+    );
+    path.lineTo(r - w * 0.05, b - h * 0.22);
+    path.quadraticBezierTo(r - w * 0.05, b, r - w * 0.24, b);
+    path.lineTo(l + w * 0.24, b);
+    path.quadraticBezierTo(l + w * 0.05, b, l + w * 0.05, b - h * 0.22);
+    path.lineTo(l + w * 0.05, t + h * 0.54);
+    path.quadraticBezierTo(l + w * 0.12, t + h * 0.42, l, t + h * 0.32);
+    path.lineTo(l, t + h * 0.14);
+    path.quadraticBezierTo(l + w * 0.02, t, l + w * 0.20, t);
+    path.close();
+    return path;
   }
 
   @override

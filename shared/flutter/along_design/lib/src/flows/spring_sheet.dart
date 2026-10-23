@@ -17,11 +17,21 @@ class AlongSpringSheet extends StatefulWidget {
     this.fraction,
     this.snaps,
     this.title,
-  }) : assert(restingHeight != null || fraction != null || snaps != null);
+    this.shrinkWrap = false,
+  }) : assert(
+         shrinkWrap ||
+             restingHeight != null ||
+             fraction != null ||
+             snaps != null,
+       );
 
   final Widget child;
   final double? restingHeight;
   final double? fraction;
+
+  /// Size the panel to [child]. Home uses this so the sheet does not
+  /// reserve a tall empty band under a short list.
+  final bool shrinkWrap;
 
   /// Resting fractions, collapsed first. A flick on the handle moves one snap.
   /// Tests and the gallery stay on the first snap.
@@ -94,6 +104,7 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.shrinkWrap) return _shrinkWrapped(context);
     final palette = AlongPalette.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -251,6 +262,56 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
           },
         );
       },
+    );
+  }
+
+  /// Panel height follows the child. No snap, no empty expanded body.
+  Widget _shrinkWrapped(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final shape = AlongCraft.borderVertical(top: 28);
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AlongSheetFade(),
+          DecoratedBox(
+            decoration: ShapeDecoration(
+              shadows: AlongElevation.sheet(palette.ink),
+              shape: shape,
+            ),
+            child: ClipPath(
+              clipper: ShapeBorderClipper(shape: shape),
+              child: ColoredBox(
+                color: palette.surface,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      key: const Key('sheet_handle'),
+                      padding: const EdgeInsets.only(top: 8, bottom: 4),
+                      child: Center(
+                        child: Container(
+                          width: 36,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: palette.ink.withValues(alpha: 0.18),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                      child: widget.child,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -107,10 +107,8 @@ class AlongFlowHome extends StatelessWidget {
       builder: (context, extent) {
         return Scaffold(
           backgroundColor: palette.mapLand,
-          body: LayoutBuilder(
-            builder: (context, constraints) {
-              final fraction = constraints.maxHeight >= 760 ? 0.54 : 0.67;
-              final sheetTop = constraints.maxHeight * (1 - fraction);
+          body: Builder(
+            builder: (context) {
               Widget map = const AlongCityMap();
               if (extent != 0) {
                 map = Transform.translate(
@@ -118,6 +116,20 @@ class AlongFlowHome extends StatelessWidget {
                   child: map,
                 );
               }
+              final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+              final dock = ColoredBox(
+                color: palette.surface,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.paddingOf(context).bottom,
+                  ),
+                  child: const AlongTabBar(),
+                ),
+              );
+              final sheet = AlongSpringSheet(
+                shrinkWrap: true,
+                child: const _HomeSheetBody(),
+              );
               return Stack(
                 children: [
                   Positioned.fill(child: map),
@@ -151,28 +163,29 @@ class AlongFlowHome extends StatelessWidget {
                     right: 72,
                     child: AlongGreeting(phase: AlongDayPhase.afternoon),
                   ),
-                  Positioned(
-                    left: 16,
-                    right: 16,
-                    top: sheetTop - 60,
-                    child: const AlongTabBar(),
-                  ),
-                  Positioned.fill(
-                    child: AlongSpringSheet(
-                      fraction: fraction,
-                      snaps: [fraction, 0.88],
-                      child: Builder(
-                        builder: (context) {
-                          const body = _HomeSheetBody();
-                          if (MediaQuery.textScalerOf(context).scale(1) <=
-                              1.05) {
-                            return body;
-                          }
-                          return const SingleChildScrollView(child: body);
-                        },
+                  if (roomy)
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SingleChildScrollView(
+                        reverse: true,
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [sheet, dock],
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [sheet, dock],
                       ),
                     ),
-                  ),
                 ],
               );
             },
@@ -654,15 +667,11 @@ class _LiveSheet extends StatelessWidget {
         Builder(
           builder: (context) {
             final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
-            final eta = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AlongRollingDigits(
-                  text: '4-6',
-                  suffix: ' min',
-                  style: AlongType.display(palette),
-                ),
-              ],
+            final eta = Text(
+              '4-6 min',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.display(palette),
             );
             final place = Text(
               'Nyanya',
@@ -688,13 +697,8 @@ class _LiveSheet extends StatelessWidget {
           children: [
             _LiveAction(icon: AlongIcons.call, label: 'Call'),
             _LiveAction(icon: AlongIcons.chat, label: 'Message'),
-            _LiveAction(icon: AlongIcons.share, label: 'Share'),
             _LiveAction(icon: AlongIcons.shield, label: 'Safety'),
-            _LiveAction(
-              icon: AlongIcons.receipt,
-              label: 'Report',
-              semanticsLabel: 'Report an issue',
-            ),
+            _LiveOverflow(),
           ],
         ),
       ],
@@ -722,15 +726,10 @@ class _PlateChip extends StatelessWidget {
 }
 
 class _LiveAction extends StatelessWidget {
-  const _LiveAction({
-    required this.icon,
-    required this.label,
-    this.semanticsLabel,
-  });
+  const _LiveAction({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
-  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -738,7 +737,7 @@ class _LiveAction extends StatelessWidget {
     return Expanded(
       child: Semantics(
         button: true,
-        label: semanticsLabel ?? label,
+        label: label,
         child: InkWell(
           onTap: _noop,
           child: Column(
@@ -770,6 +769,65 @@ class _LiveAction extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LiveOverflow extends StatelessWidget {
+  const _LiveOverflow();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final style = AlongType.body(palette);
+    return PopupMenuButton<String>(
+      tooltip: 'More',
+      padding: EdgeInsets.zero,
+      offset: const Offset(0, 52),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      onSelected: (_) {},
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'share',
+          child: Text('Share', style: style),
+        ),
+        const PopupMenuItem(
+          value: 'report',
+          child: Text('Report an issue'),
+        ),
+      ],
+      child: SizedBox(
+        width: 56,
+        child: Column(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: palette.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: AlongElevation.hairline(palette.ink),
+              ),
+              child: AlongIcon(AlongIcons.dots, size: 20, color: palette.ink),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'More',
+              maxLines: MediaQuery.textScalerOf(context).scale(1) > 1.05
+                  ? 2
+                  : 1,
+              softWrap: MediaQuery.textScalerOf(context).scale(1) > 1.05,
+              textAlign: TextAlign.center,
+              style: AlongType.caption(palette).copyWith(
+                color: palette.ink,
+                fontWeight: FontWeight.w600,
+                height: 1.1,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -932,23 +990,16 @@ class AlongFlowWallet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
     return _Page(
       bottom: const AlongButton(label: 'Pay ₦1,200', onPressed: _noop),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Balance', style: AlongType.caption(palette)),
-          Text(
-            '₦6,400',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.display(palette),
-          ),
-          const SizedBox(height: 16),
-          const _WalletActions(),
-          const SizedBox(height: 8),
-          const Expanded(child: _ActivityCard()),
+          _BalanceCard(),
+          SizedBox(height: 16),
+          _WalletActions(),
+          SizedBox(height: 8),
+          Expanded(child: _ActivityCard()),
         ],
       ),
     );
@@ -1468,73 +1519,48 @@ class AlongFlowRating extends StatelessWidget {
     return Scaffold(
       backgroundColor: palette.bg,
       body: SafeArea(
-        top: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final short = constraints.maxHeight < 700;
             final portrait = short ? 72.0 : 88.0;
             final star = short ? 36.0 : 44.0;
-            return Column(
-              children: [
-                const Expanded(
-                  child: AlongCityMap(mode: AlongCityMapMode.completed),
-                ),
-                ColoredBox(
-                  color: palette.bg,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          16,
-                          portrait / 2 + (short ? 6 : 8),
-                          16,
-                          12,
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Chinedu',
-                              maxLines: 1,
-                              softWrap: false,
-                              textAlign: TextAlign.center,
-                              style: AlongType.heading(palette),
-                            ),
-                            Text(
-                              'Wuse to Nyanya',
-                              maxLines: 1,
-                              softWrap: false,
-                              textAlign: TextAlign.center,
-                              style: AlongType.meta(palette),
-                            ),
-                            SizedBox(height: short ? 8 : 12),
-                            _Stars(filled: 4, size: star),
-                            SizedBox(height: short ? 12 : 16),
-                            const _RatingGrid(),
-                            SizedBox(height: short ? 8 : 12),
-                            const _TipRow(),
-                            SizedBox(height: short ? 8 : 12),
-                            const _NoteField(),
-                            SizedBox(height: short ? 8 : 12),
-                            const _SendThanks(),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: -portrait / 2,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: AlongDriverPortrait(
-                            size: portrait,
-                            verified: true,
-                          ),
-                        ),
-                      ),
-                    ],
+            return SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(16, short ? 12 : 20, 16, 12),
+              child: Column(
+                children: [
+                  Center(
+                    child: AlongDriverPortrait(
+                      size: portrait,
+                      verified: true,
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(height: short ? 8 : 12),
+                  Text(
+                    'Chinedu',
+                    maxLines: 1,
+                    softWrap: false,
+                    textAlign: TextAlign.center,
+                    style: AlongType.heading(palette),
+                  ),
+                  Text(
+                    'Wuse to Nyanya',
+                    maxLines: 1,
+                    softWrap: false,
+                    textAlign: TextAlign.center,
+                    style: AlongType.meta(palette),
+                  ),
+                  SizedBox(height: short ? 8 : 12),
+                  _Stars(filled: 4, size: star),
+                  SizedBox(height: short ? 12 : 16),
+                  const _RatingGrid(),
+                  SizedBox(height: short ? 8 : 12),
+                  const _TipRow(),
+                  SizedBox(height: short ? 8 : 12),
+                  const _NoteField(),
+                  SizedBox(height: short ? 8 : 12),
+                  const _SendThanks(),
+                ],
+              ),
             );
           },
         ),
@@ -1603,37 +1629,48 @@ class _TipRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Row(
-      children: [
-        for (var i = 0; i < _tips.length; i++) ...[
-          if (i > 0) const SizedBox(width: 8),
-          Expanded(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: palette.ink.withValues(
-                    alpha: _tips[i] == '₦200' ? 1 : 0.28,
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    final line = palette.ink.withValues(alpha: 0.28);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: line),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(11),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < _tips.length; i++) ...[
+                if (i > 0) ColoredBox(color: line, child: const SizedBox(width: 1)),
+                Expanded(
+                  child: ColoredBox(
+                    color: _tips[i] == '₦200'
+                        ? palette.ink
+                        : const Color(0x00000000),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        _tips[i],
+                        maxLines: roomy ? 2 : 1,
+                        softWrap: roomy,
+                        textAlign: TextAlign.center,
+                        style: AlongType.label(palette).copyWith(
+                          color: _tips[i] == '₦200'
+                              ? palette.onInk
+                              : palette.ink,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
                   ),
-                  width: _tips[i] == '₦200' ? 1.5 : 1,
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  _tips[i],
-                  maxLines: 1,
-                  softWrap: false,
-                  textAlign: TextAlign.center,
-                  style: AlongType.label(palette).copyWith(
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
-              ),
-            ),
+              ],
+            ],
           ),
-        ],
-      ],
+        ),
+      ),
     );
   }
 }
@@ -3812,27 +3849,103 @@ class _ShareToggle extends StatelessWidget {
   }
 }
 
+class _BalanceCard extends StatelessWidget {
+  const _BalanceCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    const paper = Color(0xFFF7F4EF);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF3C3832),
+              Color(0xFF241F1B),
+              Color(0xFF141210),
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            const Positioned.fill(child: AlongNoise(opacity: 0.07)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const AlongWordmark(color: paper),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Balance',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette).copyWith(color: paper),
+                  ),
+                  Text(
+                    '₦6,400',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.display(palette).copyWith(color: paper),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _WalletActions extends StatelessWidget {
   const _WalletActions();
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    final style = AlongType.label(palette);
-    Widget word(String label) => Text(
-      label,
-      maxLines: 1,
-      softWrap: false,
-      style: style,
-    );
-    return Row(
+    return const Row(
       children: [
-        word('Top up'),
-        const SizedBox(width: 24),
-        word('Send'),
-        const SizedBox(width: 24),
-        word('Pass'),
+        Expanded(child: _WalletAction(icon: AlongIcons.plus, label: 'Top up')),
+        Expanded(child: _WalletAction(icon: AlongIcons.arrowRight, label: 'Send')),
+        Expanded(child: _WalletAction(icon: AlongIcons.receipt, label: 'Pass')),
       ],
+    );
+  }
+}
+
+class _WalletAction extends StatelessWidget {
+  const _WalletAction({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return InkWell(
+      onTap: _noop,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          children: [
+            AlongIcon(icon, size: 24, color: palette.ink),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              maxLines: roomy ? 2 : 1,
+              softWrap: roomy,
+              textAlign: TextAlign.center,
+              style: AlongType.label(palette),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

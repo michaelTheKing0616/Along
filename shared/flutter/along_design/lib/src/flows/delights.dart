@@ -275,8 +275,12 @@ class AlongTabBarState extends State<AlongTabBar>
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return AlongFrost(
-      radius: 24,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: palette.ink.withValues(alpha: 0.12)),
+        ),
+      ),
       child: SizedBox(
         height: 48,
         child: Row(

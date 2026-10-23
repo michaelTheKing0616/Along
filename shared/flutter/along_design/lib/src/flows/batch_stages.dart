@@ -102,7 +102,7 @@ class _DepartureRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final ticks = (item.demand * 5).round().clamp(0, 5);
+    final demand = item.demand.clamp(0.0, 1.0);
     return SizedBox(
       height: 36,
       child: Row(
@@ -142,20 +142,21 @@ class _DepartureRow extends StatelessWidget {
               ),
             ),
           ),
-          for (var i = 0; i < 5; i++)
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Container(
-                width: 6,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: i < ticks
-                      ? palette.ink.withValues(alpha: 0.2 + 0.16 * i)
-                      : palette.ink.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(2),
-                ),
+          SizedBox(
+            width: 48,
+            height: 6,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: demand,
+                minHeight: 6,
+                backgroundColor: palette.ink.withValues(alpha: 0.12),
+                color: item.best
+                    ? palette.accent
+                    : palette.ink.withValues(alpha: 0.72),
               ),
             ),
+          ),
         ],
       ),
     );

@@ -203,6 +203,11 @@ abstract final class AlongIcons {
     fontFamily: _family,
     fontPackage: _package,
   );
+  static const dots = IconData(
+    0xe1ff,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
 
   /// Fill layer that sits under the stroke in the duotone font.
   static const tone = <int, int>{
@@ -245,6 +250,7 @@ abstract final class AlongIcons {
     0xe6e1: 0xe6e0,
     0xe5af: 0xe5ae,
     0xe479: 0xe478,
+    0xe1ff: 0xe1fe,
   };
 }
 
