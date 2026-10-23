@@ -1,6 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../components/along_button.dart';
 import '../components/seat_map.dart';
@@ -13,6 +13,7 @@ import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
 import 'demo_adapter.dart';
+import 'driver_portrait.dart';
 import 'trip_machine.dart';
 
 void _noop() {}
@@ -33,29 +34,77 @@ class _PickupBody extends StatefulWidget {
 }
 
 class _PickupBodyState extends State<_PickupBody> {
+  final _map = MapController();
   DemoLandmark _landmark = DemoAdapter.landmarks.first;
-  var _offset = Offset.zero;
-  var _snapped = true;
+  var _dropped = false;
+  var _lifted = false;
+
+  @override
+  void dispose() {
+    _map.dispose();
+    super.dispose();
+  }
 
   void _choose(DemoLandmark mark) {
     setState(() {
       _landmark = mark;
-      _offset = Offset.zero;
-      _snapped = true;
+      _dropped = false;
+      _lifted = false;
     });
+    _moveTo(LatLng(mark.lat, mark.lng));
     AlongHaptics.selection(context);
+  }
+
+  void _moveTo(LatLng at) {
+    try {
+      _map.move(at, _map.camera.zoom);
+    } catch (_) {}
+  }
+
+  /// The pin stays put. The finger drags the map that sits under it.
+  void _panBy(Offset delta) {
+    try {
+      final camera = _map.camera;
+      final screenCenter = camera.nonRotatedSize.center(Offset.zero);
+      final next = camera.screenOffsetToLatLng(screenCenter - delta);
+      _map.move(next, camera.zoom);
+    } catch (_) {}
+  }
+
+  void _settle() {
+    DemoLandmark? hit;
+    try {
+      final at = _map.camera.center;
+      hit = DemoAdapter.snap(at.latitude, at.longitude);
+    } catch (_) {}
+    setState(() {
+      _lifted = false;
+      if (hit == null) {
+        _dropped = true;
+      } else {
+        _dropped = false;
+        _landmark = hit;
+      }
+    });
+    if (hit != null) _moveTo(LatLng(hit.lat, hit.lng));
   }
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final label = _snapped ? _landmark.label : 'Dropped pin';
+    final play = AlongMotionPolicy.play(context);
+    final label = _dropped ? 'Dropped pin' : _landmark.label;
+    final gate = DemoAdapter.landmarks.first;
     return Scaffold(
       backgroundColor: palette.mapLand,
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          const Positioned.fill(
+          Positioned.fill(
             child: AlongCityMap(
+              controller: _map,
+              center: LatLng(gate.lat, gate.lng),
+              zoom: 17,
               sheetInset: 0,
               bare: true,
               demoLabel: false,
@@ -64,16 +113,19 @@ class _PickupBodyState extends State<_PickupBody> {
           ),
           Align(
             alignment: Alignment.center,
-            child: Transform.translate(
-              offset: _offset,
-              child: GestureDetector(
-                key: const Key('pickup_pin'),
-                onPanUpdate: (details) {
-                  setState(() {
-                    _offset += details.delta;
-                    _snapped = false;
-                  });
-                },
+            child: GestureDetector(
+              key: const Key('pickup_pin'),
+              behavior: HitTestBehavior.opaque,
+              onPanStart: (_) {
+                if (!_lifted) setState(() => _lifted = true);
+              },
+              onPanUpdate: (details) => _panBy(details.delta),
+              onPanEnd: (_) => _settle(),
+              onPanCancel: _settle,
+              child: AnimatedSlide(
+                offset: play && _lifted ? const Offset(0, -0.28) : Offset.zero,
+                duration: play ? AlongDurations.sheet : Duration.zero,
+                curve: AlongCurves.settle,
                 child: Semantics(label: label, child: const _Pin()),
               ),
             ),
@@ -135,7 +187,7 @@ class _PickupBodyState extends State<_PickupBody> {
                   for (final mark in DemoAdapter.landmarks)
                     _LandmarkChip(
                       mark: mark,
-                      selected: _snapped && mark.id == _landmark.id,
+                      selected: !_dropped && mark.id == _landmark.id,
                       onTap: () => _choose(mark),
                     ),
                 ],
@@ -269,59 +321,83 @@ class AlongFlowQuote extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final quote = DemoAdapter.quote;
     final clock = _clock(quote.expiresIn);
-    return _JourneyPage(
-      bottom: AlongButton(
-        key: const Key('quote_accept'),
-        label: 'Confirm fare',
-        onPressed: _noop,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final roomy = _roomy(context);
+    return Scaffold(
+      backgroundColor: palette.mapLand,
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          Row(
-            children: [
-              Expanded(child: Text('Quote', style: AlongType.display(palette))),
-              const AlongDemoMark(),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Wuse Market to Nyanya',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.body(palette)
-                .copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 12),
-          _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
-          _FareLine(label: 'Seat', value: alongNaira(quote.seatMinor)),
-          _FareLine(label: 'Fees', value: alongNaira(quote.feesMinor)),
-          _FareLine(
-            label: 'Wallet credit',
-            value: alongNaira(-quote.walletCreditMinor),
-          ),
-          const SizedBox(height: 8),
-          _FareLine(
-            label: 'Total',
-            value: alongNaira(quote.totalMinor),
-            strong: true,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Expires in $clock',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.body(palette).copyWith(
-              fontWeight: FontWeight.w600,
-              fontFeatures: const [FontFeature.tabularFigures()],
+          const Positioned.fill(
+            child: AlongCityMap(
+              mode: AlongCityMapMode.trip,
+              progress: 0,
+              sheetInset: 0.62,
+              demoLabel: false,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            quote.cancelTerms,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(color: palette.ink),
+          _AnchoredSheet(
+            child: _SolidCard(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('Quote', style: AlongType.display(palette)),
+                      ),
+                      const AlongDemoMark(),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Wuse Market to Nyanya',
+                    maxLines: roomy ? 2 : 1,
+                    softWrap: roomy,
+                    style: AlongType.body(palette)
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 12),
+                  _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
+                  _FareLine(label: 'Seat', value: alongNaira(quote.seatMinor)),
+                  _FareLine(label: 'Fees', value: alongNaira(quote.feesMinor)),
+                  _FareLine(
+                    label: 'Wallet credit',
+                    value: alongNaira(-quote.walletCreditMinor),
+                  ),
+                  const SizedBox(height: 8),
+                  _FareLine(
+                    label: 'Total',
+                    value: alongNaira(quote.totalMinor),
+                    strong: true,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Expires in $clock',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.body(palette).copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    quote.cancelTerms,
+                    maxLines: roomy ? 2 : 1,
+                    softWrap: roomy,
+                    style: AlongType.caption(palette)
+                        .copyWith(color: palette.ink),
+                  ),
+                  const SizedBox(height: 12),
+                  const AlongButton(
+                    key: Key('quote_accept'),
+                    label: 'Confirm fare',
+                    onPressed: _noop,
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -382,16 +458,17 @@ class AlongFlowMatching extends StatelessWidget {
     return Scaffold(
       backgroundColor: palette.mapLand,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const Positioned.fill(
             child: AlongCityMap(
+              center: AlongCityMap.wuseMarket,
               sheetInset: 0,
               bare: true,
               demoLabel: false,
-              fix: AlongFix.hidden,
+              fix: AlongFix.approximate,
             ),
           ),
-          const Align(alignment: Alignment(0, 0.2), child: _SearchPulse()),
           Positioned(
             top: 12,
             left: 12,
@@ -438,89 +515,6 @@ class AlongFlowMatching extends StatelessWidget {
   }
 }
 
-class _SearchPulse extends StatefulWidget {
-  const _SearchPulse();
-
-  @override
-  State<_SearchPulse> createState() => _SearchPulseState();
-}
-
-class _SearchPulseState extends State<_SearchPulse>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _motion;
-
-  @override
-  void initState() {
-    super.initState();
-    _motion = AnimationController(
-      vsync: this,
-      duration: AlongDurations.hold,
-      value: 0.35,
-    );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final reduced = AlongMotionPolicy.reduced(context);
-    // One rest pose. "Looking nearby" is the status, not a loop.
-    _motion.value = reduced ? 0.2 : 0.35;
-  }
-
-  @override
-  void dispose() {
-    _motion.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return AnimatedBuilder(
-      animation: _motion,
-      builder: (context, _) {
-        final reduced = AlongMotionPolicy.reduced(context);
-        final play = AlongMotionPolicy.play(context);
-        final t = _motion.value;
-        final opacity = reduced ? 0.35 + 0.65 * t : 1.0;
-        final angle = (!reduced && play) ? t * math.pi * 2 : 0.0;
-        return Opacity(
-          opacity: opacity,
-          child: Transform.rotate(
-            angle: angle,
-            child: CustomPaint(
-              size: const Size(128, 128),
-              painter: _RingPainter(color: palette.ink),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _RingPainter extends CustomPainter {
-  const _RingPainter({required this.color});
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..color = color.withValues(alpha: 0.28);
-    canvas.drawCircle(center, 28, paint);
-    canvas.drawCircle(center, 46, paint..color = color.withValues(alpha: 0.16));
-    canvas.drawCircle(center, 6, Paint()..color = color);
-  }
-
-  @override
-  bool shouldRepaint(covariant _RingPainter oldDelegate) =>
-      oldDelegate.color != color;
-}
-
 /// No driver. Widen, schedule, or switch to keke.
 class AlongFlowRecovery extends StatelessWidget {
   const AlongFlowRecovery({super.key});
@@ -528,12 +522,29 @@ class AlongFlowRecovery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
+    final secondary = [
+      const AlongButton(
+        key: Key('schedule_ride'),
+        label: 'Schedule',
+        variant: AlongButtonVariant.secondary,
+        onPressed: _noop,
+      ),
+      const AlongButton(
+        key: Key('try_keke'),
+        label: 'Try keke',
+        variant: AlongButtonVariant.secondary,
+        onPressed: _noop,
+      ),
+    ];
     return Scaffold(
       backgroundColor: palette.mapLand,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const Positioned.fill(
             child: AlongCityMap(
+              center: AlongCityMap.wuseMarket,
               sheetInset: 0,
               bare: true,
               demoLabel: false,
@@ -568,19 +579,20 @@ class AlongFlowRecovery extends StatelessWidget {
                     onPressed: _noop,
                   ),
                   const SizedBox(height: 8),
-                  const AlongButton(
-                    key: Key('schedule_ride'),
-                    label: 'Schedule',
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: _noop,
-                  ),
-                  const SizedBox(height: 8),
-                  const AlongButton(
-                    key: Key('try_keke'),
-                    label: 'Try keke',
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: _noop,
-                  ),
+                  if (roomy) ...[
+                    for (final button in secondary) ...[
+                      button,
+                      const SizedBox(height: 8),
+                    ],
+                  ] else
+                    Row(
+                      children: [
+                        for (var i = 0; i < secondary.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 8),
+                          Expanded(child: secondary[i]),
+                        ],
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -598,36 +610,82 @@ class AlongFlowTripPin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _JourneyPage(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text('Trip PIN', style: AlongType.display(palette)),
+    final roomy = _roomy(context);
+    final header = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text('Trip PIN', style: AlongType.display(palette)),
+            ),
+            const AlongDemoMark(),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Wuse Market to Nyanya',
+          maxLines: roomy ? 2 : 1,
+          softWrap: roomy,
+          style: AlongType.body(palette).copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Show this when the driver arrives',
+          maxLines: roomy ? 2 : 1,
+          softWrap: roomy,
+          style: AlongType.body(palette),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            const AlongDriverPortrait(size: 48, verified: true),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Chinedu',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.title(palette).copyWith(height: 1.1),
+                  ),
+                  Text(
+                    'ABC-123-XY',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette).copyWith(
+                      color: palette.ink,
+                      fontWeight: FontWeight.w600,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ],
               ),
-              const AlongDemoMark(),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Wuse Market to Nyanya',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.body(palette)
-                .copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Show this when the driver arrives',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.body(palette),
-          ),
-          const SizedBox(height: 24),
-          const Center(child: _PinReadout(code: DemoAdapter.pin)),
-        ],
+            ),
+          ],
+        ),
+      ],
+    );
+    final digits = const Center(child: _PinReadout(code: DemoAdapter.pin));
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: roomy
+              ? SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [header, const SizedBox(height: 28), digits],
+                  ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [header, const SizedBox(height: 36), digits],
+                ),
+        ),
       ),
     );
   }
@@ -678,17 +736,19 @@ class _PinBox extends StatelessWidget {
     final scale = _roomy(context)
         ? MediaQuery.textScalerOf(context).scale(1)
         : 1.0;
+    final wide = MediaQuery.sizeOf(context).width >= 340;
     return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 12, hairline: true),
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: SizedBox(
-        width: 56 * scale,
-        height: 64 * scale,
+        width: (wide ? 72 : 62) * scale,
+        height: (wide ? 112 : 96) * scale,
         child: Center(
           child: Text(
             digit,
             maxLines: 1,
             softWrap: false,
-            style: AlongType.numeric(palette).copyWith(fontSize: 28),
+            style: AlongType.numeric(palette)
+                .copyWith(fontSize: wide ? 48 : 40),
           ),
         ),
       ),
@@ -739,56 +799,61 @@ class _DriverBodyState extends State<_DriverBody> {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final verified = _phase.verified;
-    final roomy = _roomy(context);
-    return _JourneyPage(
-      bottom: AlongButton(
-        key: const Key('verify_pin'),
-        label: verified ? 'PIN matched' : 'Verify PIN',
-        onPressed: verified ? null : _verify,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    final column = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text('Your trip', style: AlongType.display(palette)),
+            ),
+            const AlongDemoMark(),
+          ],
+        ),
+        const SizedBox(height: 8),
+        const _DriverSteps(),
+        const SizedBox(height: 8),
+        Text(
+          'Enter the rider\'s PIN',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.body(palette).copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 12),
+        Center(child: _PinSlots(code: _digits)),
+        if (_phase.rejected) ...[
+          const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(
-                child: Text('Your trip', style: AlongType.display(palette)),
+              Icon(AlongIcons.close, size: 20, color: palette.roles.error),
+              const SizedBox(width: 6),
+              Text(
+                'Wrong PIN',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.caption(palette)
+                    .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
               ),
-              const AlongDemoMark(),
             ],
           ),
-          const SizedBox(height: 8),
-          const _DriverSteps(),
-          const SizedBox(height: 8),
-          Text(
-            'Enter the rider\'s PIN',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.body(palette)
-                .copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 12),
-          Center(child: _PinSlots(code: _digits)),
-          if (_phase.rejected) ...[
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(AlongIcons.close, size: 20, color: palette.roles.error),
-                const SizedBox(width: 6),
-                Text(
-                  'Wrong PIN',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(
-                    palette,
-                  ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-          ],
-          if (!roomy) const Spacer(),
-          _Keypad(onKey: _press),
         ],
+        const SizedBox(height: 12),
+        _Keypad(onKey: _press),
+        const SizedBox(height: 12),
+        AlongButton(
+          key: const Key('verify_pin'),
+          label: verified ? 'PIN matched' : 'Verify PIN',
+          onPressed: verified ? null : _verify,
+        ),
+      ],
+    );
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: SingleChildScrollView(child: column),
+        ),
       ),
     );
   }
@@ -930,9 +995,8 @@ class AlongFlowNav extends StatelessWidget {
         children: [
           const Positioned.fill(
             child: AlongCityMap(
-              mode: AlongCityMapMode.trip,
+              mode: AlongCityMapMode.nav,
               progress: 0.42,
-              sheetInset: 0.18,
               fix: AlongFix.stale,
               demoLabel: false,
             ),
@@ -959,13 +1023,6 @@ class AlongFlowNav extends StatelessWidget {
                     style: AlongType.body(palette)
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
-                  Text(
-                    gps.ageLabel,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette)
-                        .copyWith(color: palette.ink),
-                  ),
                 ],
               ),
             ),
@@ -984,14 +1041,11 @@ class AlongFlowReceipt extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final quote = DemoAdapter.quote;
-    return _JourneyPage(
-      bottom: const AlongButton(
-        key: Key('report_issue'),
-        label: 'Report an issue',
-        variant: AlongButtonVariant.secondary,
-        onPressed: _noop,
-      ),
+    final roomy = _roomy(context);
+    return _CenteredCard(
+      top: true,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -1005,8 +1059,8 @@ class AlongFlowReceipt extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Wuse Market to Nyanya',
-            maxLines: 1,
-            softWrap: false,
+            maxLines: roomy ? 2 : 1,
+            softWrap: roomy,
             style: AlongType.body(palette)
                 .copyWith(fontWeight: FontWeight.w600),
           ),
@@ -1034,6 +1088,13 @@ class AlongFlowReceipt extends StatelessWidget {
             softWrap: false,
             style: AlongType.caption(palette).copyWith(color: palette.ink),
           ),
+          const SizedBox(height: 12),
+          const AlongButton(
+            key: Key('report_issue'),
+            label: 'Report an issue',
+            variant: AlongButtonVariant.secondary,
+            onPressed: _noop,
+          ),
         ],
       ),
     );
@@ -1047,12 +1108,16 @@ class AlongFlowNotices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _JourneyPage(
-      bottom: const AlongButton(
-        key: Key('notices_retry'),
-        label: 'Try again',
-        onPressed: _noop,
-      ),
+    final roomy = _roomy(context);
+    final primary = DemoAdapter.notices
+        .where((notice) => notice.label == 'Payment failed')
+        .map((notice) => notice.label)
+        .first;
+    final rest = [
+      for (final notice in DemoAdapter.notices)
+        if (notice.label != primary) notice.label,
+    ];
+    return _TopCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1060,16 +1125,69 @@ class AlongFlowNotices extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'One notice at a time in the app',
-            maxLines: 1,
-            softWrap: false,
+            maxLines: roomy ? 2 : 1,
+            softWrap: roomy,
             style: AlongType.caption(palette).copyWith(color: palette.ink),
           ),
           const SizedBox(height: 12),
-          for (final notice in DemoAdapter.notices) ...[
-            _NoticeBanner(label: notice.label),
-            const SizedBox(height: 8),
+          _SolidCard(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _NoticeBanner(label: primary),
+                const SizedBox(height: 12),
+                const AlongButton(
+                  key: Key('notices_retry'),
+                  label: 'Try again',
+                  onPressed: _noop,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          for (final label in rest) ...[
+            _QuietNotice(label: label),
+            const SizedBox(height: 6),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _QuietNotice extends StatelessWidget {
+  const _QuietNotice({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final role = _noticeRole(palette, label);
+    final roomy = _roomy(context);
+    return Semantics(
+      label: label,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 36),
+        child: Row(
+          children: [
+            Icon(role.icon, size: 20, color: role.color),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: roomy ? 2 : 1,
+                softWrap: roomy,
+                style: AlongType.caption(palette).copyWith(
+                  color: palette.ink,
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1161,62 +1279,62 @@ class _SettingsBodyState extends State<_SettingsBody> {
     final palette = AlongPalette.of(context);
     final reduced = AlongMotionPolicy.reduced(context);
     final roomy = _roomy(context);
-    return _JourneyPage(
-      bottom: AlongButton(
-        key: const Key('haptics_try'),
-        label: 'Test haptic',
-        variant: AlongButtonVariant.secondary,
-        onPressed: () => AlongHaptics.success(context),
-      ),
+    return _TopCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Settings', style: AlongType.display(palette)),
-          const SizedBox(height: 16),
-          DecoratedBox(
-            decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 56),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: roomy ? 8 : 0,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Haptics',
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.body(palette)
-                            .copyWith(fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 64,
-                      height: 48,
-                      child: FittedBox(
-                        child: Switch(
-                          key: const Key('haptics_switch'),
-                          value: AlongHaptics.enabled,
-                          onChanged: (value) {
-                            setState(() => AlongHaptics.enabled = value);
-                          },
+          const SizedBox(height: 12),
+          _SolidCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Haptics',
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.body(palette)
+                              .copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: FittedBox(
+                          child: Switch(
+                            key: const Key('haptics_switch'),
+                            value: AlongHaptics.enabled,
+                            onChanged: (value) {
+                              setState(() => AlongHaptics.enabled = value);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 4),
+                Text(
+                  reduced ? 'Reduce motion is on' : 'Reduce motion uses fades',
+                  maxLines: roomy ? 2 : 1,
+                  softWrap: roomy,
+                  style: AlongType.caption(palette)
+                      .copyWith(color: palette.ink),
+                ),
+                const SizedBox(height: 12),
+                AlongButton(
+                  key: const Key('haptics_try'),
+                  label: 'Test haptic',
+                  variant: AlongButtonVariant.secondary,
+                  onPressed: () => AlongHaptics.success(context),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            reduced ? 'Reduce motion is on' : 'Reduce motion uses fades',
-            maxLines: roomy ? 2 : 1,
-            softWrap: roomy,
-            style: AlongType.caption(palette).copyWith(color: palette.ink),
           ),
         ],
       ),
@@ -1224,11 +1342,60 @@ class _SettingsBodyState extends State<_SettingsBody> {
   }
 }
 
-class _JourneyPage extends StatelessWidget {
-  const _JourneyPage({required this.child, this.bottom});
+class _AnchoredSheet extends StatelessWidget {
+  const _AnchoredSheet({required this.child});
 
   final Widget child;
-  final Widget? bottom;
+
+  @override
+  Widget build(BuildContext context) {
+    final roomy = _roomy(context);
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          child: roomy
+              ? SingleChildScrollView(reverse: true, child: child)
+              : child,
+        ),
+      ),
+    );
+  }
+}
+
+class _CenteredCard extends StatelessWidget {
+  const _CenteredCard({required this.child, this.top = false});
+
+  final Widget child;
+  final bool top;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
+    final card = _SolidCard(child: child);
+    final placed = top
+        ? Align(alignment: Alignment.topCenter, child: card)
+        : Center(child: card);
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: roomy
+              ? SingleChildScrollView(reverse: !top, child: card)
+              : placed,
+        ),
+      ),
+    );
+  }
+}
+
+class _TopCard extends StatelessWidget {
+  const _TopCard({required this.child});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -1239,16 +1406,9 @@ class _JourneyPage extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (roomy)
-                Expanded(child: SingleChildScrollView(child: child))
-              else
-                Expanded(child: child),
-              if (bottom != null) ...[const SizedBox(height: 12), bottom!],
-            ],
-          ),
+          child: roomy
+              ? SingleChildScrollView(child: child)
+              : Align(alignment: Alignment.topCenter, child: child),
         ),
       ),
     );

@@ -31,13 +31,18 @@ void main() {
 
     final pin = find.byKey(const Key('pickup_pin'));
     final gesture = await tester.startGesture(tester.getCenter(pin));
-    await gesture.moveBy(const Offset(0, -36));
+    await gesture.moveBy(const Offset(0, -120));
+    await tester.pump();
+    expect(
+      tester.widget<Text>(find.byKey(const Key('pickup_label'))).data,
+      'Banex entrance',
+    );
+    await gesture.up();
     await tester.pump();
     expect(
       tester.widget<Text>(find.byKey(const Key('pickup_label'))).data,
       'Dropped pin',
     );
-    await gesture.up();
   });
 
   testWidgets('a matched PIN asks for a success haptic', (tester) async {

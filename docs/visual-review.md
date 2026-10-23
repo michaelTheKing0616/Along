@@ -44,4 +44,28 @@ Re-render: the same golden set. Notices at 320×640 still shows Try again (the i
 | Loading, success, empty, error | Skeleton and keke refresh, PIN matched, the three empty states, and the notice roles. |
 | Reduced motion and large text | The actions listed in pass 3 stay on screen. |
 
-Honest ceiling: 7 to 8. Quote still has paper between the cancel line and the button. The pickup pin does not move the map. The nav corridor is still the z12 extract. None of that is a 9.
+Honest ceiling on the previous render: 7 to 8. The holes named there are closed in pass 4.
+
+## Pass 4 — every defect, not the top one
+
+Measured on the re-render at 360×800 light. A row is a defect that was visible in the pixels, and the fix.
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| Quote | Paper between the cancel line and Confirm fare. | The sheet is the height of the fare. The button sits 20px under the cancel line. The corridor is behind it, with no car. |
+| Pickup | The pin slid across the screen. The label and the camera disagreed. The address changed during the drag. | The pin stays at the screen center. The map pans under it, lifts while the finger is down, and drops on release. The address updates on settle. The camera opens on Gate 2 at zoom 17. |
+| Nav | The z12 corridor, zoomed out. | Zoom 17 on the neighborhood extract. The z16 tiles are the overzoomed z15 vector. The car sits above the sheet. No Wuse or Nyanya pins on that street. |
+| PIN | A short card floated in empty paper. | The route, the instruction, and Chinedu sit at the top. The four digits follow, at 72×112. |
+| Driver | 340px of paper between the digits and the keypad. The button was pinned under that hole. | Digits, keypad, and Verify PIN are one stack. |
+| Receipt | The cabin floated, and the button was pinned under empty paper. | One top-aligned card. Report an issue follows the payment line. |
+| Day | The timeline card stretched, leaving about 120px of empty surface above Save the day. | The board is the height of the stops. The button follows the board. |
+| Earnings | The trip list stretched into empty surface above Cash out. | The list is the height of the trips. Cash out follows the list. |
+| Seats | Seat perks stretched with a spacer so the note sat in a hole. | Perks are the height of the chips and the note. The hold bar follows them. |
+| Matching | Search rings were a second focal on an empty map. | The rings are gone. The map shows the approximate fix under the status card. |
+| Recovery | Three full-width buttons ate the map. | Widen radius stays the primary. Schedule and Try keke share the next row. |
+| Notices | Seven equal banners, with Try again pinned under empty paper. | Payment failed carries Try again. The other notices are quiet rows. |
+| Settings | Test haptic was pinned under empty paper. | Haptics, the reduce-motion line, and Test haptic are one card at the top. |
+| Live | The sheet repeated the car's "Updated 40s ago". | The age stays on the stale car. The sheet is the ETA and Nyanya. |
+| Home | "Where to?" used a plain rounded rect. | The field uses the squircle. |
+
+Screens that were already a single focal and a single next action were left alone: onboarding, rides, search, rating, SOS, guardian, plate, wallet, online, and offer.

@@ -194,9 +194,9 @@ class _HomeSheetBody extends StatelessWidget {
         Container(
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: palette.ink,
-            borderRadius: BorderRadius.circular(16),
+            shape: AlongCraft.border(16),
           ),
           child: Row(
             children: [
@@ -488,32 +488,28 @@ class AlongFlowSeats extends StatelessWidget {
                     child: _SeatPerks(),
                   )
                 else
-                  const Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: _SeatPerks(),
-                    ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: _SeatPerks(),
                   ),
               ],
             );
-            return Column(
+            final page = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      0,
-                      short ? 4 : 12,
-                      0,
-                      short ? 0 : 12,
-                    ),
-                    child: roomy
-                        ? SingleChildScrollView(child: seatColumn)
-                        : seatColumn,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    0,
+                    short ? 4 : 12,
+                    0,
+                    short ? 0 : 12,
                   ),
+                  child: seatColumn,
                 ),
                 _SeatBar(dense: short),
               ],
             );
+            return SingleChildScrollView(child: page);
           },
         ),
       ),
@@ -919,13 +915,6 @@ class _LiveSheet extends StatelessWidget {
                   label: '4-6 min',
                   style: AlongType.display(palette),
                 ),
-                Text(
-                  'Updated 40s ago',
-                  maxLines: roomy ? 2 : 1,
-                  softWrap: roomy,
-                  style: AlongType.caption(palette)
-                      .copyWith(color: palette.ink, height: 1.1),
-                ),
               ],
             );
             final place = Text(
@@ -1240,24 +1229,32 @@ class AlongFlowDay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _Page(
-      bottom: const AlongButton(label: 'Save the day', onPressed: _noop),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Thursday', style: AlongType.display(palette)),
-          const SizedBox(height: 4),
-          Text(
-            'Nyanya corridor',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.bodyMuted(palette),
-          ),
-          const SizedBox(height: 8),
-          const _DaySummary(),
-          const SizedBox(height: 8),
-          const Expanded(child: _DayBoard()),
-        ],
+    final column = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Thursday', style: AlongType.display(palette)),
+        const SizedBox(height: 4),
+        Text(
+          'Nyanya corridor',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.bodyMuted(palette),
+        ),
+        const SizedBox(height: 8),
+        const _DaySummary(),
+        const SizedBox(height: 8),
+        const _DayBoard(),
+        const SizedBox(height: 12),
+        const AlongButton(label: 'Save the day', onPressed: _noop),
+      ],
+    );
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: SingleChildScrollView(child: column),
+        ),
       ),
     );
   }
@@ -1401,53 +1398,35 @@ class AlongFlowEarnings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _Page(
-      bottom: const AlongButton(label: 'Cash out', onPressed: _noop),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          // The first viewport is the total and the chart. Payout and the
-          // trip list start on the next scroll.
-          return SingleChildScrollView(
-            padding: EdgeInsets.zero,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: constraints.maxHeight,
-                  child: Stack(
-                    children: [
-                      const AlongNoise(opacity: 0.025),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Today', style: AlongType.caption(palette)),
-                          AlongOdometer(
-                            value: 48200,
-                            style: AlongType.display(palette),
-                          ),
-                          Text(
-                            '11 trips · goal ₦60,000',
-                            maxLines: 1,
-                            softWrap: false,
-                            style: AlongType.bodyMuted(palette),
-                          ),
-                          const SizedBox(height: 8),
-                          const _WeekCard(),
-                          const SizedBox(height: 8),
-                          const _EarnBreakdown(),
-                          const SizedBox(height: 8),
-                          const _PassUpsell(),
-                          const SizedBox(height: 8),
-                          const Expanded(child: _EarnList()),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Today', style: AlongType.caption(palette)),
+              AlongOdometer(value: 48200, style: AlongType.display(palette)),
+              Text(
+                '11 trips · goal ₦60,000',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.bodyMuted(palette),
+              ),
+              const SizedBox(height: 8),
+              const _WeekCard(),
+              const SizedBox(height: 8),
+              const _EarnBreakdown(),
+              const SizedBox(height: 8),
+              const _PassUpsell(),
+              const SizedBox(height: 8),
+              const _EarnList(),
+              const SizedBox(height: 12),
+              const AlongButton(label: 'Cash out', onPressed: _noop),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -3303,6 +3282,8 @@ class _EarnList extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: const [
           _EarningTrip(place: 'Nyanya', fare: '₦1,800', tip: '₦200'),
@@ -4606,11 +4587,8 @@ class _DayBoard extends StatelessWidget {
       child: const Padding(
         padding: EdgeInsets.fromLTRB(12, 4, 12, 8),
         child: Column(
-          children: [
-            Expanded(child: _DayTimeline()),
-            SizedBox(height: 4),
-            _DayFooter(),
-          ],
+          mainAxisSize: MainAxisSize.min,
+          children: [_DayTimeline(), SizedBox(height: 4), _DayFooter()],
         ),
       ),
     );
@@ -4662,8 +4640,8 @@ class _DayTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         _DayBand(label: 'Morning', stops: _morning),
         _DayBand(label: 'Afternoon', stops: _afternoon),
@@ -4745,7 +4723,7 @@ class _DayStop extends StatelessWidget {
     final route = AlongType.caption(palette)
         .copyWith(color: palette.ink, fontWeight: FontWeight.w600, height: 1.1);
     return SizedBox(
-      height: 56,
+      height: 48,
       child: Row(
         children: [
           SizedBox(

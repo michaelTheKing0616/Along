@@ -17,7 +17,15 @@ import 'driver_portrait.dart';
 import 'vehicle_art.dart';
 
 /// How the Abuja map is dressed.
-enum AlongCityMapMode { browse, trip, online, routeHero, search, completed }
+enum AlongCityMapMode {
+  browse,
+  trip,
+  online,
+  routeHero,
+  search,
+  completed,
+  nav,
+}
 
 /// How sure the fix is. Approximate and stale are hollow and grey, and
 /// they carry a word. Precise is a filled rider dot plus "You".
@@ -31,8 +39,9 @@ enum AlongFix { precise, approximate, stale, hidden }
 /// white or `#C9CCD2` roads). They are drawn as baked, with no color matrix.
 /// The daily planet stops at z15; neighborhood frames are the z16 slippy
 /// grid, drawn by overzooming that z15 vector so building footprints stay
-/// sharp. The corridor uses native zoom-12 tiles. Online demand is a hex
-/// contour painted in map space, not a blurred heat tile.
+/// sharp. Nav locks zoom 17 so those z16 tiles overzoom. The corridor uses
+/// native zoom-12 tiles. Online demand is a hex contour painted in map
+/// space, not a blurred heat tile.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -43,6 +52,9 @@ class AlongCityMap extends StatelessWidget {
     this.bare = false,
     this.fix = AlongFix.precise,
     this.demoLabel = true,
+    this.controller,
+    this.center,
+    this.zoom,
   });
 
   final AlongCityMapMode mode;
@@ -63,6 +75,15 @@ class AlongCityMap extends StatelessWidget {
   /// Debug builds label simulated positions. Screens that already show a
   /// Demo mark pass false.
   final bool demoLabel;
+
+  /// When set, the screen owns the camera. Pickup pans this under a fixed pin.
+  final MapController? controller;
+
+  /// Replaces the mode's default center. The value is the first camera only.
+  final LatLng? center;
+
+  /// Locks min, max, and the initial zoom. Nav ignores this and stays at 17.
+  final double? zoom;
 
   /// Sits about one tile south of Wuse Market, so the market stays in the
   /// strip above a full-screen sheet on both 360×800 and 320×640.
@@ -107,6 +128,14 @@ class AlongCityMap extends StatelessWidget {
       mode == AlongCityMapMode.trip ||
       mode == AlongCityMapMode.completed;
 
+  bool get _nav => mode == AlongCityMapMode.nav;
+
+  /// Car on the neighborhood street, shifted south so it clears a bottom card.
+  LatLng _navFocus(double progress) {
+    final at = _along(neighborhoodRoute, progress);
+    return LatLng(at.point.latitude - 0.0012, at.point.longitude);
+  }
+
   @override
   Widget build(BuildContext context) {
     return _HeldProgress(
@@ -121,17 +150,23 @@ class AlongCityMap extends StatelessWidget {
     final drawn = AlongMotionPolicy.reduced(context)
         ? 1.0
         : shown.clamp(0.0, 1.0);
-    final route = _wide ? corridorRoute : neighborhoodRoute;
+    final route = _nav
+        ? neighborhoodRoute
+        : _wide
+        ? corridorRoute
+        : neighborhoodRoute;
     final showRoute =
         mode == AlongCityMapMode.trip ||
         mode == AlongCityMapMode.routeHero ||
-        mode == AlongCityMapMode.completed;
+        mode == AlongCityMapMode.completed ||
+        _nav;
     return LayoutBuilder(
       builder: (context, constraints) {
         final trip = mode == AlongCityMapMode.trip;
         final completed = mode == AlongCityMapMode.completed;
         final city = mode == AlongCityMapMode.online;
-        final fit = showRoute
+        // Nav stays on the z16 extract. Fitting the corridor would drop to z12.
+        final fit = showRoute && !_nav
             ? CameraFit.bounds(
                 bounds: LatLngBounds.fromPoints(route),
                 padding: trip
@@ -149,25 +184,40 @@ class AlongCityMap extends StatelessWidget {
                 maxZoom: trip || completed ? 12 : 12.4,
               )
             : null;
+        final locked = zoom;
+        final initialZoom = _nav
+            ? 17.0
+            : locked ?? (city ? 11.15 : (_wide ? 12.0 : 16.0));
         return FlutterMap(
+          mapController: controller,
           options: MapOptions(
-            initialCenter: city
-                ? cityCenter
-                : _wide
-                ? corridorCenter
-                : neighborhoodCenter,
-            initialZoom: city ? 11.15 : (_wide ? 12 : 16),
+            initialCenter:
+                center ??
+                (city
+                    ? cityCenter
+                    : _nav
+                    ? _navFocus(shown)
+                    : _wide
+                    ? corridorCenter
+                    : neighborhoodCenter),
+            initialZoom: initialZoom,
             initialCameraFit: fit,
-            minZoom: city
-                ? 11.15
-                : _wide
-                ? (trip || completed ? 10 : 12)
-                : 16,
-            maxZoom: city
-                ? 11.15
-                : _wide
-                ? (trip || completed ? 12 : 12.4)
-                : 16,
+            minZoom: _nav
+                ? 17
+                : locked ??
+                      (city
+                          ? 11.15
+                          : _wide
+                          ? (trip || completed ? 10 : 12)
+                          : 16),
+            maxZoom: _nav
+                ? 17
+                : locked ??
+                      (city
+                          ? 11.15
+                          : _wide
+                          ? (trip || completed ? 12 : 12.4)
+                          : 16),
             interactionOptions: const InteractionOptions(
               flags: InteractiveFlag.none,
             ),
@@ -185,7 +235,9 @@ class AlongCityMap extends StatelessWidget {
               retinaMode: false,
               minNativeZoom: 12,
               maxNativeZoom: 16,
-              keepBuffer: 1,
+              // Zoom 17 sits on the edge of the extract. An extra tile ring
+              // asks for files that were never baked.
+              keepBuffer: initialZoom >= 17 ? 0 : 1,
               panBuffer: 0,
             ),
             if (mode == AlongCityMapMode.online)
@@ -256,14 +308,8 @@ class AlongCityMap extends StatelessWidget {
       }
       return markers;
     }
-    if (mode == AlongCityMapMode.trip) {
-      markers.add(
-        _endpoint(context, corridorRoute.first, 'Wuse', true, palette),
-      );
-      markers.add(
-        _endpoint(context, corridorRoute.last, 'Nyanya', false, palette),
-      );
-      final at = _along(corridorRoute, drawn);
+    if (mode == AlongCityMapMode.nav) {
+      final at = _along(neighborhoodRoute, drawn);
       markers.add(
         _vehicle(
           context,
@@ -275,6 +321,30 @@ class AlongCityMap extends StatelessWidget {
           emphasized: true,
         ),
       );
+      return markers;
+    }
+    if (mode == AlongCityMapMode.trip) {
+      markers.add(
+        _endpoint(context, corridorRoute.first, 'Wuse', true, palette),
+      );
+      markers.add(
+        _endpoint(context, corridorRoute.last, 'Nyanya', false, palette),
+      );
+      // A quote is the route before a car exists.
+      if (drawn > 0.02) {
+        final at = _along(corridorRoute, drawn);
+        markers.add(
+          _vehicle(
+            context,
+            at.point,
+            AlongVehicleKind.car,
+            null,
+            at.heading,
+            palette,
+            emphasized: true,
+          ),
+        );
+      }
       return markers;
     }
     if (mode == AlongCityMapMode.browse) {

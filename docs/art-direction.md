@@ -65,11 +65,17 @@ Markers are anchored and purposeful. A label sits above its dot, on a solid surf
 
 Route strokes use round caps and round joins. Casing is `routeCasing`. The remainder is `stale`. The traveled portion is `route` and is the selected state. There is no pulsing overlay.
 
-The trip camera frames pickup and drop together. Padding clears the top labels and the sheet: 28 on the sides, 72 on top, and `sheetInset` plus 36 on the bottom. Zoom stays inside the baked tiles (trip max zoom 12).
+The trip camera frames pickup and drop together. Padding clears the top labels and the sheet: 28 on the sides, 72 on top, and `sheetInset` plus 36 on the bottom. The corridor stays inside the z12 tiles (trip max zoom 12).
+
+Nav does not fit that corridor. It locks zoom 17 on the neighborhood street, which is the z16 slippy grid drawn by overzooming the z15 vector. The car is the camera subject, shifted up so it clears the sheet. Wuse and Nyanya pins are not drawn on that local street.
+
+The pickup pin is fixed at the screen center. A drag pans the map under it. The pin lifts while the finger is down and drops on release. The address updates when the drag settles, and snaps to an entrance within 120 meters. The camera opens on Gate 2 at zoom 17 so the pin sits on the extract.
+
+The quote sheet is only as tall as the fare. Confirm fare sits on the cancel line. The corridor is behind that sheet, and no car is drawn until the trip is moving.
 
 An approximate or stale fix is hollow and grey, with the words "Approx" or "Stale" and "Updated Xs ago". A precise fix is a filled dot and the word "You". Simulated positions say "Demo" in debug builds. A screen that already shows a Demo mark does not add a second one on the map.
 
-Pickup, matching, and recovery use a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor.
+Pickup, matching, and recovery use a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor. Matching keeps the status in the card. The map shows the approximate fix.
 
 ## Motion
 
@@ -80,6 +86,7 @@ Named lengths live on `AlongDurations`. Curves live on `AlongCurves`. Springs li
 | Press | `press` 120ms. Reduced motion uses opacity 0.72 instead of scale 0.96. | The control acknowledges the finger. | The press landed. | Yes. Release or cancel returns it. |
 | Fade | `fade` 180ms, `AlongCurves.fade` (easeOut) | Opacity of a status that cannot move. | Something settled without a slide. | Yes. |
 | Sheet | `AlongSprings.sheet` (mass 0.7, stiffness 520, damping 32). Visually at rest inside 300ms. `sheet` 280ms is the paired length. | The sheet position. | Where the page now sits. | Yes. A drag takes over. |
+| Pin | `sheet` 280ms, `AlongCurves.settle`. Duration zero when motion does not play, so the rest pose is the dropped pin. | The pin lifts while the finger drags and drops on release. The map pans under it. The address changes on settle. | The pickup is placed. A nearby entrance snaps. | Yes. Release settles it. |
 | Route | `routeDraw` 900ms, `AlongCurves.settle` (easeOutCubic), `AlongSprings.route` | The traveled stroke. | How far along the trip is. | Yes. A new progress replaces it. |
 | Refresh | `refresh` 480ms | The keke rocks, only while the refresh future is running. | The list is loading. | Yes. It stops when the future ends. |
 | Hold | `hold` 1400ms for a one-shot status. The SOS hold control is 600ms. | A bar fills while the finger stays down. | Keep holding to call 112. Release cancels. | Yes. |
