@@ -95,15 +95,19 @@ class SeatMap extends StatelessWidget {
             onSeatTap: onSeatTap,
             onSeatLongPress: onSeatLongPress,
           );
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // A bounded height centers the wrapped cabin. The row gap stays
-        // 20px. A scrolling list stays shrink-wrapped.
-        final fill = constraints.hasBoundedHeight && body == 'cabin';
-        final block = Column(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(body == 'bike' ? 36 : 24),
+        boxShadow: AlongElevation.card(palette.ink),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            ...rules,
             diagram,
             if (body == 'cabin') ...[
               const SizedBox(height: 14),
@@ -111,26 +115,8 @@ class SeatMap extends StatelessWidget {
             ],
             if (footer != null) ...[const SizedBox(height: 16), footer!],
           ],
-        );
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            color: palette.surface,
-            borderRadius: BorderRadius.circular(body == 'bike' ? 36 : 24),
-            boxShadow: AlongElevation.card(palette.ink),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
-            child: Column(
-              mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ...rules,
-                if (fill) Expanded(child: Center(child: block)) else block,
-              ],
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
