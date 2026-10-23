@@ -9,6 +9,7 @@ import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../type.dart';
+import 'delights.dart';
 import 'driver_portrait.dart';
 import 'vehicle_art.dart';
 
@@ -80,11 +81,18 @@ class AlongCityMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _HeldProgress(
+      progress: progress,
+      builder: (context, shown) => _frame(context, shown),
+    );
+  }
+
+  Widget _frame(BuildContext context, double shown) {
     final palette = AlongPalette.of(context);
     final dark = palette.brightness == Brightness.dark;
     final drawn = AlongMotionPolicy.reduced(context)
         ? 1.0
-        : progress.clamp(0.0, 1.0);
+        : shown.clamp(0.0, 1.0);
     final route = _wide ? corridorRoute : neighborhoodRoute;
     final showRoute =
         mode == AlongCityMapMode.trip ||
@@ -256,6 +264,24 @@ class AlongCityMap extends StatelessWidget {
           palette,
         ),
       );
+      markers.add(
+        _vehicle(
+          const LatLng(9.06915, 7.46540),
+          AlongVehicleKind.okada,
+          1,
+          -0.8,
+          palette,
+        ),
+      );
+      markers.add(
+        _vehicle(
+          const LatLng(9.06935, 7.46605),
+          AlongVehicleKind.bus,
+          12,
+          0.6,
+          palette,
+        ),
+      );
     }
     if (mode == AlongCityMapMode.browse ||
         mode == AlongCityMapMode.online ||
@@ -271,31 +297,33 @@ class AlongCityMap extends StatelessWidget {
       width: 72,
       height: 34,
       alignment: Alignment.bottomCenter,
-      child: Column(
-        children: [
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              color: pickup ? palette.accent : palette.ink,
-              shape: BoxShape.circle,
-              border: Border.all(color: palette.surface, width: 2),
-              boxShadow: AlongElevation.float(palette.ink),
+      child: AlongPinDrop(
+        child: Column(
+          children: [
+            Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                color: pickup ? palette.accent : palette.ink,
+                shape: BoxShape.circle,
+                border: Border.all(color: palette.surface, width: 2),
+                boxShadow: AlongElevation.float(palette.ink),
+              ),
             ),
-          ),
-          Text(
-            label,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(
-              fontSize: 11,
-              height: 1.1,
-              fontWeight: FontWeight.w700,
-              color: palette.ink,
-              backgroundColor: palette.surface.withValues(alpha: 0.92),
+            Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(
+                fontSize: 11,
+                height: 1.1,
+                fontWeight: FontWeight.w700,
+                color: palette.ink,
+                backgroundColor: palette.surface.withValues(alpha: 0.92),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -306,31 +334,33 @@ class AlongCityMap extends StatelessWidget {
       width: 64,
       height: 36,
       alignment: Alignment.bottomCenter,
-      child: Column(
-        children: [
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              color: park ? palette.mapPark : palette.surface,
-              shape: BoxShape.circle,
-              border: Border.all(color: palette.ink, width: 2),
-              boxShadow: AlongElevation.float(palette.ink),
+      child: AlongPinDrop(
+        child: Column(
+          children: [
+            Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                color: park ? palette.mapPark : palette.surface,
+                shape: BoxShape.circle,
+                border: Border.all(color: palette.ink, width: 2),
+                boxShadow: AlongElevation.float(palette.ink),
+              ),
             ),
-          ),
-          Text(
-            label,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(
-              fontSize: 11,
-              height: 1.1,
-              fontWeight: FontWeight.w700,
-              color: palette.ink,
-              backgroundColor: palette.surface.withValues(alpha: 0.92),
+            Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(
+                fontSize: 11,
+                height: 1.1,
+                fontWeight: FontWeight.w700,
+                color: palette.ink,
+                backgroundColor: palette.surface.withValues(alpha: 0.92),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -352,6 +382,17 @@ class AlongCityMap extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
+          Positioned(
+            bottom: 8,
+            child: Container(
+              width: emphasized ? 28 : 22,
+              height: 7,
+              decoration: BoxDecoration(
+                color: const Color(0x33000000),
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
           if (emphasized)
             Container(
               width: plate,
@@ -588,6 +629,59 @@ class _PulsePainter extends CustomPainter {
   bool shouldRepaint(covariant _PulsePainter oldDelegate) => oldDelegate.t != t;
 }
 
+class _HeldProgress extends StatefulWidget {
+  const _HeldProgress({required this.progress, required this.builder});
+
+  final double progress;
+  final Widget Function(BuildContext context, double shown) builder;
+
+  @override
+  State<_HeldProgress> createState() => _HeldProgressState();
+}
+
+class _HeldProgressState extends State<_HeldProgress>
+    with SingleTickerProviderStateMixin {
+  late double _shown;
+  late final AnimationController _move;
+  double _from = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _shown = widget.progress;
+    _move =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 700),
+        )..addListener(() {
+          final t = Curves.easeInOut.transform(_move.value);
+          setState(() => _shown = _from + (widget.progress - _from) * t);
+        });
+  }
+
+  @override
+  void didUpdateWidget(covariant _HeldProgress oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.progress == widget.progress) return;
+    if (!AlongMotionPolicy.play(context)) {
+      _move.stop();
+      setState(() => _shown = widget.progress);
+      return;
+    }
+    _from = _shown;
+    _move.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _move.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(context, _shown);
+}
+
 class _RoutePoint {
   const _RoutePoint(this.point, this.heading);
 
@@ -689,7 +783,7 @@ class _HeatWash extends StatelessWidget {
   }
 }
 
-class _RouteOverlay extends StatelessWidget {
+class _RouteOverlay extends StatefulWidget {
   const _RouteOverlay({
     required this.route,
     required this.progress,
@@ -701,16 +795,50 @@ class _RouteOverlay extends StatelessWidget {
   final AlongPalette palette;
 
   @override
+  State<_RouteOverlay> createState() => _RouteOverlayState();
+}
+
+class _RouteOverlayState extends State<_RouteOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !AlongMotionPolicy.play(context)) return;
+      _pulse.repeat();
+    });
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final camera = MapCamera.of(context);
     return IgnorePointer(
-      child: CustomPaint(
-        painter: _RoutePainter(
-          camera: camera,
-          route: route,
-          progress: progress,
-          palette: palette,
-        ),
+      child: AnimatedBuilder(
+        animation: _pulse,
+        builder: (context, _) {
+          final pulse = AlongMotionPolicy.play(context) ? _pulse.value : 0.0;
+          return CustomPaint(
+            painter: _RoutePainter(
+              camera: camera,
+              route: widget.route,
+              progress: widget.progress,
+              palette: widget.palette,
+              pulse: pulse,
+            ),
+          );
+        },
       ),
     );
   }
@@ -722,12 +850,14 @@ class _RoutePainter extends CustomPainter {
     required this.route,
     required this.progress,
     required this.palette,
+    this.pulse = 0,
   });
 
   final MapCamera camera;
   final List<LatLng> route;
   final double progress;
   final AlongPalette palette;
+  final double pulse;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -738,6 +868,7 @@ class _RoutePainter extends CustomPainter {
     canvas.drawPath(path, _stroke(10, casing));
     canvas.drawPath(path, _stroke(5, palette.surface));
     canvas.drawPath(path, _stroke(2.5, palette.accent));
+    if (pulse > 0) alongPaintRoutePulse(canvas, path, pulse, palette.accent);
   }
 
   Paint _stroke(double width, Color color) {
@@ -793,6 +924,7 @@ class _RoutePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _RoutePainter oldDelegate) {
     return oldDelegate.progress != progress ||
+        oldDelegate.pulse != pulse ||
         oldDelegate.camera.center != camera.center ||
         oldDelegate.camera.zoom != camera.zoom ||
         oldDelegate.palette.brightness != palette.brightness;

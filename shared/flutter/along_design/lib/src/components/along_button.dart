@@ -4,6 +4,7 @@ import '../branding/branding_overrides.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../tokens.g.dart';
+import 'skeleton.dart';
 
 /// Visual button variants (doc 05 §9 `AlongButton`).
 enum AlongButtonVariant { primary, secondary, tertiary, danger, yellow }
@@ -50,14 +51,7 @@ class AlongButton extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final style = _styleForVariant(branding, palette);
     final child = _isLoading
-        ? SizedBox(
-            width: AlongSpace.s24,
-            height: AlongSpace.s24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: style.foregroundColor,
-            ),
-          )
+        ? const AlongSkeleton(width: 72, height: 10)
         : Text(
             label,
             maxLines: 1,
@@ -93,28 +87,30 @@ class AlongButton extends StatelessWidget {
       ),
     );
 
-    return Opacity(
-      opacity: _isDisabled ? 0.38 : 1,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          button,
-          if (_isPressed)
-            Positioned.fill(
-              child: IgnorePointer(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: _pressedOverlay(
-                      style.backgroundColor,
-                      branding,
-                      palette,
+    return AlongPressable(
+      child: Opacity(
+        opacity: _isDisabled ? 0.38 : 1,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            button,
+            if (_isPressed)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: _pressedOverlay(
+                        style.backgroundColor,
+                        branding,
+                        palette,
+                      ),
+                      borderRadius: BorderRadius.circular(AlongRadius.md.x),
                     ),
-                    borderRadius: BorderRadius.circular(AlongRadius.md.x),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

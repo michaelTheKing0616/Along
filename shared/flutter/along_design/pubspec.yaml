@@ -17,6 +17,7 @@ dependencies:
   latlong2: ^0.10.1
   lottie: ^3.6.1
   material_symbols_icons: ^4.2960.0
+  sensors_plus: ^6.1.1
 
 dev_dependencies:
   flutter_test:

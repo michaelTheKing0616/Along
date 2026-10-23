@@ -4,6 +4,7 @@ import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
 import 'city_map.dart';
+import 'delights.dart';
 
 /// Painted stand-in for the brand basemap. Widget tests must not mount MapLibre.
 class AlongMapSketch extends StatelessWidget {
@@ -154,23 +155,27 @@ class AlongMapButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Tooltip(
-      message: tooltip ?? '',
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: AlongElevation.float(palette.ink),
-        ),
-        child: Material(
-          color: palette.surface,
-          shape: const CircleBorder(),
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: onPressed,
-            child: SizedBox(
-              width: 48,
-              height: 48,
-              child: Icon(icon, color: palette.ink, size: 22),
+    return AlongPressable(
+      child: Tooltip(
+        message: tooltip ?? '',
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: AlongElevation.float(palette.ink),
+          ),
+          child: AlongFrost(
+            circle: true,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onPressed,
+                child: SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Icon(icon, color: palette.ink, size: 22),
+                ),
+              ),
             ),
           ),
         ),

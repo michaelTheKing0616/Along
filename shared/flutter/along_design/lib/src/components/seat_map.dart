@@ -8,6 +8,19 @@ import 'package:along_design/src/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
+/// Privacy-safe rider mark. Initials only, never a name or a photo.
+class AlongRider {
+  const AlongRider(this.initials);
+
+  final String initials;
+
+  static const riding = <AlongRider>[
+    AlongRider('CN'),
+    AlongRider('AM'),
+    AlongRider('TU'),
+  ];
+}
+
 /// One seat on a driver-built diagram. [statusWord] is already translated.
 class SeatMapSeat {
   const SeatMapSeat({
@@ -54,6 +67,7 @@ class SeatMap extends StatelessWidget {
     this.onSeatTap,
     this.onSeatLongPress,
     this.footer,
+    this.riders = const [],
   });
 
   final String body;
@@ -63,6 +77,9 @@ class SeatMap extends StatelessWidget {
 
   /// Ride facts under the legend. The cabin never stretches to fill them.
   final Widget? footer;
+
+  /// Initials of people already in the cabin. Empty hides the row.
+  final List<AlongRider> riders;
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +129,10 @@ class SeatMap extends StatelessWidget {
             if (body == 'cabin') ...[
               const SizedBox(height: 14),
               const _SeatLegend(),
+            ],
+            if (riders.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              _WhosRiding(riders: riders),
             ],
             if (footer != null) ...[const SizedBox(height: 16), footer!],
           ],
@@ -202,14 +223,17 @@ class _CabinShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return CustomPaint(
-      painter: _CabinOutlinePainter(palette: palette),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 22, 4, 12),
-        child: _SeatGrid(
-          rows: rows,
-          onSeatTap: onSeatTap,
-          onSeatLongPress: onSeatLongPress,
+    return ClipPath(
+      clipper: _CabinClipper(),
+      child: CustomPaint(
+        painter: _CabinOutlinePainter(palette: palette),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 26, 8, 14),
+          child: _SeatGrid(
+            rows: rows,
+            onSeatTap: onSeatTap,
+            onSeatLongPress: onSeatLongPress,
+          ),
         ),
       ),
     );
@@ -365,7 +389,7 @@ class _CabinOutlinePainter extends CustomPainter {
     final dark = palette.brightness == Brightness.dark;
     final fill = dark ? const Color(0xFF16171A) : const Color(0xFFF6F7F9);
     final line = dark ? const Color(0xFF4A4C54) : const Color(0xFFD0D2D8);
-    final path = _outline(size);
+    final path = _cabinOutline(size);
     canvas.drawPath(path, Paint()..color = fill);
     canvas.drawPath(
       path,
@@ -374,6 +398,7 @@ class _CabinOutlinePainter extends CustomPainter {
         ..strokeWidth = 1
         ..color = line,
     );
+    _doorSeams(canvas, size, line);
     final dashW = math.min(72.0, size.width * 0.28);
     final dash = RRect.fromRectAndRadius(
       Rect.fromCenter(
@@ -386,29 +411,69 @@ class _CabinOutlinePainter extends CustomPainter {
     canvas.drawRRect(dash, Paint()..color = line);
   }
 
-  Path _outline(Size size) {
-    final w = size.width;
-    final h = size.height;
-    final taper = math.min(14.0, w * 0.045);
-    final r = math.min(22.0, w * 0.08);
-    final path = Path();
-    path.moveTo(taper + r, 0.5);
-    path.lineTo(w - taper - r, 0.5);
-    path.arcToPoint(Offset(w - taper, r), radius: Radius.circular(r));
-    path.lineTo(w - 0.5, h - r);
-    path.arcToPoint(Offset(w - r - 0.5, h - 0.5), radius: Radius.circular(r));
-    path.lineTo(r, h - 0.5);
-    path.arcToPoint(Offset(0.5, h - r), radius: Radius.circular(r));
-    path.lineTo(taper, r);
-    path.arcToPoint(Offset(taper + r, 0.5), radius: Radius.circular(r));
-    path.close();
-    return path;
+  void _doorSeams(Canvas canvas, Size size, Color line) {
+    final seam = Paint()
+      ..color = line
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round;
+    final pillar = Paint()..color = line;
+    for (final left in [true, false]) {
+      final x = left ? 4.0 : size.width - 4;
+      canvas.drawLine(
+        Offset(x, size.height * 0.22),
+        Offset(x, size.height * 0.44),
+        seam,
+      );
+      canvas.drawLine(
+        Offset(x, size.height * 0.56),
+        Offset(x, size.height * 0.90),
+        seam,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(x, size.height * 0.50),
+            width: 4,
+            height: math.max(10, size.height * 0.08),
+          ),
+          const Radius.circular(2),
+        ),
+        pillar,
+      );
+    }
   }
 
   @override
   bool shouldRepaint(covariant _CabinOutlinePainter oldDelegate) {
     return oldDelegate.palette.brightness != palette.brightness;
   }
+}
+
+Path _cabinOutline(Size size) {
+  final w = size.width;
+  final h = size.height;
+  final taper = math.min(14.0, w * 0.045);
+  final r = math.min(22.0, w * 0.08);
+  final path = Path();
+  path.moveTo(taper + r, 0.5);
+  path.lineTo(w - taper - r, 0.5);
+  path.arcToPoint(Offset(w - taper, r), radius: Radius.circular(r));
+  path.lineTo(w - 0.5, h - r);
+  path.arcToPoint(Offset(w - r - 0.5, h - 0.5), radius: Radius.circular(r));
+  path.lineTo(r, h - 0.5);
+  path.arcToPoint(Offset(0.5, h - r), radius: Radius.circular(r));
+  path.lineTo(taper, r);
+  path.arcToPoint(Offset(taper + r, 0.5), radius: Radius.circular(r));
+  path.close();
+  return path;
+}
+
+class _CabinClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) => _cabinOutline(size);
+
+  @override
+  bool shouldReclip(covariant _CabinClipper oldClipper) => false;
 }
 
 class _RuleChip extends StatelessWidget {
@@ -693,21 +758,58 @@ class _SeatButton extends StatefulWidget {
 }
 
 class _SeatButtonState extends State<_SeatButton>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _scale;
+  late final AnimationController _reveal;
   var _armed = false;
 
-  /// Short underdamped settle. Tests and reduced motion stay at rest.
+  /// 0.9, through about 1.05, then rest at 1. The view clamps the peak.
   static const _select = SpringDescription(
-    mass: 0.55,
-    stiffness: 380,
-    damping: 14,
+    mass: 0.5,
+    stiffness: 420,
+    damping: 12,
   );
 
   @override
   void initState() {
     super.initState();
     _scale = AnimationController.unbounded(vsync: this, value: 1);
+    _reveal = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+      value: 1,
+    );
+  }
+
+  bool get _play => AlongMotionPolicy.play(context);
+
+  void _armSelection() {
+    if (!_play) {
+      _scale.value = 1;
+      _reveal.value = 1;
+      return;
+    }
+    _scale.value = 0.9;
+    _scale.animateWith(SpringSimulation(_select, 0.9, 1, 0));
+    _reveal.forward(from: 0);
+    AlongHaptics.tick(context);
+  }
+
+  void _armTaken() {
+    if (!_play) {
+      _reveal.value = 1;
+      _scale.value = 1;
+      return;
+    }
+    _reveal.forward(from: 0);
+    _scale.animateWith(
+      SpringSimulation(
+        const SpringDescription(mass: 0.4, stiffness: 520, damping: 11),
+        1,
+        1,
+        8,
+      ),
+    );
   }
 
   @override
@@ -715,17 +817,24 @@ class _SeatButtonState extends State<_SeatButton>
     super.didChangeDependencies();
     if (_armed) return;
     _armed = true;
-    if (widget.seat.status != 'yours') return;
-    if (AlongMotionPolicy.inWidgetTest || AlongMotionPolicy.reduced(context)) {
-      return;
+    if (widget.seat.status == 'yours') _armSelection();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SeatButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.seat.status == widget.seat.status) return;
+    if (widget.seat.status == 'yours') {
+      _armSelection();
+    } else if (widget.seat.status == 'occupied') {
+      _armTaken();
     }
-    _scale.value = 0.86;
-    _scale.animateWith(SpringSimulation(_select, 0.86, 1, 0));
   }
 
   @override
   void dispose() {
     _scale.dispose();
+    _reveal.dispose();
     super.dispose();
   }
 
@@ -739,7 +848,10 @@ class _SeatButtonState extends State<_SeatButton>
         price != null && price.contains('₦') && seat.status != 'occupied';
     final showWheel = seat.isDriver && widget.driverIcon;
     final badge =
-        widget.badge ?? (seat.status == 'held' ? Icons.schedule_rounded : null);
+        widget.badge ??
+        (seat.status == 'held' && !widget.driverIcon
+            ? Icons.schedule_rounded
+            : null);
     return Semantics(
       button: widget.onTap != null,
       label: '${seat.label}, ${seat.statusWord}',
@@ -751,92 +863,106 @@ class _SeatButtonState extends State<_SeatButton>
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
-              onTap: widget.onTap == null ? null : () => widget.onTap!(seat.id),
+              onTap: widget.onTap == null
+                  ? null
+                  : () {
+                      AlongHaptics.selection(context);
+                      widget.onTap!(seat.id);
+                    },
               onLongPress: widget.onLongPress == null
                   ? null
                   : () => widget.onLongPress!(seat.id),
               child: AnimatedBuilder(
-                animation: _scale,
+                animation: Listenable.merge([_scale, _reveal]),
                 builder: (context, child) {
-                  final scale = _scale.value.clamp(0.86, 1.08).toDouble();
-                  return Transform.scale(scale: scale, child: child);
+                  final scale = _scale.value.clamp(0.9, 1.05).toDouble();
+                  final showPerson =
+                      seat.status == 'occupied' || seat.status == 'yours';
+                  return Transform.scale(
+                    scale: scale,
+                    child: CustomPaint(
+                      painter: widget.driverIcon
+                          ? _CarSeatPainter(
+                              seat: seat,
+                              palette: palette,
+                              silhouette: showPerson ? _reveal.value : 0,
+                              held: seat.status == 'held' ? 0.66 : 0,
+                            )
+                          : _SeatPainter(seat: seat, palette: palette),
+                      child: child,
+                    ),
+                  );
                 },
-                child: CustomPaint(
-                  painter: _SeatPainter(seat: seat, palette: palette),
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(3, 12, 3, 4),
-                        child: Center(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (showWheel)
-                                  _SteeringWheel(ink: palette.ink, size: 16)
-                                else if (seat.isCargo)
-                                  Icon(
-                                    Icons.luggage_outlined,
-                                    size: 14,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(3, 12, 3, 4),
+                      child: Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (showWheel)
+                                _SteeringWheel(ink: palette.ink, size: 16)
+                              else if (seat.isCargo)
+                                Icon(
+                                  Icons.luggage_outlined,
+                                  size: 14,
+                                  color: ink,
+                                )
+                              else if (seat.status == 'yours')
+                                AlongStrokeCheck(color: ink)
+                              else if (seat.status == 'occupied' &&
+                                  !widget.driverIcon)
+                                Icon(
+                                  Icons.person_rounded,
+                                  size: 14,
+                                  color: ink,
+                                ),
+                              if (!showWheel && !seat.isDriver) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  seat.label.trim(),
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: AlongText.caption.copyWith(
                                     color: ink,
-                                  )
-                                else if (seat.status == 'yours')
-                                  Icon(
-                                    Icons.check_rounded,
-                                    size: 14,
-                                    color: ink,
-                                  )
-                                else if (seat.status == 'occupied')
-                                  Icon(
-                                    Icons.person_rounded,
-                                    size: 14,
-                                    color: ink,
+                                    fontSize: 12,
+                                    height: 1,
+                                    fontWeight: FontWeight.w700,
                                   ),
-                                if (!showWheel && !seat.isDriver) ...[
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    seat.label.trim(),
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    style: AlongText.caption.copyWith(
-                                      color: ink,
-                                      fontSize: 12,
-                                      height: 1,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                                if (showPrice && !showWheel) ...[
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    price,
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    style: AlongText.caption.copyWith(
-                                      color: ink,
-                                      fontSize: 10,
-                                      height: 1,
-                                      fontWeight: FontWeight.w600,
-                                      fontFeatures: const [
-                                        FontFeature.tabularFigures(),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ],
-                            ),
+                              if (showPrice && !showWheel) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  price,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: AlongText.caption.copyWith(
+                                    color: ink,
+                                    fontSize: 10,
+                                    height: 1,
+                                    fontWeight: FontWeight.w600,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
                       ),
-                      if (badge != null)
-                        Positioned(
-                          top: 5,
-                          right: 5,
-                          child: Icon(badge, size: 11, color: ink),
-                        ),
-                    ],
-                  ),
+                    ),
+                    if (badge != null)
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: Icon(badge, size: 11, color: ink),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -924,5 +1050,268 @@ class _SeatPainter extends CustomPainter {
     return oldDelegate.seat.status != seat.status ||
         oldDelegate.seat.role != seat.role ||
         oldDelegate.palette.brightness != palette.brightness;
+  }
+}
+
+class _CarSeatPainter extends CustomPainter {
+  _CarSeatPainter({
+    required this.seat,
+    required this.palette,
+    required this.silhouette,
+    required this.held,
+  });
+
+  final SeatMapSeat seat;
+  final AlongPalette palette;
+  final double silhouette;
+  final double held;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final fill = _SeatButtonState._fill(seat, palette);
+    final ink = _SeatButtonState._ink(seat, palette);
+    final selected = seat.status == 'yours';
+    final hairline = _SeatButtonState.hairline(palette);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w / 2, h * 0.8),
+        width: w * 0.62,
+        height: h * 0.14,
+      ),
+      Paint()
+        ..color = const Color(0x33000000)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
+    );
+    final cushion = _cushion(size);
+    canvas.drawPath(cushion, Paint()..color = fill);
+    canvas.save();
+    canvas.clipPath(cushion);
+    canvas.drawRect(
+      Rect.fromLTWH(0, h * 0.58, w * 0.18, h),
+      Paint()..color = ink.withValues(alpha: 0.06),
+    );
+    canvas.restore();
+    canvas.drawPath(
+      cushion,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = selected
+            ? palette.accentInk.withValues(alpha: 0.22)
+            : hairline,
+    );
+    final backColor = Color.alphaBlend(ink.withValues(alpha: 0.08), fill);
+    final back = RRect.fromRectAndRadius(
+      Rect.fromLTWH(w * 0.16, h * 0.18, w * 0.68, h * 0.28),
+      Radius.circular(w * 0.12),
+    );
+    canvas.drawRRect(back, Paint()..color = backColor);
+    canvas.drawRRect(
+      back,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = hairline,
+    );
+    final stitch = Paint()
+      ..color = ink.withValues(alpha: 0.38)
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+    final y = h * 0.32;
+    for (var x = w * 0.28; x < w * 0.72; x += 4.2) {
+      canvas.drawLine(Offset(x, y), Offset(x + 2, y), stitch);
+    }
+    final head = RRect.fromRectAndRadius(
+      Rect.fromLTWH(w * 0.30, h * 0.045, w * 0.40, h * 0.12),
+      Radius.circular(w * 0.08),
+    );
+    canvas.drawRRect(head, Paint()..color = backColor);
+    canvas.drawRRect(
+      head,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = hairline,
+    );
+    if (silhouette > 0.01) {
+      final person = ink.withValues(alpha: 0.55 * silhouette);
+      final headCenter = Offset(w / 2, h * 0.58);
+      canvas.drawCircle(headCenter, w * 0.07, Paint()..color = person);
+      final body = Path()
+        ..moveTo(w * 0.38, h * 0.78)
+        ..quadraticBezierTo(w * 0.5, h * 0.62, w * 0.62, h * 0.78)
+        ..close();
+      canvas.drawPath(body, Paint()..color = person);
+    }
+    if (held > 0) {
+      canvas.drawArc(
+        Rect.fromLTWH(1.6, 1.6, w - 3.2, h - 3.2),
+        -math.pi / 2,
+        math.pi * 2 * held,
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.2
+          ..strokeCap = StrokeCap.round
+          ..color = palette.accent,
+      );
+    }
+  }
+
+  Path _cushion(Size size) {
+    final w = size.width;
+    final h = size.height;
+    return Path()
+      ..moveTo(w * 0.22, h * 0.42)
+      ..quadraticBezierTo(w * 0.50, h * 0.36, w * 0.78, h * 0.42)
+      ..quadraticBezierTo(w * 0.96, h * 0.64, w * 0.88, h * 0.86)
+      ..quadraticBezierTo(w * 0.50, h * 0.98, w * 0.12, h * 0.86)
+      ..quadraticBezierTo(w * 0.04, h * 0.64, w * 0.22, h * 0.42)
+      ..close();
+  }
+
+  @override
+  bool shouldRepaint(covariant _CarSeatPainter oldDelegate) {
+    return oldDelegate.seat.status != seat.status ||
+        oldDelegate.silhouette != silhouette ||
+        oldDelegate.held != held ||
+        oldDelegate.palette.brightness != palette.brightness;
+  }
+}
+
+/// Check that draws itself on. At rest the stroke is complete.
+class AlongStrokeCheck extends StatefulWidget {
+  const AlongStrokeCheck({super.key, required this.color, this.size = 14});
+
+  final Color color;
+  final double size;
+
+  @override
+  State<AlongStrokeCheck> createState() => AlongStrokeCheckState();
+}
+
+class AlongStrokeCheckState extends State<AlongStrokeCheck>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _draw;
+
+  @override
+  void initState() {
+    super.initState();
+    _draw = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+      value: 1,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !AlongMotionPolicy.play(context)) return;
+      _draw.forward(from: 0);
+    });
+  }
+
+  @override
+  void dispose() {
+    _draw.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _draw,
+      builder: (context, _) {
+        return CustomPaint(
+          size: Size.square(widget.size),
+          painter: _CheckPainter(progress: _draw.value, color: widget.color),
+        );
+      },
+    );
+  }
+}
+
+class _CheckPainter extends CustomPainter {
+  _CheckPainter({required this.progress, required this.color});
+
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(size.width * 0.18, size.height * 0.52)
+      ..lineTo(size.width * 0.42, size.height * 0.76)
+      ..lineTo(size.width * 0.84, size.height * 0.28);
+    final metric = path.computeMetrics().first;
+    canvas.drawPath(
+      metric.extractPath(0, metric.length * progress.clamp(0.0, 1.0)),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = math.max(1.6, size.width * 0.14)
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CheckPainter oldDelegate) =>
+      oldDelegate.progress != progress;
+}
+
+class _WhosRiding extends StatelessWidget {
+  const _WhosRiding({required this.riders});
+
+  final List<AlongRider> riders;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final shown = riders.take(4).toList();
+    return Row(
+      children: [
+        Text(
+          "Who's riding",
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.caption(palette).copyWith(
+            fontWeight: FontWeight.w700,
+            height: 1.1,
+            color: palette.ink,
+          ),
+        ),
+        const Spacer(),
+        for (final rider in shown) ...[
+          Semantics(
+            label: 'Rider ${rider.initials}',
+            container: true,
+            child: ExcludeSemantics(
+              child: Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: palette.recessed,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: palette.surface, width: 1.5),
+                ),
+                child: Text(
+                  rider.initials,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette).copyWith(
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                    fontSize: 10,
+                    color: palette.ink,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ],
+    );
   }
 }

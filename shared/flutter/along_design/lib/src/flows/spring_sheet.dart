@@ -34,15 +34,17 @@ class AlongSpringSheet extends StatefulWidget {
 }
 
 class _AlongSpringSheetState extends State<AlongSpringSheet>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _motion;
-  int _snap = 0;
+  late final AnimationController _lift;
 
   @override
   void initState() {
     super.initState();
     final skip = AlongMotionPolicy.inWidgetTest;
     _motion = AnimationController.unbounded(vsync: this, value: skip ? 1 : 0);
+    _lift = AnimationController.unbounded(vsync: this, value: 0)
+      ..addListener(_reportExtent);
     if (!skip) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _springTo(1));
     }
@@ -58,8 +60,26 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
 
   @override
   void dispose() {
+    _lift.removeListener(_reportExtent);
+    _lift.dispose();
     _motion.dispose();
     super.dispose();
+  }
+
+  void _reportExtent() {
+    final scope = AlongMapMotion.maybeOf(context);
+    if (scope == null) return;
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final maxH = box.size.height;
+    final snaps = widget.snaps;
+    final maxExtra = (snaps != null && snaps.length > 1)
+        ? maxH * (snaps.last - snaps.first)
+        : maxH * 0.2;
+    final extent = maxExtra <= 0
+        ? 0.0
+        : (_lift.value / maxExtra).clamp(0.0, 1.0);
+    scope.setExtent(extent);
   }
 
   void _springTo(double target) {
@@ -79,17 +99,22 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
     return LayoutBuilder(
       builder: (context, constraints) {
         final snaps = widget.snaps;
-        final snapFraction = (snaps != null && snaps.isNotEmpty)
-            ? snaps[_snap.clamp(0, snaps.length - 1)]
+        final baseFraction = (snaps != null && snaps.isNotEmpty)
+            ? snaps.first
             : widget.fraction;
         final rest =
             widget.restingHeight ??
-            constraints.maxHeight * (snapFraction ?? 0.42);
+            constraints.maxHeight * (baseFraction ?? 0.42);
+        final maxExtra = (snaps != null && snaps.length > 1)
+            ? constraints.maxHeight * (snaps.last - snaps.first)
+            : 0.0;
         return AnimatedBuilder(
-          animation: _motion,
+          animation: Listenable.merge([_motion, _lift]),
           builder: (context, _) {
             final t = _motion.value.clamp(0.0, 1.15);
-            final height = rest * (0.90 + 0.10 * t.clamp(0.0, 1.0));
+            final lifted =
+                rest * (0.90 + 0.10 * t.clamp(0.0, 1.0)) + _lift.value;
+            final height = lifted.clamp(96.0, constraints.maxHeight);
             final reduce = AlongMotionPolicy.reduced(context);
             final veil = reduce
                 ? palette.surface
@@ -115,31 +140,47 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                     child: ColoredBox(
                       color: veil,
                       child: SizedBox(
+                        key: const Key('sheet_panel'),
                         height: height,
                         width: double.infinity,
                         child: Column(
                           children: [
                             GestureDetector(
+                              key: const Key('sheet_handle'),
                               behavior: HitTestBehavior.opaque,
+                              onVerticalDragUpdate: (details) {
+                                var delta = -details.delta.dy;
+                                final next = _lift.value + delta;
+                                if (next < 0 || next > maxExtra) delta *= 0.22;
+                                _lift.value += delta;
+                              },
                               onVerticalDragEnd: (details) {
-                                final points = widget.snaps;
-                                if (points == null || points.length < 2) {
+                                final velocity =
+                                    -(details.primaryVelocity ?? 0);
+                                var target = 0.0;
+                                if (maxExtra > 0) {
+                                  if (velocity > 700) {
+                                    target = maxExtra;
+                                  } else if (velocity < -700) {
+                                    target = 0;
+                                  } else {
+                                    target = _lift.value > maxExtra / 2
+                                        ? maxExtra
+                                        : 0;
+                                  }
+                                }
+                                if (!AlongMotionPolicy.play(context)) {
+                                  _lift.value = target;
                                   return;
                                 }
-                                final velocity = details.primaryVelocity ?? 0;
-                                setState(() {
-                                  if (velocity < -80) {
-                                    _snap = (_snap + 1).clamp(
-                                      0,
-                                      points.length - 1,
-                                    );
-                                  } else if (velocity > 80) {
-                                    _snap = (_snap - 1).clamp(
-                                      0,
-                                      points.length - 1,
-                                    );
-                                  }
-                                });
+                                _lift.animateWith(
+                                  SpringSimulation(
+                                    AlongSprings.sheet,
+                                    _lift.value,
+                                    target,
+                                    velocity,
+                                  ),
+                                );
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 8),
@@ -205,4 +246,43 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
       },
     );
   }
+}
+
+/// Shares how far a map sheet has risen so the map can dim and parallax.
+class AlongMapMotion extends StatefulWidget {
+  const AlongMapMotion({super.key, required this.builder});
+
+  final Widget Function(BuildContext context, double extent) builder;
+
+  static _AlongMapMotionState? maybeOf(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<_AlongMapScope>()?.state;
+  }
+
+  @override
+  State<AlongMapMotion> createState() => _AlongMapMotionState();
+}
+
+class _AlongMapMotionState extends State<AlongMapMotion> {
+  double _extent = 0;
+
+  void setExtent(double value) {
+    final next = value.clamp(0.0, 1.0);
+    if ((next - _extent).abs() < 0.004) return;
+    setState(() => _extent = next);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _AlongMapScope(state: this, child: widget.builder(context, _extent));
+  }
+}
+
+class _AlongMapScope extends InheritedWidget {
+  const _AlongMapScope({required this.state, required super.child});
+
+  final _AlongMapMotionState state;
+
+  @override
+  bool updateShouldNotify(covariant _AlongMapScope oldWidget) =>
+      oldWidget.state._extent != state._extent;
 }
