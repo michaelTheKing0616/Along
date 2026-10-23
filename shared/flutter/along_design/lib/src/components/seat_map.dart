@@ -206,11 +206,12 @@ class _CabinShell extends StatelessWidget {
   final ValueChanged<String>? onSeatTap;
   final ValueChanged<String>? onSeatLongPress;
 
-  /// Cabin window. Tight enough that a 48dp marker fits one front cushion.
-  static const _cropL = 0.26;
+  /// Cabin window. Cuts the doors and the trunk lip so the benches
+  /// fill the card, and a 48dp marker still fits one front cushion.
+  static const _cropL = 0.31;
   static const _cropT = 0.18;
-  static const _cropR = 0.74;
-  static const _cropB = 0.70;
+  static const _cropR = 0.69;
+  static const _cropB = 0.62;
   static const _cropAspect =
       ((_cropR - _cropL) * 864) / ((_cropB - _cropT) * 1152);
 
@@ -399,15 +400,15 @@ class _WheelPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 1;
+    final radius = size.width / 2 - 1.5;
     final ring = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.4
+      ..strokeWidth = math.max(2.6, size.width * 0.12)
       ..color = ink;
     canvas.drawCircle(center, radius, ring);
-    canvas.drawCircle(center, 3.2, Paint()..color = ink);
+    canvas.drawCircle(center, size.width * 0.14, Paint()..color = ink);
     final spoke = Paint()
-      ..strokeWidth = 1.6
+      ..strokeWidth = math.max(2.0, size.width * 0.08)
       ..strokeCap = StrokeCap.round
       ..color = ink;
     canvas.drawLine(center, Offset(center.dx, 3), spoke);
@@ -509,7 +510,7 @@ class _SeatButtonState extends State<_SeatButton>
                     child: seat.isDriver && widget.driverIcon
                         ? Align(
                             alignment: const Alignment(0, 0.15),
-                            child: _SteeringWheel(ink: palette.onInk, size: 26),
+                            child: _SteeringWheel(ink: palette.onInk, size: 30),
                           )
                         : Padding(
                             padding: const EdgeInsets.fromLTRB(2, 6, 2, 3),
