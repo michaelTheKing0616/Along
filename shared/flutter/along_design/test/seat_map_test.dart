@@ -84,7 +84,7 @@ void main() {
     }
   });
 
-  testWidgets('cabin rows share a column grid and fill a tall phone', (
+  testWidgets('cabin rows share one cushion size and a fixed row gap', (
     tester,
   ) async {
     const rows = [
@@ -161,7 +161,10 @@ void main() {
           data: MediaQueryData(size: size),
           child: MaterialApp(
             home: Scaffold(
-              body: SeatMap(body: 'cabin', rows: rows),
+              body: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SeatMap(body: 'cabin', rows: rows),
+              ),
             ),
           ),
         ),
@@ -173,22 +176,24 @@ void main() {
       final fm = tester.getRect(find.byKey(const Key('seat_fm')));
       final fr = tester.getRect(find.byKey(const Key('seat_fr')));
       final bl = tester.getRect(find.byKey(const Key('seat_bl')));
-      final ml = tester.getRect(find.byKey(const Key('seat_ml')));
       final br = tester.getRect(find.byKey(const Key('seat_br')));
       final legend = tester.getRect(find.text('Available'));
 
       expect(drv.left, closeTo(bl.left, 0.6), reason: '$size flush left');
       expect(fr.right, closeTo(br.right, 0.6), reason: '$size flush right');
-      expect(bl.width, greaterThanOrEqualTo(56), reason: '$size cushion');
-      expect(bl.width, lessThanOrEqualTo(76.5), reason: '$size cap');
+      expect(fm.width, closeTo(bl.width, 0.6), reason: '$size same cushion');
+      expect(drv.width, closeTo(bl.width, 0.6));
       expect(bl.height, closeTo(bl.width, 0.6), reason: '$size square');
       expect(drv.height, closeTo(bl.height, 0.6));
-      expect(fm.width, greaterThan(bl.width));
-      final frontPitch = fm.left - drv.left;
-      final backPitch = ml.left - bl.left;
-      expect(frontPitch / backPitch, closeTo(4 / 3, 0.02));
-      expect(legend.bottom, greaterThan(size.height - 40));
-      expect(br.bottom, greaterThan(legend.top - 48));
+      expect(bl.top - fm.bottom, closeTo(20, 0.6), reason: '$size row gap');
+      expect(bl.width, lessThanOrEqualTo(72.5));
+      if (size.width == 360) {
+        expect(bl.width, inInclusiveRange(68, 72), reason: '360 cushion');
+      } else {
+        expect(bl.width, greaterThanOrEqualTo(56), reason: '320 cushion');
+      }
+      expect(legend.top, greaterThan(br.bottom));
+      expect(find.text('3/6 seats left'), findsNothing);
     }
     await tester.binding.setSurfaceSize(null);
   });

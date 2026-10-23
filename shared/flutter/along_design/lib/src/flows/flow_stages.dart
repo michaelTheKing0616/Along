@@ -233,6 +233,7 @@ class AlongFlowSeats extends StatelessWidget {
           const Expanded(
             child: SeatMap(
               body: 'cabin',
+              footer: AlongSeatContext.sample,
               rows: [
                 SeatMapRowView(
                   id: 'front',

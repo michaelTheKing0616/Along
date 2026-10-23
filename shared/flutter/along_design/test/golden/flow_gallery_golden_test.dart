@@ -189,7 +189,11 @@ class _SeatLayoutPage extends StatelessWidget {
       backgroundColor: AlongPalette.of(context).bg,
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: SeatMap(body: 'cabin', rows: rows),
+        child: SeatMap(
+          body: 'cabin',
+          rows: rows,
+          footer: AlongSeatContext.sample,
+        ),
       ),
     );
   }
