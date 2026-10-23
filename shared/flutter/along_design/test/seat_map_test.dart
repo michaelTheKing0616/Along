@@ -83,4 +83,54 @@ void main() {
       expect(find.byKey(const Key('seat_p')), findsOneWidget);
     }
   });
+
+  testWidgets('cabin layouts 2+3 and 3+3 fit 320 and 360', (tester) async {
+    const layouts = [
+      [
+        ['A', 'B'],
+        ['C', 'D', 'E'],
+      ],
+      [
+        ['A', 'B', 'C'],
+        ['D', 'E', 'F'],
+      ],
+    ];
+    for (final size in const [Size(320, 640), Size(360, 800)]) {
+      await tester.binding.setSurfaceSize(size);
+      for (final layout in layouts) {
+        await tester.pumpWidget(
+          MediaQuery(
+            data: MediaQueryData(size: size),
+            child: MaterialApp(
+              home: Scaffold(
+                body: SeatMap(
+                  body: 'cabin',
+                  rows: [
+                    for (var r = 0; r < layout.length; r++)
+                      SeatMapRowView(
+                        id: 'r$r',
+                        seats: [
+                          for (final label in layout[r])
+                            SeatMapSeat(
+                              id: 's$r$label',
+                              label: label,
+                              role: 'passenger',
+                              status: 'free',
+                              statusWord: 'Free',
+                              price: '₦500',
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+        expect(tester.takeException(), isNull);
+      }
+    }
+    await tester.binding.setSurfaceSize(null);
+  });
 }

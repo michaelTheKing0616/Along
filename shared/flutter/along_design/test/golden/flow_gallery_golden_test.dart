@@ -50,6 +50,32 @@ void main() {
     }
   }
 
+  for (final layout in ['2x4', 'danfo']) {
+    for (final brightness in [Brightness.light, Brightness.dark]) {
+      for (final size in const [Size(360, 800), Size(320, 640)]) {
+        final tone = brightness == Brightness.dark ? 'dark' : 'light';
+        final label = '${size.width.toInt()}x${size.height.toInt()}';
+        testWidgets('seat layout $layout $tone $label', (tester) async {
+          await _pump(
+            tester,
+            child: _SeatLayoutPage(
+              rows: layout == 'danfo' ? _danfoRows() : _sedanRows(),
+            ),
+            brightness: brightness,
+            size: size,
+          );
+          _expectNoLabelWrap(tester, 'seat layout $layout $tone $label');
+          await expectLater(
+            find.byType(Scaffold),
+            matchesGoldenFile(
+              'goldens/flows/after/seats_${layout}_${tone}_$label.png',
+            ),
+          );
+        });
+      }
+    }
+  }
+
   testWidgets('live route mid draw light 360', (tester) async {
     await _pump(
       tester,
@@ -150,4 +176,152 @@ void _expectNoLabelWrap(WidgetTester tester, String stage) {
     if (lines > 1) problems.add('wrapped: $plain');
   }
   expect(problems, isEmpty, reason: '$stage\n${problems.join('\n')}');
+}
+
+class _SeatLayoutPage extends StatelessWidget {
+  const _SeatLayoutPage({required this.rows});
+
+  final List<SeatMapRowView> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AlongPalette.of(context).bg,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SeatMap(body: 'cabin', rows: rows),
+      ),
+    );
+  }
+}
+
+List<SeatMapRowView> _sedanRows() {
+  return const [
+    SeatMapRowView(
+      id: 'front',
+      seats: [
+        SeatMapSeat(
+          id: 'fm',
+          label: 'FM',
+          role: 'passenger',
+          status: 'yours',
+          statusWord: 'Yours',
+          price: '₦1,200',
+        ),
+        SeatMapSeat(
+          id: 'fr',
+          label: 'FR',
+          role: 'passenger',
+          status: 'held',
+          statusWord: 'Held',
+          price: '₦900',
+        ),
+        SeatMapSeat(
+          id: 'drv',
+          label: 'Driver',
+          role: 'driver',
+          status: 'occupied',
+          statusWord: 'Driver',
+        ),
+      ],
+    ),
+    SeatMapRowView(
+      id: 'back',
+      seats: [
+        SeatMapSeat(
+          id: 'b1',
+          label: 'BL',
+          role: 'passenger',
+          status: 'free',
+          statusWord: 'Free',
+          price: '₦700',
+        ),
+        SeatMapSeat(
+          id: 'b2',
+          label: 'ML',
+          role: 'passenger',
+          status: 'occupied',
+          statusWord: 'Taken',
+        ),
+        SeatMapSeat(
+          id: 'b3',
+          label: 'MR',
+          role: 'passenger',
+          status: 'free',
+          statusWord: 'Free',
+          price: '₦700',
+        ),
+        SeatMapSeat(
+          id: 'b4',
+          label: 'BR',
+          role: 'passenger',
+          status: 'held',
+          statusWord: 'Held',
+          price: '₦800',
+        ),
+      ],
+    ),
+  ];
+}
+
+List<SeatMapRowView> _danfoRows() {
+  SeatMapSeat seat(
+    String id,
+    String label,
+    String status,
+    String word, {
+    String? price,
+  }) {
+    return SeatMapSeat(
+      id: id,
+      label: label,
+      role: 'passenger',
+      status: status,
+      statusWord: word,
+      price: price,
+    );
+  }
+
+  return [
+    SeatMapRowView(
+      id: 'cab',
+      seats: [
+        const SeatMapSeat(
+          id: 'drv',
+          label: 'Driver',
+          role: 'driver',
+          status: 'occupied',
+          statusWord: 'Driver',
+        ),
+        seat('c2', '2', 'held', 'Held', price: '₦500'),
+      ],
+    ),
+    SeatMapRowView(
+      id: 'r2',
+      seats: [
+        seat('2a', 'A', 'free', 'Free', price: '₦400'),
+        seat('2b', 'B', 'yours', 'Yours', price: '₦400'),
+        seat('2c', 'C', 'free', 'Free', price: '₦400'),
+        seat('2d', 'D', 'occupied', 'Taken'),
+      ],
+    ),
+    SeatMapRowView(
+      id: 'r3',
+      seats: [
+        seat('3a', 'A', 'held', 'Held', price: '₦400'),
+        seat('3b', 'B', 'free', 'Free', price: '₦400'),
+        seat('3c', 'C', 'free', 'Free', price: '₦400'),
+        seat('3d', 'D', 'free', 'Free', price: '₦400'),
+      ],
+    ),
+    SeatMapRowView(
+      id: 'r4',
+      seats: [
+        seat('4a', 'A', 'free', 'Free', price: '₦350'),
+        seat('4b', 'B', 'occupied', 'Taken'),
+        seat('4c', 'C', 'free', 'Free', price: '₦350'),
+        seat('4d', 'D', 'held', 'Held', price: '₦350'),
+      ],
+    ),
+  ];
 }
