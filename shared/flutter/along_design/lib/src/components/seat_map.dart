@@ -1087,6 +1087,45 @@ class _CornerBadge extends StatelessWidget {
   }
 }
 
+/// The cabin outline with the same seat painter, at a fixed cushion size.
+/// Offer uses this so the diagram is a car, not loose glyphs.
+class AlongCabinDiagram extends StatelessWidget {
+  const AlongCabinDiagram({super.key, required this.rows, this.seat = 72});
+
+  /// Each inner list is a row of status tokens (`driver`, `yours`, `free`,
+  /// `occupied`, `held`).
+  final List<List<String>> rows;
+  final double seat;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return CustomPaint(
+      painter: _CabinOutlinePainter(palette: palette),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var r = 0; r < rows.length; r++) ...[
+              if (r > 0) const SizedBox(height: 8),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var c = 0; c < rows[r].length; c++) ...[
+                    if (c > 0) const SizedBox(width: 8),
+                    AlongSeatGlyph(status: rows[r][c], width: seat),
+                  ],
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Small top-down seat. The cabin painter, without a hit target.
 class AlongSeatGlyph extends StatelessWidget {
   const AlongSeatGlyph({super.key, required this.status, this.width = 36});

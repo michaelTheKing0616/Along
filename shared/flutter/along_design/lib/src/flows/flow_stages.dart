@@ -365,127 +365,152 @@ class AlongFlowSeats extends StatelessWidget {
     return Scaffold(
       backgroundColor: palette.bg,
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Column(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // 320×640 is already full before the perks row. Tighten only then.
+            final short = constraints.maxHeight < 720;
+            final gap = short ? 4.0 : 8.0;
+            return Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      0,
+                      short ? 4 : 12,
+                      0,
+                      short ? 0 : 12,
+                    ),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'Choose a seat',
-                            style: AlongType.display(palette),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: _SeatDriver(),
-                        ),
-                        const SizedBox(height: 8),
-                        const SeatMap(
-                          body: 'cabin',
-                          rows: [
-                            SeatMapRowView(
-                              id: 'front',
-                              seats: [
-                                SeatMapSeat(
-                                  id: 'fm',
-                                  label: 'FM',
-                                  role: 'passenger',
-                                  status: 'yours',
-                                  statusWord: 'Yours',
-                                  price: '₦1,200',
-                                ),
-                                SeatMapSeat(
-                                  id: 'fr',
-                                  label: 'FR',
-                                  role: 'passenger',
-                                  status: 'held',
-                                  statusWord: 'Held',
-                                  price: '₦900',
-                                ),
-                                SeatMapSeat(
-                                  id: 'drv',
-                                  label: 'Driver',
-                                  role: 'driver',
-                                  status: 'occupied',
-                                  statusWord: 'Driver',
-                                ),
-                              ],
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                'Choose a seat',
+                                style: AlongType.display(palette),
+                              ),
                             ),
-                            SeatMapRowView(
-                              id: 'back',
-                              seats: [
-                                SeatMapSeat(
-                                  id: 'b1',
-                                  label: 'BL',
-                                  role: 'passenger',
-                                  status: 'free',
-                                  statusWord: 'Free',
-                                  price: '₦700',
+                            SizedBox(height: gap),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: _SeatDriver(),
+                            ),
+                            SizedBox(height: gap),
+                            const SeatMap(
+                              body: 'cabin',
+                              rows: [
+                                SeatMapRowView(
+                                  id: 'front',
+                                  seats: [
+                                    SeatMapSeat(
+                                      id: 'fm',
+                                      label: 'FM',
+                                      role: 'passenger',
+                                      status: 'yours',
+                                      statusWord: 'Yours',
+                                      price: '₦1,200',
+                                    ),
+                                    SeatMapSeat(
+                                      id: 'fr',
+                                      label: 'FR',
+                                      role: 'passenger',
+                                      status: 'held',
+                                      statusWord: 'Held',
+                                      price: '₦900',
+                                    ),
+                                    SeatMapSeat(
+                                      id: 'drv',
+                                      label: 'Driver',
+                                      role: 'driver',
+                                      status: 'occupied',
+                                      statusWord: 'Driver',
+                                    ),
+                                  ],
                                 ),
-                                SeatMapSeat(
-                                  id: 'b2',
-                                  label: 'ML',
-                                  role: 'passenger',
-                                  status: 'occupied',
-                                  statusWord: 'Taken',
-                                ),
-                                SeatMapSeat(
-                                  id: 'b3',
-                                  label: 'MR',
-                                  role: 'passenger',
-                                  status: 'free',
-                                  statusWord: 'Free',
-                                  price: '₦700',
-                                ),
-                                SeatMapSeat(
-                                  id: 'b4',
-                                  label: 'BR',
-                                  role: 'passenger',
-                                  status: 'held',
-                                  statusWord: 'Held',
-                                  price: '₦800',
+                                SeatMapRowView(
+                                  id: 'back',
+                                  seats: [
+                                    SeatMapSeat(
+                                      id: 'b1',
+                                      label: 'BL',
+                                      role: 'passenger',
+                                      status: 'free',
+                                      statusWord: 'Free',
+                                      price: '₦700',
+                                    ),
+                                    SeatMapSeat(
+                                      id: 'b2',
+                                      label: 'ML',
+                                      role: 'passenger',
+                                      status: 'occupied',
+                                      statusWord: 'Taken',
+                                    ),
+                                    SeatMapSeat(
+                                      id: 'b3',
+                                      label: 'MR',
+                                      role: 'passenger',
+                                      status: 'free',
+                                      statusWord: 'Free',
+                                      price: '₦700',
+                                    ),
+                                    SeatMapSeat(
+                                      id: 'b4',
+                                      label: 'BR',
+                                      role: 'passenger',
+                                      status: 'held',
+                                      statusWord: 'Held',
+                                      price: '₦800',
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
                         ),
+                        SizedBox(height: gap),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _SeatSection(
+                            vertical: short ? 8 : 12,
+                            child: const AlongWhosRiding(
+                              riders: AlongRider.riding,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: gap),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _SeatSection(
+                            vertical: short ? 8 : 12,
+                            child: const AlongSeatContext(
+                              origin: 'Wuse Market',
+                              destination: 'Garki',
+                              departs: 'Departs in 12 min',
+                              seatsLeft: '3/6 seats left',
+                              ruled: false,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: gap),
+                        const Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: _SeatPerks(),
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: _SeatSection(
-                        child: AlongWhosRiding(riders: AlongRider.riding),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: _SeatSection(
-                        child: AlongSeatContext(
-                          origin: 'Wuse Market',
-                          destination: 'Garki',
-                          departs: 'Departs in 12 min',
-                          seatsLeft: '3/6 seats left',
-                          ruled: false,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            const _SeatBar(),
-          ],
+                _SeatBar(dense: short),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -561,9 +586,10 @@ class _SeatDriver extends StatelessWidget {
 }
 
 class _SeatSection extends StatelessWidget {
-  const _SeatSection({required this.child});
+  const _SeatSection({required this.child, this.vertical = 12});
 
   final Widget child;
+  final double vertical;
 
   @override
   Widget build(BuildContext context) {
@@ -574,19 +600,109 @@ class _SeatSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: vertical),
         child: child,
       ),
     );
   }
 }
 
-class _SeatBar extends StatelessWidget {
-  const _SeatBar();
+class _SeatPerks extends StatelessWidget {
+  const _SeatPerks();
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // A note only when the card is tall enough to close the page gap.
+          final showNote = constraints.maxHeight >= 96;
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Seat perks',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(
+                    palette,
+                  ).copyWith(color: palette.ink, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 6),
+                const Row(
+                  children: [
+                    _PerkChip('AC'),
+                    SizedBox(width: 8),
+                    _PerkChip('Window'),
+                    SizedBox(width: 8),
+                    _PerkChip('Luggage'),
+                  ],
+                ),
+                if (showNote) ...[
+                  const Spacer(),
+                  Text(
+                    'Set by Chinedu',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _PerkChip extends StatelessWidget {
+  const _PerkChip(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.recessed,
+        borderRadius: BorderRadius.circular(17),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Text(
+          label,
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.meta(palette).copyWith(
+            color: palette.ink,
+            fontWeight: FontWeight.w600,
+            height: 1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SeatBar extends StatelessWidget {
+  const _SeatBar({this.dense = false});
+
+  final bool dense;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final pad = dense ? 8.0 : 12.0;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: palette.surface,
@@ -595,7 +711,7 @@ class _SeatBar extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        padding: EdgeInsets.fromLTRB(16, pad, 16, pad),
         child: Column(
           children: [
             Row(
@@ -627,7 +743,7 @@ class _SeatBar extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: pad),
             AlongSwipeConfirm(label: 'Hold this seat', onConfirmed: _noop),
           ],
         ),
@@ -1681,21 +1797,31 @@ class _NoteField extends StatelessWidget {
   }
 }
 
-/// Chips hug their labels. Two centered rows on a narrow phone.
+/// Content-width pills, two per row. A chip must not stretch.
 class _ComplimentWrap extends StatelessWidget {
   const _ComplimentWrap();
 
   @override
   Widget build(BuildContext context) {
-    return const Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 8,
-      runSpacing: 8,
+    return const Column(
       children: [
-        _ComplimentChip('Smooth ride', selected: true),
-        _ComplimentChip('Clean car'),
-        _ComplimentChip('On time'),
-        _ComplimentChip('Safe driving'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ComplimentChip('Smooth ride', selected: true),
+            SizedBox(width: 8),
+            _ComplimentChip('Clean car'),
+          ],
+        ),
+        SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ComplimentChip('On time'),
+            SizedBox(width: 8),
+            _ComplimentChip('Safe driving'),
+          ],
+        ),
       ],
     );
   }
@@ -1710,10 +1836,7 @@ class _ComplimentChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Container(
-      height: 34,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      alignment: Alignment.center,
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: selected ? palette.ink : palette.surface,
         borderRadius: BorderRadius.circular(17),
@@ -1721,14 +1844,17 @@ class _ComplimentChip extends StatelessWidget {
           color: selected ? palette.ink : palette.line.withValues(alpha: 0.45),
         ),
       ),
-      child: Text(
-        label,
-        maxLines: 1,
-        softWrap: false,
-        style: AlongType.meta(palette).copyWith(
-          color: selected ? palette.onInk : palette.ink,
-          fontWeight: FontWeight.w600,
-          height: 1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Text(
+          label,
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.meta(palette).copyWith(
+            color: selected ? palette.onInk : palette.ink,
+            fontWeight: FontWeight.w600,
+            height: 1,
+          ),
         ),
       ),
     );
@@ -1871,6 +1997,7 @@ class _Poster extends StatelessWidget {
             filterQuality: FilterQuality.high,
             excludeFromSemantics: true,
           ),
+          const Positioned.fill(child: _PosterRoute()),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -1911,10 +2038,138 @@ class _Poster extends StatelessWidget {
               ],
             ),
           ),
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 28,
+            child: _StepDots(count: 3, index: 0),
+          ),
         ],
       ),
     );
   }
+}
+
+class _StepDots extends StatelessWidget {
+  const _StepDots({required this.count, required this.index});
+
+  final int count;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var i = 0; i < count; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Container(
+            width: i == index ? 18 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: i == index
+                  ? const Color(0xFFF7D117)
+                  : const Color(0x66FFFFFF),
+              borderRadius: BorderRadius.circular(99),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// A quiet route drawn across the poster. Tests and reduced motion show
+/// the finished line.
+class _PosterRoute extends StatefulWidget {
+  const _PosterRoute();
+
+  @override
+  State<_PosterRoute> createState() => _PosterRouteState();
+}
+
+class _PosterRouteState extends State<_PosterRoute>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _draw;
+
+  @override
+  void initState() {
+    super.initState();
+    _draw = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+      value: 1,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !AlongMotionPolicy.play(context)) return;
+      _draw.forward(from: 0);
+    });
+  }
+
+  @override
+  void dispose() {
+    _draw.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _draw,
+      builder: (context, _) {
+        final t = AlongMotionPolicy.play(context) ? _draw.value : 1.0;
+        return CustomPaint(
+          painter: _PosterRoutePainter(progress: t),
+          child: const SizedBox.expand(),
+        );
+      },
+    );
+  }
+}
+
+class _PosterRoutePainter extends CustomPainter {
+  const _PosterRoutePainter({required this.progress});
+
+  final double progress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(size.width * 0.08, size.height * 0.62)
+      ..quadraticBezierTo(
+        size.width * 0.32,
+        size.height * 0.48,
+        size.width * 0.52,
+        size.height * 0.58,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.72,
+        size.height * 0.68,
+        size.width * 0.90,
+        size.height * 0.46,
+      );
+    final metric = path.computeMetrics().first;
+    final drawn = metric.extractPath(0, metric.length * progress.clamp(0, 1));
+    canvas.drawPath(
+      drawn,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..strokeCap = StrokeCap.round
+        ..color = const Color(0xCCFFFFFF),
+    );
+    if (progress > 0.98) {
+      canvas.drawCircle(
+        Offset(size.width * 0.90, size.height * 0.46),
+        5,
+        Paint()..color = const Color(0xFFF7D117),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _PosterRoutePainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }
 
 class _HoldRing extends StatefulWidget {
@@ -2752,26 +3007,16 @@ class _OfferLine extends CustomPainter {
 class _OfferSeats extends StatelessWidget {
   const _OfferSeats();
 
-  static const _rows = <List<String>>[
-    ['driver', 'yours', 'free'],
-    ['occupied', 'yours', 'free'],
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var row = 0; row < _rows.length; row++) ...[
-          if (row > 0) const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              for (final status in _rows[row])
-                AlongSeatGlyph(status: status, width: 72),
-            ],
-          ),
+    return const Center(
+      child: AlongCabinDiagram(
+        seat: 72,
+        rows: [
+          ['driver', 'yours', 'free'],
+          ['occupied', 'yours', 'free'],
         ],
-      ],
+      ),
     );
   }
 }
@@ -3373,10 +3618,14 @@ class _PlateFrame extends StatelessWidget {
           size.width - 32,
           size.height * 0.20,
         );
+        // One scale for both axes. Cover keeps the photo's aspect; fill was
+        // stretching the plate text.
         final scale = math.min(
           frame.width / _plate.width,
           frame.height / _plate.height,
         );
+        final imageW = _photoW * scale;
+        final imageH = imageW * _photoH / _photoW;
         final imageLeft =
             frame.center.dx - (_plate.left + _plate.width / 2) * scale;
         final imageTop =
@@ -3387,13 +3636,13 @@ class _PlateFrame extends StatelessWidget {
             Positioned(
               left: imageLeft,
               top: imageTop,
-              width: _photoW * scale,
-              height: _photoH * scale,
+              width: imageW,
+              height: imageH,
               child: Image.asset(
                 'assets/photos/plate-abuja.jpg',
                 package: 'along_design',
-                fit: BoxFit.fill,
-                filterQuality: FilterQuality.medium,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
                 excludeFromSemantics: true,
               ),
             ),

@@ -47,7 +47,8 @@ class AlongCityMap extends StatelessWidget {
   /// strip above a full-screen sheet on both 360×800 and 320×640.
   static const neighborhoodCenter = LatLng(9.063022, 7.465938);
   static const corridorCenter = LatLng(9.0460, 7.5183);
-  static const cityCenter = LatLng(9.055, 7.495);
+  /// South of the busy cores so the GO button sits on quiet map.
+  static const cityCenter = LatLng(9.012, 7.490);
   static const wuseMarket = LatLng(9.068555, 7.465938);
   static const nyanya = LatLng(9.023418, 7.570635);
 
@@ -113,10 +114,10 @@ class AlongCityMap extends StatelessWidget {
                 bounds: LatLngBounds.fromPoints(route),
                 padding: trip
                     ? EdgeInsets.fromLTRB(
-                        48,
-                        72,
-                        56,
-                        constraints.maxHeight * sheetInset + 28,
+                        24,
+                        64,
+                        24,
+                        constraints.maxHeight * sheetInset + 12,
                       )
                     : completed
                     ? const EdgeInsets.fromLTRB(32, 28, 40, 64)
@@ -200,6 +201,8 @@ class AlongCityMap extends StatelessWidget {
       return markers;
     }
     if (mode == AlongCityMapMode.trip) {
+      markers.add(_endpoint(corridorRoute.first, 'Wuse', true, palette));
+      markers.add(_endpoint(corridorRoute.last, 'Nyanya', false, palette));
       final at = _along(corridorRoute, drawn);
       markers.add(
         _vehicle(
@@ -718,57 +721,67 @@ _RoutePoint _along(List<LatLng> route, double progress) {
   return _RoutePoint(point, heading);
 }
 
-/// Hex demand across the Abuja districts that sit in the z12 extract.
-/// Hot cores are Wuse, Garki, Maitama, Nyanya, and Jabi.
+/// Hex demand across Abuja. Intensity follows the districts, then feathers
+/// out so the field is not a hard rectangle. The south edge stays quiet
+/// so the GO button is not sitting on a hot core.
 List<Polygon> _demandHexes(Color accent) {
-  const radius = 1450.0;
+  const radius = 1280.0;
   const mPerLat = 111320.0;
   const hotspots = <(double, double, double)>[
-    (9.068, 7.466, 1),
-    (9.036, 7.492, 0.9),
-    (9.082, 7.495, 0.72),
-    (9.023, 7.571, 0.88),
-    (9.076, 7.426, 0.62),
-    (9.068, 7.442, 0.5),
-    (9.050, 7.530, 0.42),
-    (9.010, 7.625, 0.58),
-    (9.102, 7.402, 0.34),
-    (8.985, 7.385, 0.3),
+    (9.076, 7.458, 1),
+    (9.062, 7.492, 0.55),
+    (9.088, 7.498, 0.72),
+    (9.070, 7.430, 0.48),
+    (9.084, 7.418, 0.36),
+    (9.058, 7.530, 0.28),
+    (9.094, 7.470, 0.22),
   ];
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
   final dx = radius * math.sqrt(3);
   final dy = radius * 1.5;
-  const originLat = 9.055;
-  const originLon = 7.495;
+  const originLat = 9.072;
+  const originLon = 7.470;
   final polygons = <Polygon>[];
-  for (var r = -6; r <= 6; r++) {
-    for (var q = -6; q <= 6; q++) {
+  for (var r = -5; r <= 5; r++) {
+    for (var q = -5; q <= 5; q++) {
       final x = dx * (q + r / 2);
       final y = dy * r;
       final lat = originLat + y / mPerLat;
       final lon = originLon + x / mPerLon;
-      if (lat < 8.97 || lat > 9.13 || lon < 7.36 || lon > 7.66) continue;
+      final dLat = (lat - originLat) * mPerLat;
+      final dLon = (lon - originLon) * mPerLon;
+      final fromCore = math.sqrt(dLat * dLat + dLon * dLon);
+      final edgeT = ((fromCore - 2800) / 5200).clamp(0.0, 1.0);
+      final feather = 1 - edgeT * edgeT * (3 - 2 * edgeT);
+      // Fade before the southern band the GO button covers.
+      final south = ((lat - 9.028) / 0.028).clamp(0.0, 1.0);
       var demand = 0.0;
       for (final spot in hotspots) {
-        final dLat = (lat - spot.$1) * mPerLat;
-        final dLon = (lon - spot.$2) * mPerLon;
-        final dist = math.sqrt(dLat * dLat + dLon * dLon);
-        final falloff = spot.$3 * math.exp(-dist / 2800);
-        if (falloff > demand) demand = falloff;
+        final sLat = (lat - spot.$1) * mPerLat;
+        final sLon = (lon - spot.$2) * mPerLon;
+        final dist = math.sqrt(sLat * sLat + sLon * sLon);
+        demand += spot.$3 * math.exp(-dist / 1500);
       }
-      if (demand < 0.16) continue;
-      final hot = demand > 0.62;
+      demand = (demand * _hexJitter(q, r)).clamp(0.0, 1.2);
+      final alpha = feather * south * (0.04 + demand * 0.42);
+      if (alpha < 0.045) continue;
+      final hot = demand > 0.72 && feather > 0.8;
       polygons.add(
         Polygon(
-          points: _hexRing(LatLng(lat, lon), radius * 0.92, mPerLat, mPerLon),
-          color: accent.withValues(alpha: 0.12 + demand * 0.46),
-          borderColor: accent.withValues(alpha: hot ? 0.95 : 0.5),
-          borderStrokeWidth: hot ? 1.6 : 1,
+          points: _hexRing(LatLng(lat, lon), radius * 0.86, mPerLat, mPerLon),
+          color: accent.withValues(alpha: alpha.clamp(0.0, 0.62)),
+          borderColor: accent.withValues(alpha: hot ? 0.55 : 0),
+          borderStrokeWidth: hot ? 1.2 : 0,
         ),
       );
     }
   }
   return polygons;
+}
+
+double _hexJitter(int q, int r) {
+  final n = (q * 73856093) ^ (r * 19349663);
+  return 0.7 + 0.3 * ((n & 0xFFFF) / 65535);
 }
 
 List<LatLng> _hexRing(
