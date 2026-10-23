@@ -270,6 +270,128 @@ void main() {
     );
   });
 
+  testWidgets('a seat tap depresses the cushion and asks for a light haptic', (
+    tester,
+  ) async {
+    AlongMotionPolicy.debugPlayMotion = true;
+    AlongHaptics.requested = 0;
+    AlongSeatPress.depress.clear();
+    await tester.pumpWidget(_seat(status: 'free', onSeatTap: (_) {}));
+    await tester.pump();
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byKey(const Key('seat_fm'))),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(AlongSeatPress.depress['fm'] ?? 0, greaterThan(0.15));
+    await gesture.up();
+    await tester.pump();
+    expect(AlongHaptics.requested, greaterThan(0));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(AlongSeatPress.depress['fm'] ?? 1, lessThan(0.2));
+    expect(_seatScale(tester), closeTo(1, 0.06));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('eta digits roll onto the new range', (tester) async {
+    AlongMotionPolicy.debugPlayMotion = true;
+    var label = '1-2';
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                children: [
+                  AlongRollingDigits(
+                    text: label,
+                    suffix: ' min',
+                    style: const TextStyle(fontSize: 28, height: 1),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => label = '4-6'),
+                    child: const Text('roll'),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('roll'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('4'), findsWidgets);
+    expect(find.text('6'), findsWidgets);
+    expect(find.text(' min'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('vehicle hero flies from the card into the quote', (
+    tester,
+  ) async {
+    AlongMotionPolicy.debugPlayMotion = true;
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) {
+            return Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 120,
+                  height: 72,
+                  child: InkWell(
+                    key: const Key('open_quote'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const AlongFlowQuote(),
+                        ),
+                      );
+                    },
+                    child: const AlongVehicleHero(
+                      kind: AlongVehicleKind.keke,
+                      width: 96,
+                      height: 60,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    await tester.tap(find.byKey(const Key('open_quote')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.byType(AlongVehicleMark), findsWidgets);
+    await tester.pump(const Duration(milliseconds: 450));
+    expect(find.text('Confirm fare'), findsOneWidget);
+    expect(find.text('Quote'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the refresh car rests mid-road when motion is off', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(width: 320, child: AlongDriveTrack(progress: 0.58)),
+        ),
+      ),
+    );
+    await tester.pump();
+    final car = tester.getTopLeft(find.byType(AlongVehicleMark));
+    expect(car.dx, greaterThan(80));
+    expect(car.dx, lessThan(220));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('who is riding uses initials', (tester) async {
     await tester.pumpWidget(_seat(status: 'free', riders: AlongRider.riding));
     expect(find.text("Who's riding"), findsOneWidget);
@@ -350,12 +472,17 @@ double _seatScale(WidgetTester tester) {
   return transform.transform.storage[0];
 }
 
-Widget _seat({required String status, List<AlongRider> riders = const []}) {
+Widget _seat({
+  required String status,
+  List<AlongRider> riders = const [],
+  ValueChanged<String>? onSeatTap,
+}) {
   return MaterialApp(
     home: Scaffold(
       body: SeatMap(
         body: 'cabin',
         riders: riders,
+        onSeatTap: onSeatTap,
         rows: [
           SeatMapRowView(
             id: 'front',

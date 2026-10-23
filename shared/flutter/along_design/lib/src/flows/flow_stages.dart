@@ -12,6 +12,7 @@ import '../motion.dart';
 import '../palette.dart';
 import '../theme.dart';
 import '../type.dart';
+import 'batch_stages.dart';
 import 'city_map.dart';
 import 'delights.dart';
 import 'driver_portrait.dart';
@@ -233,8 +234,10 @@ class _HomeSheetBody extends StatelessWidget {
                 ),
                 _PlaceRow(
                   icon: AlongIcons.schedule,
-                  title: 'Nyanya',
-                  detail: 'Yesterday · ₦1,200',
+                  title: 'Wuse to Nyanya',
+                  detail: 'Regular',
+                  action: 'Rebook',
+                  actionKey: Key('rebook_regular'),
                 ),
               ],
             ),
@@ -911,8 +914,9 @@ class _LiveSheet extends StatelessWidget {
             final eta = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AlongTickingEta(
-                  label: '4-6 min',
+                AlongRollingDigits(
+                  text: '4-6',
+                  suffix: ' min',
                   style: AlongType.display(palette),
                 ),
               ],
@@ -1242,6 +1246,8 @@ class AlongFlowDay extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const _DaySummary(),
+        const SizedBox(height: 8),
+        const AlongDepartureBoard(),
         const SizedBox(height: 8),
         const _DayBoard(),
         const SizedBox(height: 12),
@@ -2621,11 +2627,15 @@ class _PlaceRow extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.detail,
+    this.action,
+    this.actionKey,
   });
 
   final IconData icon;
   final String title;
   final String detail;
+  final String? action;
+  final Key? actionKey;
 
   @override
   Widget build(BuildContext context) {
@@ -2645,12 +2655,52 @@ class _PlaceRow extends StatelessWidget {
             child: AlongIcon(icon, size: 20, color: palette.ink),
           ),
           const SizedBox(width: 12),
-          Expanded(child: Text(title, style: AlongType.body(palette))),
-          Text(
-            detail,
-            style: AlongType.caption(palette)
-                .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: AlongType.body(palette),
+            ),
           ),
+          if (action != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Material(
+                color: palette.ink,
+                shape: const StadiumBorder(),
+                child: InkWell(
+                  key: actionKey,
+                  onTap: _noop,
+                  customBorder: const StadiumBorder(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    child: Text(
+                      action!,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: AlongType.caption(palette).copyWith(
+                        color: palette.onInk,
+                        fontWeight: FontWeight.w600,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            Text(
+              detail,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette)
+                  .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+            ),
         ],
       ),
     );

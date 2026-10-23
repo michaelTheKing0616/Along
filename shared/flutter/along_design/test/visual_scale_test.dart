@@ -32,6 +32,10 @@ void main() {
     'receipt': const AlongFlowReceipt(),
     'notices': const AlongFlowNotices(),
     'settings': const AlongFlowSettings(),
+    'pass': const AlongFlowPass(),
+    'split': const AlongFlowSplit(),
+    'loading': const AlongFlowLoading(),
+    'refresh': const AlongFlowRefresh(),
     'empty-routes': const Scaffold(
       body: EmptyState(variant: EmptyStateVariant.coverageGap),
     ),

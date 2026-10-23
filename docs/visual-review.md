@@ -114,3 +114,19 @@ Checked at 360 and 320, light and dark. The breath rests in gallery frames.
 | --- | --- | --- |
 | Online | The warn tint read as muddy stains. | Small hex outlines, evenly spaced, with no fill. Stroke alpha is ink at 6, 12, or 20 percent. The top three cells are brand yellow at 85 percent, with a soft glow. The glow breathes for 2.4s and holds still when motion does not play. Yellow is under 1.1 percent of the frame. |
 | Nav | Blank beige and a fat white road. | Zoom 17. Building footprints and side streets sit on the extract. The route is brand ink at 6dp on a casing. |
+
+## Pass 9 — motion, Pass, split, rebook, departures
+
+Checked at 360 and 320, light and dark. Motion rests in gallery frames.
+
+| Screen | What changed |
+| --- | --- |
+| Rides to quote | The keke on the ride card and the quote header share one hero tag, so the vehicle flies into the fare. |
+| Seats | A tap springs the cushion, depresses it, and asks for a light haptic. The rest pose and the cushion size stay. |
+| Live | The ETA is a digit window. It rolls on a change and rests on 4-6 min. |
+| Loading | Fare bones with the shimmer held at rest. |
+| Refresh | A car sits mid-road while the ride list loads, and drives across while a refresh is in flight. |
+| Home | Wuse to Nyanya is a regular route with one Rebook action. Where to? stays the focal. |
+| Pass | A weekly Wuse to Nyanya seat, weekday pills, and Subscribe. |
+| Split | You and Ada each pay ₦600, with a share link. |
+| Day | Leave at suggests 06:40, 07:10, and 09:20 from corridor demand. The best time has a short accent rail. |
