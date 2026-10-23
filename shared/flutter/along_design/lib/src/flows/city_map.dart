@@ -31,18 +31,23 @@ class AlongCityMap extends StatelessWidget {
     this.mode = AlongCityMapMode.browse,
     this.progress = 1,
     this.liveMarker = false,
+    this.sheetInset = 0.46,
   });
 
   final AlongCityMapMode mode;
   final double progress;
 
-  /// Drops a vehicle on the corridor. Guardian uses this for the live fix.
+  /// Drops a rider dot on the corridor. Guardian and Safety use this.
   final bool liveMarker;
+
+  /// Fraction of the map kept clear under a sheet, so a route can sit above it.
+  final double sheetInset;
 
   /// Sits about one tile south of Wuse Market, so the market stays in the
   /// strip above a full-screen sheet on both 360×800 and 320×640.
   static const neighborhoodCenter = LatLng(9.063022, 7.465938);
   static const corridorCenter = LatLng(9.0460, 7.5183);
+  static const cityCenter = LatLng(9.055, 7.495);
   static const wuseMarket = LatLng(9.068555, 7.465938);
   static const nyanya = LatLng(9.023418, 7.570635);
 
@@ -102,15 +107,16 @@ class AlongCityMap extends StatelessWidget {
       builder: (context, constraints) {
         final trip = mode == AlongCityMapMode.trip;
         final completed = mode == AlongCityMapMode.completed;
+        final city = mode == AlongCityMapMode.online;
         final fit = showRoute
             ? CameraFit.bounds(
-                bounds: LatLngBounds.fromPoints(_drawnRoute(route, drawn)),
+                bounds: LatLngBounds.fromPoints(route),
                 padding: trip
                     ? EdgeInsets.fromLTRB(
                         48,
                         72,
                         56,
-                        constraints.maxHeight * 0.46 + 28,
+                        constraints.maxHeight * sheetInset + 28,
                       )
                     : completed
                     ? const EdgeInsets.fromLTRB(32, 28, 40, 64)
@@ -122,11 +128,23 @@ class AlongCityMap extends StatelessWidget {
             : null;
         return FlutterMap(
           options: MapOptions(
-            initialCenter: _wide ? corridorCenter : neighborhoodCenter,
-            initialZoom: _wide ? 12 : 16,
+            initialCenter: city
+                ? cityCenter
+                : _wide
+                ? corridorCenter
+                : neighborhoodCenter,
+            initialZoom: city ? 11.15 : (_wide ? 12 : 16),
             initialCameraFit: fit,
-            minZoom: _wide ? (trip || completed ? 10 : 12) : 16,
-            maxZoom: _wide ? (trip || completed ? 12 : 12.4) : 16,
+            minZoom: city
+                ? 11.15
+                : _wide
+                ? (trip || completed ? 10 : 12)
+                : 16,
+            maxZoom: city
+                ? 11.15
+                : _wide
+                ? (trip || completed ? 12 : 12.4)
+                : 16,
             interactionOptions: const InteractionOptions(
               flags: InteractiveFlag.none,
             ),
@@ -177,17 +195,7 @@ class AlongCityMap extends StatelessWidget {
       markers.add(_endpoint(wuseMarket, 'Wuse', true, palette));
       markers.add(_endpoint(nyanya, 'Nyanya', false, palette));
       if (liveMarker) {
-        final at = _along(corridorRoute, 0.62);
-        markers.add(
-          _vehicle(
-            at.point,
-            AlongVehicleKind.car,
-            null,
-            at.heading,
-            palette,
-            emphasized: true,
-          ),
-        );
+        markers.add(_riderDot(_along(corridorRoute, 0.62).point, palette));
       }
       return markers;
     }
@@ -393,6 +401,22 @@ class AlongCityMap extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Marker _riderDot(LatLng at, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 22,
+      height: 22,
+      child: Container(
+        decoration: BoxDecoration(
+          color: palette.accent,
+          shape: BoxShape.circle,
+          border: Border.all(color: palette.surface, width: 3),
+          boxShadow: AlongElevation.float(palette.ink),
+        ),
       ),
     );
   }
@@ -673,26 +697,6 @@ class _RoutePoint {
   final double heading;
 }
 
-/// The part of [route] the painter has actually stroked. Fitting the full
-/// line leaves the undrawn tail as empty map.
-List<LatLng> _drawnRoute(List<LatLng> route, double progress) {
-  if (route.length < 2 || progress >= 0.999) return route;
-  final segments = route.length - 1;
-  final scaled = (segments * progress).clamp(0.0, segments.toDouble());
-  if (scaled < 0.05) return route;
-  final last = scaled.floor().clamp(0, segments - 1);
-  final t = scaled - last;
-  final a = route[last];
-  final b = route[last + 1];
-  return [
-    ...route.take(last + 1),
-    LatLng(
-      a.latitude + (b.latitude - a.latitude) * t,
-      a.longitude + (b.longitude - a.longitude) * t,
-    ),
-  ];
-}
-
 _RoutePoint _along(List<LatLng> route, double progress) {
   if (route.length < 2) {
     return _RoutePoint(route.first, 0);
@@ -714,32 +718,52 @@ _RoutePoint _along(List<LatLng> route, double progress) {
   return _RoutePoint(point, heading);
 }
 
-/// Crisp hex contour around Wuse. Axial distance steps the fill and the
-/// stroke so the hot core reads as a contour, not a blur.
+/// Hex demand across the Abuja districts that sit in the z12 extract.
+/// Hot cores are Wuse, Garki, Maitama, Nyanya, and Jabi.
 List<Polygon> _demandHexes(Color accent) {
-  const hotspot = LatLng(9.0646, 7.4662);
-  const radius = 86.0;
+  const radius = 1450.0;
   const mPerLat = 111320.0;
-  final mPerLon = mPerLat * math.cos(hotspot.latitude * math.pi / 180);
+  const hotspots = <(double, double, double)>[
+    (9.068, 7.466, 1),
+    (9.036, 7.492, 0.9),
+    (9.082, 7.495, 0.72),
+    (9.023, 7.571, 0.88),
+    (9.076, 7.426, 0.62),
+    (9.068, 7.442, 0.5),
+    (9.050, 7.530, 0.42),
+    (9.010, 7.625, 0.58),
+    (9.102, 7.402, 0.34),
+    (8.985, 7.385, 0.3),
+  ];
+  final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
+  final dx = radius * math.sqrt(3);
+  final dy = radius * 1.5;
+  const originLat = 9.055;
+  const originLon = 7.495;
   final polygons = <Polygon>[];
-  for (var r = -3; r <= 3; r++) {
-    for (var q = -4; q <= 4; q++) {
-      final dist = math.sqrt(q * q + r * r + q * r);
-      if (dist > 3.05) continue;
-      final demand = (1 - dist / 3.15).clamp(0.0, 1.0);
-      final x = radius * math.sqrt(3) * (q + r / 2);
-      final y = radius * 1.5 * r;
-      final center = LatLng(
-        hotspot.latitude + y / mPerLat,
-        hotspot.longitude + x / mPerLon,
-      );
+  for (var r = -6; r <= 6; r++) {
+    for (var q = -6; q <= 6; q++) {
+      final x = dx * (q + r / 2);
+      final y = dy * r;
+      final lat = originLat + y / mPerLat;
+      final lon = originLon + x / mPerLon;
+      if (lat < 8.97 || lat > 9.13 || lon < 7.36 || lon > 7.66) continue;
+      var demand = 0.0;
+      for (final spot in hotspots) {
+        final dLat = (lat - spot.$1) * mPerLat;
+        final dLon = (lon - spot.$2) * mPerLon;
+        final dist = math.sqrt(dLat * dLat + dLon * dLon);
+        final falloff = spot.$3 * math.exp(-dist / 2800);
+        if (falloff > demand) demand = falloff;
+      }
+      if (demand < 0.16) continue;
       final hot = demand > 0.62;
       polygons.add(
         Polygon(
-          points: _hexRing(center, radius * 0.94, mPerLat, mPerLon),
-          color: accent.withValues(alpha: hot ? 0.55 : 0.16 + demand * 0.22),
-          borderColor: accent.withValues(alpha: hot ? 0.95 : 0.72),
-          borderStrokeWidth: hot ? 2 : 1.25,
+          points: _hexRing(LatLng(lat, lon), radius * 0.92, mPerLat, mPerLon),
+          color: accent.withValues(alpha: 0.12 + demand * 0.46),
+          borderColor: accent.withValues(alpha: hot ? 0.95 : 0.5),
+          borderStrokeWidth: hot ? 1.6 : 1,
         ),
       );
     }
@@ -842,20 +866,30 @@ class _RoutePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = _smooth(_points());
     final casing = palette.brightness == Brightness.dark
         ? const Color(0xFF0E0E10)
         : const Color(0xFFFFFFFF);
-    canvas.drawPath(path, _stroke(9, casing));
-    canvas.drawPath(path, _stroke(4.5, palette.ink));
-    if (pulse > 0) {
-      alongPaintRoutePulse(
-        canvas,
-        path,
-        pulse,
-        palette.ink.withValues(alpha: 0.55),
-      );
+    final full = _smooth(_screen(route));
+    final grey = palette.muted.withValues(alpha: 0.45);
+    canvas.drawPath(full, _stroke(8, casing));
+    canvas.drawPath(full, _stroke(4.5, grey));
+    if (progress > 0.02) {
+      final traveled = _smooth(_points());
+      canvas.drawPath(traveled, _stroke(9, casing));
+      canvas.drawPath(traveled, _stroke(4.5, palette.ink));
+      if (pulse > 0) {
+        alongPaintRoutePulse(
+          canvas,
+          traveled,
+          pulse,
+          palette.ink.withValues(alpha: 0.55),
+        );
+      }
     }
+  }
+
+  List<Offset> _screen(List<LatLng> points) {
+    return [for (final point in points) camera.latLngToScreenOffset(point)];
   }
 
   Paint _stroke(double width, Color color) {

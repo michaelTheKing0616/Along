@@ -242,14 +242,14 @@ class _CabinShell extends StatelessWidget {
   }
 }
 
-/// Square cushion from the row width. Four-across on a 360 phone
-/// lands near 70. The cap is 72. The row gap never grows.
+/// Square cushion from the row width. A padded 360 cabin lands near 68.
+/// The cap is 84 so a full-width cabin can grow. The row gap never grows.
 class _CabinFit {
   const _CabinFit(this.seat);
 
   final double seat;
 
-  static const maxSeat = 72.0;
+  static const maxSeat = 84.0;
   static const columnGap = 8.0;
   static const rowGap = 20.0;
 
