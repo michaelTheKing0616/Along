@@ -51,22 +51,21 @@ class AlongButton extends StatelessWidget {
     final branding = alongBrandingOf(context);
     final palette = AlongPalette.of(context);
     final style = _styleForVariant(branding, palette);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     final child = _isLoading
         ? const AlongSkeleton(width: 72, height: 10)
         : Text(
             label,
-            maxLines: 1,
+            maxLines: roomy ? 2 : 1,
             overflow: TextOverflow.ellipsis,
-            softWrap: false,
+            softWrap: roomy,
+            textAlign: TextAlign.center,
             style: AlongText.buttonPrimary.copyWith(
               color: style.foregroundColor,
             ),
           );
 
-    final shape = AlongCraft.border(
-      AlongRadius.md.x,
-      side: style.borderSide,
-    );
+    final shape = AlongCraft.border(AlongRadius.md.x, side: style.borderSide);
     final yellow = variant == AlongButtonVariant.yellow;
     final button = DecoratedBox(
       decoration: ShapeDecoration(
@@ -86,17 +85,31 @@ class AlongButton extends StatelessWidget {
           customBorder: shape,
           splashFactory: NoSplash.splashFactory,
           highlightColor: Colors.transparent,
-          child: SizedBox(
-            height: _height,
-            width: fullWidth ? double.infinity : null,
-            child: Stack(
-              children: [
-                Center(child: child),
-                if (variant == AlongButtonVariant.primary || yellow)
-                  const AlongSheen(),
-              ],
-            ),
-          ),
+          child: roomy
+              ? ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: _height),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: SizedBox(
+                      width: fullWidth ? double.infinity : null,
+                      child: child,
+                    ),
+                  ),
+                )
+              : SizedBox(
+                  height: _height,
+                  width: fullWidth ? double.infinity : null,
+                  child: Stack(
+                    children: [
+                      Center(child: child),
+                      if (variant == AlongButtonVariant.primary || yellow)
+                        const AlongSheen(),
+                    ],
+                  ),
+                ),
         ),
       ),
     );

@@ -516,27 +516,31 @@ class _SeatLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _LegendMark(
-          label: 'Available',
-          fill: _SeatButtonState.available(palette),
-          border: _SeatButtonState.hairline(palette),
-        ),
-        const SizedBox(width: 14),
-        _LegendMark(
-          label: 'Selected',
-          fill: palette.accent,
-          border: palette.accent,
-        ),
-        const SizedBox(width: 14),
-        _LegendMark(
-          label: 'Taken',
-          fill: _SeatButtonState.taken(palette),
-          border: _SeatButtonState.hairline(palette),
-        ),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _LegendMark(
+            label: 'Available',
+            fill: _SeatButtonState.available(palette),
+            border: _SeatButtonState.hairline(palette),
+          ),
+          const SizedBox(width: 14),
+          _LegendMark(
+            label: 'Selected',
+            fill: palette.accent,
+            border: palette.accent,
+          ),
+          const SizedBox(width: 14),
+          _LegendMark(
+            label: 'Taken',
+            fill: _SeatButtonState.taken(palette),
+            border: _SeatButtonState.hairline(palette),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -619,6 +623,22 @@ class AlongSeatContext extends StatelessWidget {
     final fact = AlongType.caption(
       palette,
     ).copyWith(color: palette.muted, fontWeight: FontWeight.w600, height: 1.1);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    final facts = roomy
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(departs, maxLines: 2, softWrap: true, style: fact),
+              Text(seatsLeft, maxLines: 2, softWrap: true, style: fact),
+            ],
+          )
+        : Row(
+            children: [
+              Text(departs, maxLines: 1, softWrap: false, style: fact),
+              const Spacer(),
+              Text(seatsLeft, maxLines: 1, softWrap: false, style: fact),
+            ],
+          );
     return DecoratedBox(
       key: const Key('seat_ride_context'),
       decoration: BoxDecoration(
@@ -655,13 +675,7 @@ class AlongSeatContext extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Row(
-              children: [
-                Text(departs, maxLines: 1, softWrap: false, style: fact),
-                const Spacer(),
-                Text(seatsLeft, maxLines: 1, softWrap: false, style: fact),
-              ],
-            ),
+            facts,
           ],
         ),
       ),
@@ -1183,7 +1197,7 @@ class AlongSeatCount extends StatelessWidget {
           ],
           const SizedBox(width: 4),
           Text(
-            '$count',
+            '$count seats',
             maxLines: 1,
             softWrap: false,
             style: AlongType.caption(palette).copyWith(
@@ -1423,6 +1437,38 @@ class AlongWhosRiding extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final shown = riders.take(4).toList();
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    final faces = [
+      for (final rider in shown) ...[
+        Semantics(
+          label: 'Rider ${rider.initials}',
+          container: true,
+          child: ExcludeSemantics(
+            child: AlongMonogram(initials: rider.initials, size: 28),
+          ),
+        ),
+        const SizedBox(width: 4),
+      ],
+    ];
+    if (roomy) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Who's riding",
+            maxLines: 2,
+            softWrap: true,
+            style: AlongType.caption(palette).copyWith(
+              fontWeight: FontWeight.w600,
+              height: 1.1,
+              color: palette.ink,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(children: faces),
+        ],
+      );
+    }
     return Row(
       children: [
         Text(
@@ -1436,16 +1482,7 @@ class AlongWhosRiding extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        for (final rider in shown) ...[
-          Semantics(
-            label: 'Rider ${rider.initials}',
-            container: true,
-            child: ExcludeSemantics(
-              child: AlongMonogram(initials: rider.initials, size: 28),
-            ),
-          ),
-          const SizedBox(width: 4),
-        ],
+        ...faces,
       ],
     );
   }

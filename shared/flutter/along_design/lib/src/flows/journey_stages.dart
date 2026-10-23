@@ -54,7 +54,14 @@ class _PickupBodyState extends State<_PickupBody> {
       backgroundColor: palette.mapLand,
       body: Stack(
         children: [
-          const Positioned.fill(child: AlongCityMap(sheetInset: 0)),
+          const Positioned.fill(
+            child: AlongCityMap(
+              sheetInset: 0,
+              bare: true,
+              demoLabel: false,
+              fix: AlongFix.hidden,
+            ),
+          ),
           Align(
             alignment: Alignment.center,
             child: Transform.translate(
@@ -155,6 +162,7 @@ class _LandmarkChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Semantics(
@@ -174,10 +182,13 @@ class _LandmarkChip extends StatelessWidget {
             key: Key('landmark_${mark.id}'),
             customBorder: AlongCraft.border(16),
             onTap: onTap,
-            child: SizedBox(
-              height: 48,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 48),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: roomy ? 10 : 0,
+                ),
                 child: Row(
                   children: [
                     Icon(
@@ -189,8 +200,8 @@ class _LandmarkChip extends StatelessWidget {
                     Expanded(
                       child: Text(
                         mark.label,
-                        maxLines: 1,
-                        softWrap: false,
+                        maxLines: roomy ? 2 : 1,
+                        softWrap: roomy,
                         style: AlongType.body(palette).copyWith(
                           color: selected ? palette.onInk : palette.ink,
                           fontWeight: FontWeight.w600,
@@ -218,35 +229,35 @@ class _Pin extends StatelessWidget {
     return SizedBox(
       width: 48,
       height: 48,
-      child: CustomPaint(
-        painter: _PinPainter(fill: palette.ink, dot: palette.accent),
-      ),
+      child: CustomPaint(painter: _PinPainter(fill: palette.roles.stale)),
     );
   }
 }
 
 class _PinPainter extends CustomPainter {
-  const _PinPainter({required this.fill, required this.dot});
+  const _PinPainter({required this.fill});
 
   final Color fill;
-  final Color dot;
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2 - 4);
-    canvas.drawCircle(center, 10, Paint()..color = fill);
-    canvas.drawCircle(center, 4, Paint()..color = dot);
-    final tail = Path()
-      ..moveTo(center.dx - 6, center.dy + 6)
-      ..lineTo(center.dx, center.dy + 18)
-      ..lineTo(center.dx + 6, center.dy + 6)
-      ..close();
-    canvas.drawPath(tail, Paint()..color = fill);
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round
+      ..color = fill;
+    canvas.drawCircle(center, 10, ring);
+    canvas.drawLine(
+      center + const Offset(0, 10),
+      center + const Offset(0, 18),
+      ring,
+    );
   }
 
   @override
   bool shouldRepaint(covariant _PinPainter oldDelegate) =>
-      oldDelegate.fill != fill || oldDelegate.dot != dot;
+      oldDelegate.fill != fill;
 }
 
 /// Fare breakdown, a frozen expiry, and the cancel line.
@@ -272,6 +283,14 @@ class AlongFlowQuote extends StatelessWidget {
               Expanded(child: Text('Quote', style: AlongType.display(palette))),
               const AlongDemoMark(),
             ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Wuse Market to Nyanya',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
@@ -324,20 +343,30 @@ class _FareLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final style = AlongType.body(palette).copyWith(
-      fontWeight: strong ? FontWeight.w600 : FontWeight.w400,
-      height: 1.2,
-      fontFeatures: const [FontFeature.tabularFigures()],
-    );
-    return SizedBox(
-      height: 32,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(label, maxLines: 1, softWrap: false, style: style),
-          ),
-          Text(value, maxLines: 1, softWrap: false, style: style),
-        ],
+    final roomy = _roomy(context);
+    final style = (strong ? AlongType.title(palette) : AlongType.body(palette))
+        .copyWith(
+          fontWeight: strong ? FontWeight.w600 : FontWeight.w400,
+          height: 1.2,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        );
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: strong ? 40 : 32),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                maxLines: roomy ? 2 : 1,
+                softWrap: roomy,
+                style: style,
+              ),
+            ),
+            Text(value, maxLines: 1, softWrap: false, style: style),
+          ],
+        ),
       ),
     );
   }
@@ -354,24 +383,51 @@ class AlongFlowMatching extends StatelessWidget {
       backgroundColor: palette.mapLand,
       body: Stack(
         children: [
-          const Positioned.fill(child: AlongCityMap(sheetInset: 0)),
-          const Align(alignment: Alignment.center, child: _SearchPulse()),
+          const Positioned.fill(
+            child: AlongCityMap(
+              sheetInset: 0,
+              bare: true,
+              demoLabel: false,
+              fix: AlongFix.hidden,
+            ),
+          ),
+          const Align(alignment: Alignment(0, 0.2), child: _SearchPulse()),
           Positioned(
+            top: 12,
             left: 12,
             right: 12,
-            bottom: 12,
             child: _SolidCard(
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Looking nearby',
-                      maxLines: 1,
-                      softWrap: false,
-                      style: AlongType.title(palette).copyWith(height: 1.1),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Looking nearby',
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.title(palette).copyWith(height: 1.1),
+                        ),
+                      ),
+                      const AlongDemoMark(),
+                    ],
                   ),
-                  const AlongDemoMark(),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Wuse Market',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette)
+                        .copyWith(color: palette.ink),
+                  ),
+                  const SizedBox(height: 12),
+                  const AlongButton(
+                    key: Key('cancel_search'),
+                    label: 'Cancel search',
+                    variant: AlongButtonVariant.secondary,
+                    onPressed: _noop,
+                  ),
                 ],
               ),
             ),
@@ -398,7 +454,7 @@ class _SearchPulseState extends State<_SearchPulse>
     super.initState();
     _motion = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AlongDurations.hold,
       value: 0.35,
     );
   }
@@ -407,13 +463,8 @@ class _SearchPulseState extends State<_SearchPulse>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final reduced = AlongMotionPolicy.reduced(context);
-    final play = AlongMotionPolicy.play(context);
-    if ((reduced || play) && !_motion.isAnimating) {
-      _motion.repeat(reverse: reduced);
-    } else if (!reduced && !play) {
-      _motion.stop();
-      _motion.value = 0.35;
-    }
+    // One rest pose. "Looking nearby" is the status, not a loop.
+    _motion.value = reduced ? 0.2 : 0.35;
   }
 
   @override
@@ -481,7 +532,14 @@ class AlongFlowRecovery extends StatelessWidget {
       backgroundColor: palette.mapLand,
       body: Stack(
         children: [
-          const Positioned.fill(child: AlongCityMap(sheetInset: 0)),
+          const Positioned.fill(
+            child: AlongCityMap(
+              sheetInset: 0,
+              bare: true,
+              demoLabel: false,
+              fix: AlongFix.approximate,
+            ),
+          ),
           Positioned(
             left: 12,
             right: 12,
@@ -552,9 +610,17 @@ class AlongFlowTripPin extends StatelessWidget {
               const AlongDemoMark(),
             ],
           ),
+          const SizedBox(height: 4),
+          Text(
+            'Wuse Market to Nyanya',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
           Text(
-            'Driver enters this to start',
+            'Show this when the driver arrives',
             maxLines: 1,
             softWrap: false,
             style: AlongType.body(palette),
@@ -585,17 +651,18 @@ class _PinSlots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final slots = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < 4; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          _PinBox(digit: i < code.length ? code[i] : ''),
+        ],
+      ],
+    );
     return Semantics(
       label: 'Trip PIN ${code.split('').join(' ')}',
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < 4; i++) ...[
-            if (i > 0) const SizedBox(width: 8),
-            _PinBox(digit: i < code.length ? code[i] : ''),
-          ],
-        ],
-      ),
+      child: _roomy(context) ? FittedBox(child: slots) : slots,
     );
   }
 }
@@ -608,11 +675,14 @@ class _PinBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final scale = _roomy(context)
+        ? MediaQuery.textScalerOf(context).scale(1)
+        : 1.0;
     return DecoratedBox(
       decoration: AlongCraft.surface(palette, radius: 12, hairline: true),
       child: SizedBox(
-        width: 56,
-        height: 64,
+        width: 56 * scale,
+        height: 64 * scale,
         child: Center(
           child: Text(
             digit,
@@ -669,6 +739,7 @@ class _DriverBodyState extends State<_DriverBody> {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final verified = _phase.verified;
+    final roomy = _roomy(context);
     return _JourneyPage(
       bottom: AlongButton(
         key: const Key('verify_pin'),
@@ -688,18 +759,34 @@ class _DriverBodyState extends State<_DriverBody> {
           ),
           const SizedBox(height: 8),
           const _DriverSteps(),
+          const SizedBox(height: 8),
+          Text(
+            'Enter the rider\'s PIN',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 12),
           Center(child: _PinSlots(code: _digits)),
           if (_phase.rejected) ...[
             const SizedBox(height: 8),
-            Text(
-              'Wrong PIN',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette).copyWith(color: palette.danger),
+            Row(
+              children: [
+                Icon(AlongIcons.close, size: 20, color: palette.roles.error),
+                const SizedBox(width: 6),
+                Text(
+                  'Wrong PIN',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(
+                    palette,
+                  ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
+                ),
+              ],
             ),
           ],
-          const Spacer(),
+          if (!roomy) const Spacer(),
           _Keypad(onKey: _press),
         ],
       ),
@@ -718,15 +805,32 @@ class _DriverSteps extends StatelessWidget {
       children: [
         for (var i = 0; i < steps.length; i++)
           Expanded(
-            child: Text(
-              steps[i],
-              maxLines: 1,
-              softWrap: false,
-              textAlign: TextAlign.center,
-              style: AlongType.caption(palette).copyWith(
-                color: i <= 1 ? palette.ink : palette.muted,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Column(
+              children: [
+                Icon(
+                  i < 1
+                      ? AlongIcons.check
+                      : i == 1
+                      ? AlongIcons.verified
+                      : AlongIcons.caretRight,
+                  size: 16,
+                  color: i <= 1 ? palette.ink : palette.muted,
+                ),
+                Text(
+                  steps[i],
+                  maxLines: 1,
+                  softWrap: false,
+                  textAlign: TextAlign.center,
+                  style: AlongType.caption(palette).copyWith(
+                    color: i == 1
+                        ? palette.ink
+                        : i < 1
+                        ? palette.ink
+                        : palette.muted,
+                    fontWeight: i == 1 ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
           ),
       ],
@@ -778,6 +882,7 @@ class _KeyCap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
     if (label.isEmpty) return const SizedBox(height: 48);
     final del = label == 'del';
     return Semantics(
@@ -789,17 +894,20 @@ class _KeyCap extends StatelessWidget {
         child: InkWell(
           customBorder: AlongCraft.border(12),
           onTap: () => onKey(label),
-          child: SizedBox(
-            height: 48,
-            child: Center(
-              child: del
-                  ? Icon(AlongIcons.close, size: 20, color: palette.ink)
-                  : Text(
-                      label,
-                      maxLines: 1,
-                      softWrap: false,
-                      style: AlongType.title(palette).copyWith(height: 1),
-                    ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: roomy ? 8 : 0),
+              child: Center(
+                child: del
+                    ? Icon(AlongIcons.close, size: 20, color: palette.ink)
+                    : Text(
+                        label,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: AlongType.title(palette).copyWith(height: 1),
+                      ),
+              ),
             ),
           ),
         ),
@@ -825,6 +933,8 @@ class AlongFlowNav extends StatelessWidget {
               mode: AlongCityMapMode.trip,
               progress: 0.42,
               sheetInset: 0.18,
+              fix: AlongFix.stale,
+              demoLabel: false,
             ),
           ),
           const Positioned(top: 12, right: 12, child: AlongDemoMark()),
@@ -892,6 +1002,14 @@ class AlongFlowReceipt extends StatelessWidget {
               const AlongDemoMark(),
             ],
           ),
+          const SizedBox(height: 4),
+          Text(
+            'Wuse Market to Nyanya',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
           const AlongSeatCount(count: 2, glyph: 16),
           const SizedBox(height: 8),
@@ -930,10 +1048,22 @@ class AlongFlowNotices extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return _JourneyPage(
+      bottom: const AlongButton(
+        key: Key('notices_retry'),
+        label: 'Try again',
+        onPressed: _noop,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Notices', style: AlongType.display(palette)),
+          const SizedBox(height: 4),
+          Text(
+            'One notice at a time in the app',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette).copyWith(color: palette.ink),
+          ),
           const SizedBox(height: 12),
           for (final notice in DemoAdapter.notices) ...[
             _NoticeBanner(label: notice.label),
@@ -953,23 +1083,28 @@ class _NoticeBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final role = _noticeRole(palette, label);
+    final roomy = _roomy(context);
     return Semantics(
       label: label,
       child: DecoratedBox(
         decoration: AlongCraft.surface(palette, radius: 12, hairline: true),
-        child: SizedBox(
-          height: 48,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: roomy ? 8 : 0,
+            ),
             child: Row(
               children: [
-                Icon(AlongIcons.info, size: 20, color: palette.ink),
+                Icon(role.icon, size: 20, color: role.color),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     label,
-                    maxLines: 1,
-                    softWrap: false,
+                    maxLines: roomy ? 3 : 1,
+                    softWrap: roomy,
                     style: AlongType.body(palette)
                         .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                   ),
@@ -981,6 +1116,27 @@ class _NoticeBanner extends StatelessWidget {
       ),
     );
   }
+}
+
+class _NoticeRole {
+  const _NoticeRole(this.icon, this.color);
+
+  final IconData icon;
+  final Color color;
+}
+
+_NoticeRole _noticeRole(AlongPalette palette, String label) {
+  final roles = palette.roles;
+  return switch (label) {
+    'Location denied' => _NoticeRole(AlongIcons.close, roles.error),
+    'Location is approximate' => _NoticeRole(AlongIcons.locate, roles.warn),
+    'Offline · poor network' => _NoticeRole(AlongIcons.info, roles.stale),
+    'Driver cancelled the trip' => _NoticeRole(AlongIcons.user, roles.error),
+    'Quote changed · review it' => _NoticeRole(AlongIcons.tag, roles.warn),
+    'Payment failed' => _NoticeRole(AlongIcons.wallet, roles.error),
+    'Welcome back' => _NoticeRole(AlongIcons.check, roles.success),
+    _ => _NoticeRole(AlongIcons.info, roles.stale),
+  };
 }
 
 /// Haptics toggle. Reduce motion is the system setting; this screen says
@@ -1004,6 +1160,7 @@ class _SettingsBodyState extends State<_SettingsBody> {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final reduced = AlongMotionPolicy.reduced(context);
+    final roomy = _roomy(context);
     return _JourneyPage(
       bottom: AlongButton(
         key: const Key('haptics_try'),
@@ -1018,10 +1175,13 @@ class _SettingsBodyState extends State<_SettingsBody> {
           const SizedBox(height: 16),
           DecoratedBox(
             decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-            child: SizedBox(
-              height: 56,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 56),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: roomy ? 8 : 0,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -1054,8 +1214,8 @@ class _SettingsBodyState extends State<_SettingsBody> {
           const SizedBox(height: 12),
           Text(
             reduced ? 'Reduce motion is on' : 'Reduce motion uses fades',
-            maxLines: 1,
-            softWrap: false,
+            maxLines: roomy ? 2 : 1,
+            softWrap: roomy,
             style: AlongType.caption(palette).copyWith(color: palette.ink),
           ),
         ],
@@ -1073,6 +1233,7 @@ class _JourneyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
     return Scaffold(
       backgroundColor: palette.bg,
       body: SafeArea(
@@ -1081,7 +1242,10 @@ class _JourneyPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: child),
+              if (roomy)
+                Expanded(child: SingleChildScrollView(child: child))
+              else
+                Expanded(child: child),
               if (bottom != null) ...[const SizedBox(height: 12), bottom!],
             ],
           ),
@@ -1090,6 +1254,9 @@ class _JourneyPage extends StatelessWidget {
     );
   }
 }
+
+bool _roomy(BuildContext context) =>
+    MediaQuery.textScalerOf(context).scale(1) > 1.15;
 
 class _SolidCard extends StatelessWidget {
   const _SolidCard({

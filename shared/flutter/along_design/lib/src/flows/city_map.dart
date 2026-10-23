@@ -1,20 +1,27 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../craft.dart';
 import '../elevation.dart';
+import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../type.dart';
 import 'delights.dart';
+import 'demo_adapter.dart';
 import 'driver_portrait.dart';
 import 'vehicle_art.dart';
 
 /// How the Abuja map is dressed.
 enum AlongCityMapMode { browse, trip, online, routeHero, search, completed }
+
+/// How sure the fix is. Approximate and stale are hollow and grey, and
+/// they carry a word. Precise is a filled rider dot plus "You".
+enum AlongFix { precise, approximate, stale, hidden }
 
 /// Muted Abuja maps.
 ///
@@ -33,6 +40,9 @@ class AlongCityMap extends StatelessWidget {
     this.progress = 1,
     this.liveMarker = false,
     this.sheetInset = 0.46,
+    this.bare = false,
+    this.fix = AlongFix.precise,
+    this.demoLabel = true,
   });
 
   final AlongCityMapMode mode;
@@ -43,6 +53,16 @@ class AlongCityMap extends StatelessWidget {
 
   /// Fraction of the map kept clear under a sheet, so a route can sit above it.
   final double sheetInset;
+
+  /// Tiles only, plus the fix marker. Pickup and search use this so the
+  /// decorative pins do not cover the place label.
+  final bool bare;
+
+  final AlongFix fix;
+
+  /// Debug builds label simulated positions. Screens that already show a
+  /// Demo mark pass false.
+  final bool demoLabel;
 
   /// Sits about one tile south of Wuse Market, so the market stays in the
   /// strip above a full-screen sheet on both 360×800 and 320×640.
@@ -116,10 +136,10 @@ class AlongCityMap extends StatelessWidget {
                 bounds: LatLngBounds.fromPoints(route),
                 padding: trip
                     ? EdgeInsets.fromLTRB(
-                        24,
-                        64,
-                        24,
-                        constraints.maxHeight * sheetInset + 12,
+                        28,
+                        72,
+                        28,
+                        constraints.maxHeight * sheetInset + 36,
                       )
                     : completed
                     ? const EdgeInsets.fromLTRB(32, 28, 40, 64)
@@ -178,7 +198,12 @@ class AlongCityMap extends StatelessWidget {
                   palette: palette,
                 ),
               ),
-            MarkerLayer(rotate: true, markers: _markers(palette, drawn)),
+            MarkerLayer(
+              rotate: true,
+              markers: _markers(context, palette, drawn),
+            ),
+            if (kDebugMode && demoLabel && !_positionCarriesDemo)
+              const Positioned(top: 8, right: 8, child: AlongDemoMark()),
             Positioned(
               top: 8,
               left: 0,
@@ -192,23 +217,56 @@ class AlongCityMap extends StatelessWidget {
     );
   }
 
-  List<Marker> _markers(AlongPalette palette, double drawn) {
+  /// A puck or a stale car already says Demo, so the corner chip stays off.
+  bool get _positionCarriesDemo {
+    if (bare) return fix != AlongFix.hidden;
+    return mode == AlongCityMapMode.browse ||
+        mode == AlongCityMapMode.online ||
+        mode == AlongCityMapMode.search ||
+        (mode == AlongCityMapMode.trip && fix == AlongFix.stale);
+  }
+
+  double _typeScale(BuildContext context) {
+    final scale = MediaQuery.textScalerOf(context).scale(1);
+    if (scale < 1) return 1;
+    if (scale > 2.5) return 2.5;
+    return scale;
+  }
+
+  List<Marker> _markers(
+    BuildContext context,
+    AlongPalette palette,
+    double drawn,
+  ) {
     final markers = <Marker>[];
+    if (bare) {
+      if (fix != AlongFix.hidden) {
+        markers.add(_puck(context, wuseMarket, palette));
+      }
+      return markers;
+    }
     if (mode == AlongCityMapMode.routeHero ||
         mode == AlongCityMapMode.completed) {
-      markers.add(_endpoint(wuseMarket, 'Wuse', true, palette));
-      markers.add(_endpoint(nyanya, 'Nyanya', false, palette));
+      markers.add(_endpoint(context, wuseMarket, 'Wuse', true, palette));
+      markers.add(_endpoint(context, nyanya, 'Nyanya', false, palette));
       if (liveMarker) {
-        markers.add(_riderDot(_along(corridorRoute, 0.62).point, palette));
+        markers.add(
+          _riderDot(context, _along(corridorRoute, 0.62).point, palette),
+        );
       }
       return markers;
     }
     if (mode == AlongCityMapMode.trip) {
-      markers.add(_endpoint(corridorRoute.first, 'Wuse', true, palette));
-      markers.add(_endpoint(corridorRoute.last, 'Nyanya', false, palette));
+      markers.add(
+        _endpoint(context, corridorRoute.first, 'Wuse', true, palette),
+      );
+      markers.add(
+        _endpoint(context, corridorRoute.last, 'Nyanya', false, palette),
+      );
       final at = _along(corridorRoute, drawn);
       markers.add(
         _vehicle(
+          context,
           at.point,
           AlongVehicleKind.car,
           null,
@@ -220,24 +278,45 @@ class AlongCityMap extends StatelessWidget {
       return markers;
     }
     if (mode == AlongCityMapMode.browse) {
-      markers.add(_pin(wuseMarket, 'Wuse', false, palette));
-      markers.add(_pin(const LatLng(9.06905, 7.46485), 'Park', true, palette));
+      markers.add(_pin(context, wuseMarket, 'Wuse', false, palette));
+      markers.add(
+        _pin(context, const LatLng(9.06905, 7.46485), 'Park', true, palette),
+      );
     }
     if (mode == AlongCityMapMode.search) {
       markers.add(_radar(wuseMarket, palette));
       markers.add(
-        _driver(const LatLng(9.06902, 7.46662), '4 min', false, palette),
+        _driver(
+          context,
+          const LatLng(9.06902, 7.46662),
+          '4 min',
+          false,
+          palette,
+        ),
       );
       markers.add(
-        _driver(const LatLng(9.06805, 7.46515), '6 min', true, palette),
+        _driver(
+          context,
+          const LatLng(9.06805, 7.46515),
+          '6 min',
+          true,
+          palette,
+        ),
       );
       markers.add(
-        _driver(const LatLng(9.06928, 7.46470), '8 min', false, palette),
+        _driver(
+          context,
+          const LatLng(9.06928, 7.46470),
+          '8 min',
+          false,
+          palette,
+        ),
       );
     }
     if (mode == AlongCityMapMode.online) {
       markers.add(
         _vehicle(
+          context,
           const LatLng(9.06842, 7.46505),
           AlongVehicleKind.keke,
           2,
@@ -247,6 +326,7 @@ class AlongCityMap extends StatelessWidget {
       );
       markers.add(
         _vehicle(
+          context,
           const LatLng(9.06878, 7.46670),
           AlongVehicleKind.danfo,
           6,
@@ -255,62 +335,111 @@ class AlongCityMap extends StatelessWidget {
         ),
       );
     } else if (mode == AlongCityMapMode.browse) {
-      markers.add(_cluster(const LatLng(9.06848, 7.46515), 3, palette));
-      markers.add(_cluster(const LatLng(9.06922, 7.46585), 2, palette));
+      markers.add(
+        _cluster(context, const LatLng(9.06848, 7.46515), 3, palette),
+      );
+      markers.add(
+        _cluster(context, const LatLng(9.06922, 7.46585), 2, palette),
+      );
     }
     if (mode == AlongCityMapMode.browse ||
         mode == AlongCityMapMode.online ||
         mode == AlongCityMapMode.search) {
-      markers.add(_puck(const LatLng(9.06812, 7.46525), palette));
+      markers.add(_puck(context, const LatLng(9.06812, 7.46525), palette));
     }
     return markers;
   }
 
-  Marker _endpoint(LatLng at, String label, bool pickup, AlongPalette palette) {
+  Marker _endpoint(
+    BuildContext context,
+    LatLng at,
+    String label,
+    bool pickup,
+    AlongPalette palette,
+  ) {
+    final roles = palette.roles;
+    final color = pickup ? roles.pickup : roles.dropoff;
+    final word = pickup ? 'Pickup' : 'Drop';
+    final s = _typeScale(context);
     return Marker(
       point: at,
-      width: 72,
-      height: 34,
+      width: 96 * s,
+      height: 48 * s,
       alignment: Alignment.bottomCenter,
       child: AlongPinDrop(
-        child: Column(
-          children: [
-            Container(
-              width: 14,
-              height: 14,
-              decoration: BoxDecoration(
-                color: pickup ? palette.accent : palette.ink,
-                shape: BoxShape.circle,
-                border: Border.all(color: palette.surface, width: 2),
-                boxShadow: AlongElevation.float(palette.ink),
+        child: Semantics(
+          label: '$word $label',
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: palette.surface,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        pickup ? AlongIcons.locate : AlongIcons.path,
+                        size: 12,
+                        color: color,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        label,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: AlongType.caption(palette).copyWith(
+                          fontSize: 10,
+                          height: 1.1,
+                          fontWeight: FontWeight.w600,
+                          color: palette.ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            Text(
-              label,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette).copyWith(
-                fontSize: 10,
-                height: 1.1,
-                fontWeight: FontWeight.w600,
-                color: palette.muted,
-                backgroundColor: palette.surface.withValues(alpha: 0.72),
+              const SizedBox(height: 2),
+              Container(
+                width: pickup ? 12 : 10,
+                height: pickup ? 12 : 10,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: pickup ? BoxShape.circle : BoxShape.rectangle,
+                  borderRadius: pickup ? null : BorderRadius.circular(2),
+                  border: Border.all(color: palette.surface, width: 1.5),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Marker _pin(LatLng at, String label, bool park, AlongPalette palette) {
+  Marker _pin(
+    BuildContext context,
+    LatLng at,
+    String label,
+    bool park,
+    AlongPalette palette,
+  ) {
+    final s = _typeScale(context);
     return Marker(
       point: at,
-      width: 64,
-      height: 36,
+      width: 72 * s,
+      height: 42 * s,
       alignment: Alignment.bottomCenter,
       child: AlongPinDrop(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 14,
@@ -322,16 +451,24 @@ class AlongCityMap extends StatelessWidget {
                 boxShadow: AlongElevation.float(palette.ink),
               ),
             ),
-            Text(
-              label,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette).copyWith(
-                fontSize: 10,
-                height: 1.1,
-                fontWeight: FontWeight.w600,
-                color: palette.muted,
-                backgroundColor: palette.surface.withValues(alpha: 0.72),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: palette.surface,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette).copyWith(
+                    fontSize: 10,
+                    height: 1.1,
+                    fontWeight: FontWeight.w600,
+                    color: palette.ink,
+                  ),
+                ),
               ),
             ),
           ],
@@ -341,6 +478,7 @@ class AlongCityMap extends StatelessWidget {
   }
 
   Marker _vehicle(
+    BuildContext context,
     LatLng at,
     AlongVehicleKind kind,
     int? seats,
@@ -348,80 +486,137 @@ class AlongCityMap extends StatelessWidget {
     AlongPalette palette, {
     bool emphasized = false,
   }) {
-    final plate = emphasized ? 58.0 : 52.0;
+    final s = _typeScale(context);
+    final stale = emphasized && fix == AlongFix.stale;
+    final plate = (emphasized ? 58.0 : 52.0) * s;
+    final width = stale ? math.max(plate, 156 * s) : plate;
+    final height = stale ? plate + 44 * s : plate;
     return Marker(
       point: at,
-      width: plate,
-      height: plate,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
+      width: width,
+      height: height,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Positioned(
-            bottom: 8,
-            child: Container(
-              width: emphasized ? 28 : 22,
-              height: 7,
-              decoration: BoxDecoration(
-                color: const Color(0x33000000),
-                borderRadius: BorderRadius.circular(8),
-              ),
+          SizedBox(
+            width: plate,
+            height: plate,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  bottom: 8,
+                  child: Container(
+                    width: emphasized ? 28 : 22,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: const Color(0x33000000),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+                if (emphasized)
+                  Container(
+                    width: plate,
+                    height: plate,
+                    decoration: BoxDecoration(
+                      color: stale
+                          ? palette.roles.stale.withValues(alpha: 0.18)
+                          : palette.surface,
+                      shape: BoxShape.circle,
+                      border: stale
+                          ? Border.all(color: palette.roles.stale, width: 2)
+                          : null,
+                      boxShadow: AlongElevation.float(palette.ink),
+                    ),
+                  ),
+                AlongTopDownMark(
+                  kind: kind,
+                  heading: heading,
+                  size: (emphasized ? 40 : 36) * (s > 1.15 ? s : 1),
+                ),
+                if (seats != null)
+                  Positioned(
+                    right: 0,
+                    top: -2,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: palette.accent,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: palette.accentInk, width: 1),
+                      ),
+                      child: Text(
+                        '$seats',
+                        maxLines: 1,
+                        softWrap: false,
+                        style: AlongType.numeric(palette).copyWith(
+                          fontSize: 11,
+                          height: 1,
+                          color: palette.accentInk,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          if (emphasized)
-            Container(
-              width: plate,
-              height: plate,
-              decoration: BoxDecoration(
-                color: palette.surface,
-                shape: BoxShape.circle,
-                boxShadow: AlongElevation.float(palette.ink),
-              ),
-            ),
-          AlongTopDownMark(
-            kind: kind,
-            heading: heading,
-            size: emphasized ? 40 : 36,
-          ),
-          if (seats != null)
-            Positioned(
-              right: 0,
-              top: -2,
-              child: Container(
-                width: 20,
-                height: 20,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: palette.accent,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: palette.accentInk, width: 1),
-                ),
-                child: Text(
-                  '$seats',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.numeric(
-                    palette,
-                  ).copyWith(fontSize: 11, height: 1, color: palette.accentInk),
-                ),
-              ),
+          if (stale)
+            _FixCaption(
+              palette: palette,
+              label: DemoAdapter.gps.ageLabel,
+              demo: kDebugMode && demoLabel,
             ),
         ],
       ),
     );
   }
 
-  Marker _riderDot(LatLng at, AlongPalette palette) {
+  Marker _riderDot(BuildContext context, LatLng at, AlongPalette palette) {
+    final s = _typeScale(context);
     return Marker(
       point: at,
-      width: 22,
-      height: 22,
-      child: Container(
-        decoration: BoxDecoration(
-          color: palette.accent,
-          shape: BoxShape.circle,
-          border: Border.all(color: palette.surface, width: 3),
-          boxShadow: AlongElevation.float(palette.ink),
+      width: 48 * s,
+      height: 40 * s,
+      alignment: Alignment.bottomCenter,
+      child: Semantics(
+        label: 'You',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: palette.surface,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  'You',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette).copyWith(
+                    fontSize: 10,
+                    height: 1.1,
+                    fontWeight: FontWeight.w600,
+                    color: palette.ink,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: palette.roles.riderDot,
+                shape: BoxShape.circle,
+                border: Border.all(color: palette.surface, width: 2),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -430,18 +625,25 @@ class AlongCityMap extends StatelessWidget {
   Marker _radar(LatLng at, AlongPalette palette) {
     return Marker(
       point: at,
-      width: 210,
-      height: 210,
+      width: 96,
+      height: 96,
       alignment: Alignment.center,
       child: _PulseRadar(palette: palette),
     );
   }
 
-  Marker _driver(LatLng at, String eta, bool rider, AlongPalette palette) {
+  Marker _driver(
+    BuildContext context,
+    LatLng at,
+    String eta,
+    bool rider,
+    AlongPalette palette,
+  ) {
+    final s = _typeScale(context);
     return Marker(
       point: at,
-      width: 74,
-      height: 58,
+      width: 74 * s,
+      height: 58 * s,
       alignment: Alignment.bottomCenter,
       child: Column(
         children: [
@@ -480,11 +682,17 @@ class AlongCityMap extends StatelessWidget {
     );
   }
 
-  Marker _cluster(LatLng at, int count, AlongPalette palette) {
+  Marker _cluster(
+    BuildContext context,
+    LatLng at,
+    int count,
+    AlongPalette palette,
+  ) {
+    final s = _typeScale(context);
     return Marker(
       point: at,
-      width: 36,
-      height: 36,
+      width: 36 * s,
+      height: 36 * s,
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -503,18 +711,107 @@ class AlongCityMap extends StatelessWidget {
     );
   }
 
-  Marker _puck(LatLng at, AlongPalette palette) {
+  Marker _puck(BuildContext context, LatLng at, AlongPalette palette) {
+    final scale = _typeScale(context);
+    final hollow = fix == AlongFix.approximate || fix == AlongFix.stale;
+    final showDemo = kDebugMode && demoLabel;
+    final word = switch (fix) {
+      AlongFix.precise => 'You',
+      AlongFix.approximate => 'Approx',
+      AlongFix.stale => 'Stale',
+      AlongFix.hidden => '',
+    };
+    final fill = hollow ? palette.roles.stale : palette.roles.riderDot;
+    final caption = [
+      if (showDemo) 'Demo',
+      word,
+      if (hollow) DemoAdapter.gps.ageLabel,
+    ].join(' ');
     return Marker(
       point: at,
-      width: 18,
-      height: 18,
-      child: Container(
-        decoration: BoxDecoration(
-          color: palette.accent,
-          shape: BoxShape.circle,
-          border: Border.all(color: palette.surface, width: 3),
-          boxShadow: AlongElevation.float(palette.ink),
+      width: (hollow ? 156 : 72) * scale,
+      height: ((showDemo ? 16 : 0) + 16 + (hollow ? 16 : 0) + 20) * scale,
+      alignment: Alignment.bottomCenter,
+      child: Semantics(
+        label: caption,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (showDemo) _SolidWord(palette: palette, text: 'Demo'),
+            _SolidWord(palette: palette, text: word),
+            if (hollow)
+              _SolidWord(palette: palette, text: DemoAdapter.gps.ageLabel),
+            Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                color: hollow ? const Color(0x00000000) : fill,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: hollow ? palette.roles.stale : palette.surface,
+                  width: hollow ? 2 : 3,
+                ),
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _SolidWord extends StatelessWidget {
+  const _SolidWord({required this.palette, required this.text});
+
+  final AlongPalette palette;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Text(
+          text,
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.caption(palette).copyWith(
+            fontSize: 10,
+            height: 1.1,
+            fontWeight: FontWeight.w600,
+            color: palette.ink,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FixCaption extends StatelessWidget {
+  const _FixCaption({
+    required this.palette,
+    required this.label,
+    required this.demo,
+  });
+
+  final AlongPalette palette;
+  final String label;
+  final bool demo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: demo ? 'Demo $label' : label,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (demo) _SolidWord(palette: palette, text: 'Demo'),
+          _SolidWord(palette: palette, text: label),
+        ],
       ),
     );
   }
@@ -529,7 +826,7 @@ class _Attribution extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: palette.surface.withValues(alpha: 0.92),
+        color: palette.surface,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -570,11 +867,7 @@ class _PulseRadarState extends State<_PulseRadar>
       vsync: this,
       duration: const Duration(milliseconds: 2200),
     );
-    if (AlongMotionPolicy.inWidgetTest) {
-      _pulse.value = 0.42;
-    } else {
-      _pulse.repeat();
-    }
+    _pulse.value = 0.42;
   }
 
   @override
@@ -828,12 +1121,9 @@ class _RouteOverlayState extends State<_RouteOverlay>
     super.initState();
     _pulse = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AlongDurations.routeDraw,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _pulse.repeat();
-    });
+    // The traveled stroke is the selected route. A looping pulse is decoration.
   }
 
   @override
@@ -882,17 +1172,16 @@ class _RoutePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final casing = palette.brightness == Brightness.dark
-        ? const Color(0xFF0E0E10)
-        : const Color(0xFFFFFFFF);
+    final roles = palette.roles;
+    final casing = roles.routeCasing;
     final full = _smooth(_screen(route));
-    final grey = palette.muted.withValues(alpha: 0.45);
+    final grey = roles.stale.withValues(alpha: 0.55);
     canvas.drawPath(full, _stroke(11, casing));
     canvas.drawPath(full, _stroke(6.5, grey));
     if (progress > 0.02) {
       final traveled = _smooth(_points());
       canvas.drawPath(traveled, _stroke(12, casing));
-      canvas.drawPath(traveled, _stroke(7, palette.ink));
+      canvas.drawPath(traveled, _stroke(7, roles.route));
       if (pulse > 0) {
         alongPaintRoutePulse(
           canvas,

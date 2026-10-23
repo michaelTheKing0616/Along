@@ -160,7 +160,16 @@ class AlongFlowHome extends StatelessWidget {
                     child: AlongSpringSheet(
                       fraction: fraction,
                       snaps: [fraction, 0.88],
-                      child: const _HomeSheetBody(),
+                      child: Builder(
+                        builder: (context) {
+                          const body = _HomeSheetBody();
+                          if (MediaQuery.textScalerOf(context).scale(1) <=
+                              1.05) {
+                            return body;
+                          }
+                          return const SingleChildScrollView(child: body);
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -359,6 +368,134 @@ class AlongFlowSeats extends StatelessWidget {
             // 320×640 is already full before the perks row. Tighten only then.
             final short = constraints.maxHeight < 720;
             final gap = short ? 4.0 : 8.0;
+            final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
+            final seatColumn = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Choose a seat',
+                        style: AlongType.display(palette),
+                      ),
+                    ),
+                    SizedBox(height: gap),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: _SeatDriver(),
+                    ),
+                    SizedBox(height: gap),
+                    const SeatMap(
+                      body: 'cabin',
+                      rows: [
+                        SeatMapRowView(
+                          id: 'front',
+                          seats: [
+                            SeatMapSeat(
+                              id: 'fm',
+                              label: 'FM',
+                              role: 'passenger',
+                              status: 'yours',
+                              statusWord: 'Yours',
+                              price: '₦1,200',
+                            ),
+                            SeatMapSeat(
+                              id: 'fr',
+                              label: 'FR',
+                              role: 'passenger',
+                              status: 'held',
+                              statusWord: 'Held',
+                              price: '₦900',
+                            ),
+                            SeatMapSeat(
+                              id: 'drv',
+                              label: 'Driver',
+                              role: 'driver',
+                              status: 'occupied',
+                              statusWord: 'Driver',
+                            ),
+                          ],
+                        ),
+                        SeatMapRowView(
+                          id: 'back',
+                          seats: [
+                            SeatMapSeat(
+                              id: 'b1',
+                              label: 'BL',
+                              role: 'passenger',
+                              status: 'free',
+                              statusWord: 'Free',
+                              price: '₦700',
+                            ),
+                            SeatMapSeat(
+                              id: 'b2',
+                              label: 'ML',
+                              role: 'passenger',
+                              status: 'occupied',
+                              statusWord: 'Taken',
+                            ),
+                            SeatMapSeat(
+                              id: 'b3',
+                              label: 'MR',
+                              role: 'passenger',
+                              status: 'free',
+                              statusWord: 'Free',
+                              price: '₦700',
+                            ),
+                            SeatMapSeat(
+                              id: 'b4',
+                              label: 'BR',
+                              role: 'passenger',
+                              status: 'held',
+                              statusWord: 'Held',
+                              price: '₦800',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: gap),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SeatSection(
+                    vertical: short ? 8 : 12,
+                    child: const AlongWhosRiding(riders: AlongRider.riding),
+                  ),
+                ),
+                SizedBox(height: gap),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SeatSection(
+                    vertical: short ? 8 : 12,
+                    child: const AlongSeatContext(
+                      origin: 'Wuse Market',
+                      destination: 'Garki',
+                      departs: 'Departs in 12 min',
+                      seatsLeft: '3/6 seats left',
+                      ruled: false,
+                    ),
+                  ),
+                ),
+                SizedBox(height: gap),
+                if (roomy)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: _SeatPerks(),
+                  )
+                else
+                  const Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: _SeatPerks(),
+                    ),
+                  ),
+              ],
+            );
             return Column(
               children: [
                 Expanded(
@@ -369,131 +506,9 @@ class AlongFlowSeats extends StatelessWidget {
                       0,
                       short ? 0 : 12,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Text(
-                                'Choose a seat',
-                                style: AlongType.display(palette),
-                              ),
-                            ),
-                            SizedBox(height: gap),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: _SeatDriver(),
-                            ),
-                            SizedBox(height: gap),
-                            const SeatMap(
-                              body: 'cabin',
-                              rows: [
-                                SeatMapRowView(
-                                  id: 'front',
-                                  seats: [
-                                    SeatMapSeat(
-                                      id: 'fm',
-                                      label: 'FM',
-                                      role: 'passenger',
-                                      status: 'yours',
-                                      statusWord: 'Yours',
-                                      price: '₦1,200',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'fr',
-                                      label: 'FR',
-                                      role: 'passenger',
-                                      status: 'held',
-                                      statusWord: 'Held',
-                                      price: '₦900',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'drv',
-                                      label: 'Driver',
-                                      role: 'driver',
-                                      status: 'occupied',
-                                      statusWord: 'Driver',
-                                    ),
-                                  ],
-                                ),
-                                SeatMapRowView(
-                                  id: 'back',
-                                  seats: [
-                                    SeatMapSeat(
-                                      id: 'b1',
-                                      label: 'BL',
-                                      role: 'passenger',
-                                      status: 'free',
-                                      statusWord: 'Free',
-                                      price: '₦700',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'b2',
-                                      label: 'ML',
-                                      role: 'passenger',
-                                      status: 'occupied',
-                                      statusWord: 'Taken',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'b3',
-                                      label: 'MR',
-                                      role: 'passenger',
-                                      status: 'free',
-                                      statusWord: 'Free',
-                                      price: '₦700',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'b4',
-                                      label: 'BR',
-                                      role: 'passenger',
-                                      status: 'held',
-                                      statusWord: 'Held',
-                                      price: '₦800',
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: gap),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _SeatSection(
-                            vertical: short ? 8 : 12,
-                            child: const AlongWhosRiding(
-                              riders: AlongRider.riding,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: gap),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _SeatSection(
-                            vertical: short ? 8 : 12,
-                            child: const AlongSeatContext(
-                              origin: 'Wuse Market',
-                              destination: 'Garki',
-                              departs: 'Departs in 12 min',
-                              seatsLeft: '3/6 seats left',
-                              ruled: false,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: gap),
-                        const Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: _SeatPerks(),
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: roomy
+                        ? SingleChildScrollView(child: seatColumn)
+                        : seatColumn,
                   ),
                 ),
                 _SeatBar(dense: short),
@@ -527,14 +542,19 @@ class _SeatDriver extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text('Chinedu', maxLines: 1, softWrap: false, style: name),
-                  const SizedBox(width: 8),
-                  AlongIcon(AlongIcons.star, size: 20, color: palette.accent),
-                  const SizedBox(width: 2),
-                  Text('4.9', maxLines: 1, softWrap: false, style: rating),
-                ],
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Chinedu', maxLines: 1, softWrap: false, style: name),
+                    const SizedBox(width: 8),
+                    AlongIcon(AlongIcons.star, size: 20, color: palette.accent),
+                    const SizedBox(width: 2),
+                    Text('4.9', maxLines: 1, softWrap: false, style: rating),
+                  ],
+                ),
               ),
               const SizedBox(height: 6),
               const FittedBox(
@@ -601,7 +621,8 @@ class _SeatPerks extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           // A note only when the card is tall enough to close the page gap.
-          final showNote = constraints.maxHeight >= 96;
+          final bounded = constraints.maxHeight.isFinite;
+          final showNote = !bounded || constraints.maxHeight >= 96;
           return Padding(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
             child: Column(
@@ -616,17 +637,22 @@ class _SeatPerks extends StatelessWidget {
                   ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 6),
-                const Row(
-                  children: [
-                    _PerkChip('AC'),
-                    SizedBox(width: 8),
-                    _PerkChip('Window'),
-                    SizedBox(width: 8),
-                    _PerkChip('Luggage'),
-                  ],
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _PerkChip('AC'),
+                      SizedBox(width: 8),
+                      _PerkChip('Window'),
+                      SizedBox(width: 8),
+                      _PerkChip('Luggage'),
+                    ],
+                  ),
                 ),
                 if (showNote) ...[
-                  const Spacer(),
+                  if (bounded) const Spacer() else const SizedBox(height: 8),
                   Text(
                     'Set by Chinedu',
                     maxLines: 1,
@@ -708,16 +734,25 @@ class _SeatBar extends StatelessWidget {
                             .copyWith(fontSize: 16, height: 1.1),
                       ),
                       const SizedBox(height: 6),
-                      const _SeatChip(label: 'Window stays open'),
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: _SeatChip(label: 'Window stays open'),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 12),
-                Hero(
-                  tag: 'along-fare-car',
-                  child: AlongOdometer(
-                    value: 1200,
-                    style: AlongType.numeric(palette),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Hero(
+                      tag: 'along-fare-car',
+                      child: AlongOdometer(
+                        value: 1200,
+                        style: AlongType.numeric(palette),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -778,6 +813,7 @@ class AlongFlowLive extends StatelessWidget {
               mode: AlongCityMapMode.trip,
               progress: progress,
               sheetInset: 0.32,
+              fix: AlongFix.stale,
             ),
           ),
           const Positioned(
@@ -792,7 +828,15 @@ class AlongFlowLive extends StatelessWidget {
                 return AlongSpringSheet(
                   fraction: fraction,
                   snaps: [fraction, 0.72],
-                  child: const _LiveSheet(),
+                  child: Builder(
+                    builder: (context) {
+                      final roomy =
+                          MediaQuery.textScalerOf(context).scale(1) > 1.05;
+                      const sheet = _LiveSheet();
+                      if (!roomy) return sheet;
+                      return const SingleChildScrollView(child: sheet);
+                    },
+                  ),
                 );
               },
             ),
@@ -865,10 +909,10 @@ class _LiveSheet extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Column(
+        Builder(
+          builder: (context) {
+            final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+            final eta = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AlongTickingEta(
@@ -877,22 +921,31 @@ class _LiveSheet extends StatelessWidget {
                 ),
                 Text(
                   'Updated 40s ago',
-                  maxLines: 1,
-                  softWrap: false,
+                  maxLines: roomy ? 2 : 1,
+                  softWrap: roomy,
                   style: AlongType.caption(palette)
                       .copyWith(color: palette.ink, height: 1.1),
                 ),
               ],
-            ),
-            const Spacer(),
-            Text(
+            );
+            final place = Text(
               'Nyanya',
               maxLines: 1,
               softWrap: false,
               style: AlongType.body(palette)
                   .copyWith(fontWeight: FontWeight.w600, height: 1.2),
-            ),
-          ],
+            );
+            if (roomy) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [eta, const SizedBox(height: 4), place],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [eta, const Spacer(), place],
+            );
+          },
         ),
         const SizedBox(height: 8),
         const Row(
@@ -921,9 +974,10 @@ class _PlateChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     return Container(
-      height: 22,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      height: roomy ? null : 22,
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: roomy ? 4 : 0),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: palette.recessed,
@@ -980,8 +1034,11 @@ class _LiveAction extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 label,
-                maxLines: 1,
-                softWrap: false,
+                maxLines: MediaQuery.textScalerOf(context).scale(1) > 1.05
+                    ? 2
+                    : 1,
+                softWrap: MediaQuery.textScalerOf(context).scale(1) > 1.05,
+                textAlign: TextAlign.center,
                 style: AlongType.caption(palette).copyWith(
                   color: palette.ink,
                   fontWeight: FontWeight.w600,
@@ -1821,25 +1878,26 @@ class _ComplimentWrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    Widget row(List<Widget> chips) {
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(mainAxisSize: MainAxisSize.min, children: chips),
+      );
+    }
+
+    return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _ComplimentChip('Smooth ride', selected: true),
-            SizedBox(width: 8),
-            _ComplimentChip('Clean car'),
-          ],
-        ),
-        SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _ComplimentChip('On time'),
-            SizedBox(width: 8),
-            _ComplimentChip('Safe driving'),
-          ],
-        ),
+        row(const [
+          _ComplimentChip('Smooth ride', selected: true),
+          SizedBox(width: 8),
+          _ComplimentChip('Clean car'),
+        ]),
+        const SizedBox(height: 8),
+        row(const [
+          _ComplimentChip('On time'),
+          SizedBox(width: 8),
+          _ComplimentChip('Safe driving'),
+        ]),
       ],
     );
   }
@@ -2118,7 +2176,7 @@ class _PosterRouteState extends State<_PosterRoute>
     super.initState();
     _draw = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: AlongDurations.routeDraw,
       value: 1,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -2219,7 +2277,7 @@ class _HoldRingState extends State<_HoldRing>
     super.initState();
     _fill = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AlongDurations.hold,
       value: 0.66,
     );
   }
@@ -2482,10 +2540,7 @@ class _GoButtonState extends State<_GoButton>
       duration: const Duration(milliseconds: 1600),
       value: 0.45,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _glow.repeat(reverse: true);
-    });
+    // One rest pose. A looping glow is decoration, not the next action.
   }
 
   @override
@@ -2728,10 +2783,15 @@ class _RideLine extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: DecoratedBox(
         decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-        child: SizedBox(
-          height: 48,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: MediaQuery.textScalerOf(context).scale(1) > 1.05
+                  ? 6
+                  : 0,
+            ),
             child: Row(
               children: [
                 AlongVehicleHero(kind: kind, width: 48, height: 30),
@@ -2767,14 +2827,20 @@ class _RideLine extends StatelessWidget {
                     ],
                   ),
                 ),
-                Hero(
-                  tag: 'along-fare-${kind.name}',
-                  child: Text(
-                    fare,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.body(palette)
-                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Hero(
+                      tag: 'along-fare-${kind.name}',
+                      child: Text(
+                        fare,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: AlongType.body(palette)
+                            .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -2811,9 +2877,13 @@ class _RideRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final rulesLine = rules.join(' · ');
-    return SizedBox(
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return ConstrainedBox(
       key: ValueKey(selected),
-      height: 104,
+      constraints: BoxConstraints(
+        minHeight: 104,
+        maxHeight: roomy ? double.infinity : 104,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Row(
@@ -2825,10 +2895,13 @@ class _RideRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
                           title,
                           maxLines: 1,
                           softWrap: false,
@@ -2836,12 +2909,12 @@ class _RideRow extends StatelessWidget {
                             palette,
                           ).copyWith(fontWeight: FontWeight.w600, height: 1.1),
                         ),
-                      ),
-                      if (badge != null) ...[
-                        const SizedBox(width: 6),
-                        _RideBadge(badge!),
+                        if (badge != null) ...[
+                          const SizedBox(width: 6),
+                          _RideBadge(badge!),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                   FittedBox(
                     fit: BoxFit.scaleDown,
@@ -2877,12 +2950,18 @@ class _RideRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Text(
-              fare,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  fare,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                ),
+              ),
             ),
           ],
         ),
@@ -2969,10 +3048,11 @@ class _OfferRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     final place = AlongType.body(palette)
         .copyWith(fontWeight: FontWeight.w600, height: 1.1);
     return SizedBox(
-      height: 44,
+      height: roomy ? null : 44,
       child: Row(
         children: [
           Expanded(
@@ -3073,39 +3153,46 @@ class _RiderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 48,
-      child: Row(
-        children: [
-          const AlongDriverPortrait(
-            size: 36,
-            asset: AlongDriverPortrait.adaeze,
-            verified: true,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Adaeze · 4.9',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                ),
-                Text(
-                  'Rider',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette),
-                ),
-              ],
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 48,
+        maxHeight: roomy ? double.infinity : 48,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
+        child: Row(
+          children: [
+            const AlongDriverPortrait(
+              size: 36,
+              asset: AlongDriverPortrait.adaeze,
+              verified: true,
             ),
-          ),
-          const _Stars(filled: 5, size: 14),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Adaeze · 4.9',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.body(palette)
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                  ),
+                  Text(
+                    'Rider',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette),
+                  ),
+                ],
+              ),
+            ),
+            const _Stars(filled: 5, size: 14),
+          ],
+        ),
       ),
     );
   }
@@ -3710,13 +3797,10 @@ class _ViewfinderState extends State<_Viewfinder>
     super.initState();
     _scan = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: AlongDurations.scan,
       value: 0.42,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _scan.repeat();
-    });
+    // The scan rests. A loop would decorate the photo.
   }
 
   @override
@@ -3809,7 +3893,7 @@ class _HoldAlertState extends State<_HoldAlert>
     super.initState();
     _fill = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AlongDurations.hold,
       value: 0.66,
     );
   }
@@ -4385,51 +4469,58 @@ class _TxnRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 52,
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.surface,
-              shape: BoxShape.circle,
-              border: AlongElevation.hairline(palette.ink),
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 52,
+        maxHeight: roomy ? double.infinity : 52,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: palette.surface,
+                shape: BoxShape.circle,
+                border: AlongElevation.hairline(palette.ink),
+              ),
+              child: AlongIcon(icon, size: 20, color: palette.ink),
             ),
-            child: AlongIcon(icon, size: 20, color: palette.ink),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                ),
-                Text(
-                  detail,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.meta(palette),
-                ),
-              ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.body(palette)
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                  ),
+                  Text(
+                    detail,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.meta(palette),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            value,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
-          ),
-        ],
+            Text(
+              value,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.numeric(palette)
+                  .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -5053,13 +5144,10 @@ class _SearchRadarState extends State<_SearchRadar>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2400),
+      duration: AlongDurations.scan,
     );
-    if (AlongMotionPolicy.inWidgetTest) {
-      _controller.value = 0.38;
-    } else {
-      _controller.repeat();
-    }
+    // Rest pose. A looping sweep is decoration, not status.
+    _controller.value = 0.38;
   }
 
   @override
@@ -5083,8 +5171,8 @@ class _SearchRadarState extends State<_SearchRadar>
             package: 'along_design',
             width: 200,
             height: 200,
-            animate: !AlongMotionPolicy.inWidgetTest,
-            repeat: true,
+            animate: false,
+            repeat: false,
           ),
           AnimatedBuilder(
             animation: _controller,

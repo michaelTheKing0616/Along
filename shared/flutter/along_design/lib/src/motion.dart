@@ -4,6 +4,24 @@ import 'package:flutter/widgets.dart';
 /// Ride UI is used many times a day, so springs settle inside 300ms.
 /// The motion-grammar spring (stiffness 100, damping 20) is the character:
 /// a short underdamped settle, scaled up so the sheet does not linger. [emil]
+/// Named lengths. Springs live on [AlongSprings]. Nothing else invents a
+/// duration. See the motion table in docs/art-direction.md.
+abstract final class AlongDurations {
+  static const press = Duration(milliseconds: 120);
+  static const fade = Duration(milliseconds: 180);
+  static const stagger = Duration(milliseconds: 240);
+  static const sheet = Duration(milliseconds: 280);
+  static const refresh = Duration(milliseconds: 480);
+  static const routeDraw = Duration(milliseconds: 900);
+  static const hold = Duration(milliseconds: 1400);
+  static const scan = Duration(milliseconds: 1800);
+}
+
+abstract final class AlongCurves {
+  static const fade = Curves.easeOut;
+  static const settle = Curves.easeOutCubic;
+}
+
 abstract final class AlongSprings {
   static const sheet = SpringDescription(
     mass: 0.7,

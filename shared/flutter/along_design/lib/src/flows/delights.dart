@@ -220,14 +220,8 @@ class AlongStagger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (AlongMotionPolicy.reduced(context)) {
-      return child.animate().fadeIn(duration: 180.ms);
-    }
-    if (!AlongMotionPolicy.play(context)) return child;
-    return child
-        .animate(delay: (36 * index).ms)
-        .fadeIn(duration: 240.ms)
-        .slideY(begin: 0.12, end: 0, duration: 240.ms, curve: Curves.easeOut);
+    // No entrance on every row. The list is already there.
+    return child;
   }
 }
 
@@ -258,7 +252,7 @@ class AlongTabBarState extends State<AlongTabBar>
     _index = widget.index;
     _pop = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 280),
+      duration: AlongDurations.sheet,
       value: 1,
     );
   }
@@ -940,7 +934,7 @@ class AlongRoutePulseState extends State<AlongRoutePulse>
     super.initState();
     _pulse = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: AlongDurations.routeDraw,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !AlongMotionPolicy.play(context)) return;
@@ -1042,10 +1036,7 @@ class AlongKekeRefreshState extends State<AlongKekeRefresh>
   @override
   void initState() {
     super.initState();
-    _rock = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 480),
-    );
+    _rock = AnimationController(vsync: this, duration: AlongDurations.refresh);
   }
 
   @override
@@ -1446,7 +1437,7 @@ class AlongTickingEtaState extends State<AlongTickingEta>
     super.initState();
     _tick = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: AlongDurations.routeDraw,
       value: 1,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {

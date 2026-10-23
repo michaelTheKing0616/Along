@@ -95,13 +95,10 @@ class _EmptyMarkState extends State<_EmptyMark>
     super.initState();
     _float = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: AlongDurations.scan,
       value: 0,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _float.repeat(reverse: true);
-    });
+    // The spot rests. Floating it on a loop is decoration.
   }
 
   @override
