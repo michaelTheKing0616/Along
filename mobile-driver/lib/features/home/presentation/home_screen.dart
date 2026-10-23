@@ -250,6 +250,11 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         label: Text(l10n.restTitle),
                         onPressed: () => context.push(AppRoutes.rest),
                       ),
+                      ActionChip(
+                        key: const Key('marketplace_entry_button'),
+                        label: Text(l10n.marketplaceTitle),
+                        onPressed: () => context.push(AppRoutes.marketplace),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AlongSpace.s8),

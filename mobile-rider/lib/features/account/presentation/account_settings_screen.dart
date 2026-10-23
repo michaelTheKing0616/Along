@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/account/presentation/emergency_contacts_section.dart';
+import 'package:mobile_rider/features/marketplace/presentation/fare_shield_screen.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -208,6 +209,21 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         const SizedBox(height: AlongSpace.s24),
         Text(l10n.accountSafetyHeading, style: AlongText.overline),
         const SizedBox(height: AlongSpace.s8),
+        ListTile(
+          key: const Key('account_stage_radar'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.stageRadarTitle, style: AlongText.bodyStrong),
+          onTap: () => context.push(AppRoutes.stageRadar),
+        ),
+        ListTile(
+          key: const Key('account_fare_shield'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.fareShieldTitle, style: AlongText.bodyStrong),
+          onTap: () => context.push(
+            AppRoutes.fareShield,
+            extra: const FareShieldArgs(offeredLabel: ''),
+          ),
+        ),
         ListTile(
           key: const Key('account_guardian'),
           contentPadding: EdgeInsets.zero,

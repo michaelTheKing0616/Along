@@ -1277,4 +1277,59 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get restPriority => 'Priority dispatch until your rest window ends';
+
+  @override
+  String get marketplaceTitle => 'Today';
+
+  @override
+  String get marketplaceGoal => 'Daily target';
+
+  @override
+  String get marketplaceEarned => 'Already earned';
+
+  @override
+  String get marketplaceTypical => 'Usual seat fare';
+
+  @override
+  String marketplaceSeats(int count) {
+    return '$count seats to go';
+  }
+
+  @override
+  String get marketplaceGoalMet => 'Target reached';
+
+  @override
+  String get marketplaceSave => 'Save';
+
+  @override
+  String get marketplaceCorridor => 'Corridor you watch';
+
+  @override
+  String get marketplaceRequests => 'Requests';
+
+  @override
+  String get marketplaceAddCorridor => 'Add';
+
+  @override
+  String marketplaceTip(String corridor) {
+    return 'Queue toward $corridor';
+  }
+
+  @override
+  String get marketplaceFuel => 'Price per litre';
+
+  @override
+  String get marketplaceFuelLabel => 'Pump';
+
+  @override
+  String get marketplaceFuelSave => 'Save price';
+
+  @override
+  String get marketplaceEventName => 'Event name';
+
+  @override
+  String get marketplaceEventHours => 'Hours the point stays open';
+
+  @override
+  String get marketplaceEventSave => 'Open the point';
 }
