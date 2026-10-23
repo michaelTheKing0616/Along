@@ -69,3 +69,18 @@ Measured on the re-render at 360×800 light. A row is a defect that was visible 
 | Home | "Where to?" used a plain rounded rect. | The field uses the squircle. |
 
 Screens that were already a single focal and a single next action were left alone: onboarding, rides, search, rating, SOS, guardian, plate, wallet, online, and offer.
+
+## Pass 5 — contact-sheet rejection
+
+Measured on the re-render at 360×800 light after the rejection.
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| PIN | Four digits sat at the top of an empty page. | The driver card, car, plate, "Share this with Chinedu", and a frozen 1:48 countdown sit with the digits in the vertical center. |
+| Receipt | A short card on empty paper. | A route map header, fare lines, payment, the seat, a trip timeline, the rating, then Download, Share, and Report an issue. |
+| Settings | One haptics card on empty paper. | Grouped lists: account, payment, safety, accessibility, haptics, language, about. The switch and Test haptic stay live. |
+| Nav | A hairline on a blank street. | Zoom 18, rotated so the white road runs up the screen. Thick casing. Maneuver banner (arrow, 180 m, Obafemi Awolowo Way). Speed and ETA bar. The car sits above that bar. |
+| Offer | The cabin fill read as a grey mass. | The cushions are the seat-screen painter, with no filled shell. |
+| Online | One yellow disc in the middle. | Separate district hexes, four intensity steps, a ragged dim edge, and a quiet band above GO. |
+| Plate | The brackets framed the bumper, so the photo looked wide. | The hole matches the plate pixels. The photo uses BoxFit.cover at its own aspect. |
+| Matching and recovery | An empty street. | A resting pulse on the pickup and three nearby drivers. |

@@ -49,13 +49,13 @@ Every screen has one thing to look at and one next action. Everything else is qu
 | Rides | quote | The selected ride | Confirm keke | One recommended row, a short list |
 | Seats | quote | The selected cushion | Hold this seat | Cabin, then one bar |
 | Offer | assigned | The fare | Accept | One card over the route |
-| PIN | arrived | The four digits | Show them to the driver | Digits, one sentence |
+| PIN | arrived | The four digits | Share them with Chinedu | Driver card, car, plate, countdown, digits, centered |
 | Driver | arrived | The PIN step | Verify PIN | Steps, digits, keypad |
 | Live | in progress | The ETA range | Call, or Safety | Map, one sheet |
-| Nav | nav | The ETA range | Keep driving | Map, one card, no extra actions |
-| Receipt | receipt | The total and the seat | Report an issue | One column |
+| Nav | nav | The next maneuver | Keep driving | Banner, lane route, speed and ETA |
+| Receipt | receipt | The total and the seat | Report an issue | Map, fare, payment, seat, timeline, rating |
 | Notices | closed and the failures | The banner that applies | Try again | The gallery shows the catalog. Production shows one banner and one action. |
-| Settings | — | The haptics switch | Test haptic | Two controls |
+| Settings | — | The haptics switch | Test haptic | Grouped account, payment, safety, access, haptics, language, about |
 | SOS | any | Call 112 | Hold to call, or share with contacts | One hold. No promise of a staffed desk. |
 | Empty | — | The heading | The single action on the empty state | Icon, heading, body, one button |
 
@@ -67,7 +67,7 @@ Route strokes use round caps and round joins. Casing is `routeCasing`. The remai
 
 The trip camera frames pickup and drop together. Padding clears the top labels and the sheet: 28 on the sides, 72 on top, and `sheetInset` plus 36 on the bottom. The corridor stays inside the z12 tiles (trip max zoom 12).
 
-Nav does not fit that corridor. It locks zoom 17 on the neighborhood street, which is the z16 slippy grid drawn by overzooming the z15 vector. The car is the camera subject, shifted up so it clears the sheet. Wuse and Nyanya pins are not drawn on that local street.
+Nav does not fit that corridor. It locks zoom 18 on the white east-west road in the z16 extract, rotated so that street runs up the screen. The route casing is the lane stroke. A maneuver banner (arrow, street, distance) sits on top. Speed and the ETA share the bottom bar. The car is shifted down the screen so it clears that bar. Wuse and Nyanya pins are not drawn on that local street.
 
 The pickup pin is fixed at the screen center. A drag pans the map under it. The pin lifts while the finger is down and drops on release. The address updates when the drag settles, and snaps to an entrance within 120 meters. The camera opens on Gate 2 at zoom 17 so the pin sits on the extract.
 
@@ -75,7 +75,7 @@ The quote sheet is only as tall as the fare. Confirm fare sits on the cancel lin
 
 An approximate or stale fix is hollow and grey, with the words "Approx" or "Stale" and "Updated Xs ago". A precise fix is a filled dot and the word "You". Simulated positions say "Demo" in debug builds. A screen that already shows a Demo mark does not add a second one on the map.
 
-Pickup, matching, and recovery use a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor. Matching keeps the status in the card. The map shows the approximate fix.
+Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is separate district hexes: four intensity steps, a ragged outer ring at lower alpha, and a fade before the GO button.
 
 ## Motion
 

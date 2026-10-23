@@ -15,6 +15,7 @@ import 'delights.dart';
 import 'demo_adapter.dart';
 import 'driver_portrait.dart';
 import 'trip_machine.dart';
+import 'vehicle_art.dart';
 
 void _noop() {}
 
@@ -467,6 +468,7 @@ class AlongFlowMatching extends StatelessWidget {
               bare: true,
               demoLabel: false,
               fix: AlongFix.approximate,
+              nearby: true,
             ),
           ),
           Positioned(
@@ -549,6 +551,7 @@ class AlongFlowRecovery extends StatelessWidget {
               bare: true,
               demoLabel: false,
               fix: AlongFix.approximate,
+              nearby: true,
             ),
           ),
           Positioned(
@@ -603,7 +606,8 @@ class AlongFlowRecovery extends StatelessWidget {
   }
 }
 
-/// Rider side of the 4-digit start PIN.
+/// Rider side of the 4-digit start PIN. The handoff sits in the middle of
+/// the page: the driver, the car, the plate, then the digits.
 class AlongFlowTripPin extends StatelessWidget {
   const AlongFlowTripPin({super.key});
 
@@ -611,81 +615,87 @@ class AlongFlowTripPin extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final roomy = _roomy(context);
-    final header = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final handoff = Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text('Trip PIN', style: AlongType.display(palette)),
-            ),
-            const AlongDemoMark(),
-          ],
+        const _PinDriverCard(),
+        const SizedBox(height: 20),
+        Text(
+          'Share this with Chinedu',
+          maxLines: roomy ? 2 : 1,
+          softWrap: roomy,
+          textAlign: TextAlign.center,
+          style: AlongType.body(palette).copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 4),
         Text(
-          'Wuse Market to Nyanya',
-          maxLines: roomy ? 2 : 1,
-          softWrap: roomy,
-          style: AlongType.body(palette).copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Show this when the driver arrives',
-          maxLines: roomy ? 2 : 1,
-          softWrap: roomy,
-          style: AlongType.body(palette),
+          _clock(DemoAdapter.pinFor),
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.numeric(palette).copyWith(fontSize: 22),
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            const AlongDriverPortrait(size: 48, verified: true),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Chinedu',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.title(palette).copyWith(height: 1.1),
-                  ),
-                  Text(
-                    'ABC-123-XY',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette).copyWith(
-                      color: palette.ink,
-                      fontWeight: FontWeight.w600,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        const _PinReadout(code: DemoAdapter.pin),
       ],
     );
-    final digits = const Center(child: _PinReadout(code: DemoAdapter.pin));
     return Scaffold(
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: roomy
-              ? SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [header, const SizedBox(height: 28), digits],
-                  ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [header, const SizedBox(height: 36), digits],
-                ),
+              ? SingleChildScrollView(child: handoff)
+              : Center(child: handoff),
         ),
+      ),
+    );
+  }
+}
+
+class _PinDriverCard extends StatelessWidget {
+  const _PinDriverCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return _SolidCard(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const AlongDriverPortrait(size: 48, verified: true),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Chinedu',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.title(palette).copyWith(height: 1.1),
+                ),
+              ),
+              const AlongDemoMark(),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const AlongVehicleMark(kind: AlongVehicleKind.car, width: 148),
+          const SizedBox(height: 8),
+          DecoratedBox(
+            decoration: AlongCraft.surface(palette, radius: 8, hairline: true),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Text(
+                'ABC-123-XY',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.title(palette).copyWith(
+                  height: 1.1,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -981,14 +991,15 @@ class _KeyCap extends StatelessWidget {
   }
 }
 
-/// Driving. One ETA range, one stale-GPS line, no extra chrome.
+/// Turn-by-turn. The maneuver is the top banner. Speed and ETA share the bar.
 class AlongFlowNav extends StatelessWidget {
   const AlongFlowNav({super.key});
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final gps = DemoAdapter.gps;
+    final maneuver = DemoAdapter.maneuver;
+    final roomy = _roomy(context);
     return Scaffold(
       backgroundColor: palette.mapLand,
       body: Stack(
@@ -996,35 +1007,28 @@ class AlongFlowNav extends StatelessWidget {
           const Positioned.fill(
             child: AlongCityMap(
               mode: AlongCityMapMode.nav,
-              progress: 0.42,
+              progress: 0.28,
               fix: AlongFix.stale,
               demoLabel: false,
             ),
           ),
-          const Positioned(top: 12, right: 12, child: AlongDemoMark()),
+          Positioned(
+            top: 12,
+            left: 12,
+            right: 12,
+            child: _ManeuverBanner(
+              street: maneuver.street,
+              distance: maneuver.distanceLabel,
+              roomy: roomy,
+            ),
+          ),
           Positioned(
             left: 12,
             right: 12,
             bottom: 12,
-            child: _SolidCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    gps.etaLabel,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.display(palette),
-                  ),
-                  Text(
-                    'Nyanya',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.body(palette)
-                        .copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
+            child: _SpeedBar(
+              speed: maneuver.speedLabel,
+              eta: DemoAdapter.gps.etaLabel,
             ),
           ),
         ],
@@ -1033,7 +1037,136 @@ class AlongFlowNav extends StatelessWidget {
   }
 }
 
-/// Receipt, the seat motif, and the issue entry.
+class _ManeuverBanner extends StatelessWidget {
+  const _ManeuverBanner({
+    required this.street,
+    required this.distance,
+    required this.roomy,
+  });
+
+  final String street;
+  final String distance;
+  final bool roomy;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return _SolidCard(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const _StraightArrow(),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  distance,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.display(palette).copyWith(height: 1),
+                ),
+              ),
+              const SizedBox(width: 8),
+              const AlongDemoMark(),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            street,
+            maxLines: roomy ? 2 : 1,
+            softWrap: roomy,
+            style: AlongType.title(palette).copyWith(height: 1.1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StraightArrow extends StatelessWidget {
+  const _StraightArrow();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return CustomPaint(
+      size: const Size(56, 56),
+      painter: _StraightArrowPainter(color: palette.ink),
+    );
+  }
+}
+
+class _StraightArrowPainter extends CustomPainter {
+  const _StraightArrowPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 6
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final mid = size.width / 2;
+    final head = Path()
+      ..moveTo(mid - 16, 22)
+      ..lineTo(mid, 8)
+      ..lineTo(mid + 16, 22);
+    canvas.drawPath(head, paint);
+    canvas.drawLine(Offset(mid, 18), Offset(mid, size.height - 6), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _StraightArrowPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _SpeedBar extends StatelessWidget {
+  const _SpeedBar({required this.speed, required this.eta});
+
+  final String speed;
+  final String eta;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final value = AlongType.title(palette).copyWith(height: 1.1);
+    final caption = AlongType.caption(palette)
+        .copyWith(color: palette.ink, fontWeight: FontWeight.w600);
+    return _SolidCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(speed, maxLines: 1, softWrap: false, style: value),
+                Text('Speed', maxLines: 1, softWrap: false, style: caption),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(eta, maxLines: 1, softWrap: false, style: value),
+                Text('Nyanya', maxLines: 1, softWrap: false, style: caption),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Receipt. The route heads the page. Fare, payment, seat, timeline, and
+/// the rating follow as one column, then download, share, and the issue.
 class AlongFlowReceipt extends StatelessWidget {
   const AlongFlowReceipt({super.key});
 
@@ -1042,61 +1175,250 @@ class AlongFlowReceipt extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final quote = DemoAdapter.quote;
     final roomy = _roomy(context);
-    return _CenteredCard(
-      top: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    final share = [
+      const AlongButton(
+        label: 'Download',
+        variant: AlongButtonVariant.secondary,
+        onPressed: _noop,
+      ),
+      const AlongButton(
+        label: 'Share',
+        variant: AlongButtonVariant.secondary,
+        onPressed: _noop,
+      ),
+    ];
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text('Receipt', style: AlongType.display(palette)),
+              const ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                child: SizedBox(
+                  height: 112,
+                  width: double.infinity,
+                  child: AlongCityMap(
+                    mode: AlongCityMapMode.completed,
+                    center: AlongCityMap.corridorCenter,
+                    zoom: 12,
+                    sheetInset: 0,
+                    demoLabel: false,
+                  ),
+                ),
               ),
-              const AlongDemoMark(),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Receipt', style: AlongType.display(palette)),
+                  ),
+                  const AlongDemoMark(),
+                ],
+              ),
+              Text(
+                'Wuse Market to Nyanya',
+                maxLines: roomy ? 2 : 1,
+                softWrap: roomy,
+                style: AlongType.body(palette)
+                    .copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              const _SectionLabel('Fare'),
+              _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
+              _FareLine(label: 'Seat', value: alongNaira(quote.seatMinor)),
+              _FareLine(label: 'Fees', value: alongNaira(quote.feesMinor)),
+              _FareLine(
+                label: 'Wallet credit',
+                value: alongNaira(-quote.walletCreditMinor),
+              ),
+              _FareLine(
+                label: 'Total',
+                value: alongNaira(quote.totalMinor),
+                strong: true,
+              ),
+              const SizedBox(height: 8),
+              const _SectionLabel('Payment'),
+              _IconLine(
+                icon: AlongIcons.wallet,
+                label: DemoAdapter.payment.label,
+              ),
+              const SizedBox(height: 8),
+              const _SectionLabel('Seat'),
+              const _ReceiptSeats(),
+              const SizedBox(height: 8),
+              const _SectionLabel('Trip'),
+              const _TimelineRow(label: 'Requested 14:02'),
+              const _TimelineRow(label: 'Pickup Wuse Market'),
+              const _TimelineRow(label: 'Drop Nyanya', last: true),
+              const SizedBox(height: 8),
+              const _SectionLabel('Rating'),
+              const _RatingSummary(),
+              const SizedBox(height: 12),
+              if (roomy)
+                for (final button in share) ...[
+                  button,
+                  const SizedBox(height: 8),
+                ]
+              else
+                Row(
+                  children: [
+                    for (var i = 0; i < share.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      Expanded(child: share[i]),
+                    ],
+                  ],
+                ),
+              const SizedBox(height: 8),
+              const AlongButton(
+                key: Key('report_issue'),
+                label: 'Report an issue',
+                variant: AlongButtonVariant.secondary,
+                onPressed: _noop,
+              ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Wuse Market to Nyanya',
-            maxLines: roomy ? 2 : 1,
-            softWrap: roomy,
-            style: AlongType.body(palette)
-                .copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          const AlongSeatCount(count: 2, glyph: 16),
-          const SizedBox(height: 8),
-          const Center(
-            child: AlongCabinDiagram(
-              seat: 36,
-              rows: [
-                ['driver', 'free', 'free'],
-                ['occupied', 'yours', 'free'],
-              ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReceiptSeats extends StatelessWidget {
+  const _ReceiptSeats();
+
+  @override
+  Widget build(BuildContext context) {
+    const seats = ['driver', 'free', 'free', 'occupied', 'yours', 'free'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _IconLine(icon: AlongIcons.seat, label: 'Window seat'),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            for (var i = 0; i < seats.length; i++) ...[
+              if (i > 0) const SizedBox(width: 6),
+              AlongSeatGlyph(status: seats[i], width: 28),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(
+        label,
+        maxLines: 1,
+        softWrap: false,
+        style: AlongType.caption(palette)
+            .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _IconLine extends StatelessWidget {
+  const _IconLine({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 36),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: palette.ink),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: roomy ? 2 : 1,
+              softWrap: roomy,
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600),
             ),
-          ),
-          const SizedBox(height: 8),
-          _FareLine(
-            label: 'Total',
-            value: alongNaira(quote.totalMinor),
-            strong: true,
-          ),
-          Text(
-            DemoAdapter.payment.label,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(color: palette.ink),
-          ),
-          const SizedBox(height: 12),
-          const AlongButton(
-            key: Key('report_issue'),
-            label: 'Report an issue',
-            variant: AlongButtonVariant.secondary,
-            onPressed: _noop,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TimelineRow extends StatelessWidget {
+  const _TimelineRow({required this.label, this.last = false});
+
+  final String label;
+  final bool last;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final roomy = _roomy(context);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 28),
+      child: Row(
+        children: [
+          Icon(
+            last ? AlongIcons.locate : AlongIcons.check,
+            size: 16,
+            color: palette.ink,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: roomy ? 2 : 1,
+              softWrap: roomy,
+              style: AlongType.body(palette),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RatingSummary extends StatelessWidget {
+  const _RatingSummary();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Row(
+      children: [
+        for (var i = 0; i < 5; i++) ...[
+          if (i > 0) const SizedBox(width: 2),
+          Icon(AlongIcons.star, size: 16, color: palette.ink),
+        ],
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'You rated Chinedu',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1257,8 +1579,8 @@ _NoticeRole _noticeRole(AlongPalette palette, String label) {
   };
 }
 
-/// Haptics toggle. Reduce motion is the system setting; this screen says
-/// what the app does with it.
+/// Grouped settings. Haptics is the live control. The other rows are the
+/// account, payment, safety, access, language, and about groups.
 class AlongFlowSettings extends StatelessWidget {
   const AlongFlowSettings({super.key});
 
@@ -1279,63 +1601,155 @@ class _SettingsBodyState extends State<_SettingsBody> {
     final palette = AlongPalette.of(context);
     final reduced = AlongMotionPolicy.reduced(context);
     final roomy = _roomy(context);
-    return _TopCard(
+    final motion = reduced ? 'Reduce motion is on' : 'Reduce motion uses fades';
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Settings', style: AlongType.display(palette)),
+              const SizedBox(height: 8),
+              const _SettingsGroup(
+                title: 'Account',
+                rows: [_SettingsRow(icon: AlongIcons.user, label: 'Adaeze')],
+              ),
+              const _SettingsGroup(
+                title: 'Payment',
+                rows: [
+                  _SettingsRow(icon: AlongIcons.wallet, label: 'Demo payment'),
+                ],
+              ),
+              const _SettingsGroup(
+                title: 'Safety',
+                rows: [
+                  _SettingsRow(
+                    icon: AlongIcons.shield,
+                    label: 'Trusted contacts',
+                  ),
+                ],
+              ),
+              _SettingsGroup(
+                title: 'Accessibility',
+                rows: [
+                  _SettingsRow(
+                    icon: AlongIcons.info,
+                    label: motion,
+                    roomy: roomy,
+                  ),
+                ],
+              ),
+              _SettingsGroup(
+                title: 'Haptics',
+                rows: [
+                  _SettingsRow(
+                    icon: AlongIcons.verified,
+                    label: 'Haptics',
+                    trailing: SizedBox(
+                      width: 64,
+                      height: 48,
+                      child: FittedBox(
+                        child: Switch(
+                          key: const Key('haptics_switch'),
+                          value: AlongHaptics.enabled,
+                          onChanged: (value) {
+                            setState(() => AlongHaptics.enabled = value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              AlongButton(
+                key: const Key('haptics_try'),
+                label: 'Test haptic',
+                variant: AlongButtonVariant.secondary,
+                onPressed: () => AlongHaptics.success(context),
+              ),
+              const SizedBox(height: 8),
+              const _SettingsGroup(
+                title: 'Language',
+                rows: [_SettingsRow(icon: AlongIcons.chat, label: 'English')],
+              ),
+              const _SettingsGroup(
+                title: 'About',
+                rows: [_SettingsRow(icon: AlongIcons.info, label: 'Along')],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.title, required this.rows});
+
+  final String title;
+  final List<_SettingsRow> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Settings', style: AlongType.display(palette)),
-          const SizedBox(height: 12),
+          Text(
+            title,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette)
+                .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 4),
           _SolidCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 48),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Haptics',
-                          maxLines: 1,
-                          softWrap: false,
-                          style: AlongType.body(palette)
-                              .copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 64,
-                        height: 48,
-                        child: FittedBox(
-                          child: Switch(
-                            key: const Key('haptics_switch'),
-                            value: AlongHaptics.enabled,
-                            onChanged: (value) {
-                              setState(() => AlongHaptics.enabled = value);
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  reduced ? 'Reduce motion is on' : 'Reduce motion uses fades',
-                  maxLines: roomy ? 2 : 1,
-                  softWrap: roomy,
-                  style: AlongType.caption(palette)
-                      .copyWith(color: palette.ink),
-                ),
-                const SizedBox(height: 12),
-                AlongButton(
-                  key: const Key('haptics_try'),
-                  label: 'Test haptic',
-                  variant: AlongButtonVariant.secondary,
-                  onPressed: () => AlongHaptics.success(context),
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Column(children: rows),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
+    required this.icon,
+    required this.label,
+    this.trailing,
+    this.roomy = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final Widget? trailing;
+  final bool roomy;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: palette.ink),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: roomy ? 2 : 1,
+              softWrap: roomy,
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600),
             ),
           ),
+          if (trailing != null) trailing!,
         ],
       ),
     );
@@ -1358,34 +1772,6 @@ class _AnchoredSheet extends StatelessWidget {
           child: roomy
               ? SingleChildScrollView(reverse: true, child: child)
               : child,
-        ),
-      ),
-    );
-  }
-}
-
-class _CenteredCard extends StatelessWidget {
-  const _CenteredCard({required this.child, this.top = false});
-
-  final Widget child;
-  final bool top;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    final roomy = _roomy(context);
-    final card = _SolidCard(child: child);
-    final placed = top
-        ? Align(alignment: Alignment.topCenter, child: card)
-        : Center(child: card);
-    return Scaffold(
-      backgroundColor: palette.bg,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          child: roomy
-              ? SingleChildScrollView(reverse: !top, child: card)
-              : placed,
         ),
       ),
     );

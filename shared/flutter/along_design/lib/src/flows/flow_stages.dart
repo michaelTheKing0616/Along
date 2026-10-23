@@ -3109,19 +3109,40 @@ class _OfferLine extends CustomPainter {
       oldDelegate.color != color;
 }
 
+/// The seat-screen cushion painter, without the filled cabin shell. The
+/// shell at this card width read as one grey mass.
 class _OfferSeats extends StatelessWidget {
   const _OfferSeats();
 
+  static const _rows = [
+    ['driver', 'yours', 'free'],
+    ['occupied', 'yours', 'free'],
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: AlongCabinDiagram(
-        seat: 72,
-        rows: [
-          ['driver', 'yours', 'free'],
-          ['occupied', 'yours', 'free'],
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final gaps = 8.0 * (_rows.first.length - 1);
+        final seat = math.min(56.0, (constraints.maxWidth - gaps) / 3);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var r = 0; r < _rows.length; r++) ...[
+              if (r > 0) const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var c = 0; c < _rows[r].length; c++) ...[
+                    if (c > 0) const SizedBox(width: 8),
+                    AlongSeatGlyph(status: _rows[r][c], width: seat),
+                  ],
+                ],
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -3701,45 +3722,38 @@ class _HeatLegend extends StatelessWidget {
   }
 }
 
-/// Puts the whole fictional plate inside the brackets. Cover-fit on a
-/// portrait phone was cropping ABC-123-XY down to C-123-X.
+/// Full plate, at the photo's own aspect. The viewfinder matches the plate
+/// rectangle in plate-abuja.jpg (1040×760). [BoxFit.cover] only scales.
 class _PlateFrame extends StatelessWidget {
   const _PlateFrame();
 
-  /// Source pixels of plate-abuja.jpg (1040×760) that contain the full plate.
   static const _photoW = 1040.0;
   static const _photoH = 760.0;
-  static const _plate = Rect.fromLTRB(250, 400, 760, 540);
+
+  /// Light plate pixels. A taller crop included the bumper and made the
+  /// characters look wide inside the brackets.
+  static const _plate = Rect.fromLTRB(175, 368, 781, 436);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
-        final frame = Rect.fromLTWH(
-          16,
-          size.height * 0.40,
-          size.width - 32,
-          size.height * 0.20,
-        );
-        // One scale for both axes. Cover keeps the photo's aspect; fill was
-        // stretching the plate text.
-        final scale = math.min(
-          frame.width / _plate.width,
-          frame.height / _plate.height,
-        );
+        final holeW = size.width - 32;
+        final scale = holeW / _plate.width;
         final imageW = _photoW * scale;
-        final imageH = imageW * _photoH / _photoW;
-        final imageLeft =
-            frame.center.dx - (_plate.left + _plate.width / 2) * scale;
-        final imageTop =
-            frame.center.dy - (_plate.top + _plate.height / 2) * scale;
+        final imageH = _photoH * scale;
+        final hole = Rect.fromCenter(
+          center: Offset(size.width / 2, size.height * 0.42),
+          width: holeW,
+          height: _plate.height * scale,
+        );
         return Stack(
           fit: StackFit.expand,
           children: [
             Positioned(
-              left: imageLeft,
-              top: imageTop,
+              left: hole.center.dx - _plate.center.dx * scale,
+              top: hole.center.dy - _plate.center.dy * scale,
               width: imageW,
               height: imageH,
               child: AlongGrade(
@@ -3747,12 +3761,13 @@ class _PlateFrame extends StatelessWidget {
                   'assets/photos/plate-abuja.jpg',
                   package: 'along_design',
                   fit: BoxFit.cover,
+                  alignment: Alignment.center,
                   filterQuality: FilterQuality.high,
                   excludeFromSemantics: true,
                 ),
               ),
             ),
-            Positioned.fill(child: _Viewfinder(hole: frame)),
+            Positioned.fill(child: _Viewfinder(hole: hole)),
           ],
         );
       },

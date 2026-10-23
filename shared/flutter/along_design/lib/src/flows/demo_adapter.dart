@@ -73,6 +73,22 @@ class DemoNotice {
   final String label;
 }
 
+class DemoManeuver {
+  const DemoManeuver({
+    required this.street,
+    required this.meters,
+    required this.speedKmh,
+  });
+
+  final String street;
+  final int meters;
+  final int speedKmh;
+
+  String get distanceLabel => '$meters m';
+
+  String get speedLabel => '$speedKmh km/h';
+}
+
 /// Named stand-in for GPS, dispatch, and payment. Every figure it returns
 /// is scripted.
 class DemoAdapter {
@@ -127,6 +143,16 @@ class DemoAdapter {
   static const payment = DemoPayment(ok: false, label: 'Demo payment');
 
   static const pin = '4821';
+
+  /// Frozen window. The rider screen must not tick during a golden.
+  static const pinFor = Duration(minutes: 1, seconds: 48);
+
+  /// Scripted turn on the neighborhood street the nav camera locks to.
+  static const maneuver = DemoManeuver(
+    street: 'Obafemi Awolowo Way',
+    meters: 180,
+    speedKmh: 32,
+  );
 
   static const notices = <DemoNotice>[
     DemoNotice('Location denied'),

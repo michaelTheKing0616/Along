@@ -39,9 +39,10 @@ enum AlongFix { precise, approximate, stale, hidden }
 /// white or `#C9CCD2` roads). They are drawn as baked, with no color matrix.
 /// The daily planet stops at z15; neighborhood frames are the z16 slippy
 /// grid, drawn by overzooming that z15 vector so building footprints stay
-/// sharp. Nav locks zoom 17 so those z16 tiles overzoom. The corridor uses
-/// native zoom-12 tiles. Online demand is a hex contour painted in map
-/// space, not a blurred heat tile.
+/// sharp. Nav locks zoom 18, rotated so the street runs up the screen, and
+/// those z16 tiles overzoom to lane level. The corridor uses native zoom-12
+/// tiles. Online demand is separate district hexes with stepped intensity
+/// and a feathered edge, painted in map space, not one heat blob.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -55,6 +56,7 @@ class AlongCityMap extends StatelessWidget {
     this.controller,
     this.center,
     this.zoom,
+    this.nearby = false,
   });
 
   final AlongCityMapMode mode;
@@ -82,8 +84,18 @@ class AlongCityMap extends StatelessWidget {
   /// Replaces the mode's default center. The value is the first camera only.
   final LatLng? center;
 
-  /// Locks min, max, and the initial zoom. Nav ignores this and stays at 17.
+  /// Locks min, max, and the initial zoom. Nav ignores this and stays at 18.
   final double? zoom;
+
+  /// Pulsing pickup plus nearby drivers. Matching and recovery use this so
+  /// the bare map is not an empty street.
+  final bool nearby;
+
+  /// Lane zoom. z16 tiles overzoom. Negative rotation puts east at the top:
+  /// a positive bearing rotates the map clockwise, which would point the
+  /// street down the screen.
+  static const navZoom = 18.0;
+  static const navRotation = -90.0;
 
   /// Sits about one tile south of Wuse Market, so the market stays in the
   /// strip above a full-screen sheet on both 360×800 and 320×640.
@@ -95,15 +107,15 @@ class AlongCityMap extends StatelessWidget {
   static const wuseMarket = LatLng(9.068555, 7.465938);
   static const nyanya = LatLng(9.023418, 7.570635);
 
-  /// East-west street in the cached Wuse grid, south of the reservoir.
-  /// Long enough that the drawn portion fills the band above the sheet.
+  /// The white east-west road on tile 16_34126_31112. The line sits on the
+  /// road pixels (lat 9.05826), and the span is the continuous white run.
   static const neighborhoodRoute = <LatLng>[
-    LatLng(9.058278, 7.462292),
-    LatLng(9.058278, 7.462871),
-    LatLng(9.058278, 7.463450),
-    LatLng(9.058278, 7.464030),
-    LatLng(9.058278, 7.464609),
-    LatLng(9.058278, 7.465189),
+    LatLng(9.05826, 7.45980),
+    LatLng(9.05826, 7.46090),
+    LatLng(9.05826, 7.46200),
+    LatLng(9.05826, 7.46310),
+    LatLng(9.05826, 7.46420),
+    LatLng(9.05826, 7.46515),
   ];
 
   /// Wuse Market to Nyanya, snapped to the white roads on the z12 tiles.
@@ -130,10 +142,11 @@ class AlongCityMap extends StatelessWidget {
 
   bool get _nav => mode == AlongCityMapMode.nav;
 
-  /// Car on the neighborhood street, shifted south so it clears a bottom card.
+  /// Car on the street. East is up, so the camera sits ahead of the car and
+  /// the car rests above the speed bar.
   LatLng _navFocus(double progress) {
     final at = _along(neighborhoodRoute, progress);
-    return LatLng(at.point.latitude - 0.0012, at.point.longitude);
+    return LatLng(at.point.latitude, at.point.longitude + 0.00072);
   }
 
   @override
@@ -165,8 +178,11 @@ class AlongCityMap extends StatelessWidget {
         final trip = mode == AlongCityMapMode.trip;
         final completed = mode == AlongCityMapMode.completed;
         final city = mode == AlongCityMapMode.online;
+        final locked = zoom;
         // Nav stays on the z16 extract. Fitting the corridor would drop to z12.
-        final fit = showRoute && !_nav
+        // A locked zoom is a header or a pickup camera. Fitting the corridor
+        // would pull in tiles outside the extract.
+        final fit = showRoute && !_nav && locked == null
             ? CameraFit.bounds(
                 bounds: LatLngBounds.fromPoints(route),
                 padding: trip
@@ -184,9 +200,8 @@ class AlongCityMap extends StatelessWidget {
                 maxZoom: trip || completed ? 12 : 12.4,
               )
             : null;
-        final locked = zoom;
         final initialZoom = _nav
-            ? 17.0
+            ? navZoom
             : locked ?? (city ? 11.15 : (_wide ? 12.0 : 16.0));
         return FlutterMap(
           mapController: controller,
@@ -201,9 +216,10 @@ class AlongCityMap extends StatelessWidget {
                     ? corridorCenter
                     : neighborhoodCenter),
             initialZoom: initialZoom,
+            initialRotation: _nav ? navRotation : 0,
             initialCameraFit: fit,
             minZoom: _nav
-                ? 17
+                ? navZoom
                 : locked ??
                       (city
                           ? 11.15
@@ -211,7 +227,7 @@ class AlongCityMap extends StatelessWidget {
                           ? (trip || completed ? 10 : 12)
                           : 16),
             maxZoom: _nav
-                ? 17
+                ? navZoom
                 : locked ??
                       (city
                           ? 11.15
@@ -248,6 +264,7 @@ class AlongCityMap extends StatelessWidget {
                   route: route,
                   progress: drawn,
                   palette: palette,
+                  lane: _nav,
                 ),
               ),
             MarkerLayer(
@@ -292,8 +309,39 @@ class AlongCityMap extends StatelessWidget {
   ) {
     final markers = <Marker>[];
     if (bare) {
+      if (nearby) {
+        final pickup = center ?? wuseMarket;
+        markers.add(_radar(pickup, palette));
+        markers.add(
+          _driver(
+            context,
+            const LatLng(9.06755, 7.46715),
+            '4 min',
+            false,
+            palette,
+          ),
+        );
+        markers.add(
+          _driver(
+            context,
+            const LatLng(9.06715, 7.46455),
+            '6 min',
+            true,
+            palette,
+          ),
+        );
+        markers.add(
+          _driver(
+            context,
+            const LatLng(9.06905, 7.46490),
+            '8 min',
+            false,
+            palette,
+          ),
+        );
+      }
       if (fix != AlongFix.hidden) {
-        markers.add(_puck(context, wuseMarket, palette));
+        markers.add(_puck(context, center ?? wuseMarket, palette));
       }
       return markers;
     }
@@ -310,13 +358,14 @@ class AlongCityMap extends StatelessWidget {
     }
     if (mode == AlongCityMapMode.nav) {
       final at = _along(neighborhoodRoute, drawn);
+      // The marker stays upright, so heading 0 points the nose up the street.
       markers.add(
         _vehicle(
           context,
           at.point,
           AlongVehicleKind.car,
           null,
-          at.heading,
+          0,
           palette,
           emphasized: true,
         ),
@@ -1087,67 +1136,75 @@ _RoutePoint _along(List<LatLng> route, double progress) {
   return _RoutePoint(point, heading);
 }
 
-/// Hex demand across Abuja. Intensity follows the districts, then feathers
-/// out so the field is not a hard rectangle. The south edge stays quiet
-/// so the GO button is not sitting on a hot core.
+/// District demand. Each core is a small hex flower with a fixed intensity
+/// step. The outer ring is ragged and dimmer, so the field feathers instead
+/// of reading as one disc. The south edge stays quiet under the GO button.
 List<Polygon> _demandHexes(Color accent) {
-  const radius = 1280.0;
+  const radius = 640.0;
   const mPerLat = 111320.0;
-  const hotspots = <(double, double, double)>[
-    (9.076, 7.458, 1),
-    (9.062, 7.492, 0.62),
-    (9.088, 7.498, 0.84),
-    (9.070, 7.430, 0.5),
-    (9.084, 7.418, 0.4),
-    (9.058, 7.530, 0.34),
-    (9.094, 7.470, 0.28),
-  ];
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
-  final dx = radius * math.sqrt(3);
-  final dy = radius * 1.5;
-  const originLat = 9.072;
-  const originLon = 7.470;
-  final polygons = <Polygon>[];
-  for (var r = -5; r <= 5; r++) {
-    for (var q = -5; q <= 5; q++) {
-      final x = dx * (q + r / 2);
-      final y = dy * r;
-      final lat = originLat + y / mPerLat;
-      final lon = originLon + x / mPerLon;
-      final dLat = (lat - originLat) * mPerLat;
-      final dLon = (lon - originLon) * mPerLon;
-      final fromCore = math.sqrt(dLat * dLat + dLon * dLon);
-      final edgeT = ((fromCore - 900) / 7200).clamp(0.0, 1.0);
-      final feather = 1 - edgeT * edgeT * (3 - 2 * edgeT);
-      // Die north of the GO button so the control sits on quiet map.
-      final south = ((lat - 9.042) / 0.018).clamp(0.0, 1.0);
-      var demand = 0.0;
-      for (final spot in hotspots) {
-        final sLat = (lat - spot.$1) * mPerLat;
-        final sLon = (lon - spot.$2) * mPerLon;
-        final dist = math.sqrt(sLat * sLat + sLon * sLon);
-        demand += spot.$3 * math.exp(-(dist * dist) / (2 * 2100 * 2100));
+  const cores = <(double, double, int)>[
+    (9.200, 7.390, 3),
+    (9.190, 7.500, 3),
+    (9.185, 7.590, 2),
+    (9.110, 7.430, 3),
+    (9.100, 7.545, 3),
+    (9.040, 7.390, 2),
+    (9.055, 7.480, 3),
+    (9.030, 7.580, 2),
+    (8.980, 7.440, 2),
+    (8.970, 7.545, 2),
+  ];
+  const stepAlpha = <double>[0, 0.22, 0.40, 0.58];
+  final best = <(int, int), int>{};
+  final where = <(int, int), LatLng>{};
+  for (final core in cores) {
+    final maxRing = core.$3;
+    for (var ring = 0; ring <= maxRing; ring++) {
+      final count = ring == 0 ? 1 : 6 * ring;
+      for (var i = 0; i < count; i++) {
+        if (ring == maxRing && _hexJitterInt(i, ring + maxRing) % 3 == 0) {
+          continue;
+        }
+        final turns = ring == 0 ? 0.0 : (i + 0.5) / count;
+        final angle = turns * math.pi * 2 + core.$1;
+        final dist = ring * radius * math.sqrt(3);
+        final lat = core.$1 + math.cos(angle) * dist / mPerLat;
+        final lon = core.$2 + math.sin(angle) * dist / mPerLon;
+        if (lat < 8.90 || lat > 9.24 || lon < 7.34 || lon > 7.62) continue;
+        final key = ((lat * 280).round(), (lon * 280).round());
+        final step = maxRing - ring;
+        final prev = best[key];
+        if (prev != null && prev >= step) continue;
+        best[key] = step;
+        where[key] = LatLng(lat, lon);
       }
-      demand = (demand * _hexJitter(q, r)).clamp(0.0, 1.4);
-      final alpha = feather * south * (0.04 + demand.clamp(0.0, 1.0) * 0.62);
-      if (alpha < 0.05 || lat < 9.045) continue;
-      final hot = demand > 0.85 && feather > 0.85;
-      polygons.add(
-        Polygon(
-          points: _hexRing(LatLng(lat, lon), radius * 0.98, mPerLat, mPerLon),
-          color: accent.withValues(alpha: alpha.clamp(0.0, 0.7)),
-          borderColor: accent.withValues(alpha: hot ? 0.35 : 0),
-          borderStrokeWidth: hot ? 1 : 0,
-        ),
-      );
     }
+  }
+  final polygons = <Polygon>[];
+  for (final entry in best.entries) {
+    final step = entry.value;
+    if (step <= 0) continue;
+    final at = where[entry.key]!;
+    final south = ((at.latitude - 8.90) / 0.07).clamp(0.0, 1.0);
+    final feather = step == 1 ? 0.40 : (step == 2 ? 0.75 : 1.0);
+    final alpha = stepAlpha[step] * feather * south;
+    if (alpha < 0.05) continue;
+    polygons.add(
+      Polygon(
+        points: _hexRing(at, radius * 0.92, mPerLat, mPerLon),
+        color: accent.withValues(alpha: alpha),
+        borderColor: accent.withValues(alpha: 0),
+        borderStrokeWidth: 0,
+      ),
+    );
   }
   return polygons;
 }
 
-double _hexJitter(int q, int r) {
+int _hexJitterInt(int q, int r) {
   final n = (q * 73856093) ^ (r * 19349663);
-  return 0.72 + 0.28 * ((n & 0xFFFF) / 65535);
+  return n & 0x7fffffff;
 }
 
 List<LatLng> _hexRing(
@@ -1172,11 +1229,15 @@ class _RouteOverlay extends StatefulWidget {
     required this.route,
     required this.progress,
     required this.palette,
+    this.lane = false,
   });
 
   final List<LatLng> route;
   final double progress;
   final AlongPalette palette;
+
+  /// Lane-level nav. The corridor stroke is a hairline at zoom 18.
+  final bool lane;
 
   @override
   State<_RouteOverlay> createState() => _RouteOverlayState();
@@ -1217,6 +1278,7 @@ class _RouteOverlayState extends State<_RouteOverlay>
               progress: widget.progress,
               palette: widget.palette,
               pulse: pulse,
+              lane: widget.lane,
             ),
           );
         },
@@ -1232,6 +1294,7 @@ class _RoutePainter extends CustomPainter {
     required this.progress,
     required this.palette,
     this.pulse = 0,
+    this.lane = false,
   });
 
   final MapCamera camera;
@@ -1239,6 +1302,7 @@ class _RoutePainter extends CustomPainter {
   final double progress;
   final AlongPalette palette;
   final double pulse;
+  final bool lane;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1246,12 +1310,16 @@ class _RoutePainter extends CustomPainter {
     final casing = roles.routeCasing;
     final full = _smooth(_screen(route));
     final grey = roles.stale.withValues(alpha: 0.55);
-    canvas.drawPath(full, _stroke(11, casing));
-    canvas.drawPath(full, _stroke(6.5, grey));
+    final casingW = lane ? 34.0 : 11.0;
+    final restW = lane ? 20.0 : 6.5;
+    final traveledCasing = lane ? 38.0 : 12.0;
+    final traveledW = lane ? 22.0 : 7.0;
+    canvas.drawPath(full, _stroke(casingW, casing));
+    canvas.drawPath(full, _stroke(restW, grey));
     if (progress > 0.02) {
       final traveled = _smooth(_points());
-      canvas.drawPath(traveled, _stroke(12, casing));
-      canvas.drawPath(traveled, _stroke(7, roles.route));
+      canvas.drawPath(traveled, _stroke(traveledCasing, casing));
+      canvas.drawPath(traveled, _stroke(traveledW, roles.route));
       if (pulse > 0) {
         alongPaintRoutePulse(
           canvas,
@@ -1321,8 +1389,10 @@ class _RoutePainter extends CustomPainter {
   bool shouldRepaint(covariant _RoutePainter oldDelegate) {
     return oldDelegate.progress != progress ||
         oldDelegate.pulse != pulse ||
+        oldDelegate.lane != lane ||
         oldDelegate.camera.center != camera.center ||
         oldDelegate.camera.zoom != camera.zoom ||
+        oldDelegate.camera.rotation != camera.rotation ||
         oldDelegate.palette.brightness != palette.brightness;
   }
 }
