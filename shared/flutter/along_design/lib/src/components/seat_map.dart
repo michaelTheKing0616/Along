@@ -190,11 +190,9 @@ class _SchematicBody extends StatelessWidget {
   }
 }
 
-/// Photograph is 864×1152, nose up. The steering wheel is on the left.
-/// The shell crops to the cabin. Front row of the photo is two buckets
-/// (centers 0.37 and 0.62); the rear is one bench. Marker count still
-/// comes from the row list, so a three-across front row puts the middle
-/// marker on the console between those buckets.
+/// Photograph is 864×1152, nose up, steering wheel on the left.
+/// Front row is a three-cushion bench (seams near x 0.46 and 0.54).
+/// The rear is one bench. Marker count still comes from the row list.
 class _CabinShell extends StatelessWidget {
   const _CabinShell({
     required this.rows,
@@ -206,12 +204,11 @@ class _CabinShell extends StatelessWidget {
   final ValueChanged<String>? onSeatTap;
   final ValueChanged<String>? onSeatLongPress;
 
-  /// Interior window, as fractions of the 864×1152 photograph.
-  /// Top includes the wheel; bottom includes the rear cushion.
-  static const _cropL = 0.18;
-  static const _cropT = 0.14;
-  static const _cropR = 0.82;
-  static const _cropB = 0.72;
+  /// Cabin window. Tight enough that a 48dp marker fits one front cushion.
+  static const _cropL = 0.26;
+  static const _cropT = 0.18;
+  static const _cropR = 0.74;
+  static const _cropB = 0.70;
   static const _cropAspect =
       ((_cropR - _cropL) * 864) / ((_cropB - _cropT) * 1152);
 
@@ -296,24 +293,25 @@ class _CabinShell extends StatelessWidget {
 
   /// Cushion centers in full-photo fractions, left to right.
   /// Driver is sorted first, so the left front center is the wheel side.
+  /// Front seams are at 0.46 and 0.54; 0.50 is the middle cushion.
   static List<double> _photoXs(int index, int rowCount, int count) {
     final front = rowCount <= 1 || index == 0;
-    if (front && count == 2) return const [0.37, 0.62];
-    if (front && count == 3) return const [0.37, 0.50, 0.62];
-    if (!front && count == 4) return const [0.33, 0.44, 0.54, 0.65];
-    final start = front ? 0.32 : 0.30;
-    final end = front ? 0.68 : 0.70;
-    if (count <= 1) return [(start + end) / 2];
+    if (front && count == 2) return const [0.39, 0.60];
+    if (front && count == 3) return const [0.39, 0.50, 0.60];
+    if (!front && count == 4) return const [0.36, 0.45, 0.55, 0.64];
+    const start = 0.36;
+    const end = 0.64;
+    if (count <= 1) return const [(start + end) / 2];
     return [
       for (var i = 0; i < count; i++) start + (end - start) * i / (count - 1),
     ];
   }
 
   static double _photoY(int index, int rowCount) {
-    if (rowCount <= 1) return 0.385;
-    if (rowCount == 2) return index == 0 ? 0.385 : 0.548;
+    if (rowCount <= 1) return 0.395;
+    if (rowCount == 2) return index == 0 ? 0.395 : 0.575;
     final t = index / (rowCount - 1);
-    return 0.385 + (0.548 - 0.385) * t;
+    return 0.395 + (0.575 - 0.395) * t;
   }
 
   static double _mapX(double photo, double width) =>
