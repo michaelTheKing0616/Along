@@ -109,7 +109,9 @@ class AlongFlowHome extends StatelessWidget {
           backgroundColor: palette.mapLand,
           body: Builder(
             builder: (context) {
-              Widget map = const AlongCityMap();
+              Widget map = const AlongCityMap(
+                demoInset: EdgeInsets.only(top: 72, right: 12),
+              );
               if (extent != 0) {
                 map = Transform.translate(
                   offset: Offset(0, extent * 18),
@@ -488,43 +490,17 @@ class _SeatBar extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.fromLTRB(16, pad, 16, pad),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Front right',
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.title(palette)
-                            .copyWith(fontSize: 16, height: 1.1),
-                      ),
-                      const SizedBox(height: 6),
-                      const _SeatChip(label: 'Window stays open'),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Hero(
-                      tag: 'along-fare-car',
-                      child: AlongOdometer(
-                        value: 1200,
-                        style: AlongType.numeric(palette),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: _SeatChip(label: 'Window stays open'),
             ),
             SizedBox(height: pad),
-            AlongSwipeConfirm(label: 'Hold this seat', onConfirmed: _noop),
+            const AlongButton(
+              label: 'Hold front right · ₦1,200',
+              onPressed: _noop,
+            ),
           ],
         ),
       ),
@@ -1063,7 +1039,10 @@ class AlongFlowOnline extends StatelessWidget {
       body: Stack(
         children: [
           const Positioned.fill(
-            child: AlongCityMap(mode: AlongCityMapMode.online),
+            child: AlongCityMap(
+              mode: AlongCityMapMode.online,
+              demoInset: EdgeInsets.only(top: 72, right: 12),
+            ),
           ),
           const Positioned(top: 16, left: 16, child: _HeatLegend()),
           const Positioned(top: 16, right: 16, child: _HeatTip()),
@@ -1170,7 +1149,10 @@ class AlongFlowOffer extends StatelessWidget {
                         const SizedBox(height: 8),
                         const _OfferSeats(),
                         const SizedBox(height: 12),
-                        AlongSwipeConfirm(label: 'Accept', onConfirmed: _noop),
+                        const AlongButton(
+                          label: 'Accept · ₦1,800',
+                          onPressed: _noop,
+                        ),
                       ],
                     ),
                   ),
@@ -1243,7 +1225,11 @@ class AlongFlowRides extends StatelessWidget {
       body: Stack(
         children: [
           const Positioned.fill(
-            child: AlongCityMap(mode: AlongCityMapMode.trip, progress: 1),
+            child: AlongCityMap(
+              mode: AlongCityMapMode.trip,
+              progress: 1,
+              demoInset: EdgeInsets.only(top: 56, right: 12),
+            ),
           ),
           const Positioned(
             top: 16,
@@ -1522,45 +1508,72 @@ class AlongFlowRating extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final short = constraints.maxHeight < 700;
-            final portrait = short ? 72.0 : 88.0;
+            final portrait = short ? 96.0 : 120.0;
             final star = short ? 36.0 : 44.0;
-            return SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(16, short ? 12 : 20, 16, 12),
-              child: Column(
-                children: [
-                  Center(
-                    child: AlongDriverPortrait(
-                      size: portrait,
-                      verified: true,
+            final hero = Column(
+              children: [
+                Center(
+                  child: AlongDriverPortrait(
+                    size: portrait,
+                    verified: true,
+                  ),
+                ),
+                SizedBox(height: short ? 10 : 14),
+                Text(
+                  'Chinedu',
+                  maxLines: 1,
+                  softWrap: false,
+                  textAlign: TextAlign.center,
+                  style: AlongType.heading(palette),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Wuse → Nyanya · ₦1,200',
+                  maxLines: 2,
+                  softWrap: true,
+                  textAlign: TextAlign.center,
+                  style: AlongType.body(palette).copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+                SizedBox(height: short ? 12 : 16),
+                _Stars(filled: 4, size: star),
+                SizedBox(height: short ? 12 : 16),
+                const _RatingGrid(),
+                SizedBox(height: short ? 8 : 12),
+                const _TipRow(),
+                SizedBox(height: short ? 8 : 12),
+                const _NoteField(),
+              ],
+            );
+            return Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(24, short ? 8 : 16, 24, 8),
+                    child: LayoutBuilder(
+                      builder: (context, space) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: space.maxHeight,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [hero],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  SizedBox(height: short ? 8 : 12),
-                  Text(
-                    'Chinedu',
-                    maxLines: 1,
-                    softWrap: false,
-                    textAlign: TextAlign.center,
-                    style: AlongType.heading(palette),
-                  ),
-                  Text(
-                    'Wuse to Nyanya',
-                    maxLines: 1,
-                    softWrap: false,
-                    textAlign: TextAlign.center,
-                    style: AlongType.meta(palette),
-                  ),
-                  SizedBox(height: short ? 8 : 12),
-                  _Stars(filled: 4, size: star),
-                  SizedBox(height: short ? 12 : 16),
-                  const _RatingGrid(),
-                  SizedBox(height: short ? 8 : 12),
-                  const _TipRow(),
-                  SizedBox(height: short ? 8 : 12),
-                  const _NoteField(),
-                  SizedBox(height: short ? 8 : 12),
-                  const _SendThanks(),
-                ],
-              ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(24, 0, 24, 12),
+                  child: _SendThanks(),
+                ),
+              ],
             );
           },
         ),
@@ -2924,7 +2937,6 @@ class _RiderRow extends StatelessWidget {
                 ],
               ),
             ),
-            const _Stars(filled: 5, size: 14),
           ],
         ),
       ),
@@ -3856,46 +3868,57 @@ class _BalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     const paper = Color(0xFFF7F4EF);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF3C3832),
-              Color(0xFF241F1B),
-              Color(0xFF141210),
+    return AspectRatio(
+      aspectRatio: 1.586,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF3C3832),
+                Color(0xFF241F1B),
+                Color(0xFF141210),
+              ],
+            ),
+          ),
+          child: Stack(
+            children: [
+              const Positioned.fill(child: AlongNoise(opacity: 0.07)),
+              Positioned(
+                left: 20,
+                top: 18,
+                right: 20,
+                child: Text(
+                  'Along',
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: AlongType.title(palette).copyWith(
+                    color: paper,
+                    letterSpacing: -0.4,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 20,
+                right: 20,
+                bottom: 16,
+                child: Text(
+                  '₦6,400',
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: AlongType.display(palette).copyWith(
+                    color: paper,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-        child: Stack(
-          children: [
-            const Positioned.fill(child: AlongNoise(opacity: 0.07)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AlongWordmark(color: paper),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Balance',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette).copyWith(color: paper),
-                  ),
-                  Text(
-                    '₦6,400',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.display(palette).copyWith(color: paper),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

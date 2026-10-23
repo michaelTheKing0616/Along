@@ -451,7 +451,7 @@ class _SeatCaption extends StatelessWidget {
 }
 
 /// One stroke weight for the cabin, the door seams, and every seat.
-const _vectorStroke = 1.25;
+const _vectorStroke = 1.5;
 
 /// Car body from above: tapered nose, straight doors, tapered rear.
 class _CabinOutlinePainter extends CustomPainter {
@@ -1110,8 +1110,9 @@ class _SeatButtonState extends State<_SeatButton>
 
   static Color available(AlongPalette palette) => const Color(0xFFFFFFFF);
 
-  /// Brand ink, in both themes, so a taken seat stays a filled mark.
-  static Color taken(AlongPalette palette) => const Color(0xFF141210);
+  /// Brand ink at 85%, in both themes, so a taken seat stays a filled mark.
+  static Color taken(AlongPalette palette) =>
+      const Color(0xFF141210).withValues(alpha: 0.85);
 
   static Color driver(AlongPalette palette) => taken(palette);
 

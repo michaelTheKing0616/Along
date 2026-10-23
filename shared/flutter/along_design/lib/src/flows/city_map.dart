@@ -54,6 +54,7 @@ class AlongCityMap extends StatelessWidget {
     this.bare = false,
     this.fix = AlongFix.precise,
     this.demoLabel = true,
+    this.demoInset = const EdgeInsets.only(top: 8, right: 8),
     this.controller,
     this.center,
     this.zoom,
@@ -80,6 +81,9 @@ class AlongCityMap extends StatelessWidget {
   /// Debug builds label simulated positions. Screens that already show a
   /// Demo mark pass false.
   final bool demoLabel;
+
+  /// Clears map chrome that sits in the top-right. The mark stays one tag.
+  final EdgeInsets demoInset;
 
   /// When set, the screen owns the camera. Pickup pans this under a fixed pin.
   final MapController? controller;
@@ -334,8 +338,12 @@ class AlongCityMap extends StatelessWidget {
               rotate: true,
               markers: _markers(context, palette, drawn),
             ),
-            if (kDebugMode && demoLabel && !_positionCarriesDemo)
-              const Positioned(top: 8, right: 8, child: AlongDemoMark()),
+            if (kDebugMode && demoLabel)
+              Positioned(
+                top: demoInset.top,
+                right: demoInset.right,
+                child: const AlongDemoMark(),
+              ),
             Positioned(
               top: 8,
               left: 0,
@@ -347,15 +355,6 @@ class AlongCityMap extends StatelessWidget {
         );
       },
     );
-  }
-
-  /// A puck or a stale car already says Demo, so the corner chip stays off.
-  bool get _positionCarriesDemo {
-    if (bare) return fix != AlongFix.hidden;
-    return mode == AlongCityMapMode.browse ||
-        mode == AlongCityMapMode.online ||
-        mode == AlongCityMapMode.search ||
-        (mode == AlongCityMapMode.trip && fix == AlongFix.stale);
   }
 
   double _typeScale(BuildContext context) {
@@ -831,7 +830,6 @@ class AlongCityMap extends StatelessWidget {
             _FixCaption(
               palette: palette,
               label: DemoAdapter.gps.ageLabel,
-              demo: kDebugMode && demoLabel,
             ),
         ],
       ),
@@ -977,7 +975,6 @@ class AlongCityMap extends StatelessWidget {
   Marker _puck(BuildContext context, LatLng at, AlongPalette palette) {
     final scale = _typeScale(context);
     final hollow = fix == AlongFix.approximate || fix == AlongFix.stale;
-    final showDemo = kDebugMode && demoLabel;
     final word = switch (fix) {
       AlongFix.precise => 'You',
       AlongFix.approximate => 'Approx',
@@ -986,21 +983,19 @@ class AlongCityMap extends StatelessWidget {
     };
     final fill = hollow ? palette.roles.stale : palette.roles.riderDot;
     final caption = [
-      if (showDemo) 'Demo',
       word,
       if (hollow) DemoAdapter.gps.ageLabel,
     ].join(' ');
     return Marker(
       point: at,
       width: (hollow ? 156 : 72) * scale,
-      height: ((showDemo ? 16 : 0) + 16 + (hollow ? 16 : 0) + 20) * scale,
+      height: (16 + (hollow ? 16 : 0) + 20) * scale,
       alignment: Alignment.bottomCenter,
       child: Semantics(
         label: caption,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (showDemo) _SolidWord(palette: palette, text: 'Demo'),
             _SolidWord(palette: palette, text: word),
             if (hollow)
               _SolidWord(palette: palette, text: DemoAdapter.gps.ageLabel),
@@ -1055,27 +1050,16 @@ class _SolidWord extends StatelessWidget {
 }
 
 class _FixCaption extends StatelessWidget {
-  const _FixCaption({
-    required this.palette,
-    required this.label,
-    required this.demo,
-  });
+  const _FixCaption({required this.palette, required this.label});
 
   final AlongPalette palette;
   final String label;
-  final bool demo;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: demo ? 'Demo $label' : label,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (demo) _SolidWord(palette: palette, text: 'Demo'),
-          _SolidWord(palette: palette, text: label),
-        ],
-      ),
+      label: label,
+      child: _SolidWord(palette: palette, text: label),
     );
   }
 }
