@@ -132,7 +132,7 @@ class SeatMap extends StatelessWidget {
             ],
             if (riders.isNotEmpty) ...[
               const SizedBox(height: 12),
-              _WhosRiding(riders: riders),
+              AlongWhosRiding(riders: riders),
             ],
             if (footer != null) ...[const SizedBox(height: 16), footer!],
           ],
@@ -589,12 +589,16 @@ class AlongSeatContext extends StatelessWidget {
     required this.destination,
     required this.departs,
     required this.seatsLeft,
+    this.ruled = true,
   });
 
   final String origin;
   final String destination;
   final String departs;
   final String seatsLeft;
+
+  /// Top rule when the strip sits inside the cabin card.
+  final bool ruled;
 
   /// The gallery sedan: Wuse to Garki, leaving soon, three of six left.
   static const sample = AlongSeatContext(
@@ -615,10 +619,10 @@ class AlongSeatContext extends StatelessWidget {
     return DecoratedBox(
       key: const Key('seat_ride_context'),
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: palette.line)),
+        border: ruled ? Border(top: BorderSide(color: palette.line)) : null,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 12),
+        padding: EdgeInsets.only(top: ruled ? 12 : 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -876,8 +880,6 @@ class _SeatButtonState extends State<_SeatButton>
                 animation: Listenable.merge([_scale, _reveal]),
                 builder: (context, child) {
                   final scale = _scale.value.clamp(0.9, 1.05).toDouble();
-                  final showPerson =
-                      seat.status == 'occupied' || seat.status == 'yours';
                   return Transform.scale(
                     scale: scale,
                     child: CustomPaint(
@@ -885,7 +887,6 @@ class _SeatButtonState extends State<_SeatButton>
                           ? _CarSeatPainter(
                               seat: seat,
                               palette: palette,
-                              silhouette: showPerson ? _reveal.value : 0,
                               held: seat.status == 'held' ? 0.66 : 0,
                             )
                           : _SeatPainter(seat: seat, palette: palette),
@@ -896,7 +897,12 @@ class _SeatButtonState extends State<_SeatButton>
                 child: Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(3, 12, 3, 4),
+                      padding: EdgeInsets.fromLTRB(
+                        4,
+                        widget.driverIcon ? widget.markHeight * 0.40 : 12,
+                        4,
+                        4,
+                      ),
                       child: Center(
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
@@ -911,7 +917,8 @@ class _SeatButtonState extends State<_SeatButton>
                                   size: 14,
                                   color: ink,
                                 )
-                              else if (seat.status == 'yours')
+                              else if (!widget.driverIcon &&
+                                  seat.status == 'yours')
                                 AlongStrokeCheck(color: ink)
                               else if (seat.status == 'occupied' &&
                                   !widget.driverIcon)
@@ -956,7 +963,26 @@ class _SeatButtonState extends State<_SeatButton>
                         ),
                       ),
                     ),
-                    if (badge != null)
+                    if (widget.driverIcon &&
+                        !seat.isDriver &&
+                        (seat.status == 'yours' || seat.status == 'occupied'))
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: _CornerBadge(
+                          fill: seat.status == 'yours'
+                              ? palette.accentInk
+                              : palette.ink.withValues(alpha: 0.10),
+                          child: seat.status == 'yours'
+                              ? AlongStrokeCheck(color: palette.accent, size: 9)
+                              : Icon(
+                                  Icons.person_rounded,
+                                  size: 11,
+                                  color: ink,
+                                ),
+                        ),
+                      )
+                    else if (badge != null)
                       Positioned(
                         top: 5,
                         right: 5,
@@ -1053,59 +1079,113 @@ class _SeatPainter extends CustomPainter {
   }
 }
 
+class _CornerBadge extends StatelessWidget {
+  const _CornerBadge({required this.fill, required this.child});
+
+  final Color fill;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 16,
+      height: 16,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(color: fill, shape: BoxShape.circle),
+      child: child,
+    );
+  }
+}
+
+/// Flat top-down seat. Width to height is about 1:1.1.
 class _CarSeatPainter extends CustomPainter {
   _CarSeatPainter({
     required this.seat,
     required this.palette,
-    required this.silhouette,
     required this.held,
   });
 
   final SeatMapSeat seat;
   final AlongPalette palette;
-  final double silhouette;
   final double held;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
     final fill = _SeatButtonState._fill(seat, palette);
     final ink = _SeatButtonState._ink(seat, palette);
     final selected = seat.status == 'yours';
-    final hairline = _SeatButtonState.hairline(palette);
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w / 2, h * 0.8),
-        width: w * 0.62,
-        height: h * 0.14,
-      ),
-      Paint()
-        ..color = const Color(0x33000000)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
+    final hairline = selected
+        ? palette.accentInk.withValues(alpha: 0.22)
+        : _SeatButtonState.hairline(palette);
+    final backColor = Color.alphaBlend(ink.withValues(alpha: 0.10), fill);
+    final seatW = math.min(size.width - 2, (size.height - 2) / 1.1);
+    final seatH = seatW * 1.1;
+    final left = (size.width - seatW) / 2;
+    final top = (size.height - seatH) / 2;
+    final headH = seatH * 0.12;
+    final headW = seatW * 0.46;
+    final backH = seatH * 0.16;
+    final backW = seatW * 0.74;
+    final cushion = RRect.fromRectAndRadius(
+      Rect.fromLTWH(left, top + seatH * 0.24, seatW, seatH * 0.76),
+      Radius.circular(seatW * 0.22),
     );
-    final cushion = _cushion(size);
-    canvas.drawPath(cushion, Paint()..color = fill);
+    canvas.drawRRect(cushion, Paint()..color = fill);
     canvas.save();
-    canvas.clipPath(cushion);
+    canvas.clipRRect(cushion);
     canvas.drawRect(
-      Rect.fromLTWH(0, h * 0.58, w * 0.18, h),
-      Paint()..color = ink.withValues(alpha: 0.06),
+      Rect.fromLTWH(cushion.left, cushion.top, cushion.width, seatH * 0.10),
+      Paint()..color = ink.withValues(alpha: 0.07),
+    );
+    final bolster = Paint()..color = ink.withValues(alpha: 0.08);
+    final bolsterW = seatW * 0.13;
+    final bolsterH = cushion.height * 0.62;
+    final bolsterTop = cushion.top + cushion.height * 0.22;
+    final bolsterRadius = Radius.circular(bolsterW / 2);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cushion.left + 2, bolsterTop, bolsterW, bolsterH),
+        bolsterRadius,
+      ),
+      bolster,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          cushion.right - bolsterW - 2,
+          bolsterTop,
+          bolsterW,
+          bolsterH,
+        ),
+        bolsterRadius,
+      ),
+      bolster,
     );
     canvas.restore();
-    canvas.drawPath(
+    canvas.drawRRect(
       cushion,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
-        ..color = selected
-            ? palette.accentInk.withValues(alpha: 0.22)
-            : hairline,
+        ..color = hairline,
     );
-    final backColor = Color.alphaBlend(ink.withValues(alpha: 0.08), fill);
     final back = RRect.fromRectAndRadius(
-      Rect.fromLTWH(w * 0.16, h * 0.18, w * 0.68, h * 0.28),
-      Radius.circular(w * 0.12),
+      Rect.fromLTWH(
+        left + (seatW - backW) / 2,
+        cushion.top - backH * 0.62,
+        backW,
+        backH,
+      ),
+      Radius.circular(backH / 2),
+    );
+    final head = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        left + (seatW - headW) / 2,
+        back.top - headH - seatH * 0.025,
+        headW,
+        headH,
+      ),
+      Radius.circular(headH / 2),
     );
     canvas.drawRRect(back, Paint()..color = backColor);
     canvas.drawRRect(
@@ -1115,18 +1195,6 @@ class _CarSeatPainter extends CustomPainter {
         ..strokeWidth = 1
         ..color = hairline,
     );
-    final stitch = Paint()
-      ..color = ink.withValues(alpha: 0.38)
-      ..strokeWidth = 1
-      ..strokeCap = StrokeCap.round;
-    final y = h * 0.32;
-    for (var x = w * 0.28; x < w * 0.72; x += 4.2) {
-      canvas.drawLine(Offset(x, y), Offset(x + 2, y), stitch);
-    }
-    final head = RRect.fromRectAndRadius(
-      Rect.fromLTWH(w * 0.30, h * 0.045, w * 0.40, h * 0.12),
-      Radius.circular(w * 0.08),
-    );
     canvas.drawRRect(head, Paint()..color = backColor);
     canvas.drawRRect(
       head,
@@ -1135,47 +1203,28 @@ class _CarSeatPainter extends CustomPainter {
         ..strokeWidth = 1
         ..color = hairline,
     );
-    if (silhouette > 0.01) {
-      final person = ink.withValues(alpha: 0.55 * silhouette);
-      final headCenter = Offset(w / 2, h * 0.58);
-      canvas.drawCircle(headCenter, w * 0.07, Paint()..color = person);
-      final body = Path()
-        ..moveTo(w * 0.38, h * 0.78)
-        ..quadraticBezierTo(w * 0.5, h * 0.62, w * 0.62, h * 0.78)
-        ..close();
-      canvas.drawPath(body, Paint()..color = person);
-    }
     if (held > 0) {
-      canvas.drawArc(
-        Rect.fromLTWH(1.6, 1.6, w - 3.2, h - 3.2),
-        -math.pi / 2,
-        math.pi * 2 * held,
-        false,
+      final ringRect = cushion.outerRect.deflate(3.2);
+      final ring = RRect.fromRectAndRadius(
+        ringRect,
+        Radius.circular(math.max(4, seatW * 0.22 - 3.2)),
+      );
+      final path = Path()..addRRect(ring);
+      final metric = path.computeMetrics().first;
+      canvas.drawPath(
+        metric.extractPath(0, metric.length * held.clamp(0.0, 1.0)),
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 2.2
+          ..strokeWidth = 2
           ..strokeCap = StrokeCap.round
           ..color = palette.accent,
       );
     }
   }
 
-  Path _cushion(Size size) {
-    final w = size.width;
-    final h = size.height;
-    return Path()
-      ..moveTo(w * 0.22, h * 0.42)
-      ..quadraticBezierTo(w * 0.50, h * 0.36, w * 0.78, h * 0.42)
-      ..quadraticBezierTo(w * 0.96, h * 0.64, w * 0.88, h * 0.86)
-      ..quadraticBezierTo(w * 0.50, h * 0.98, w * 0.12, h * 0.86)
-      ..quadraticBezierTo(w * 0.04, h * 0.64, w * 0.22, h * 0.42)
-      ..close();
-  }
-
   @override
   bool shouldRepaint(covariant _CarSeatPainter oldDelegate) {
     return oldDelegate.seat.status != seat.status ||
-        oldDelegate.silhouette != silhouette ||
         oldDelegate.held != held ||
         oldDelegate.palette.brightness != palette.brightness;
   }
@@ -1259,8 +1308,8 @@ class _CheckPainter extends CustomPainter {
       oldDelegate.progress != progress;
 }
 
-class _WhosRiding extends StatelessWidget {
-  const _WhosRiding({required this.riders});
+class AlongWhosRiding extends StatelessWidget {
+  const AlongWhosRiding({super.key, required this.riders});
 
   final List<AlongRider> riders;
 

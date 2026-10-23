@@ -617,69 +617,83 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
       label: widget.label,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final width = constraints.maxWidth;
+          final width = constraints.maxWidth.isFinite
+              ? constraints.maxWidth
+              : 280.0;
           final travel = math.max(0.0, width - 56);
           final x = _x.clamp(0.0, travel);
+          final fade = _done
+              ? 1.0
+              : (1 - (travel == 0 ? 0.0 : x / travel)).clamp(0.0, 1.0);
           return SizedBox(
+            width: width,
             height: 56,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.recessed,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Text(
-                    _done ? 'Held' : widget.label,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.button(palette),
-                  ),
-                  Positioned(
-                    left: 4 + x,
-                    top: 4,
-                    child: GestureDetector(
-                      key: const Key('swipe_thumb'),
-                      onHorizontalDragUpdate: (details) {
-                        if (_done) return;
-                        setState(() {
-                          _x = (_x + details.delta.dx).clamp(0.0, travel);
-                          _settle.value = _x;
-                        });
-                      },
-                      behavior: HitTestBehavior.opaque,
-                      onHorizontalDragEnd: (details) {
-                        if (_done) return;
-                        final velocity = details.primaryVelocity ?? 0;
-                        // Read the state field. The recognizer can fire end
-                        // with the closure from the pointer-down frame.
-                        if (_x > travel * 0.72 || velocity > 900) {
-                          setState(() => _done = true);
-                          _spring(travel, velocity);
-                          AlongHaptics.success(context);
-                          widget.onConfirmed();
-                        } else {
-                          _spring(0, velocity);
-                        }
-                      },
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: palette.accent,
-                          borderRadius: BorderRadius.circular(12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: palette.recessed),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 56),
+                      child: Opacity(
+                        opacity: fade,
+                        child: Text(
+                          _done ? 'Held' : widget.label,
+                          maxLines: 1,
+                          softWrap: false,
+                          textAlign: TextAlign.center,
+                          style: AlongType.button(palette)
+                              .copyWith(color: palette.ink),
                         ),
-                        child: SizedBox(
-                          width: 48,
-                          height: 48,
-                          child: Icon(
-                            AlongIcons.navigate,
-                            color: palette.accentInk,
+                      ),
+                    ),
+                    Positioned(
+                      left: 4 + x,
+                      top: 4,
+                      child: GestureDetector(
+                        key: const Key('swipe_thumb'),
+                        onHorizontalDragUpdate: (details) {
+                          if (_done) return;
+                          setState(() {
+                            _x = (_x + details.delta.dx).clamp(0.0, travel);
+                            _settle.value = _x;
+                          });
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        onHorizontalDragEnd: (details) {
+                          if (_done) return;
+                          final velocity = details.primaryVelocity ?? 0;
+                          // Read the state field. The recognizer can fire end
+                          // with the closure from the pointer-down frame.
+                          if (_x > travel * 0.72 || velocity > 900) {
+                            setState(() => _done = true);
+                            _spring(travel, velocity);
+                            AlongHaptics.success(context);
+                            widget.onConfirmed();
+                          } else {
+                            _spring(0, velocity);
+                          }
+                        },
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: palette.accent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: Icon(
+                              AlongIcons.navigate,
+                              color: palette.accentInk,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
