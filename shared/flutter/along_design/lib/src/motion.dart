@@ -4,6 +4,27 @@ import 'package:flutter/widgets.dart';
 /// Ride UI is used many times a day, so springs settle inside 300ms.
 /// The motion-grammar spring (stiffness 100, damping 20) is the character:
 /// a short underdamped settle, scaled up so the sheet does not linger. [emil]
+/// Named lengths. Springs live on [AlongSprings]. Nothing else invents a
+/// duration. See the motion table in docs/art-direction.md.
+abstract final class AlongDurations {
+  static const press = Duration(milliseconds: 120);
+  static const fade = Duration(milliseconds: 180);
+  static const stagger = Duration(milliseconds: 240);
+  static const sheet = Duration(milliseconds: 280);
+  static const refresh = Duration(milliseconds: 480);
+  static const routeDraw = Duration(milliseconds: 900);
+  static const hold = Duration(milliseconds: 1400);
+  static const scan = Duration(milliseconds: 1800);
+
+  /// Demand glow on the three hot cells. One breath, then back.
+  static const breath = Duration(milliseconds: 2400);
+}
+
+abstract final class AlongCurves {
+  static const fade = Curves.easeOut;
+  static const settle = Curves.easeOutCubic;
+}
+
 abstract final class AlongSprings {
   static const sheet = SpringDescription(
     mass: 0.7,
@@ -44,11 +65,16 @@ abstract final class AlongMotionPolicy {
 abstract final class AlongHaptics {
   static int requested = 0;
 
+  /// Settings toggle. Off skips the platform call and the request count.
+  static bool enabled = true;
+
   static bool _skip(BuildContext context) {
+    if (!enabled) return true;
     return AlongMotionPolicy.reduced(context) || AlongMotionPolicy.inWidgetTest;
   }
 
   static Future<void> tick(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.selectionClick();
@@ -57,18 +83,21 @@ abstract final class AlongHaptics {
   static Future<void> selection(BuildContext context) => tick(context);
 
   static Future<void> confirm(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.lightImpact();
   }
 
   static Future<void> success(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.mediumImpact();
   }
 
   static Future<void> error(BuildContext context) async {
+    if (!enabled) return;
     requested++;
     if (_skip(context)) return;
     await HapticFeedback.heavyImpact();
@@ -91,7 +120,8 @@ class _AlongPressableState extends State<AlongPressable> {
 
   @override
   Widget build(BuildContext context) {
-    final pressed = _down && AlongMotionPolicy.play(context);
+    final reduced = AlongMotionPolicy.reduced(context);
+    final pressed = _down && (reduced || AlongMotionPolicy.play(context));
     return Listener(
       onPointerDown: (_) {
         if (!_down) setState(() => _down = true);
@@ -102,9 +132,11 @@ class _AlongPressableState extends State<AlongPressable> {
       onPointerCancel: (_) {
         if (_down) setState(() => _down = false);
       },
-      child: pressed
-          ? Transform.scale(scale: 0.96, child: widget.child)
-          : widget.child,
+      child: !pressed
+          ? widget.child
+          : reduced
+          ? Opacity(opacity: 0.72, child: widget.child)
+          : Transform.scale(scale: 0.96, child: widget.child),
     );
   }
 }

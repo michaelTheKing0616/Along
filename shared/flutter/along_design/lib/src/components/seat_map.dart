@@ -229,7 +229,7 @@ class _CabinShell extends StatelessWidget {
     return ClipPath(
       clipper: _CabinClipper(),
       child: CustomPaint(
-        painter: _CabinOutlinePainter(palette: palette),
+        painter: _CabinOutlinePainter(palette: palette, bold: true),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 26, 8, 14),
           child: _SeatGrid(
@@ -383,22 +383,27 @@ class _SeatGridRow extends StatelessWidget {
 
 /// Rounded cabin, slightly narrower at the nose. No wheels, no mirrors.
 class _CabinOutlinePainter extends CustomPainter {
-  _CabinOutlinePainter({required this.palette});
+  _CabinOutlinePainter({required this.palette, this.bold = false});
 
   final AlongPalette palette;
+  final bool bold;
 
   @override
   void paint(Canvas canvas, Size size) {
     final dark = palette.brightness == Brightness.dark;
-    final fill = dark ? const Color(0xFF16171A) : const Color(0xFFF6F7F9);
-    final line = dark ? const Color(0xFF4A4C54) : const Color(0xFFD0D2D8);
+    final fill = bold
+        ? (dark ? const Color(0xFF1C1E22) : const Color(0xFFE7E9EE))
+        : (dark ? const Color(0xFF16171A) : const Color(0xFFF6F7F9));
+    final line = bold
+        ? (dark ? const Color(0xFFC8CAD2) : const Color(0xFF2A2C31))
+        : (dark ? const Color(0xFF4A4C54) : const Color(0xFFD0D2D8));
     final path = _cabinOutline(size);
     canvas.drawPath(path, Paint()..color = fill);
     canvas.drawPath(
       path,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.5
+        ..strokeWidth = bold ? 1.6 : 0.5
         ..color = line,
     );
     _doorSeams(canvas, size, line);
@@ -448,7 +453,8 @@ class _CabinOutlinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CabinOutlinePainter oldDelegate) {
-    return oldDelegate.palette.brightness != palette.brightness;
+    return oldDelegate.palette.brightness != palette.brightness ||
+        oldDelegate.bold != bold;
   }
 }
 
@@ -516,27 +522,31 @@ class _SeatLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _LegendMark(
-          label: 'Available',
-          fill: _SeatButtonState.available(palette),
-          border: _SeatButtonState.hairline(palette),
-        ),
-        const SizedBox(width: 14),
-        _LegendMark(
-          label: 'Selected',
-          fill: palette.accent,
-          border: palette.accent,
-        ),
-        const SizedBox(width: 14),
-        _LegendMark(
-          label: 'Taken',
-          fill: _SeatButtonState.taken(palette),
-          border: _SeatButtonState.hairline(palette),
-        ),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _LegendMark(
+            label: 'Available',
+            fill: _SeatButtonState.available(palette),
+            border: _SeatButtonState.hairline(palette),
+          ),
+          const SizedBox(width: 14),
+          _LegendMark(
+            label: 'Selected',
+            fill: palette.accent,
+            border: palette.accent,
+          ),
+          const SizedBox(width: 14),
+          _LegendMark(
+            label: 'Taken',
+            fill: _SeatButtonState.taken(palette),
+            border: _SeatButtonState.hairline(palette),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -619,6 +629,22 @@ class AlongSeatContext extends StatelessWidget {
     final fact = AlongType.caption(
       palette,
     ).copyWith(color: palette.muted, fontWeight: FontWeight.w600, height: 1.1);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    final facts = roomy
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(departs, maxLines: 2, softWrap: true, style: fact),
+              Text(seatsLeft, maxLines: 2, softWrap: true, style: fact),
+            ],
+          )
+        : Row(
+            children: [
+              Text(departs, maxLines: 1, softWrap: false, style: fact),
+              const Spacer(),
+              Text(seatsLeft, maxLines: 1, softWrap: false, style: fact),
+            ],
+          );
     return DecoratedBox(
       key: const Key('seat_ride_context'),
       decoration: BoxDecoration(
@@ -655,13 +681,7 @@ class AlongSeatContext extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Row(
-              children: [
-                Text(departs, maxLines: 1, softWrap: false, style: fact),
-                const Spacer(),
-                Text(seatsLeft, maxLines: 1, softWrap: false, style: fact),
-              ],
-            ),
+            facts,
           ],
         ),
       ),
@@ -849,7 +869,9 @@ class _SeatButtonState extends State<_SeatButton>
   Widget build(BuildContext context) {
     final seat = widget.seat;
     final palette = AlongPalette.of(context);
-    final ink = _ink(seat, palette);
+    final ink = widget.driverIcon
+        ? _contrastInk(seat, palette)
+        : _ink(seat, palette);
     final price = seat.price;
     final showPrice =
         price != null && price.contains('₦') && seat.status != 'occupied';
@@ -891,6 +913,8 @@ class _SeatButtonState extends State<_SeatButton>
                               seat: seat,
                               palette: palette,
                               held: seat.status == 'held' ? 0.66 : 0,
+                              contrast: true,
+                              drawWheel: false,
                             )
                           : _SeatPainter(seat: seat, palette: palette),
                       child: child,
@@ -913,7 +937,7 @@ class _SeatButtonState extends State<_SeatButton>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (showWheel)
-                                _SteeringWheel(ink: palette.ink, size: 16)
+                                _SteeringWheel(ink: ink, size: 16)
                               else if (seat.isCargo)
                                 Icon(AlongIcons.luggage, size: 14, color: ink)
                               else if (!widget.driverIcon &&
@@ -1021,6 +1045,15 @@ class _SeatButtonState extends State<_SeatButton>
     }
     return palette.ink;
   }
+
+  /// Label ink for the high-contrast cabin. Taken cushions are near-black.
+  static Color _contrastInk(SeatMapSeat seat, AlongPalette palette) {
+    final taken =
+        seat.isDriver || seat.status == 'occupied' || seat.status == 'blocked';
+    if (seat.status == 'yours') return palette.accentInk;
+    if (taken) return const Color(0xFFF4F1EA);
+    return palette.ink;
+  }
 }
 
 class _SeatPainter extends CustomPainter {
@@ -1091,18 +1124,26 @@ class _CornerBadge extends StatelessWidget {
 /// The cabin outline with the same seat painter, at a fixed cushion size.
 /// Offer uses this so the diagram is a car, not loose glyphs.
 class AlongCabinDiagram extends StatelessWidget {
-  const AlongCabinDiagram({super.key, required this.rows, this.seat = 72});
+  const AlongCabinDiagram({
+    super.key,
+    required this.rows,
+    this.seat = 72,
+    this.contrast = false,
+  });
 
   /// Each inner list is a row of status tokens (`driver`, `yours`, `free`,
   /// `occupied`, `held`).
   final List<List<String>> rows;
   final double seat;
 
+  /// Dark taken seats, yellow selected seats, and a heavier cabin stroke.
+  final bool contrast;
+
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return CustomPaint(
-      painter: _CabinOutlinePainter(palette: palette),
+      painter: _CabinOutlinePainter(palette: palette, bold: contrast),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
         child: Column(
@@ -1115,7 +1156,11 @@ class AlongCabinDiagram extends StatelessWidget {
                 children: [
                   for (var c = 0; c < rows[r].length; c++) ...[
                     if (c > 0) const SizedBox(width: 8),
-                    AlongSeatGlyph(status: rows[r][c], width: seat),
+                    AlongSeatGlyph(
+                      status: rows[r][c],
+                      width: seat,
+                      contrast: contrast,
+                    ),
                   ],
                 ],
               ),
@@ -1129,11 +1174,19 @@ class AlongCabinDiagram extends StatelessWidget {
 
 /// Small top-down seat. The cabin painter, without a hit target.
 class AlongSeatGlyph extends StatelessWidget {
-  const AlongSeatGlyph({super.key, required this.status, this.width = 36});
+  const AlongSeatGlyph({
+    super.key,
+    required this.status,
+    this.width = 36,
+    this.contrast = false,
+  });
 
   /// `yours`, `occupied`, `free`, `held`, or `driver`.
   final String status;
   final double width;
+
+  /// Stronger cushion fills. Offer uses this so a free seat is not a pale blob.
+  final bool contrast;
 
   @override
   Widget build(BuildContext context) {
@@ -1154,7 +1207,47 @@ class AlongSeatGlyph extends StatelessWidget {
           seat: seat,
           palette: palette,
           held: status == 'held' ? 0.66 : 0,
+          contrast: contrast,
         ),
+      ),
+    );
+  }
+}
+
+/// Open-seat count with the same cushion painter. Rides, offer, and the
+/// receipt use it so a seat is Along's mark, not a leftover word.
+class AlongSeatCount extends StatelessWidget {
+  const AlongSeatCount({super.key, required this.count, this.glyph = 12});
+
+  final int count;
+  final double glyph;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final shown = count.clamp(1, 3);
+    return Semantics(
+      label: '$count seats',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < shown; i++) ...[
+            if (i > 0) const SizedBox(width: 2),
+            AlongSeatGlyph(status: 'free', width: glyph),
+          ],
+          const SizedBox(width: 4),
+          Text(
+            '$count seats',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette).copyWith(
+              color: palette.ink,
+              fontWeight: FontWeight.w600,
+              height: 1,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1166,21 +1259,57 @@ class _CarSeatPainter extends CustomPainter {
     required this.seat,
     required this.palette,
     required this.held,
+    this.contrast = false,
+    this.drawWheel = true,
   });
 
   final SeatMapSeat seat;
   final AlongPalette palette;
   final double held;
+  final bool contrast;
+  final bool drawWheel;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fill = _SeatButtonState._fill(seat, palette);
-    final ink = _SeatButtonState._ink(seat, palette);
     final selected = seat.status == 'yours';
-    final hairline = selected
-        ? palette.accentInk.withValues(alpha: 0.22)
-        : _SeatButtonState.hairline(palette);
-    final backColor = Color.alphaBlend(ink.withValues(alpha: 0.10), fill);
+    final taken =
+        seat.isDriver || seat.status == 'occupied' || seat.status == 'blocked';
+    final dark = palette.brightness == Brightness.dark;
+    final Color fill;
+    final Color ink;
+    final Color hairline;
+    final double stroke;
+    if (contrast) {
+      if (selected) {
+        fill = palette.accent;
+        ink = palette.accentInk;
+        hairline = palette.accentInk;
+      } else if (taken) {
+        fill = dark ? const Color(0xFF3A3C44) : const Color(0xFF2C2E33);
+        ink = const Color(0xFFF4F1EA);
+        hairline = dark ? const Color(0xFFC8CAD2) : const Color(0xFF141210);
+      } else {
+        fill = dark ? const Color(0xFF1A1C20) : const Color(0xFFFFFFFF);
+        ink = palette.ink;
+        hairline = palette.ink.withValues(alpha: 0.78);
+      }
+      stroke = 1.6;
+    } else {
+      fill = _SeatButtonState._fill(seat, palette);
+      ink = _SeatButtonState._ink(seat, palette);
+      hairline = selected
+          ? palette.accentInk.withValues(alpha: 0.22)
+          : _SeatButtonState.hairline(palette);
+      stroke = 0.5;
+    }
+    final backColor = contrast
+        ? (selected
+              ? palette.accentInk.withValues(alpha: 0.18)
+              : Color.alphaBlend(
+                  ink.withValues(alpha: taken ? 0.22 : 0.16),
+                  fill,
+                ))
+        : Color.alphaBlend(ink.withValues(alpha: 0.10), fill);
     final seatW = math.min(size.width - 2, (size.height - 2) / 1.1);
     final seatH = seatW * 1.1;
     final left = (size.width - seatW) / 2;
@@ -1208,7 +1337,8 @@ class _CarSeatPainter extends CustomPainter {
       ),
       Paint()..color = ink.withValues(alpha: 0.07),
     );
-    final bolster = Paint()..color = ink.withValues(alpha: 0.08);
+    final bolster = Paint()
+      ..color = ink.withValues(alpha: contrast ? 0.22 : 0.08);
     final bolsterW = seatW * 0.13;
     final bolsterH = cushionRect.height * 0.62;
     final bolsterTop = cushionRect.top + cushionRect.height * 0.22;
@@ -1237,9 +1367,18 @@ class _CarSeatPainter extends CustomPainter {
       cushion,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.5
+        ..strokeWidth = stroke
         ..color = hairline,
     );
+    if (contrast && drawWheel && seat.isDriver) {
+      final hub = Offset(cushionRect.center.dx, cushionRect.center.dy);
+      final wheel = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = math.max(1.4, seatW * 0.06)
+        ..color = ink;
+      canvas.drawCircle(hub, seatW * 0.16, wheel);
+      canvas.drawCircle(hub, seatW * 0.04, Paint()..color = ink);
+    }
     final back = RRect.fromRectAndRadius(
       Rect.fromLTWH(
         left + (seatW - backW) / 2,
@@ -1293,6 +1432,8 @@ class _CarSeatPainter extends CustomPainter {
   bool shouldRepaint(covariant _CarSeatPainter oldDelegate) {
     return oldDelegate.seat.status != seat.status ||
         oldDelegate.held != held ||
+        oldDelegate.contrast != contrast ||
+        oldDelegate.drawWheel != drawWheel ||
         oldDelegate.palette.brightness != palette.brightness;
   }
 }
@@ -1384,6 +1525,38 @@ class AlongWhosRiding extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final shown = riders.take(4).toList();
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    final faces = [
+      for (final rider in shown) ...[
+        Semantics(
+          label: 'Rider ${rider.initials}',
+          container: true,
+          child: ExcludeSemantics(
+            child: AlongMonogram(initials: rider.initials, size: 28),
+          ),
+        ),
+        const SizedBox(width: 4),
+      ],
+    ];
+    if (roomy) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Who's riding",
+            maxLines: 2,
+            softWrap: true,
+            style: AlongType.caption(palette).copyWith(
+              fontWeight: FontWeight.w600,
+              height: 1.1,
+              color: palette.ink,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(children: faces),
+        ],
+      );
+    }
     return Row(
       children: [
         Text(
@@ -1397,16 +1570,7 @@ class AlongWhosRiding extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        for (final rider in shown) ...[
-          Semantics(
-            label: 'Rider ${rider.initials}',
-            container: true,
-            child: ExcludeSemantics(
-              child: AlongMonogram(initials: rider.initials, size: 28),
-            ),
-          ),
-          const SizedBox(width: 4),
-        ],
+        ...faces,
       ],
     );
   }

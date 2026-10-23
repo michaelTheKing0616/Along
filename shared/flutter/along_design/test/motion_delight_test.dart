@@ -7,6 +7,7 @@ void main() {
     AlongMotionPolicy.debugPlayMotion = false;
     AlongGyroCard.debugTilt = Offset.zero;
     AlongHaptics.requested = 0;
+    AlongHaptics.enabled = true;
   });
 
   testWidgets('seat selection springs through the peak and rests at 1', (

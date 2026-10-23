@@ -160,7 +160,16 @@ class AlongFlowHome extends StatelessWidget {
                     child: AlongSpringSheet(
                       fraction: fraction,
                       snaps: [fraction, 0.88],
-                      child: const _HomeSheetBody(),
+                      child: Builder(
+                        builder: (context) {
+                          const body = _HomeSheetBody();
+                          if (MediaQuery.textScalerOf(context).scale(1) <=
+                              1.05) {
+                            return body;
+                          }
+                          return const SingleChildScrollView(child: body);
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -185,9 +194,9 @@ class _HomeSheetBody extends StatelessWidget {
         Container(
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: palette.ink,
-            borderRadius: BorderRadius.circular(16),
+            shape: AlongCraft.border(16),
           ),
           child: Row(
             children: [
@@ -359,146 +368,148 @@ class AlongFlowSeats extends StatelessWidget {
             // 320×640 is already full before the perks row. Tighten only then.
             final short = constraints.maxHeight < 720;
             final gap = short ? 4.0 : 8.0;
-            return Column(
+            final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
+            final seatColumn = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      0,
-                      short ? 4 : 12,
-                      0,
-                      short ? 0 : 12,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Choose a seat',
+                        style: AlongType.display(palette),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Text(
-                                'Choose a seat',
-                                style: AlongType.display(palette),
-                              ),
+                    SizedBox(height: gap),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: _SeatDriver(),
+                    ),
+                    SizedBox(height: gap),
+                    const SeatMap(
+                      body: 'cabin',
+                      rows: [
+                        SeatMapRowView(
+                          id: 'front',
+                          seats: [
+                            SeatMapSeat(
+                              id: 'fm',
+                              label: 'FM',
+                              role: 'passenger',
+                              status: 'yours',
+                              statusWord: 'Yours',
+                              price: '₦1,200',
                             ),
-                            SizedBox(height: gap),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: _SeatDriver(),
+                            SeatMapSeat(
+                              id: 'fr',
+                              label: 'FR',
+                              role: 'passenger',
+                              status: 'held',
+                              statusWord: 'Held',
+                              price: '₦900',
                             ),
-                            SizedBox(height: gap),
-                            const SeatMap(
-                              body: 'cabin',
-                              rows: [
-                                SeatMapRowView(
-                                  id: 'front',
-                                  seats: [
-                                    SeatMapSeat(
-                                      id: 'fm',
-                                      label: 'FM',
-                                      role: 'passenger',
-                                      status: 'yours',
-                                      statusWord: 'Yours',
-                                      price: '₦1,200',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'fr',
-                                      label: 'FR',
-                                      role: 'passenger',
-                                      status: 'held',
-                                      statusWord: 'Held',
-                                      price: '₦900',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'drv',
-                                      label: 'Driver',
-                                      role: 'driver',
-                                      status: 'occupied',
-                                      statusWord: 'Driver',
-                                    ),
-                                  ],
-                                ),
-                                SeatMapRowView(
-                                  id: 'back',
-                                  seats: [
-                                    SeatMapSeat(
-                                      id: 'b1',
-                                      label: 'BL',
-                                      role: 'passenger',
-                                      status: 'free',
-                                      statusWord: 'Free',
-                                      price: '₦700',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'b2',
-                                      label: 'ML',
-                                      role: 'passenger',
-                                      status: 'occupied',
-                                      statusWord: 'Taken',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'b3',
-                                      label: 'MR',
-                                      role: 'passenger',
-                                      status: 'free',
-                                      statusWord: 'Free',
-                                      price: '₦700',
-                                    ),
-                                    SeatMapSeat(
-                                      id: 'b4',
-                                      label: 'BR',
-                                      role: 'passenger',
-                                      status: 'held',
-                                      statusWord: 'Held',
-                                      price: '₦800',
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            SeatMapSeat(
+                              id: 'drv',
+                              label: 'Driver',
+                              role: 'driver',
+                              status: 'occupied',
+                              statusWord: 'Driver',
                             ),
                           ],
                         ),
-                        SizedBox(height: gap),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _SeatSection(
-                            vertical: short ? 8 : 12,
-                            child: const AlongWhosRiding(
-                              riders: AlongRider.riding,
+                        SeatMapRowView(
+                          id: 'back',
+                          seats: [
+                            SeatMapSeat(
+                              id: 'b1',
+                              label: 'BL',
+                              role: 'passenger',
+                              status: 'free',
+                              statusWord: 'Free',
+                              price: '₦700',
                             ),
-                          ),
-                        ),
-                        SizedBox(height: gap),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _SeatSection(
-                            vertical: short ? 8 : 12,
-                            child: const AlongSeatContext(
-                              origin: 'Wuse Market',
-                              destination: 'Garki',
-                              departs: 'Departs in 12 min',
-                              seatsLeft: '3/6 seats left',
-                              ruled: false,
+                            SeatMapSeat(
+                              id: 'b2',
+                              label: 'ML',
+                              role: 'passenger',
+                              status: 'occupied',
+                              statusWord: 'Taken',
                             ),
-                          ),
-                        ),
-                        SizedBox(height: gap),
-                        const Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: _SeatPerks(),
-                          ),
+                            SeatMapSeat(
+                              id: 'b3',
+                              label: 'MR',
+                              role: 'passenger',
+                              status: 'free',
+                              statusWord: 'Free',
+                              price: '₦700',
+                            ),
+                            SeatMapSeat(
+                              id: 'b4',
+                              label: 'BR',
+                              role: 'passenger',
+                              status: 'held',
+                              statusWord: 'Held',
+                              price: '₦800',
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                  ],
+                ),
+                SizedBox(height: gap),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SeatSection(
+                    vertical: short ? 8 : 12,
+                    child: const AlongWhosRiding(riders: AlongRider.riding),
                   ),
+                ),
+                SizedBox(height: gap),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SeatSection(
+                    vertical: short ? 8 : 12,
+                    child: const AlongSeatContext(
+                      origin: 'Wuse Market',
+                      destination: 'Garki',
+                      departs: 'Departs in 12 min',
+                      seatsLeft: '3/6 seats left',
+                      ruled: false,
+                    ),
+                  ),
+                ),
+                SizedBox(height: gap),
+                if (roomy)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: _SeatPerks(),
+                  )
+                else
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: _SeatPerks(),
+                  ),
+              ],
+            );
+            final page = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    0,
+                    short ? 4 : 12,
+                    0,
+                    short ? 0 : 12,
+                  ),
+                  child: seatColumn,
                 ),
                 _SeatBar(dense: short),
               ],
             );
+            return SingleChildScrollView(child: page);
           },
         ),
       ),
@@ -527,14 +538,19 @@ class _SeatDriver extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text('Chinedu', maxLines: 1, softWrap: false, style: name),
-                  const SizedBox(width: 8),
-                  AlongIcon(AlongIcons.star, size: 20, color: palette.accent),
-                  const SizedBox(width: 2),
-                  Text('4.9', maxLines: 1, softWrap: false, style: rating),
-                ],
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Chinedu', maxLines: 1, softWrap: false, style: name),
+                    const SizedBox(width: 8),
+                    AlongIcon(AlongIcons.star, size: 20, color: palette.accent),
+                    const SizedBox(width: 2),
+                    Text('4.9', maxLines: 1, softWrap: false, style: rating),
+                  ],
+                ),
               ),
               const SizedBox(height: 6),
               const FittedBox(
@@ -601,7 +617,8 @@ class _SeatPerks extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           // A note only when the card is tall enough to close the page gap.
-          final showNote = constraints.maxHeight >= 96;
+          final bounded = constraints.maxHeight.isFinite;
+          final showNote = !bounded || constraints.maxHeight >= 96;
           return Padding(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
             child: Column(
@@ -616,17 +633,22 @@ class _SeatPerks extends StatelessWidget {
                   ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 6),
-                const Row(
-                  children: [
-                    _PerkChip('AC'),
-                    SizedBox(width: 8),
-                    _PerkChip('Window'),
-                    SizedBox(width: 8),
-                    _PerkChip('Luggage'),
-                  ],
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _PerkChip('AC'),
+                      SizedBox(width: 8),
+                      _PerkChip('Window'),
+                      SizedBox(width: 8),
+                      _PerkChip('Luggage'),
+                    ],
+                  ),
                 ),
                 if (showNote) ...[
-                  const Spacer(),
+                  if (bounded) const Spacer() else const SizedBox(height: 8),
                   Text(
                     'Set by Chinedu',
                     maxLines: 1,
@@ -708,16 +730,25 @@ class _SeatBar extends StatelessWidget {
                             .copyWith(fontSize: 16, height: 1.1),
                       ),
                       const SizedBox(height: 6),
-                      const _SeatChip(label: 'Window stays open'),
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: _SeatChip(label: 'Window stays open'),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 12),
-                Hero(
-                  tag: 'along-fare-car',
-                  child: AlongOdometer(
-                    value: 1200,
-                    style: AlongType.numeric(palette),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Hero(
+                      tag: 'along-fare-car',
+                      child: AlongOdometer(
+                        value: 1200,
+                        style: AlongType.numeric(palette),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -778,6 +809,7 @@ class AlongFlowLive extends StatelessWidget {
               mode: AlongCityMapMode.trip,
               progress: progress,
               sheetInset: 0.32,
+              fix: AlongFix.stale,
             ),
           ),
           const Positioned(
@@ -792,7 +824,15 @@ class AlongFlowLive extends StatelessWidget {
                 return AlongSpringSheet(
                   fraction: fraction,
                   snaps: [fraction, 0.72],
-                  child: const _LiveSheet(),
+                  child: Builder(
+                    builder: (context) {
+                      final roomy =
+                          MediaQuery.textScalerOf(context).scale(1) > 1.05;
+                      const sheet = _LiveSheet();
+                      if (!roomy) return sheet;
+                      return const SingleChildScrollView(child: sheet);
+                    },
+                  ),
                 );
               },
             ),
@@ -864,28 +904,50 @@ class _LiveSheet extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            AlongTickingEta(label: '6 min', style: AlongType.display(palette)),
-            const Spacer(),
-            Text(
+        const SizedBox(height: 8),
+        Builder(
+          builder: (context) {
+            final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+            final eta = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AlongTickingEta(
+                  label: '4-6 min',
+                  style: AlongType.display(palette),
+                ),
+              ],
+            );
+            final place = Text(
               'Nyanya',
               maxLines: 1,
               softWrap: false,
               style: AlongType.body(palette)
                   .copyWith(fontWeight: FontWeight.w600, height: 1.2),
-            ),
-          ],
+            );
+            if (roomy) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [eta, const SizedBox(height: 4), place],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [eta, const Spacer(), place],
+            );
+          },
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         const Row(
           children: [
             _LiveAction(icon: AlongIcons.call, label: 'Call'),
             _LiveAction(icon: AlongIcons.chat, label: 'Message'),
             _LiveAction(icon: AlongIcons.share, label: 'Share'),
             _LiveAction(icon: AlongIcons.shield, label: 'Safety'),
+            _LiveAction(
+              icon: AlongIcons.receipt,
+              label: 'Report',
+              semanticsLabel: 'Report an issue',
+            ),
           ],
         ),
       ],
@@ -901,9 +963,10 @@ class _PlateChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     return Container(
-      height: 22,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      height: roomy ? null : 22,
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: roomy ? 4 : 0),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: palette.recessed,
@@ -925,40 +988,55 @@ class _PlateChip extends StatelessWidget {
 }
 
 class _LiveAction extends StatelessWidget {
-  const _LiveAction({required this.icon, required this.label});
+  const _LiveAction({
+    required this.icon,
+    required this.label,
+    this.semanticsLabel,
+  });
 
   final IconData icon;
   final String label;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return Expanded(
-      child: Column(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.surface,
-              shape: BoxShape.circle,
-              border: AlongElevation.hairline(palette.ink),
-            ),
-            child: AlongIcon(icon, size: 20, color: palette.ink),
+      child: Semantics(
+        button: true,
+        label: semanticsLabel ?? label,
+        child: InkWell(
+          onTap: _noop,
+          child: Column(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: palette.surface,
+                  shape: BoxShape.circle,
+                  border: AlongElevation.hairline(palette.ink),
+                ),
+                child: AlongIcon(icon, size: 20, color: palette.ink),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                maxLines: MediaQuery.textScalerOf(context).scale(1) > 1.05
+                    ? 2
+                    : 1,
+                softWrap: MediaQuery.textScalerOf(context).scale(1) > 1.05,
+                textAlign: TextAlign.center,
+                style: AlongType.caption(palette).copyWith(
+                  color: palette.ink,
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(
-              color: palette.ink,
-              fontWeight: FontWeight.w600,
-              height: 1.1,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -978,7 +1056,7 @@ class AlongFlowSos extends StatelessWidget {
           Text('Safety', style: AlongType.display(palette)),
           const SizedBox(height: 4),
           Text(
-            'Ready · hold for 2 seconds',
+            'Call 112 · share with contacts',
             maxLines: 1,
             softWrap: false,
             style: AlongType.bodyMuted(palette),
@@ -1151,24 +1229,32 @@ class AlongFlowDay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _Page(
-      bottom: const AlongButton(label: 'Save the day', onPressed: _noop),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Thursday', style: AlongType.display(palette)),
-          const SizedBox(height: 4),
-          Text(
-            'Nyanya corridor',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.bodyMuted(palette),
-          ),
-          const SizedBox(height: 8),
-          const _DaySummary(),
-          const SizedBox(height: 8),
-          const Expanded(child: _DayBoard()),
-        ],
+    final column = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Thursday', style: AlongType.display(palette)),
+        const SizedBox(height: 4),
+        Text(
+          'Nyanya corridor',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.bodyMuted(palette),
+        ),
+        const SizedBox(height: 8),
+        const _DaySummary(),
+        const SizedBox(height: 8),
+        const _DayBoard(),
+        const SizedBox(height: 12),
+        const AlongButton(label: 'Save the day', onPressed: _noop),
+      ],
+    );
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: SingleChildScrollView(child: column),
+        ),
       ),
     );
   }
@@ -1275,6 +1361,8 @@ class AlongFlowOffer extends StatelessWidget {
                                 style: AlongType.display(palette),
                               ),
                             ),
+                            const AlongSeatCount(count: 2, glyph: 14),
+                            const SizedBox(width: 8),
                             Text(
                               '4.2 km',
                               maxLines: 1,
@@ -1310,53 +1398,35 @@ class AlongFlowEarnings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _Page(
-      bottom: const AlongButton(label: 'Cash out', onPressed: _noop),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          // The first viewport is the total and the chart. Payout and the
-          // trip list start on the next scroll.
-          return SingleChildScrollView(
-            padding: EdgeInsets.zero,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: constraints.maxHeight,
-                  child: Stack(
-                    children: [
-                      const AlongNoise(opacity: 0.025),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Today', style: AlongType.caption(palette)),
-                          AlongOdometer(
-                            value: 48200,
-                            style: AlongType.display(palette),
-                          ),
-                          Text(
-                            '11 trips · goal ₦60,000',
-                            maxLines: 1,
-                            softWrap: false,
-                            style: AlongType.bodyMuted(palette),
-                          ),
-                          const SizedBox(height: 8),
-                          const _WeekCard(),
-                          const SizedBox(height: 8),
-                          const _EarnBreakdown(),
-                          const SizedBox(height: 8),
-                          const _PassUpsell(),
-                          const SizedBox(height: 8),
-                          const Expanded(child: _EarnList()),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+    return Scaffold(
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Today', style: AlongType.caption(palette)),
+              AlongOdometer(value: 48200, style: AlongType.display(palette)),
+              Text(
+                '11 trips · goal ₦60,000',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.bodyMuted(palette),
+              ),
+              const SizedBox(height: 8),
+              const _WeekCard(),
+              const SizedBox(height: 8),
+              const _EarnBreakdown(),
+              const SizedBox(height: 8),
+              const _PassUpsell(),
+              const SizedBox(height: 8),
+              const _EarnList(),
+              const SizedBox(height: 12),
+              const AlongButton(label: 'Cash out', onPressed: _noop),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1488,8 +1558,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.okada,
               title: 'Okada',
-              eta: '3 min',
-              seats: '1 left',
+              eta: '2-4 min',
+              seatCount: 1,
               fare: '₦300-500',
               badge: 'Fastest',
             ),
@@ -1499,8 +1569,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.car,
               title: 'Car',
-              eta: '6 min',
-              seats: '3 left',
+              eta: '6-8 min',
+              seatCount: 3,
               fare: '₦1,100-1,400',
             ),
           ),
@@ -1509,8 +1579,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.danfo,
               title: 'Danfo',
-              eta: '8 min',
-              seats: '8 left',
+              eta: '8-12 min',
+              seatCount: 8,
               fare: '₦200-350',
               badge: 'Cheapest',
             ),
@@ -1520,8 +1590,8 @@ class _RideList extends StatelessWidget {
             child: _RideLine(
               kind: AlongVehicleKind.bus,
               title: 'Bus',
-              eta: '12 min',
-              seats: '14 left',
+              eta: '12-16 min',
+              seatCount: 14,
               fare: '₦500-800',
             ),
           ),
@@ -1787,25 +1857,26 @@ class _ComplimentWrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    Widget row(List<Widget> chips) {
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(mainAxisSize: MainAxisSize.min, children: chips),
+      );
+    }
+
+    return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _ComplimentChip('Smooth ride', selected: true),
-            SizedBox(width: 8),
-            _ComplimentChip('Clean car'),
-          ],
-        ),
-        SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _ComplimentChip('On time'),
-            SizedBox(width: 8),
-            _ComplimentChip('Safe driving'),
-          ],
-        ),
+        row(const [
+          _ComplimentChip('Smooth ride', selected: true),
+          SizedBox(width: 8),
+          _ComplimentChip('Clean car'),
+        ]),
+        const SizedBox(height: 8),
+        row(const [
+          _ComplimentChip('On time'),
+          SizedBox(width: 8),
+          _ComplimentChip('Safe driving'),
+        ]),
       ],
     );
   }
@@ -2084,7 +2155,7 @@ class _PosterRouteState extends State<_PosterRoute>
     super.initState();
     _draw = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: AlongDurations.routeDraw,
       value: 1,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -2185,7 +2256,7 @@ class _HoldRingState extends State<_HoldRing>
     super.initState();
     _fill = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AlongDurations.hold,
       value: 0.66,
     );
   }
@@ -2228,7 +2299,7 @@ class _HoldRingState extends State<_HoldRing>
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      'Hold to alert',
+                      'Call 112',
                       maxLines: 1,
                       softWrap: false,
                       textAlign: TextAlign.center,
@@ -2448,10 +2519,7 @@ class _GoButtonState extends State<_GoButton>
       duration: const Duration(milliseconds: 1600),
       value: 0.45,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _glow.repeat(reverse: true);
-    });
+    // One rest pose. A looping glow is decoration, not the next action.
   }
 
   @override
@@ -2658,8 +2726,8 @@ class _RecommendedRide extends StatelessWidget {
         child: _RideRow(
           kind: AlongVehicleKind.keke,
           title: 'Keke',
-          eta: '4 min',
-          seats: '2 left',
+          eta: '4-6 min',
+          seatCount: 2,
           fare: '₦400-600',
           rules: ['Window open', 'Women in back'],
           badge: 'For you',
@@ -2675,16 +2743,16 @@ class _RideLine extends StatelessWidget {
     required this.kind,
     required this.title,
     required this.eta,
-    required this.seats,
     required this.fare,
+    required this.seatCount,
     this.badge,
   });
 
   final AlongVehicleKind kind;
   final String title;
   final String eta;
-  final String seats;
   final String fare;
+  final int seatCount;
   final String? badge;
 
   @override
@@ -2694,10 +2762,15 @@ class _RideLine extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: DecoratedBox(
         decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-        child: SizedBox(
-          height: 48,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: MediaQuery.textScalerOf(context).scale(1) > 1.05
+                  ? 6
+                  : 0,
+            ),
             child: Row(
               children: [
                 AlongVehicleHero(kind: kind, width: 48, height: 30),
@@ -2714,23 +2787,39 @@ class _RideLine extends StatelessWidget {
                         style: AlongType.body(palette)
                             .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                       ),
-                      Text(
-                        badge == null ? '$eta · $seats' : '$badge · $eta',
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.caption(palette),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            Text(
+                              badge == null ? eta : '$badge · $eta',
+                              maxLines: 1,
+                              softWrap: false,
+                              style: AlongType.caption(palette),
+                            ),
+                            const SizedBox(width: 6),
+                            AlongSeatCount(count: seatCount, glyph: 10),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Hero(
-                  tag: 'along-fare-${kind.name}',
-                  child: Text(
-                    fare,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.body(palette)
-                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Hero(
+                      tag: 'along-fare-${kind.name}',
+                      child: Text(
+                        fare,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: AlongType.body(palette)
+                            .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -2747,8 +2836,8 @@ class _RideRow extends StatelessWidget {
     required this.kind,
     required this.title,
     required this.eta,
-    required this.seats,
     required this.fare,
+    this.seatCount = 2,
     this.rules = const [],
     this.badge,
     this.selected = false,
@@ -2757,8 +2846,8 @@ class _RideRow extends StatelessWidget {
   final AlongVehicleKind kind;
   final String title;
   final String eta;
-  final String seats;
   final String fare;
+  final int seatCount;
   final List<String> rules;
   final String? badge;
   final bool selected;
@@ -2767,9 +2856,13 @@ class _RideRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final rulesLine = rules.join(' · ');
-    return SizedBox(
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return ConstrainedBox(
       key: ValueKey(selected),
-      height: 104,
+      constraints: BoxConstraints(
+        minHeight: 104,
+        maxHeight: roomy ? double.infinity : 104,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Row(
@@ -2781,10 +2874,13 @@ class _RideRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
                           title,
                           maxLines: 1,
                           softWrap: false,
@@ -2792,18 +2888,28 @@ class _RideRow extends StatelessWidget {
                             palette,
                           ).copyWith(fontWeight: FontWeight.w600, height: 1.1),
                         ),
-                      ),
-                      if (badge != null) ...[
-                        const SizedBox(width: 6),
-                        _RideBadge(badge!),
+                        if (badge != null) ...[
+                          const SizedBox(width: 6),
+                          _RideBadge(badge!),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                  Text(
-                    '$eta · $seats',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          eta,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.caption(palette),
+                        ),
+                        const SizedBox(width: 6),
+                        AlongSeatCount(count: seatCount, glyph: 10),
+                      ],
+                    ),
                   ),
                   if (rulesLine.isNotEmpty)
                     FittedBox(
@@ -2823,12 +2929,18 @@ class _RideRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Text(
-              fare,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  fare,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                ),
+              ),
             ),
           ],
         ),
@@ -2893,6 +3005,7 @@ class _MapChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(boxShadow: AlongElevation.float(palette.ink)),
       child: AlongFrost(
+        solid: true,
         radius: 99,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         child: Text(
@@ -2914,10 +3027,11 @@ class _OfferRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     final place = AlongType.body(palette)
         .copyWith(fontWeight: FontWeight.w600, height: 1.1);
     return SizedBox(
-      height: 44,
+      height: roomy ? null : 44,
       child: Row(
         children: [
           Expanded(
@@ -2995,19 +3109,26 @@ class _OfferLine extends CustomPainter {
       oldDelegate.color != color;
 }
 
+/// Seat-screen painter, high contrast, inside the cabin outline. Selected
+/// cushions are yellow. Taken and driver cushions are dark.
 class _OfferSeats extends StatelessWidget {
   const _OfferSeats();
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: AlongCabinDiagram(
-        seat: 72,
-        rows: [
-          ['driver', 'yours', 'free'],
-          ['occupied', 'yours', 'free'],
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final inner = math.max(0.0, constraints.maxWidth - 24 - 16);
+        final seat = math.min(52.0, inner / 3);
+        return AlongCabinDiagram(
+          seat: seat,
+          contrast: true,
+          rows: const [
+            ['driver', 'yours', 'free'],
+            ['occupied', 'yours', 'free'],
+          ],
+        );
+      },
     );
   }
 }
@@ -3018,39 +3139,46 @@ class _RiderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 48,
-      child: Row(
-        children: [
-          const AlongDriverPortrait(
-            size: 36,
-            asset: AlongDriverPortrait.adaeze,
-            verified: true,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Adaeze · 4.9',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                ),
-                Text(
-                  'Rider',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette),
-                ),
-              ],
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 48,
+        maxHeight: roomy ? double.infinity : 48,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
+        child: Row(
+          children: [
+            const AlongDriverPortrait(
+              size: 36,
+              asset: AlongDriverPortrait.adaeze,
+              verified: true,
             ),
-          ),
-          const _Stars(filled: 5, size: 14),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Adaeze · 4.9',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.body(palette)
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                  ),
+                  Text(
+                    'Rider',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette),
+                  ),
+                ],
+              ),
+            ),
+            const _Stars(filled: 5, size: 14),
+          ],
+        ),
       ),
     );
   }
@@ -3161,6 +3289,8 @@ class _EarnList extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
       child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: const [
           _EarningTrip(place: 'Nyanya', fare: '₦1,800', tip: '₦200'),
@@ -3427,6 +3557,7 @@ class _DemandHint extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return AlongFrost(
+      solid: true,
       radius: 99,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Text(
@@ -3497,6 +3628,7 @@ class _TodayPillState extends State<_TodayPill> {
               boxShadow: AlongElevation.float(palette.ink),
             ),
             child: AlongFrost(
+              solid: true,
               radius: 99,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               child: Text(
@@ -3562,8 +3694,10 @@ class _HeatLegend extends StatelessWidget {
               borderRadius: BorderRadius.circular(99),
               gradient: LinearGradient(
                 colors: [
-                  palette.accent.withValues(alpha: 0.22),
-                  palette.accent,
+                  palette.ink.withValues(alpha: 0.06),
+                  palette.ink.withValues(alpha: 0.12),
+                  palette.ink.withValues(alpha: 0.20),
+                  palette.accent.withValues(alpha: 0.85),
                 ],
               ),
             ),
@@ -3576,61 +3710,109 @@ class _HeatLegend extends StatelessWidget {
   }
 }
 
-/// Puts the whole fictional plate inside the brackets. Cover-fit on a
-/// portrait phone was cropping ABC-123-XY down to C-123-X.
+/// Vector plate inside the viewfinder. The bumper photo was a foreshortened
+/// crop, so the characters read as stretched. This plate is drawn front-on.
 class _PlateFrame extends StatelessWidget {
   const _PlateFrame();
 
-  /// Source pixels of plate-abuja.jpg (1040×760) that contain the full plate.
-  static const _photoW = 1040.0;
-  static const _photoH = 760.0;
-  static const _plate = Rect.fromLTRB(250, 400, 760, 540);
+  /// Front-on Nigerian plate, green band included. Not the bumper crop.
+  static const _aspect = 3.45;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
-        final frame = Rect.fromLTWH(
-          16,
-          size.height * 0.40,
-          size.width - 32,
-          size.height * 0.20,
+        final holeW = size.width - 32;
+        final hole = Rect.fromCenter(
+          center: Offset(size.width / 2, size.height * 0.40),
+          width: holeW,
+          height: holeW / _aspect,
         );
-        // One scale for both axes. Cover keeps the photo's aspect; fill was
-        // stretching the plate text.
-        final scale = math.min(
-          frame.width / _plate.width,
-          frame.height / _plate.height,
-        );
-        final imageW = _photoW * scale;
-        final imageH = imageW * _photoH / _photoW;
-        final imageLeft =
-            frame.center.dx - (_plate.left + _plate.width / 2) * scale;
-        final imageTop =
-            frame.center.dy - (_plate.top + _plate.height / 2) * scale;
         return Stack(
           fit: StackFit.expand,
           children: [
-            Positioned(
-              left: imageLeft,
-              top: imageTop,
-              width: imageW,
-              height: imageH,
-              child: AlongGrade(
-                child: Image.asset(
-                  'assets/photos/plate-abuja.jpg',
-                  package: 'along_design',
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.high,
-                  excludeFromSemantics: true,
-                ),
-              ),
-            ),
-            Positioned.fill(child: _Viewfinder(hole: frame)),
+            const ColoredBox(color: Color(0xFF12110F)),
+            Positioned.fromRect(rect: hole, child: const _NigeriaPlate()),
+            Positioned.fill(child: _Viewfinder(hole: hole)),
           ],
         );
       },
+    );
+  }
+}
+
+class _NigeriaPlate extends StatelessWidget {
+  const _NigeriaPlate();
+
+  @override
+  Widget build(BuildContext context) {
+    final font = AlongPalette.of(context).fontFamily;
+    const ink = Color(0xFF141210);
+    const green = Color(0xFF0C6B32);
+    final band = TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: AlongType.fallback,
+      color: Colors.white,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.4,
+      height: 1,
+    );
+    final state = TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: AlongType.fallback,
+      color: green,
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1.4,
+      height: 1,
+    );
+    final number = TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: AlongType.fallback,
+      color: ink,
+      fontSize: 28,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1.2,
+      height: 1,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
+    Widget line(String text, TextStyle style) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(text, maxLines: 1, softWrap: false, style: style),
+        ),
+      );
+    }
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F4EA),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: ink, width: 1.5),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 24,
+              child: ColoredBox(
+                color: green,
+                child: Center(child: line('FEDERAL REPUBLIC OF NIGERIA', band)),
+              ),
+            ),
+            Expanded(flex: 18, child: Center(child: line('ABUJA', state))),
+            Expanded(
+              flex: 46,
+              child: Center(child: line('ABC-123-XY', number)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -3653,13 +3835,10 @@ class _ViewfinderState extends State<_Viewfinder>
     super.initState();
     _scan = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: AlongDurations.scan,
       value: 0.42,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _scan.repeat();
-    });
+    // The scan rests. A loop would decorate the photo.
   }
 
   @override
@@ -3752,7 +3931,7 @@ class _HoldAlertState extends State<_HoldAlert>
     super.initState();
     _fill = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AlongDurations.hold,
       value: 0.66,
     );
   }
@@ -3796,7 +3975,7 @@ class _HoldAlertState extends State<_HoldAlert>
                   ),
                   Center(
                     child: Text(
-                      'Hold to alert',
+                      'Call 112',
                       maxLines: 1,
                       softWrap: false,
                       style: AlongType.button(palette)
@@ -4328,51 +4507,58 @@ class _TxnRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 52,
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.surface,
-              shape: BoxShape.circle,
-              border: AlongElevation.hairline(palette.ink),
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 52,
+        maxHeight: roomy ? double.infinity : 52,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: palette.surface,
+                shape: BoxShape.circle,
+                border: AlongElevation.hairline(palette.ink),
+              ),
+              child: AlongIcon(icon, size: 20, color: palette.ink),
             ),
-            child: AlongIcon(icon, size: 20, color: palette.ink),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                ),
-                Text(
-                  detail,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.meta(palette),
-                ),
-              ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.body(palette)
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                  ),
+                  Text(
+                    detail,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.meta(palette),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            value,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
-          ),
-        ],
+            Text(
+              value,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.numeric(palette)
+                  .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -4458,11 +4644,8 @@ class _DayBoard extends StatelessWidget {
       child: const Padding(
         padding: EdgeInsets.fromLTRB(12, 4, 12, 8),
         child: Column(
-          children: [
-            Expanded(child: _DayTimeline()),
-            SizedBox(height: 4),
-            _DayFooter(),
-          ],
+          mainAxisSize: MainAxisSize.min,
+          children: [_DayTimeline(), SizedBox(height: 4), _DayFooter()],
         ),
       ),
     );
@@ -4514,8 +4697,8 @@ class _DayTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         _DayBand(label: 'Morning', stops: _morning),
         _DayBand(label: 'Afternoon', stops: _afternoon),
@@ -4597,7 +4780,7 @@ class _DayStop extends StatelessWidget {
     final route = AlongType.caption(palette)
         .copyWith(color: palette.ink, fontWeight: FontWeight.w600, height: 1.1);
     return SizedBox(
-      height: 56,
+      height: 48,
       child: Row(
         children: [
           SizedBox(
@@ -4996,13 +5179,10 @@ class _SearchRadarState extends State<_SearchRadar>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2400),
+      duration: AlongDurations.scan,
     );
-    if (AlongMotionPolicy.inWidgetTest) {
-      _controller.value = 0.38;
-    } else {
-      _controller.repeat();
-    }
+    // Rest pose. A looping sweep is decoration, not status.
+    _controller.value = 0.38;
   }
 
   @override
@@ -5026,8 +5206,8 @@ class _SearchRadarState extends State<_SearchRadar>
             package: 'along_design',
             width: 200,
             height: 200,
-            animate: !AlongMotionPolicy.inWidgetTest,
-            repeat: true,
+            animate: false,
+            repeat: false,
           ),
           AnimatedBuilder(
             animation: _controller,

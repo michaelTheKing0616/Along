@@ -193,6 +193,11 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     return (hi + 0.05) / (lo + 0.05);
   }
 
+  /// Named roles. Map light and dark variants ride on the palette's map
+  /// colours. A state still needs an icon and a word; these colours are
+  /// not the whole signal.
+  AlongRoles get roles => AlongRoles.of(this);
+
   static double _lum(Color color) {
     double channel(double value) {
       return value <= 0.04045
@@ -203,5 +208,64 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     return 0.2126 * channel(color.r) +
         0.7152 * channel(color.g) +
         0.0722 * channel(color.b);
+  }
+}
+
+/// Semantic colours for the trip, the map, and status.
+///
+/// Light and dark each have a map variant ([mapLand], [mapWater], [mapPark],
+/// [mapRoad]) taken from the palette so tiles and UI share one name.
+@immutable
+class AlongRoles {
+  const AlongRoles({
+    required this.route,
+    required this.routeCasing,
+    required this.pickup,
+    required this.dropoff,
+    required this.riderDot,
+    required this.driverMarker,
+    required this.stale,
+    required this.success,
+    required this.warn,
+    required this.error,
+    required this.mapLand,
+    required this.mapWater,
+    required this.mapPark,
+    required this.mapRoad,
+  });
+
+  final Color route;
+  final Color routeCasing;
+  final Color pickup;
+  final Color dropoff;
+  final Color riderDot;
+  final Color driverMarker;
+  final Color stale;
+  final Color success;
+  final Color warn;
+  final Color error;
+  final Color mapLand;
+  final Color mapWater;
+  final Color mapPark;
+  final Color mapRoad;
+
+  static AlongRoles of(AlongPalette palette) {
+    final dark = palette.brightness == Brightness.dark;
+    return AlongRoles(
+      route: palette.ink,
+      routeCasing: palette.surface,
+      pickup: palette.accent,
+      dropoff: palette.ink,
+      riderDot: palette.ink,
+      driverMarker: palette.ink,
+      stale: palette.muted,
+      success: palette.success,
+      warn: dark ? const Color(0xFFE7C98A) : const Color(0xFF7A4E16),
+      error: palette.danger,
+      mapLand: palette.mapLand,
+      mapWater: palette.mapWater,
+      mapPark: palette.mapPark,
+      mapRoad: palette.mapRoad,
+    );
   }
 }

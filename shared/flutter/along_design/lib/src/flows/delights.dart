@@ -71,6 +71,7 @@ class AlongFrost extends StatelessWidget {
     this.radius = 24,
     this.padding = EdgeInsets.zero,
     this.circle = false,
+    this.solid = false,
   });
 
   final Widget child;
@@ -78,9 +79,25 @@ class AlongFrost extends StatelessWidget {
   final EdgeInsets padding;
   final bool circle;
 
+  /// Text sits on an opaque surface. Blur stays on icon chrome over the map.
+  final bool solid;
+
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    if (solid) {
+      final shape = circle ? const CircleBorder() : AlongCraft.border(radius);
+      return DecoratedBox(
+        decoration: ShapeDecoration(color: palette.surface, shape: shape),
+        child: Padding(
+          padding: padding,
+          child: IconTheme.merge(
+            data: IconThemeData(color: palette.ink),
+            child: DefaultTextStyle.merge(child: child),
+          ),
+        ),
+      );
+    }
     final blur = BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
       child: ColoredBox(
@@ -135,6 +152,7 @@ class AlongGreeting extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: AlongFrost(
+        solid: true,
         radius: 16,
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Column(
@@ -166,6 +184,7 @@ class AlongSuggestionChips extends StatelessWidget {
             padding: EdgeInsets.only(right: i == labels.length - 1 ? 0 : 6),
             child: AlongPressable(
               child: AlongFrost(
+                solid: true,
                 radius: 99,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -201,11 +220,8 @@ class AlongStagger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!AlongMotionPolicy.play(context)) return child;
-    return child
-        .animate(delay: (36 * index).ms)
-        .fadeIn(duration: 240.ms)
-        .slideY(begin: 0.12, end: 0, duration: 240.ms, curve: Curves.easeOut);
+    // No entrance on every row. The list is already there.
+    return child;
   }
 }
 
@@ -236,7 +252,7 @@ class AlongTabBarState extends State<AlongTabBar>
     _index = widget.index;
     _pop = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 280),
+      duration: AlongDurations.sheet,
       value: 1,
     );
   }
@@ -632,6 +648,16 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
     super.dispose();
   }
 
+  double _travel = 0;
+
+  void _finish({double velocity = 0}) {
+    if (_done) return;
+    setState(() => _done = true);
+    _spring(_travel, velocity);
+    AlongHaptics.success(context);
+    widget.onConfirmed();
+  }
+
   void _spring(double target, double velocity) {
     if (!AlongMotionPolicy.play(context)) {
       _settle.value = target;
@@ -655,6 +681,7 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
               ? constraints.maxWidth
               : 280.0;
           final travel = math.max(0.0, width - 56);
+          _travel = travel;
           final x = _x.clamp(0.0, travel);
           final fade = _done
               ? 1.0
@@ -702,10 +729,7 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
                           // Read the state field. The recognizer can fire end
                           // with the closure from the pointer-down frame.
                           if (_x > travel * 0.72 || velocity > 900) {
-                            setState(() => _done = true);
-                            _spring(travel, velocity);
-                            AlongHaptics.success(context);
-                            widget.onConfirmed();
+                            _finish(velocity: velocity);
                           } else {
                             _spring(0, velocity);
                           }
@@ -721,6 +745,28 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
                             child: Icon(
                               AlongIcons.navigate,
                               color: palette.accentInk,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 4,
+                      top: 4,
+                      child: Semantics(
+                        button: true,
+                        label: 'Confirm',
+                        child: Material(
+                          color: palette.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          child: InkWell(
+                            key: const Key('confirm_without_swipe'),
+                            onTap: _finish,
+                            borderRadius: BorderRadius.circular(12),
+                            child: SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Icon(AlongIcons.check, color: palette.ink),
                             ),
                           ),
                         ),
@@ -888,7 +934,7 @@ class AlongRoutePulseState extends State<AlongRoutePulse>
     super.initState();
     _pulse = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: AlongDurations.routeDraw,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !AlongMotionPolicy.play(context)) return;
@@ -990,10 +1036,7 @@ class AlongKekeRefreshState extends State<AlongKekeRefresh>
   @override
   void initState() {
     super.initState();
-    _rock = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 480),
-    );
+    _rock = AnimationController(vsync: this, duration: AlongDurations.refresh);
   }
 
   @override
@@ -1394,7 +1437,7 @@ class AlongTickingEtaState extends State<AlongTickingEta>
     super.initState();
     _tick = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: AlongDurations.routeDraw,
       value: 1,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {

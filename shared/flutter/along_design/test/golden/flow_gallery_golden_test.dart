@@ -22,6 +22,16 @@ void main() {
     'online': ({bool legacy = false}) => const AlongFlowOnline(),
     'offer': ({bool legacy = false}) => const AlongFlowOffer(),
     'earnings': ({bool legacy = false}) => const AlongFlowEarnings(),
+    'pickup': ({bool legacy = false}) => const AlongFlowPickup(),
+    'quote': ({bool legacy = false}) => const AlongFlowQuote(),
+    'matching': ({bool legacy = false}) => const AlongFlowMatching(),
+    'recovery': ({bool legacy = false}) => const AlongFlowRecovery(),
+    'pin': ({bool legacy = false}) => const AlongFlowTripPin(),
+    'driver': ({bool legacy = false}) => const AlongFlowDriver(),
+    'nav': ({bool legacy = false}) => const AlongFlowNav(),
+    'receipt': ({bool legacy = false}) => const AlongFlowReceipt(),
+    'notices': ({bool legacy = false}) => const AlongFlowNotices(),
+    'settings': ({bool legacy = false}) => const AlongFlowSettings(),
   };
 
   for (final stage in stages.entries) {

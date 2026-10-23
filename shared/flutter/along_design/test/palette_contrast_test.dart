@@ -19,6 +19,12 @@ void main() {
       pair(palette.onInk, palette.ink);
       pair(palette.line, palette.bg, min: 3);
       pair(palette.line, palette.surface, min: 3);
+      final roles = palette.roles;
+      pair(roles.stale, palette.surface);
+      pair(roles.warn, palette.surface);
+      pair(roles.success, palette.surface);
+      pair(roles.error, palette.surface);
+      pair(roles.dropoff, palette.mapLand, min: 3);
     }
   });
 

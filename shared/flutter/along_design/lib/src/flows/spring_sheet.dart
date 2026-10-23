@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
@@ -116,10 +114,6 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
             final lifted =
                 rest * (0.90 + 0.10 * t.clamp(0.0, 1.0)) + _lift.value;
             final height = lifted.clamp(96.0, constraints.maxHeight);
-            final reduce = AlongMotionPolicy.reduced(context);
-            final veil = reduce
-                ? palette.surface
-                : palette.surface.withValues(alpha: 0.90);
             final shape = AlongCraft.borderVertical(top: 28);
             return Align(
               alignment: Alignment.bottomCenter,
@@ -134,124 +128,118 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                     ),
                     child: ClipPath(
                       clipper: ShapeBorderClipper(shape: shape),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: reduce ? 0 : 16,
-                          sigmaY: reduce ? 0 : 16,
-                        ),
-                        child: ColoredBox(
-                          color: veil,
-                          child: SizedBox(
-                            key: const Key('sheet_panel'),
-                            height: height,
-                            width: double.infinity,
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  key: const Key('sheet_handle'),
-                                  behavior: HitTestBehavior.opaque,
-                                  onVerticalDragUpdate: (details) {
-                                    var delta = -details.delta.dy;
-                                    final next = _lift.value + delta;
-                                    if (next < 0 || next > maxExtra)
-                                      delta *= 0.22;
-                                    _lift.value += delta;
-                                  },
-                                  onVerticalDragEnd: (details) {
-                                    final velocity =
-                                        -(details.primaryVelocity ?? 0);
-                                    var target = 0.0;
-                                    if (maxExtra > 0) {
-                                      if (velocity > 700) {
-                                        target = maxExtra;
-                                      } else if (velocity < -700) {
-                                        target = 0;
-                                      } else {
-                                        target = _lift.value > maxExtra / 2
-                                            ? maxExtra
-                                            : 0;
-                                      }
+                      child: ColoredBox(
+                        color: palette.surface,
+                        child: SizedBox(
+                          key: const Key('sheet_panel'),
+                          height: height,
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                key: const Key('sheet_handle'),
+                                behavior: HitTestBehavior.opaque,
+                                onVerticalDragUpdate: (details) {
+                                  var delta = -details.delta.dy;
+                                  final next = _lift.value + delta;
+                                  if (next < 0 || next > maxExtra)
+                                    delta *= 0.22;
+                                  _lift.value += delta;
+                                },
+                                onVerticalDragEnd: (details) {
+                                  final velocity =
+                                      -(details.primaryVelocity ?? 0);
+                                  var target = 0.0;
+                                  if (maxExtra > 0) {
+                                    if (velocity > 700) {
+                                      target = maxExtra;
+                                    } else if (velocity < -700) {
+                                      target = 0;
+                                    } else {
+                                      target = _lift.value > maxExtra / 2
+                                          ? maxExtra
+                                          : 0;
                                     }
-                                    if (!AlongMotionPolicy.play(context)) {
-                                      _lift.value = target;
-                                      return;
-                                    }
-                                    _lift.animateWith(
-                                      SpringSimulation(
-                                        AlongSprings.sheet,
-                                        _lift.value,
-                                        target,
-                                        velocity,
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Center(
-                                      child: Container(
-                                        width: 36,
-                                        height: 4,
-                                        decoration: BoxDecoration(
-                                          color: palette.ink.withValues(
-                                            alpha: 0.18,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            999,
-                                          ),
+                                  }
+                                  if (!AlongMotionPolicy.play(context)) {
+                                    _lift.value = target;
+                                    return;
+                                  }
+                                  _lift.animateWith(
+                                    SpringSimulation(
+                                      AlongSprings.sheet,
+                                      _lift.value,
+                                      target,
+                                      velocity,
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Center(
+                                    child: Container(
+                                      width: 36,
+                                      height: 4,
+                                      decoration: BoxDecoration(
+                                        color: palette.ink.withValues(
+                                          alpha: 0.18,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          999,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                                if (widget.title != null)
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                      16,
-                                      12,
-                                      16,
-                                      0,
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        widget.title!,
-                                        style: TextStyle(
-                                          fontFamily: palette.fontFamily,
-                                          fontFamilyFallback: const ['Inter'],
-                                          fontSize: 20,
-                                          height: 1.25,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: -0.4,
-                                          color: palette.ink,
-                                        ),
-                                      ),
-                                    ),
+                              ),
+                              if (widget.title != null)
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    16,
+                                    12,
+                                    16,
+                                    0,
                                   ),
-                                Expanded(
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          16,
-                                          12,
-                                          16,
-                                          12,
-                                        ),
-                                        child: widget.child,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      widget.title!,
+                                      style: TextStyle(
+                                        fontFamily: palette.fontFamily,
+                                        fontFamilyFallback: const ['Inter'],
+                                        fontSize: 20,
+                                        height: 1.25,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: -0.4,
+                                        color: palette.ink,
                                       ),
-                                      Positioned(
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        child: AlongEdgeFade(
-                                          color: palette.surface,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              Expanded(
+                                child: Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        16,
+                                        12,
+                                        16,
+                                        12,
+                                      ),
+                                      child: widget.child,
+                                    ),
+                                    Positioned(
+                                      left: 0,
+                                      right: 0,
+                                      bottom: 0,
+                                      child: AlongEdgeFade(
+                                        color: palette.surface,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

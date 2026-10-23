@@ -15,7 +15,7 @@ import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'support/trip_options_fixtures.dart';
 
 void main() {
-  testWidgets('SOS 2G gate: raise_sos within 10 s shows team alerted', (tester) async {
+  testWidgets('SOS 2G gate: raise_sos within 10 s is ready to call 112', (tester) async {
     final trip = tripSummaryFromFixture(sampleAcceptedTripResponse(heading: 90));
     final fakeSupabase = FakeAlongSupabase(
       configRows: defaultTestConfigRows(),
@@ -60,14 +60,14 @@ void main() {
 
     final stopwatch = Stopwatch()..start();
     await tester.pump();
-    expect(find.text('Alerting safety team…'), findsOneWidget);
+    expect(find.text('Opening the 112 call…'), findsOneWidget);
 
     await tester.pumpAndSettle(const Duration(seconds: 10));
     stopwatch.stop();
 
     expect(fakeSupabase.raiseSosInvokeCount, 1);
     expect(find.byKey(const Key('sos_team_alerted')), findsOneWidget);
-    expect(find.text('Along safety team alerted'), findsOneWidget);
+    expect(find.text('Ready to call 112'), findsOneWidget);
     expect(stopwatch.elapsed.inSeconds, lessThanOrEqualTo(10));
 
     fakeSupabase.dispose();
