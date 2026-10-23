@@ -21,4 +21,7 @@ Maps
 
 Type
 - Geist variable font, Vercel, SIL Open Font License. See assets/fonts/Geist-OFL.txt.
+
+Icons
+- Phosphor Duotone, Phosphor Icons, MIT License. https://phosphoricons.com. Shipped via the phosphor_flutter package.
 - Inter remains the naira glyph fallback. See assets/fonts/OFL.txt.

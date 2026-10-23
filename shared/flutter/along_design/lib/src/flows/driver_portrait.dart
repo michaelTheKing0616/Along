@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../elevation.dart';
 import '../icons.dart';
 import '../palette.dart';
+import '../type.dart';
 
 /// Circle crop of a real photograph. See LICENSES for the Unsplash credit.
 class AlongDriverPortrait extends StatelessWidget {
@@ -36,11 +36,10 @@ class AlongDriverPortrait extends StatelessWidget {
           Container(
             width: size,
             height: size,
-            padding: const EdgeInsets.all(2.5),
+            padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: palette.accent, width: 2),
-              boxShadow: AlongElevation.float(palette.ink),
+              border: Border.all(color: palette.ink.withValues(alpha: 0.12)),
             ),
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -68,18 +67,65 @@ class AlongDriverPortrait extends StatelessWidget {
                 height: badge,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: palette.accent,
+                  color: palette.surface,
                   shape: BoxShape.circle,
-                  border: Border.all(color: palette.surface, width: 2),
+                  border: Border.all(color: palette.ink, width: 1.5),
                 ),
                 child: Icon(
                   AlongIcons.verified,
-                  size: badge * 0.62,
-                  color: palette.accentInk,
+                  size: badge * 0.55,
+                  color: palette.ink,
                 ),
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Initials on a warm gradient. Never a flat black disc.
+class AlongMonogram extends StatelessWidget {
+  const AlongMonogram({super.key, required this.initials, required this.size});
+
+  final String initials;
+  final double size;
+
+  static const _stops = <(Color, Color)>[
+    (Color(0xFF3A342C), Color(0xFF8A7E72)),
+    (Color(0xFF243028), Color(0xFF6E7A68)),
+    (Color(0xFF2A3138), Color(0xFF6A7580)),
+    (Color(0xFF3A2C28), Color(0xFF8A6E64)),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final pair = _stops[initials.hashCode.abs() % _stops.length];
+    final palette = AlongPalette.of(context);
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [pair.$1, pair.$2],
+        ),
+      ),
+      child: Text(
+        initials,
+        maxLines: 1,
+        softWrap: false,
+        style: TextStyle(
+          fontFamily: palette.fontFamily,
+          fontFamilyFallback: AlongType.fallback,
+          fontSize: size * 0.34,
+          height: 1,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFFF7F4EF),
+        ),
       ),
     );
   }

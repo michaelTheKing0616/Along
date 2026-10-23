@@ -322,22 +322,51 @@ class AlongWordmark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = progress.clamp(0.0, 1.0);
+    final palette = AlongPalette.of(context);
     return Opacity(
       opacity: t < 0.15 ? t / 0.15 : 1,
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CustomPaint(
-            size: const Size(28, 28),
-            painter: _MarkPainter(color: color, progress: t),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF7F4EF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: CustomPaint(
+              size: const Size(36, 36),
+              painter: _MarkPainter(color: color, progress: t),
+            ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            'Along',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.title(AlongPalette.of(context))
-                .copyWith(color: color, fontSize: 22, height: 1),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Along',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.display(palette).copyWith(
+                  color: color,
+                  fontSize: 28,
+                  height: 1,
+                  letterSpacing: -1.0,
+                ),
+              ),
+              Text(
+                'ABUJA',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.caption(palette).copyWith(
+                  color: color.withValues(alpha: 0.82),
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2.2,
+                  height: 1.1,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -353,22 +382,33 @@ class _MarkPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final disc = Paint()..color = const Color(0xFFF7D117);
-    canvas.drawCircle(size.center(Offset.zero), size.width / 2, disc);
+    final ink = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = const Color(0xFF111111);
     final path = Path()
-      ..moveTo(size.width * 0.28, size.height * 0.62)
-      ..lineTo(size.width * 0.48, size.height * 0.34)
-      ..lineTo(size.width * 0.74, size.height * 0.66);
+      ..moveTo(size.width * 0.22, size.height * 0.68)
+      ..quadraticBezierTo(
+        size.width * 0.42,
+        size.height * 0.28,
+        size.width * 0.58,
+        size.height * 0.52,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.70,
+        size.height * 0.70,
+        size.width * 0.80,
+        size.height * 0.36,
+      );
     final metric = path.computeMetrics().first;
     final drawn = metric.extractPath(0, metric.length * progress);
-    canvas.drawPath(
-      drawn,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.4
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round
-        ..color = const Color(0xFF111111),
+    canvas.drawPath(drawn, ink);
+    canvas.drawCircle(
+      Offset(size.width * 0.80, size.height * 0.36),
+      2.4,
+      Paint()..color = const Color(0xFFF7D117),
     );
   }
 

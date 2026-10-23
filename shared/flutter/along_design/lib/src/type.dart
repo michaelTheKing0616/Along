@@ -17,7 +17,7 @@ abstract final class AlongType {
       fontSize: 34,
       height: 1.05,
       fontWeight: FontWeight.w700,
-      letterSpacing: -1.53,
+      letterSpacing: -1.2,
       color: palette.ink,
     );
   }
@@ -26,10 +26,10 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 24,
-      height: 1.12,
+      fontSize: 22,
+      height: 1.15,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.48,
+      letterSpacing: -0.4,
       color: palette.ink,
     );
   }
@@ -38,9 +38,10 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 18,
-      height: 1.3,
+      fontSize: 22,
+      height: 1.2,
       fontWeight: FontWeight.w600,
+      letterSpacing: -0.4,
       color: palette.ink,
     );
   }
@@ -49,8 +50,8 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 16,
-      height: 1.5,
+      fontSize: 15,
+      height: 1.45,
       fontWeight: FontWeight.w400,
       color: palette.ink,
     );
@@ -65,8 +66,8 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 14,
-      height: 1.25,
+      fontSize: 12,
+      height: 1.3,
       fontWeight: FontWeight.w500,
       color: palette.muted,
     );
@@ -76,8 +77,8 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 13,
-      height: 1.35,
+      fontSize: 12,
+      height: 1.3,
       fontWeight: FontWeight.w500,
       color: palette.muted,
     );
@@ -87,7 +88,7 @@ abstract final class AlongType {
     return TextStyle(
       fontFamily: palette.fontFamily,
       fontFamilyFallback: fallback,
-      fontSize: 17,
+      fontSize: 15,
       height: 1.2,
       fontWeight: FontWeight.w700,
       color: palette.onInk,
@@ -115,7 +116,7 @@ abstract final class AlongType {
       titleMedium: title(palette),
       bodyLarge: body(palette),
       bodyMedium: body(palette),
-      bodySmall: bodyMuted(palette).copyWith(fontSize: 14, height: 1.4),
+      bodySmall: bodyMuted(palette).copyWith(fontSize: 12, height: 1.3),
       labelLarge: button(palette).copyWith(color: palette.ink),
     );
   }

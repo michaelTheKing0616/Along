@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:along_design/src/elevation.dart';
+import 'package:along_design/src/flows/driver_portrait.dart';
+import 'package:along_design/src/icons.dart';
 import 'package:along_design/src/motion.dart';
 import 'package:along_design/src/palette.dart';
 import 'package:along_design/src/tokens.g.dart';
@@ -373,8 +375,8 @@ class _SeatGridRow extends StatelessWidget {
   static IconData? _badgeFor(String? rule) {
     final text = rule?.trim().toLowerCase() ?? '';
     if (text.isEmpty) return null;
-    if (text.contains('women')) return Icons.female_rounded;
-    return Icons.sell_outlined;
+    if (text.contains('women')) return AlongIcons.female;
+    return AlongIcons.tag;
   }
 }
 
@@ -638,7 +640,7 @@ class AlongSeatContext extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Icon(Icons.arrow_forward_rounded, size: 14, color: palette.ink),
+                Icon(AlongIcons.arrowRight, size: 14, color: palette.ink),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
@@ -854,7 +856,7 @@ class _SeatButtonState extends State<_SeatButton>
     final badge =
         widget.badge ??
         (seat.status == 'held' && !widget.driverIcon
-            ? Icons.schedule_rounded
+            ? AlongIcons.schedule
             : null);
     return Semantics(
       button: widget.onTap != null,
@@ -912,21 +914,13 @@ class _SeatButtonState extends State<_SeatButton>
                               if (showWheel)
                                 _SteeringWheel(ink: palette.ink, size: 16)
                               else if (seat.isCargo)
-                                Icon(
-                                  Icons.luggage_outlined,
-                                  size: 14,
-                                  color: ink,
-                                )
+                                Icon(AlongIcons.luggage, size: 14, color: ink)
                               else if (!widget.driverIcon &&
                                   seat.status == 'yours')
                                 AlongStrokeCheck(color: ink)
                               else if (seat.status == 'occupied' &&
                                   !widget.driverIcon)
-                                Icon(
-                                  Icons.person_rounded,
-                                  size: 14,
-                                  color: ink,
-                                ),
+                                Icon(AlongIcons.user, size: 14, color: ink),
                               if (!showWheel && !seat.isDriver) ...[
                                 const SizedBox(height: 2),
                                 Text(
@@ -975,11 +969,7 @@ class _SeatButtonState extends State<_SeatButton>
                               : palette.ink.withValues(alpha: 0.10),
                           child: seat.status == 'yours'
                               ? AlongStrokeCheck(color: palette.accent, size: 9)
-                              : Icon(
-                                  Icons.person_rounded,
-                                  size: 11,
-                                  color: ink,
-                                ),
+                              : Icon(AlongIcons.user, size: 11, color: ink),
                         ),
                       )
                     else if (badge != null)
@@ -1335,27 +1325,7 @@ class AlongWhosRiding extends StatelessWidget {
             label: 'Rider ${rider.initials}',
             container: true,
             child: ExcludeSemantics(
-              child: Container(
-                width: 28,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: palette.recessed,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: palette.surface, width: 1.5),
-                ),
-                child: Text(
-                  rider.initials,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette).copyWith(
-                    fontWeight: FontWeight.w700,
-                    height: 1,
-                    fontSize: 10,
-                    color: palette.ink,
-                  ),
-                ),
-              ),
+              child: AlongMonogram(initials: rider.initials, size: 28),
             ),
           ),
           const SizedBox(width: 4),

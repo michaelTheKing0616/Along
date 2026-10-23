@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 
 import '../components/along_button.dart';
@@ -108,7 +107,7 @@ class AlongFlowHome extends StatelessWidget {
           backgroundColor: palette.mapLand,
           body: LayoutBuilder(
             builder: (context, constraints) {
-              final fraction = constraints.maxHeight >= 760 ? 0.36 : 0.44;
+              final fraction = constraints.maxHeight >= 760 ? 0.58 : 0.64;
               final sheetTop = constraints.maxHeight * (1 - fraction);
               Widget map = const AlongCityMap();
               if (extent != 0) {
@@ -159,14 +158,6 @@ class AlongFlowHome extends StatelessWidget {
                     right: 72,
                     child: AlongGreeting(phase: AlongDayPhase.afternoon),
                   ),
-                  const Positioned(
-                    top: 148,
-                    left: 16,
-                    right: 16,
-                    child: AlongSuggestionChips(
-                      labels: ['Home', 'Work', 'Nyanya'],
-                    ),
-                  ),
                   Positioned(
                     left: 16,
                     right: 16,
@@ -199,73 +190,146 @@ class _HomeSheetBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Field(
-          fill: palette.recessed,
+        Container(
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: palette.ink,
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Row(
             children: [
-              Icon(AlongIcons.search, color: palette.ink, size: 22),
-              const SizedBox(width: 10),
+              AlongIcon(AlongIcons.search, color: palette.onInk, size: 20),
+              const SizedBox(width: 12),
               Expanded(
-                child: Text('Where to?', style: AlongType.heading(palette)),
+                child: Text(
+                  'Where to?',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.title(palette)
+                      .copyWith(color: palette.onInk),
+                ),
               ),
             ],
           ),
         ),
-        const _PlaceRow(
-          icon: AlongIcons.home,
-          title: 'Home',
-          detail: 'Garki · 12 min',
-        ),
-        const _PlaceRow(
-          icon: AlongIcons.work,
-          title: 'Work',
-          detail: 'Wuse Market',
-        ),
-        const _Fold(
-          label: 'Recent and rides',
-          child: Column(
-            children: [
-              _VehicleChips(),
-              SizedBox(height: 8),
-              _PlaceRow(
-                icon: AlongIcons.schedule,
-                title: 'Nyanya',
-                detail: 'Yesterday · ₦1,200',
-              ),
-              _PlaceRow(
-                icon: AlongIcons.schedule,
-                title: 'Jabi',
-                detail: 'Tuesday · ₦900',
-              ),
-              _PlaceRow(
-                icon: AlongIcons.schedule,
-                title: 'Berger',
-                detail: 'Monday · ₦1,400',
-              ),
-              _PromoCarousel(),
-              _RideRow(
-                kind: AlongVehicleKind.keke,
-                title: 'Keke',
-                eta: '4 min',
-                seats: '2 left',
-                fare: '₦400-600',
-                rules: ['Window open'],
-                selected: true,
-              ),
-              _RideRow(
-                kind: AlongVehicleKind.car,
-                title: 'Car',
-                eta: '6 min',
-                seats: '3 left',
-                fare: '₦1,100',
-                rules: ['AC', 'Trust 86'],
-              ),
-              SizedBox(height: 8),
-              _QuickActions(),
-              AlongButton(label: 'See rides', onPressed: _noop),
-            ],
+        const SizedBox(height: 8),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: AlongElevation.hairline(palette.ink),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              children: [
+                _PlaceRow(
+                  icon: AlongIcons.home,
+                  title: 'Home',
+                  detail: 'Garki · 12 min',
+                ),
+                _PlaceRow(
+                  icon: AlongIcons.work,
+                  title: 'Work',
+                  detail: 'Wuse Market',
+                ),
+                _PlaceRow(
+                  icon: AlongIcons.schedule,
+                  title: 'Nyanya',
+                  detail: 'Yesterday · ₦1,200',
+                ),
+              ],
+            ),
           ),
         ),
+        const SizedBox(height: 8),
+        const _RoutePromo(),
+        const Spacer(),
+        const _ServiceRow(),
+      ],
+    );
+  }
+}
+
+class _RoutePromo extends StatelessWidget {
+  const _RoutePromo();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      height: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
+      child: Row(
+        children: [
+          const AlongVehicleMark(
+            kind: AlongVehicleKind.keke,
+            width: 64,
+            height: 40,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Evening along',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Wuse to Nyanya · ₦200 off',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ServiceRow extends StatelessWidget {
+  const _ServiceRow();
+
+  static const _items = <(AlongVehicleKind, String)>[
+    (AlongVehicleKind.keke, 'Keke'),
+    (AlongVehicleKind.okada, 'Okada'),
+    (AlongVehicleKind.car, 'Car'),
+    (AlongVehicleKind.danfo, 'Danfo'),
+    (AlongVehicleKind.bus, 'Bus'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final label = AlongType.caption(palette)
+        .copyWith(fontWeight: FontWeight.w700, color: palette.ink, height: 1.1);
+    return Row(
+      children: [
+        for (final item in _items)
+          Expanded(
+            child: Column(
+              children: [
+                AlongVehicleMark(kind: item.$1, width: 52, height: 32),
+                const SizedBox(height: 4),
+                Text(item.$2, maxLines: 1, softWrap: false, style: label),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -419,7 +483,7 @@ class _SeatDriver extends StatelessWidget {
                 children: [
                   Text('Chinedu', maxLines: 1, softWrap: false, style: name),
                   const SizedBox(width: 8),
-                  Icon(AlongIcons.star, size: 14, color: palette.accent),
+                  AlongIcon(AlongIcons.star, size: 20, color: palette.accent),
                   const SizedBox(width: 2),
                   Text('4.9', maxLines: 1, softWrap: false, style: rating),
                 ],
@@ -511,7 +575,8 @@ class _SeatBar extends StatelessWidget {
                         'Front middle',
                         maxLines: 1,
                         softWrap: false,
-                        style: AlongType.title(palette).copyWith(height: 1.1),
+                        style: AlongType.title(palette)
+                            .copyWith(fontSize: 16, height: 1.1),
                       ),
                       const SizedBox(height: 6),
                       const _SeatChip(label: 'Window stays open'),
@@ -593,7 +658,7 @@ class AlongFlowLive extends StatelessWidget {
           Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final fraction = constraints.maxHeight >= 760 ? 0.40 : 0.50;
+                final fraction = constraints.maxHeight >= 760 ? 0.46 : 0.54;
                 return AlongSpringSheet(
                   fraction: fraction,
                   snaps: [fraction, 0.72],
@@ -619,108 +684,170 @@ class _LiveSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            const AlongVehicleMark(
-              kind: AlongVehicleKind.car,
-              width: 108,
-              height: 60,
-            ),
-            const SizedBox(width: 8),
+            const AlongDriverPortrait(size: 56, verified: true),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'ABC-123-XY',
+                    'Chinedu',
                     maxLines: 1,
                     softWrap: false,
-                    style: AlongType.title(palette).copyWith(
-                      fontSize: 18,
-                      height: 1.1,
-                      fontWeight: FontWeight.w700,
+                    style: AlongType.title(palette).copyWith(height: 1.1),
+                  ),
+                  const SizedBox(height: 4),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        const _PlateChip(label: 'ABC-123-XY'),
+                        const SizedBox(width: 8),
+                        AlongIcon(
+                          AlongIcons.star,
+                          size: 20,
+                          color: palette.accent,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          '4.9',
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.caption(palette).copyWith(
+                            color: palette.ink,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    'Silver sedan',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.meta(palette),
-                  ),
                 ],
               ),
             ),
+            const SizedBox(width: 8),
+            const AlongVehicleMark(
+              kind: AlongVehicleKind.car,
+              width: 72,
+              height: 44,
+            ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 16),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const AlongDriverPortrait(size: 40, verified: true),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Chinedu',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.title(palette)
-                    .copyWith(fontSize: 16, height: 1.1),
-              ),
-            ),
+            AlongTickingEta(label: '6 min', style: AlongType.display(palette)),
+            const Spacer(),
             Text(
-              '4.9',
+              'Nyanya',
               maxLines: 1,
               softWrap: false,
-              style: AlongType.meta(palette),
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.2),
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            AlongTickingEta(label: '6 min', style: AlongType.heading(palette)),
-            const Spacer(),
-            const AlongProgressRing(progress: 0.45, label: '6', size: 36),
-          ],
-        ),
-        Text(
-          'Nyanya',
-          maxLines: 1,
-          softWrap: false,
-          style: AlongType.title(palette).copyWith(fontSize: 16, height: 1.15),
-        ),
-        const _Fold(
-          label: 'Share and call',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 4),
-              Text('ABC-123-XY', maxLines: 1, softWrap: false),
-              SizedBox(height: 4),
-              Text('4.9 · Trust 86', maxLines: 1, softWrap: false),
-              SizedBox(height: 8),
-              _Timeline(),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  _RoundIcon(icon: AlongIcons.chat, tooltip: 'Chat'),
-                  SizedBox(width: 8),
-                  _RoundIcon(icon: AlongIcons.call, tooltip: 'Call'),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  _SafetyAction(icon: AlongIcons.share, label: 'Share'),
-                  _SafetyAction(
-                    icon: AlongIcons.sos,
-                    label: 'SOS',
-                    danger: true,
-                  ),
-                  _SafetyAction(icon: AlongIcons.shield, label: 'Guardian'),
-                ],
-              ),
-            ],
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(99),
+          child: SizedBox(
+            height: 6,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ColoredBox(color: palette.recessed),
+                FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: 0.62,
+                  child: ColoredBox(color: palette.ink),
+                ),
+              ],
+            ),
           ),
         ),
+        const Spacer(),
+        const Row(
+          children: [
+            _LiveAction(icon: AlongIcons.call, label: 'Call'),
+            _LiveAction(icon: AlongIcons.chat, label: 'Message'),
+            _LiveAction(icon: AlongIcons.share, label: 'Share'),
+            _LiveAction(icon: AlongIcons.shield, label: 'Safety'),
+          ],
+        ),
       ],
+    );
+  }
+}
+
+class _PlateChip extends StatelessWidget {
+  const _PlateChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      height: 22,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: palette.recessed,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        softWrap: false,
+        style: AlongType.caption(palette).copyWith(
+          color: palette.ink,
+          fontWeight: FontWeight.w700,
+          height: 1,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
+    );
+  }
+}
+
+class _LiveAction extends StatelessWidget {
+  const _LiveAction({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: palette.surface,
+              shape: BoxShape.circle,
+              border: AlongElevation.hairline(palette.ink),
+            ),
+            child: AlongIcon(icon, size: 20, color: palette.ink),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette).copyWith(
+              color: palette.ink,
+              fontWeight: FontWeight.w600,
+              height: 1.1,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -733,50 +860,54 @@ class AlongFlowSos extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return _Page(
       bottom: const SizedBox.shrink(),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final short = constraints.maxHeight < 620;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Safety', style: AlongType.display(palette)),
-              const SizedBox(height: 4),
-              Text(
-                'Your location goes with the alert.',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.bodyMuted(palette),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Safety', style: AlongType.display(palette)),
+          const SizedBox(height: 4),
+          Text(
+            'Ready · your location stays with you',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.bodyMuted(palette),
+          ),
+          const SizedBox(height: 16),
+          const Center(child: _HoldRing(size: 148)),
+          const SizedBox(height: 8),
+          Center(
+            child: Text(
+              'Hold for 2 seconds',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: palette.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: AlongElevation.hairline(palette.ink),
               ),
-              SizedBox(height: short ? 8 : 12),
-              Center(child: _HoldRing(size: short ? 152 : 176)),
-              const SizedBox(height: 12),
-              Expanded(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: palette.surface,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.fromLTRB(14, 4, 14, 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _TrustedFaces(),
-                        _SafetyLine(
-                          icon: AlongIcons.share,
-                          label: 'Share trip',
-                        ),
-                        _SafetyLine(icon: AlongIcons.call, label: 'Call 112'),
-                        _SafetyTips(),
-                        _Fold(label: 'Who is told', child: _SosPanel()),
-                      ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    _ContactLine(
+                      name: 'Adaeze',
+                      detail: 'Sister · gets the alert',
+                      asset: AlongDriverPortrait.adaeze,
                     ),
-                  ),
+                    _SafetyLine(icon: AlongIcons.share, label: 'Share trip'),
+                    _SafetyLine(icon: AlongIcons.call, label: 'Call 112'),
+                    _SafetyLine(icon: AlongIcons.shield, label: 'Guardian'),
+                  ],
                 ),
               ),
-            ],
-          );
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -802,7 +933,7 @@ class AlongFlowGuardian extends StatelessWidget {
             style: AlongType.bodyMuted(palette),
           ),
           const SizedBox(height: 8),
-          const _MapHero(height: 148, label: 'Live', live: true),
+          const _MapHero(height: 128, label: 'Live', live: true),
           const SizedBox(height: 8),
           const _ContactLine(
             name: 'Adaeze',
@@ -811,7 +942,8 @@ class AlongFlowGuardian extends StatelessWidget {
           ),
           const _ContactLine(name: 'Chidi', detail: 'Brother', initials: 'CH'),
           const _ContactLine(name: 'Ngozi', detail: 'Aunt', initials: 'NG'),
-          const _Fold(label: 'Rules', child: _RuleStrip()),
+          const _ShareToggle(label: 'Share live location', on: true),
+          const _ShareToggle(label: 'Share the plate', on: false),
         ],
       ),
     );
@@ -909,54 +1041,49 @@ class AlongFlowWallet extends StatelessWidget {
       bottom: const AlongButton(label: 'Pay ₦1,200', onPressed: _noop),
       child: ListView(
         padding: EdgeInsets.zero,
-        children: [
-          const _PassStack(),
-          const SizedBox(height: 16),
-          const _TxnRow(
-            icon: AlongIcons.receipt,
+        children: const [
+          AlongGyroCard(child: _BalanceCard()),
+          SizedBox(height: 16),
+          _WalletTiles(),
+          SizedBox(height: 16),
+          _TxnGroup(label: 'Today'),
+          _TxnRow(
+            icon: AlongIcons.navigate,
             title: 'Nyanya',
-            detail: 'Today · seat hold',
+            detail: 'Seat hold',
             value: '−₦1,200',
           ),
-          const _TxnRow(
-            icon: AlongIcons.earnings,
+          _TxnRow(
+            icon: AlongIcons.plus,
             title: 'Top up',
-            detail: 'Tuesday · transfer',
+            detail: 'Transfer',
             value: '+₦5,000',
           ),
-          const _Fold(
-            label: 'Add money and earlier',
-            child: Column(
-              children: [
-                _WalletTiles(),
-                SizedBox(height: 8),
-                _CreditNote(),
-                _TxnRow(
-                  icon: AlongIcons.wallet,
-                  title: 'Wallet',
-                  detail: 'Available',
-                  value: '₦6,400',
-                ),
-                _TxnRow(
-                  icon: AlongIcons.navigate,
-                  title: 'Berger',
-                  detail: 'Yesterday',
-                  value: '−₦900',
-                ),
-                _TxnRow(
-                  icon: AlongIcons.navigate,
-                  title: 'Jabi',
-                  detail: 'Monday',
-                  value: '−₦1,600',
-                ),
-                _TxnRow(
-                  icon: AlongIcons.earnings,
-                  title: 'Cash out',
-                  detail: 'Sunday · GTBank',
-                  value: '−₦8,000',
-                ),
-              ],
-            ),
+          SizedBox(height: 8),
+          _TxnGroup(label: 'Earlier'),
+          _TxnRow(
+            icon: AlongIcons.navigate,
+            title: 'Berger',
+            detail: 'Yesterday',
+            value: '−₦900',
+          ),
+          _TxnRow(
+            icon: AlongIcons.navigate,
+            title: 'Jabi',
+            detail: 'Monday',
+            value: '−₦1,600',
+          ),
+          _TxnRow(
+            icon: AlongIcons.wallet,
+            title: 'Cash out',
+            detail: 'Sunday · GTBank',
+            value: '−₦8,000',
+          ),
+          _TxnRow(
+            icon: AlongIcons.receipt,
+            title: 'Along Pass',
+            detail: 'This month',
+            value: '−₦2,000',
           ),
         ],
       ),
@@ -978,11 +1105,13 @@ class AlongFlowDay extends StatelessWidget {
           Text('Thursday', style: AlongType.display(palette)),
           const SizedBox(height: 4),
           Text(
-            'Nyanya',
+            '7 runs · Nyanya corridor',
             maxLines: 1,
             softWrap: false,
             style: AlongType.bodyMuted(palette),
           ),
+          const SizedBox(height: 8),
+          const _DaySummary(),
           const SizedBox(height: 8),
           const Expanded(child: _DayTimeline()),
         ],
@@ -1011,7 +1140,13 @@ class AlongFlowOnline extends StatelessWidget {
             bottom: 28,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [_TodayPill(), SizedBox(height: 16), _GoButton()],
+              children: [
+                _TodayPill(),
+                SizedBox(height: 8),
+                _DemandHint(),
+                SizedBox(height: 16),
+                _GoButton(),
+              ],
             ),
           ),
         ],
@@ -1043,60 +1178,67 @@ class AlongFlowOffer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: AlongElevation.sheet(palette.ink),
               ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '₦1,800',
-                            maxLines: 1,
-                            softWrap: false,
-                            style: AlongType.numeric(palette)
-                                .copyWith(fontSize: 36, height: 1.05),
-                          ),
-                        ),
-                        const _CountdownRing(progress: 0.72, label: '12'),
-                      ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
                     ),
-                    const SizedBox(height: 8),
-                    AlongSwipeConfirm(label: 'Accept', onConfirmed: _noop),
-                    _Fold(
-                      label: 'Rider and stops',
-                      child: Column(
+                    child: SizedBox(
+                      height: 4,
+                      child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          const Text(
-                            'Wuse to Nyanya · 6 min',
-                            maxLines: 1,
-                            softWrap: false,
-                          ),
-                          const SizedBox(height: 8),
-                          const _Stop(
-                            time: '6 min',
-                            title: 'Wuse Market',
-                            detail: 'Pickup',
-                          ),
-                          const _Stop(
-                            time: '4.2 km',
-                            title: 'Nyanya',
-                            detail: 'Dropoff',
-                          ),
-                          const _RiderRow(),
-                          const SizedBox(height: 8),
-                          AlongButton(
-                            label: 'Decline',
-                            variant: AlongButtonVariant.secondary,
-                            onPressed: () => AlongHaptics.error(context),
+                          ColoredBox(color: palette.recessed),
+                          FractionallySizedBox(
+                            alignment: Alignment.centerLeft,
+                            widthFactor: 0.72,
+                            child: ColoredBox(color: palette.accent),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const _OfferRoute(),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '₦1,800',
+                                maxLines: 1,
+                                softWrap: false,
+                                style: AlongType.display(palette),
+                              ),
+                            ),
+                            Text(
+                              '4.2 km',
+                              maxLines: 1,
+                              softWrap: false,
+                              style: AlongType.caption(palette).copyWith(
+                                color: palette.ink,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const _RiderRow(),
+                        const SizedBox(height: 8),
+                        const _OfferSeats(),
+                        const SizedBox(height: 12),
+                        AlongSwipeConfirm(label: 'Accept', onConfirmed: _noop),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1131,8 +1273,7 @@ class AlongFlowEarnings extends StatelessWidget {
                       Text('Today', style: AlongType.caption(palette)),
                       AlongOdometer(
                         value: 48200,
-                        style: AlongType.numeric(palette)
-                            .copyWith(fontSize: 48),
+                        style: AlongType.display(palette),
                       ),
                       Text(
                         '11 trips · goal ₦60,000',
@@ -1141,49 +1282,16 @@ class AlongFlowEarnings extends StatelessWidget {
                         style: AlongType.bodyMuted(palette),
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const AlongProgressRing(
-                            progress: 0.8,
-                            label: '80%',
-                            size: 44,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'Daily goal',
-                              maxLines: 1,
-                              softWrap: false,
-                              style: AlongType.meta(palette),
-                            ),
-                          ),
-                        ],
-                      ),
+                      const SizedBox(height: 132, child: _WeekBars()),
                       const SizedBox(height: 8),
-                      const Expanded(child: _WeekBars()),
+                      const _EarnBreakdown(),
+                      const SizedBox(height: 8),
+                      const _PassUpsell(),
+                      const SizedBox(height: 8),
+                      const Expanded(child: _EarnList()),
                     ],
                   ),
                 ),
-                const _PayoutCard(),
-                const _EarningTrip(
-                  place: 'Thu · Nyanya',
-                  fare: '₦1,800',
-                  tip: '₦200',
-                ),
-                const _EarningTrip(place: 'Wed · Wuse', fare: '₦1,200'),
-                const _EarningTrip(
-                  place: 'Tue · Garki',
-                  fare: '₦900',
-                  tip: '₦100',
-                ),
-                const _EarningTrip(place: 'Mon · Berger', fare: '₦1,400'),
-                const _EarningTrip(
-                  place: 'Sun · Jabi',
-                  fare: '₦1,600',
-                  tip: '₦300',
-                ),
-                const _EarningTrip(place: 'Sat · Nyanya', fare: '₦2,100'),
-                const _EarningTrip(place: 'Fri · Airport', fare: '₦3,200'),
               ],
             ),
           );
@@ -1366,7 +1474,7 @@ class AlongFlowSearch extends StatelessWidget {
           Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final fraction = constraints.maxHeight >= 760 ? 0.38 : 0.46;
+                final fraction = constraints.maxHeight >= 760 ? 0.56 : 0.64;
                 return AlongSpringSheet(
                   fraction: fraction,
                   snaps: [fraction, 0.72],
@@ -1482,17 +1590,7 @@ class AlongFlowRating extends StatelessWidget {
                         SizedBox(height: short ? 10 : 14),
                         const _ComplimentWrap(),
                         SizedBox(height: short ? 10 : 14),
-                        const Row(
-                          children: [
-                            _TipChip('₦100'),
-                            SizedBox(width: 6),
-                            _TipChip('₦200', selected: true),
-                            SizedBox(width: 6),
-                            _TipChip('₦500'),
-                            SizedBox(width: 6),
-                            _TipChip('Custom'),
-                          ],
-                        ),
+                        const _TipSegments(),
                         SizedBox(height: short ? 10 : 12),
                         const _SendThanks(),
                         const SizedBox(height: 4),
@@ -1520,22 +1618,18 @@ class _ComplimentWrap extends StatelessWidget {
     return const Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _ComplimentChip('Smooth ride', selected: true),
+            Expanded(child: _ComplimentChip('Smooth ride', selected: true)),
             SizedBox(width: 8),
-            _ComplimentChip('Clean car'),
-            SizedBox(width: 8),
-            _ComplimentChip('On time'),
+            Expanded(child: _ComplimentChip('Clean car')),
           ],
         ),
         SizedBox(height: 8),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _ComplimentChip('Great conversation'),
+            Expanded(child: _ComplimentChip('On time')),
             SizedBox(width: 8),
-            _ComplimentChip('Safe driving'),
+            Expanded(child: _ComplimentChip('Safe driving')),
           ],
         ),
       ],
@@ -1572,6 +1666,52 @@ class _ComplimentChip extends StatelessWidget {
           fontWeight: FontWeight.w600,
           height: 1,
         ),
+      ),
+    );
+  }
+}
+
+class _TipSegments extends StatelessWidget {
+  const _TipSegments();
+
+  static const _tips = ['₦100', '₦200', '₦500', 'Custom'];
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: palette.recessed,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          for (final tip in _tips)
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: tip == '₦200'
+                      ? palette.accent
+                      : const Color(0x00000000),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Text(
+                    tip,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.caption(palette).copyWith(
+                      color: palette.ink,
+                      fontWeight: FontWeight.w700,
+                      height: 1,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -1791,8 +1931,9 @@ class _HoldRingState extends State<_HoldRing>
             child: CustomPaint(
               painter: _HoldRingPainter(
                 progress: _fill.value,
-                color: palette.danger,
-                track: palette.surface,
+                color: palette.ink,
+                progressColor: palette.accent,
+                track: palette.onInk,
               ),
               child: Center(
                 child: SizedBox(
@@ -1802,9 +1943,8 @@ class _HoldRingState extends State<_HoldRing>
                     maxLines: 1,
                     softWrap: false,
                     textAlign: TextAlign.center,
-                    style: AlongType.caption(palette).copyWith(
-                      color: const Color(0xFFF7F7F8),
-                      fontSize: 13,
+                    style: AlongType.body(palette).copyWith(
+                      color: palette.onInk,
                       height: 1,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1823,25 +1963,27 @@ class _HoldRingPainter extends CustomPainter {
   _HoldRingPainter({
     required this.progress,
     required this.color,
+    required this.progressColor,
     required this.track,
   });
 
   final double progress;
   final Color color;
+  final Color progressColor;
   final Color track;
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 14;
-    canvas.drawCircle(center, radius, Paint()..color = const Color(0xCC1C1916));
+    canvas.drawCircle(center, radius, Paint()..color = color);
     canvas.drawCircle(
       center,
       radius - 8,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 10
-        ..color = track.withValues(alpha: 0.28),
+        ..strokeWidth = 8
+        ..color = track.withValues(alpha: 0.22),
     );
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius - 8),
@@ -1852,7 +1994,7 @@ class _HoldRingPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 10
         ..strokeCap = StrokeCap.round
-        ..color = color,
+        ..color = progressColor,
     );
   }
 
@@ -1948,37 +2090,6 @@ class _Face extends StatelessWidget {
   }
 }
 
-class _PayoutCard extends StatelessWidget {
-  const _PayoutCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Next cash out', style: AlongType.caption(palette)),
-          const SizedBox(height: 4),
-          Text('Friday', style: AlongType.title(palette)),
-          Text(
-            '₦48,200 available',
-            style: AlongType.bodyMuted(palette)
-                .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _Fold extends StatefulWidget {
   const _Fold({required this.label, required this.child});
 
@@ -2013,9 +2124,9 @@ class _FoldState extends State<_Fold> {
                         .copyWith(fontSize: 16, height: 1.1),
                   ),
                 ),
-                Icon(
-                  _open ? Icons.expand_less : Icons.expand_more,
-                  size: 22,
+                AlongIcon(
+                  _open ? AlongIcons.caretUp : AlongIcons.caretDown,
+                  size: 20,
                   color: palette.muted,
                 ),
               ],
@@ -2067,18 +2178,19 @@ class _GoButtonState extends State<_GoButton>
       builder: (context, child) {
         final breathe = AlongMotionPolicy.play(context) ? _glow.value : 0.45;
         return Container(
-          width: 168,
-          height: 168,
+          width: 120,
+          height: 120,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: palette.accent,
+            color: palette.ink,
             shape: BoxShape.circle,
+            border: Border.all(color: palette.accent, width: 3),
             boxShadow: [
-              ...AlongElevation.float(palette.ink),
+              ...AlongElevation.raised(palette.ink),
               BoxShadow(
-                color: palette.accent.withValues(alpha: 0.18 + 0.28 * breathe),
-                blurRadius: 28,
-                spreadRadius: 2 + 6 * breathe,
+                color: palette.accent.withValues(alpha: 0.28 + 0.28 * breathe),
+                blurRadius: 18 + 10 * breathe,
+                spreadRadius: 1,
               ),
             ],
           ),
@@ -2086,133 +2198,12 @@ class _GoButtonState extends State<_GoButton>
             'GO',
             maxLines: 1,
             softWrap: false,
-            style: AlongType.display(palette).copyWith(
-              fontSize: 44,
-              letterSpacing: -1.6,
-              color: palette.accentInk,
-            ),
+            style: AlongType.display(
+              palette,
+            ).copyWith(fontSize: 28, letterSpacing: -0.8, color: palette.onInk),
           ),
         );
       },
-    );
-  }
-}
-
-class _TrustedFaces extends StatelessWidget {
-  const _TrustedFaces();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    Widget face(Widget child) {
-      return Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: palette.surface, width: 2),
-        ),
-        child: ClipOval(child: child),
-      );
-    }
-
-    return SizedBox(
-      height: 56,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 80,
-            height: 36,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  child: face(
-                    Image.asset(
-                      AlongDriverPortrait.adaeze,
-                      package: 'along_design',
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.cover,
-                      excludeFromSemantics: true,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 22,
-                  child: face(const _Monogram(initials: 'CH', size: 32)),
-                ),
-                Positioned(
-                  left: 44,
-                  child: face(const _Monogram(initials: 'NG', size: 32)),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'Trusted contacts',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.title(palette)
-                  .copyWith(fontSize: 16, height: 1.1),
-            ),
-          ),
-          Icon(Icons.chevron_right, size: 22, color: palette.muted),
-        ],
-      ),
-    );
-  }
-}
-
-class _SafetyTips extends StatelessWidget {
-  const _SafetyTips();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 4),
-        Text(
-          'Safety tips',
-          maxLines: 1,
-          softWrap: false,
-          style: AlongType.meta(palette),
-        ),
-        for (final tip in const [
-          'Share the trip',
-          'Sit in the back',
-          'Check the plate',
-        ])
-          SizedBox(
-            height: 36,
-            child: Row(
-              children: [
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: palette.accent,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    tip,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.title(palette)
-                        .copyWith(fontSize: 16, height: 1.1),
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
     );
   }
 }
@@ -2240,7 +2231,7 @@ class _SafetyLine extends StatelessWidget {
               style: AlongType.title(palette),
             ),
           ),
-          Icon(Icons.chevron_right, size: 22, color: palette.muted),
+          AlongIcon(AlongIcons.caretRight, size: 20, color: palette.muted),
         ],
       ),
     );
@@ -2312,18 +2303,18 @@ class _PlaceRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return SizedBox(
-      height: 56,
+      height: 48,
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 32,
+            height: 32,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: palette.recessed,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 18, color: palette.ink),
+            child: AlongIcon(icon, size: 20, color: palette.ink),
           ),
           const SizedBox(width: 12),
           Expanded(child: Text(title, style: AlongType.body(palette))),
@@ -2354,93 +2345,6 @@ class _FactRow extends StatelessWidget {
           Icon(icon, size: 20, color: palette.ink),
           const SizedBox(width: 12),
           Expanded(child: Text(label, style: AlongType.body(palette))),
-        ],
-      ),
-    );
-  }
-}
-
-class _VehicleChips extends StatelessWidget {
-  const _VehicleChips();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 118,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        children: const [
-          _VehicleChip(
-            kind: AlongVehicleKind.keke,
-            title: 'Keke',
-            fare: '₦400',
-          ),
-          SizedBox(width: 8),
-          _VehicleChip(
-            kind: AlongVehicleKind.okada,
-            title: 'Okada',
-            fare: '₦300',
-          ),
-          SizedBox(width: 8),
-          _VehicleChip(
-            kind: AlongVehicleKind.car,
-            title: 'Car',
-            fare: '₦1,100',
-          ),
-          SizedBox(width: 8),
-          _VehicleChip(
-            kind: AlongVehicleKind.danfo,
-            title: 'Danfo',
-            fare: '₦200',
-          ),
-          SizedBox(width: 8),
-          _VehicleChip(kind: AlongVehicleKind.bus, title: 'Bus', fare: '₦500'),
-        ],
-      ),
-    );
-  }
-}
-
-class _VehicleChip extends StatelessWidget {
-  const _VehicleChip({
-    required this.kind,
-    required this.title,
-    required this.fare,
-  });
-
-  final AlongVehicleKind kind;
-  final String title;
-  final String fare;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      width: 112,
-      padding: const EdgeInsets.fromLTRB(6, 6, 6, 8),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Column(
-        children: [
-          AlongVehicleMark(kind: kind, width: 100, height: 58),
-          const Spacer(),
-          Text(
-            title,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.title(palette).copyWith(fontSize: 14, height: 1.1),
-          ),
-          Text(
-            fare,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: 13, height: 1.1, letterSpacing: 0),
-          ),
         ],
       ),
     );
@@ -2762,146 +2666,6 @@ class _RideRules extends StatelessWidget {
   }
 }
 
-class _PromoCarousel extends StatelessWidget {
-  const _PromoCarousel();
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth * 0.86;
-        return SizedBox(
-          height: 88,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              _enter(
-                SizedBox(
-                  width: width,
-                  child: const _Promo(
-                    title: 'Evening along',
-                    detail: '₦200 off Wuse to Nyanya',
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: width,
-                child: const _Promo(
-                  title: 'Night seats',
-                  detail: '₦100 off after 9',
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _Promo extends StatelessWidget {
-  const _Promo({required this.title, required this.detail});
-
-  final String title;
-  final String detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      height: 88,
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 6,
-            height: 88,
-            decoration: BoxDecoration(
-              color: palette.accent,
-              borderRadius: const BorderRadius.horizontal(
-                left: Radius.circular(18),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          const AlongVehicleMark(kind: AlongVehicleKind.keke, width: 56),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: AlongType.title(palette),
-                ),
-                Text(
-                  detail,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: AlongType.caption(palette).copyWith(
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SafetyAction extends StatelessWidget {
-  const _SafetyAction({
-    required this.icon,
-    required this.label,
-    this.danger = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool danger;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Expanded(
-      child: Column(
-        children: [
-          Material(
-            color: danger ? palette.danger : palette.recessed,
-            shape: const CircleBorder(),
-            child: InkWell(
-              onTap: _noop,
-              customBorder: const CircleBorder(),
-              child: SizedBox(
-                width: 48,
-                height: 48,
-                child: Icon(
-                  icon,
-                  color: danger ? palette.dangerOn : palette.ink,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(label, style: AlongType.caption(palette)),
-        ],
-      ),
-    );
-  }
-}
-
 class _MapChip extends StatelessWidget {
   const _MapChip({required this.label});
 
@@ -2928,6 +2692,123 @@ class _MapChip extends StatelessWidget {
   }
 }
 
+class _OfferRoute extends StatelessWidget {
+  const _OfferRoute();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final place = AlongType.body(palette)
+        .copyWith(fontWeight: FontWeight.w700, height: 1.1);
+    return SizedBox(
+      height: 44,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Wuse Market', maxLines: 1, softWrap: false, style: place),
+                Text(
+                  'Pickup',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 72,
+            height: 16,
+            child: CustomPaint(painter: _OfferLine(color: palette.ink)),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Nyanya', maxLines: 1, softWrap: false, style: place),
+                Text(
+                  'Drop',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OfferLine extends CustomPainter {
+  const _OfferLine({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final y = size.height / 2;
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(6, y), Offset(size.width - 6, y), paint);
+    canvas.drawCircle(Offset(4, y), 3, Paint()..color = color);
+    canvas.drawCircle(
+      Offset(size.width - 4, y),
+      3,
+      Paint()..color = const Color(0xFFFFFFFF),
+    );
+    canvas.drawCircle(
+      Offset(size.width - 4, y),
+      3,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _OfferLine oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _OfferSeats extends StatelessWidget {
+  const _OfferSeats();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      height: 28,
+      child: Row(
+        children: [
+          for (var i = 0; i < 6; i++)
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  color: i == 1
+                      ? palette.accent
+                      : i == 0
+                      ? palette.ink.withValues(alpha: 0.16)
+                      : palette.recessed,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class _RiderRow extends StatelessWidget {
   const _RiderRow();
 
@@ -2935,11 +2816,11 @@ class _RiderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return SizedBox(
-      height: 64,
+      height: 48,
       child: Row(
         children: [
           const AlongDriverPortrait(
-            size: 40,
+            size: 36,
             asset: AlongDriverPortrait.adaeze,
             verified: true,
           ),
@@ -2949,12 +2830,18 @@ class _RiderRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Adaeze', style: AlongType.title(palette)),
                 Text(
-                  '4.9 rider',
-                  style: AlongType.caption(palette).copyWith(
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
+                  'Adaeze · 4.9',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                ),
+                Text(
+                  'Rider',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette),
                 ),
               ],
             ),
@@ -2966,44 +2853,120 @@ class _RiderRow extends StatelessWidget {
   }
 }
 
-class _Stop extends StatelessWidget {
-  const _Stop({required this.time, required this.title, required this.detail});
+class _EarnBreakdown extends StatelessWidget {
+  const _EarnBreakdown();
 
-  final String time;
-  final String title;
-  final String detail;
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        _EarnCell(label: 'Trips', value: '11'),
+        SizedBox(width: 8),
+        _EarnCell(label: 'Tips', value: '₦600'),
+        SizedBox(width: 8),
+        _EarnCell(label: 'Hours', value: '6.5'),
+      ],
+    );
+  }
+}
+
+class _EarnCell extends StatelessWidget {
+  const _EarnCell({required this.label, required this.value});
+
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 52,
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          color: palette.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: AlongElevation.hairline(palette.ink),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+            ),
+            Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PassUpsell extends StatelessWidget {
+  const _PassUpsell();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
       child: Row(
         children: [
-          SizedBox(
-            width: 64,
-            child: Text(
-              time,
-              style: AlongType.caption(palette).copyWith(
-                fontFeatures: const [FontFeature.tabularFigures()],
-                fontWeight: FontWeight.w700,
-                color: palette.ink,
-              ),
+          AlongIcon(AlongIcons.receipt, size: 20, color: palette.ink),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Along Pass',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                ),
+                Text(
+                  'Keep ₦200 more on each trip',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.caption(palette),
+                ),
+              ],
             ),
           ),
-          Container(
-            width: 10,
-            height: 10,
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: palette.accent,
-              shape: BoxShape.circle,
-            ),
-          ),
-          Expanded(child: Text(title, style: AlongType.body(palette))),
-          Text(detail, style: AlongType.caption(palette)),
         ],
       ),
+    );
+  }
+}
+
+class _EarnList extends StatelessWidget {
+  const _EarnList();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: const [
+        _EarningTrip(place: 'Nyanya', fare: '₦1,800', tip: '₦200'),
+        _EarningTrip(place: 'Wuse', fare: '₦1,200'),
+        _EarningTrip(place: 'Garki', fare: '₦900', tip: '₦100'),
+        _EarningTrip(place: 'Berger', fare: '₦1,400'),
+        _EarningTrip(place: 'Jabi', fare: '₦1,600', tip: '₦300'),
+      ],
     );
   }
 }
@@ -3015,13 +2978,13 @@ class _WeekBars extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     const bars = <(String, double, bool)>[
-      ('M', 28, false),
-      ('Tu', 40, false),
-      ('W', 32, false),
-      ('Th', 52, true),
-      ('F', 44, false),
-      ('Sa', 22, false),
-      ('Su', 16, false),
+      ('M', 22, false),
+      ('Tu', 31, false),
+      ('W', 18, false),
+      ('Th', 48, true),
+      ('F', 36, false),
+      ('Sa', 14, false),
+      ('Su', 9, false),
     ];
     final axis = AlongType.caption(palette).copyWith(
       fontSize: 10,
@@ -3061,38 +3024,45 @@ class _WeekBars extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          bar.$3 ? 'Best' : '',
+                          bar.$3 ? '48k' : '',
                           maxLines: 1,
                           softWrap: false,
                           style: AlongType.caption(palette).copyWith(
-                            fontSize: 10,
-                            height: 1.1,
                             fontWeight: FontWeight.w700,
                             color: palette.ink,
+                            height: 1,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Expanded(
-                          child: Align(
+                          child: Stack(
                             alignment: Alignment.bottomCenter,
-                            child: FractionallySizedBox(
-                              heightFactor: bar.$2 / 52,
-                              widthFactor: 1,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: bar.$3
-                                      ? palette.accent
-                                      : palette.ink.withValues(alpha: 0.16),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: bar.$3
-                                      ? Border.all(
-                                          color: palette.ink,
-                                          width: 1.5,
-                                        )
-                                      : null,
+                            children: [
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                top: 8,
+                                child: Container(
+                                  height: 1,
+                                  color: palette.ink.withValues(alpha: 0.28),
                                 ),
                               ),
-                            ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: FractionallySizedBox(
+                                  heightFactor: bar.$2 / 60,
+                                  child: Container(
+                                    width: 8,
+                                    decoration: BoxDecoration(
+                                      color: bar.$3
+                                          ? palette.ink
+                                          : palette.ink.withValues(alpha: 0.18),
+                                      borderRadius: BorderRadius.circular(99),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -3184,69 +3154,24 @@ class _EarningTrip extends StatelessWidget {
   }
 }
 
-class _MapThumb extends StatelessWidget {
-  const _MapThumb({required this.seed});
-
-  final int seed;
+class _DemandHint extends StatelessWidget {
+  const _DemandHint();
 
   @override
   Widget build(BuildContext context) {
-    final align = Alignment(-0.8 + (seed % 5) * 0.35, (seed % 3) * 0.3 - 0.3);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: SizedBox(
-        width: 44,
-        height: 36,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/map/tiles/light/16_34127_31111.png',
-              package: 'along_design',
-              fit: BoxFit.cover,
-              alignment: align,
-              filterQuality: FilterQuality.medium,
-              excludeFromSemantics: true,
-            ),
-            CustomPaint(painter: _ThumbRoute(seed)),
-          ],
-        ),
+    final palette = AlongPalette.of(context);
+    return AlongFrost(
+      radius: 99,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Text(
+        'High demand near Wuse',
+        maxLines: 1,
+        softWrap: false,
+        style: AlongType.caption(palette)
+            .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
       ),
     );
   }
-}
-
-class _ThumbRoute extends CustomPainter {
-  const _ThumbRoute(this.seed);
-
-  final int seed;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF111111)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    final path = Path()
-      ..moveTo(6, size.height - 8)
-      ..quadraticBezierTo(
-        size.width * (0.3 + (seed % 3) * 0.1),
-        8 + (seed % 2) * 6,
-        size.width - 8,
-        10 + (seed % 4) * 3,
-      );
-    canvas.drawPath(path, paint);
-    canvas.drawCircle(
-      Offset(size.width - 8, 10 + (seed % 4) * 3),
-      2.5,
-      Paint()..color = const Color(0xFFF7D117),
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _ThumbRoute oldDelegate) =>
-      oldDelegate.seed != seed;
 }
 
 class _HeatTip extends StatefulWidget {
@@ -3572,6 +3497,42 @@ class _PlateMatch extends StatelessWidget {
   }
 }
 
+class _ShareToggle extends StatelessWidget {
+  const _ShareToggle({required this.label, required this.on});
+
+  final String label;
+  final bool on;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      height: 48,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+            ),
+          ),
+          Switch(
+            value: on,
+            onChanged: (_) {},
+            activeThumbColor: palette.accentInk,
+            activeTrackColor: palette.accent,
+            inactiveThumbColor: palette.surface,
+            inactiveTrackColor: palette.recessed,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ContactLine extends StatelessWidget {
   const _ContactLine({
     required this.name,
@@ -3618,127 +3579,7 @@ class _ContactLine extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, size: 22, color: palette.muted),
-        ],
-      ),
-    );
-  }
-}
-
-class _RuleStrip extends StatelessWidget {
-  const _RuleStrip();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: const Row(
-        children: [
-          _RuleTile(icon: AlongIcons.navigate, value: '400 m', label: 'Route'),
-          _RuleTile(icon: AlongIcons.schedule, value: '3 min', label: 'Stop'),
-          _RuleTile(icon: AlongIcons.shield, value: '15 min', label: 'Ping'),
-          _RuleTile(icon: AlongIcons.verified, value: 'Set', label: 'Word'),
-        ],
-      ),
-    );
-  }
-}
-
-class _RuleTile extends StatelessWidget {
-  const _RuleTile({
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
-
-  final IconData icon;
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Expanded(
-      child: Column(
-        children: [
-          Icon(icon, size: 16, color: palette.ink),
-          Text(
-            value,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette)
-                .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
-          ),
-          Text(
-            label,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.meta(palette),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PassStack extends StatelessWidget {
-  const _PassStack();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 200,
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 18,
-            right: 18,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 56),
-              decoration: BoxDecoration(
-                color: palette.accent,
-                borderRadius: BorderRadius.circular(22),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Change credit',
-                      maxLines: 1,
-                      softWrap: false,
-                      style: AlongType.title(palette)
-                          .copyWith(color: palette.accentInk, fontSize: 16),
-                    ),
-                  ),
-                  Text(
-                    '₦6,400',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.numeric(palette).copyWith(
-                      fontSize: 18,
-                      color: palette.accentInk,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Positioned(
-            top: 48,
-            left: 0,
-            right: 0,
-            child: AlongGyroCard(child: _BalanceCard()),
-          ),
+          AlongIcon(AlongIcons.caretRight, size: 20, color: palette.muted),
         ],
       ),
     );
@@ -3750,64 +3591,99 @@ class _BalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      height: 168,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: palette.ink,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: AlongElevation.float(palette.ink),
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF3A342C), Color(0xFF161513)],
+        ),
+        boxShadow: AlongElevation.raised(const Color(0xFF111111)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              Container(
-                width: 34,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: palette.accent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              const Spacer(),
-              Text(
-                'Along',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.caption(
-                  palette,
-                ).copyWith(color: palette.onInk, fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          Text(
-            'Ride credit',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.meta(palette).copyWith(color: palette.onInk),
-          ),
-          Text(
-            '₦1,200',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: 36, color: palette.onInk),
-          ),
-          Text(
-            'Locked for Chinedu',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.meta(palette)
-                .copyWith(color: palette.accent, fontWeight: FontWeight.w700),
+          const Positioned.fill(child: CustomPaint(painter: _CardNoise())),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: _BalanceFace(),
           ),
         ],
       ),
     );
   }
+}
+
+class _BalanceFace extends StatelessWidget {
+  const _BalanceFace();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    const paper = Color(0xFFF7F4EF);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 36,
+              height: 26,
+              decoration: BoxDecoration(
+                color: const Color(0xFFC8BBA4),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: const Color(0x66FFFFFF)),
+              ),
+            ),
+            const Spacer(),
+            Text(
+              'Along',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette)
+                  .copyWith(color: paper, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+        const Spacer(),
+        Text(
+          'Balance',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.caption(palette).copyWith(color: paper),
+        ),
+        Text(
+          '₦6,400',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.display(palette).copyWith(color: paper),
+        ),
+      ],
+    );
+  }
+}
+
+class _CardNoise extends CustomPainter {
+  const _CardNoise();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = const Color(0x18FFFFFF);
+    final rnd = math.Random(4);
+    for (var i = 0; i < 220; i++) {
+      canvas.drawCircle(
+        Offset(rnd.nextDouble() * size.width, rnd.nextDouble() * size.height),
+        rnd.nextDouble() * 0.7 + 0.25,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _CardNoise oldDelegate) => false;
 }
 
 class _WalletTiles extends StatelessWidget {
@@ -3817,11 +3693,11 @@ class _WalletTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        _IconTile(icon: AlongIcons.earnings, label: 'Top up'),
+        _IconTile(icon: AlongIcons.plus, label: 'Top up'),
         SizedBox(width: 8),
         _IconTile(icon: AlongIcons.share, label: 'Send'),
         SizedBox(width: 8),
-        _IconTile(icon: AlongIcons.receipt, label: 'Card'),
+        _IconTile(icon: AlongIcons.receipt, label: 'Pass'),
       ],
     );
   }
@@ -3864,77 +3740,22 @@ class _IconTile extends StatelessWidget {
   }
 }
 
-class _SosPanel extends StatelessWidget {
-  const _SosPanel();
+class _TxnGroup extends StatelessWidget {
+  const _TxnGroup({required this.label});
+
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: AlongElevation.float(palette.ink),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Goes to', style: AlongType.title(palette)),
-          const SizedBox(height: 8),
-          const Row(
-            children: [
-              _IconTile(icon: AlongIcons.shield, label: 'Mum'),
-              SizedBox(width: 8),
-              _IconTile(icon: AlongIcons.shield, label: 'Chidi'),
-              SizedBox(width: 8),
-              _IconTile(icon: AlongIcons.share, label: 'Share'),
-              SizedBox(width: 8),
-              _IconTile(icon: AlongIcons.call, label: 'Call'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CreditNote extends StatelessWidget {
-  const _CreditNote();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Row(
-        children: [
-          Icon(AlongIcons.wallet, color: palette.ink, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Change stays as credit',
-                  style: AlongType.title(palette)
-                      .copyWith(fontSize: 16, height: 1.15),
-                ),
-                Text(
-                  'We do not round the fare up.',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.meta(palette),
-                ),
-              ],
-            ),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(
+        label,
+        maxLines: 1,
+        softWrap: false,
+        style: AlongType.caption(palette)
+            .copyWith(fontWeight: FontWeight.w700, color: palette.ink),
       ),
     );
   }
@@ -3960,7 +3781,17 @@ class _TxnRow extends StatelessWidget {
       height: 52,
       child: Row(
         children: [
-          Icon(icon, size: 20, color: palette.ink),
+          Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: palette.surface,
+              shape: BoxShape.circle,
+              border: AlongElevation.hairline(palette.ink),
+            ),
+            child: AlongIcon(icon, size: 20, color: palette.ink),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -3971,8 +3802,8 @@ class _TxnRow extends StatelessWidget {
                   title,
                   maxLines: 1,
                   softWrap: false,
-                  style: AlongType.title(palette)
-                      .copyWith(fontSize: 16, height: 1.1),
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                 ),
                 Text(
                   detail,
@@ -3996,51 +3827,59 @@ class _TxnRow extends StatelessWidget {
   }
 }
 
-class _WeekStrip extends StatelessWidget {
-  const _WeekStrip();
+class _DaySummary extends StatelessWidget {
+  const _DaySummary();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        _DayStat(value: '7', label: 'Trips'),
+        SizedBox(width: 8),
+        _DayStat(value: '₦9,300', label: 'Earned'),
+        SizedBox(width: 8),
+        _DayStat(value: '6.5', label: 'Hours'),
+      ],
+    );
+  }
+}
+
+class _DayStat extends StatelessWidget {
+  const _DayStat({required this.value, required this.label});
+
+  final String value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
-    const dots = [true, true, false, true, true, false, true];
-    return Row(
-      children: [
-        for (var i = 0; i < days.length; i++)
-          Expanded(
-            child: Column(
-              children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: days[i] == 'Th' ? palette.ink : palette.surface,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    days[i],
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette).copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: days[i] == 'Th' ? palette.onInk : palette.ink,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  width: 4,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: dots[i] ? palette.accent : Colors.transparent,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ],
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          color: palette.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: AlongElevation.hairline(palette.ink),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.title(palette)
+                  .copyWith(fontSize: 16, height: 1.1),
             ),
-          ),
-      ],
+            Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -4050,42 +3889,26 @@ class _DayTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const stops = <(String, String)>[
-      ('Wuse to Nyanya', '₦1,400'),
-      ('Berger to Garki', '₦900'),
-      ('Jabi to Wuse', '₦1,200'),
-      ('Nyanya to Wuse', '₦1,600'),
-      ('Garki to Jabi', '₦700'),
-      ('Wuse to Berger', '₦1,100'),
-      ('Airport to Wuse', '₦2,400'),
+    const stops = <(String, AlongVehicleKind, String, String)>[
+      ('07:10', AlongVehicleKind.keke, 'Nyanya', '₦1,400'),
+      ('08:40', AlongVehicleKind.car, 'Garki', '₦900'),
+      ('10:15', AlongVehicleKind.danfo, 'Wuse', '₦1,200'),
+      ('12:05', AlongVehicleKind.keke, 'Nyanya', '₦1,600'),
+      ('14:20', AlongVehicleKind.car, 'Jabi', '₦700'),
+      ('16:45', AlongVehicleKind.bus, 'Berger', '₦1,100'),
+      ('18:30', AlongVehicleKind.car, 'Airport', '₦2,400'),
     ];
     return ListView(
       padding: EdgeInsets.zero,
       children: [
         for (var i = 0; i < stops.length; i++)
           _DayStop(
-            title: stops[i].$1,
-            fare: stops[i].$2,
+            time: stops[i].$1,
+            kind: stops[i].$2,
+            title: stops[i].$3,
+            fare: stops[i].$4,
             last: i == stops.length - 1,
-            seed: i,
           ),
-        const _Fold(
-          label: 'Week and seats',
-          child: Column(
-            children: [
-              _WeekStrip(),
-              SizedBox(height: 8),
-              SizedBox(
-                height: 108,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                  child: AlongCityMap(mode: AlongCityMapMode.routeHero),
-                ),
-              ),
-              _DayRuns(),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -4093,16 +3916,18 @@ class _DayTimeline extends StatelessWidget {
 
 class _DayStop extends StatelessWidget {
   const _DayStop({
+    required this.time,
+    required this.kind,
     required this.title,
     required this.fare,
     required this.last,
-    required this.seed,
   });
 
+  final String time;
+  final AlongVehicleKind kind;
   final String title;
   final String fare;
   final bool last;
-  final int seed;
 
   @override
   Widget build(BuildContext context) {
@@ -4125,20 +3950,38 @@ class _DayStop extends StatelessWidget {
                   ),
                 ),
                 if (!last)
-                  Expanded(child: Container(width: 2, color: palette.line)),
+                  Expanded(
+                    child: Container(
+                      width: 1,
+                      color: palette.ink.withValues(alpha: 0.12),
+                    ),
+                  ),
               ],
             ),
           ),
-          const SizedBox(width: 6),
-          _MapThumb(seed: seed),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 44,
+            child: Text(
+              time,
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(
+                color: palette.ink,
+                fontWeight: FontWeight.w700,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+          AlongVehicleMark(kind: kind, width: 44, height: 28),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               title,
               maxLines: 1,
               softWrap: false,
-              style: AlongType.title(palette)
-                  .copyWith(fontSize: 16, height: 1.1),
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
             ),
           ),
           Text(
@@ -4149,210 +3992,6 @@ class _DayStop extends StatelessWidget {
                 .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DayRuns extends StatelessWidget {
-  const _DayRuns();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: const [
-        _RunCard(route: 'Wuse to Nyanya', seats: '4 of 6', fare: '₦1,400'),
-        _RunCard(route: 'Berger to Garki', seats: '6 of 6', fare: '₦900'),
-        _RunCard(route: 'Jabi to Wuse', seats: '3 of 6', fare: '₦1,200'),
-        _RunCard(route: 'Nyanya to Wuse', seats: '5 of 6', fare: '₦1,600'),
-        _RunCard(route: 'Garki to Jabi', seats: '2 of 6', fare: '₦700'),
-        _RunCard(route: 'Wuse to Berger', seats: '4 of 6', fare: '₦1,100'),
-        _RunCard(route: 'Airport to Wuse', seats: '6 of 6', fare: '₦2,400'),
-      ],
-    );
-  }
-}
-
-class _RunCard extends StatelessWidget {
-  const _RunCard({
-    required this.route,
-    required this.seats,
-    required this.fare,
-  });
-
-  final String route;
-  final String seats;
-  final String fare;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  route,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.title(palette)
-                      .copyWith(fontSize: 16, height: 1.1),
-                ),
-                const SizedBox(height: 4),
-                const SizedBox(
-                  height: 16,
-                  width: double.infinity,
-                  child: _MiniRoute(),
-                ),
-                Text(
-                  seats,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.meta(palette),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            fare,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MiniRoute extends StatelessWidget {
-  const _MiniRoute();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return CustomPaint(
-      painter: _MiniRoutePainter(ink: palette.ink, accent: palette.accent),
-    );
-  }
-}
-
-class _MiniRoutePainter extends CustomPainter {
-  _MiniRoutePainter({required this.ink, required this.accent});
-
-  final Color ink;
-  final Color accent;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..moveTo(2, size.height * 0.7)
-      ..quadraticBezierTo(
-        size.width * 0.35,
-        size.height * 0.1,
-        size.width * 0.62,
-        size.height * 0.55,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.82,
-        size.height * 0.9,
-        size.width - 2,
-        size.height * 0.25,
-      );
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..strokeCap = StrokeCap.round
-        ..color = accent,
-    );
-    canvas.drawCircle(Offset(2, size.height * 0.7), 2.5, Paint()..color = ink);
-    canvas.drawCircle(
-      Offset(size.width - 2, size.height * 0.25),
-      2.5,
-      Paint()..color = accent,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _MiniRoutePainter oldDelegate) => false;
-}
-
-class _CountdownRing extends StatefulWidget {
-  const _CountdownRing({required this.progress, required this.label});
-
-  final double progress;
-  final String label;
-
-  @override
-  State<_CountdownRing> createState() => _CountdownRingState();
-}
-
-class _CountdownRingState extends State<_CountdownRing>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _spin;
-
-  @override
-  void initState() {
-    super.initState();
-    _spin = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-      value: widget.progress,
-    );
-    if (!AlongMotionPolicy.inWidgetTest) {
-      _spin.repeat(reverse: true);
-    }
-  }
-
-  @override
-  void dispose() {
-    _spin.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return SizedBox(
-      width: 64,
-      height: 64,
-      child: AnimatedBuilder(
-        animation: _spin,
-        builder: (context, _) {
-          final t = AlongMotionPolicy.inWidgetTest
-              ? widget.progress
-              : _spin.value;
-          return CustomPaint(
-            painter: _RingPainter(
-              progress: t,
-              track: palette.line.withValues(alpha: 0.25),
-              ink: palette.accent,
-            ),
-            child: Center(
-              child: Text(
-                widget.label,
-                style: AlongType.numeric(palette).copyWith(fontSize: 20),
-              ),
-            ),
-          );
-        },
       ),
     );
   }
@@ -4386,24 +4025,19 @@ class _BidRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: best ? palette.accent.withValues(alpha: 0.28) : null,
-          borderRadius: BorderRadius.circular(14),
-          border: best
-              ? Border.all(
-                  color: palette.ink.withValues(alpha: 0.35),
-                  width: 1.5,
-                )
-              : null,
+          color: palette.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: best ? palette.ink : palette.ink.withValues(alpha: 0.12),
+            width: best ? 1.5 : 1,
+          ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: best ? 8 : 0,
-            vertical: best ? 6 : 0,
-          ),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               if (initials != null)
-                _Monogram(initials: initials!, size: 40)
+                AlongMonogram(initials: initials!, size: 40)
               else
                 AlongDriverPortrait(
                   size: 40,
@@ -4421,21 +4055,26 @@ class _BidRow extends StatelessWidget {
                       name,
                       maxLines: 1,
                       softWrap: false,
-                      style: AlongType.title(palette)
-                          .copyWith(fontSize: 16, height: 1.1),
+                      style: AlongType.body(palette)
+                          .copyWith(fontWeight: FontWeight.w700, height: 1.1),
                     ),
                     Text(
-                      '$rating · $vehicle · $eta',
+                      '$rating · $eta',
                       maxLines: 1,
                       softWrap: false,
-                      style: AlongType.meta(palette).copyWith(
+                      style: AlongType.caption(palette).copyWith(
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const AlongVehicleMark(
+                kind: AlongVehicleKind.keke,
+                width: 44,
+                height: 28,
+              ),
+              const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -4443,8 +4082,8 @@ class _BidRow extends StatelessWidget {
                     fare,
                     maxLines: 1,
                     softWrap: false,
-                    style: AlongType.numeric(palette)
-                        .copyWith(fontSize: 16, height: 1.1, letterSpacing: 0),
+                    style: AlongType.body(palette)
+                        .copyWith(fontWeight: FontWeight.w700, height: 1.1),
                   ),
                   const SizedBox(height: 4),
                   DecoratedBox(
@@ -4454,16 +4093,17 @@ class _BidRow extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       child: Text(
-                        best ? 'Best' : 'Accept',
+                        'Accept',
                         maxLines: 1,
                         softWrap: false,
                         style: AlongType.caption(palette).copyWith(
                           color: palette.accentInk,
                           fontWeight: FontWeight.w700,
+                          height: 1.1,
                         ),
                       ),
                     ),
@@ -4486,20 +4126,7 @@ class _Monogram extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      width: size,
-      height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(color: palette.ink, shape: BoxShape.circle),
-      child: Text(
-        initials,
-        maxLines: 1,
-        softWrap: false,
-        style: AlongType.caption(palette)
-            .copyWith(color: palette.onInk, fontWeight: FontWeight.w700),
-      ),
-    );
+    return AlongMonogram(initials: initials, size: size);
   }
 }
 
@@ -4542,158 +4169,6 @@ class _MapDriver extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _QuickActions extends StatelessWidget {
-  const _QuickActions();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        _Quick(icon: AlongIcons.home, label: 'Home'),
-        _Quick(icon: AlongIcons.work, label: 'Work'),
-        _Quick(icon: AlongIcons.schedule, label: 'Plan'),
-        _Quick(icon: AlongIcons.seat, label: 'Seats'),
-      ],
-    );
-  }
-}
-
-class _Quick extends StatelessWidget {
-  const _Quick({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.surface,
-              shape: BoxShape.circle,
-              boxShadow: AlongElevation.float(palette.ink),
-            ),
-            child: Icon(icon, color: palette.ink, size: 22),
-          ),
-          const SizedBox(height: 4),
-          Text(label, style: AlongType.caption(palette)),
-        ],
-      ),
-    );
-  }
-}
-
-class _Timeline extends StatelessWidget {
-  const _Timeline();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        _TimeStop(title: 'Wuse Market', detail: 'Picked up', done: true),
-        _TimeStop(title: 'Berger', detail: 'Now', done: true, current: true),
-        _TimeStop(title: 'Nyanya', detail: '12 min', done: false, last: true),
-      ],
-    );
-  }
-}
-
-class _TimeStop extends StatelessWidget {
-  const _TimeStop({
-    required this.title,
-    required this.detail,
-    required this.done,
-    this.current = false,
-    this.last = false,
-  });
-
-  final String title;
-  final String detail;
-  final bool done;
-  final bool current;
-  final bool last;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return SizedBox(
-      height: 36,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 16,
-            child: Column(
-              children: [
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: done ? palette.accent : palette.recessed,
-                    shape: BoxShape.circle,
-                    border: current
-                        ? Border.all(color: palette.ink, width: 2)
-                        : null,
-                  ),
-                ),
-                if (!last)
-                  Expanded(
-                    child: Container(
-                      width: 2,
-                      color: palette.line.withValues(alpha: 0.5),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(child: Text(title, style: AlongType.body(palette))),
-          Text(
-            detail,
-            style: AlongType.caption(palette).copyWith(
-              color: current ? palette.ink : palette.muted,
-              fontWeight: current ? FontWeight.w700 : FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RoundIcon extends StatelessWidget {
-  const _RoundIcon({required this.icon, required this.tooltip});
-
-  final IconData icon;
-  final String tooltip;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: palette.recessed,
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: _noop,
-          customBorder: const CircleBorder(),
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(icon, color: palette.ink, size: 22),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -4828,45 +4303,6 @@ class _Stars extends StatelessWidget {
   }
 }
 
-class _TipChip extends StatelessWidget {
-  const _TipChip(this.label, {this.selected = false});
-
-  final String label;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Expanded(
-      child: Container(
-        height: 44,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? palette.ink : palette.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: selected
-                ? palette.ink
-                : palette.line.withValues(alpha: 0.35),
-          ),
-          boxShadow: selected ? AlongElevation.card(palette.ink) : null,
-        ),
-        child: Text(
-          label,
-          maxLines: 1,
-          softWrap: false,
-          style: AlongType.meta(palette).copyWith(
-            color: selected ? palette.onInk : palette.ink,
-            fontWeight: FontWeight.w700,
-            height: 1,
-            fontFeatures: const [FontFeature.tabularFigures()],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _SearchRadar extends StatefulWidget {
   const _SearchRadar();
 
@@ -4978,11 +4414,6 @@ class _SweepPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _SweepPainter oldDelegate) =>
       oldDelegate.turn != turn;
-}
-
-Widget _enter(Widget child) {
-  if (AlongMotionPolicy.inWidgetTest) return child;
-  return child.animate().fadeIn(duration: 220.ms).slideY(begin: 0.06, end: 0);
 }
 
 void _noop() {}

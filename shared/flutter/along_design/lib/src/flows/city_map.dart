@@ -16,6 +16,53 @@ import 'vehicle_art.dart';
 /// How the Abuja map is dressed.
 enum AlongCityMapMode { browse, trip, online, routeHero, search, completed }
 
+/// Warms grey land, keeps roads near white, and pulls park green down.
+const _lightMapMatrix = <double>[
+  0.92,
+  0.08,
+  0.02,
+  0,
+  12,
+  0.04,
+  0.90,
+  0.02,
+  0,
+  6,
+  0.02,
+  0.08,
+  0.74,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+];
+
+const _darkMapMatrix = <double>[
+  0.94,
+  0.05,
+  0.02,
+  0,
+  4,
+  0.03,
+  0.92,
+  0.02,
+  0,
+  2,
+  0.02,
+  0.05,
+  0.84,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+];
+
 /// Muted Abuja maps.
 ///
 /// Tiles are pre-rendered at 3× from a Protomaps basemap extract of Abuja
@@ -135,17 +182,22 @@ class AlongCityMap extends StatelessWidget {
                 : const Color(0xFFE6E7EA),
           ),
           children: [
-            TileLayer(
-              urlTemplate:
-                  'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
-              tileProvider: AssetTileProvider(),
-              userAgentPackageName: 'app.along.design',
-              tileDisplay: const TileDisplay.instantaneous(),
-              retinaMode: false,
-              minNativeZoom: 12,
-              maxNativeZoom: 16,
-              keepBuffer: 1,
-              panBuffer: 0,
+            ColorFiltered(
+              colorFilter: ColorFilter.matrix(
+                dark ? _darkMapMatrix : _lightMapMatrix,
+              ),
+              child: TileLayer(
+                urlTemplate:
+                    'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
+                tileProvider: AssetTileProvider(),
+                userAgentPackageName: 'app.along.design',
+                tileDisplay: const TileDisplay.instantaneous(),
+                retinaMode: false,
+                minNativeZoom: 12,
+                maxNativeZoom: 16,
+                keepBuffer: 1,
+                panBuffer: 0,
+              ),
             ),
             if (mode == AlongCityMapMode.online) _HeatWash(),
             if (showRoute)
@@ -216,6 +268,9 @@ class AlongCityMap extends StatelessWidget {
       markers.add(
         _driver(const LatLng(9.06805, 7.46515), '6 min', true, palette),
       );
+      markers.add(
+        _driver(const LatLng(9.06928, 7.46470), '8 min', false, palette),
+      );
     }
     if (mode == AlongCityMapMode.online) {
       markers.add(
@@ -237,51 +292,8 @@ class AlongCityMap extends StatelessWidget {
         ),
       );
     } else if (mode == AlongCityMapMode.browse) {
-      markers.add(
-        _vehicle(
-          const LatLng(9.06840, 7.46495),
-          AlongVehicleKind.keke,
-          2,
-          -0.5,
-          palette,
-        ),
-      );
-      markers.add(
-        _vehicle(
-          const LatLng(9.06862, 7.46615),
-          AlongVehicleKind.car,
-          3,
-          0.3,
-          palette,
-        ),
-      );
-      markers.add(
-        _vehicle(
-          const LatLng(9.06822, 7.46555),
-          AlongVehicleKind.danfo,
-          8,
-          1.0,
-          palette,
-        ),
-      );
-      markers.add(
-        _vehicle(
-          const LatLng(9.06915, 7.46540),
-          AlongVehicleKind.okada,
-          1,
-          -0.8,
-          palette,
-        ),
-      );
-      markers.add(
-        _vehicle(
-          const LatLng(9.06935, 7.46605),
-          AlongVehicleKind.bus,
-          12,
-          0.6,
-          palette,
-        ),
-      );
+      markers.add(_cluster(const LatLng(9.06848, 7.46515), 3, palette));
+      markers.add(_cluster(const LatLng(9.06922, 7.46585), 2, palette));
     }
     if (mode == AlongCityMapMode.browse ||
         mode == AlongCityMapMode.online ||
@@ -485,6 +497,29 @@ class AlongCityMap extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Marker _cluster(LatLng at, int count, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 36,
+      height: 36,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: palette.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: palette.ink, width: 1.5),
+          boxShadow: AlongElevation.rest(palette.ink),
+        ),
+        child: Text(
+          '$count',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.title(palette).copyWith(fontSize: 15, height: 1),
+        ),
       ),
     );
   }
@@ -739,9 +774,9 @@ class _HeatWash extends StatelessWidget {
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: Opacity(
-        opacity: 0.72,
+        opacity: 0.88,
         child: ImageFiltered(
-          imageFilter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          imageFilter: ui.ImageFilter.blur(sigmaX: 6, sigmaY: 6),
           child: ColorFiltered(
             colorFilter: const ColorFilter.matrix(<double>[
               0,
@@ -863,12 +898,18 @@ class _RoutePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = _smooth(_points());
     final casing = palette.brightness == Brightness.dark
-        ? const Color(0xFF0B0D10)
-        : const Color(0xFF243040);
-    canvas.drawPath(path, _stroke(10, casing));
-    canvas.drawPath(path, _stroke(5, palette.surface));
-    canvas.drawPath(path, _stroke(2.5, palette.accent));
-    if (pulse > 0) alongPaintRoutePulse(canvas, path, pulse, palette.accent);
+        ? const Color(0xFF0E0E10)
+        : const Color(0xFFFFFFFF);
+    canvas.drawPath(path, _stroke(9, casing));
+    canvas.drawPath(path, _stroke(4.5, palette.ink));
+    if (pulse > 0) {
+      alongPaintRoutePulse(
+        canvas,
+        path,
+        pulse,
+        palette.ink.withValues(alpha: 0.55),
+      );
+    }
   }
 
   Paint _stroke(double width, Color color) {

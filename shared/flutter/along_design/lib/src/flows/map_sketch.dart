@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../elevation.dart';
+import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
 import 'city_map.dart';
@@ -173,7 +174,7 @@ class AlongMapButton extends StatelessWidget {
                 child: SizedBox(
                   width: 48,
                   height: 48,
-                  child: Icon(icon, color: palette.ink, size: 22),
+                  child: AlongIcon(icon, color: palette.ink, size: 24),
                 ),
               ),
             ),
