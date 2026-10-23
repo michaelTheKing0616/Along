@@ -34,19 +34,24 @@ class _AlongSkeletonState extends State<AlongSkeleton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: _shimmerDuration);
-    // Widget tests advance a fake clock. A repeating shimmer never lets
-    // pumpAndSettle finish, so tests play the same pass once.
-    if (_inWidgetTest) {
-      _controller.forward();
-    } else {
-      _controller.repeat();
-    }
+    _controller = AnimationController(
+      vsync: this,
+      duration: _shimmerDuration,
+      value: 0.42,
+    );
   }
 
-  bool get _inWidgetTest {
-    final name = WidgetsBinding.instance.runtimeType.toString();
-    return name.contains('Test');
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduced = AlongMotionPolicy.reduced(context);
+    final play = AlongMotionPolicy.play(context) && !reduced;
+    if (play) {
+      if (!_controller.isAnimating) _controller.repeat();
+    } else {
+      _controller.stop();
+      _controller.value = reduced ? 0 : 0.42;
+    }
   }
 
   @override
@@ -55,7 +60,12 @@ class _AlongSkeletonState extends State<AlongSkeleton>
     super.dispose();
   }
 
-  Widget _bone(AlongPalette palette, double width, double height, double radius) {
+  Widget _bone(
+    AlongPalette palette,
+    double width,
+    double height,
+    double radius,
+  ) {
     return Container(
       width: width,
       height: height,
@@ -96,17 +106,18 @@ class _AlongSkeletonState extends State<AlongSkeleton>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
+        final highlight = Color.alphaBlend(
+          const Color(0x66FFFFFF),
+          palette.surface,
+        );
         return ShaderMask(
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
+            final t = _controller.value;
             return LinearGradient(
-              begin: Alignment(-1 + 2 * _controller.value, 0),
-              end: Alignment(-0.5 + 2 * _controller.value, 0),
-              colors: const [
-                AlongColors.surface200,
-                AlongColors.surface100,
-                AlongColors.surface200,
-              ],
+              begin: Alignment(-1.2 + 2.4 * t, 0),
+              end: Alignment(-0.15 + 2.4 * t, 0),
+              colors: [palette.recessed, highlight, palette.recessed],
             ).createShader(bounds);
           },
           child: child,

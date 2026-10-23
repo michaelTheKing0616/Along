@@ -37,6 +37,13 @@ abstract final class AlongSprings {
     stiffness: 280,
     damping: 24,
   );
+
+  /// Cushion press. Short, then back. The seat scale uses its own settle.
+  static const press = SpringDescription(
+    mass: 0.4,
+    stiffness: 640,
+    damping: 18,
+  );
 }
 
 abstract final class AlongMotionPolicy {

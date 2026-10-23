@@ -330,6 +330,8 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
                     ),
                   ],
                   const SizedBox(height: AlongSpace.s12),
+                  const AlongDepartureBoard(),
+                  const SizedBox(height: AlongSpace.s12),
                   TextField(
                     key: const Key('layout_name_field'),
                     decoration: InputDecoration(labelText: l10n.layoutName),

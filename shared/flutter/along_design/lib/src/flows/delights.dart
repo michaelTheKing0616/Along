@@ -524,7 +524,7 @@ class AlongOdometerState extends State<AlongOdometer>
     _shown = widget.value;
     _roll = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 640),
+      duration: AlongDurations.refresh,
       value: 1,
     );
   }
@@ -561,6 +561,161 @@ class AlongOdometerState extends State<AlongOdometer>
   }
 }
 
+/// Mechanical digit window. Gallery frames rest on [text]. A change rolls
+/// each numeral with [AlongDurations.refresh].
+class AlongRollingDigits extends StatefulWidget {
+  const AlongRollingDigits({
+    super.key,
+    required this.text,
+    required this.style,
+    this.suffix = '',
+  });
+
+  final String text;
+  final TextStyle style;
+  final String suffix;
+
+  @override
+  State<AlongRollingDigits> createState() => AlongRollingDigitsState();
+}
+
+class AlongRollingDigitsState extends State<AlongRollingDigits>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _roll;
+  late String _from;
+
+  @override
+  void initState() {
+    super.initState();
+    _from = widget.text;
+    _roll = AnimationController(
+      vsync: this,
+      duration: AlongDurations.refresh,
+      value: 1,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant AlongRollingDigits oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text == widget.text) return;
+    _from = oldWidget.text;
+    if (!AlongMotionPolicy.play(context)) {
+      _roll.value = 1;
+      _from = widget.text;
+      return;
+    }
+    _roll.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _roll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Semantics(
+      label: '${widget.text}${widget.suffix}',
+      child: ExcludeSemantics(
+        child: AnimatedBuilder(
+          animation: _roll,
+          builder: (context, _) {
+            final rolling = _roll.value < 1 && AlongMotionPolicy.play(context);
+            final t = AlongCurves.settle.transform(_roll.value.clamp(0.0, 1.0));
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                DecoratedBox(
+                  decoration: AlongCraft.surface(
+                    palette,
+                    radius: 10,
+                    color: palette.recessed,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (var i = 0; i < widget.text.length; i++)
+                          _DigitDrum(
+                            from: i < _from.length ? _from[i] : widget.text[i],
+                            to: widget.text[i],
+                            t: rolling ? t : 1,
+                            style: widget.style,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (widget.suffix.isNotEmpty)
+                  Text(
+                    widget.suffix,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: widget.style,
+                  ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _DigitDrum extends StatelessWidget {
+  const _DigitDrum({
+    required this.from,
+    required this.to,
+    required this.t,
+    required this.style,
+  });
+
+  final String from;
+  final String to;
+  final double t;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = style.fontSize ?? 34;
+    final height = size * (style.height ?? 1);
+    final drum = style.copyWith(height: 1);
+    final fromDigit = int.tryParse(from);
+    final toDigit = int.tryParse(to);
+    if (fromDigit == null || toDigit == null || t >= 1) {
+      return Text(to, maxLines: 1, softWrap: false, style: drum);
+    }
+    var delta = toDigit - fromDigit;
+    if (delta <= 0) delta += 10;
+    final pos = fromDigit + delta * t;
+    final shown = pos.floor() % 10;
+    final next = (shown + 1) % 10;
+    final frac = pos - pos.floor();
+    return ClipRect(
+      child: SizedBox(
+        height: height,
+        child: Stack(
+          children: [
+            Transform.translate(
+              offset: Offset(0, -frac * height),
+              child: Text('$shown', maxLines: 1, softWrap: false, style: drum),
+            ),
+            Transform.translate(
+              offset: Offset(0, (1 - frac) * height),
+              child: Text('$next', maxLines: 1, softWrap: false, style: drum),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class AlongFareSplit extends StatelessWidget {
   const AlongFareSplit({super.key, required this.each});
 
@@ -584,8 +739,18 @@ class AlongFareSplit extends StatelessWidget {
             height: 6,
             child: Row(
               children: [
-                Expanded(child: ColoredBox(color: palette.accent)),
-                Expanded(child: ColoredBox(color: palette.ink)),
+                Expanded(
+                  child: ColoredBox(
+                    color: palette.accent,
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+                Expanded(
+                  child: ColoredBox(
+                    color: palette.ink,
+                    child: const SizedBox.expand(),
+                  ),
+                ),
               ],
             ),
           ),
@@ -1077,11 +1242,19 @@ class AlongKekeRefreshState extends State<AlongKekeRefresh>
         children: [
           widget.child,
           if (_pulling)
-            const Positioned(
-              top: 8,
+            Positioned(
+              top: 4,
               left: 0,
               right: 0,
-              child: Center(child: _KekeSpinner(key: Key('keke_refresh'))),
+              child: AnimatedBuilder(
+                animation: _rock,
+                builder: (context, _) {
+                  final progress = AlongMotionPolicy.play(context)
+                      ? _rock.value
+                      : 0.55;
+                  return AlongDriveTrack(progress: progress);
+                },
+              ),
             ),
         ],
       ),
@@ -1089,45 +1262,93 @@ class AlongKekeRefreshState extends State<AlongKekeRefresh>
   }
 }
 
-class _KekeSpinner extends StatelessWidget {
-  const _KekeSpinner({super.key});
+/// A car crossing a short road. [progress] is 0 at the left curb and 1 at
+/// the right. The refresh loop drives it. A still frame passes a fixed value.
+class AlongDriveTrack extends StatelessWidget {
+  const AlongDriveTrack({
+    super.key,
+    this.progress = 0,
+    this.height = 48,
+    this.carWidth = 72,
+  });
+
+  final double progress;
+  final double height;
+  final double carWidth;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final t = progress.clamp(0.0, 1.0);
+    final carHeight = carWidth * 0.5;
     return SizedBox(
-      width: 46,
-      height: 28,
-      child: CustomPaint(
-        painter: _KekePainter(color: palette.accent, ink: palette.ink),
+      key: const Key('keke_refresh'),
+      height: height,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final travel = math.max(0.0, constraints.maxWidth - carWidth - 16);
+          final road = math.max(8.0, height * 0.22);
+          return Stack(
+            children: [
+              Positioned(
+                left: 8,
+                right: 8,
+                bottom: 4,
+                height: road,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.mapRoad,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: palette.ink.withValues(alpha: 0.28),
+                    ),
+                  ),
+                  child: Center(
+                    child: height >= 80
+                        ? Row(
+                            children: [
+                              for (var i = 0; i < 8; i++)
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 3,
+                                    ),
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: palette.ink.withValues(
+                                          alpha: 0.35,
+                                        ),
+                                        borderRadius: BorderRadius.circular(99),
+                                      ),
+                                      child: const SizedBox(height: 3),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          )
+                        : Container(
+                            height: 2,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            color: palette.ink.withValues(alpha: 0.35),
+                          ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 8 + travel * t,
+                bottom: road * 0.45,
+                child: AlongVehicleMark(
+                  kind: AlongVehicleKind.car,
+                  width: carWidth,
+                  height: carHeight,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
-}
-
-class _KekePainter extends CustomPainter {
-  _KekePainter({required this.color, required this.ink});
-
-  final Color color;
-  final Color ink;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final body = RRect.fromRectAndRadius(
-      Rect.fromLTWH(6, 4, size.width - 10, 14),
-      const Radius.circular(4),
-    );
-    canvas.drawRRect(body, Paint()..color = color);
-    canvas.drawCircle(Offset(14, size.height - 4), 3.5, Paint()..color = ink);
-    canvas.drawCircle(
-      Offset(size.width - 12, size.height - 4),
-      3.5,
-      Paint()..color = ink,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _KekePainter oldDelegate) => false;
 }
 
 class AlongConfetti extends StatefulWidget {

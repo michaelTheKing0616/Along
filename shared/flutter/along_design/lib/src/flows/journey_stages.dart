@@ -345,8 +345,19 @@ class AlongFlowQuote extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      const AlongVehicleHero(
+                        kind: AlongVehicleKind.keke,
+                        width: 64,
+                        height: 36,
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
-                        child: Text('Quote', style: AlongType.display(palette)),
+                        child: Text(
+                          'Quote',
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.display(palette),
+                        ),
                       ),
                       const AlongDemoMark(),
                     ],

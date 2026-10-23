@@ -11,6 +11,11 @@ import 'package:along_design/src/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
+/// Cushion depress while a finger is down, keyed by seat id. Rest is 0.
+abstract final class AlongSeatPress {
+  static final depress = <String, double>{};
+}
+
 /// Privacy-safe rider mark. Initials only, never a name or a photo.
 class AlongRider {
   const AlongRider(this.initials);
@@ -788,6 +793,7 @@ class _SeatButtonState extends State<_SeatButton>
     with TickerProviderStateMixin {
   late final AnimationController _scale;
   late final AnimationController _reveal;
+  late final AnimationController _depress;
   var _armed = false;
 
   /// 0.9, through about 1.05, then rest at 1. The view clamps the peak.
@@ -805,6 +811,33 @@ class _SeatButtonState extends State<_SeatButton>
       vsync: this,
       duration: const Duration(milliseconds: 320),
       value: 1,
+    );
+    _depress = AnimationController.unbounded(vsync: this, value: 0)
+      ..addListener(() {
+        AlongSeatPress.depress[widget.seat.id] = _depress.value;
+      });
+  }
+
+  void _pressIn() {
+    if (widget.onTap == null) return;
+    if (!_play) {
+      _depress.value = 0;
+      return;
+    }
+    _scale.animateWith(SpringSimulation(_select, 0.92, 1, 0));
+    _depress.animateWith(
+      SpringSimulation(AlongSprings.press, _depress.value, 1, 0),
+    );
+  }
+
+  void _pressOut() {
+    if (!_play) {
+      _depress.value = 0;
+      AlongSeatPress.depress[widget.seat.id] = 0;
+      return;
+    }
+    _depress.animateWith(
+      SpringSimulation(AlongSprings.press, _depress.value, 0, 0),
     );
   }
 
@@ -862,6 +895,7 @@ class _SeatButtonState extends State<_SeatButton>
   void dispose() {
     _scale.dispose();
     _reveal.dispose();
+    _depress.dispose();
     super.dispose();
   }
 
@@ -892,19 +926,24 @@ class _SeatButtonState extends State<_SeatButton>
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
+              onTapDown: widget.onTap == null ? null : (_) => _pressIn(),
+              onTapUp: widget.onTap == null ? null : (_) => _pressOut(),
+              onTapCancel: widget.onTap == null ? null : _pressOut,
               onTap: widget.onTap == null
                   ? null
                   : () {
-                      AlongHaptics.selection(context);
+                      AlongHaptics.confirm(context);
                       widget.onTap!(seat.id);
                     },
               onLongPress: widget.onLongPress == null
                   ? null
                   : () => widget.onLongPress!(seat.id),
               child: AnimatedBuilder(
-                animation: Listenable.merge([_scale, _reveal]),
+                animation: Listenable.merge([_scale, _reveal, _depress]),
                 builder: (context, child) {
                   final scale = _scale.value.clamp(0.9, 1.05).toDouble();
+                  final depress = _play ? _depress.value : 0.0;
+                  AlongSeatPress.depress[seat.id] = depress;
                   return Transform.scale(
                     scale: scale,
                     child: CustomPaint(
@@ -915,8 +954,13 @@ class _SeatButtonState extends State<_SeatButton>
                               held: seat.status == 'held' ? 0.66 : 0,
                               contrast: true,
                               drawWheel: false,
+                              depress: depress,
                             )
-                          : _SeatPainter(seat: seat, palette: palette),
+                          : _SeatPainter(
+                              seat: seat,
+                              palette: palette,
+                              depress: depress,
+                            ),
                       child: child,
                     ),
                   );
@@ -1057,10 +1101,11 @@ class _SeatButtonState extends State<_SeatButton>
 }
 
 class _SeatPainter extends CustomPainter {
-  _SeatPainter({required this.seat, required this.palette});
+  _SeatPainter({required this.seat, required this.palette, this.depress = 0});
 
   final SeatMapSeat seat;
   final AlongPalette palette;
+  final double depress;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1071,6 +1116,13 @@ class _SeatPainter extends CustomPainter {
       Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
       Radius.circular(radius),
     );
+    final squash = depress.clamp(0.0, 1.0);
+    if (squash > 0) {
+      canvas.save();
+      canvas.translate(size.width / 2, size.height);
+      canvas.scale(1, 1 - 0.18 * squash);
+      canvas.translate(-size.width / 2, -size.height);
+    }
     canvas.drawRRect(pad, Paint()..color = cushion);
     canvas.drawRRect(
       pad,
@@ -1093,12 +1145,14 @@ class _SeatPainter extends CustomPainter {
             ? palette.accentInk.withValues(alpha: 0.28)
             : palette.ink.withValues(alpha: 0.18),
     );
+    if (squash > 0) canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant _SeatPainter oldDelegate) {
     return oldDelegate.seat.status != seat.status ||
         oldDelegate.seat.role != seat.role ||
+        oldDelegate.depress != depress ||
         oldDelegate.palette.brightness != palette.brightness;
   }
 }
@@ -1261,6 +1315,7 @@ class _CarSeatPainter extends CustomPainter {
     required this.held,
     this.contrast = false,
     this.drawWheel = true,
+    this.depress = 0,
   });
 
   final SeatMapSeat seat;
@@ -1268,6 +1323,7 @@ class _CarSeatPainter extends CustomPainter {
   final double held;
   final bool contrast;
   final bool drawWheel;
+  final double depress;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1325,6 +1381,14 @@ class _CarSeatPainter extends CustomPainter {
       seatH * 0.76,
     );
     final cushion = AlongCraft.path(cushionRect, seatW * 0.32);
+    final squash = depress.clamp(0.0, 1.0);
+    if (squash > 0) {
+      final pivot = Offset(cushionRect.center.dx, cushionRect.bottom);
+      canvas.save();
+      canvas.translate(pivot.dx, pivot.dy);
+      canvas.scale(1, 1 - 0.22 * squash);
+      canvas.translate(-pivot.dx, -pivot.dy);
+    }
     canvas.drawPath(cushion, Paint()..color = fill);
     canvas.save();
     canvas.clipPath(cushion);
@@ -1379,6 +1443,7 @@ class _CarSeatPainter extends CustomPainter {
       canvas.drawCircle(hub, seatW * 0.16, wheel);
       canvas.drawCircle(hub, seatW * 0.04, Paint()..color = ink);
     }
+    if (squash > 0) canvas.restore();
     final back = RRect.fromRectAndRadius(
       Rect.fromLTWH(
         left + (seatW - backW) / 2,
@@ -1434,6 +1499,7 @@ class _CarSeatPainter extends CustomPainter {
         oldDelegate.held != held ||
         oldDelegate.contrast != contrast ||
         oldDelegate.drawWheel != drawWheel ||
+        oldDelegate.depress != depress ||
         oldDelegate.palette.brightness != palette.brightness;
   }
 }

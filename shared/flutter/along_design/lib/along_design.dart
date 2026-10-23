@@ -9,6 +9,7 @@ export 'src/palette.dart';
 export 'src/theme.dart';
 export 'src/tokens.g.dart';
 export 'src/type.dart';
+export 'src/flows/batch_stages.dart';
 export 'src/flows/city_map.dart';
 export 'src/flows/delights.dart';
 export 'src/flows/demo_adapter.dart';

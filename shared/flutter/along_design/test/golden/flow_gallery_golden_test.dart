@@ -32,6 +32,10 @@ void main() {
     'receipt': ({bool legacy = false}) => const AlongFlowReceipt(),
     'notices': ({bool legacy = false}) => const AlongFlowNotices(),
     'settings': ({bool legacy = false}) => const AlongFlowSettings(),
+    'pass': ({bool legacy = false}) => const AlongFlowPass(),
+    'split': ({bool legacy = false}) => const AlongFlowSplit(),
+    'loading': ({bool legacy = false}) => const AlongFlowLoading(),
+    'refresh': ({bool legacy = false}) => const AlongFlowRefresh(),
   };
 
   for (final stage in stages.entries) {
