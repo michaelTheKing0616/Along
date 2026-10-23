@@ -1265,41 +1265,82 @@ class AlongKekeRefreshState extends State<AlongKekeRefresh>
 /// A car crossing a short road. [progress] is 0 at the left curb and 1 at
 /// the right. The refresh loop drives it. A still frame passes a fixed value.
 class AlongDriveTrack extends StatelessWidget {
-  const AlongDriveTrack({super.key, this.progress = 0});
+  const AlongDriveTrack({
+    super.key,
+    this.progress = 0,
+    this.height = 48,
+    this.carWidth = 72,
+  });
 
   final double progress;
+  final double height;
+  final double carWidth;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final t = progress.clamp(0.0, 1.0);
+    final carHeight = carWidth * 0.5;
     return SizedBox(
       key: const Key('keke_refresh'),
-      height: 48,
+      height: height,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final travel = math.max(0.0, constraints.maxWidth - 88);
+          final travel = math.max(0.0, constraints.maxWidth - carWidth - 16);
+          final road = math.max(8.0, height * 0.22);
           return Stack(
             children: [
               Positioned(
-                left: 12,
-                right: 12,
-                bottom: 8,
-                child: Container(
-                  height: 3,
+                left: 8,
+                right: 8,
+                bottom: 4,
+                height: road,
+                child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: palette.ink.withValues(alpha: 0.18),
-                    borderRadius: BorderRadius.circular(99),
+                    color: palette.mapRoad,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: palette.ink.withValues(alpha: 0.28),
+                    ),
+                  ),
+                  child: Center(
+                    child: height >= 80
+                        ? Row(
+                            children: [
+                              for (var i = 0; i < 8; i++)
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 3,
+                                    ),
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: palette.ink.withValues(
+                                          alpha: 0.35,
+                                        ),
+                                        borderRadius: BorderRadius.circular(99),
+                                      ),
+                                      child: const SizedBox(height: 3),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          )
+                        : Container(
+                            height: 2,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            color: palette.ink.withValues(alpha: 0.35),
+                          ),
                   ),
                 ),
               ),
               Positioned(
                 left: 8 + travel * t,
-                top: 2,
-                child: const AlongVehicleMark(
+                bottom: road * 0.45,
+                child: AlongVehicleMark(
                   kind: AlongVehicleKind.car,
-                  width: 72,
-                  height: 32,
+                  width: carWidth,
+                  height: carHeight,
                 ),
               ),
             ],

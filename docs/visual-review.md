@@ -124,9 +124,20 @@ Checked at 360 and 320, light and dark. Motion rests in gallery frames.
 | Rides to quote | The keke on the ride card and the quote header share one hero tag, so the vehicle flies into the fare. |
 | Seats | A tap springs the cushion, depresses it, and asks for a light haptic. The rest pose and the cushion size stay. |
 | Live | The ETA is a digit window. It rolls on a change and rests on 4-6 min. |
-| Loading | Fare bones with the shimmer held at rest. |
-| Refresh | A car sits mid-road while the ride list loads, and drives across while a refresh is in flight. |
+| Loading | Fare bones with the shimmer held at rest. Pass 10 rebuilds the layout. |
+| Refresh | A car drives across while a refresh is in flight. Pass 10 puts the still frame on the ride list. |
 | Home | Wuse to Nyanya is a regular route with one Rebook action. Where to? stays the focal. |
-| Pass | A weekly Wuse to Nyanya seat, weekday pills, and Subscribe. |
-| Split | You and Ada each pay ₦600, with a share link. |
+| Pass | A weekly Wuse to Nyanya seat and Subscribe. Pass 10 replaces the empty middle with the ticket. |
+| Split | You and Ada each pay ₦600, with a share link. Pass 10 fills the card. |
 | Day | Leave at suggests 06:40, 07:10, and 09:20 from corridor demand. The best time has a short accent rail. |
+
+## Pass 10 — ticket, split, skeletons, refresh
+
+Home, quote, live, and day stay as accepted in Pass 9. Checked again at 360 and 320, light and dark.
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| Pass | A short column and an empty middle. | One ticket. The top is the Wuse–Nyanya corridor. Under it: a seven-day seat calendar (Thursday is the accent seat), single fare ₦12,000 against the pass at ₦4,800, and three perks. Subscribe sits under the ticket. |
+| Split | Initials, a thin bar, and an empty middle. | You and Ada use the two portraits. A ₦600 / ₦600 bar splits accent and ink. The status row reads Ada paid. The share link stays on the card. |
+| Loading | Full-width grey slabs. | A map tile (land, roads, park, water, a warm sheen), then a card of round bones and text lines, then a button bone. Each bone keeps the warm shimmer. |
+| Refresh | No car, only bars. | The car sits mid-road on a lane. Under it is the ride list: keke, okada, car, danfo, and bus, then Confirm keke. |
