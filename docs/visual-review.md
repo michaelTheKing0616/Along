@@ -141,3 +141,12 @@ Home, quote, live, and day stay as accepted in Pass 9. Checked again at 360 and 
 | Split | Initials, a thin bar, and an empty middle. | You and Ada use the two portraits. A ₦600 / ₦600 bar splits accent and ink. The status row reads Ada paid. The share link stays on the card. |
 | Loading | Full-width grey slabs. | A map tile (land, roads, park, water, a warm sheen), then a card of round bones and text lines, then a button bone. Each bone keeps the warm shimmer. |
 | Refresh | No car, only bars. | The car sits mid-road on a lane. Under it is the ride list: keke, okada, car, danfo, and bus, then Confirm keke. |
+
+## Pass 11 — soft map, split filled
+
+Pass and refresh stay as accepted in Pass 10. Checked at 360 and 320, light and dark.
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| Loading | The map tile was a grey field with a hard white cross. | A blurred bake of the real tiles. Streets sit at low alpha, with the warm shimmer over them. The card of round bones stays. |
+| Split | The lower half was empty. | A trip card (route, seat, time), a wallet row, and Remind Ada. Share link sits on the bottom safe area. |

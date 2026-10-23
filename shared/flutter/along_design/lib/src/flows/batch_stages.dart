@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,6 +9,7 @@ import '../components/skeleton.dart';
 import '../craft.dart';
 import '../elevation.dart';
 import '../icons.dart';
+import '../motion.dart';
 import '../palette.dart';
 import '../type.dart';
 import 'city_map.dart';
@@ -545,12 +548,26 @@ class AlongFlowSplit extends StatelessWidget {
         _oneLine('Split the fare', AlongType.title(palette)),
         const SizedBox(height: 2),
         _oneLine('Wuse to Nyanya · two seats', AlongType.bodyMuted(palette)),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
+        _SplitRiders(size: roomy ? 72 : 84),
+        const SizedBox(height: 8),
+        const _SplitBar(),
+        const SizedBox(height: 8),
+        const _PaidRow(),
+        const SizedBox(height: 8),
         if (roomy)
-          const _SplitCard(fill: false)
+          const _TripSummary(fill: false)
         else
-          const Expanded(child: _SplitCard(fill: true)),
-        const SizedBox(height: 10),
+          const Expanded(child: _TripSummary(fill: true)),
+        const SizedBox(height: 8),
+        const _PayMethod(),
+        const SizedBox(height: 8),
+        const AlongButton(
+          label: 'Remind Ada',
+          variant: AlongButtonVariant.secondary,
+          onPressed: _noop,
+        ),
+        const SizedBox(height: 8),
         const AlongButton(
           key: Key('share_fare_link'),
           label: 'Share link',
@@ -574,8 +591,8 @@ void _copyLink() {
   Clipboard.setData(const ClipboardData(text: 'https://along.app/s/nyanya'));
 }
 
-class _SplitCard extends StatelessWidget {
-  const _SplitCard({required this.fill});
+class _TripSummary extends StatelessWidget {
+  const _TripSummary({required this.fill});
 
   final bool fill;
 
@@ -585,36 +602,97 @@ class _SplitCard extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 20,
+        radius: 16,
         hairline: true,
-        shadow: AlongElevation.sheet(palette.ink),
+        shadow: AlongElevation.rest(palette.ink),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final bounded = fill && constraints.maxHeight.isFinite;
-            var avatar = bounded ? constraints.maxHeight * 0.28 : 96.0;
-            final byWidth = (constraints.maxWidth - 16) / 2;
-            if (avatar > byWidth) avatar = byWidth;
-            if (avatar > 132) avatar = 132;
-            if (avatar < 72) avatar = 72;
-            return Column(
-              mainAxisSize: bounded ? MainAxisSize.max : MainAxisSize.min,
-              mainAxisAlignment: bounded
-                  ? MainAxisAlignment.spaceEvenly
-                  : MainAxisAlignment.start,
-              children: [
-                _SplitRiders(size: avatar),
-                if (!bounded) const SizedBox(height: 16),
-                const _SplitBar(),
-                if (!bounded) const SizedBox(height: 12),
-                const _PaidRow(),
-                if (!bounded) const SizedBox(height: 12),
-                const _ShareLink(link: 'along.app/s/nyanya'),
-              ],
-            );
-          },
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        child: Column(
+          mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+          mainAxisAlignment: fill
+              ? MainAxisAlignment.spaceEvenly
+              : MainAxisAlignment.start,
+          children: [
+            Text(
+              'This trip',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(
+                color: palette.ink,
+                fontWeight: FontWeight.w600,
+                height: 1.1,
+              ),
+            ),
+            if (!fill) const SizedBox(height: 6),
+            const _SummaryLine(icon: AlongIcons.path, label: 'Wuse to Nyanya'),
+            if (!fill) const SizedBox(height: 4),
+            const _SummaryLine(icon: AlongIcons.seat, label: '2 seats'),
+            if (!fill) const SizedBox(height: 4),
+            const _SummaryLine(icon: AlongIcons.schedule, label: '4-6 min'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SummaryLine extends StatelessWidget {
+  const _SummaryLine({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Row(
+      children: [
+        AlongIcon(icon, size: 20, color: palette.ink),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PayMethod extends StatelessWidget {
+  const _PayMethod();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            AlongIcon(AlongIcons.wallet, size: 20, color: palette.ink),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Wallet',
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.body(palette)
+                    .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+              ),
+            ),
+            AlongMoney(
+              value: 600,
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+            ),
+          ],
         ),
       ),
     );
@@ -772,45 +850,6 @@ class _PaidRow extends StatelessWidget {
   }
 }
 
-class _ShareLink extends StatelessWidget {
-  const _ShareLink({required this.link});
-
-  final String link;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(
-        palette,
-        radius: 12,
-        color: palette.recessed,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Row(
-          children: [
-            AlongIcon(AlongIcons.share, size: 20, color: palette.ink),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                link,
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.body(palette).copyWith(
-                  fontWeight: FontWeight.w600,
-                  height: 1.1,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// Fare card while the quote is still on the way. Bones mirror the card.
 class AlongFlowLoading extends StatelessWidget {
   const AlongFlowLoading({super.key});
@@ -857,87 +896,137 @@ class _LoadingMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final dark = palette.brightness == Brightness.dark;
+    final tone = dark ? 'dark' : 'light';
+    // Light tiles are almost one grey. Stretch them around the land value
+    // so the baked streets read, then blur so none of the edges stay hard.
+    final contrast = dark ? 1.0 : 4.0;
+    final pivot = dark ? 40.0 : 224.0;
+    final shift = pivot * (1 - contrast);
     return ClipPath(
       clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
       child: ColoredBox(
         color: palette.mapLand,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final w = constraints.maxWidth;
-            final h = constraints.maxHeight;
-            final road = h * 0.09;
-            return Stack(
-              children: [
-                Positioned(
-                  left: w * 0.08,
-                  top: h * 0.14,
-                  width: w * 0.3,
-                  height: h * 0.24,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: palette.mapPark,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+              child: ColorFiltered(
+                colorFilter: ColorFilter.matrix(<double>[
+                  contrast,
+                  0,
+                  0,
+                  0,
+                  shift,
+                  0,
+                  contrast,
+                  0,
+                  0,
+                  shift,
+                  0,
+                  0,
+                  contrast,
+                  0,
+                  shift,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                ]),
+                child: Row(
+                  children: [
+                    for (final name in ['12_2132_1944', '12_2133_1944'])
+                      Expanded(
+                        child: Image.asset(
+                          'assets/map/tiles/$tone/$name.png',
+                          package: 'along_design',
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                          filterQuality: FilterQuality.low,
+                          excludeFromSemantics: true,
+                          gaplessPlayback: true,
+                        ),
+                      ),
+                  ],
                 ),
-                Positioned(
-                  right: w * 0.08,
-                  bottom: h * 0.12,
-                  width: w * 0.2,
-                  height: h * 0.18,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: palette.mapWater,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: h * 0.46,
-                  height: road,
-                  child: ColoredBox(color: palette.mapRoad),
-                ),
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  left: w * 0.62,
-                  width: w * 0.055,
-                  child: ColoredBox(color: palette.mapRoad),
-                ),
-                Positioned(
-                  left: 16,
-                  right: 16,
-                  top: h * 0.46 + road / 2 - 1,
-                  height: 2,
-                  child: ColoredBox(color: palette.ink.withValues(alpha: 0.28)),
-                ),
-                const Positioned.fill(child: _WarmSheen()),
-              ],
-            );
-          },
+              ),
+            ),
+            ColoredBox(
+              color: palette.mapLand.withValues(alpha: dark ? 0.18 : 0.1),
+            ),
+            const _MapShimmer(),
+          ],
         ),
       ),
     );
   }
 }
 
-class _WarmSheen extends StatelessWidget {
-  const _WarmSheen();
+/// Warm band held at the same rest as [AlongSkeleton]. It does not repaint
+/// the streets.
+class _MapShimmer extends StatefulWidget {
+  const _MapShimmer();
+
+  @override
+  State<_MapShimmer> createState() => _MapShimmerState();
+}
+
+class _MapShimmerState extends State<_MapShimmer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+      value: 0.42,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduced = AlongMotionPolicy.reduced(context);
+    final play = AlongMotionPolicy.play(context) && !reduced;
+    if (play) {
+      if (!_controller.isAnimating) _controller.repeat();
+    } else {
+      _controller.stop();
+      _controller.value = reduced ? 0 : 0.42;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const IgnorePointer(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment(-1.15, 0),
-            end: Alignment(0.35, 0),
-            colors: [Color(0x00FFF6E8), Color(0x33FFF6E8), Color(0x00FFF6E8)],
-            stops: [0.18, 0.48, 0.78],
-          ),
-        ),
+    return IgnorePointer(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          final t = _controller.value;
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment(-1.4 + 2.6 * t, 0),
+                end: Alignment(-0.2 + 2.6 * t, 0),
+                colors: const [
+                  Color(0x00FFF6E8),
+                  Color(0x47FFF6E8),
+                  Color(0x00FFF6E8),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
