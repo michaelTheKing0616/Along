@@ -95,6 +95,8 @@ Named lengths live on `AlongDurations`. Curves live on `AlongCurves`. Springs li
 | Skeleton | 1200ms shimmer | A sheen crosses the block. Gallery frames hold the sheen at rest. | Content is on its way. | Yes. Real content replaces it. |
 | Seat | `AlongSprings.press` | The cushion sinks under the finger, and the seat springs back. A light haptic fires on release. Rest geometry is unchanged. | That seat was chosen. | Yes. Lift the finger and it returns. |
 | ETA | `refresh` 480ms, `AlongCurves.settle` | Each ETA numeral rolls. The window rests on the final digits. | How long the ride is. | Yes. A new value replaces the roll. |
+| Goal | `AlongSprings.route` | The earnings arc fills to the day's fraction, then rests. | How close the day is to ₦60,000. | Yes. A new total replaces it. |
+| Arrival | Stroke check. The gallery holds the finished mark. | The check draws on, then a light haptic. No confetti. | The trip has arrived. | Yes. |
 
 Do not animate every element on entry. `AlongStagger` returns the child. Do not loop decoration: search rings, the map radar, the route pulse, the GO glow, the plate sweep, and the empty-state float stay on a rest pose. Do not bounce a control twice. The skeleton shimmer and the in-flight refresh are progress, not decoration.
 

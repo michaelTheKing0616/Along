@@ -37,6 +37,7 @@ enum AlongFix { precise, approximate, stale, hidden }
 /// `tool/map/style-light.json` and `style-dark.json` (land `#E6E7EA` /
 /// `#16171A`, parks `#E4EEE4` / `#1A2620`, water `#D4E2EE` / `#1A2A36`,
 /// white or `#C9CCD2` roads). They are drawn as baked, with no color matrix.
+/// An optional [phase] lays a dawn, day, dusk, or night veil on the tiles.
 /// The daily planet stops at z15; neighborhood frames are the z16 slippy
 /// grid, drawn by overzooming that z15 vector so building footprints stay
 /// sharp. Nav locks zoom 17, rotated so the street runs up the screen, with
@@ -60,6 +61,7 @@ class AlongCityMap extends StatelessWidget {
     this.nearby = false,
     this.approach = false,
     this.place = false,
+    this.phase,
   });
 
   final AlongCityMapMode mode;
@@ -100,6 +102,9 @@ class AlongCityMap extends StatelessWidget {
   /// Building footprints, street names, and a walk to the pin. Pickup uses
   /// this. The screen pin stays fixed; these layers move with the map.
   final bool place;
+
+  /// Dawn, day, dusk, or night. Null leaves every existing map untouched.
+  final AlongDayPhase? phase;
 
   /// Lane zoom, inside 17–18. z16 tiles overzoom. Negative rotation puts
   /// east at the top: a positive bearing rotates the map clockwise, which
@@ -187,6 +192,7 @@ class AlongCityMap extends StatelessWidget {
   Widget _frame(BuildContext context, double shown) {
     final palette = AlongPalette.of(context);
     final dark = palette.brightness == Brightness.dark;
+    final tint = phase;
     final drawn = AlongMotionPolicy.reduced(context)
         ? 1.0
         : shown.clamp(0.0, 1.0);
@@ -283,6 +289,12 @@ class AlongCityMap extends StatelessWidget {
               keepBuffer: initialZoom >= 17 ? 0 : 1,
               panBuffer: 0,
             ),
+            if (tint != null)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: ColoredBox(color: tint.veil(dark)),
+                ),
+              ),
             if (mode == AlongCityMapMode.online) ...[
               PolygonLayer(polygons: _demandOutlines(palette)),
               Positioned.fill(

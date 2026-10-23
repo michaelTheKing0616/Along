@@ -14,6 +14,7 @@ import '../theme.dart';
 import '../type.dart';
 import 'batch_stages.dart';
 import 'city_map.dart';
+import 'live_arrival.dart';
 import 'delights.dart';
 import 'driver_portrait.dart';
 import 'map_sketch.dart';
@@ -111,7 +112,7 @@ class AlongFlowHome extends StatelessWidget {
             builder: (context, constraints) {
               final fraction = constraints.maxHeight >= 760 ? 0.54 : 0.67;
               final sheetTop = constraints.maxHeight * (1 - fraction);
-              Widget map = const AlongCityMap();
+              Widget map = const AlongCityMap(phase: AlongDayPhase.afternoon);
               if (extent != 0) {
                 map = Transform.translate(
                   offset: Offset(0, extent * 18),
@@ -192,6 +193,8 @@ class _HomeSheetBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const AlongLiveStrip(),
+        const SizedBox(height: 8),
         Container(
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -245,55 +248,7 @@ class _HomeSheetBody extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const _ServiceSlot(),
-        const SizedBox(height: 8),
-        const _RoutePromo(),
       ],
-    );
-  }
-}
-
-class _RoutePromo extends StatelessWidget {
-  const _RoutePromo();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      height: 72,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-      child: Row(
-        children: [
-          const AlongVehicleMark(
-            kind: AlongVehicleKind.keke,
-            width: 64,
-            height: 40,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Evening along',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.body(palette)
-                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Wuse to Nyanya · ₦200 off',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -1100,12 +1055,7 @@ class AlongFlowGuardian extends StatelessWidget {
         children: [
           Text('Guardian', style: AlongType.display(palette)),
           const SizedBox(height: 4),
-          Text(
-            'On Nyanya road · check-in 14:02',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.bodyMuted(palette),
-          ),
+          const _GuardianCheckIn(),
           const SizedBox(height: 8),
           const Expanded(
             child: _MapHero(
@@ -1118,6 +1068,34 @@ class AlongFlowGuardian extends StatelessWidget {
           const _GuardianPeople(),
         ],
       ),
+    );
+  }
+}
+
+class _GuardianCheckIn extends StatelessWidget {
+  const _GuardianCheckIn();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final line = AlongType.body(palette).copyWith(
+      fontWeight: FontWeight.w600,
+      height: 1.1,
+    );
+    return Row(
+      children: [
+        AlongStrokeCheck(color: palette.ink, size: 16),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'Ada checked in · sent 14:02',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+            style: line,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1288,6 +1266,8 @@ class AlongFlowOnline extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                AlongBreakNudge(),
+                SizedBox(height: 8),
                 _TodayPill(),
                 SizedBox(height: 8),
                 _DemandHint(),
@@ -1383,6 +1363,8 @@ class AlongFlowOffer extends StatelessWidget {
                         const _RiderRow(),
                         const SizedBox(height: 8),
                         const _OfferSeats(),
+                        const SizedBox(height: 8),
+                        const AlongQuickReplies(),
                         const SizedBox(height: 12),
                         AlongSwipeConfirm(label: 'Accept', onConfirmed: _noop),
                       ],
@@ -1412,13 +1394,43 @@ class AlongFlowEarnings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Today', style: AlongType.caption(palette)),
-              AlongOdometer(value: 48200, style: AlongType.display(palette)),
-              Text(
-                '11 trips · goal ₦60,000',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.bodyMuted(palette),
+              Row(
+                children: [
+                  const AlongGoalSpring(progress: 48200 / 60000, label: '80'),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Today', style: AlongType.caption(palette)),
+                        SizedBox(
+                          height: 40,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: AlongOdometer(
+                              value: 48200,
+                              style: AlongType.display(palette),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 22,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '11 trips · goal ₦60,000',
+                              maxLines: 1,
+                              softWrap: false,
+                              style: AlongType.bodyMuted(palette),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               const _WeekCard(),
@@ -1745,8 +1757,19 @@ class AlongFlowRating extends StatelessWidget {
             final star = short ? 36.0 : 44.0;
             return Column(
               children: [
-                const Expanded(
-                  child: AlongCityMap(mode: AlongCityMapMode.completed),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(
+                        child: AlongCityMap(mode: AlongCityMapMode.completed),
+                      ),
+                      const Positioned(
+                        left: 16,
+                        bottom: 16,
+                        child: AlongArrivalMark(),
+                      ),
+                    ],
+                  ),
                 ),
                 ColoredBox(
                   color: palette.bg,
@@ -1968,39 +1991,12 @@ class _TipSegments extends StatelessWidget {
   }
 }
 
-class _SendThanks extends StatefulWidget {
+class _SendThanks extends StatelessWidget {
   const _SendThanks();
 
   @override
-  State<_SendThanks> createState() => _SendThanksState();
-}
-
-class _SendThanksState extends State<_SendThanks> {
-  var _burst = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        AlongButton(
-          label: 'Send thanks',
-          onPressed: () {
-            AlongHaptics.success(context);
-            if (!AlongMotionPolicy.play(context)) return;
-            setState(() => _burst = true);
-          },
-        ),
-        Positioned.fill(
-          child: AlongConfetti(
-            play: _burst,
-            onDone: () {
-              if (mounted) setState(() => _burst = false);
-            },
-          ),
-        ),
-      ],
-    );
+    return const AlongButton(label: 'Send thanks', onPressed: _noop);
   }
 }
 

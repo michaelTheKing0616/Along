@@ -12,6 +12,7 @@ import '../palette.dart';
 import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
+import 'live_arrival.dart';
 import 'demo_adapter.dart';
 import 'driver_portrait.dart';
 import 'trip_machine.dart';
@@ -385,14 +386,9 @@ class AlongFlowQuote extends StatelessWidget {
                     strong: true,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Expires in $clock',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.body(palette).copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
+                  AlongFareLock(
+                    clock: clock,
+                    progress: quote.expiresIn.inSeconds / 120,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -1296,6 +1292,13 @@ class AlongFlowReceipt extends StatelessWidget {
                 softWrap: roomy,
                 style: AlongType.body(palette)
                     .copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              const AlongButton(
+                key: Key('lost_item'),
+                label: 'Report a lost item',
+                variant: AlongButtonVariant.secondary,
+                onPressed: _noop,
               ),
               const SizedBox(height: 8),
               const _SectionLabel('Fare'),
