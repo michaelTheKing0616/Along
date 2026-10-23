@@ -192,7 +192,9 @@ class _SchematicBody extends StatelessWidget {
 
 /// Photograph is 864×1152, nose up, steering wheel on the left.
 /// Front row is a three-cushion bench (seams near x 0.46 and 0.54).
-/// The rear is one bench. Marker count still comes from the row list.
+/// The rear is one bench. Four markers share that full width, centered
+/// on the cushion rather than the trunk lip. Marker count still comes
+/// from the row list. A bounded cabin stretches the crop to the card.
 class _CabinShell extends StatelessWidget {
   const _CabinShell({
     required this.rows,
@@ -218,19 +220,15 @@ class _CabinShell extends StatelessWidget {
       builder: (context, constraints) {
         final maxW = constraints.maxWidth;
         final maxH = constraints.maxHeight;
-        var width = maxW;
-        var height = width / _cropAspect;
-        if (maxH.isFinite && height > maxH) {
-          height = maxH;
-          width = height * _cropAspect;
-        }
-        return Align(
-          alignment: Alignment.topCenter,
-          child: SizedBox(
-            width: width,
-            height: height,
-            child: _shell(width, height),
-          ),
+        // A finite slot is the card interior. Stretch the crop to fill it
+        // so the cabin does not letterbox a white band under the bench.
+        // Unbounded callers keep the crop's own aspect.
+        final width = maxW;
+        final height = maxH.isFinite ? maxH : width / _cropAspect;
+        return SizedBox(
+          width: width,
+          height: height,
+          child: _shell(width, height),
         );
       },
     );
@@ -264,6 +262,7 @@ class _CabinShell extends StatelessWidget {
             child: _SeatButton(
               seat: seat,
               markHeight: seatH,
+              driverIcon: seat.isDriver,
               onTap: seat.isClaimable ? onSeatTap : null,
               onLongPress: seat.isClaimable ? onSeatLongPress : null,
             ),
@@ -294,24 +293,30 @@ class _CabinShell extends StatelessWidget {
   /// Cushion centers in full-photo fractions, left to right.
   /// Driver is sorted first, so the left front center is the wheel side.
   /// Front seams are at 0.46 and 0.54; 0.50 is the middle cushion.
+  /// The rear bench fabric runs about x 0.34–0.66. Four markers split
+  /// that width into equal slots (the photo reads as three cushions).
   static List<double> _photoXs(int index, int rowCount, int count) {
     final front = rowCount <= 1 || index == 0;
     if (front && count == 2) return const [0.39, 0.60];
     if (front && count == 3) return const [0.39, 0.50, 0.60];
-    if (!front && count == 4) return const [0.36, 0.45, 0.55, 0.64];
-    const start = 0.36;
-    const end = 0.64;
+    if (!front && count == 4) return const [0.38, 0.46, 0.54, 0.62];
+    const start = 0.34;
+    const end = 0.66;
     if (count <= 1) return const [(start + end) / 2];
     return [
       for (var i = 0; i < count; i++) start + (end - start) * i / (count - 1),
     ];
   }
 
+  /// Front cushion center is y 0.395. Rear cushion fabric is y 0.525–0.58;
+  /// 0.55 sits on that band. 0.575 dropped the marker onto the trunk lip.
   static double _photoY(int index, int rowCount) {
-    if (rowCount <= 1) return 0.395;
-    if (rowCount == 2) return index == 0 ? 0.395 : 0.575;
+    const frontY = 0.395;
+    const rearY = 0.55;
+    if (rowCount <= 1) return frontY;
+    if (rowCount == 2) return index == 0 ? frontY : rearY;
     final t = index / (rowCount - 1);
-    return 0.395 + (0.575 - 0.395) * t;
+    return frontY + (rearY - frontY) * t;
   }
 
   static double _mapX(double photo, double width) =>
@@ -367,16 +372,19 @@ String _silhouetteAsset(String body) {
 }
 
 class _SteeringWheel extends StatelessWidget {
-  const _SteeringWheel();
+  const _SteeringWheel({this.ink, this.size = 28});
+
+  final Color? ink;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return SizedBox(
-      width: 28,
-      height: 28,
+      width: size,
+      height: size,
       child: CustomPaint(
-        painter: _WheelPainter(ink: palette.ink, hub: palette.surface),
+        painter: _WheelPainter(ink: ink ?? palette.ink, hub: palette.surface),
       ),
     );
   }
@@ -426,12 +434,16 @@ class _SeatButton extends StatefulWidget {
     required this.onTap,
     required this.onLongPress,
     this.markHeight = 86,
+    this.driverIcon = false,
   });
 
   final SeatMapSeat seat;
   final ValueChanged<String>? onTap;
   final ValueChanged<String>? onLongPress;
   final double markHeight;
+
+  /// Cabin driver marker. Schematic rows draw their own wheel beside the seat.
+  final bool driverIcon;
 
   @override
   State<_SeatButton> createState() => _SeatButtonState();
@@ -494,45 +506,54 @@ class _SeatButtonState extends State<_SeatButton>
                       palette: palette,
                       pulse: seat.status == 'yours' ? _pulse.value : 0,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 6, 2, 3),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (seat.isCargo)
-                            Icon(Icons.luggage_outlined, size: 16, color: ink)
-                          else if (!seat.isDriver)
-                            Text(
-                              seat.label.trim(),
-                              maxLines: 1,
-                              softWrap: false,
-                              style: AlongText.caption.copyWith(
-                                color: ink,
-                                fontSize: 13,
-                                height: 1,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          if (showPrice) ...[
-                            const SizedBox(height: 2),
-                            Text(
-                              price,
-                              maxLines: 1,
-                              softWrap: false,
-                              style: AlongText.caption.copyWith(
-                                color: ink,
-                                fontSize: 11,
-                                height: 1,
-                                fontWeight: FontWeight.w700,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
+                    child: seat.isDriver && widget.driverIcon
+                        ? Align(
+                            alignment: const Alignment(0, 0.15),
+                            child: _SteeringWheel(ink: palette.onInk, size: 26),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.fromLTRB(2, 6, 2, 3),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (seat.isCargo)
+                                  Icon(
+                                    Icons.luggage_outlined,
+                                    size: 16,
+                                    color: ink,
+                                  )
+                                else if (!seat.isDriver)
+                                  Text(
+                                    seat.label.trim(),
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: AlongText.caption.copyWith(
+                                      color: ink,
+                                      fontSize: 13,
+                                      height: 1,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                if (showPrice) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    price,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: AlongText.caption.copyWith(
+                                      color: ink,
+                                      fontSize: 11,
+                                      height: 1,
+                                      fontWeight: FontWeight.w700,
+                                      fontFeatures: const [
+                                        FontFeature.tabularFigures(),
+                                      ],
+                                    ),
+                                  ),
                                 ],
-                              ),
+                              ],
                             ),
-                          ],
-                        ],
-                      ),
-                    ),
+                          ),
                   );
                 },
               ),

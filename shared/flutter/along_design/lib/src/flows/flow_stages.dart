@@ -238,8 +238,8 @@ class AlongFlowSeats extends StatelessWidget {
                   id: 'front',
                   seats: [
                     SeatMapSeat(
-                      id: 'fl',
-                      label: 'FL',
+                      id: 'fm',
+                      label: 'FM',
                       role: 'passenger',
                       status: 'yours',
                       statusWord: 'Yours',
@@ -302,6 +302,9 @@ class AlongFlowSeats extends StatelessWidget {
               ],
             ),
           ),
+          // Card shadow offsets 8px and blurs 24. Without this gap the
+          // fold title sits in that shadow and reads as cut off.
+          const SizedBox(height: 20),
           const _Fold(
             label: 'Driver and key',
             child: Column(
