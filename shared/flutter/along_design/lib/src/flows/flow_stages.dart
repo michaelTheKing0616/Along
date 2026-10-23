@@ -935,15 +935,7 @@ class AlongFlowGuardian extends StatelessWidget {
           const SizedBox(height: 8),
           const _MapHero(height: 128, label: 'Live', live: true),
           const SizedBox(height: 8),
-          const _ContactLine(
-            name: 'Adaeze',
-            detail: 'Sister · shares this trip',
-            asset: AlongDriverPortrait.adaeze,
-          ),
-          const _ContactLine(name: 'Chidi', detail: 'Brother', initials: 'CH'),
-          const _ContactLine(name: 'Ngozi', detail: 'Aunt', initials: 'NG'),
-          const _ShareToggle(label: 'Share live location', on: true),
-          const _ShareToggle(label: 'Share the plate', on: false),
+          const Expanded(child: _GuardianCard()),
         ],
       ),
     );
@@ -1039,52 +1031,14 @@ class AlongFlowWallet extends StatelessWidget {
   Widget build(BuildContext context) {
     return _Page(
       bottom: const AlongButton(label: 'Pay ₦1,200', onPressed: _noop),
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
           AlongGyroCard(child: _BalanceCard()),
           SizedBox(height: 16),
           _WalletTiles(),
           SizedBox(height: 16),
-          _TxnGroup(label: 'Today'),
-          _TxnRow(
-            icon: AlongIcons.navigate,
-            title: 'Nyanya',
-            detail: 'Seat hold',
-            value: '−₦1,200',
-          ),
-          _TxnRow(
-            icon: AlongIcons.plus,
-            title: 'Top up',
-            detail: 'Transfer',
-            value: '+₦5,000',
-          ),
-          SizedBox(height: 8),
-          _TxnGroup(label: 'Earlier'),
-          _TxnRow(
-            icon: AlongIcons.navigate,
-            title: 'Berger',
-            detail: 'Yesterday',
-            value: '−₦900',
-          ),
-          _TxnRow(
-            icon: AlongIcons.navigate,
-            title: 'Jabi',
-            detail: 'Monday',
-            value: '−₦1,600',
-          ),
-          _TxnRow(
-            icon: AlongIcons.wallet,
-            title: 'Cash out',
-            detail: 'Sunday · GTBank',
-            value: '−₦8,000',
-          ),
-          _TxnRow(
-            icon: AlongIcons.receipt,
-            title: 'Along Pass',
-            detail: 'This month',
-            value: '−₦2,000',
-          ),
+          Expanded(child: _ActivityCard()),
         ],
       ),
     );
@@ -1113,7 +1067,7 @@ class AlongFlowDay extends StatelessWidget {
           const SizedBox(height: 8),
           const _DaySummary(),
           const SizedBox(height: 8),
-          const Expanded(child: _DayTimeline()),
+          const Expanded(child: _DayBoard()),
         ],
       ),
     );
@@ -2958,15 +2912,24 @@ class _EarnList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      children: const [
-        _EarningTrip(place: 'Nyanya', fare: '₦1,800', tip: '₦200'),
-        _EarningTrip(place: 'Wuse', fare: '₦1,200'),
-        _EarningTrip(place: 'Garki', fare: '₦900', tip: '₦100'),
-        _EarningTrip(place: 'Berger', fare: '₦1,400'),
-        _EarningTrip(place: 'Jabi', fare: '₦1,600', tip: '₦300'),
-      ],
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        children: const [
+          _EarningTrip(place: 'Nyanya', fare: '₦1,800', tip: '₦200'),
+          _EarningTrip(place: 'Wuse', fare: '₦1,200'),
+          _EarningTrip(place: 'Garki', fare: '₦900', tip: '₦100'),
+          _EarningTrip(place: 'Berger', fare: '₦1,400'),
+          _EarningTrip(place: 'Jabi', fare: '₦1,600', tip: '₦300'),
+          _EarningTrip(place: 'Airport', fare: '₦3,200'),
+        ],
+      ),
     );
   }
 }
@@ -3497,6 +3460,66 @@ class _PlateMatch extends StatelessWidget {
   }
 }
 
+class _GuardianCard extends StatelessWidget {
+  const _GuardianCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          children: [
+            _ContactLine(
+              name: 'Adaeze',
+              detail: 'Sister · shares this trip',
+              asset: AlongDriverPortrait.adaeze,
+            ),
+            _ContactLine(name: 'Chidi', detail: 'Brother', initials: 'CH'),
+            _ContactLine(name: 'Ngozi', detail: 'Aunt', initials: 'NG'),
+            _ShareToggle(label: 'Share live location', on: true),
+            _ShareToggle(label: 'Share the plate', on: false),
+            Spacer(),
+            _GuardianFoot(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GuardianFoot extends StatelessWidget {
+  const _GuardianFoot();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      height: 36,
+      child: Row(
+        children: [
+          AlongIcon(AlongIcons.shield, size: 20, color: palette.ink),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '3 people can see this trip',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(color: palette.ink),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ShareToggle extends StatelessWidget {
   const _ShareToggle({required this.label, required this.on});
 
@@ -3740,6 +3763,65 @@ class _IconTile extends StatelessWidget {
   }
 }
 
+class _ActivityCard extends StatelessWidget {
+  const _ActivityCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+        children: const [
+          _TxnGroup(label: 'Today'),
+          _TxnRow(
+            icon: AlongIcons.navigate,
+            title: 'Nyanya',
+            detail: 'Seat hold',
+            value: '−₦1,200',
+          ),
+          _TxnRow(
+            icon: AlongIcons.plus,
+            title: 'Top up',
+            detail: 'Transfer',
+            value: '+₦5,000',
+          ),
+          _TxnGroup(label: 'Earlier'),
+          _TxnRow(
+            icon: AlongIcons.navigate,
+            title: 'Berger',
+            detail: 'Yesterday',
+            value: '−₦900',
+          ),
+          _TxnRow(
+            icon: AlongIcons.navigate,
+            title: 'Jabi',
+            detail: 'Monday',
+            value: '−₦1,600',
+          ),
+          _TxnRow(
+            icon: AlongIcons.wallet,
+            title: 'Cash out',
+            detail: 'Sunday · GTBank',
+            value: '−₦8,000',
+          ),
+          _TxnRow(
+            icon: AlongIcons.receipt,
+            title: 'Along Pass',
+            detail: 'This month',
+            value: '−₦2,000',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _TxnGroup extends StatelessWidget {
   const _TxnGroup({required this.label});
 
@@ -3879,6 +3961,58 @@ class _DayStat extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DayBoard extends StatelessWidget {
+  const _DayBoard();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: AlongElevation.hairline(palette.ink),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(12, 4, 12, 8),
+        child: Column(
+          children: [
+            Expanded(child: _DayTimeline()),
+            SizedBox(height: 4),
+            _DayFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DayFooter extends StatelessWidget {
+  const _DayFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      height: 28,
+      child: Row(
+        children: [
+          AlongIcon(AlongIcons.path, size: 20, color: palette.ink),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Nyanya corridor · 6.5 hours',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(color: palette.ink),
+            ),
+          ),
+        ],
       ),
     );
   }
