@@ -150,3 +150,19 @@ Pass and refresh stay as accepted in Pass 10. Checked at 360 and 320, light and 
 | --- | --- | --- |
 | Loading | The map tile was a grey field with a hard white cross. | A blurred bake of the real tiles. Streets sit at low alpha, with the warm shimmer over them. The card of round bones stays. |
 | Split | The lower half was empty. | A trip card (route, seat, time), a wallet row, and Remind Ada. Share link sits on the bottom safe area. |
+
+## Pass 12 — live strip, lock, arrival
+
+Pass, refresh, the soft loading map, and the filled split stay as accepted. Checked at 360 and 320, light and dark.
+
+| Screen | What changed |
+| --- | --- |
+| Home | A live strip sits on the sheet during the ride: Chinedu, Nyanya, 4 min. The map wears the day veil. Where to? and Rebook stay. |
+| Quote | A fare-lock ring rests on 1:48 of a two-minute hold. Confirm fare stays. |
+| Rating | Arrival is a drawn check and the word Arrived. Send thanks does not throw confetti. |
+| Earnings | The day's ring springs to 80 of the ₦60,000 goal and rests there. |
+| Map light | Dawn, day, dusk, and night are the same street with four veils. Other maps stay untinted unless they pass a phase. |
+| Guardian | Ada's arrival already checked in. The line reads sent at 14:02. |
+| Offer | Four canned replies: On my way, I dey come, Ina zuwa, Mo n bọ. |
+| Receipt | Report a lost item sits under the route. Report an issue stays. |
+| Online | After 4h online, a break nudge sits above Go. |

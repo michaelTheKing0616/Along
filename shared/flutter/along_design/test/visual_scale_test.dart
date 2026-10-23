@@ -36,6 +36,7 @@ void main() {
     'split': const AlongFlowSplit(),
     'loading': const AlongFlowLoading(),
     'refresh': const AlongFlowRefresh(),
+    'phases': const AlongFlowPhases(),
     'empty-routes': const Scaffold(
       body: EmptyState(variant: EmptyStateVariant.coverageGap),
     ),

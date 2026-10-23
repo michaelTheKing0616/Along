@@ -457,6 +457,64 @@ void main() {
     expect(find.byIcon(AlongIcons.check), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('live arrival rests without confetti', (tester) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowHome()));
+    await tester.pump();
+    expect(find.byKey(const Key('live_strip')), findsOneWidget);
+    expect(find.byKey(const Key('rebook_regular')), findsOneWidget);
+    expect(find.text('Where to?'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowQuote()));
+    await tester.pump();
+    expect(find.text('Fare locked'), findsOneWidget);
+    expect(find.text('1:48'), findsOneWidget);
+    expect(find.text('Confirm fare'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowRating()));
+    await tester.pump();
+    expect(find.byKey(const Key('arrival_mark')), findsOneWidget);
+    expect(find.text('Arrived'), findsOneWidget);
+    expect(find.byType(AlongConfetti), findsNothing);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowEarnings()));
+    await tester.pump();
+    expect(find.byKey(const Key('goal_spring')), findsOneWidget);
+    expect(find.text('80'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowPhases()));
+    await tester.pump();
+    expect(find.text('Dawn'), findsOneWidget);
+    expect(find.text('Day'), findsOneWidget);
+    expect(find.text('Dusk'), findsOneWidget);
+    expect(find.text('Night'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowGuardian()));
+    await tester.pump();
+    expect(find.text('Ada checked in · sent 14:02'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowOffer()));
+    await tester.pump();
+    expect(find.text('EN On my way'), findsOneWidget);
+    expect(find.text('PCM I dey come'), findsOneWidget);
+    expect(find.text('HA Ina zuwa'), findsOneWidget);
+    expect(find.text('YO Mo n bọ'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowReceipt()));
+    await tester.pump();
+    expect(find.text('Report a lost item'), findsOneWidget);
+    expect(find.text('Report an issue'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: AlongFlowOnline()));
+    await tester.pump();
+    expect(find.text('4h online'), findsOneWidget);
+    expect(find.text('Take a break'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 double _seatScale(WidgetTester tester) {
