@@ -25,6 +25,8 @@ class AlongDriverApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Along Driver',
       theme: alongTheme(branding: branding),
+      darkTheme: alongTheme(branding: branding, brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
       routerConfig: router,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -53,7 +55,9 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
         supabase: supabase,
         database: await AlongDatabase.open(fileName: 'driver.db'),
         driverChannel: SupabaseDriverChannel(Supabase.instance.client),
-        negotiationChannel: SupabaseNegotiationChannel(Supabase.instance.client),
+        negotiationChannel: SupabaseNegotiationChannel(
+          Supabase.instance.client,
+        ),
         pushService: StubPushService(),
       ),
       driverForegroundNotifierProvider.overrideWithValue(

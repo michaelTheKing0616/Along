@@ -84,7 +84,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.reportIncidentTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         foregroundColor: AlongColors.ink900,
         elevation: 0,
       ),

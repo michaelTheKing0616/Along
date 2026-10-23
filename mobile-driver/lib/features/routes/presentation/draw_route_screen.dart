@@ -39,7 +39,7 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.routeDrawTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: Column(

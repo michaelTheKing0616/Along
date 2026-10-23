@@ -10,8 +10,15 @@ environment:
 dependencies:
   along_core:
     path: ../along_core
+  figma_squircle: ^0.6.3
   flutter:
     sdk: flutter
+  flutter_animate: ^4.5.2
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  lottie: ^3.6.1
+  phosphor_flutter: ^2.1.0
+  sensors_plus: ^6.1.1
 
 dev_dependencies:
   flutter_test:
@@ -35,7 +42,23 @@ flutter:
     - assets/icons/android/drawable-xxxhdpi/
     - assets/icons/ios/AppIcon.appiconset/
     - assets/splash/
+    - assets/map/
+    - assets/map/tiles/light/
+    - assets/map/tiles/dark/
+    - assets/map/tiles/heat/
+    - assets/photos/
+    - assets/avatars/
+    - assets/vehicles/
+    - assets/motion/
   fonts:
+    - family: Geist
+      fonts:
+        # Variable font (wght 100–900). The min/max pair is what lets
+        # fontWeight resolve inside the axis instead of pinning 400.
+        - asset: assets/fonts/Geist-Variable.ttf
+          weight: 100
+        - asset: assets/fonts/Geist-Variable.ttf
+          weight: 900
     - family: Inter
       fonts:
         # Variable font (wght 100–900); min/max entries enable weight interpolation.

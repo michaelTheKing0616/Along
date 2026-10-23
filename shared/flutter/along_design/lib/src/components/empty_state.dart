@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
+import '../motion.dart';
 import '../tokens.g.dart';
 import 'along_button.dart';
 
@@ -19,29 +21,27 @@ class EmptyState extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
-  ({IconData icon, String heading, String body, String defaultAction})
-      get _content => switch (variant) {
-            EmptyStateVariant.coverageGap => (
-                icon: Icons.map_outlined,
-                heading: 'No routes here yet',
-                body:
-                    'Along does not have verified routes for this area. Try a nearby park or check back soon.',
-                defaultAction: 'Report a route',
-              ),
-            EmptyStateVariant.noHistory => (
-                icon: Icons.history_rounded,
-                heading: 'No trips yet',
-                body: 'Your completed trips will appear here.',
-                defaultAction: 'Find a ride',
-              ),
-            EmptyStateVariant.offline => (
-                icon: Icons.wifi_off_rounded,
-                heading: 'You are offline',
-                body:
-                    'Connect to the internet to search routes. Saved trips and Na Me still work.',
-                defaultAction: 'Retry',
-              ),
-          };
+  ({AlongSpotKind spot, String heading, String body, String defaultAction})
+  get _content => switch (variant) {
+    EmptyStateVariant.coverageGap => (
+      spot: AlongSpotKind.route,
+      heading: 'No routes here yet',
+      body: 'Along does not have verified routes for this area. Try a nearby park or check back soon.',
+      defaultAction: 'Report a route',
+    ),
+    EmptyStateVariant.noHistory => (
+      spot: AlongSpotKind.ticket,
+      heading: 'No trips yet',
+      body: 'Your completed trips will appear here.',
+      defaultAction: 'Find a ride',
+    ),
+    EmptyStateVariant.offline => (
+      spot: AlongSpotKind.offline,
+      heading: 'You are offline',
+      body: 'Connect to the internet to search routes. Saved trips and Na Me still work.',
+      defaultAction: 'Retry',
+    ),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +51,13 @@ class EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(content.icon, size: 48, color: AlongColors.ink500),
+          _EmptyMark(kind: content.spot),
           const SizedBox(height: AlongSpace.s16),
-          Text(content.heading, style: AlongText.heading2, textAlign: TextAlign.center),
+          Text(
+            content.heading,
+            style: AlongText.heading2,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: AlongSpace.s8),
           Text(
             content.body,
@@ -69,6 +73,54 @@ class EmptyState extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _EmptyMark extends StatefulWidget {
+  const _EmptyMark({required this.kind});
+
+  final AlongSpotKind kind;
+
+  @override
+  State<_EmptyMark> createState() => _EmptyMarkState();
+}
+
+class _EmptyMarkState extends State<_EmptyMark>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _float;
+
+  @override
+  void initState() {
+    super.initState();
+    _float = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+      value: 0,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !AlongMotionPolicy.play(context)) return;
+      _float.repeat(reverse: true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _float.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _float,
+      builder: (context, _) {
+        final dy = AlongMotionPolicy.play(context) ? -4 * _float.value : 0.0;
+        return Transform.translate(
+          offset: Offset(0, dy),
+          child: AlongSpot(kind: widget.kind),
+        );
+      },
     );
   }
 }

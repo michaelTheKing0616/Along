@@ -120,7 +120,7 @@ class _CompactLegChip extends StatelessWidget {
               leg.isWalk ? 'Walk' : leg.mode.label,
               style: AlongText.caption.copyWith(
                 color: AlongColors.ink900,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
           ],

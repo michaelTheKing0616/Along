@@ -5,7 +5,6 @@ import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:maplibre_gl/maplibre_gl.dart' hide GeoPoint;
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
@@ -102,30 +101,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Positioned(
             top: state.showLocationBanner ? 72 : AlongSpace.s16,
             left: AlongSpace.s16,
-            child: IconButton.filled(
+            child: AlongMapButton(
               key: const Key('home_menu_button'),
+              tooltip: l10n.homeMenu,
               onPressed: () => context.go(AppRoutes.account),
-              icon: const Icon(Icons.menu_rounded),
+              icon: AlongIcons.menu,
             ),
           ),
           Positioned(
             top: state.showLocationBanner ? 72 : AlongSpace.s16,
             left: 72,
-            child: IconButton.filled(
+            child: AlongMapButton(
               key: const Key('home_vehicles_button'),
+              tooltip: l10n.homeVehicles,
               onPressed: () => context.push(AppRoutes.vehicles),
-              icon: const Icon(Icons.airline_seat_recline_normal),
+              icon: AlongIcons.seat,
             ),
           ),
           Positioned(
             top: state.showLocationBanner ? 72 : AlongSpace.s16,
             right: AlongSpace.s16,
-            child: IconButton.filled(
+            child: AlongMapButton(
               key: const Key('home_recenter_button'),
+              tooltip: l10n.homeRecenter,
               onPressed: state.userLocation == null
                   ? null
                   : () => _recenter(state.userLocation!),
-              icon: const Icon(Icons.my_location_rounded),
+              icon: AlongIcons.locate,
             ),
           ),
           Positioned(

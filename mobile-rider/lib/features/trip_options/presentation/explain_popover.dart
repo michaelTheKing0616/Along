@@ -14,7 +14,7 @@ void showExplainPopover(
 
   showModalBottomSheet<void>(
     context: context,
-    backgroundColor: AlongColors.surface0,
+    backgroundColor: AlongPalette.of(context).bg,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: AlongRadius.sheet),
     ),

@@ -26,7 +26,7 @@ class RoutesListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.routesListTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton.extended(

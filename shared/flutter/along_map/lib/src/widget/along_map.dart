@@ -11,6 +11,7 @@ import 'package:along_map/src/style/along_style_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 /// Primary Along map widget — MapLibre with along-light style and overlay layers.
@@ -78,6 +79,43 @@ class _AlongMapState extends State<AlongMap> {
   MapLayerController? _layerController;
   final _controllerCompleter = Completer<MapLibreMapController>();
   bool _styleLoaded = false;
+  String? _bundledStyle;
+  bool _bundledDark = false;
+  bool? _pendingDark;
+
+  bool get _wantsBrandStyle {
+    if (widget.offlineStyleJson != null &&
+        widget.offlineStyleJson!.isNotEmpty) {
+      return false;
+    }
+    return widget.styleUrl == AlongStyleLoader.openFreeMapStyleUrl;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_wantsBrandStyle) return;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    if (_bundledStyle != null && _bundledDark == dark) return;
+    if (_pendingDark == dark) return;
+    _pendingDark = dark;
+    _bundledDark = dark;
+    _loadBrandStyle(dark);
+  }
+
+  Future<void> _loadBrandStyle(bool dark) async {
+    try {
+      final json = await rootBundle.loadString(
+        dark
+            ? AlongStyleLoader.brandDuskAsset
+            : AlongStyleLoader.brandPaperAsset,
+      );
+      if (!mounted || _bundledDark != dark) return;
+      setState(() => _bundledStyle = json);
+    } catch (_) {
+      // Positron remains available through [styleUrl] if the asset is missing.
+    }
+  }
 
   @override
   void didUpdateWidget(covariant AlongMap oldWidget) {
@@ -91,6 +129,7 @@ class _AlongMapState extends State<AlongMap> {
   String? _resolveStyleString() {
     final offline = widget.offlineStyleJson;
     if (offline != null && offline.isNotEmpty) return offline;
+    if (_wantsBrandStyle && _bundledStyle != null) return _bundledStyle;
     final remote = widget.styleUrl;
     if (remote != null && remote.isNotEmpty) return remote;
     if (widget.allowDemoStyleFallback) {
@@ -113,6 +152,10 @@ class _AlongMapState extends State<AlongMap> {
   @override
   Widget build(BuildContext context) {
     if (inFlutterTest) {
+      return const ColoredBox(color: AlongMapColors.land);
+    }
+
+    if (_wantsBrandStyle && _bundledStyle == null) {
       return const ColoredBox(color: AlongMapColors.land);
     }
 

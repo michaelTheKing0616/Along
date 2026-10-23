@@ -44,7 +44,7 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
     final width = MediaQuery.sizeOf(context).width * 0.6;
 
     return Scaffold(
-      backgroundColor: AlongColors.surface0,
+      backgroundColor: AlongPalette.of(context).bg,
       body: Center(
         child: AnimatedOpacity(
           opacity: 1,

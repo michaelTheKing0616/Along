@@ -107,6 +107,7 @@ module.exports = {
       },
       "fontFamily": {
         "sans": [
+          "Geist",
           "Inter",
           "system-ui",
           "-apple-system",

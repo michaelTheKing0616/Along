@@ -12,12 +12,12 @@ abstract final class AlongMapColors {
   static Color get ink => AlongColors.ink900;
 
   /// Basemap tokens from doc 05 §8 (not yet in Style Dictionary — fixed spec values).
-  static const land = Color(0xFFF4F4F2);
-  static const water = Color(0xFFCFE3EA);
-  static const parksGreen = Color(0xFFE6EEE3);
-  static const buildings = Color(0xFFEBEBE9);
-  static const roadMotorway = Color(0xFFD8D8D6);
-  static const roadPrimary = Color(0xFFDEDEDC);
-  static const roadMinor = Color(0xFFE8E8E6);
-  static const roadLabel = Color(0xFF6B6B6B);
+  static const land = Color(0xFFF3EFE6);
+  static const water = Color(0xFFD4E2E2);
+  static const parksGreen = Color(0xFFE4EBD8);
+  static const buildings = Color(0xFFE8E2D6);
+  static const roadMotorway = Color(0xFFB7AA96);
+  static const roadPrimary = Color(0xFFC4B7A4);
+  static const roadMinor = Color(0xFFD5C9B8);
+  static const roadLabel = Color(0xFF5E574C);
 }

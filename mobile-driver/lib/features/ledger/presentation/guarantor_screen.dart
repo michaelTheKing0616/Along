@@ -59,7 +59,7 @@ class _GuarantorScreenState extends ConsumerState<GuarantorScreen> {
       key: const Key('guarantor_screen'),
       appBar: AppBar(
         title: Text(l10n.guarantorTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: ListView(

@@ -46,7 +46,7 @@ class DocumentsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.documentsTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: asyncState.when(

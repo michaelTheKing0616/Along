@@ -21,6 +21,13 @@ class AlongStyleLoader {
   static const openFreeMapStyleUrl =
       'https://tiles.openfreemap.org/styles/positron';
 
+  /// Bundled brand styles. Paper for light, dusk for dark. Free OpenFreeMap
+  /// tiles, Along colours. Used when no private tile host is configured.
+  static const brandPaperAsset =
+      'packages/along_design/assets/map/along-paper.json';
+  static const brandDuskAsset =
+      'packages/along_design/assets/map/along-dusk.json';
+
   /// Hosts that were written into env files before a tile CDN existed.
   static const unreachableTileHosts = <String>{
     'tiles.along.ng',

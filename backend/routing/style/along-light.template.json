@@ -94,7 +94,7 @@
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#F4F4F2"
+        "background-color": "#F3EFE6"
       }
     },
     {
@@ -103,7 +103,7 @@
       "source": "basemap",
       "source-layer": "water",
       "paint": {
-        "fill-color": "#CFE3EA"
+        "fill-color": "#D4E2E2"
       }
     },
     {
@@ -117,7 +117,7 @@
         "grass"
       ],
       "paint": {
-        "fill-color": "#E6EEE3"
+        "fill-color": "#E4EBD8"
       }
     },
     {
@@ -131,7 +131,7 @@
         "wood"
       ],
       "paint": {
-        "fill-color": "#E6EEE3"
+        "fill-color": "#E4EBD8"
       }
     },
     {
@@ -146,7 +146,7 @@
         "national_park"
       ],
       "paint": {
-        "fill-color": "#E6EEE3"
+        "fill-color": "#E4EBD8"
       }
     },
     {
@@ -162,7 +162,7 @@
         "path"
       ],
       "paint": {
-        "line-color": "#E8E8E6",
+        "line-color": "#D5C9B8",
         "line-width": [
           "interpolate",
           [
@@ -191,7 +191,7 @@
         "tertiary"
       ],
       "paint": {
-        "line-color": "#DEDEDC",
+        "line-color": "#C4B7A4",
         "line-width": [
           "interpolate",
           [
@@ -218,7 +218,7 @@
         "motorway"
       ],
       "paint": {
-        "line-color": "#D8D8D6",
+        "line-color": "#B7AA96",
         "line-width": [
           "interpolate",
           [
@@ -252,7 +252,7 @@
       },
       "paint": {
         "text-color": "#6B6B6B",
-        "text-halo-color": "#F4F4F2",
+        "text-halo-color": "#F3EFE6",
         "text-halo-width": 1
       }
     },
@@ -263,7 +263,7 @@
       "source-layer": "building",
       "minzoom": 15,
       "paint": {
-        "fill-color": "#EBEBE9",
+        "fill-color": "#D5C9B8",
         "fill-opacity": 0.8
       }
     },
@@ -495,7 +495,7 @@
       },
       "paint": {
         "text-color": "#0A0A0A",
-        "text-halo-color": "#F4F4F2",
+        "text-halo-color": "#F3EFE6",
         "text-halo-width": 1
       }
     },

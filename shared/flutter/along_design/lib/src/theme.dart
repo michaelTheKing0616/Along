@@ -1,64 +1,120 @@
 import 'package:flutter/material.dart';
 
 import 'branding/branding_overrides.dart';
+import 'craft.dart';
+import 'motion.dart';
+import 'palette.dart';
 import 'tokens.g.dart';
+import 'type.dart';
 
-/// Material 3 theme wired to generated Along tokens (doc 05 §10).
+/// Material 3 theme for Along paper (light) and dusk (dark).
 ///
-/// Does not use [ColorScheme.fromSeed] — explicit ink/yellow palette per ADR-0005.
+/// Does not use [ColorScheme.fromSeed]. Yellow stays the single accent.
 /// [branding] applies `deployments.branding_config` token overrides only.
-ThemeData alongTheme({BrandingOverrides branding = BrandingOverrides.empty}) {
+ThemeData alongTheme({
+  BrandingOverrides branding = BrandingOverrides.empty,
+  Brightness brightness = Brightness.light,
+}) {
   final resolved = AlongBranding.fromOverrides(branding);
+  final palette = brightness == Brightness.dark
+      ? AlongPalette.dark
+      : AlongPalette.light;
   final colorScheme = ColorScheme(
-    brightness: Brightness.light,
-    primary: AlongColors.ink900,
-    onPrimary: AlongColors.surface0,
+    brightness: palette.brightness,
+    primary: palette.ink,
+    onPrimary: palette.onInk,
     secondary: resolved.brandYellow,
     onSecondary: resolved.brandYellowOn,
-    error: AlongColors.semanticDangerFill,
-    onError: AlongColors.surface0,
-    surface: AlongColors.surface0,
-    onSurface: AlongColors.ink900,
+    error: palette.danger,
+    onError: palette.dangerOn,
+    surface: palette.surface,
+    onSurface: palette.ink,
   );
+
+  final text = AlongType.textTheme(palette);
 
   return ThemeData(
     useMaterial3: true,
+    brightness: palette.brightness,
     visualDensity: VisualDensity.standard,
     splashFactory: NoSplash.splashFactory,
     highlightColor: Colors.transparent,
     splashColor: Colors.transparent,
     colorScheme: colorScheme,
-    scaffoldBackgroundColor: AlongColors.surface0,
-    fontFamily: 'Inter',
-    textTheme: TextTheme(
-      displayLarge: AlongText.displayXl,
-      displayMedium: AlongText.displayL,
-      headlineLarge: AlongText.heading1,
-      headlineMedium: AlongText.heading2,
-      titleMedium: AlongText.title,
-      bodyLarge: AlongText.body,
-      bodyMedium: AlongText.bodyStrong,
-      labelLarge: AlongText.label,
-      bodySmall: AlongText.caption,
-      labelSmall: AlongText.overline,
+    scaffoldBackgroundColor: palette.bg,
+    fontFamily: palette.fontFamily,
+    fontFamilyFallback: AlongType.fallback,
+    textTheme: text,
+    iconTheme: IconThemeData(color: palette.ink, size: 20),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: palette.ink,
+      selectionColor: palette.accent.withValues(alpha: 0.28),
+      selectionHandleColor: palette.ink,
+    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(color: palette.ink),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        minimumSize: const Size(
+          AlongSpace.sizeTouchMin,
+          AlongSpace.sizeTouchMin,
+        ),
+        foregroundColor: palette.ink,
+        tapTargetSize: MaterialTapTargetSize.padded,
+      ),
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: palette.bg,
+      foregroundColor: palette.ink,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      titleTextStyle: text.headlineMedium,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: Size.fromHeight(AlongSpace.sizeCtaPrimary),
+        minimumSize: const Size.fromHeight(AlongSpace.sizeCtaPrimary),
         textStyle: AlongText.buttonPrimary,
-        backgroundColor: AlongColors.ink900,
-        foregroundColor: AlongColors.surface0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        backgroundColor: palette.ink,
+        foregroundColor: palette.onInk,
+        shape: AlongCraft.border(AlongRadius.md.x),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: palette.surface,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AlongSpace.s12,
+        vertical: AlongSpace.s16,
+      ),
+      labelStyle: text.bodySmall,
+      hintStyle: text.bodyLarge?.copyWith(color: palette.muted),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        borderSide: BorderSide(
+          color: palette.ink.withValues(alpha: 0.14),
+          width: 0.5,
         ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        borderSide: BorderSide(
+          color: palette.ink.withValues(alpha: 0.14),
+          width: 0.5,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        borderSide: BorderSide(color: palette.ink, width: 1),
       ),
     ),
     cardTheme: CardThemeData(
-      color: AlongColors.surface0,
+      color: palette.surface,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        side: const BorderSide(color: AlongColors.ink100),
+      shape: AlongCraft.border(
+        AlongRadius.lg.x,
+        side: BorderSide(
+          color: palette.ink.withValues(alpha: 0.14),
+          width: 0.5,
+        ),
       ),
       margin: EdgeInsets.zero,
     ),
@@ -68,11 +124,11 @@ ThemeData alongTheme({BrandingOverrides branding = BrandingOverrides.empty}) {
         TargetPlatform.iOS: _AlongAxisPageTransitionsBuilder(),
       },
     ),
-    extensions: [resolved],
+    extensions: [resolved, palette],
   );
 }
 
-/// 200 ms shared-axis transition (doc 05 §5 `motion.route`).
+/// 200 ms shared-axis transition. Reduced motion keeps the page still. [emil]
 class _AlongAxisPageTransitionsBuilder extends PageTransitionsBuilder {
   const _AlongAxisPageTransitionsBuilder();
 
@@ -84,6 +140,7 @@ class _AlongAxisPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
+    if (AlongMotionPolicy.reduced(context)) return child;
     final curved = CurvedAnimation(
       parent: animation,
       curve: const Cubic(0.2, 0, 0, 1),

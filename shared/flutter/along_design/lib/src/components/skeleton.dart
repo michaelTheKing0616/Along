@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
+import '../motion.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 
 /// Skeleton placeholder variants (doc 05 §9 `Skeleton`).
@@ -52,34 +55,43 @@ class _AlongSkeletonState extends State<AlongSkeleton>
     super.dispose();
   }
 
+  Widget _bone(AlongPalette palette, double width, double height, double radius) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: AlongCraft.surface(
+        palette,
+        radius: radius,
+        color: palette.recessed,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
     final child = switch (widget.variant) {
-      SkeletonVariant.line => Container(
-        width: widget.width ?? double.infinity,
-        height: widget.height ?? AlongSpace.s16,
-        decoration: BoxDecoration(
-          color: AlongColors.surface200,
-          borderRadius: BorderRadius.circular(AlongRadius.xs.x),
-        ),
+      SkeletonVariant.line => _bone(
+        palette,
+        widget.width ?? double.infinity,
+        widget.height ?? AlongSpace.s16,
+        AlongRadius.xs.x,
       ),
-      SkeletonVariant.card => Container(
-        width: widget.width ?? double.infinity,
-        height: widget.height ?? 120,
-        decoration: BoxDecoration(
-          color: AlongColors.surface200,
-          borderRadius: BorderRadius.circular(AlongRadius.lg.x),
-        ),
+      SkeletonVariant.card => _bone(
+        palette,
+        widget.width ?? double.infinity,
+        widget.height ?? 120,
+        AlongRadius.lg.x,
       ),
-      SkeletonVariant.mapOverlay => Container(
-        width: widget.width ?? 120,
-        height: widget.height ?? 36,
-        decoration: BoxDecoration(
-          color: AlongColors.surface200,
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-        ),
+      SkeletonVariant.mapOverlay => _bone(
+        palette,
+        widget.width ?? 120,
+        widget.height ?? 36,
+        AlongRadius.sm.x,
       ),
     };
+
+    if (AlongMotionPolicy.reduced(context)) return child;
 
     return AnimatedBuilder(
       animation: _controller,

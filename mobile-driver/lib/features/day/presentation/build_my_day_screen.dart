@@ -272,7 +272,7 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.buildMyDayTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: _loading

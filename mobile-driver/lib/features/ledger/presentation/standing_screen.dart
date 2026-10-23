@@ -22,7 +22,7 @@ class StandingScreen extends ConsumerWidget {
       key: const Key('standing_screen'),
       appBar: AppBar(
         title: Text(l10n.standingTitle),
-        backgroundColor: AlongColors.surface0,
+        backgroundColor: AlongPalette.of(context).bg,
         elevation: 0,
       ),
       body: ListView(

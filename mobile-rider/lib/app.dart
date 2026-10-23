@@ -30,6 +30,8 @@ class AlongRiderApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Along',
       theme: alongTheme(branding: branding),
+      darkTheme: alongTheme(branding: branding, brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
       routerConfig: router,
       localizationsDelegates: const [
         AppLocalizations.delegate,

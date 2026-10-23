@@ -1,0 +1,27 @@
+Photographs and map data used by the design gallery.
+
+People
+- Driver portrait (assets/avatars/avatar-chinedu.jpg). Abraham George, “A man in a suit”, Federal Capital Territory, Nigeria. Unsplash, https://unsplash.com/photos/a-man-in-a-suit-wwVtHt5Px18. Unsplash License.
+- Rider portrait (assets/avatars/avatar-adaeze.jpg). Theresa Ude, “A beautiful woman with unique earrings poses.”, Abuja, Nigeria. Unsplash, https://unsplash.com/photos/a-beautiful-woman-with-unique-earrings-poses-bFSMzNAij8I. Unsplash License.
+
+Place
+- Onboarding skyline (assets/photos/abuja-skyline.jpg). Blessing Niniola, Abuja National Mosque and the Millennium Tower, clear day. Pexels, https://www.pexels.com/photo/abuja-national-mosque-and-the-millennium-tower-in-nigeria-20453360/. Pexels License.
+- Onboarding poster (assets/photos/onboarding-fleet.jpg) is project-owned. Keke, okada, sedan, yellow danfo, and city bus in a line, Aso Rock behind them, open sky above. Along holds the rights to use it in the product.
+- Cabin photograph (assets/photos/car-cabin-top.jpg, plus the 2.0x and 3.0x JPEG twins) is project-owned. The seat map no longer uses it as the shell: the cabin is drawn in code from the driver's rows. Along holds the rights to keep the file in the package.
+
+Plate
+- Camera frame (assets/photos/plate-abuja.jpg). Sarah Sheedy, “A close up of a license plate on a car”, Kailua-Kona. Unsplash, https://unsplash.com/photos/a-close-up-of-a-license-plate-on-a-car-j7fKhMSqbmU. Unsplash License. The original plate area is replaced with the fictional plate ABC-123-XY.
+
+Vehicles
+- 3/4 studio photographs (assets/vehicles/*_three.png, plus the 2.0x and 3.0x PNG and WebP twins) are project-owned. They were generated for Along: keke, okada, sedan, yellow danfo, and city bus, front-left on white, then cut out with a soft alpha matte. Along holds the rights to use them in the product.
+- Top-down marks (assets/vehicles/*_top.png) are Blender studio renders recolored to that same fleet: keke yellow and green, okada black, car silver, danfo yellow with a black stripe, bus white with a green stripe. Kenney Car Kit and Kenney Starter Kit Racing (https://kenney.nl, CC0) were proportion references only and are not in the shipped pixels.
+
+Maps
+- Basemap tiles are a 3× render of a Protomaps daily planet extract for the Federal Capital Territory, max zoom 15 in the public build (neighborhood frames are the z16 grid, overzoomed from that vector). © OpenStreetMap contributors. https://protomaps.com https://www.openstreetmap.org/copyright. Extract steps: tool/extract_abuja_pmtiles.sh. The PMTiles archive is not committed.
+
+Type
+- Geist variable font, Vercel, SIL Open Font License. See assets/fonts/Geist-OFL.txt.
+
+Icons
+- Phosphor Duotone, Phosphor Icons, MIT License. https://phosphoricons.com. Shipped via the phosphor_flutter package.
+- Inter remains the naira glyph fallback. See assets/fonts/OFL.txt.

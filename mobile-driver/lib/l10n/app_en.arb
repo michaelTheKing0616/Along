@@ -8,7 +8,7 @@
   "@phoneEntryTitle": {
     "description": "D-02 heading"
   },
-  "phoneEntrySubtitle": "Enter your number to get started",
+  "phoneEntrySubtitle": "We text a code to this number so your day stays yours.",
   "@phoneEntrySubtitle": {
     "description": "D-02 body"
   },

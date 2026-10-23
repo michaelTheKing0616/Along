@@ -67,7 +67,9 @@ function fontWeightDart(weight) {
 function typographyDart(token) {
   const t = token.$value ?? token.value;
   const parts = [];
-  parts.push(`fontFamily: 'Inter'`);
+  const family = String(t.fontFamily || 'Geist').replace(/'/g, '');
+  parts.push(`fontFamily: '${family}'`);
+  parts.push(`fontFamilyFallback: const ['Inter']`);
   let fontSizePx = 16;
   if (t.fontSize) {
     fontSizePx = parseFloat(String(t.fontSize));
@@ -83,7 +85,7 @@ function typographyDart(token) {
   if (t.letterSpacing) {
     const ls = String(t.letterSpacing);
     if (ls.endsWith('em')) {
-      const absolute = parseFloat(ls) * fontSizePx;
+      const absolute = Math.round(parseFloat(ls) * fontSizePx * 100) / 100;
       parts.push(`letterSpacing: ${absolute}`);
     } else {
       parts.push(`letterSpacing: ${parseFloat(ls)}`);
@@ -230,7 +232,7 @@ ${typoLines.join('\n')}
       lines.push('  --color-primary-hover: var(--color-ink-700);');
       lines.push('  --color-danger: var(--color-semantic-danger-fill);');
       lines.push('  --color-danger-bg: var(--color-semantic-danger-tint);');
-      lines.push('  --font-sans: Inter, system-ui, -apple-system, sans-serif;');
+      lines.push('  --font-sans: Geist, Inter, system-ui, -apple-system, sans-serif;');
       lines.push('  --space-1: calc(var(--space-4) / 4);');
       lines.push('  --space-2: calc(var(--space-8) / 4);');
       lines.push('  --space-3: calc(var(--space-12) / 4);');
@@ -286,7 +288,7 @@ ${typoLines.join('\n')}
             spacing,
             boxShadow,
             fontFamily: {
-              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+              sans: ['Geist', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
             },
             fontVariantNumeric: {
               tabular: ['tabular-nums'],
