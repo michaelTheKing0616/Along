@@ -3109,37 +3109,23 @@ class _OfferLine extends CustomPainter {
       oldDelegate.color != color;
 }
 
-/// The seat-screen cushion painter, without the filled cabin shell. The
-/// shell at this card width read as one grey mass.
+/// Seat-screen painter, high contrast, inside the cabin outline. Selected
+/// cushions are yellow. Taken and driver cushions are dark.
 class _OfferSeats extends StatelessWidget {
   const _OfferSeats();
-
-  static const _rows = [
-    ['driver', 'yours', 'free'],
-    ['occupied', 'yours', 'free'],
-  ];
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gaps = 8.0 * (_rows.first.length - 1);
-        final seat = math.min(56.0, (constraints.maxWidth - gaps) / 3);
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var r = 0; r < _rows.length; r++) ...[
-              if (r > 0) const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var c = 0; c < _rows[r].length; c++) ...[
-                    if (c > 0) const SizedBox(width: 8),
-                    AlongSeatGlyph(status: _rows[r][c], width: seat),
-                  ],
-                ],
-              ),
-            ],
+        final inner = math.max(0.0, constraints.maxWidth - 24 - 16);
+        final seat = math.min(52.0, inner / 3);
+        return AlongCabinDiagram(
+          seat: seat,
+          contrast: true,
+          rows: const [
+            ['driver', 'yours', 'free'],
+            ['occupied', 'yours', 'free'],
           ],
         );
       },
@@ -3708,7 +3694,8 @@ class _HeatLegend extends StatelessWidget {
               borderRadius: BorderRadius.circular(99),
               gradient: LinearGradient(
                 colors: [
-                  palette.accent.withValues(alpha: 0.22),
+                  palette.ink.withValues(alpha: 0.10),
+                  palette.ink.withValues(alpha: 0.28),
                   palette.accent,
                 ],
               ),
@@ -3722,17 +3709,13 @@ class _HeatLegend extends StatelessWidget {
   }
 }
 
-/// Full plate, at the photo's own aspect. The viewfinder matches the plate
-/// rectangle in plate-abuja.jpg (1040×760). [BoxFit.cover] only scales.
+/// Vector plate inside the viewfinder. The bumper photo was a foreshortened
+/// crop, so the characters read as stretched. This plate is drawn front-on.
 class _PlateFrame extends StatelessWidget {
   const _PlateFrame();
 
-  static const _photoW = 1040.0;
-  static const _photoH = 760.0;
-
-  /// Light plate pixels. A taller crop included the bumper and made the
-  /// characters look wide inside the brackets.
-  static const _plate = Rect.fromLTRB(175, 368, 781, 436);
+  /// Front-on Nigerian plate, green band included. Not the bumper crop.
+  static const _aspect = 3.45;
 
   @override
   Widget build(BuildContext context) {
@@ -3740,37 +3723,95 @@ class _PlateFrame extends StatelessWidget {
       builder: (context, constraints) {
         final size = constraints.biggest;
         final holeW = size.width - 32;
-        final scale = holeW / _plate.width;
-        final imageW = _photoW * scale;
-        final imageH = _photoH * scale;
         final hole = Rect.fromCenter(
-          center: Offset(size.width / 2, size.height * 0.42),
+          center: Offset(size.width / 2, size.height * 0.40),
           width: holeW,
-          height: _plate.height * scale,
+          height: holeW / _aspect,
         );
         return Stack(
           fit: StackFit.expand,
           children: [
-            Positioned(
-              left: hole.center.dx - _plate.center.dx * scale,
-              top: hole.center.dy - _plate.center.dy * scale,
-              width: imageW,
-              height: imageH,
-              child: AlongGrade(
-                child: Image.asset(
-                  'assets/photos/plate-abuja.jpg',
-                  package: 'along_design',
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                  filterQuality: FilterQuality.high,
-                  excludeFromSemantics: true,
-                ),
-              ),
-            ),
+            const ColoredBox(color: Color(0xFF12110F)),
+            Positioned.fromRect(rect: hole, child: const _NigeriaPlate()),
             Positioned.fill(child: _Viewfinder(hole: hole)),
           ],
         );
       },
+    );
+  }
+}
+
+class _NigeriaPlate extends StatelessWidget {
+  const _NigeriaPlate();
+
+  @override
+  Widget build(BuildContext context) {
+    final font = AlongPalette.of(context).fontFamily;
+    const ink = Color(0xFF141210);
+    const green = Color(0xFF0C6B32);
+    final band = TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: AlongType.fallback,
+      color: Colors.white,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.4,
+      height: 1,
+    );
+    final state = TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: AlongType.fallback,
+      color: green,
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1.4,
+      height: 1,
+    );
+    final number = TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: AlongType.fallback,
+      color: ink,
+      fontSize: 28,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1.2,
+      height: 1,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
+    Widget line(String text, TextStyle style) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(text, maxLines: 1, softWrap: false, style: style),
+        ),
+      );
+    }
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F4EA),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: ink, width: 1.5),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 24,
+              child: ColoredBox(
+                color: green,
+                child: Center(child: line('FEDERAL REPUBLIC OF NIGERIA', band)),
+              ),
+            ),
+            Expanded(flex: 18, child: Center(child: line('ABUJA', state))),
+            Expanded(
+              flex: 46,
+              child: Center(child: line('ABC-123-XY', number)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

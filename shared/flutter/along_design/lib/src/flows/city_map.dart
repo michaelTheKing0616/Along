@@ -41,8 +41,8 @@ enum AlongFix { precise, approximate, stale, hidden }
 /// grid, drawn by overzooming that z15 vector so building footprints stay
 /// sharp. Nav locks zoom 18, rotated so the street runs up the screen, and
 /// those z16 tiles overzoom to lane level. The corridor uses native zoom-12
-/// tiles. Online demand is separate district hexes with stepped intensity
-/// and a feathered edge, painted in map space, not one heat blob.
+/// tiles. Online demand is one hex grid over the visible city: ink tint
+/// steps, and only the two or three hottest cells in brand yellow.
 class AlongCityMap extends StatelessWidget {
   const AlongCityMap({
     super.key,
@@ -257,7 +257,7 @@ class AlongCityMap extends StatelessWidget {
               panBuffer: 0,
             ),
             if (mode == AlongCityMapMode.online)
-              PolygonLayer(polygons: _demandHexes(palette.accent)),
+              PolygonLayer(polygons: _demandHexes(palette)),
             if (showRoute)
               Positioned.fill(
                 child: _RouteOverlay(
@@ -1136,75 +1136,91 @@ _RoutePoint _along(List<LatLng> route, double progress) {
   return _RoutePoint(point, heading);
 }
 
-/// District demand. Each core is a small hex flower with a fixed intensity
-/// step. The outer ring is ragged and dimmer, so the field feathers instead
-/// of reading as one disc. The south edge stays quiet under the GO button.
-List<Polygon> _demandHexes(Color accent) {
-  const radius = 640.0;
+/// One hex grid over the visible city. Steps are flat ink tints. The three
+/// hottest cells are solid brand yellow. Cells do not overlap, so the edges
+/// stay crisp. The band under the GO button is left clear.
+List<Polygon> _demandHexes(AlongPalette palette) {
+  const radius = 1050.0;
   const mPerLat = 111320.0;
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
-  const cores = <(double, double, int)>[
-    (9.200, 7.390, 3),
-    (9.190, 7.500, 3),
-    (9.185, 7.590, 2),
-    (9.110, 7.430, 3),
-    (9.100, 7.545, 3),
-    (9.040, 7.390, 2),
-    (9.055, 7.480, 3),
-    (9.030, 7.580, 2),
-    (8.980, 7.440, 2),
-    (8.970, 7.545, 2),
-  ];
-  const stepAlpha = <double>[0, 0.22, 0.40, 0.58];
-  final best = <(int, int), int>{};
-  final where = <(int, int), LatLng>{};
-  for (final core in cores) {
-    final maxRing = core.$3;
-    for (var ring = 0; ring <= maxRing; ring++) {
-      final count = ring == 0 ? 1 : 6 * ring;
-      for (var i = 0; i < count; i++) {
-        if (ring == maxRing && _hexJitterInt(i, ring + maxRing) % 3 == 0) {
-          continue;
-        }
-        final turns = ring == 0 ? 0.0 : (i + 0.5) / count;
-        final angle = turns * math.pi * 2 + core.$1;
-        final dist = ring * radius * math.sqrt(3);
-        final lat = core.$1 + math.cos(angle) * dist / mPerLat;
-        final lon = core.$2 + math.sin(angle) * dist / mPerLon;
-        if (lat < 8.90 || lat > 9.24 || lon < 7.34 || lon > 7.62) continue;
-        final key = ((lat * 280).round(), (lon * 280).round());
-        final step = maxRing - ring;
-        final prev = best[key];
-        if (prev != null && prev >= step) continue;
-        best[key] = step;
-        where[key] = LatLng(lat, lon);
+  final dx = radius * math.sqrt(3);
+  final dy = radius * 1.5;
+  const originLat = 9.04;
+  const originLon = 7.49;
+  const hotspots = <(double, double)>[(9.12, 7.45), (9.16, 7.56), (9.00, 7.50)];
+  final cells = <({double lat, double lon, double demand})>[];
+  for (var r = -16; r <= 16; r++) {
+    for (var q = -10; q <= 10; q++) {
+      final x = dx * (q + r / 2);
+      final y = dy * r;
+      final lat = originLat + y / mPerLat;
+      final lon = originLon + x / mPerLon;
+      if (lat < 8.86 || lat > 9.23 || lon < 7.37 || lon > 7.61) continue;
+      var demand = 0.0;
+      for (final spot in hotspots) {
+        final sLat = (lat - spot.$1) * mPerLat;
+        final sLon = (lon - spot.$2) * mPerLon;
+        final dist = math.sqrt(sLat * sLat + sLon * sLon);
+        demand = math.max(demand, 1 - dist / 8500);
       }
+      cells.add((lat: lat, lon: lon, demand: demand));
     }
   }
+  final ranked = [...cells]..sort((a, b) => b.demand.compareTo(a.demand));
+  final hot = <({double lat, double lon, double demand})>[];
+  for (final cell in ranked) {
+    if (hot.length == 3) break;
+    final separated = hot.every((other) {
+      final dLat = (cell.lat - other.lat) * mPerLat;
+      final dLon = (cell.lon - other.lon) * mPerLon;
+      return math.sqrt(dLat * dLat + dLon * dLon) > radius * 2.6;
+    });
+    if (separated) hot.add(cell);
+  }
+  bool isHot(({double lat, double lon, double demand}) cell) {
+    for (final mark in hot) {
+      if ((cell.lat - mark.lat).abs() < 1e-6 &&
+          (cell.lon - mark.lon).abs() < 1e-6) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const inkAlpha = <double>[0.045, 0.08, 0.12, 0.18];
+  final edge = palette.ink.withValues(alpha: 0.28);
   final polygons = <Polygon>[];
-  for (final entry in best.entries) {
-    final step = entry.value;
-    if (step <= 0) continue;
-    final at = where[entry.key]!;
-    final south = ((at.latitude - 8.90) / 0.07).clamp(0.0, 1.0);
-    final feather = step == 1 ? 0.40 : (step == 2 ? 0.75 : 1.0);
-    final alpha = stepAlpha[step] * feather * south;
-    if (alpha < 0.05) continue;
+  for (final cell in cells) {
+    final at = LatLng(cell.lat, cell.lon);
+    final ring = _hexRing(at, radius * 0.96, mPerLat, mPerLon);
+    if (isHot(cell)) {
+      polygons.add(
+        Polygon(
+          points: ring,
+          color: palette.accent,
+          borderColor: palette.accentInk,
+          borderStrokeWidth: 1.25,
+        ),
+      );
+      continue;
+    }
+    final step = cell.demand < 0.22
+        ? 0
+        : cell.demand < 0.45
+        ? 1
+        : cell.demand < 0.7
+        ? 2
+        : 3;
     polygons.add(
       Polygon(
-        points: _hexRing(at, radius * 0.92, mPerLat, mPerLon),
-        color: accent.withValues(alpha: alpha),
-        borderColor: accent.withValues(alpha: 0),
-        borderStrokeWidth: 0,
+        points: ring,
+        color: palette.ink.withValues(alpha: inkAlpha[step]),
+        borderColor: edge,
+        borderStrokeWidth: 0.8,
       ),
     );
   }
   return polygons;
-}
-
-int _hexJitterInt(int q, int r) {
-  final n = (q * 73856093) ^ (r * 19349663);
-  return n & 0x7fffffff;
 }
 
 List<LatLng> _hexRing(

@@ -75,7 +75,7 @@ The quote sheet is only as tall as the fare. Confirm fare sits on the cancel lin
 
 An approximate or stale fix is hollow and grey, with the words "Approx" or "Stale" and "Updated Xs ago". A precise fix is a filled dot and the word "You". Simulated positions say "Demo" in debug builds. A screen that already shows a Demo mark does not add a second one on the map.
 
-Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is separate district hexes: four intensity steps, a ragged outer ring at lower alpha, and a fade before the GO button.
+Pickup uses a bare map so decorative pins do not cover the place. The pickup pin itself is the hollow anchor. Matching and recovery keep the status in the card and add a resting pulse on the pickup plus nearby driver chips, so the street is not empty. The approximate fix stays on that pickup. Online demand is one hex grid over the visible city. Steps are flat ink tints with a hairline edge. Two or three cells are solid brand yellow. The band under the GO button stays clear.
 
 ## Motion
 

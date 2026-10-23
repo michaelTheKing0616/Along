@@ -84,3 +84,11 @@ Measured on the re-render at 360×800 light after the rejection.
 | Online | One yellow disc in the middle. | Separate district hexes, four intensity steps, a ragged dim edge, and a quiet band above GO. |
 | Plate | The brackets framed the bumper, so the photo looked wide. | The hole matches the plate pixels. The photo uses BoxFit.cover at its own aspect. |
 | Matching and recovery | An empty street. | A resting pulse on the pickup and three nearby drivers. |
+
+## Pass 6 — hex grid, vector plate, offer contrast
+
+| Screen | What was wrong | What changed |
+| --- | --- | --- |
+| Online | Scattered yellow splotches. | One hex grid. Ink tint steps with a hairline. Three solid yellow cells. Clear under GO. |
+| Plate | The bumper photo still read as stretched. | A front-on vector plate: green band, ABUJA, ABC-123-XY. The viewfinder stays. |
+| Offer | Pale grey cushions. | The seat painter at high contrast, selected yellow, inside the cabin outline. |
