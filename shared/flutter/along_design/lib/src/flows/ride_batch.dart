@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../components/along_button.dart';
+import '../components/seat_map.dart';
 import '../craft.dart';
 import '../elevation.dart';
 import '../icons.dart';
@@ -328,7 +329,15 @@ class AlongFlowRideOptions extends StatefulWidget {
 }
 
 class _AlongFlowRideOptionsState extends State<AlongFlowRideOptions> {
-  static const _seatOrder = ['front', 'back_a', 'back_b', 'back_c', 'back_d'];
+  /// Six passenger seats: two beside the driver, then four in back.
+  static const _seatOrder = [
+    'front_a',
+    'front_b',
+    'back_a',
+    'back_b',
+    'back_c',
+    'back_d',
+  ];
 
   late AlongRideOptions _options;
   late List<String> _held;
@@ -373,6 +382,14 @@ class _AlongFlowRideOptionsState extends State<AlongFlowRideOptions> {
     });
   }
 
+  _CabinSeatData _passenger(String id) {
+    return _CabinSeatData(
+      id: id,
+      held: _held.contains(id),
+      holdKey: _holdKey(id),
+    );
+  }
+
   Key? _holdKey(String id) {
     String? more;
     for (final seat in _seatOrder) {
@@ -382,8 +399,9 @@ class _AlongFlowRideOptionsState extends State<AlongFlowRideOptions> {
       }
     }
     if (more == id) return const Key('seat_hold_more');
-    if (_held.isNotEmpty && _held.last == id)
+    if (_held.isNotEmpty && _held.last == id) {
       return const Key('seat_hold_less');
+    }
     return null;
   }
 
@@ -438,65 +456,32 @@ class _AlongFlowRideOptionsState extends State<AlongFlowRideOptions> {
           style: AlongType.bodyMuted(palette),
         ),
         const SizedBox(height: 12),
-        _CabinRow(
-          rowKey: const Key('women_row_1'),
-          name: 'Front',
-          women: _options.womenOnlyRows.contains(1),
-          onRow: () => _toggleRow(1),
-          seats: [
-            const _CabinSeatData(id: 'driver', label: 'Driver', driver: true),
-            _CabinSeatData(
-              id: 'front',
-              label: _held.contains('front') ? 'Held' : 'Open',
-              held: _held.contains('front'),
-              holdKey: _holdKey('front'),
+        _CabinDiagram(
+          onSeat: _toggleHold,
+          rows: [
+            _CabinBandData(
+              rowKey: const Key('women_row_1'),
+              women: _options.womenOnlyRows.contains(1),
+              onRow: () => _toggleRow(1),
+              seats: [
+                const _CabinSeatData(id: 'driver', driver: true),
+                _passenger('front_a'),
+                _passenger('front_b'),
+              ],
+            ),
+            _CabinBandData(
+              rowKey: const Key('women_row_2'),
+              women: _options.womenOnlyRows.contains(2),
+              onRow: () => _toggleRow(2),
+              seats: [_passenger('back_a'), _passenger('back_b')],
+            ),
+            _CabinBandData(
+              rowKey: const Key('women_row_3'),
+              women: _options.womenOnlyRows.contains(3),
+              onRow: () => _toggleRow(3),
+              seats: [_passenger('back_c'), _passenger('back_d')],
             ),
           ],
-          onSeat: _toggleHold,
-        ),
-        const SizedBox(height: 8),
-        _CabinRow(
-          rowKey: const Key('women_row_2'),
-          name: 'Middle',
-          women: _options.womenOnlyRows.contains(2),
-          onRow: () => _toggleRow(2),
-          seats: [
-            _CabinSeatData(
-              id: 'back_a',
-              label: _held.contains('back_a') ? 'Held' : 'Open',
-              held: _held.contains('back_a'),
-              holdKey: _holdKey('back_a'),
-            ),
-            _CabinSeatData(
-              id: 'back_b',
-              label: _held.contains('back_b') ? 'Held' : 'Open',
-              held: _held.contains('back_b'),
-              holdKey: _holdKey('back_b'),
-            ),
-          ],
-          onSeat: _toggleHold,
-        ),
-        const SizedBox(height: 8),
-        _CabinRow(
-          rowKey: const Key('women_row_3'),
-          name: 'Back',
-          women: _options.womenOnlyRows.contains(3),
-          onRow: () => _toggleRow(3),
-          seats: [
-            _CabinSeatData(
-              id: 'back_c',
-              label: _held.contains('back_c') ? 'Held' : 'Open',
-              held: _held.contains('back_c'),
-              holdKey: _holdKey('back_c'),
-            ),
-            _CabinSeatData(
-              id: 'back_d',
-              label: _held.contains('back_d') ? 'Held' : 'Open',
-              held: _held.contains('back_d'),
-              holdKey: _holdKey('back_d'),
-            ),
-          ],
-          onSeat: _toggleHold,
         ),
         const SizedBox(height: 12),
         const _CabinLegend(),
@@ -739,9 +724,7 @@ class AlongFlowOfflineReconnecting extends StatelessWidget {
       topButtons: true,
       card: const _OfflineCard(
         title: 'Reconnecting',
-        body: 'Looking for the network',
-        action: 'Try again',
-        actionKey: Key('offline_reconnect_retry'),
+        body: 'Looking for the network…',
         extra: Column(
           children: [
             _PlaceLine(icon: AlongIcons.home, title: 'Home', detail: 'Garki'),
@@ -1789,8 +1772,8 @@ class _OfflineCard extends StatelessWidget {
   const _OfflineCard({
     required this.title,
     required this.body,
-    required this.action,
-    required this.actionKey,
+    this.action,
+    this.actionKey,
     this.detail,
     this.leading,
     this.extra,
@@ -1798,8 +1781,8 @@ class _OfflineCard extends StatelessWidget {
 
   final String title;
   final String body;
-  final String action;
-  final Key actionKey;
+  final String? action;
+  final Key? actionKey;
   final String? detail;
   final Widget? leading;
   final Widget? extra;
@@ -1843,8 +1826,15 @@ class _OfflineCard extends StatelessWidget {
               softWrap: false,
               style: AlongType.bodyMuted(palette),
             ),
-            const SizedBox(height: 12),
-            AlongButton(key: actionKey, label: action, onPressed: _noop),
+            if (action != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: AlongButton(
+                  key: actionKey,
+                  label: action!,
+                  onPressed: _noop,
+                ),
+              ),
           ],
         ),
       ),
@@ -2203,22 +2193,12 @@ class _BalanceHero extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _GrainPainter(
-                  ink: palette.ink,
-                  accent: palette.accent,
-                ),
-              ),
-            ),
             Positioned(
               left: 0,
               top: 0,
               bottom: 0,
-              child: ColoredBox(
-                color: palette.accent,
-                child: const SizedBox(width: 4),
-              ),
+              width: 3,
+              child: ColoredBox(color: palette.accent),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
@@ -2258,39 +2238,6 @@ class _BalanceHero extends StatelessWidget {
   }
 }
 
-class _GrainPainter extends CustomPainter {
-  const _GrainPainter({required this.ink, required this.accent});
-
-  final Color ink;
-  final Color accent;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final hair = Paint()
-      ..color = ink.withValues(alpha: 0.045)
-      ..strokeWidth = 1;
-    for (var x = -size.height; x < size.width; x += 16) {
-      canvas.drawLine(Offset(x, size.height), Offset(x + size.height, 0), hair);
-    }
-    final arc = Paint()
-      ..color = accent.withValues(alpha: 0.45)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(size.width - 6, 22), radius: 26),
-      0.6,
-      1.5,
-      false,
-      arc,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _GrainPainter oldDelegate) =>
-      oldDelegate.ink != ink || oldDelegate.accent != accent;
-}
-
 class _EarningsHero extends StatelessWidget {
   const _EarningsHero({required this.pending, required this.paid});
 
@@ -2304,6 +2251,7 @@ class _EarningsHero extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final total = pending + paid;
     final progress = (total / _goal).clamp(0.0, 1.0);
+    final pct = (progress * 100).round();
     return DecoratedBox(
       decoration: AlongCraft.fill(
         palette.surface,
@@ -2349,6 +2297,13 @@ class _EarningsHero extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
+            Text(
+              '$pct% of weekly goal',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.label(palette),
+            ),
             const SizedBox(height: 14),
             const _WeekBars(),
           ],
@@ -2376,13 +2331,11 @@ class _GoalRing extends StatelessWidget {
           ink: palette.ink,
         ),
         child: Center(
-          child: FittedBox(
-            child: Text(
-              '${(progress * 100).round()}',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.title(palette).copyWith(height: 1),
-            ),
+          child: Text(
+            '${(progress * 100).round()}%',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.title(palette).copyWith(height: 1),
           ),
         ),
       ),
@@ -2495,139 +2448,122 @@ class _WeekBars extends StatelessWidget {
 class _CabinSeatData {
   const _CabinSeatData({
     required this.id,
-    required this.label,
     this.driver = false,
     this.held = false,
     this.holdKey,
   });
 
   final String id;
-  final String label;
   final bool driver;
   final bool held;
   final Key? holdKey;
 }
 
-class _CabinRow extends StatelessWidget {
-  const _CabinRow({
+class _CabinBandData {
+  const _CabinBandData({
     required this.rowKey,
-    required this.name,
     required this.women,
     required this.onRow,
     required this.seats,
-    required this.onSeat,
   });
 
   final Key rowKey;
-  final String name;
   final bool women;
   final VoidCallback onRow;
   final List<_CabinSeatData> seats;
+}
+
+/// One chassis. Front is the driver plus two passengers. Back is four seats.
+class _CabinDiagram extends StatelessWidget {
+  const _CabinDiagram({required this.rows, required this.onSeat});
+
+  final List<_CabinBandData> rows;
   final ValueChanged<String> onSeat;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.fill(
-        palette.surface,
-        corner: AlongRadius.card.x,
-        side: women
-            ? BorderSide(color: palette.accent, width: 2)
-            : BorderSide(color: palette.ink.withValues(alpha: 0.14)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            GestureDetector(
-              key: rowKey,
-              onTap: onRow,
-              behavior: HitTestBehavior.opaque,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 32),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        name,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.label(palette)
-                            .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                      ),
-                    ),
-                    if (women)
-                      Icon(AlongIcons.check, size: 20, color: palette.ink),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < seats.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 12),
-                  _CabinSeat(data: seats[i], onTap: onSeat),
-                ],
+    return CustomPaint(
+      painter: _OptionsChassisPainter(palette: palette),
+      child: ClipPath(
+        clipper: const _OptionsChassisClipper(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 48, 14, 26),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < rows.length; i++) ...[
+                if (i > 0) const SizedBox(height: 8),
+                _CabinBand(data: rows[i], onSeat: onSeat),
               ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _CabinSeat extends StatelessWidget {
-  const _CabinSeat({required this.data, required this.onTap});
+class _CabinBand extends StatelessWidget {
+  const _CabinBand({required this.data, required this.onSeat});
 
-  final _CabinSeatData data;
-  final ValueChanged<String> onTap;
+  final _CabinBandData data;
+  final ValueChanged<String> onSeat;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final fill = data.driver
-        ? palette.recessed
-        : data.held
-        ? palette.ink
-        : palette.surface;
     return GestureDetector(
-      key: data.holdKey,
-      onTap: data.driver ? null : () => onTap(data.id),
+      onTap: data.onRow,
       behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: 72,
-        child: Column(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: data.women ? palette.accent.withValues(alpha: 0.28) : null,
+          border: data.women
+              ? Border(
+                  top: BorderSide(color: palette.accent, width: 2),
+                  bottom: BorderSide(color: palette.accent, width: 2),
+                )
+              : null,
+        ),
+        child: Stack(
           children: [
-            SizedBox(
-              width: 64,
-              height: 64,
-              child: DecoratedBox(
-                decoration: AlongCraft.fill(
-                  fill,
-                  corner: AlongRadius.control.x,
-                  side: data.held
-                      ? BorderSide.none
-                      : BorderSide(color: palette.ink.withValues(alpha: 0.14)),
-                ),
-                child: data.driver
-                    ? CustomPaint(painter: _WheelPainter(color: palette.ink))
-                    : null,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
+              child: Row(
+                children: [
+                  for (final seat in data.seats)
+                    Expanded(
+                      child: Center(
+                        child: _OptionSeat(data: seat, onTap: onSeat),
+                      ),
+                    ),
+                ],
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              data.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              textAlign: TextAlign.center,
-              style: AlongType.caption(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+            Positioned(
+              right: 2,
+              top: 0,
+              bottom: 0,
+              child: GestureDetector(
+                key: data.rowKey,
+                onTap: data.onRow,
+                behavior: HitTestBehavior.opaque,
+                child: SizedBox(
+                  width: 28,
+                  child: data.women
+                      ? MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(textScaler: TextScaler.noScaling),
+                          child: Icon(
+                            AlongIcons.check,
+                            size: 16,
+                            color: palette.ink,
+                          ),
+                        )
+                      : null,
+                ),
+              ),
             ),
           ],
         ),
@@ -2636,8 +2572,59 @@ class _CabinSeat extends StatelessWidget {
   }
 }
 
-class _WheelPainter extends CustomPainter {
-  const _WheelPainter({required this.color});
+class _OptionSeat extends StatelessWidget {
+  const _OptionSeat({required this.data, required this.onTap});
+
+  final _CabinSeatData data;
+  final ValueChanged<String> onTap;
+
+  static const size = 52.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      key: data.holdKey,
+      onTap: data.driver ? null : () => onTap(data.id),
+      behavior: HitTestBehavior.opaque,
+      child: data.held
+          ? const _HeldMark(size: size)
+          : AlongSeatGlyph(
+              status: data.driver ? 'driver' : 'free',
+              width: size,
+            ),
+    );
+  }
+}
+
+class _HeldMark extends StatelessWidget {
+  const _HeldMark({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          AlongSeatGlyph(status: 'occupied', width: size),
+          Padding(
+            padding: EdgeInsets.only(bottom: size * 0.14),
+            child: CustomPaint(
+              size: Size(size * 0.34, size * 0.40),
+              painter: const _LockPainter(color: Color(0xFFF7F4EF)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LockPainter extends CustomPainter {
+  const _LockPainter({required this.color});
 
   final Color color;
 
@@ -2645,20 +2632,168 @@ class _WheelPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.75
+      ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
       ..color = color;
-    final center = size.center(Offset.zero);
-    canvas.drawCircle(center, 12, stroke);
-    canvas.drawCircle(center, 3, stroke);
-    canvas.drawLine(center, center + const Offset(0, -12), stroke);
-    canvas.drawLine(center, center + const Offset(-8, 8), stroke);
-    canvas.drawLine(center, center + const Offset(8, 8), stroke);
+    final body = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.08,
+        size.height * 0.42,
+        size.width * 0.84,
+        size.height * 0.50,
+      ),
+      Radius.circular(size.width * 0.16),
+    );
+    canvas.drawRRect(body, stroke);
+    final shackle = Path()
+      ..moveTo(size.width * 0.26, size.height * 0.48)
+      ..lineTo(size.width * 0.26, size.height * 0.36)
+      ..quadraticBezierTo(
+        size.width * 0.26,
+        size.height * 0.06,
+        size.width * 0.50,
+        size.height * 0.06,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.74,
+        size.height * 0.06,
+        size.width * 0.74,
+        size.height * 0.36,
+      )
+      ..lineTo(size.width * 0.74, size.height * 0.48);
+    canvas.drawPath(shackle, stroke);
   }
 
   @override
-  bool shouldRepaint(covariant _WheelPainter oldDelegate) =>
+  bool shouldRepaint(covariant _LockPainter oldDelegate) =>
       oldDelegate.color != color;
+}
+
+class _OptionsChassisPainter extends CustomPainter {
+  const _OptionsChassisPainter({required this.palette});
+
+  final AlongPalette palette;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final dark = palette.brightness == Brightness.dark;
+    final fill = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
+    final line = dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210);
+    final path = _optionsChassis(size);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..color = line;
+    canvas.drawPath(path, Paint()..color = fill);
+    canvas.drawPath(path, stroke);
+    final nose = math.min(28.0, size.height * 0.16);
+    final top = nose + 20;
+    final bottom = size.height - math.min(18.0, size.height * 0.12) - 14;
+    if (bottom - top > 16) {
+      for (final left in [true, false]) {
+        final x = left ? 8.0 : size.width - 8;
+        canvas.drawLine(
+          Offset(x, top),
+          Offset(x, top + (bottom - top) * 0.42),
+          stroke,
+        );
+        canvas.drawLine(
+          Offset(x, top + (bottom - top) * 0.58),
+          Offset(x, bottom),
+          stroke,
+        );
+      }
+    }
+    final glass = Path()
+      ..moveTo(size.width * 0.34, nose * 0.62)
+      ..quadraticBezierTo(
+        size.width * 0.50,
+        nose * 0.28,
+        size.width * 0.66,
+        nose * 0.62,
+      );
+    canvas.drawPath(glass, stroke);
+    final tail = math.min(18.0, size.height * 0.12);
+    final deck = Path()
+      ..moveTo(size.width * 0.32, size.height - tail * 0.55)
+      ..quadraticBezierTo(
+        size.width * 0.50,
+        size.height - tail * 0.85,
+        size.width * 0.68,
+        size.height - tail * 0.55,
+      );
+    canvas.drawPath(deck, stroke);
+  }
+
+  @override
+  bool shouldRepaint(covariant _OptionsChassisPainter oldDelegate) =>
+      oldDelegate.palette.brightness != palette.brightness;
+}
+
+Path _optionsChassis(Size size) {
+  final w = size.width;
+  final h = size.height;
+  final nose = math.min(28.0, h * 0.16);
+  final tail = math.min(18.0, h * 0.12);
+  final side = math.max(1.5, w * 0.008);
+  final shoulder = nose + 14;
+  final tailJoin = h - tail - 8;
+  final fillet = math.min(AlongRadius.card.x, shoulder - 4);
+  final path = Path();
+  path.moveTo(w * 0.50, 1.2);
+  path.cubicTo(
+    w * 0.64,
+    1.2,
+    w * 0.76,
+    nose * 0.20,
+    w * 0.86,
+    math.max(4.0, shoulder - fillet),
+  );
+  path.cubicTo(
+    w - side - fillet * 0.12,
+    shoulder - fillet * 0.45,
+    w - side,
+    shoulder - fillet * 0.28,
+    w - side,
+    shoulder,
+  );
+  path.lineTo(w - side, tailJoin);
+  path.cubicTo(
+    w - side,
+    tailJoin + fillet * 0.42,
+    w * 0.88,
+    h - 6,
+    w * 0.72,
+    h - 3.5,
+  );
+  path.quadraticBezierTo(w * 0.61, h - 1.2, w * 0.50, h - 1.2);
+  path.quadraticBezierTo(w * 0.39, h - 1.2, w * 0.28, h - 3.5);
+  path.cubicTo(w * 0.12, h - 6, side, tailJoin + fillet * 0.42, side, tailJoin);
+  path.lineTo(side, shoulder);
+  path.cubicTo(
+    side,
+    shoulder - fillet * 0.28,
+    side + fillet * 0.12,
+    shoulder - fillet * 0.45,
+    w * 0.14,
+    math.max(4.0, shoulder - fillet),
+  );
+  path.cubicTo(w * 0.24, nose * 0.20, w * 0.36, 1.2, w * 0.50, 1.2);
+  path.close();
+  return path;
+}
+
+class _OptionsChassisClipper extends CustomClipper<Path> {
+  const _OptionsChassisClipper();
+
+  @override
+  Path getClip(Size size) => _optionsChassis(size);
+
+  @override
+  bool shouldReclip(covariant _OptionsChassisClipper oldClipper) => false;
 }
 
 class _CabinLegend extends StatelessWidget {
@@ -2670,38 +2805,41 @@ class _CabinLegend extends StatelessWidget {
     return Wrap(
       spacing: 14,
       runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        _LegendSwatch(
+        const _LegendGlyph(
           label: 'Open',
-          fill: palette.surface,
-          border: palette.ink.withValues(alpha: 0.14),
+          child: AlongSeatGlyph(status: 'free', width: 28),
         ),
-        _LegendSwatch(label: 'Held', fill: palette.ink, border: palette.ink),
-        _LegendSwatch(
+        const _LegendGlyph(label: 'Held', child: _HeldMark(size: 28)),
+        _LegendGlyph(
           label: 'Women-only',
-          fill: palette.surface,
-          border: palette.accent,
+          child: DecoratedBox(
+            decoration: AlongCraft.fill(
+              palette.accent.withValues(alpha: 0.28),
+              corner: AlongRadius.xs.x,
+              side: BorderSide(color: palette.accent, width: 1.5),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(2),
+              child: AlongSeatGlyph(status: 'free', width: 24),
+            ),
+          ),
         ),
-        _LegendSwatch(
+        const _LegendGlyph(
           label: 'Driver',
-          fill: palette.recessed,
-          border: palette.ink.withValues(alpha: 0.14),
+          child: AlongSeatGlyph(status: 'driver', width: 28),
         ),
       ],
     );
   }
 }
 
-class _LegendSwatch extends StatelessWidget {
-  const _LegendSwatch({
-    required this.label,
-    required this.fill,
-    required this.border,
-  });
+class _LegendGlyph extends StatelessWidget {
+  const _LegendGlyph({required this.label, required this.child});
 
   final String label;
-  final Color fill;
-  final Color border;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -2709,18 +2847,7 @@ class _LegendSwatch extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: AlongCraft.fill(
-            fill,
-            corner: AlongRadius.xs.x,
-            side: BorderSide(
-              color: border,
-              width: border == palette.accent ? 2 : 1,
-            ),
-          ),
-        ),
+        child,
         const SizedBox(width: 6),
         Text(
           label,
