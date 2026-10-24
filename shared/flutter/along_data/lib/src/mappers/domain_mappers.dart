@@ -133,6 +133,7 @@ class DomainMappers {
       modeCode: view.mode.code,
       modeLabel: view.mode.label,
       etaMinutes: etaMinutes,
+      eta: TripEta.fromJson(raw?['eta']),
       pendingExtension: pendingExtension,
       dispatchAttempt: _dispatchAttemptFromTripJson(view),
       isRoamingHail: _isRoamingHailFromTripJson(view),

@@ -1,5 +1,6 @@
 import 'package:along_core/along_core.dart'
     show
+        TripEtaStop,
         TripStatus,
         TripSummary,
         TripWaitApproach,
@@ -146,6 +147,21 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             l10n.activeTripBoardAlight(boardName, alightName),
                             style: AlongText.body,
                           ),
+                          const SizedBox(height: AlongSpace.s8),
+                          Text(
+                            trip?.eta?.driverLine ?? 'Calculating…',
+                            key: const Key('active_trip_eta'),
+                            style: AlongText.body,
+                          ),
+                          for (final stop in trip?.eta?.stops ?? const <TripEtaStop>[])
+                            Padding(
+                              padding: const EdgeInsets.only(top: AlongSpace.s4),
+                              child: Text(
+                                '${stop.name} · ${stop.label}',
+                                key: Key('active_trip_stop_${stop.id}'),
+                                style: AlongText.caption,
+                              ),
+                            ),
                           if (trip?.wait != null) ...[
                             const SizedBox(height: AlongSpace.s8),
                             Text(

@@ -151,6 +151,7 @@ Allowed only when `rounds = round_cap` and status open; creates system round at 
   "live_channel": "trip:{id}", "expires_at", "timestamps": {...},
   "approach_band": "under_2"|"m2_5"|"over_5"|null,                         // requested only; omitted after accept
   "wait": null | {"walk_eta_s":int,"approach":"approaching"|"stalled"|"unknown","updated_at"}, // accepted, pre-board; driver only
+  "eta": null | {"status":"calculating"|"ready","pickup":null|{"kind","low_s","high_s","label"},"trip":null|{"kind","low_s","high_s","label"},"stops":[{"id","name","state":"passed"|"current"|"upcoming","label"}],"updated_at"},
   "extension": null | {...}, "payment_method" }
 ```
 
@@ -223,7 +224,7 @@ Authorized via RLS on `realtime.messages` (topic must match a trip the caller is
 | `rpc.update_sos(p_sos_id, 'cancel')` | raiser | Hold-to-cancel; recorded as `false_alarm` by safety, not deleted. |
 | `rpc.create_trip_share(p_journey_id, p_contact_name?, p_contact_phone?)` | own | Returns `{url: "https://along.ng/s/<token>", expires_at}`; token shown once. |
 | `rpc.revoke_trip_share(p_share_id)` | own | |
-| `rpc.shared_trip_view(p_token)` | anon (security definer) | `{rider_first_name, status, mode, vehicle:{plate,color}, driver_first_name, current_location (≤ 30 s old), destination_label, eta_s, legs_progress}` — only while journey active and token valid; nothing else. |
+| `rpc.shared_trip_view(p_token)` | anon (security definer) | `{rider_first_name, status, mode, vehicle:{plate,color}, driver_first_name, current_location (≤ 30 s old), destination_label, eta_s, eta, legs_progress}` — `eta` is the same payload as `TripView.eta` (`calculating` until the estimator publishes). Only while journey active and token valid; nothing else. |
 | `rpc.report_incident(p_trip_id?, p_type, p_description, p_attachment_paths[])` | own | |
 
 ---

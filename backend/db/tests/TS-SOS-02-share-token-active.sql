@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(6);
+select plan(8);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 
@@ -136,20 +136,39 @@ select ok(
   'TS-SOS-02: shared_trip_view exposes minimal vehicle plate only'
 );
 
-select set_config(
-  'test.sos02_eta_default',
-  shared_trip_view(current_setting('test.sos02_token'))->>'eta_s',
-  true
+select ok(
+  shared_trip_view(current_setting('test.sos02_token'))#>>'{eta,status}' = 'calculating',
+  'TS-SOS-02: share link is calculating until the estimator publishes'
 );
+
+select ok(
+  (shared_trip_view(current_setting('test.sos02_token'))->>'eta_s')::int = 0,
+  'TS-SOS-02: eta_s stays unset while the payload is calculating'
+);
+
+update trips
+set meta = coalesce(meta, '{}'::jsonb) || jsonb_build_object(
+  'eta', jsonb_build_object(
+    'status', 'ready',
+    'pickup', null,
+    'trip', jsonb_build_object('kind', 'single', 'low_s', 480, 'high_s', 480, 'label', '8 min'),
+    'stops', jsonb_build_array(
+      jsonb_build_object('id', 'wuse', 'name', 'Wuse', 'state', 'upcoming', 'label', '7:41')
+    ),
+    'updated_at', now()
+  )
+)
+where id = '0e600000-0000-4000-8000-000000000011';
 
 update app_config
 set value = '100'
 where key = 'planner.baseline_speed_mps' and scope_type = 'global' and scope_id = '*';
 
 select ok(
-  (shared_trip_view(current_setting('test.sos02_token'))->>'eta_s')::int
-    < (current_setting('test.sos02_eta_default')::int),
-  'TS-SOS-02: shared_trip_view eta_s uses planner.baseline_speed_mps config'
+  shared_trip_view(current_setting('test.sos02_token'))#>>'{eta,trip,label}' = '8 min'
+    and (shared_trip_view(current_setting('test.sos02_token'))->>'eta_s')::int = 480
+    and shared_trip_view(current_setting('test.sos02_token'))#>>'{eta,stops,0,label}' = '7:41',
+  'TS-SOS-02: share link returns the published eta payload'
 );
 
 select set_config('request.jwt.claim.sub', '0e100000-0000-4000-8000-000000000011', true);

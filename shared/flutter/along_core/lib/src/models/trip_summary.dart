@@ -2,6 +2,7 @@ import 'package:along_core/src/enums/trip_approach_band.dart';
 import 'package:along_core/src/enums/trip_status.dart';
 import 'package:along_core/src/models/fare_quote.dart';
 import 'package:along_core/src/models/na_me_pairing.dart';
+import 'package:along_core/src/models/trip_eta.dart';
 import 'package:along_core/src/models/trip_extension_proposal.dart';
 import 'package:along_core/src/models/trip_live.dart';
 import 'package:along_core/src/models/trip_load.dart';
@@ -47,6 +48,7 @@ class TripSummary {
     this.modeCode = 'car',
     this.modeLabel = 'Car',
     this.etaMinutes,
+    this.eta,
     this.pendingExtension,
     this.paymentMethod,
     this.approachBand,
@@ -74,6 +76,7 @@ class TripSummary {
   final String modeCode;
   final String modeLabel;
   final int? etaMinutes;
+  final TripEta? eta;
   final TripExtensionProposal? pendingExtension;
   final String? paymentMethod;
   final TripApproachBand? approachBand;

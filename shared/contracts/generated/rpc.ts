@@ -768,6 +768,28 @@ export interface SharedTripViewResponse {
   };
   destination_label: string;
   eta_s: number;
+  eta?: {
+    status: "calculating" | "ready";
+    pickup?: {
+      kind: "single" | "range";
+      low_s: number;
+      high_s: number;
+      label: string;
+    } | null;
+    trip?: {
+      kind: "single" | "range";
+      low_s: number;
+      high_s: number;
+      label: string;
+    } | null;
+    stops: {
+      id: string;
+      name: string;
+      state: "passed" | "current" | "upcoming";
+      label: string;
+    }[];
+    updated_at: string;
+  };
   legs_progress: {}[];
 }
 

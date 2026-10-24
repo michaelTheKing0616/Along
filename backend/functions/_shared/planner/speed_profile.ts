@@ -5,8 +5,9 @@ import type { PlannerCfg } from '../types.ts';
  * Historical segment speed calibration for in_vehicle_time_estimate_s (doc 04 §4.4 / §15).
  *
  * Fallback order:
- * 1. Live presence speed on the same segment in the last 10 min (doc 04 §15) — **not implemented**;
- *    no live segment-speed pipeline exists yet, so this hook is skipped.
+ * 1. Live 10-minute map-matched median — used by the in-trip estimator
+ *    (`_shared/eta/estimate.ts`). A quote has no trip yet, so planner calibration
+ *    still starts at the hour profile.
  * 2. segment_speed_profiles for matching hour/dow when route_leg.segment_keys are present.
  * 3. Unchanged base in_vehicle_time_estimate_s (seeded graph or OSRM × shared_vehicle_factor).
  */

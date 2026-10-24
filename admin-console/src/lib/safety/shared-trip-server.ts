@@ -24,6 +24,22 @@ export function formatEtaMinutes(etaSeconds: number): string {
   return `${minutes} min`;
 }
 
+/** Prefer the shared estimator payload. Fall back to eta_s for older links. */
+export function sharedEtaLabel(view: {
+  eta?: {
+    status?: string;
+    trip?: { label?: string } | null;
+    pickup?: { label?: string } | null;
+  } | null;
+  eta_s?: number | null;
+}): string {
+  if (view.eta?.status === 'calculating') return 'Calculating…';
+  const label = view.eta?.trip?.label ?? view.eta?.pickup?.label;
+  if (label) return label;
+  if (view.eta_s == null) return 'Calculating…';
+  return formatEtaMinutes(view.eta_s);
+}
+
 export function modeLabel(code: string, label?: string): string {
   return label ?? code;
 }

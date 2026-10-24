@@ -1,7 +1,7 @@
 import {
   fetchSharedTripView,
-  formatEtaMinutes,
   modeLabel,
+  sharedEtaLabel,
 } from '@/lib/safety/shared-trip-server';
 import './share.css';
 
@@ -60,9 +60,18 @@ export default async function SharedTripPage({ params }: PageProps) {
       <div className="w01-row">
         <span className="w01-row-label">ETA</span>
         <span className="w01-row-value" data-testid="w01-eta">
-          {formatEtaMinutes(view.eta_s)}
+          {sharedEtaLabel(view)}
         </span>
       </div>
+      {view.eta?.stops?.length ? (
+        <div className="w01-legs" data-testid="w01-eta-stops">
+          {view.eta.stops.map((stop) => (
+            <div key={stop.id} className="w01-leg" data-testid={`w01-stop-${stop.id}`}>
+              {stop.name} · {stop.label}
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div className="w01-legs" data-testid="w01-legs">
         {view.legs_progress.map((leg, index) => (

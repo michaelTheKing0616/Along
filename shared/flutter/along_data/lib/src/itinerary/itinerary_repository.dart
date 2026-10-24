@@ -112,6 +112,18 @@ class ItineraryRepository {
     );
   }
 
+  String? _etaLabel(Object? eta) {
+    if (eta is! Map) return null;
+    final trip = eta['trip'];
+    if (trip is Map && trip['label'] is String) return trip['label'] as String;
+    final pickup = eta['pickup'];
+    if (pickup is Map && pickup['label'] is String) {
+      return pickup['label'] as String;
+    }
+    if (eta['status'] == 'calculating') return 'Calculating…';
+    return null;
+  }
+
   ItineraryStopView _mapStop(Map<String, dynamic> json) {
     final loc = json['destination_location'];
     GeoPoint? point;
@@ -132,6 +144,8 @@ class ItineraryRepository {
           ? _planner.planResultFromData(preparedRaw)
           : null,
       linkedJourneyId: json['linked_journey_id'] as String?,
+      etaMinutes: (json['eta_minutes'] as num?)?.toInt(),
+      etaLabel: json['eta_label'] as String? ?? _etaLabel(json['eta']),
     );
   }
 

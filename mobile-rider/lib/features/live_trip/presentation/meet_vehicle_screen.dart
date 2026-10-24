@@ -113,9 +113,14 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
     final heading = trip.live?.driver?.headingDegrees;
     final colour = naMeColourFromToken(trip.naMe.colorToken);
     final shape = naMeShapeFromToken(trip.naMe.shape);
-    final etaLine = trip.etaMinutes != null
-        ? l10n.meetVehicleArrivingIn(trip.etaMinutes!)
-        : l10n.meetVehicleWalkTo(trip.board.walkS ~/ 60, trip.board.name);
+    final etaLine = switch (trip.eta?.status) {
+      'ready' when trip.eta!.pickup != null =>
+        'Arriving · ${trip.eta!.pickup!.label}',
+      'calculating' => 'Calculating…',
+      _ => trip.etaMinutes != null
+          ? l10n.meetVehicleArrivingIn(trip.etaMinutes!)
+          : l10n.meetVehicleWalkTo(trip.board.walkS ~/ 60, trip.board.name),
+    };
 
     return Scaffold(
       body: Column(
