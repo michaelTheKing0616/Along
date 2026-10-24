@@ -27,9 +27,8 @@ class PriceKeypadSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: AlongPalette.of(context).bg,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AlongRadius.lg.x)),
-      ),
+      shape: AlongCraft.borderVertical(top: AlongRadius.sheet.x),
+      clipBehavior: Clip.antiAlias,
       builder: (context) => PriceKeypadSheet(
         initialAmount: initialAmount,
         suggestedAmounts: suggestedAmounts,
@@ -187,10 +186,11 @@ class _KeypadKey extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AlongColors.surface100,
-      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      shape: AlongCraft.border(AlongRadius.control.x),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        customBorder: AlongCraft.border(AlongRadius.control.x),
         child: SizedBox(
           height: 56,
           child: Center(

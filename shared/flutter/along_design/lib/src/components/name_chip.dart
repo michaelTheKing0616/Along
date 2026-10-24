@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/name_signal.dart';
 import 'na_me_shape_painter.dart';
@@ -24,11 +25,12 @@ class NaMeChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AlongSpace.s12,
-          vertical: AlongSpace.s8,
+          vertical: AlongSpace.s12,
         ),
-        decoration: BoxDecoration(
-          color: AlongColors.surface100,
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        clipBehavior: Clip.antiAlias,
+        decoration: AlongCraft.fill(
+          AlongColors.surface100,
+          corner: AlongRadius.control.x,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

@@ -10,6 +10,7 @@ import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import 'delights.dart';
 import 'demo_adapter.dart';
@@ -54,6 +55,7 @@ class AlongCityMap extends StatelessWidget {
     this.bare = false,
     this.fix = AlongFix.precise,
     this.demoLabel = true,
+    this.demoInset = const EdgeInsets.only(top: 8, right: 8),
     this.controller,
     this.center,
     this.zoom,
@@ -80,6 +82,9 @@ class AlongCityMap extends StatelessWidget {
   /// Debug builds label simulated positions. Screens that already show a
   /// Demo mark pass false.
   final bool demoLabel;
+
+  /// Clears map chrome that sits in the top-right. The mark stays one tag.
+  final EdgeInsets demoInset;
 
   /// When set, the screen owns the camera. Pickup pans this under a fixed pin.
   final MapController? controller;
@@ -334,8 +339,12 @@ class AlongCityMap extends StatelessWidget {
               rotate: true,
               markers: _markers(context, palette, drawn),
             ),
-            if (kDebugMode && demoLabel && !_positionCarriesDemo)
-              const Positioned(top: 8, right: 8, child: AlongDemoMark()),
+            if (kDebugMode && demoLabel)
+              Positioned(
+                top: demoInset.top,
+                right: demoInset.right,
+                child: const AlongDemoMark(),
+              ),
             Positioned(
               top: 8,
               left: 0,
@@ -347,15 +356,6 @@ class AlongCityMap extends StatelessWidget {
         );
       },
     );
-  }
-
-  /// A puck or a stale car already says Demo, so the corner chip stays off.
-  bool get _positionCarriesDemo {
-    if (bare) return fix != AlongFix.hidden;
-    return mode == AlongCityMapMode.browse ||
-        mode == AlongCityMapMode.online ||
-        mode == AlongCityMapMode.search ||
-        (mode == AlongCityMapMode.trip && fix == AlongFix.stale);
   }
 
   double _typeScale(BuildContext context) {
@@ -600,7 +600,7 @@ class AlongCityMap extends StatelessWidget {
         softWrap: false,
         textAlign: TextAlign.center,
         style: AlongType.caption(palette).copyWith(
-          fontSize: 12,
+          fontSize: 13,
           height: 1,
           fontWeight: FontWeight.w600,
           color: dark ? const Color(0xFFE7E2D8) : const Color(0xFF3A342C),
@@ -636,9 +636,9 @@ class AlongCityMap extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               DecoratedBox(
-                decoration: BoxDecoration(
-                  color: palette.surface,
-                  borderRadius: BorderRadius.circular(8),
+                decoration: AlongCraft.fill(
+                  palette.surface,
+                  corner: AlongRadius.xs.x,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -659,7 +659,7 @@ class AlongCityMap extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         style: AlongType.caption(palette).copyWith(
-                          fontSize: 10,
+                          fontSize: 13,
                           height: 1.1,
                           fontWeight: FontWeight.w600,
                           color: palette.ink,
@@ -673,12 +673,17 @@ class AlongCityMap extends StatelessWidget {
               Container(
                 width: pickup ? 12 : 10,
                 height: pickup ? 12 : 10,
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: pickup ? BoxShape.circle : BoxShape.rectangle,
-                  borderRadius: pickup ? null : BorderRadius.circular(2),
-                  border: Border.all(color: palette.surface, width: 1.5),
-                ),
+                decoration: pickup
+                    ? BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: palette.surface, width: 1.5),
+                      )
+                    : AlongCraft.fill(
+                        color,
+                        corner: AlongRadius.xs.x,
+                        side: BorderSide(color: palette.surface, width: 1.5),
+                      ),
               ),
             ],
           ),
@@ -715,9 +720,9 @@ class AlongCityMap extends StatelessWidget {
               ),
             ),
             DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: BorderRadius.circular(6),
+              decoration: AlongCraft.fill(
+                palette.surface,
+                corner: AlongRadius.xs.x,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -726,7 +731,7 @@ class AlongCityMap extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontSize: 10,
+                    fontSize: 13,
                     height: 1.1,
                     fontWeight: FontWeight.w600,
                     color: palette.ink,
@@ -773,9 +778,9 @@ class AlongCityMap extends StatelessWidget {
                   child: Container(
                     width: emphasized ? 28 : 22,
                     height: 7,
-                    decoration: BoxDecoration(
-                      color: const Color(0x33000000),
-                      borderRadius: BorderRadius.circular(8),
+                    decoration: AlongCraft.fill(
+                      const Color(0x33000000),
+                      corner: AlongRadius.xs.x,
                     ),
                   ),
                 ),
@@ -817,7 +822,7 @@ class AlongCityMap extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         style: AlongType.numeric(palette).copyWith(
-                          fontSize: 11,
+                          fontSize: 13,
                           height: 1,
                           color: palette.accentInk,
                         ),
@@ -831,7 +836,6 @@ class AlongCityMap extends StatelessWidget {
             _FixCaption(
               palette: palette,
               label: DemoAdapter.gps.ageLabel,
-              demo: kDebugMode && demoLabel,
             ),
         ],
       ),
@@ -851,9 +855,9 @@ class AlongCityMap extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: BorderRadius.circular(6),
+              decoration: AlongCraft.fill(
+                palette.surface,
+                corner: AlongRadius.xs.x,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -862,7 +866,7 @@ class AlongCityMap extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: AlongType.caption(palette).copyWith(
-                    fontSize: 10,
+                    fontSize: 13,
                     height: 1.1,
                     fontWeight: FontWeight.w600,
                     color: palette.ink,
@@ -919,10 +923,10 @@ class AlongCityMap extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           DecoratedBox(
-            decoration: BoxDecoration(
-              color: palette.surface,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: AlongElevation.float(palette.ink),
+            decoration: AlongCraft.fill(
+              palette.surface,
+              corner: AlongRadius.xs.x,
+              shadow: AlongElevation.float(palette.ink),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
@@ -931,7 +935,7 @@ class AlongCityMap extends StatelessWidget {
                 maxLines: 1,
                 softWrap: false,
                 style: AlongType.caption(palette).copyWith(
-                  fontSize: 11,
+                  fontSize: 13,
                   height: 1.1,
                   fontWeight: FontWeight.w600,
                   color: palette.ink,
@@ -968,7 +972,7 @@ class AlongCityMap extends StatelessWidget {
           '$count',
           maxLines: 1,
           softWrap: false,
-          style: AlongType.title(palette).copyWith(fontSize: 15, height: 1),
+          style: AlongType.label(palette).copyWith(height: 1),
         ),
       ),
     );
@@ -977,7 +981,6 @@ class AlongCityMap extends StatelessWidget {
   Marker _puck(BuildContext context, LatLng at, AlongPalette palette) {
     final scale = _typeScale(context);
     final hollow = fix == AlongFix.approximate || fix == AlongFix.stale;
-    final showDemo = kDebugMode && demoLabel;
     final word = switch (fix) {
       AlongFix.precise => 'You',
       AlongFix.approximate => 'Approx',
@@ -986,21 +989,19 @@ class AlongCityMap extends StatelessWidget {
     };
     final fill = hollow ? palette.roles.stale : palette.roles.riderDot;
     final caption = [
-      if (showDemo) 'Demo',
       word,
       if (hollow) DemoAdapter.gps.ageLabel,
     ].join(' ');
     return Marker(
       point: at,
       width: (hollow ? 156 : 72) * scale,
-      height: ((showDemo ? 16 : 0) + 16 + (hollow ? 16 : 0) + 20) * scale,
+      height: (16 + (hollow ? 16 : 0) + 20) * scale,
       alignment: Alignment.bottomCenter,
       child: Semantics(
         label: caption,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (showDemo) _SolidWord(palette: palette, text: 'Demo'),
             _SolidWord(palette: palette, text: word),
             if (hollow)
               _SolidWord(palette: palette, text: DemoAdapter.gps.ageLabel),
@@ -1032,9 +1033,9 @@ class _SolidWord extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(6),
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.xs.x,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -1043,7 +1044,7 @@ class _SolidWord extends StatelessWidget {
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
-            fontSize: 10,
+            fontSize: 13,
             height: 1.1,
             fontWeight: FontWeight.w600,
             color: palette.ink,
@@ -1055,27 +1056,16 @@ class _SolidWord extends StatelessWidget {
 }
 
 class _FixCaption extends StatelessWidget {
-  const _FixCaption({
-    required this.palette,
-    required this.label,
-    required this.demo,
-  });
+  const _FixCaption({required this.palette, required this.label});
 
   final AlongPalette palette;
   final String label;
-  final bool demo;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: demo ? 'Demo $label' : label,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (demo) _SolidWord(palette: palette, text: 'Demo'),
-          _SolidWord(palette: palette, text: label),
-        ],
-      ),
+      label: label,
+      child: _SolidWord(palette: palette, text: label),
     );
   }
 }
@@ -1088,9 +1078,9 @@ class _Attribution extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(8),
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.xs.x,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -1099,7 +1089,7 @@ class _Attribution extends StatelessWidget {
           maxLines: 1,
           softWrap: false,
           style: AlongType.caption(palette).copyWith(
-            fontSize: 10,
+            fontSize: 13,
             height: 1.1,
             fontWeight: FontWeight.w600,
             color: palette.ink,

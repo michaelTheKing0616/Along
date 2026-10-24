@@ -18,10 +18,11 @@ class StaleBadge extends StatelessWidget {
         horizontal: AlongSpace.s8,
         vertical: AlongSpace.s4,
       ),
-      decoration: BoxDecoration(
-        color: AlongColors.semanticWarningTint,
-        borderRadius: BorderRadius.circular(AlongSpace.s4),
-        border: Border.all(color: AlongColors.semanticWarning),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.semanticWarningTint,
+        corner: AlongRadius.xs.x,
+        side: const BorderSide(color: AlongColors.semanticWarning),
       ),
       child: Text(
         label,

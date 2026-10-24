@@ -9,10 +9,10 @@ Build to this note. The trip lifecycle is in [flows.md](flows.md). Each visual p
 | Piece | Rule |
 | --- | --- |
 | Color | Warm paper and ink. Light background `#F6F4F1`, surface `#FBF9F6`, ink `#141210`. Dark background `#100F0D`, surface `#26231F`, ink `#F3EEE8`. Accent `#F7D117` with ink `#141210` on it. |
-| Shape | Squircles at smoothing 0.6 (`AlongCraft`). Pills (radius 999) and circular controls stay round. |
+| Shape | Squircles at smoothing 0.6 (`AlongCraft`). Controls are rectangles, radius 12–14. The primary button is full width, 56 tall, radius 16. Avatars, step dots, and map controls stay round. |
 | Seat | The seat glyph is the product mark. Counts read as glyphs plus the word "seats", not a bare number. |
 | Map | Baked muted tiles. No color matrix. Labels sit on solid surface chips. The route has a surface casing, a grey remainder, and an ink traveled stroke. |
-| Type | Geist, two weights (600 and 400), tabular figures, hanging naira. Inter is only the naira fallback. |
+| Type | Geist. Five sizes: display 32, title 20, body 16, label 14, caption 13. Weights 400, 500, and 600. Body line-height 1.4. Display is tighter. Nothing under 13. Tabular figures, including money. Inter is only the naira fallback. |
 | Icons | Phosphor Duotone, from the font. A state is an icon plus words. Color never carries the state alone. |
 
 ## Semantic roles

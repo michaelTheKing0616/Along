@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/fare_tier.dart';
 import '../utils/format_money.dart';
@@ -62,10 +63,11 @@ class OptionCard extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
-              color: AlongColors.surface0,
-              borderRadius: BorderRadius.circular(AlongRadius.lg.x),
-              border: Border.all(color: borderColor, width: borderWidth),
+            clipBehavior: Clip.antiAlias,
+            decoration: AlongCraft.fill(
+              AlongColors.surface0,
+              corner: AlongRadius.card.x,
+              side: BorderSide(color: borderColor, width: borderWidth),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,11 +78,10 @@ class OptionCard extends StatelessWidget {
                       horizontal: AlongSpace.s12,
                       vertical: AlongSpace.s4,
                     ),
-                    decoration: BoxDecoration(
-                      color: AlongColors.brandYellowTint,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(AlongRadius.lg.x - 1),
-                      ),
+                    decoration: AlongCraft.fill(
+                      AlongColors.brandYellowTint,
+                      corner: AlongRadius.card.x,
+                      top: true,
                     ),
                     child: Text(
                       'Recommended',
@@ -195,9 +196,9 @@ class OptionCard extends StatelessWidget {
             Positioned.fill(
               child: IgnorePointer(
                 child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AlongColors.ink900.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(AlongRadius.lg.x),
+                  decoration: AlongCraft.fill(
+                    AlongColors.ink900.withValues(alpha: 0.08),
+                    corner: AlongRadius.card.x,
                   ),
                 ),
               ),

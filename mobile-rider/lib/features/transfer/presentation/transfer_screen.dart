@@ -181,10 +181,11 @@ class _NextLegCard extends StatelessWidget {
     final supply = leg.supplyBucket;
     return Container(
       padding: const EdgeInsets.all(AlongSpace.s16),
-      decoration: BoxDecoration(
-        color: AlongColors.surface0,
-        borderRadius: BorderRadius.circular(AlongRadius.lg.x),
-        border: Border.all(color: AlongColors.ink100),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.surface0,
+        corner: AlongRadius.card.x,
+        side: const BorderSide(color: AlongColors.ink100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

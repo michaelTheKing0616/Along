@@ -197,9 +197,10 @@ class _InfoCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AlongSpace.s12),
-      decoration: BoxDecoration(
-        color: AlongColors.surface0,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.surface0,
+        corner: AlongRadius.card.x,
       ),
       child: Text(text, style: AlongText.body),
     );

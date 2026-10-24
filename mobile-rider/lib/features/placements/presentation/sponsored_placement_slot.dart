@@ -70,13 +70,14 @@ class _SponsoredPlacementSlotState extends ConsumerState<SponsoredPlacementSlot>
       child: Material(
         key: const Key('sponsored_placement_slot'),
         color: AlongColors.surface100,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        shape: AlongCraft.border(
+          AlongRadius.card.x,
           side: const BorderSide(color: AlongColors.brandYellow, width: 1),
         ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () => _onTap(placement),
-          borderRadius: BorderRadius.circular(AlongRadius.md.x),
+          customBorder: AlongCraft.border(AlongRadius.card.x),
           child: Padding(
             padding: const EdgeInsets.all(AlongSpace.s12),
             child: Column(

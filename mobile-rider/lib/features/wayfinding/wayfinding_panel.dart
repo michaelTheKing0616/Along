@@ -128,9 +128,10 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
     final camera = polyline.isNotEmpty ? polyline.first : widget.userLocation;
     return Stack(
       children: [
-        ClipRRect(
+        KeyedSubtree(
           key: const Key('wayfinding_map'),
-          borderRadius: BorderRadius.circular(AlongRadius.lg.x),
+          child: AlongCraft.clip(
+          corner: AlongRadius.card.x,
           child: AlongMap(
             styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
             allowDemoStyleFallback: false,
@@ -145,6 +146,7 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
               controller.setWalkRoute(polyline);
             },
           ),
+          ),
         ),
         if (widget.directions.degraded)
           Positioned(
@@ -152,10 +154,11 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
             left: AlongSpace.s8,
             right: AlongSpace.s8,
             child: Container(
-              padding: const EdgeInsets.all(AlongSpace.s8),
-              decoration: BoxDecoration(
-                color: AlongColors.semanticWarningTint,
-                borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+              padding: const EdgeInsets.all(AlongSpace.s12),
+              clipBehavior: Clip.antiAlias,
+              decoration: AlongCraft.fill(
+                AlongColors.semanticWarningTint,
+                corner: AlongRadius.control.x,
               ),
               child: Text(
                 l10n.wayfindingDegraded,

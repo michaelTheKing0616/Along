@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:along_design/src/craft.dart';
-import 'package:along_design/src/elevation.dart';
 import 'package:along_design/src/flows/driver_portrait.dart';
 import 'package:along_design/src/icons.dart';
 import 'package:along_design/src/motion.dart';
@@ -91,7 +90,6 @@ class SeatMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
     final rules = <Widget>[
       for (final row in rows)
         if (row.ruleTitle != null && row.ruleTitle!.trim().isNotEmpty)
@@ -120,14 +118,8 @@ class SeatMap extends StatelessWidget {
             onSeatTap: onSeatTap,
             onSeatLongPress: onSeatLongPress,
           );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(body == 'bike' ? 36 : 24),
-        boxShadow: AlongElevation.card(palette.ink),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -145,7 +137,6 @@ class SeatMap extends StatelessWidget {
             if (footer != null) ...[const SizedBox(height: 16), footer!],
           ],
         ),
-      ),
     );
   }
 }
@@ -231,16 +222,23 @@ class _CabinShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return ClipPath(
-      clipper: _CabinClipper(),
-      child: CustomPaint(
-        painter: _CabinOutlinePainter(palette: palette, bold: true),
+    return CustomPaint(
+      painter: _CabinOutlinePainter(palette: palette, bold: true),
+      child: ClipPath(
+        clipper: _CabinClipper(),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 26, 8, 14),
-          child: _SeatGrid(
-            rows: rows,
-            onSeatTap: onSeatTap,
-            onSeatLongPress: onSeatLongPress,
+          padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: _CabinFit.nose),
+              _SeatGrid(
+                rows: rows,
+                onSeatTap: onSeatTap,
+                onSeatLongPress: onSeatLongPress,
+              ),
+              const SizedBox(height: _CabinFit.tail),
+            ],
           ),
         ),
       ),
@@ -257,7 +255,18 @@ class _CabinFit {
 
   static const maxSeat = 84.0;
   static const columnGap = 8.0;
-  static const rowGap = 20.0;
+
+  /// Space under the price line, before the next cushion.
+  static const rowGap = 8.0;
+
+  /// Label and price sit under the cushion, not inside it.
+  static const captionGap = 4.0;
+  static const captionSlot = 36.0;
+
+  /// Empty nose and tail so the cushions sit in the door section,
+  /// past the taper in [_cabinOutline].
+  static const nose = 48.0;
+  static const tail = 28.0;
 
   static _CabinFit solve({required double maxWidth, required int columns}) {
     final cols = math.max(1, columns);
@@ -335,14 +344,25 @@ class _SeatGridRow extends StatelessWidget {
       for (final item in seats)
         SizedBox(
           width: seat,
-          height: seat,
-          child: _SeatButton(
-            seat: item,
-            markHeight: seat,
-            driverIcon: true,
-            badge: item.isDriver ? null : badge,
-            onTap: item.isClaimable ? onSeatTap : null,
-            onLongPress: item.isClaimable ? onSeatLongPress : null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: seat,
+                height: seat,
+                child: _SeatButton(
+                  seat: item,
+                  markHeight: seat,
+                  driverIcon: true,
+                  captionBelow: true,
+                  badge: item.isDriver ? null : badge,
+                  onTap: item.isClaimable ? onSeatTap : null,
+                  onLongPress: item.isClaimable ? onSeatLongPress : null,
+                ),
+              ),
+              const SizedBox(height: _CabinFit.captionGap),
+              _SeatCaption(seat: item, width: seat),
+            ],
           ),
         ),
     ];
@@ -359,8 +379,8 @@ class _SeatGridRow extends StatelessWidget {
     }
     return SizedBox(
       width: width,
-      height: seat,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: seats.length == 1
             ? MainAxisAlignment.center
             : MainAxisAlignment.spaceBetween,
@@ -386,7 +406,55 @@ class _SeatGridRow extends StatelessWidget {
   }
 }
 
-/// Rounded cabin, slightly narrower at the nose. No wheels, no mirrors.
+class _SeatCaption extends StatelessWidget {
+  const _SeatCaption({required this.seat, required this.width});
+
+  final SeatMapSeat seat;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final style = AlongType.caption(palette).copyWith(
+      fontWeight: FontWeight.w600,
+      height: 1.2,
+    );
+    final price = seat.price;
+    final showPrice =
+        price != null && price.contains('₦') && seat.status != 'occupied';
+    return SizedBox(
+      width: width,
+      child: Column(
+        children: [
+          Text(
+            seat.label.trim(),
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            style: style,
+          ),
+          if (showPrice)
+            Text(
+              price,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: style.copyWith(
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            )
+          else
+            const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+}
+
+/// One stroke weight for the cabin, the door seams, and every seat.
+const _vectorStroke = 1.5;
+
+/// Car body from above: tapered nose, straight doors, tapered rear.
 class _CabinOutlinePainter extends CustomPainter {
   _CabinOutlinePainter({required this.palette, this.bold = false});
 
@@ -396,62 +464,51 @@ class _CabinOutlinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final dark = palette.brightness == Brightness.dark;
-    final fill = bold
-        ? (dark ? const Color(0xFF1C1E22) : const Color(0xFFE7E9EE))
-        : (dark ? const Color(0xFF16171A) : const Color(0xFFF6F7F9));
-    final line = bold
-        ? (dark ? const Color(0xFFC8CAD2) : const Color(0xFF2A2C31))
-        : (dark ? const Color(0xFF4A4C54) : const Color(0xFFD0D2D8));
+    final fill = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
+    final line = dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210);
     final path = _cabinOutline(size);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _vectorStroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..color = line;
     canvas.drawPath(path, Paint()..color = fill);
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = bold ? 1.6 : 0.5
-        ..color = line,
-    );
-    _doorSeams(canvas, size, line);
-    final dashW = math.min(72.0, size.width * 0.28);
-    final dash = RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: Offset(size.width / 2, 11),
-        width: dashW,
-        height: 3,
-      ),
-      const Radius.circular(2),
-    );
-    canvas.drawRRect(dash, Paint()..color = line);
+    canvas.drawPath(path, stroke);
+    _doorSeams(canvas, size, stroke);
+    final nose = math.min(28.0, size.height * 0.16);
+    final glass = Path()
+      ..moveTo(size.width * 0.34, nose * 0.62)
+      ..quadraticBezierTo(
+        size.width * 0.50,
+        nose * 0.28,
+        size.width * 0.66,
+        nose * 0.62,
+      );
+    canvas.drawPath(glass, stroke);
+    final tail = math.min(18.0, size.height * 0.12);
+    final deck = Path()
+      ..moveTo(size.width * 0.32, size.height - tail * 0.55)
+      ..quadraticBezierTo(
+        size.width * 0.50,
+        size.height - tail * 0.85,
+        size.width * 0.68,
+        size.height - tail * 0.55,
+      );
+    canvas.drawPath(deck, stroke);
   }
 
-  void _doorSeams(Canvas canvas, Size size, Color line) {
-    final seam = Paint()
-      ..color = line
-      ..strokeWidth = 1.4
-      ..strokeCap = StrokeCap.round;
-    final pillar = Paint()..color = line;
+  void _doorSeams(Canvas canvas, Size size, Paint seam) {
+    final top = _CabinFit.nose + 6;
+    final bottom = size.height - _CabinFit.tail - 6;
+    if (bottom - top < 16) return;
     for (final left in [true, false]) {
-      final x = left ? 4.0 : size.width - 4;
+      final x = left ? 8.0 : size.width - 8;
+      canvas.drawLine(Offset(x, top), Offset(x, top + (bottom - top) * 0.42), seam);
       canvas.drawLine(
-        Offset(x, size.height * 0.22),
-        Offset(x, size.height * 0.44),
+        Offset(x, top + (bottom - top) * 0.58),
+        Offset(x, bottom),
         seam,
-      );
-      canvas.drawLine(
-        Offset(x, size.height * 0.56),
-        Offset(x, size.height * 0.90),
-        seam,
-      );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(x, size.height * 0.50),
-            width: 4,
-            height: math.max(10, size.height * 0.08),
-          ),
-          const Radius.circular(2),
-        ),
-        pillar,
       );
     }
   }
@@ -466,18 +523,61 @@ class _CabinOutlinePainter extends CustomPainter {
 Path _cabinOutline(Size size) {
   final w = size.width;
   final h = size.height;
-  final taper = math.min(14.0, w * 0.045);
-  final r = math.min(22.0, w * 0.08);
+  final nose = math.min(28.0, h * 0.16);
+  final tail = math.min(18.0, h * 0.12);
+  final side = math.max(1.5, w * 0.008);
+  // Door wall still starts at nose + 14. The 24 fillet lives in the nose
+  // and the tail, above and below that line.
+  final shoulder = nose + 14;
+  final tailJoin = h - tail - 8;
+  final fillet = math.min(AlongRadius.card.x, shoulder - 4);
   final path = Path();
-  path.moveTo(taper + r, 0.5);
-  path.lineTo(w - taper - r, 0.5);
-  path.arcToPoint(Offset(w - taper, r), radius: Radius.circular(r));
-  path.lineTo(w - 0.5, h - r);
-  path.arcToPoint(Offset(w - r - 0.5, h - 0.5), radius: Radius.circular(r));
-  path.lineTo(r, h - 0.5);
-  path.arcToPoint(Offset(0.5, h - r), radius: Radius.circular(r));
-  path.lineTo(taper, r);
-  path.arcToPoint(Offset(taper + r, 0.5), radius: Radius.circular(r));
+  path.moveTo(w * 0.50, 1.2);
+  path.cubicTo(
+    w * 0.64,
+    1.2,
+    w * 0.76,
+    nose * 0.20,
+    w * 0.86,
+    math.max(4.0, shoulder - fillet),
+  );
+  path.cubicTo(
+    w - side - fillet * 0.12,
+    shoulder - fillet * 0.45,
+    w - side,
+    shoulder - fillet * 0.28,
+    w - side,
+    shoulder,
+  );
+  path.lineTo(w - side, tailJoin);
+  path.cubicTo(
+    w - side,
+    tailJoin + fillet * 0.42,
+    w * 0.88,
+    h - 6,
+    w * 0.72,
+    h - 3.5,
+  );
+  path.quadraticBezierTo(w * 0.61, h - 1.2, w * 0.50, h - 1.2);
+  path.quadraticBezierTo(w * 0.39, h - 1.2, w * 0.28, h - 3.5);
+  path.cubicTo(
+    w * 0.12,
+    h - 6,
+    side,
+    tailJoin + fillet * 0.42,
+    side,
+    tailJoin,
+  );
+  path.lineTo(side, shoulder);
+  path.cubicTo(
+    side,
+    shoulder - fillet * 0.28,
+    side + fillet * 0.12,
+    shoulder - fillet * 0.45,
+    w * 0.14,
+    math.max(4.0, shoulder - fillet),
+  );
+  path.cubicTo(w * 0.24, nose * 0.20, w * 0.36, 1.2, w * 0.50, 1.2);
   path.close();
   return path;
 }
@@ -498,25 +598,11 @@ class _RuleChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.recessed,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        child: Text(
-          label,
-          maxLines: 1,
-          softWrap: false,
-          style: AlongText.caption.copyWith(
-            color: palette.ink,
-            fontSize: 12,
-            height: 1.1,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
+    return Text(
+      label,
+      maxLines: 1,
+      softWrap: false,
+      style: AlongType.label(palette),
     );
   }
 }
@@ -527,31 +613,27 @@ class _SeatLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 14,
+      runSpacing: 8,
+      children: [
           _LegendMark(
             label: 'Available',
             fill: _SeatButtonState.available(palette),
             border: _SeatButtonState.hairline(palette),
           ),
-          const SizedBox(width: 14),
           _LegendMark(
             label: 'Selected',
             fill: palette.accent,
             border: palette.accent,
           ),
-          const SizedBox(width: 14),
           _LegendMark(
             label: 'Taken',
             fill: _SeatButtonState.taken(palette),
             border: _SeatButtonState.hairline(palette),
           ),
-        ],
-      ),
+      ],
     );
   }
 }
@@ -576,10 +658,11 @@ class _LegendMark extends StatelessWidget {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(3),
-            border: Border.all(color: border),
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            fill,
+            corner: AlongRadius.xs.x,
+            side: BorderSide(color: border),
           ),
         ),
         const SizedBox(width: 6),
@@ -589,7 +672,7 @@ class _LegendMark extends StatelessWidget {
           softWrap: false,
           style: AlongText.caption.copyWith(
             color: palette.ink,
-            fontSize: 12,
+            fontSize: 13,
             height: 1,
             fontWeight: FontWeight.w600,
           ),
@@ -631,9 +714,10 @@ class AlongSeatContext extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final route = AlongType.meta(palette)
         .copyWith(color: palette.ink, fontWeight: FontWeight.w600, height: 1.1);
-    final fact = AlongType.caption(
-      palette,
-    ).copyWith(color: palette.muted, fontWeight: FontWeight.w600, height: 1.1);
+    final fact = AlongType.caption(palette).copyWith(
+      color: palette.ink.withValues(alpha: 0.72),
+      fontWeight: FontWeight.w600,
+    );
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     final facts = roomy
         ? Column(
@@ -771,6 +855,7 @@ class _SeatButton extends StatefulWidget {
     required this.onLongPress,
     this.markHeight = 86,
     this.driverIcon = false,
+    this.captionBelow = false,
     this.badge,
   });
 
@@ -781,6 +866,9 @@ class _SeatButton extends StatefulWidget {
 
   /// Cabin driver marker. Schematic rows draw their own wheel beside the seat.
   final bool driverIcon;
+
+  /// Cabin prices sit under the cushion. The square stays the hit target.
+  final bool captionBelow;
 
   /// Driver-authored tag, drawn as a corner mark. Never a seat color.
   final IconData? badge;
@@ -908,7 +996,10 @@ class _SeatButtonState extends State<_SeatButton>
         : _ink(seat, palette);
     final price = seat.price;
     final showPrice =
-        price != null && price.contains('₦') && seat.status != 'occupied';
+        !widget.captionBelow &&
+        price != null &&
+        price.contains('₦') &&
+        seat.status != 'occupied';
     final showWheel = seat.isDriver && widget.driverIcon;
     final badge =
         widget.badge ??
@@ -990,7 +1081,9 @@ class _SeatButtonState extends State<_SeatButton>
                               else if (seat.status == 'occupied' &&
                                   !widget.driverIcon)
                                 Icon(AlongIcons.user, size: 14, color: ink),
-                              if (!showWheel && !seat.isDriver) ...[
+                              if (!widget.captionBelow &&
+                                  !showWheel &&
+                                  !seat.isDriver) ...[
                                 const SizedBox(height: 2),
                                 Text(
                                   seat.label.trim(),
@@ -998,7 +1091,7 @@ class _SeatButtonState extends State<_SeatButton>
                                   softWrap: false,
                                   style: AlongText.caption.copyWith(
                                     color: ink,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     height: 1,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -1012,7 +1105,7 @@ class _SeatButtonState extends State<_SeatButton>
                                   softWrap: false,
                                   style: AlongText.caption.copyWith(
                                     color: ink,
-                                    fontSize: 10,
+                                    fontSize: 13,
                                     height: 1,
                                     fontWeight: FontWeight.w600,
                                     fontFeatures: const [
@@ -1057,20 +1150,15 @@ class _SeatButtonState extends State<_SeatButton>
     );
   }
 
-  static bool _dark(AlongPalette palette) =>
-      palette.brightness == Brightness.dark;
+  static Color available(AlongPalette palette) => const Color(0xFFFFFFFF);
 
-  static Color available(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF2A2B30) : const Color(0xFFFFFFFF);
-
+  /// Brand ink at 85%, in both themes, so a taken seat stays a filled mark.
   static Color taken(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF32343A) : const Color(0xFFE8E9ED);
+      const Color(0xFF141210).withValues(alpha: 0.85);
 
-  static Color driver(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF3A3C44) : const Color(0xFFE2E3E8);
+  static Color driver(AlongPalette palette) => taken(palette);
 
-  static Color hairline(AlongPalette palette) =>
-      _dark(palette) ? const Color(0xFF5A5C66) : const Color(0xFFD0D2D8);
+  static Color hairline(AlongPalette palette) => const Color(0xFF141210);
 
   static Color _fill(SeatMapSeat seat, AlongPalette palette) {
     if (seat.isDriver) return driver(palette);
@@ -1111,10 +1199,10 @@ class _SeatPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cushion = _SeatButtonState._fill(seat, palette);
     final selected = seat.status == 'yours';
-    final radius = math.min(16.0, size.shortestSide * 0.25);
-    final pad = RRect.fromRectAndRadius(
+    final radius = math.min(AlongRadius.card.x, size.shortestSide * 0.38);
+    final pad = AlongCraft.path(
       Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
-      Radius.circular(radius),
+      radius,
     );
     final squash = depress.clamp(0.0, 1.0);
     if (squash > 0) {
@@ -1123,8 +1211,8 @@ class _SeatPainter extends CustomPainter {
       canvas.scale(1, 1 - 0.18 * squash);
       canvas.translate(-size.width / 2, -size.height);
     }
-    canvas.drawRRect(pad, Paint()..color = cushion);
-    canvas.drawRRect(
+    canvas.drawPath(pad, Paint()..color = cushion);
+    canvas.drawPath(
       pad,
       Paint()
         ..style = PaintingStyle.stroke
@@ -1134,11 +1222,11 @@ class _SeatPainter extends CustomPainter {
             : _SeatButtonState.hairline(palette),
     );
     final barW = size.width * 0.42;
-    final bar = RRect.fromRectAndRadius(
+    final bar = AlongCraft.path(
       Rect.fromLTWH((size.width - barW) / 2, 7, barW, 3.5),
-      const Radius.circular(2),
+      1,
     );
-    canvas.drawRRect(
+    canvas.drawPath(
       bar,
       Paint()
         ..color = selected
@@ -1169,7 +1257,8 @@ class _CornerBadge extends StatelessWidget {
       width: 16,
       height: 16,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: fill, shape: BoxShape.circle),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(fill, corner: AlongRadius.xs.x),
       child: child,
     );
   }
@@ -1196,31 +1285,61 @@ class AlongCabinDiagram extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final columns = rows.fold<int>(1, (maxCols, row) => math.max(maxCols, row.length));
+    final span = columns * seat + (columns - 1) * 8;
     return CustomPaint(
       painter: _CabinOutlinePainter(palette: palette, bold: contrast),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var r = 0; r < rows.length; r++) ...[
-              if (r > 0) const SizedBox(height: 8),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (var c = 0; c < rows[r].length; c++) ...[
-                    if (c > 0) const SizedBox(width: 8),
-                    AlongSeatGlyph(
-                      status: rows[r][c],
-                      width: seat,
-                      contrast: contrast,
-                    ),
-                  ],
-                ],
-              ),
+      child: ClipPath(
+        clipper: _CabinClipper(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: _CabinFit.nose),
+              for (var r = 0; r < rows.length; r++) ...[
+                if (r > 0) const SizedBox(height: 8),
+                _OfferSeatRow(
+                  statuses: rows[r],
+                  seat: seat,
+                  span: span,
+                  contrast: contrast,
+                ),
+              ],
+              const SizedBox(height: _CabinFit.tail),
             ],
-          ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _OfferSeatRow extends StatelessWidget {
+  const _OfferSeatRow({
+    required this.statuses,
+    required this.seat,
+    required this.span,
+    required this.contrast,
+  });
+
+  final List<String> statuses;
+  final double seat;
+  final double span;
+  final bool contrast;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: span,
+      child: Row(
+        mainAxisAlignment: statuses.length == 1
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.spaceBetween,
+        children: [
+          for (final status in statuses)
+            AlongSeatGlyph(status: status, width: seat, contrast: contrast),
+        ],
       ),
     );
   }
@@ -1330,167 +1449,105 @@ class _CarSeatPainter extends CustomPainter {
     final selected = seat.status == 'yours';
     final taken =
         seat.isDriver || seat.status == 'occupied' || seat.status == 'blocked';
-    final dark = palette.brightness == Brightness.dark;
-    final Color fill;
-    final Color ink;
-    final Color hairline;
-    final double stroke;
-    if (contrast) {
-      if (selected) {
-        fill = palette.accent;
-        ink = palette.accentInk;
-        hairline = palette.accentInk;
-      } else if (taken) {
-        fill = dark ? const Color(0xFF3A3C44) : const Color(0xFF2C2E33);
-        ink = const Color(0xFFF4F1EA);
-        hairline = dark ? const Color(0xFFC8CAD2) : const Color(0xFF141210);
-      } else {
-        fill = dark ? const Color(0xFF1A1C20) : const Color(0xFFFFFFFF);
-        ink = palette.ink;
-        hairline = palette.ink.withValues(alpha: 0.78);
-      }
-      stroke = 1.6;
-    } else {
-      fill = _SeatButtonState._fill(seat, palette);
-      ink = _SeatButtonState._ink(seat, palette);
-      hairline = selected
-          ? palette.accentInk.withValues(alpha: 0.22)
-          : _SeatButtonState.hairline(palette);
-      stroke = 0.5;
-    }
-    final backColor = contrast
-        ? (selected
-              ? palette.accentInk.withValues(alpha: 0.18)
-              : Color.alphaBlend(
-                  ink.withValues(alpha: taken ? 0.22 : 0.16),
-                  fill,
-                ))
-        : Color.alphaBlend(ink.withValues(alpha: 0.10), fill);
-    final seatW = math.min(size.width - 2, (size.height - 2) / 1.1);
-    final seatH = seatW * 1.1;
-    final left = (size.width - seatW) / 2;
-    final top = (size.height - seatH) / 2;
-    final headH = seatH * 0.12;
-    final headW = seatW * 0.46;
-    final backH = seatH * 0.16;
-    final backW = seatW * 0.74;
-    final cushionRect = Rect.fromLTWH(
-      left,
-      top + seatH * 0.24,
-      seatW,
-      seatH * 0.76,
+    final fill = selected
+        ? palette.accent
+        : taken
+        ? _SeatButtonState.taken(palette)
+        : _SeatButtonState.available(palette);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _vectorStroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..color = const Color(0xFF141210);
+    final inset = _vectorStroke;
+    final bounds = Rect.fromLTWH(
+      inset,
+      inset,
+      size.width - inset * 2,
+      size.height - inset * 2,
     );
-    final cushion = AlongCraft.path(cushionRect, seatW * 0.32);
+    final backH = bounds.height * 0.22;
+    final backRect = Rect.fromLTWH(
+      bounds.left + bounds.width * 0.10,
+      bounds.top,
+      bounds.width * 0.80,
+      backH,
+    );
+    final back = AlongCraft.path(backRect, backH * 0.45);
+    final pan = _seatPan(
+      Rect.fromLTWH(
+        bounds.left,
+        bounds.top + backH + bounds.height * 0.06,
+        bounds.width,
+        bounds.height - backH - bounds.height * 0.06,
+      ),
+    );
     final squash = depress.clamp(0.0, 1.0);
     if (squash > 0) {
-      final pivot = Offset(cushionRect.center.dx, cushionRect.bottom);
+      final pivot = Offset(bounds.center.dx, bounds.bottom);
       canvas.save();
       canvas.translate(pivot.dx, pivot.dy);
-      canvas.scale(1, 1 - 0.22 * squash);
+      canvas.scale(1, 1 - 0.12 * squash);
       canvas.translate(-pivot.dx, -pivot.dy);
     }
-    canvas.drawPath(cushion, Paint()..color = fill);
-    canvas.save();
-    canvas.clipPath(cushion);
-    canvas.drawRect(
-      Rect.fromLTWH(
-        cushionRect.left,
-        cushionRect.top,
-        cushionRect.width,
-        seatH * 0.10,
-      ),
-      Paint()..color = ink.withValues(alpha: 0.07),
-    );
-    final bolster = Paint()
-      ..color = ink.withValues(alpha: contrast ? 0.22 : 0.08);
-    final bolsterW = seatW * 0.13;
-    final bolsterH = cushionRect.height * 0.62;
-    final bolsterTop = cushionRect.top + cushionRect.height * 0.22;
-    final bolsterRadius = Radius.circular(bolsterW / 2);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(cushionRect.left + 2, bolsterTop, bolsterW, bolsterH),
-        bolsterRadius,
-      ),
-      bolster,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          cushionRect.right - bolsterW - 2,
-          bolsterTop,
-          bolsterW,
-          bolsterH,
-        ),
-        bolsterRadius,
-      ),
-      bolster,
-    );
-    canvas.restore();
-    canvas.drawPath(
-      cushion,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..color = hairline,
-    );
-    if (contrast && drawWheel && seat.isDriver) {
-      final hub = Offset(cushionRect.center.dx, cushionRect.center.dy);
+    final fillPaint = Paint()..color = fill;
+    canvas.drawPath(back, fillPaint);
+    canvas.drawPath(back, stroke);
+    canvas.drawPath(pan, fillPaint);
+    canvas.drawPath(pan, stroke);
+    if (drawWheel && seat.isDriver) {
+      final hub = pan.getBounds().center;
       final wheel = Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = math.max(1.4, seatW * 0.06)
-        ..color = ink;
-      canvas.drawCircle(hub, seatW * 0.16, wheel);
-      canvas.drawCircle(hub, seatW * 0.04, Paint()..color = ink);
+        ..strokeWidth = _vectorStroke
+        ..color = const Color(0xFFF7F4EF);
+      canvas.drawCircle(hub, bounds.width * 0.12, wheel);
+      canvas.drawCircle(hub, bounds.width * 0.035, Paint()..color = wheel.color);
     }
     if (squash > 0) canvas.restore();
-    final back = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        left + (seatW - backW) / 2,
-        cushionRect.top - backH * 0.62,
-        backW,
-        backH,
-      ),
-      Radius.circular(backH / 2),
-    );
-    final head = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        left + (seatW - headW) / 2,
-        back.top - headH - seatH * 0.025,
-        headW,
-        headH,
-      ),
-      Radius.circular(headH / 2),
-    );
-    canvas.drawRRect(back, Paint()..color = backColor);
-    canvas.drawRRect(
-      back,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
-        ..color = hairline,
-    );
-    canvas.drawRRect(head, Paint()..color = backColor);
-    canvas.drawRRect(
-      head,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
-        ..color = hairline,
-    );
     if (held > 0) {
-      final ringRect = cushionRect.deflate(3.2);
-      final path = AlongCraft.path(ringRect, math.max(4, seatW * 0.32 - 3.2));
-      final metric = path.computeMetrics().first;
+      final metric = pan.computeMetrics().first;
       canvas.drawPath(
         metric.extractPath(0, metric.length * held.clamp(0.0, 1.0)),
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 2
+          ..strokeWidth = _vectorStroke
           ..strokeCap = StrokeCap.round
           ..color = palette.accent,
       );
     }
+  }
+
+  /// Rounded pan. The sides step out for the armrests, then back in.
+  Path _seatPan(Rect rect) {
+    final w = rect.width;
+    final h = rect.height;
+    final l = rect.left;
+    final t = rect.top;
+    final r = rect.right;
+    final b = rect.bottom;
+    final path = Path();
+    path.moveTo(l + w * 0.28, t);
+    path.lineTo(r - w * 0.28, t);
+    path.quadraticBezierTo(r - w * 0.02, t, r, t + h * 0.24);
+    path.lineTo(r, t + h * 0.32);
+    path.quadraticBezierTo(
+      r - w * 0.12,
+      t + h * 0.42,
+      r - w * 0.05,
+      t + h * 0.54,
+    );
+    path.lineTo(r - w * 0.05, b - h * 0.34);
+    path.quadraticBezierTo(r - w * 0.05, b, r - w * 0.32, b);
+    path.lineTo(l + w * 0.32, b);
+    path.quadraticBezierTo(l + w * 0.05, b, l + w * 0.05, b - h * 0.34);
+    path.lineTo(l + w * 0.05, t + h * 0.54);
+    path.quadraticBezierTo(l + w * 0.12, t + h * 0.42, l, t + h * 0.32);
+    path.lineTo(l, t + h * 0.24);
+    path.quadraticBezierTo(l + w * 0.02, t, l + w * 0.28, t);
+    path.close();
+    return path;
   }
 
   @override

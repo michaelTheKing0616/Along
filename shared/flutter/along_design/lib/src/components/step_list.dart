@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 
 /// Wayfinding presentation mode (doc 05 §9 `StepList`).
@@ -46,10 +47,11 @@ class StepList extends StatelessWidget {
                 horizontal: AlongSpace.s12,
                 vertical: AlongSpace.s8,
               ),
-              decoration: BoxDecoration(
-                color: AlongColors.brandYellowTint,
-                borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-                border: Border.all(color: AlongColors.brandYellow),
+              clipBehavior: Clip.antiAlias,
+              decoration: AlongCraft.fill(
+                AlongColors.brandYellowTint,
+                corner: AlongRadius.control.x,
+                side: const BorderSide(color: AlongColors.brandYellow),
               ),
               child: Row(
                 children: [
@@ -96,14 +98,15 @@ class _StepRow extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(bottom: isLast ? 0 : AlongSpace.s8),
-      decoration: BoxDecoration(
-        color: isHighlighted
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        isHighlighted
             ? AlongColors.brandYellowTint
             : isMuted
                 ? AlongColors.surface50
                 : AlongColors.surface0,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        border: Border.all(
+        corner: AlongRadius.row.x,
+        side: BorderSide(
           color: isHighlighted ? AlongColors.brandYellow : AlongColors.ink100,
           width: isHighlighted ? 2 : 1,
         ),
@@ -115,11 +118,9 @@ class _StepRow extends StatelessWidget {
             if (isHighlighted)
               Container(
                 width: AlongSpace.s4,
-                decoration: BoxDecoration(
-                  color: AlongColors.brandYellow,
-                  borderRadius: BorderRadius.horizontal(
-                    left: AlongRadius.md,
-                  ),
+                decoration: AlongCraft.fill(
+                  AlongColors.brandYellow,
+                  corner: AlongRadius.row.x,
                 ),
               ),
             Expanded(
@@ -131,11 +132,12 @@ class _StepRow extends StatelessWidget {
                     Container(
                       width: AlongSpace.sizeChip,
                       height: AlongSpace.sizeChip,
-                      decoration: BoxDecoration(
-                        color: isHighlighted
+                      clipBehavior: Clip.antiAlias,
+                      decoration: AlongCraft.fill(
+                        isHighlighted
                             ? AlongColors.brandYellow
                             : AlongColors.surface100,
-                        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+                        corner: AlongRadius.control.x,
                       ),
                       child: Icon(
                         step.maneuverIcon,

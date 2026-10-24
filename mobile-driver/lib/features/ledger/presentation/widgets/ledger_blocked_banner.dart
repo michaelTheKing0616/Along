@@ -25,10 +25,11 @@ class LedgerBlockedBanner extends StatelessWidget {
     return Container(
       key: const Key('ledger_blocked_banner'),
       padding: const EdgeInsets.all(AlongSpace.s12),
-      decoration: BoxDecoration(
-        color: AlongColors.semanticDangerTint,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-        border: Border.all(color: AlongColors.semanticDangerFill),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.semanticDangerTint,
+        corner: AlongRadius.card.x,
+        side: const BorderSide(color: AlongColors.semanticDangerFill),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

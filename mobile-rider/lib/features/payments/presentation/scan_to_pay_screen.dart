@@ -130,9 +130,13 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
               Container(
                 width: 240,
                 height: 240,
-                decoration: BoxDecoration(
-                  border: Border.all(color: AlongColors.brandYellow, width: 2),
-                  borderRadius: BorderRadius.circular(AlongRadius.md.x),
+                decoration: AlongCraft.fill(
+                  const Color(0x00000000),
+                  corner: AlongRadius.card.x,
+                  side: const BorderSide(
+                    color: AlongColors.brandYellow,
+                    width: 2,
+                  ),
                 ),
               ),
               if (_rejectMessage != null)

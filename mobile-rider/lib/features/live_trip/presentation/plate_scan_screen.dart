@@ -338,9 +338,10 @@ class _PlateScanScreenState extends State<PlateScanScreen> {
               width: 280,
               height: 88,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: AlongColors.surface0, width: 3),
-                borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+              decoration: AlongCraft.fill(
+                const Color(0x00000000),
+                corner: AlongRadius.control.x,
+                side: const BorderSide(color: AlongColors.surface0, width: 3),
               ),
               child: ready || !_opening
                   ? null

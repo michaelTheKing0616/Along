@@ -26,7 +26,7 @@ class RouteProfileCard extends StatelessWidget {
     return Card(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        customBorder: AlongCraft.border(AlongRadius.card.x),
         child: Padding(
           padding: const EdgeInsets.all(AlongSpace.s16),
           child: Column(
@@ -86,7 +86,7 @@ class SuggestedRouteCard extends StatelessWidget {
       color: AlongColors.brandYellow.withValues(alpha: 0.15),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        customBorder: AlongCraft.border(AlongRadius.card.x),
         child: Padding(
           padding: const EdgeInsets.all(AlongSpace.s16),
           child: Column(
@@ -201,9 +201,10 @@ class SnapStatusChip extends StatelessWidget {
           horizontal: AlongSpace.s8,
           vertical: AlongSpace.s4,
         ),
-        decoration: BoxDecoration(
-          color: AlongColors.semanticSuccessTint,
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        clipBehavior: Clip.antiAlias,
+        decoration: AlongCraft.fill(
+          AlongColors.semanticSuccessTint,
+          corner: AlongRadius.xs.x,
         ),
         child: Text(
           l10n.routeSnapMatched(matchedName!),
@@ -218,9 +219,7 @@ class SnapStatusChip extends StatelessWidget {
         decoration: InputDecoration(
           isDense: true,
           hintText: l10n.routeSnapNewStopHint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-          ),
+          border: AlongCraft.input(const BorderSide()),
         ),
         controller: TextEditingController(text: customLabel),
         onChanged: onLabelChanged,
@@ -253,9 +252,10 @@ class RoutePriceErrorBanner extends StatelessWidget {
       key: Key('route_price_error_$errorKey'),
       width: double.infinity,
       padding: const EdgeInsets.all(AlongSpace.s12),
-      decoration: BoxDecoration(
-        color: AlongColors.semanticDangerTint,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.semanticDangerTint,
+        corner: AlongRadius.row.x,
       ),
       child: Text(
         message,
@@ -285,9 +285,7 @@ class LoadSurchargeField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: l10n.routeLoadSurchargeOptional,
         hintText: l10n.routeLoadSurchargeHint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-        ),
+        border: AlongCraft.input(const BorderSide()),
       ),
       controller: TextEditingController(
         text: value == null ? '' : value!.toBigInt().toString(),

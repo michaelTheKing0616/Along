@@ -187,7 +187,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: l10n.settleAmountLabel,
-              border: const OutlineInputBorder(),
+              border: AlongCraft.input(const BorderSide()),
             ),
           ),
           const SizedBox(height: AlongSpace.s16),

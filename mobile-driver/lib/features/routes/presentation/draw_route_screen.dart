@@ -70,9 +70,8 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
             flex: 4,
             child: Material(
               elevation: 8,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(AlongRadius.lg.x),
-              ),
+              shape: AlongCraft.borderVertical(top: AlongRadius.sheet.x),
+              clipBehavior: Clip.antiAlias,
               child: Padding(
                 padding: const EdgeInsets.all(AlongSpace.s16),
                 child: Column(

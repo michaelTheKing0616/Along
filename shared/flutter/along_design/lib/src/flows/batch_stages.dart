@@ -11,6 +11,7 @@ import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
@@ -23,10 +24,12 @@ bool _roomy(BuildContext context) =>
     MediaQuery.textScalerOf(context).scale(1) > 1.15;
 
 Widget _oneLine(String text, TextStyle style) {
-  return FittedBox(
-    fit: BoxFit.scaleDown,
-    alignment: Alignment.centerLeft,
-    child: Text(text, maxLines: 1, softWrap: false, style: style),
+  return Text(
+    text,
+    maxLines: 1,
+    softWrap: false,
+    overflow: TextOverflow.ellipsis,
+    style: style,
   );
 }
 
@@ -66,11 +69,9 @@ class AlongDepartureBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
-        child: Column(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -89,7 +90,6 @@ class AlongDepartureBoard extends StatelessWidget {
             const SizedBox(height: 6),
             for (final item in departures) _DepartureRow(item: item),
           ],
-        ),
       ),
     );
   }
@@ -103,19 +103,20 @@ class _DepartureRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final ticks = (item.demand * 5).round().clamp(0, 5);
+    final demand = item.demand.clamp(0.0, 1.0);
     return SizedBox(
       height: 36,
       child: Row(
         children: [
           Container(
-            width: 3,
+            width: 4,
             height: 22,
-            decoration: BoxDecoration(
-              color: item.best
+            clipBehavior: Clip.antiAlias,
+            decoration: AlongCraft.fill(
+              item.best
                   ? palette.accent
                   : palette.ink.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(99),
+              corner: 1,
             ),
           ),
           const SizedBox(width: 10),
@@ -143,20 +144,21 @@ class _DepartureRow extends StatelessWidget {
               ),
             ),
           ),
-          for (var i = 0; i < 5; i++)
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Container(
-                width: 6,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: i < ticks
-                      ? palette.ink.withValues(alpha: 0.2 + 0.16 * i)
-                      : palette.ink.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(2),
-                ),
+          SizedBox(
+            width: 48,
+            height: 12,
+            child: AlongCraft.clip(
+              corner: AlongRadius.xs.x,
+              child: LinearProgressIndicator(
+                value: demand,
+                minHeight: 12,
+                backgroundColor: palette.ink.withValues(alpha: 0.12),
+                color: item.best
+                    ? palette.accent
+                    : palette.ink.withValues(alpha: 0.72),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -192,7 +194,7 @@ class AlongFlowPass extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: roomy ? SingleChildScrollView(child: column) : column,
         ),
       ),
@@ -211,7 +213,7 @@ class _PassTicket extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 20,
+        radius: AlongRadius.card.x,
         hairline: true,
         shadow: AlongElevation.sheet(palette.ink),
       ),
@@ -226,10 +228,8 @@ class _PassTicket extends StatelessWidget {
             child: Column(
               children: [
                 _PassCalendar(),
-                SizedBox(height: 12),
+                SizedBox(height: 16),
                 _PassSavings(),
-                SizedBox(height: 12),
-                _PassPerks(),
               ],
             ),
           ),
@@ -245,7 +245,9 @@ class _PassMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: ShapeBorderClipper(shape: AlongCraft.borderVertical(top: 20)),
+      clipper: ShapeBorderClipper(
+        shape: AlongCraft.borderVertical(top: AlongRadius.card.x),
+      ),
       child: const Stack(
         fit: StackFit.expand,
         children: [
@@ -274,7 +276,7 @@ class _PassChip extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 14,
+        radius: AlongRadius.control.x,
         shadow: AlongElevation.rest(palette.ink),
       ),
       child: Padding(
@@ -338,62 +340,52 @@ class _PassDay extends StatelessWidget {
   final String label;
   final int index;
 
+  static const _dates = [19, 20, 21, 22, 23, 24, 25];
+
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final today = index == 3;
-    final weekend = index >= 5;
-    final Color fill;
-    final Color ink;
-    final BorderSide side;
-    if (today) {
-      fill = palette.accent;
-      ink = palette.accentInk;
-      side = BorderSide.none;
-    } else if (weekend) {
-      fill = palette.recessed;
-      ink = palette.muted;
-      side = BorderSide.none;
-    } else {
-      fill = palette.surface;
-      ink = palette.ink;
-      side = BorderSide(color: palette.ink.withValues(alpha: 0.45));
-    }
-    return SizedBox(
-      height: 52,
-      child: DecoratedBox(
-        decoration: ShapeDecoration(
-          color: fill,
-          shape: AlongCraft.border(10, side: side),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Column(
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.caption(palette).copyWith(
-                    color: ink,
-                    fontWeight: FontWeight.w600,
-                    height: 1,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  width: 16,
-                  height: 11,
-                  decoration: BoxDecoration(
-                    color: ink,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ],
+    final booked = index < 5;
+    return DecoratedBox(
+      decoration: AlongCraft.surface(
+        palette,
+        radius: AlongRadius.control.x,
+        hairline: true,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: AlongType.caption(palette).copyWith(
+                fontWeight: FontWeight.w500,
+                height: 1.1,
+              ),
             ),
-          ),
+            const SizedBox(height: 2),
+            Text(
+              '${_dates[index]}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: AlongType.body(palette).copyWith(
+                fontWeight: FontWeight.w600,
+                height: 1.1,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+            const SizedBox(height: 2),
+            AlongIcon(
+              AlongIcons.check,
+              size: 20,
+              color: booked ? palette.ink : const Color(0x00000000),
+            ),
+          ],
         ),
       ),
     );
@@ -413,122 +405,46 @@ class _PassSavings extends StatelessWidget {
       children: [
         Text('Versus single fares', maxLines: 1, softWrap: false, style: label),
         const SizedBox(height: 8),
-        _FareBar(
-          name: 'Single',
-          amount: '₦12,000',
-          factor: 1,
-          fill: palette.ink,
-        ),
+        const _FareLine(name: 'Single', amount: '₦12,000'),
+        const SizedBox(height: 4),
+        const _FareLine(name: 'Pass', amount: '₦4,800'),
         const SizedBox(height: 8),
-        _FareBar(
-          name: 'Pass',
-          amount: '₦4,800',
-          factor: 0.4,
-          fill: palette.accent,
-        ),
-        const SizedBox(height: 6),
         Text(
           'Save ₦7,200',
           maxLines: 1,
           softWrap: false,
           style: AlongType.body(palette)
-              .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+              .copyWith(fontWeight: FontWeight.w600, height: 1.2),
         ),
       ],
     );
   }
 }
 
-class _FareBar extends StatelessWidget {
-  const _FareBar({
-    required this.name,
-    required this.amount,
-    required this.factor,
-    required this.fill,
-  });
+class _FareLine extends StatelessWidget {
+  const _FareLine({required this.name, required this.amount});
 
   final String name;
   final String amount;
-  final double factor;
-  final Color fill;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final style = AlongType.caption(palette)
-        .copyWith(color: palette.ink, fontWeight: FontWeight.w600, height: 1);
-    return SizedBox(
-      height: 22,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 48,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(name, maxLines: 1, softWrap: false, style: style),
-            ),
-          ),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(7),
-              child: ColoredBox(
-                color: palette.recessed,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: FractionallySizedBox(
-                    widthFactor: factor,
-                    heightFactor: 1,
-                    child: ColoredBox(color: fill),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(amount, maxLines: 1, softWrap: false, style: style),
-        ],
-      ),
-    );
-  }
-}
-
-class _PassPerks extends StatelessWidget {
-  const _PassPerks();
-
-  static const _items = <(IconData, String)>[
-    (AlongIcons.seat, 'Your seat'),
-    (AlongIcons.schedule, 'Skip a day'),
-    (AlongIcons.receipt, 'Paid ahead'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
+    final style = AlongType.body(palette).copyWith(height: 1.3);
     return Row(
       children: [
-        for (final item in _items)
-          Expanded(
-            child: Column(
-              children: [
-                AlongIcon(item.$1, size: 20, color: palette.ink),
-                const SizedBox(height: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    item.$2,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette).copyWith(
-                      color: palette.ink,
-                      fontWeight: FontWeight.w600,
-                      height: 1,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        Expanded(
+          child: Text(name, maxLines: 1, softWrap: false, style: style),
+        ),
+        Text(
+          amount,
+          maxLines: 1,
+          softWrap: false,
+          style: style.copyWith(
+            fontWeight: FontWeight.w600,
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
+        ),
       ],
     );
   }
@@ -579,7 +495,7 @@ class AlongFlowSplit extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: roomy ? SingleChildScrollView(child: column) : column,
         ),
       ),
@@ -602,7 +518,7 @@ class _TripSummary extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 16,
+        radius: AlongRadius.card.x,
         hairline: true,
         shadow: AlongElevation.rest(palette.ink),
       ),
@@ -671,7 +587,11 @@ class _PayMethod extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
+      decoration: AlongCraft.surface(
+        palette,
+        radius: AlongRadius.row.x,
+        hairline: true,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
@@ -764,8 +684,8 @@ class _SplitBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(18),
+    return AlongCraft.clip(
+      corner: AlongRadius.card.x,
       child: SizedBox(
         height: 64,
         child: Row(
@@ -820,7 +740,7 @@ class _PaidRow extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 12,
+        radius: AlongRadius.row.x,
         color: palette.recessed,
       ),
       child: Padding(
@@ -882,7 +802,7 @@ class AlongFlowLoading extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: roomy ? SingleChildScrollView(child: column) : column,
         ),
       ),
@@ -904,7 +824,9 @@ class _LoadingMap extends StatelessWidget {
     final pivot = dark ? 40.0 : 224.0;
     final shift = pivot * (1 - contrast);
     return ClipPath(
-      clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
+      clipper: ShapeBorderClipper(
+        shape: AlongCraft.border(AlongRadius.card.x),
+      ),
       child: ColoredBox(
         color: palette.mapLand,
         child: Stack(
@@ -1049,7 +971,7 @@ class _LoadingCard extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 20,
+        radius: AlongRadius.card.x,
         hairline: true,
         shadow: AlongElevation.rest(palette.ink),
       ),
@@ -1179,7 +1101,9 @@ class AlongFlowRefresh extends StatelessWidget {
         _oneLine('Choose a ride', AlongType.bodyMuted(palette)),
         const SizedBox(height: 8),
         ClipPath(
-          clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
+          clipper: ShapeBorderClipper(
+        shape: AlongCraft.border(AlongRadius.card.x),
+      ),
           child: ColoredBox(
             color: palette.mapLand,
             child: const AlongDriveTrack(
@@ -1203,7 +1127,7 @@ class AlongFlowRefresh extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: roomy ? SingleChildScrollView(child: column) : column,
         ),
       ),
@@ -1240,16 +1164,14 @@ class _RefreshRide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final decoration = ride.selected
-        ? ShapeDecoration(
-            color: palette.surface,
-            shadows: AlongElevation.rest(palette.ink),
-            shape: AlongCraft.border(
-              16,
-              side: BorderSide(color: palette.ink, width: 1.5),
-            ),
-          )
-        : AlongCraft.surface(palette, radius: 16, hairline: true);
+    final decoration = BoxDecoration(
+      border: Border(
+        bottom: BorderSide(color: palette.ink.withValues(alpha: 0.12)),
+        left: ride.selected
+            ? BorderSide(color: palette.ink, width: 2)
+            : BorderSide.none,
+      ),
+    );
     final row = Row(
       children: [
         AlongVehicleMark(kind: ride.kind, width: 48, height: 30),
@@ -1292,7 +1214,7 @@ class _RefreshRide extends StatelessWidget {
                       style: AlongType.caption(palette),
                     ),
                     const SizedBox(width: 6),
-                    AlongSeatCount(count: ride.seats, glyph: 10),
+                    AlongSeatCount(count: ride.seats, glyph: 14),
                   ],
                 ),
               ),
@@ -1339,23 +1261,11 @@ class _ForYou extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: palette.accent,
-        borderRadius: BorderRadius.circular(99),
-      ),
-      child: Text(
-        'For you',
-        maxLines: 1,
-        softWrap: false,
-        style: AlongType.caption(palette).copyWith(
-          fontSize: 10,
-          height: 1.05,
-          fontWeight: FontWeight.w600,
-          color: palette.accentInk,
-        ),
-      ),
+    return Text(
+      'For you',
+      maxLines: 1,
+      softWrap: false,
+      style: AlongType.label(palette),
     );
   }
 }

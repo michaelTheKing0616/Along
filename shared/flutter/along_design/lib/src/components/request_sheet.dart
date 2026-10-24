@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/format_money.dart';
 import 'along_button.dart';
@@ -40,10 +41,12 @@ class RequestSheet extends StatelessWidget {
     final progress = countdownSeconds / countdownTotal;
 
     return Container(
+      clipBehavior: Clip.antiAlias,
       padding: const EdgeInsets.all(AlongSpace.s16),
-      decoration: const BoxDecoration(
-        color: AlongColors.surface0,
-        borderRadius: BorderRadius.vertical(top: AlongRadius.sheet),
+      decoration: AlongCraft.fill(
+        AlongColors.surface0,
+        corner: AlongRadius.sheet.x,
+        top: true,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -75,9 +78,10 @@ class RequestSheet extends StatelessWidget {
                 horizontal: AlongSpace.s8,
                 vertical: AlongSpace.s4,
               ),
-              decoration: BoxDecoration(
-                color: AlongColors.semanticInfoTint,
-                borderRadius: BorderRadius.circular(AlongRadius.xs.x),
+              clipBehavior: Clip.antiAlias,
+              decoration: AlongCraft.fill(
+                AlongColors.semanticInfoTint,
+                corner: AlongRadius.xs.x,
               ),
               child: Text(
                 'Women-only match',

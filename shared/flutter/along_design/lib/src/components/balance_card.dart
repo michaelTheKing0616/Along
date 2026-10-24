@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/format_money.dart';
 import 'along_button.dart';
@@ -59,10 +60,11 @@ class BalanceCard extends StatelessWidget {
   Widget _buildCompact(BuildContext context) {
     return Material(
       color: AlongColors.surface0,
-      borderRadius: BorderRadius.circular(AlongRadius.md.x),
+      shape: AlongCraft.border(AlongRadius.card.x),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        customBorder: AlongCraft.border(AlongRadius.card.x),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AlongSpace.s16,
@@ -91,9 +93,10 @@ class BalanceCard extends StatelessWidget {
                   horizontal: AlongSpace.s8,
                   vertical: AlongSpace.s4,
                 ),
-                decoration: BoxDecoration(
-                  color: _standingColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+                clipBehavior: Clip.antiAlias,
+                decoration: AlongCraft.fill(
+                  _standingColor.withValues(alpha: 0.15),
+                  corner: AlongRadius.control.x,
                 ),
                 child: Text(
                   standingLabel,
@@ -112,10 +115,11 @@ class BalanceCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(AlongSpace.s16),
-      decoration: BoxDecoration(
-        color: AlongColors.surface0,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        border: Border.all(
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.surface0,
+        corner: AlongRadius.card.x,
+        side: BorderSide(
           color: state == BalanceCardState.paused
               ? AlongColors.semanticDangerFill
               : AlongColors.ink100,

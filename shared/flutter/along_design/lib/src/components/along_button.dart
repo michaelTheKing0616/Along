@@ -4,6 +4,7 @@ import '../branding/branding_overrides.dart';
 import '../craft.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../type.dart';
 import '../tokens.g.dart';
 import 'skeleton.dart';
 
@@ -60,12 +61,16 @@ class AlongButton extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: roomy,
             textAlign: TextAlign.center,
-            style: AlongText.buttonPrimary.copyWith(
+            style: AlongType.button(palette).copyWith(
               color: style.foregroundColor,
             ),
           );
 
-    final shape = AlongCraft.border(AlongRadius.md.x, side: style.borderSide);
+    final radius = variant == AlongButtonVariant.secondary ||
+            variant == AlongButtonVariant.tertiary
+        ? AlongRadius.control.x
+        : AlongRadius.button.x;
+    final shape = AlongCraft.border(radius, side: style.borderSide);
     final yellow = variant == AlongButtonVariant.yellow;
     final button = DecoratedBox(
       decoration: ShapeDecoration(
@@ -102,13 +107,7 @@ class AlongButton extends StatelessWidget {
               : SizedBox(
                   height: _height,
                   width: fullWidth ? double.infinity : null,
-                  child: Stack(
-                    children: [
-                      Center(child: child),
-                      if (variant == AlongButtonVariant.primary || yellow)
-                        const AlongSheen(),
-                    ],
-                  ),
+                  child: Center(child: child),
                 ),
         ),
       ),
@@ -125,13 +124,13 @@ class AlongButton extends StatelessWidget {
               Positioned.fill(
                 child: IgnorePointer(
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: _pressedOverlay(
+                    decoration: AlongCraft.fill(
+                      _pressedOverlay(
                         style.backgroundColor,
                         branding,
                         palette,
                       ),
-                      borderRadius: BorderRadius.circular(AlongRadius.md.x),
+                      corner: radius,
                     ),
                   ),
                 ),

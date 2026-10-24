@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../craft.dart';
 import '../palette.dart';
 import '../tokens.g.dart';
 
@@ -32,14 +33,15 @@ class SearchField extends StatelessWidget {
       label: hint,
       child: Container(
         height: AlongSpace.sizeListRowMin,
-        decoration: BoxDecoration(
-          color: variant == SearchFieldVariant.home
+        clipBehavior: Clip.antiAlias,
+        decoration: AlongCraft.fill(
+          variant == SearchFieldVariant.home
               ? palette.recessed
               : palette.surface,
-          borderRadius: BorderRadius.circular(AlongRadius.md.x),
-          border: variant == SearchFieldVariant.full
-              ? Border.all(color: palette.line)
-              : null,
+          corner: AlongRadius.control.x,
+          side: variant == SearchFieldVariant.full
+              ? BorderSide(color: palette.line)
+              : BorderSide.none,
         ),
         padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s12),
         child: Row(
@@ -100,10 +102,11 @@ class PhoneField extends StatelessWidget {
       children: [
         Container(
           height: AlongSpace.sizeListRowMin,
-          decoration: BoxDecoration(
-            color: palette.surface,
-            borderRadius: BorderRadius.circular(AlongRadius.md.x),
-            border: Border.all(color: hasError ? palette.danger : palette.line),
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            palette.surface,
+            corner: AlongRadius.control.x,
+            side: BorderSide(color: hasError ? palette.danger : palette.line),
           ),
           padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s12),
           child: Row(
@@ -175,10 +178,11 @@ class OtpField extends StatelessWidget {
       children: [
         Container(
           height: AlongSpace.sizeListRowMin,
-          decoration: BoxDecoration(
-            color: palette.surface,
-            borderRadius: BorderRadius.circular(AlongRadius.md.x),
-            border: Border.all(color: hasError ? palette.danger : palette.line),
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            palette.surface,
+            corner: AlongRadius.control.x,
+            side: BorderSide(color: hasError ? palette.danger : palette.line),
           ),
           alignment: Alignment.center,
           child: TextField(

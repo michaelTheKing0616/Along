@@ -27,9 +27,10 @@ class VerificationPendingScreen extends ConsumerWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(AlongSpace.s24),
-                decoration: BoxDecoration(
-                  color: AlongColors.brandYellow.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(AlongRadius.lg.x),
+                clipBehavior: Clip.antiAlias,
+                decoration: AlongCraft.fill(
+                  AlongColors.brandYellow.withValues(alpha: 0.2),
+                  corner: AlongRadius.card.x,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

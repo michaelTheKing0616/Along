@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
+import '../craft.dart';
 import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
@@ -82,25 +83,27 @@ class _AlongBottomSheetState extends State<AlongBottomSheet>
           child: Align(
             alignment: Alignment.bottomCenter,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: AlongRadius.sheet,
-                ),
-                boxShadow: AlongElevation.sheet(palette.ink),
+              decoration: AlongCraft.fill(
+                palette.surface,
+                corner: AlongRadius.sheet.x,
+                shadow: AlongElevation.sheet(palette.ink),
+                top: true,
               ),
-              child: SizedBox(
-                height: 640 * _heightFactor(),
-                width: double.infinity,
-                child: Column(
+              child: AlongCraft.clip(
+                corner: AlongRadius.sheet.x,
+                top: true,
+                child: SizedBox(
+                  height: 640 * _heightFactor(),
+                  width: double.infinity,
+                  child: Column(
                   children: [
                     const SizedBox(height: AlongSpace.s8),
                     Container(
                       width: 32,
                       height: 4,
-                      decoration: BoxDecoration(
-                        color: palette.line,
-                        borderRadius: BorderRadius.circular(AlongRadius.pill.x),
+                      decoration: AlongCraft.fill(
+                        palette.line,
+                        corner: AlongRadius.xs.x,
                       ),
                     ),
                     if (widget.title != null)
@@ -134,6 +137,7 @@ class _AlongBottomSheetState extends State<AlongBottomSheet>
                     ),
                   ],
                 ),
+              ),
               ),
             ),
           ),

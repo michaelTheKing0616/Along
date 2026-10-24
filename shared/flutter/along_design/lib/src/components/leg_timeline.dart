@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/format_money.dart';
 import '../utils/transport_mode.dart';
@@ -100,12 +101,13 @@ class _CompactLegChip extends StatelessWidget {
           horizontal: AlongSpace.s8,
           vertical: AlongSpace.s4,
         ),
-        decoration: BoxDecoration(
-          color: isActive ? leg.mode.tintColor : AlongColors.surface100,
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-          border: isActive
-              ? Border.all(color: leg.mode.fillColor, width: 2)
-              : null,
+        clipBehavior: Clip.antiAlias,
+        decoration: AlongCraft.fill(
+          isActive ? leg.mode.tintColor : AlongColors.surface100,
+          corner: AlongRadius.control.x,
+          side: isActive
+              ? BorderSide(color: leg.mode.fillColor, width: 2)
+              : BorderSide.none,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -157,15 +159,16 @@ class _FullLegRow extends StatelessWidget {
     return Opacity(
       opacity: opacity,
       child: Container(
+        clipBehavior: isCurrent ? Clip.antiAlias : Clip.none,
         margin: EdgeInsets.only(bottom: isLast ? 0 : AlongSpace.s8),
         padding: isCurrent
             ? const EdgeInsets.all(AlongSpace.s12)
             : EdgeInsets.zero,
         decoration: isCurrent
-            ? BoxDecoration(
-                color: AlongColors.surface50,
-                borderRadius: BorderRadius.circular(AlongRadius.md.x),
-                border: Border.all(color: leg.mode.fillColor, width: 1),
+            ? AlongCraft.fill(
+                AlongColors.surface50,
+                corner: AlongRadius.row.x,
+                side: BorderSide(color: leg.mode.fillColor),
               )
             : null,
         child: IntrinsicHeight(

@@ -124,9 +124,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
             maxLines: 5,
             decoration: InputDecoration(
               hintText: l10n.reportIncidentDescriptionHint,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-              ),
+              border: AlongCraft.input(const BorderSide()),
             ),
           ),
           const SizedBox(height: AlongSpace.s12),
@@ -183,10 +181,11 @@ class _CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected ? AlongColors.brandYellowTint : AlongColors.surface100,
-      borderRadius: BorderRadius.circular(AlongRadius.md.x),
+      shape: AlongCraft.border(AlongRadius.row.x),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        customBorder: AlongCraft.border(AlongRadius.row.x),
         child: Padding(
           padding: const EdgeInsets.all(AlongSpace.s12),
           child: Column(

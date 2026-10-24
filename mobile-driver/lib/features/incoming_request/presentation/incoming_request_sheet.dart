@@ -61,11 +61,10 @@ class IncomingRequestSheet extends StatelessWidget {
                                 horizontal: AlongSpace.s8,
                                 vertical: AlongSpace.s4,
                               ),
-                              decoration: BoxDecoration(
-                                color: AlongColors.semanticInfoTint,
-                                borderRadius: BorderRadius.circular(
-                                  AlongRadius.xs.x,
-                                ),
+                              clipBehavior: Clip.antiAlias,
+                              decoration: AlongCraft.fill(
+                                AlongColors.semanticInfoTint,
+                                corner: AlongRadius.xs.x,
                               ),
                               child: Text(
                                 l10n.incomingRequestCascade(
@@ -114,11 +113,10 @@ class IncomingRequestSheet extends StatelessWidget {
                             horizontal: AlongSpace.s8,
                             vertical: AlongSpace.s4,
                           ),
-                          decoration: BoxDecoration(
-                            color: AlongColors.semanticInfoTint,
-                            borderRadius: BorderRadius.circular(
-                              AlongRadius.xs.x,
-                            ),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: AlongCraft.fill(
+                            AlongColors.semanticInfoTint,
+                            corner: AlongRadius.xs.x,
                           ),
                           child: Text(
                             l10n.incomingRequestWomenOnly,

@@ -75,7 +75,7 @@ ThemeData alongTheme({
         textStyle: AlongText.buttonPrimary,
         backgroundColor: palette.ink,
         foregroundColor: palette.onInk,
-        shape: AlongCraft.border(AlongRadius.md.x),
+        shape: AlongCraft.border(AlongRadius.button.x),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -87,36 +87,37 @@ ThemeData alongTheme({
       ),
       labelStyle: text.bodySmall,
       hintStyle: text.bodyLarge?.copyWith(color: palette.muted),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        borderSide: BorderSide(
-          color: palette.ink.withValues(alpha: 0.14),
-          width: 0.5,
-        ),
+      border: AlongCraft.input(
+        BorderSide(color: palette.ink.withValues(alpha: 0.14), width: 0.5),
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        borderSide: BorderSide(
-          color: palette.ink.withValues(alpha: 0.14),
-          width: 0.5,
-        ),
+      enabledBorder: AlongCraft.input(
+        BorderSide(color: palette.ink.withValues(alpha: 0.14), width: 0.5),
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
-        borderSide: BorderSide(color: palette.ink, width: 1),
+      focusedBorder: AlongCraft.input(
+        BorderSide(color: palette.ink, width: 1),
       ),
     ),
     cardTheme: CardThemeData(
       color: palette.surface,
       elevation: 0,
       shape: AlongCraft.border(
-        AlongRadius.lg.x,
+        AlongRadius.card.x,
         side: BorderSide(
           color: palette.ink.withValues(alpha: 0.14),
           width: 0.5,
         ),
       ),
       margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: palette.surface,
+      shape: AlongCraft.border(AlongRadius.dialog.x),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: palette.surface,
+      shape: AlongCraft.borderVertical(top: AlongRadius.sheet.x),
+      clipBehavior: Clip.antiAlias,
     ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {

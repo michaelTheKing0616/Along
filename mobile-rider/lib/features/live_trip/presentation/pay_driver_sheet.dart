@@ -482,9 +482,10 @@ class _ReadyView extends StatelessWidget {
           Container(
             key: const Key('pay_driver_different_driver'),
             padding: const EdgeInsets.all(AlongSpace.s12),
-            decoration: BoxDecoration(
-              color: AlongColors.semanticDanger.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(AlongRadius.md.x),
+            clipBehavior: Clip.antiAlias,
+            decoration: AlongCraft.fill(
+              AlongColors.semanticDanger.withValues(alpha: 0.12),
+              corner: AlongRadius.row.x,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
