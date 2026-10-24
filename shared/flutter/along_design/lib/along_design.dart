@@ -17,6 +17,7 @@ export 'src/flows/driver_portrait.dart';
 export 'src/flows/flow_stages.dart';
 export 'src/flows/journey_stages.dart';
 export 'src/flows/live_arrival.dart';
+export 'src/flows/ride_batch.dart';
 export 'src/flows/trip_machine.dart';
 export 'src/flows/map_sketch.dart';
 export 'src/flows/spring_sheet.dart';

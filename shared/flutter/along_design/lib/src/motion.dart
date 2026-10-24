@@ -7,14 +7,35 @@ import 'package:flutter/widgets.dart';
 /// Named lengths. Springs live on [AlongSprings]. Nothing else invents a
 /// duration. See the motion table in docs/art-direction.md.
 abstract final class AlongDurations {
+  /// Clock sample for the Na Me countdown. Not a transition.
+  static const sample = Duration(milliseconds: 100);
+
   static const press = Duration(milliseconds: 120);
   static const fade = Duration(milliseconds: 180);
   static const stagger = Duration(milliseconds: 240);
   static const sheet = Duration(milliseconds: 280);
+
+  /// Check stroke and the seat reveal. The rest pose is the finished mark.
+  static const draw = Duration(milliseconds: 320);
+
+  /// Shared-element expand. Rest is fully open or fully closed.
+  static const expand = Duration(milliseconds: 360);
   static const refresh = Duration(milliseconds: 480);
+
+  /// Splash mark, confetti, and a held value catching up.
+  static const glide = Duration(milliseconds: 700);
+
+  /// SOS hold. Distinct from [hold], which is a one-shot status.
+  static const sos = Duration(milliseconds: 600);
   static const routeDraw = Duration(milliseconds: 900);
+
+  /// Skeleton and map sheen. Gallery frames hold the rest position.
+  static const shimmer = Duration(milliseconds: 1200);
   static const hold = Duration(milliseconds: 1400);
   static const scan = Duration(milliseconds: 1800);
+
+  /// Map radar. It holds a rest pose and does not loop.
+  static const radar = Duration(milliseconds: 2200);
 
   /// Demand glow on the three hot cells. One breath, then back.
   static const breath = Duration(milliseconds: 2400);
@@ -23,6 +44,9 @@ abstract final class AlongDurations {
 abstract final class AlongCurves {
   static const fade = Curves.easeOut;
   static const settle = Curves.easeOutCubic;
+
+  /// Breath on the hot cells, and a held value catching up.
+  static const breath = Curves.easeInOut;
 }
 
 abstract final class AlongSprings {
@@ -38,11 +62,25 @@ abstract final class AlongSprings {
     damping: 24,
   );
 
-  /// Cushion press. Short, then back. The seat scale uses its own settle.
+  /// Cushion press. Short, then back.
   static const press = SpringDescription(
     mass: 0.4,
     stiffness: 640,
     damping: 18,
+  );
+
+  /// Seat selection. Underdamped, so the scale returns past 1, then rests.
+  static const select = SpringDescription(
+    mass: 0.5,
+    stiffness: 420,
+    damping: 12,
+  );
+
+  /// A taken seat shakes once. The caller supplies the velocity.
+  static const taken = SpringDescription(
+    mass: 0.4,
+    stiffness: 520,
+    damping: 11,
   );
 }
 

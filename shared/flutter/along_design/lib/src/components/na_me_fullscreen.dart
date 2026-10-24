@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:along_design/src/components/na_me_mapper.dart';
 import 'package:along_design/src/components/na_me_shape_painter.dart';
+import 'package:along_design/src/motion.dart';
 import 'package:along_design/src/tokens.g.dart';
 import 'package:along_design/src/utils/name_signal.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +137,7 @@ class _NaMeFullscreenState extends State<NaMeFullscreen> {
       widget.effects.hapticPulse();
     });
 
-    _cycleTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+    _cycleTimer = Timer.periodic(AlongDurations.sample, (timer) {
       if (!mounted) {
         timer.cancel();
         return;
