@@ -485,8 +485,12 @@ void main() {
     expect(find.byKey(const Key('quick_replies')), findsOneWidget);
     expect(find.byKey(const Key('break_nudge')), findsOneWidget);
     expect(find.text('Arrived'), findsOneWidget);
-    expect(find.text('I dey come'), findsOneWidget);
+    expect(find.text('Quick reply'), findsOneWidget);
     expect(find.text('Take a break'), findsOneWidget);
+    await tester.tap(find.text('Quick reply'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('I dey come'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(milliseconds: 400));
     expect(tester.takeException(), isNull);

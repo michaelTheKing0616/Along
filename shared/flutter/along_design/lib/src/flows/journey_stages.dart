@@ -17,8 +17,6 @@ import 'live_arrival.dart';
 import 'demo_adapter.dart';
 import 'driver_portrait.dart';
 import 'trip_machine.dart';
-import 'vehicle_art.dart';
-
 void _noop() {}
 
 /// Pickup with a detected fix, a draggable pin, and entrance chips.
@@ -325,7 +323,7 @@ class AlongFlowQuote extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final quote = DemoAdapter.quote;
-    final clock = _clock(quote.expiresIn);
+    final clock = _mmss(quote.expiresIn);
     final roomy = _roomy(context);
     return Scaffold(
       backgroundColor: palette.mapLand,
@@ -346,25 +344,7 @@ class AlongFlowQuote extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const AlongVehicleHero(
-                        kind: AlongVehicleKind.keke,
-                        width: 64,
-                        height: 36,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'Quote',
-                          maxLines: 1,
-                          softWrap: false,
-                          style: AlongType.display(palette),
-                        ),
-                      ),
-                      const AlongDemoMark(),
-                    ],
-                  ),
+                  Text('Quote', style: AlongType.title(palette)),
                   const SizedBox(height: 4),
                   Text(
                     'Wuse Market to Nyanya',
@@ -421,13 +401,11 @@ class _FareLine extends StatelessWidget {
     required this.label,
     required this.value,
     this.strong = false,
-    this.dense = false,
   });
 
   final String label;
   final String value;
   final bool strong;
-  final bool dense;
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +419,7 @@ class _FareLine extends StatelessWidget {
         );
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minHeight: dense ? (strong ? 28 : 22) : (strong ? 40 : 32),
+        minHeight: strong ? 40 : 32,
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
@@ -739,9 +717,10 @@ class _PinReadout extends StatelessWidget {
 }
 
 class _PinSlots extends StatelessWidget {
-  const _PinSlots({required this.code});
+  const _PinSlots({required this.code, this.compact = false});
 
   final String code;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -750,7 +729,7 @@ class _PinSlots extends StatelessWidget {
       children: [
         for (var i = 0; i < 4; i++) ...[
           if (i > 0) const SizedBox(width: 8),
-          _PinBox(digit: i < code.length ? code[i] : ''),
+          _PinBox(digit: i < code.length ? code[i] : '', compact: compact),
         ],
       ],
     );
@@ -762,9 +741,10 @@ class _PinSlots extends StatelessWidget {
 }
 
 class _PinBox extends StatelessWidget {
-  const _PinBox({required this.digit});
+  const _PinBox({required this.digit, this.compact = false});
 
   final String digit;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -773,21 +753,28 @@ class _PinBox extends StatelessWidget {
         ? MediaQuery.textScalerOf(context).scale(1)
         : 1.0;
     final wide = MediaQuery.sizeOf(context).width >= 340;
+    final width = compact ? (wide ? 64 : 56) : (wide ? 72 : 62);
+    final height = compact ? 56 : (wide ? 112 : 96);
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: AlongRadius.card.x,
+        radius: AlongRadius.control.x,
         hairline: true,
       ),
       child: SizedBox(
-        width: (wide ? 72 : 62) * scale,
-        height: (wide ? 112 : 96) * scale,
+        width: width * (compact ? 1 : scale),
+        height: height * (compact ? 1 : scale),
         child: Center(
           child: Text(
             digit,
             maxLines: 1,
             softWrap: false,
-            style: AlongType.numeric(palette),
+            style: compact
+                ? AlongType.title(palette).copyWith(
+                    height: 1,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  )
+                : AlongType.numeric(palette),
           ),
         ),
       ),
@@ -859,7 +846,7 @@ class _DriverBodyState extends State<_DriverBody> {
           style: AlongType.body(palette).copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 12),
-        Center(child: _PinSlots(code: _digits)),
+        Center(child: _PinSlots(code: _digits, compact: true)),
         if (_phase.rejected) ...[
           const SizedBox(height: 8),
           Row(
@@ -917,21 +904,23 @@ class _DriverSteps extends StatelessWidget {
                       : i == 1
                       ? AlongIcons.verified
                       : AlongIcons.caretRight,
-                  size: 16,
-                  color: i <= 1 ? palette.ink : palette.muted,
+                  size: 20,
+                  color: i <= 1
+                      ? palette.ink
+                      : palette.ink.withValues(alpha: 0.72),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   steps[i],
                   maxLines: 1,
                   softWrap: false,
                   textAlign: TextAlign.center,
-                  style: AlongType.caption(palette).copyWith(
-                    color: i == 1
+                  style: AlongType.label(palette).copyWith(
+                    color: i <= 1
                         ? palette.ink
-                        : i < 1
-                        ? palette.ink
-                        : palette.muted,
-                    fontWeight: i == 1 ? FontWeight.w600 : FontWeight.w400,
+                        : palette.ink.withValues(alpha: 0.72),
+                    fontWeight: i == 1 ? FontWeight.w600 : FontWeight.w500,
+                    height: 1.1,
                   ),
                 ),
               ],
@@ -1245,49 +1234,15 @@ class AlongFlowReceipt extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final quote = DemoAdapter.quote;
     final roomy = _roomy(context);
-    final share = [
-      const AlongButton(
-        label: 'Download',
-        variant: AlongButtonVariant.secondary,
-        onPressed: _noop,
-      ),
-      const AlongButton(
-        label: 'Share',
-        variant: AlongButtonVariant.secondary,
-        onPressed: _noop,
-      ),
-    ];
     return Scaffold(
       backgroundColor: palette.bg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AlongCraft.clip(
-                corner: AlongRadius.card.x,
-                child: const SizedBox(
-                  height: 56,
-                  width: double.infinity,
-                  child: AlongCityMap(
-                    mode: AlongCityMapMode.completed,
-                    center: AlongCityMap.corridorCenter,
-                    zoom: 12,
-                    sheetInset: 0,
-                    demoLabel: false,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text('Receipt', style: AlongType.display(palette)),
-                  ),
-                  const AlongDemoMark(),
-                ],
-              ),
+              Text('Receipt', style: AlongType.display(palette)),
               Text(
                 'Wuse Market to Nyanya',
                 maxLines: roomy ? 2 : 1,
@@ -1295,77 +1250,36 @@ class AlongFlowReceipt extends StatelessWidget {
                 style: AlongType.body(palette)
                     .copyWith(fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
               const _SectionLabel('Fare'),
-              _FareLine(
-                label: 'Base',
-                value: alongNaira(quote.baseMinor),
-                dense: true,
-              ),
-              _FareLine(
-                label: 'Seat',
-                value: alongNaira(quote.seatMinor),
-                dense: true,
-              ),
-              _FareLine(
-                label: 'Fees',
-                value: alongNaira(quote.feesMinor),
-                dense: true,
-              ),
+              _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
+              _FareLine(label: 'Seat', value: alongNaira(quote.seatMinor)),
+              _FareLine(label: 'Fees', value: alongNaira(quote.feesMinor)),
               _FareLine(
                 label: 'Wallet credit',
                 value: alongNaira(-quote.walletCreditMinor),
-                dense: true,
               ),
               _FareLine(
                 label: 'Total',
                 value: alongNaira(quote.totalMinor),
                 strong: true,
-                dense: true,
               ),
-              const SizedBox(height: 4),
-              const _SectionLabel('Payment'),
-              _IconLine(
-                icon: AlongIcons.wallet,
-                label: DemoAdapter.payment.label,
-              ),
-              const SizedBox(height: 4),
-              const _SectionLabel('Seat'),
-              const _ReceiptSeats(),
-              const SizedBox(height: 4),
+              _IconLine(icon: AlongIcons.wallet, label: 'Wallet'),
+              const SizedBox(height: 24),
               const _SectionLabel('Trip'),
               const _TimelineRow(label: 'Requested 14:02'),
               const _TimelineRow(label: 'Pickup Wuse Market'),
               const _TimelineRow(label: 'Drop Nyanya', last: true),
-              const SizedBox(height: 4),
-              const _SectionLabel('Rating'),
+              const SizedBox(height: 12),
+              const _ReceiptSeats(),
+              const SizedBox(height: 8),
               const _RatingSummary(),
               const SizedBox(height: 8),
-              if (roomy)
-                for (final button in share) ...[
-                  button,
-                  const SizedBox(height: 8),
-                ]
-              else
-                Row(
-                  children: [
-                    for (var i = 0; i < share.length; i++) ...[
-                      if (i > 0) const SizedBox(width: 8),
-                      Expanded(child: share[i]),
-                    ],
-                  ],
-                ),
-              const SizedBox(height: 8),
+              const _LostItemRow(),
+              const SizedBox(height: 24),
               const AlongButton(
                 key: Key('report_issue'),
                 label: 'Report an issue',
-                variant: AlongButtonVariant.secondary,
-                onPressed: _noop,
-              ),
-              const SizedBox(height: 8),
-              const AlongButton(
-                key: Key('lost_item'),
-                label: 'Report a lost item',
                 variant: AlongButtonVariant.secondary,
                 onPressed: _noop,
               ),
@@ -1387,16 +1301,53 @@ class _ReceiptSeats extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _IconLine(icon: AlongIcons.seat, label: 'Window seat'),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            for (var i = 0; i < seats.length; i++) ...[
-              if (i > 0) const SizedBox(width: 6),
-              AlongSeatGlyph(status: seats[i], width: 28),
-            ],
-          ],
+        const SizedBox(height: 8),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            const gap = 8.0;
+            final side = ((constraints.maxWidth - gap * 5) / 6).clamp(
+              28.0,
+              40.0,
+            );
+            return Row(
+              children: [
+                for (var i = 0; i < seats.length; i++) ...[
+                  if (i > 0) const SizedBox(width: gap),
+                  AlongSeatGlyph(status: seats[i], width: side),
+                ],
+              ],
+            );
+          },
         ),
       ],
+    );
+  }
+}
+
+class _LostItemRow extends StatelessWidget {
+  const _LostItemRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return SizedBox(
+      key: const Key('lost_item'),
+      height: 44,
+      child: Row(
+        children: [
+          AlongIcon(AlongIcons.receipt, size: 20, color: palette.ink),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Report a lost item',
+              maxLines: 1,
+              softWrap: false,
+              style: AlongType.body(palette)
+                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1921,6 +1872,12 @@ class _SolidCard extends StatelessWidget {
 
 String _clock(Duration duration) {
   final minutes = duration.inMinutes.remainder(60);
+  final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return '$minutes:$seconds';
+}
+
+String _mmss(Duration duration) {
+  final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
   final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
   return '$minutes:$seconds';
 }

@@ -88,28 +88,28 @@ class AlongFareLock extends StatelessWidget {
     return Row(
       key: const Key('fare_lock'),
       children: [
-        _CountRing(progress: progress, size: 48),
+        _CountRing(progress: progress, size: 40, ink: palette.ink, stroke: 5),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                clock,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: AlongType.title(palette).copyWith(
+                  height: 1,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+              Text(
                 'Fare held',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: AlongType.title(palette).copyWith(height: 1.1),
-              ),
-              Text(
-                'Expires in $clock',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: AlongType.caption(palette).copyWith(
-                  color: palette.ink,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
+                style: AlongType.label(palette).copyWith(color: palette.ink),
               ),
             ],
           ),
@@ -243,10 +243,17 @@ class _AlongGoalSpringState extends State<AlongGoalSpring>
 }
 
 class _CountRing extends StatelessWidget {
-  const _CountRing({required this.progress, required this.size});
+  const _CountRing({
+    required this.progress,
+    required this.size,
+    required this.ink,
+    required this.stroke,
+  });
 
   final double progress;
   final double size;
+  final Color ink;
+  final double stroke;
 
   @override
   Widget build(BuildContext context) {
@@ -257,8 +264,9 @@ class _CountRing extends StatelessWidget {
       child: CustomPaint(
         painter: _ArcPainter(
           progress: progress.clamp(0.0, 1.0),
-          track: palette.recessed,
-          ink: palette.accent,
+          track: palette.ink.withValues(alpha: 0.16),
+          ink: ink,
+          strokeWidth: stroke,
         ),
       ),
     );
@@ -266,19 +274,26 @@ class _CountRing extends StatelessWidget {
 }
 
 class _ArcPainter extends CustomPainter {
-  _ArcPainter({required this.progress, required this.track, required this.ink});
+  _ArcPainter({
+    required this.progress,
+    required this.track,
+    required this.ink,
+    this.strokeWidth,
+  });
 
   final double progress;
   final Color track;
   final Color ink;
+  final double? strokeWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
     final stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = math.max(3.0, size.width * 0.08)
+      ..strokeWidth = strokeWidth ?? math.max(3.0, size.width * 0.08)
       ..strokeCap = StrokeCap.round;
-    final arc = (Offset.zero & size).deflate(stroke.strokeWidth);
+    // Half the stroke sits outside the path, so the outer edge is the box.
+    final arc = (Offset.zero & size).deflate(stroke.strokeWidth / 2);
     canvas.drawArc(arc, 0, math.pi * 2, false, stroke..color = track);
     canvas.drawArc(
       arc,
@@ -294,7 +309,7 @@ class _ArcPainter extends CustomPainter {
       oldDelegate.progress != progress || oldDelegate.ink != ink;
 }
 
-/// One canned line per language. Rectangular tiles, one row.
+/// One row. The four languages open in a sheet, not a chip grid.
 class AlongQuickReplies extends StatelessWidget {
   const AlongQuickReplies({super.key});
 
@@ -305,68 +320,82 @@ class AlongQuickReplies extends StatelessWidget {
     ('Yoruba', 'Mo n bo'),
   ];
 
-  @override
-  Widget build(BuildContext context) {
-    Widget row(int start) {
-      return SizedBox(
-        height: 44,
-        child: Row(
-          children: [
-            Expanded(
-              child: _ReplyTile(
-                language: lines[start].$1,
-                phrase: lines[start].$2,
-              ),
+  void _open(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: palette.surface,
+      shape: AlongCraft.borderVertical(top: AlongRadius.sheet.x),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Quick reply', style: AlongType.title(palette)),
+                const SizedBox(height: 8),
+                for (final line in lines)
+                  SizedBox(
+                    height: 48,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 96,
+                          child: Text(
+                            line.$1,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: AlongType.label(palette),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            line.$2,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: AlongType.body(palette)
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _ReplyTile(
-                language: lines[start + 1].$1,
-                phrase: lines[start + 1].$2,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Column(
-      key: const Key('quick_replies'),
-      children: [row(0), const SizedBox(height: 8), row(2)],
+          ),
+        );
+      },
     );
   }
-}
-
-class _ReplyTile extends StatelessWidget {
-  const _ReplyTile({required this.language, required this.phrase});
-
-  final String language;
-  final String phrase;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Semantics(
-      button: true,
-      label: '$language. $phrase',
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        decoration: AlongCraft.fill(
-          palette.surface,
-          corner: AlongRadius.control.x,
-          side: BorderSide(color: palette.ink.withValues(alpha: 0.14)),
-        ),
-        child: Text(
-          phrase,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          softWrap: false,
-          style: AlongType.caption(palette).copyWith(
-            color: palette.ink,
-            fontWeight: FontWeight.w600,
-            height: 1,
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        key: const Key('quick_replies'),
+        onTap: () => _open(context),
+        child: SizedBox(
+          height: 48,
+          child: Row(
+            children: [
+              AlongIcon(AlongIcons.chat, size: 20, color: palette.ink),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Quick reply',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                ),
+              ),
+              AlongIcon(AlongIcons.caretRight, size: 20, color: palette.ink),
+            ],
           ),
         ),
       ),
@@ -511,7 +540,7 @@ class _PhaseCell extends StatelessWidget {
           phase.dayName,
           maxLines: 1,
           softWrap: false,
-          style: AlongType.caption(palette).copyWith(
+          style: AlongType.label(palette).copyWith(
             color: palette.ink,
             fontWeight: FontWeight.w600,
             height: 1,
