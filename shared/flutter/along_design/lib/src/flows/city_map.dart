@@ -62,6 +62,7 @@ class AlongCityMap extends StatelessWidget {
     this.nearby = false,
     this.approach = false,
     this.place = false,
+    this.phase,
   });
 
   final AlongCityMapMode mode;
@@ -105,6 +106,9 @@ class AlongCityMap extends StatelessWidget {
   /// Building footprints, street names, and a walk to the pin. Pickup uses
   /// this. The screen pin stays fixed; these layers move with the map.
   final bool place;
+
+  /// Dawn, day, dusk, or night. Null leaves the bake untouched.
+  final AlongDayPhase? phase;
 
   /// Lane zoom, inside 17–18. z16 tiles overzoom. Negative rotation puts
   /// east at the top: a positive bearing rotates the map clockwise, which
@@ -192,6 +196,7 @@ class AlongCityMap extends StatelessWidget {
   Widget _frame(BuildContext context, double shown) {
     final palette = AlongPalette.of(context);
     final dark = palette.brightness == Brightness.dark;
+    final tint = phase;
     final drawn = AlongMotionPolicy.reduced(context)
         ? 1.0
         : shown.clamp(0.0, 1.0);
@@ -288,6 +293,10 @@ class AlongCityMap extends StatelessWidget {
               keepBuffer: initialZoom >= 17 ? 0 : 1,
               panBuffer: 0,
             ),
+            if (tint != null)
+              Positioned.fill(
+                child: IgnorePointer(child: ColoredBox(color: tint.veil(dark))),
+              ),
             if (mode == AlongCityMapMode.online) ...[
               PolygonLayer(polygons: _demandOutlines(palette)),
               Positioned.fill(
@@ -833,10 +842,7 @@ class AlongCityMap extends StatelessWidget {
             ),
           ),
           if (stale)
-            _FixCaption(
-              palette: palette,
-              label: DemoAdapter.gps.ageLabel,
-            ),
+            _FixCaption(palette: palette, label: DemoAdapter.gps.ageLabel),
         ],
       ),
     );
@@ -988,10 +994,7 @@ class AlongCityMap extends StatelessWidget {
       AlongFix.hidden => '',
     };
     final fill = hollow ? palette.roles.stale : palette.roles.riderDot;
-    final caption = [
-      word,
-      if (hollow) DemoAdapter.gps.ageLabel,
-    ].join(' ');
+    final caption = [word, if (hollow) DemoAdapter.gps.ageLabel].join(' ');
     return Marker(
       point: at,
       width: (hollow ? 156 : 72) * scale,
@@ -1033,10 +1036,7 @@ class _SolidWord extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: AlongCraft.fill(
-        palette.surface,
-        corner: AlongRadius.xs.x,
-      ),
+      decoration: AlongCraft.fill(palette.surface, corner: AlongRadius.xs.x),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Text(
@@ -1078,10 +1078,7 @@ class _Attribution extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: AlongCraft.fill(
-        palette.surface,
-        corner: AlongRadius.xs.x,
-      ),
+      decoration: AlongCraft.fill(palette.surface, corner: AlongRadius.xs.x),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         child: Text(
@@ -1387,7 +1384,7 @@ bool _sameCell(_HexCell a, _HexCell b) {
 List<Polygon> _demandOutlines(AlongPalette palette) {
   const mPerLat = 111320.0;
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
-  const stroke = <double>[0.06, 0.12, 0.20];
+  const stroke = <double>[0.03, 0.06, 0.10];
   final cells = _hexCells();
   final hot = _hotCells(cells);
   final polygons = <Polygon>[];
@@ -1429,7 +1426,7 @@ List<List<LatLng>> _demandHotRings() {
   ];
 }
 
-/// Yellow fill at 85 percent, a soft glow, and a 2.4s breath. The controller
+/// Yellow fill at about 42 percent, a soft glow, and a 2.4s breath. The controller
 /// stays stopped when motion does not play, so a golden is the rest glow.
 class _DemandBreath extends StatefulWidget {
   const _DemandBreath({required this.rings, required this.palette});
@@ -1509,7 +1506,7 @@ class _DemandGlowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final glow = palette.accent.withValues(alpha: 0.22 + 0.16 * breath);
+    final glow = palette.accent.withValues(alpha: 0.11 + 0.08 * breath);
     final blur = 8 + 5 * breath;
     for (final ring in rings) {
       final path = Path();
@@ -1530,7 +1527,7 @@ class _DemandGlowPainter extends CustomPainter {
       );
       canvas.drawPath(
         path,
-        Paint()..color = palette.accent.withValues(alpha: 0.85),
+        Paint()..color = palette.accent.withValues(alpha: 0.42),
       );
     }
   }

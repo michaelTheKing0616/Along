@@ -1,12 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import '../craft.dart';
-import '../palette.dart';
-import '../tokens.g.dart';
-import '../type.dart';
 
 /// Simulated dispatch, GPS, and payment. The gallery and debug builds read
 /// this. A live build would swap in the network adapters and hide the mark.
@@ -202,35 +196,7 @@ class AlongDemoMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!kDebugMode) return const SizedBox.shrink();
-    final palette = AlongPalette.of(context);
-    return Semantics(
-      key: const Key('demo_adapter'),
-      label: DemoAdapter.name,
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: AlongCraft.fill(
-          palette.surface,
-          corner: AlongRadius.control.x,
-          side: BorderSide(
-            color: palette.ink.withValues(alpha: 0.14),
-            width: 0.5,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Text(
-            'Demo',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.caption(palette).copyWith(
-              color: palette.ink,
-              fontWeight: FontWeight.w600,
-              height: 1,
-            ),
-          ),
-        ),
-      ),
-    );
+    // The key stays for the pickup test. The word is not a badge.
+    return const SizedBox.shrink(key: Key('demo_adapter'));
   }
 }

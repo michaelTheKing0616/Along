@@ -120,23 +120,23 @@ class SeatMap extends StatelessWidget {
           );
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ...rules,
-            diagram,
-            if (body == 'cabin') ...[
-              const SizedBox(height: 14),
-              const _SeatLegend(),
-            ],
-            if (riders.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              AlongWhosRiding(riders: riders),
-            ],
-            if (footer != null) ...[const SizedBox(height: 16), footer!],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...rules,
+          diagram,
+          if (body == 'cabin') ...[
+            const SizedBox(height: 14),
+            const _SeatLegend(),
           ],
-        ),
+          if (riders.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            AlongWhosRiding(riders: riders),
+          ],
+          if (footer != null) ...[const SizedBox(height: 16), footer!],
+        ],
+      ),
     );
   }
 }
@@ -415,10 +415,8 @@ class _SeatCaption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final style = AlongType.caption(palette).copyWith(
-      fontWeight: FontWeight.w600,
-      height: 1.2,
-    );
+    final style = AlongType.caption(palette)
+        .copyWith(fontWeight: FontWeight.w600, height: 1.2);
     final price = seat.price;
     final showPrice =
         price != null && price.contains('₦') && seat.status != 'occupied';
@@ -504,7 +502,11 @@ class _CabinOutlinePainter extends CustomPainter {
     if (bottom - top < 16) return;
     for (final left in [true, false]) {
       final x = left ? 8.0 : size.width - 8;
-      canvas.drawLine(Offset(x, top), Offset(x, top + (bottom - top) * 0.42), seam);
+      canvas.drawLine(
+        Offset(x, top),
+        Offset(x, top + (bottom - top) * 0.42),
+        seam,
+      );
       canvas.drawLine(
         Offset(x, top + (bottom - top) * 0.58),
         Offset(x, bottom),
@@ -560,14 +562,7 @@ Path _cabinOutline(Size size) {
   );
   path.quadraticBezierTo(w * 0.61, h - 1.2, w * 0.50, h - 1.2);
   path.quadraticBezierTo(w * 0.39, h - 1.2, w * 0.28, h - 3.5);
-  path.cubicTo(
-    w * 0.12,
-    h - 6,
-    side,
-    tailJoin + fillet * 0.42,
-    side,
-    tailJoin,
-  );
+  path.cubicTo(w * 0.12, h - 6, side, tailJoin + fillet * 0.42, side, tailJoin);
   path.lineTo(side, shoulder);
   path.cubicTo(
     side,
@@ -618,21 +613,21 @@ class _SeatLegend extends StatelessWidget {
       spacing: 14,
       runSpacing: 8,
       children: [
-          _LegendMark(
-            label: 'Available',
-            fill: _SeatButtonState.available(palette),
-            border: _SeatButtonState.hairline(palette),
-          ),
-          _LegendMark(
-            label: 'Selected',
-            fill: palette.accent,
-            border: palette.accent,
-          ),
-          _LegendMark(
-            label: 'Taken',
-            fill: _SeatButtonState.taken(palette),
-            border: _SeatButtonState.hairline(palette),
-          ),
+        _LegendMark(
+          label: 'Available',
+          fill: _SeatButtonState.available(palette),
+          border: _SeatButtonState.hairline(palette),
+        ),
+        _LegendMark(
+          label: 'Selected',
+          fill: palette.accent,
+          border: palette.accent,
+        ),
+        _LegendMark(
+          label: 'Taken',
+          fill: _SeatButtonState.taken(palette),
+          border: _SeatButtonState.hairline(palette),
+        ),
       ],
     );
   }
@@ -1285,7 +1280,10 @@ class AlongCabinDiagram extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final columns = rows.fold<int>(1, (maxCols, row) => math.max(maxCols, row.length));
+    final columns = rows.fold<int>(
+      1,
+      (maxCols, row) => math.max(maxCols, row.length),
+    );
     final span = columns * seat + (columns - 1) * 8;
     return CustomPaint(
       painter: _CabinOutlinePainter(palette: palette, bold: contrast),
@@ -1374,7 +1372,7 @@ class AlongSeatGlyph extends StatelessWidget {
     );
     return SizedBox(
       width: width,
-      height: width * 1.1,
+      height: width,
       child: CustomPaint(
         painter: _CarSeatPainter(
           seat: seat,
@@ -1503,7 +1501,11 @@ class _CarSeatPainter extends CustomPainter {
         ..strokeWidth = _vectorStroke
         ..color = const Color(0xFFF7F4EF);
       canvas.drawCircle(hub, bounds.width * 0.12, wheel);
-      canvas.drawCircle(hub, bounds.width * 0.035, Paint()..color = wheel.color);
+      canvas.drawCircle(
+        hub,
+        bounds.width * 0.035,
+        Paint()..color = wheel.color,
+      );
     }
     if (squash > 0) canvas.restore();
     if (held > 0) {

@@ -72,24 +72,24 @@ class AlongDepartureBoard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Leave at',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-            ),
-            Text(
-              'From today\u2019s demand',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette),
-            ),
-            const SizedBox(height: 6),
-            for (final item in departures) _DepartureRow(item: item),
-          ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Leave at',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+          ),
+          Text(
+            'From today\u2019s demand',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.caption(palette),
+          ),
+          const SizedBox(height: 6),
+          for (final item in departures) _DepartureRow(item: item),
+        ],
       ),
     );
   }
@@ -113,9 +113,7 @@ class _DepartureRow extends StatelessWidget {
             height: 22,
             clipBehavior: Clip.antiAlias,
             decoration: AlongCraft.fill(
-              item.best
-                  ? palette.accent
-                  : palette.ink.withValues(alpha: 0.12),
+              item.best ? palette.accent : palette.ink.withValues(alpha: 0.12),
               corner: 1,
             ),
           ),
@@ -176,12 +174,10 @@ class AlongFlowPass extends StatelessWidget {
     final column = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _oneLine(
-          'Along Pass',
-          AlongType.caption(palette)
-              .copyWith(color: palette.ink, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 8),
+        Text('Pass', style: AlongType.display(palette)),
+        const SizedBox(height: 4),
+        _oneLine('Wuse to Nyanya · each week', AlongType.bodyMuted(palette)),
+        const SizedBox(height: 12),
         if (roomy)
           const _PassTicket(roomy: true)
         else
@@ -210,12 +206,12 @@ class _PassTicket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
+    return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: AlongCraft.surface(
         palette,
         radius: AlongRadius.card.x,
         hairline: true,
-        shadow: AlongElevation.sheet(palette.ink),
       ),
       child: Column(
         children: [
@@ -224,13 +220,19 @@ class _PassTicket extends StatelessWidget {
           else
             const Expanded(child: _PassMap()),
           const Padding(
-            padding: EdgeInsets.fromLTRB(14, 12, 14, 14),
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: _PassRoute(),
+          ),
+          const SizedBox(height: 12),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: _PassCalendar(),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 16),
             child: Column(
-              children: [
-                _PassCalendar(),
-                SizedBox(height: 16),
-                _PassSavings(),
-              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [_PassSavings(), SizedBox(height: 8), _PassPerks()],
             ),
           ),
         ],
@@ -260,55 +262,47 @@ class _PassMap extends StatelessWidget {
             center: AlongCityMap.corridorCenter,
             zoom: 12,
           ),
-          Positioned(left: 12, right: 12, bottom: 10, child: _PassChip()),
         ],
       ),
     );
   }
 }
 
-class _PassChip extends StatelessWidget {
-  const _PassChip();
+class _PassRoute extends StatelessWidget {
+  const _PassRoute();
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(
-        palette,
-        radius: AlongRadius.control.x,
-        shadow: AlongElevation.rest(palette.ink),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Wuse to Nyanya',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-            ),
-            const SizedBox(height: 2),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Each week · 10 rides',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.caption(palette),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                AlongMoney(value: 4800, style: AlongType.heading(palette)),
-              ],
-            ),
-          ],
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            '10 rides',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+          ),
         ),
-      ),
+        AlongMoney(value: 4800, style: AlongType.title(palette)),
+      ],
+    );
+  }
+}
+
+class _PassPerks extends StatelessWidget {
+  const _PassPerks();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'AC · Window · Luggage',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+      style: AlongType.caption(AlongPalette.of(context))
+          .copyWith(color: AlongPalette.of(context).ink),
     );
   }
 }
@@ -320,25 +314,36 @@ class _PassCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (var i = 0; i < _days.length; i++)
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: i == 0 ? 0 : 4),
-              child: _PassDay(label: _days[i], index: i),
-            ),
-          ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const gap = 4.0;
+        final raw = (constraints.maxWidth - gap * 6) / 7;
+        final side = raw > 40 ? 40.0 : raw;
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var i = 0; i < _days.length; i++)
+              SizedBox(
+                width: side,
+                child: _PassDay(label: _days[i], index: i, side: side),
+              ),
+          ],
+        );
+      },
     );
   }
 }
 
 class _PassDay extends StatelessWidget {
-  const _PassDay({required this.label, required this.index});
+  const _PassDay({
+    required this.label,
+    required this.index,
+    required this.side,
+  });
 
   final String label;
   final int index;
+  final double side;
 
   static const _dates = [19, 20, 21, 22, 23, 24, 25];
 
@@ -346,48 +351,45 @@ class _PassDay extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final booked = index < 5;
-    return DecoratedBox(
-      decoration: AlongCraft.surface(
-        palette,
-        radius: AlongRadius.control.x,
-        hairline: true,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: AlongType.caption(palette).copyWith(
-                fontWeight: FontWeight.w500,
-                height: 1.1,
+    final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
+    final day = AlongType.label(palette).copyWith(height: 1);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: side,
+          height: roomy ? null : 40,
+          child: DecoratedBox(
+            decoration: AlongCraft.fill(
+              booked ? palette.ink : const Color(0x00000000),
+              corner: side >= 36 ? AlongRadius.control.x : AlongRadius.xs.x,
+              side: booked
+                  ? BorderSide.none
+                  : BorderSide(color: palette.ink, width: 1.5),
+            ),
+            child: Center(
+              child: Text(
+                '${_dates[index]}',
+                maxLines: 1,
+                softWrap: false,
+                style: day.copyWith(
+                  color: booked ? palette.onInk : palette.ink,
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              '${_dates[index]}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: AlongType.body(palette).copyWith(
-                fontWeight: FontWeight.w600,
-                height: 1.1,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
-            ),
-            const SizedBox(height: 2),
-            AlongIcon(
-              AlongIcons.check,
-              size: 20,
-              color: booked ? palette.ink : const Color(0x00000000),
-            ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+          style: day,
+        ),
+      ],
     );
   }
 }
@@ -433,9 +435,7 @@ class _FareLine extends StatelessWidget {
     final style = AlongType.body(palette).copyWith(height: 1.3);
     return Row(
       children: [
-        Expanded(
-          child: Text(name, maxLines: 1, softWrap: false, style: style),
-        ),
+        Expanded(child: Text(name, maxLines: 1, softWrap: false, style: style)),
         Text(
           amount,
           maxLines: 1,
@@ -461,22 +461,20 @@ class AlongFlowSplit extends StatelessWidget {
     final column = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _oneLine('Split the fare', AlongType.title(palette)),
+        Text('Split', style: AlongType.display(palette)),
         const SizedBox(height: 2),
         _oneLine('Wuse to Nyanya · two seats', AlongType.bodyMuted(palette)),
         const SizedBox(height: 8),
         _SplitRiders(size: roomy ? 72 : 84),
         const SizedBox(height: 8),
-        const _SplitBar(),
+        const _SplitCards(),
         const SizedBox(height: 8),
         const _PaidRow(),
         const SizedBox(height: 8),
-        if (roomy)
-          const _TripSummary(fill: false)
-        else
-          const Expanded(child: _TripSummary(fill: true)),
+        const _TripSummary(),
         const SizedBox(height: 8),
         const _PayMethod(),
+        if (!roomy) const Spacer(),
         const SizedBox(height: 8),
         const AlongButton(
           label: 'Remind Ada',
@@ -508,47 +506,31 @@ void _copyLink() {
 }
 
 class _TripSummary extends StatelessWidget {
-  const _TripSummary({required this.fill});
-
-  final bool fill;
+  const _TripSummary();
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(
-        palette,
-        radius: AlongRadius.card.x,
-        hairline: true,
-        shadow: AlongElevation.rest(palette.ink),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Column(
-          mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
-          mainAxisAlignment: fill
-              ? MainAxisAlignment.spaceEvenly
-              : MainAxisAlignment.start,
-          children: [
-            Text(
-              'This trip',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.caption(palette).copyWith(
-                color: palette.ink,
-                fontWeight: FontWeight.w600,
-                height: 1.1,
-              ),
-            ),
-            if (!fill) const SizedBox(height: 6),
-            const _SummaryLine(icon: AlongIcons.path, label: 'Wuse to Nyanya'),
-            if (!fill) const SizedBox(height: 4),
-            const _SummaryLine(icon: AlongIcons.seat, label: '2 seats'),
-            if (!fill) const SizedBox(height: 4),
-            const _SummaryLine(icon: AlongIcons.schedule, label: '4-6 min'),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'This trip',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.caption(palette).copyWith(
+            color: palette.ink,
+            fontWeight: FontWeight.w600,
+            height: 1.1,
+          ),
         ),
-      ),
+        const SizedBox(height: 6),
+        const _SummaryLine(icon: AlongIcons.path, label: 'Wuse to Nyanya'),
+        const SizedBox(height: 4),
+        const _SummaryLine(icon: AlongIcons.seat, label: '2 seats'),
+        const SizedBox(height: 4),
+        const _SummaryLine(icon: AlongIcons.schedule, label: '4-6 min'),
+      ],
     );
   }
 }
@@ -586,35 +568,25 @@ class _PayMethod extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(
-        palette,
-        radius: AlongRadius.row.x,
-        hairline: true,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Row(
-          children: [
-            AlongIcon(AlongIcons.wallet, size: 20, color: palette.ink),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Wallet',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.body(palette)
-                    .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-              ),
-            ),
-            AlongMoney(
-              value: 600,
-              style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-            ),
-          ],
+    return Row(
+      children: [
+        AlongIcon(AlongIcons.wallet, size: 20, color: palette.ink),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            'Wallet',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+          ),
         ),
-      ),
+        AlongMoney(
+          value: 600,
+          style: AlongType.body(palette)
+              .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+        ),
+      ],
     );
   }
 }
@@ -678,54 +650,63 @@ class _RiderFace extends StatelessWidget {
   }
 }
 
-class _SplitBar extends StatelessWidget {
-  const _SplitBar();
+class _SplitCards extends StatelessWidget {
+  const _SplitCards();
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return AlongCraft.clip(
-      corner: AlongRadius.card.x,
-      child: SizedBox(
-        height: 64,
-        child: Row(
-          children: [
-            Expanded(
-              child: _SplitHalf(color: palette.accent, ink: palette.accentInk),
-            ),
-            Expanded(
-              child: _SplitHalf(color: palette.ink, ink: palette.onInk),
-            ),
-          ],
-        ),
-      ),
+    return const Row(
+      children: [
+        Expanded(child: _SplitCard(name: 'You', yours: true)),
+        SizedBox(width: 12),
+        Expanded(child: _SplitCard(name: 'Ada')),
+      ],
     );
   }
 }
 
-class _SplitHalf extends StatelessWidget {
-  const _SplitHalf({required this.color, required this.ink});
+class _SplitCard extends StatelessWidget {
+  const _SplitCard({required this.name, this.yours = false});
 
-  final Color color;
-  final Color ink;
+  final String name;
+  final bool yours;
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: color,
-      child: Center(
-        child: FittedBox(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              '₦600',
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.title(AlongPalette.of(context))
-                  .copyWith(color: ink, height: 1),
+    final palette = AlongPalette.of(context);
+    return Container(
+      constraints: const BoxConstraints(minHeight: 76),
+      clipBehavior: Clip.antiAlias,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.card.x,
+        side: BorderSide(
+          color: yours ? palette.accent : palette.ink.withValues(alpha: 0.14),
+          width: yours ? 1.5 : 1,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name,
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.label(palette),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            '₦600',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.title(palette).copyWith(
+              height: 1,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -737,35 +718,25 @@ class _PaidRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.surface(
-        palette,
-        radius: AlongRadius.row.x,
-        color: palette.recessed,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Row(
-          children: [
-            AlongIcon(AlongIcons.check, size: 20, color: palette.ink),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Ada paid',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.body(palette)
-                    .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-              ),
-            ),
-            AlongMoney(
-              value: 600,
-              style: AlongType.body(palette)
-                  .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-            ),
-          ],
+    return Row(
+      children: [
+        AlongIcon(AlongIcons.check, size: 20, color: palette.ink),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'Ada paid',
+            maxLines: 1,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+          ),
         ),
-      ),
+        AlongMoney(
+          value: 600,
+          style: AlongType.body(palette)
+              .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+        ),
+      ],
     );
   }
 }
@@ -824,9 +795,7 @@ class _LoadingMap extends StatelessWidget {
     final pivot = dark ? 40.0 : 224.0;
     final shift = pivot * (1 - contrast);
     return ClipPath(
-      clipper: ShapeBorderClipper(
-        shape: AlongCraft.border(AlongRadius.card.x),
-      ),
+      clipper: ShapeBorderClipper(shape: AlongCraft.border(AlongRadius.card.x)),
       child: ColoredBox(
         color: palette.mapLand,
         child: Stack(
@@ -1102,8 +1071,8 @@ class AlongFlowRefresh extends StatelessWidget {
         const SizedBox(height: 8),
         ClipPath(
           clipper: ShapeBorderClipper(
-        shape: AlongCraft.border(AlongRadius.card.x),
-      ),
+            shape: AlongCraft.border(AlongRadius.card.x),
+          ),
           child: ColoredBox(
             color: palette.mapLand,
             child: const AlongDriveTrack(

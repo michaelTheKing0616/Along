@@ -85,10 +85,18 @@ class AlongDriverPortrait extends StatelessWidget {
 
 /// Initials on a warm gradient. Never a flat black disc.
 class AlongMonogram extends StatelessWidget {
-  const AlongMonogram({super.key, required this.initials, required this.size});
+  const AlongMonogram({
+    super.key,
+    required this.initials,
+    required this.size,
+    this.mark = 0.34,
+  });
 
   final String initials;
   final double size;
+
+  /// Glyph height as a fraction of [size]. Guardian uses a larger mark.
+  final double mark;
 
   static const _stops = <(Color, Color)>[
     (Color(0xFF3A342C), Color(0xFF8A7E72)),
@@ -120,7 +128,7 @@ class AlongMonogram extends StatelessWidget {
         style: TextStyle(
           fontFamily: palette.fontFamily,
           fontFamilyFallback: AlongType.fallback,
-          fontSize: size * 0.34,
+          fontSize: size * mark,
           height: 1,
           fontWeight: FontWeight.w600,
           color: const Color(0xFFF7F4EF),
