@@ -227,29 +227,15 @@ class _AlongFlowScheduleState extends State<AlongFlowSchedule> {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final quiet = AlongType.caption(palette)
-        .copyWith(color: palette.ink.withValues(alpha: 0.72));
     final picked = _times[_time];
     return _Page(
       title: 'Later',
       subtitle: 'Wuse to Nyanya',
-      footer: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            _commute ? 'Repeats Mon to Fri' : 'One seat, this week',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            softWrap: false,
-            style: quiet,
-          ),
-          const SizedBox(height: 8),
-          AlongButton(
-            key: const Key('schedule_book'),
-            label: _commute ? 'Book the commute' : 'Book ${_names[_day]}',
-            onPressed: () {},
-          ),
-        ],
+      footer: AlongButton(
+        key: const Key('schedule_book'),
+        label: _commute ? 'Book the commute' : 'Book ${_names[_day]}',
+        subtitle: _commute ? 'Repeats Mon to Fri' : 'One seat, this week',
+        onPressed: () {},
       ),
       children: [
         _RouteHero(time: picked.$1, note: picked.$2),
@@ -310,7 +296,10 @@ class AlongFlowStops extends StatelessWidget {
             _StopRow(
               stop: routes[r].stops[i],
               last: i == routes[r].stops.length - 1,
+              arrival: i == routes[r].stops.length - 1,
             ),
+          const SizedBox(height: 8),
+          _TripTotal(route: routes[r]),
         ],
       ],
     );
@@ -425,19 +414,13 @@ class _AlongFlowRideOptionsState extends State<AlongFlowRideOptions> {
               setState(() => _options = _options.copyWith(squeezeFree: value)),
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(child: Text('Cabin', style: AlongType.title(palette))),
-            Text(
-              '${_held.length}',
-              key: const Key('seat_holds'),
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.title(palette).copyWith(height: 1),
-            ),
-            const SizedBox(width: 6),
-            Text('held', maxLines: 1, softWrap: false, style: _quiet(palette)),
-          ],
+        Text(
+          'Cabin · ${_held.length} held',
+          key: const Key('seat_holds'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+          style: AlongType.title(palette),
         ),
         const SizedBox(height: 4),
         Text(
@@ -510,6 +493,7 @@ class AlongFlowTopUp extends StatefulWidget {
 
 class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
   late int _choice;
+  var _custom = false;
 
   @override
   void initState() {
@@ -526,7 +510,7 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
       gutter: 16,
       footer: AlongButton(
         key: const Key('topup_add'),
-        label: 'Add ${_naira(_choice)}',
+        label: _custom ? 'Add a custom amount' : 'Add ${_naira(_choice)}',
         onPressed: () {},
       ),
       children: [
@@ -534,16 +518,16 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
         const SizedBox(height: 20),
         Text('Add credit', style: AlongType.title(palette)),
         const SizedBox(height: 12),
-        for (var i = 0; i < widget.choices.length; i++) ...[
-          if (i > 0) const SizedBox(height: 8),
-          _ChoiceRow(
-            key: Key('topup_${widget.choices[i]}'),
-            title: _naira(widget.choices[i]),
-            selected: widget.choices[i] == _choice,
-            outlined: true,
-            onTap: () => setState(() => _choice = widget.choices[i]),
-          ),
-        ],
+        _CreditGrid(
+          choices: widget.choices,
+          selected: _custom ? null : _choice,
+          custom: _custom,
+          onAmount: (amount) => setState(() {
+            _custom = false;
+            _choice = amount;
+          }),
+          onCustom: () => setState(() => _custom = true),
+        ),
         const SizedBox(height: 16),
         Text('History', style: AlongType.title(palette)),
         const SizedBox(height: 8),
@@ -608,6 +592,7 @@ class AlongFlowOfflineHome extends StatelessWidget {
       map: const AlongCityMap(
         phase: AlongDayPhase.afternoon,
         bare: true,
+        ghost: true,
         fix: AlongFix.hidden,
         demoLabel: false,
       ),
@@ -642,6 +627,8 @@ class AlongFlowOfflineMatching extends StatelessWidget {
       map: const AlongCityMap(
         center: AlongCityMap.wuseMarket,
         bare: true,
+        ghost: true,
+        ghostRoute: AlongCityMap.lastKnownNearWuse,
         demoLabel: false,
         fix: AlongFix.hidden,
         sheetInset: 0,
@@ -668,6 +655,7 @@ class AlongFlowOfflineLive extends StatelessWidget {
       map: const AlongCityMap(
         mode: AlongCityMapMode.trip,
         progress: 0.62,
+        ghost: true,
         sheetInset: 0.36,
         demoLabel: false,
       ),
@@ -719,6 +707,7 @@ class AlongFlowOfflineReconnecting extends StatelessWidget {
       map: const AlongCityMap(
         phase: AlongDayPhase.afternoon,
         bare: true,
+        ghost: true,
         fix: AlongFix.hidden,
         demoLabel: false,
       ),
@@ -1227,11 +1216,161 @@ class _ChoiceRow extends StatelessWidget {
   }
 }
 
+class _TripTotal extends StatelessWidget {
+  const _TripTotal({required this.route});
+
+  final AlongRouteTimeline route;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final minutes = _tripMinutes(route.stops);
+    final label = minutes == null
+        ? '${route.stops.length} stops'
+        : '$minutes min total · ${route.stops.length} stops';
+    return Padding(
+      padding: const EdgeInsets.only(left: 36),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
+        style: AlongType.label(palette)
+            .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+      ),
+    );
+  }
+}
+
+int? _tripMinutes(List<AlongStop> stops) {
+  int? first;
+  int? last;
+  for (final stop in stops) {
+    final parts = stop.eta.split(':');
+    if (parts.length != 2) continue;
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+    if (hour == null || minute == null) continue;
+    final clock = hour * 60 + minute;
+    first ??= clock;
+    last = clock;
+  }
+  if (first == null || last == null) return null;
+  final span = last - first;
+  return span < 0 ? span + 12 * 60 : span;
+}
+
+class _CreditGrid extends StatelessWidget {
+  const _CreditGrid({
+    required this.choices,
+    required this.selected,
+    required this.custom,
+    required this.onAmount,
+    required this.onCustom,
+  });
+
+  final List<int> choices;
+  final int? selected;
+  final bool custom;
+  final ValueChanged<int> onAmount;
+  final VoidCallback onCustom;
+
+  @override
+  Widget build(BuildContext context) {
+    final tiles = <Widget>[
+      for (final amount in choices)
+        _CreditTile(
+          key: Key('topup_$amount'),
+          title: _naira(amount),
+          selected: selected == amount,
+          onTap: () => onAmount(amount),
+        ),
+      _CreditTile(
+        key: const Key('topup_custom'),
+        title: 'Custom',
+        selected: custom,
+        onTap: onCustom,
+      ),
+    ];
+    return Column(
+      children: [
+        for (var i = 0; i < tiles.length; i += 2) ...[
+          if (i > 0) const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(child: tiles[i]),
+              const SizedBox(width: 8),
+              Expanded(
+                child: i + 1 < tiles.length ? tiles[i + 1] : const SizedBox(),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _CreditTile extends StatelessWidget {
+  const _CreditTile({
+    super.key,
+    required this.title,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String title;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 64),
+        child: DecoratedBox(
+          decoration: AlongCraft.fill(
+            palette.surface,
+            corner: AlongRadius.row.x,
+            side: BorderSide(
+              color: selected
+                  ? palette.ink
+                  : palette.ink.withValues(alpha: 0.18),
+              width: selected ? 2 : 1,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: AlongType.body(palette).copyWith(
+                fontWeight: FontWeight.w600,
+                height: 1.1,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _StopRow extends StatelessWidget {
-  const _StopRow({required this.stop, required this.last});
+  const _StopRow({
+    required this.stop,
+    required this.last,
+    this.arrival = false,
+  });
 
   final AlongStop stop;
   final bool last;
+  final bool arrival;
 
   @override
   Widget build(BuildContext context) {
@@ -1245,7 +1384,7 @@ class _StopRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _Rail(stop: stop, last: last),
+          _Rail(stop: stop, last: last, arrival: arrival),
           const SizedBox(width: 12),
           Expanded(
             child: Padding(
@@ -1293,10 +1432,11 @@ class _StopRow extends StatelessWidget {
 }
 
 class _Rail extends StatelessWidget {
-  const _Rail({required this.stop, required this.last});
+  const _Rail({required this.stop, required this.last, this.arrival = false});
 
   final AlongStop stop;
   final bool last;
+  final bool arrival;
 
   @override
   Widget build(BuildContext context) {
@@ -1307,7 +1447,7 @@ class _Rail extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 2),
-          _StopDot(stop: stop),
+          _StopDot(stop: stop, arrival: arrival),
           if (!last)
             Expanded(
               child: Row(
@@ -1330,9 +1470,10 @@ class _Rail extends StatelessWidget {
 }
 
 class _StopDot extends StatelessWidget {
-  const _StopDot({required this.stop});
+  const _StopDot({required this.stop, this.arrival = false});
 
   final AlongStop stop;
+  final bool arrival;
 
   @override
   Widget build(BuildContext context) {
@@ -1342,7 +1483,19 @@ class _StopDot extends StatelessWidget {
       width: 22,
       height: 22,
       child: Center(
-        child: stop.current
+        child: arrival
+            ? SizedBox(
+                width: 16,
+                height: 16,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.ink,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(AlongIcons.check, size: 11, color: palette.onInk),
+                ),
+              )
+            : stop.current
             ? Stack(
                 alignment: Alignment.center,
                 children: [
@@ -2371,11 +2524,19 @@ class _GoalPainter extends CustomPainter {
       oldDelegate.progress != progress || oldDelegate.ink != ink;
 }
 
-class _WeekBars extends StatelessWidget {
+class _WeekBars extends StatefulWidget {
   const _WeekBars();
 
+  @override
+  State<_WeekBars> createState() => _WeekBarsState();
+}
+
+class _WeekBarsState extends State<_WeekBars> {
   static const _days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
   static const _amounts = [8800, 9800, 11200, 18400, 0, 0, 0];
+
+  /// Wednesday is the open settlement day in the sample week.
+  var _selected = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -2384,34 +2545,53 @@ class _WeekBars extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 48,
+          height: 72,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               for (var i = 0; i < _days.length; i++)
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: _amounts[i] == 0
-                              ? 12
-                              : 12 + 36 * (_amounts[i] / peak),
-                          child: DecoratedBox(
-                            decoration: AlongCraft.fill(
-                              i == 3
-                                  ? palette.ink
-                                  : palette.ink.withValues(
-                                      alpha: _amounts[i] == 0 ? 0.16 : 0.45,
+                  child: GestureDetector(
+                    key: Key('payout_day_$i'),
+                    onTap: () => setState(() => _selected = i),
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            height: 16,
+                            child: i == _selected
+                                ? FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      _naira(_amounts[i]),
+                                      key: const Key('payout_day_total'),
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      style: AlongType.caption(palette)
+                                          .copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            height: 1,
+                                            fontFeatures: const [
+                                              FontFeature.tabularFigures(),
+                                            ],
+                                          ),
                                     ),
-                              corner: AlongRadius.xs.x,
-                            ),
+                                  )
+                                : null,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          _DayBar(
+                            height: _amounts[i] == 0
+                                ? 12
+                                : 12 + 36 * (_amounts[i] / peak),
+                            selected: i == _selected,
+                            future: i > 3,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -2421,21 +2601,64 @@ class _WeekBars extends StatelessWidget {
         const SizedBox(height: 4),
         Row(
           children: [
-            for (final day in _days)
+            for (var i = 0; i < _days.length; i++)
               Expanded(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    day,
+                    _days[i],
                     maxLines: 1,
                     softWrap: false,
-                    style: _quiet(palette),
+                    style: i == _selected
+                        ? AlongType.caption(
+                            palette,
+                          ).copyWith(fontWeight: FontWeight.w600, height: 1.1)
+                        : _quiet(palette),
                   ),
                 ),
               ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class _DayBar extends StatelessWidget {
+  const _DayBar({
+    required this.height,
+    required this.selected,
+    required this.future,
+  });
+
+  final double height;
+  final bool selected;
+  final bool future;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    final fill = selected ? palette.ink : palette.ink.withValues(alpha: 0.45);
+    return SizedBox(
+      width: double.infinity,
+      height: height,
+      child: future
+          ? DecoratedBox(
+              decoration: ShapeDecoration(
+                shape: AlongCraft.border(
+                  AlongRadius.xs.x,
+                  side: BorderSide(
+                    color: selected
+                        ? palette.ink
+                        : palette.ink.withValues(alpha: 0.55),
+                    width: selected ? 2 : 1.5,
+                  ),
+                ),
+              ),
+            )
+          : DecoratedBox(
+              decoration: AlongCraft.fill(fill, corner: AlongRadius.xs.x),
+            ),
     );
   }
 }
@@ -2484,12 +2707,12 @@ class _CabinDiagram extends StatelessWidget {
       child: ClipPath(
         clipper: const _HullClipper(),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 40, 20, 32),
+          padding: const EdgeInsets.fromLTRB(12, 36, 12, 28),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               for (var i = 0; i < rows.length; i++) ...[
-                if (i > 0) const SizedBox(height: 10),
+                if (i > 0) const SizedBox(height: 8),
                 _CabinBand(data: rows[i], onSeat: onSeat),
               ],
             ],
@@ -2531,7 +2754,7 @@ class _CabinBand extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var i = 0; i < data.seats.length; i++) ...[
-                    if (i > 0) const SizedBox(width: 10),
+                    if (i > 0) const SizedBox(width: 8),
                     _OptionSeat(data: data.seats[i], onTap: onSeat),
                   ],
                 ],
@@ -2574,7 +2797,7 @@ class _OptionSeat extends StatelessWidget {
   final _CabinSeatData data;
   final ValueChanged<String> onTap;
 
-  static const size = 44.0;
+  static const size = 52.0;
 
   @override
   Widget build(BuildContext context) {

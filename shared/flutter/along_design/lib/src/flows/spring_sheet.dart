@@ -51,7 +51,8 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
   @override
   void initState() {
     super.initState();
-    final skip = AlongMotionPolicy.inWidgetTest;
+    final skip =
+        AlongMotionPolicy.inWidgetTest && !AlongMotionPolicy.debugPlayMotion;
     _motion = AnimationController.unbounded(vsync: this, value: skip ? 1 : 0);
     _lift = AnimationController.unbounded(vsync: this, value: 0)
       ..addListener(_reportExtent);
@@ -94,7 +95,9 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
 
   void _springTo(double target) {
     if (!mounted) return;
-    if (AlongMotionPolicy.reduced(context) || AlongMotionPolicy.inWidgetTest) {
+    if (AlongMotionPolicy.reduced(context) ||
+        (AlongMotionPolicy.inWidgetTest &&
+            !AlongMotionPolicy.debugPlayMotion)) {
       _motion.value = target;
       return;
     }

@@ -34,6 +34,8 @@ void main() {
     expect(find.text('On this danfo'), findsOneWidget);
     expect(find.text('7:41'), findsOneWidget);
     expect(find.text('Now'), findsNWidgets(2));
+    expect(find.text('53 min total · 5 stops'), findsOneWidget);
+    expect(find.text('43 min total · 4 stops'), findsOneWidget);
   });
 
   testWidgets('ride options start from the driver model', (tester) async {
@@ -53,7 +55,7 @@ void main() {
       find.byKey(const Key('squeeze_free')),
     );
     expect(squeeze.value, isTrue);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Cabin · 1 held'), findsOneWidget);
     expect(find.byIcon(AlongIcons.check), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('women_row_1')));
@@ -62,7 +64,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('seat_hold_more')));
     await tester.pump();
-    expect(find.text('2'), findsOneWidget);
+    expect(find.text('Cabin · 2 held'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('squeeze_free')));
     await tester.pump();
@@ -83,7 +85,7 @@ void main() {
       tester.widget<Switch>(find.byKey(const Key('squeeze_free'))).value,
       isFalse,
     );
-    expect(find.text('0'), findsOneWidget);
+    expect(find.text('Cabin · 0 held'), findsOneWidget);
     expect(find.byIcon(AlongIcons.check), findsNothing);
   });
 
@@ -105,5 +107,9 @@ void main() {
     expect(find.text('Pending'), findsNWidgets(2));
     expect(find.text('Settle ₦18,400'), findsOneWidget);
     expect(find.text('Paid'), findsNWidgets(4));
+    expect(find.text('₦18,400'), findsWidgets);
+    await tester.tap(find.byKey(const Key('payout_day_0')));
+    await tester.pump();
+    expect(find.text('₦8,800'), findsWidgets);
   });
 }

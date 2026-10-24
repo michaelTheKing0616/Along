@@ -53,6 +53,8 @@ class AlongCityMap extends StatelessWidget {
     this.liveMarker = false,
     this.sheetInset = 0.46,
     this.bare = false,
+    this.ghost = false,
+    this.ghostRoute,
     this.fix = AlongFix.precise,
     this.demoLabel = true,
     this.demoInset = const EdgeInsets.only(top: 8, right: 8),
@@ -77,6 +79,13 @@ class AlongCityMap extends StatelessWidget {
   /// Tiles only, plus the fix marker. Pickup and search use this so the
   /// decorative pins do not cover the place label.
   final bool bare;
+
+  /// Last route and last-known car, drawn quiet. Offline frames use this
+  /// so a dropped network is not an empty grey tile.
+  final bool ghost;
+
+  /// Overrides [neighborhoodRoute] when [ghost] is on a different camera.
+  final List<LatLng>? ghostRoute;
 
   final AlongFix fix;
 
@@ -140,6 +149,22 @@ class AlongCityMap extends StatelessWidget {
   static const cityCenter = LatLng(9.012, 7.490);
   static const wuseMarket = LatLng(9.068555, 7.465938);
   static const nyanya = LatLng(9.023418, 7.570635);
+
+  /// Last-known trace in the open band above a bottom sheet.
+  static const lastKnownNeighborhood = <LatLng>[
+    LatLng(9.0656, 7.4618),
+    LatLng(9.0658, 7.4634),
+    LatLng(9.0660, 7.4650),
+    LatLng(9.0662, 7.4666),
+  ];
+
+  /// A short last-known trace north of Wuse Market, above the offline card.
+  static const lastKnownNearWuse = <LatLng>[
+    LatLng(9.0704, 7.4638),
+    LatLng(9.0709, 7.4652),
+    LatLng(9.0714, 7.4666),
+    LatLng(9.0718, 7.4678),
+  ];
 
   /// The white east-west road on tile 16_34126_31112. The line sits on the
   /// road pixels (lat 9.05826), and the span is the continuous white run.
@@ -335,6 +360,17 @@ class AlongCityMap extends StatelessWidget {
                   ),
                 ],
               ),
+            if (ghost && !showRoute)
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: ghostRoute ?? lastKnownNeighborhood,
+                    strokeWidth: 5,
+                    color: palette.ink.withValues(alpha: 0.5),
+                    strokeCap: StrokeCap.round,
+                  ),
+                ],
+              ),
             if (showRoute)
               Positioned.fill(
                 child: _RouteOverlay(
@@ -342,6 +378,7 @@ class AlongCityMap extends StatelessWidget {
                   progress: drawn,
                   palette: palette,
                   lane: _nav,
+                  muted: ghost,
                 ),
               ),
             MarkerLayer(
@@ -438,6 +475,21 @@ class AlongCityMap extends StatelessWidget {
           ),
         );
       }
+      if (ghost) {
+        final line = ghostRoute ?? lastKnownNeighborhood;
+        final at = _along(line, 0.62);
+        markers.add(
+          _vehicle(
+            context,
+            at.point,
+            AlongVehicleKind.car,
+            null,
+            at.heading,
+            palette,
+            opacity: 0.72,
+          ),
+        );
+      }
       if (fix != AlongFix.hidden) {
         markers.add(_puck(context, center ?? wuseMarket, palette));
       }
@@ -488,7 +540,8 @@ class AlongCityMap extends StatelessWidget {
             null,
             at.heading,
             palette,
-            emphasized: true,
+            emphasized: !ghost,
+            opacity: ghost ? 0.5 : 1,
           ),
         );
       }
@@ -762,89 +815,91 @@ class AlongCityMap extends StatelessWidget {
     double heading,
     AlongPalette palette, {
     bool emphasized = false,
+    double opacity = 1,
   }) {
     final s = _typeScale(context);
     final stale = emphasized && fix == AlongFix.stale;
     final plate = (emphasized ? 58.0 : 52.0) * s;
     final width = stale ? math.max(plate, 156 * s) : plate;
     final height = stale ? plate + 44 * s : plate;
+    final column = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: plate,
+          height: plate,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                bottom: 8,
+                child: Container(
+                  width: emphasized ? 28 : 22,
+                  height: 7,
+                  decoration: AlongCraft.fill(
+                    const Color(0x33000000),
+                    corner: AlongRadius.xs.x,
+                  ),
+                ),
+              ),
+              if (emphasized)
+                Container(
+                  width: plate,
+                  height: plate,
+                  decoration: BoxDecoration(
+                    color: stale
+                        ? palette.roles.stale.withValues(alpha: 0.18)
+                        : palette.surface,
+                    shape: BoxShape.circle,
+                    border: stale
+                        ? Border.all(color: palette.roles.stale, width: 2)
+                        : null,
+                    boxShadow: AlongElevation.float(palette.ink),
+                  ),
+                ),
+              AlongTopDownMark(
+                kind: kind,
+                heading: heading,
+                size: (emphasized ? 40 : 36) * (s > 1.15 ? s : 1),
+              ),
+              if (seats != null)
+                Positioned(
+                  right: 0,
+                  top: -2,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: palette.accent,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: palette.accentInk, width: 1),
+                    ),
+                    child: Text(
+                      '$seats',
+                      maxLines: 1,
+                      softWrap: false,
+                      style: AlongType.numeric(palette).copyWith(
+                        fontSize: 13,
+                        height: 1,
+                        color: palette.accentInk,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (stale)
+          _FixCaption(palette: palette, label: DemoAdapter.gps.ageLabel),
+      ],
+    );
     return Marker(
       point: at,
       width: width,
       height: height,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: plate,
-            height: plate,
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  bottom: 8,
-                  child: Container(
-                    width: emphasized ? 28 : 22,
-                    height: 7,
-                    decoration: AlongCraft.fill(
-                      const Color(0x33000000),
-                      corner: AlongRadius.xs.x,
-                    ),
-                  ),
-                ),
-                if (emphasized)
-                  Container(
-                    width: plate,
-                    height: plate,
-                    decoration: BoxDecoration(
-                      color: stale
-                          ? palette.roles.stale.withValues(alpha: 0.18)
-                          : palette.surface,
-                      shape: BoxShape.circle,
-                      border: stale
-                          ? Border.all(color: palette.roles.stale, width: 2)
-                          : null,
-                      boxShadow: AlongElevation.float(palette.ink),
-                    ),
-                  ),
-                AlongTopDownMark(
-                  kind: kind,
-                  heading: heading,
-                  size: (emphasized ? 40 : 36) * (s > 1.15 ? s : 1),
-                ),
-                if (seats != null)
-                  Positioned(
-                    right: 0,
-                    top: -2,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: palette.accent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: palette.accentInk, width: 1),
-                      ),
-                      child: Text(
-                        '$seats',
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.numeric(palette).copyWith(
-                          fontSize: 13,
-                          height: 1,
-                          color: palette.accentInk,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (stale)
-            _FixCaption(palette: palette, label: DemoAdapter.gps.ageLabel),
-        ],
-      ),
+      child: opacity < 1 ? Opacity(opacity: opacity, child: column) : column,
     );
   }
 
@@ -1113,10 +1168,7 @@ class _PulseRadarState extends State<_PulseRadar>
   @override
   void initState() {
     super.initState();
-    _pulse = AnimationController(
-      vsync: this,
-      duration: AlongDurations.radar,
-    );
+    _pulse = AnimationController(vsync: this, duration: AlongDurations.radar);
     _pulse.value = 0.42;
   }
 
@@ -1206,14 +1258,11 @@ class _HeldProgressState extends State<_HeldProgress>
   void initState() {
     super.initState();
     _shown = widget.progress;
-    _move =
-        AnimationController(
-          vsync: this,
-          duration: AlongDurations.glide,
-        )..addListener(() {
-          final t = AlongCurves.breath.transform(_move.value);
-          setState(() => _shown = _from + (widget.progress - _from) * t);
-        });
+    _move = AnimationController(vsync: this, duration: AlongDurations.glide)
+      ..addListener(() {
+        final t = AlongCurves.breath.transform(_move.value);
+        setState(() => _shown = _from + (widget.progress - _from) * t);
+      });
   }
 
   @override
@@ -1626,6 +1675,7 @@ class _RouteOverlay extends StatefulWidget {
     required this.progress,
     required this.palette,
     this.lane = false,
+    this.muted = false,
   });
 
   final List<LatLng> route;
@@ -1634,6 +1684,9 @@ class _RouteOverlay extends StatefulWidget {
 
   /// Lane-level nav. The ink stroke is 6dp on a casing.
   final bool lane;
+
+  /// Last-known trace. The ink stays, quieter.
+  final bool muted;
 
   @override
   State<_RouteOverlay> createState() => _RouteOverlayState();
@@ -1675,6 +1728,7 @@ class _RouteOverlayState extends State<_RouteOverlay>
               palette: widget.palette,
               pulse: pulse,
               lane: widget.lane,
+              muted: widget.muted,
             ),
           );
         },
@@ -1691,6 +1745,7 @@ class _RoutePainter extends CustomPainter {
     required this.palette,
     this.pulse = 0,
     this.lane = false,
+    this.muted = false,
   });
 
   final MapCamera camera;
@@ -1699,6 +1754,7 @@ class _RoutePainter extends CustomPainter {
   final AlongPalette palette;
   final double pulse;
   final bool lane;
+  final bool muted;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1712,13 +1768,20 @@ class _RoutePainter extends CustomPainter {
     final restW = lane ? 6.0 : 6.5;
     final traveledCasing = lane ? 10.0 : 12.0;
     final traveledW = lane ? 6.0 : 7.0;
-    final restColor = lane ? palette.ink.withValues(alpha: 0.45) : grey;
+    final restColor = muted
+        ? palette.ink.withValues(alpha: 0.28)
+        : lane
+        ? palette.ink.withValues(alpha: 0.45)
+        : grey;
+    final traveledColor = muted
+        ? palette.ink.withValues(alpha: 0.42)
+        : palette.ink;
     canvas.drawPath(full, _stroke(casingW, casing));
     canvas.drawPath(full, _stroke(restW, restColor));
     if (progress > 0.02) {
       final traveled = _smooth(_points());
       canvas.drawPath(traveled, _stroke(traveledCasing, casing));
-      canvas.drawPath(traveled, _stroke(traveledW, palette.ink));
+      canvas.drawPath(traveled, _stroke(traveledW, traveledColor));
       if (pulse > 0) {
         alongPaintRoutePulse(
           canvas,
@@ -1789,6 +1852,7 @@ class _RoutePainter extends CustomPainter {
     return oldDelegate.progress != progress ||
         oldDelegate.pulse != pulse ||
         oldDelegate.lane != lane ||
+        oldDelegate.muted != muted ||
         oldDelegate.camera.center != camera.center ||
         oldDelegate.camera.zoom != camera.zoom ||
         oldDelegate.camera.rotation != camera.rotation ||
