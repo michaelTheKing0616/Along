@@ -76,3 +76,7 @@ data-collection/raw/
 # Local geo downloads (Tier-A open data)
 data/
 
+
+# Local golden mismatch dumps
+**/test/failures/
+**/test/golden/failures/
