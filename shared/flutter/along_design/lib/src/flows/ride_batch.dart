@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../components/along_button.dart';
-import '../components/seat_map.dart';
 import '../craft.dart';
 import '../elevation.dart';
 import '../icons.dart';
@@ -524,6 +523,7 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
     return _Page(
       title: 'Wallet',
       subtitle: 'Along credit',
+      gutter: 16,
       footer: AlongButton(
         key: const Key('topup_add'),
         label: 'Add ${_naira(_choice)}',
@@ -571,6 +571,7 @@ class AlongFlowPayout extends StatelessWidget {
     return _Page(
       title: 'Payout',
       subtitle: 'Your Along account',
+      gutter: 16,
       footer: AlongButton(
         key: const Key('payout_settle'),
         label: pending == 0 ? 'Nothing to settle' : 'Settle ${_naira(pending)}',
@@ -746,12 +747,16 @@ class _Page extends StatelessWidget {
     required this.subtitle,
     required this.children,
     this.footer,
+    this.gutter = 24,
   });
 
   final String title;
   final String subtitle;
   final List<Widget> children;
   final Widget? footer;
+
+  /// Screen inset. Wallet and payout use 16 so amounts share the button margin.
+  final double gutter;
 
   @override
   Widget build(BuildContext context) {
@@ -765,7 +770,7 @@ class _Page extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                padding: EdgeInsets.fromLTRB(gutter, 16, gutter, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1414,8 +1419,8 @@ class _HistoryRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          Flexible(child: _SignedMoney(value: entry.amount)),
+          const SizedBox(width: 16),
+          _LedgerAmount(value: entry.amount, signed: true),
         ],
       ),
     );
@@ -1523,18 +1528,8 @@ class _SettlementRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerRight,
-              child: AlongMoney(
-                value: row.amount,
-                style: AlongType.body(palette)
-                    .copyWith(fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
+          const SizedBox(width: 16),
+          _LedgerAmount(value: row.amount),
         ],
       ),
     );
@@ -1929,26 +1924,26 @@ TextStyle _quiet(AlongPalette palette) {
       .copyWith(color: palette.ink.withValues(alpha: 0.72));
 }
 
-class _SignedMoney extends StatelessWidget {
-  const _SignedMoney({required this.value});
+/// One text run so the sign and the naira do not paint as "+₦₦".
+class _LedgerAmount extends StatelessWidget {
+  const _LedgerAmount({required this.value, this.signed = false});
 
   final int value;
+  final bool signed;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final style = AlongType.body(palette).copyWith(fontWeight: FontWeight.w600);
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerRight,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: [
-          if (value > 0) Text('+', maxLines: 1, softWrap: false, style: style),
-          AlongMoney(value: value, style: style),
-        ],
+    final text = signed && value > 0 ? '+${_naira(value)}' : _naira(value);
+    return Text(
+      text,
+      maxLines: 1,
+      softWrap: false,
+      textAlign: TextAlign.right,
+      style: AlongType.body(palette).copyWith(
+        fontWeight: FontWeight.w600,
+        height: 1,
+        fontFeatures: AlongType.figures,
       ),
     );
   }
@@ -2484,16 +2479,17 @@ class _CabinDiagram extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return CustomPaint(
-      painter: _OptionsChassisPainter(palette: palette),
+      painter: _HullPainter(palette: palette),
+      foregroundPainter: _GlassPainter(palette: palette),
       child: ClipPath(
-        clipper: const _OptionsChassisClipper(),
+        clipper: const _HullClipper(),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 48, 14, 26),
+          padding: const EdgeInsets.fromLTRB(20, 40, 20, 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               for (var i = 0; i < rows.length; i++) ...[
-                if (i > 0) const SizedBox(height: 8),
+                if (i > 0) const SizedBox(height: 10),
                 _CabinBand(data: rows[i], onSeat: onSeat),
               ],
             ],
@@ -2518,7 +2514,7 @@ class _CabinBand extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: data.women ? palette.accent.withValues(alpha: 0.28) : null,
+          color: data.women ? palette.accent.withValues(alpha: 0.22) : null,
           border: data.women
               ? Border(
                   top: BorderSide(color: palette.accent, width: 2),
@@ -2526,46 +2522,46 @@ class _CabinBand extends StatelessWidget {
                 )
               : null,
         ),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
-              child: Row(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (final seat in data.seats)
-                    Expanded(
-                      child: Center(
-                        child: _OptionSeat(data: seat, onTap: onSeat),
-                      ),
-                    ),
+                  for (var i = 0; i < data.seats.length; i++) ...[
+                    if (i > 0) const SizedBox(width: 10),
+                    _OptionSeat(data: data.seats[i], onTap: onSeat),
+                  ],
                 ],
               ),
-            ),
-            Positioned(
-              right: 2,
-              top: 0,
-              bottom: 0,
-              child: GestureDetector(
-                key: data.rowKey,
-                onTap: data.onRow,
-                behavior: HitTestBehavior.opaque,
-                child: SizedBox(
-                  width: 28,
-                  child: data.women
-                      ? MediaQuery(
-                          data: MediaQuery.of(context)
-                              .copyWith(textScaler: TextScaler.noScaling),
-                          child: Icon(
-                            AlongIcons.check,
-                            size: 16,
-                            color: palette.ink,
-                          ),
-                        )
-                      : null,
+              Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  key: data.rowKey,
+                  onTap: data.onRow,
+                  behavior: HitTestBehavior.opaque,
+                  child: SizedBox(
+                    width: 24,
+                    child: data.women
+                        ? MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(textScaler: TextScaler.noScaling),
+                            child: Icon(
+                              AlongIcons.check,
+                              size: 16,
+                              color: palette.ink,
+                            ),
+                          )
+                        : null,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -2578,222 +2574,239 @@ class _OptionSeat extends StatelessWidget {
   final _CabinSeatData data;
   final ValueChanged<String> onTap;
 
-  static const size = 52.0;
+  static const size = 44.0;
 
   @override
   Widget build(BuildContext context) {
+    final kind = data.driver
+        ? 'driver'
+        : data.held
+        ? 'held'
+        : 'open';
     return GestureDetector(
       key: data.holdKey,
       onTap: data.driver ? null : () => onTap(data.id),
       behavior: HitTestBehavior.opaque,
-      child: data.held
-          ? const _HeldMark(size: size)
-          : AlongSeatGlyph(
-              status: data.driver ? 'driver' : 'free',
-              width: size,
-            ),
+      child: _TopSeat(kind: kind, size: size),
     );
   }
 }
 
-class _HeldMark extends StatelessWidget {
-  const _HeldMark({required this.size});
+/// Rounded backrest bar and a cushion. Same proportions at every size.
+class _TopSeat extends StatelessWidget {
+  const _TopSeat({required this.kind, this.size = 44});
 
+  /// `open`, `held`, or `driver`.
+  final String kind;
   final double size;
 
   @override
   Widget build(BuildContext context) {
+    final dark = AlongPalette.of(context).brightness == Brightness.dark;
     return SizedBox(
       width: size,
       height: size,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          AlongSeatGlyph(status: 'occupied', width: size),
-          Padding(
-            padding: EdgeInsets.only(bottom: size * 0.14),
-            child: CustomPaint(
-              size: Size(size * 0.34, size * 0.40),
-              painter: const _LockPainter(color: Color(0xFFF7F4EF)),
-            ),
-          ),
-        ],
+      child: CustomPaint(
+        painter: _TopSeatPainter(
+          kind: kind,
+          ink: const Color(0xFF141210),
+          paper: dark ? const Color(0xFFF3EEE8) : const Color(0xFFFFFFFF),
+          line: dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210),
+        ),
       ),
     );
   }
 }
 
-class _LockPainter extends CustomPainter {
-  const _LockPainter({required this.color});
+class _TopSeatPainter extends CustomPainter {
+  const _TopSeatPainter({
+    required this.kind,
+    required this.ink,
+    required this.paper,
+    required this.line,
+  });
 
-  final Color color;
+  final String kind;
+  final Color ink;
+  final Color paper;
+  final Color line;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final held = kind == 'held';
     final stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 1.25
       ..strokeJoin = StrokeJoin.round
-      ..color = color;
-    final body = RRect.fromRectAndRadius(
+      ..strokeCap = StrokeCap.round
+      ..color = held ? paper : line;
+    final fill = Paint()..color = held ? ink.withValues(alpha: 0.92) : paper;
+    final back = RRect.fromRectAndRadius(
       Rect.fromLTWH(
-        size.width * 0.08,
-        size.height * 0.42,
-        size.width * 0.84,
-        size.height * 0.50,
+        size.width * 0.12,
+        size.height * 0.08,
+        size.width * 0.76,
+        size.height * 0.22,
+      ),
+      Radius.circular(size.height * 0.11),
+    );
+    final pan = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.06,
+        size.height * 0.38,
+        size.width * 0.88,
+        size.height * 0.52,
       ),
       Radius.circular(size.width * 0.16),
     );
+    canvas.drawRRect(back, fill);
+    canvas.drawRRect(back, stroke);
+    canvas.drawRRect(pan, fill);
+    canvas.drawRRect(pan, stroke);
+    final hub = Offset(size.width * 0.50, size.height * 0.64);
+    if (kind == 'driver') {
+      canvas.drawCircle(hub, size.width * 0.13, stroke);
+      canvas.drawCircle(hub, size.width * 0.035, Paint()..color = line);
+    }
+    if (held) _lock(canvas, size);
+  }
+
+  void _lock(Canvas canvas, Size size) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.25
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = paper;
+    final w = size.width * 0.28;
+    final h = size.height * 0.32;
+    final left = (size.width - w) / 2;
+    final top = size.height * 0.50;
+    final body = RRect.fromRectAndRadius(
+      Rect.fromLTWH(left, top + h * 0.38, w, h * 0.56),
+      Radius.circular(w * 0.18),
+    );
     canvas.drawRRect(body, stroke);
     final shackle = Path()
-      ..moveTo(size.width * 0.26, size.height * 0.48)
-      ..lineTo(size.width * 0.26, size.height * 0.36)
-      ..quadraticBezierTo(
-        size.width * 0.26,
-        size.height * 0.06,
-        size.width * 0.50,
-        size.height * 0.06,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.74,
-        size.height * 0.06,
-        size.width * 0.74,
-        size.height * 0.36,
-      )
-      ..lineTo(size.width * 0.74, size.height * 0.48);
+      ..moveTo(left + w * 0.22, top + h * 0.46)
+      ..lineTo(left + w * 0.22, top + h * 0.32)
+      ..quadraticBezierTo(left + w * 0.22, top, left + w * 0.50, top)
+      ..quadraticBezierTo(left + w * 0.78, top, left + w * 0.78, top + h * 0.32)
+      ..lineTo(left + w * 0.78, top + h * 0.46);
     canvas.drawPath(shackle, stroke);
   }
 
   @override
-  bool shouldRepaint(covariant _LockPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _TopSeatPainter oldDelegate) =>
+      oldDelegate.kind != kind ||
+      oldDelegate.ink != ink ||
+      oldDelegate.paper != paper ||
+      oldDelegate.line != line;
 }
 
-class _OptionsChassisPainter extends CustomPainter {
-  const _OptionsChassisPainter({required this.palette});
+const _mirrorBand = 16.0;
+
+Rect _hullRect(Size size) {
+  return Rect.fromLTWH(
+    _mirrorBand,
+    2,
+    size.width - _mirrorBand * 2,
+    size.height - 4,
+  );
+}
+
+Path _hullPath(Size size) {
+  final rect = _hullRect(size);
+  final corner = math.min(40.0, rect.shortestSide * 0.22);
+  return AlongCraft.path(rect, corner);
+}
+
+class _HullPainter extends CustomPainter {
+  const _HullPainter({required this.palette});
 
   final AlongPalette palette;
 
   @override
   void paint(Canvas canvas, Size size) {
     final dark = palette.brightness == Brightness.dark;
-    final fill = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
-    final line = dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210);
-    final path = _optionsChassis(size);
+    final fill = Paint()
+      ..color = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
     final stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round
-      ..color = line;
-    canvas.drawPath(path, Paint()..color = fill);
-    canvas.drawPath(path, stroke);
-    final nose = math.min(28.0, size.height * 0.16);
-    final top = nose + 20;
-    final bottom = size.height - math.min(18.0, size.height * 0.12) - 14;
-    if (bottom - top > 16) {
-      for (final left in [true, false]) {
-        final x = left ? 8.0 : size.width - 8;
-        canvas.drawLine(
-          Offset(x, top),
-          Offset(x, top + (bottom - top) * 0.42),
-          stroke,
-        );
-        canvas.drawLine(
-          Offset(x, top + (bottom - top) * 0.58),
-          Offset(x, bottom),
-          stroke,
-        );
-      }
+      ..color = dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210);
+    final hull = _hullRect(size);
+    final mirror = Rect.fromLTWH(2, hull.top + hull.height * 0.16, 22, 16);
+    final mirrors = [
+      mirror,
+      Rect.fromLTWH(size.width - 24, mirror.top, 22, 16),
+    ];
+    for (final rect in mirrors) {
+      canvas.drawPath(AlongCraft.path(rect, 4), fill);
     }
-    final glass = Path()
-      ..moveTo(size.width * 0.34, nose * 0.62)
-      ..quadraticBezierTo(
-        size.width * 0.50,
-        nose * 0.28,
-        size.width * 0.66,
-        nose * 0.62,
-      );
-    canvas.drawPath(glass, stroke);
-    final tail = math.min(18.0, size.height * 0.12);
-    final deck = Path()
-      ..moveTo(size.width * 0.32, size.height - tail * 0.55)
-      ..quadraticBezierTo(
-        size.width * 0.50,
-        size.height - tail * 0.85,
-        size.width * 0.68,
-        size.height - tail * 0.55,
-      );
-    canvas.drawPath(deck, stroke);
+    final body = _hullPath(size);
+    canvas.drawPath(body, fill);
+    for (final rect in mirrors) {
+      canvas.drawPath(AlongCraft.path(rect, 4), stroke);
+    }
+    canvas.drawPath(body, stroke);
   }
 
   @override
-  bool shouldRepaint(covariant _OptionsChassisPainter oldDelegate) =>
+  bool shouldRepaint(covariant _HullPainter oldDelegate) =>
       oldDelegate.palette.brightness != palette.brightness;
 }
 
-Path _optionsChassis(Size size) {
-  final w = size.width;
-  final h = size.height;
-  final nose = math.min(28.0, h * 0.16);
-  final tail = math.min(18.0, h * 0.12);
-  final side = math.max(1.5, w * 0.008);
-  final shoulder = nose + 14;
-  final tailJoin = h - tail - 8;
-  final fillet = math.min(AlongRadius.card.x, shoulder - 4);
-  final path = Path();
-  path.moveTo(w * 0.50, 1.2);
-  path.cubicTo(
-    w * 0.64,
-    1.2,
-    w * 0.76,
-    nose * 0.20,
-    w * 0.86,
-    math.max(4.0, shoulder - fillet),
-  );
-  path.cubicTo(
-    w - side - fillet * 0.12,
-    shoulder - fillet * 0.45,
-    w - side,
-    shoulder - fillet * 0.28,
-    w - side,
-    shoulder,
-  );
-  path.lineTo(w - side, tailJoin);
-  path.cubicTo(
-    w - side,
-    tailJoin + fillet * 0.42,
-    w * 0.88,
-    h - 6,
-    w * 0.72,
-    h - 3.5,
-  );
-  path.quadraticBezierTo(w * 0.61, h - 1.2, w * 0.50, h - 1.2);
-  path.quadraticBezierTo(w * 0.39, h - 1.2, w * 0.28, h - 3.5);
-  path.cubicTo(w * 0.12, h - 6, side, tailJoin + fillet * 0.42, side, tailJoin);
-  path.lineTo(side, shoulder);
-  path.cubicTo(
-    side,
-    shoulder - fillet * 0.28,
-    side + fillet * 0.12,
-    shoulder - fillet * 0.45,
-    w * 0.14,
-    math.max(4.0, shoulder - fillet),
-  );
-  path.cubicTo(w * 0.24, nose * 0.20, w * 0.36, 1.2, w * 0.50, 1.2);
-  path.close();
-  return path;
+class _GlassPainter extends CustomPainter {
+  const _GlassPainter({required this.palette});
+
+  final AlongPalette palette;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final dark = palette.brightness == Brightness.dark;
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.25
+      ..strokeCap = StrokeCap.round
+      ..color = (dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210))
+          .withValues(alpha: 0.45);
+    final hull = _hullRect(size);
+    final glass = Path()
+      ..moveTo(hull.left + hull.width * 0.24, hull.top + 26)
+      ..quadraticBezierTo(
+        hull.center.dx,
+        hull.top + 16,
+        hull.right - hull.width * 0.24,
+        hull.top + 26,
+      );
+    final rear = Path()
+      ..moveTo(hull.left + hull.width * 0.28, hull.bottom - 22)
+      ..quadraticBezierTo(
+        hull.center.dx,
+        hull.bottom - 14,
+        hull.right - hull.width * 0.28,
+        hull.bottom - 22,
+      );
+    canvas.drawPath(glass, stroke);
+    canvas.drawPath(rear, stroke);
+  }
+
+  @override
+  bool shouldRepaint(covariant _GlassPainter oldDelegate) =>
+      oldDelegate.palette.brightness != palette.brightness;
 }
 
-class _OptionsChassisClipper extends CustomClipper<Path> {
-  const _OptionsChassisClipper();
+class _HullClipper extends CustomClipper<Path> {
+  const _HullClipper();
 
   @override
-  Path getClip(Size size) => _optionsChassis(size);
+  Path getClip(Size size) => _hullPath(size);
 
   @override
-  bool shouldReclip(covariant _OptionsChassisClipper oldClipper) => false;
+  bool shouldReclip(covariant _HullClipper oldClipper) => false;
 }
 
 class _CabinLegend extends StatelessWidget {
@@ -2802,35 +2815,43 @@ class _CabinLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Wrap(
-      spacing: 14,
-      runSpacing: 8,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        const _LegendGlyph(
-          label: 'Open',
-          child: AlongSeatGlyph(status: 'free', width: 28),
-        ),
-        const _LegendGlyph(label: 'Held', child: _HeldMark(size: 28)),
-        _LegendGlyph(
-          label: 'Women-only',
-          child: DecoratedBox(
-            decoration: AlongCraft.fill(
-              palette.accent.withValues(alpha: 0.28),
-              corner: AlongRadius.xs.x,
-              side: BorderSide(color: palette.accent, width: 1.5),
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(2),
-              child: AlongSeatGlyph(status: 'free', width: 24),
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const _LegendGlyph(
+            label: 'Open',
+            child: _TopSeat(kind: 'open', size: 22),
+          ),
+          const SizedBox(width: 12),
+          const _LegendGlyph(
+            label: 'Held',
+            child: _TopSeat(kind: 'held', size: 22),
+          ),
+          const SizedBox(width: 12),
+          _LegendGlyph(
+            label: 'Women-only',
+            child: DecoratedBox(
+              decoration: AlongCraft.fill(
+                palette.accent.withValues(alpha: 0.22),
+                corner: AlongRadius.xs.x,
+                side: BorderSide(color: palette.accent, width: 1.5),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(2),
+                child: _TopSeat(kind: 'open', size: 18),
+              ),
             ),
           ),
-        ),
-        const _LegendGlyph(
-          label: 'Driver',
-          child: AlongSeatGlyph(status: 'driver', width: 28),
-        ),
-      ],
+          const SizedBox(width: 12),
+          const _LegendGlyph(
+            label: 'Driver',
+            child: _TopSeat(kind: 'driver', size: 22),
+          ),
+        ],
+      ),
     );
   }
 }
