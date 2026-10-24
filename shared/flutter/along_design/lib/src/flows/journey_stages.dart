@@ -17,6 +17,7 @@ import 'live_arrival.dart';
 import 'demo_adapter.dart';
 import 'driver_portrait.dart';
 import 'trip_machine.dart';
+
 void _noop() {}
 
 /// Pickup with a detected fix, a draggable pin, and entrance chips.
@@ -418,9 +419,7 @@ class _FareLine extends StatelessWidget {
           fontFeatures: const [FontFeature.tabularFigures()],
         );
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: strong ? 40 : 32,
-      ),
+      constraints: BoxConstraints(minHeight: strong ? 40 : 32),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
         child: Row(
@@ -904,7 +903,7 @@ class _DriverSteps extends StatelessWidget {
                       : i == 1
                       ? AlongIcons.verified
                       : AlongIcons.caretRight,
-                  size: 20,
+                  size: 24,
                   color: i <= 1
                       ? palette.ink
                       : palette.ink.withValues(alpha: 0.72),
@@ -913,9 +912,10 @@ class _DriverSteps extends StatelessWidget {
                 Text(
                   steps[i],
                   maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   softWrap: false,
                   textAlign: TextAlign.center,
-                  style: AlongType.label(palette).copyWith(
+                  style: AlongType.body(palette).copyWith(
                     color: i <= 1
                         ? palette.ink
                         : palette.ink.withValues(alpha: 0.72),
@@ -946,21 +946,15 @@ class _Keypad extends StatelessWidget {
     ];
     return Column(
       children: [
-        for (final row in rows)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              children: [
-                for (final key in row)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: _KeyCap(label: key, onKey: onKey),
-                    ),
-                  ),
-              ],
-            ),
+        for (var r = 0; r < rows.length; r++) ...[
+          if (r > 0) const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (final key in rows[r]) _KeyCap(label: key, onKey: onKey),
+            ],
           ),
+        ],
       ],
     );
   }
@@ -982,19 +976,10 @@ class _KeyCapState extends State<_KeyCap> {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final roomy = _roomy(context);
     final play = AlongMotionPolicy.play(context);
-    if (widget.label.isEmpty) return const SizedBox(height: 48);
+    if (widget.label.isEmpty) return const SizedBox(width: 64, height: 64);
     final del = widget.label == 'del';
-    final dark = palette.brightness == Brightness.dark;
-    final fill = dark ? const Color(0xFF3A342C) : const Color(0xFFFFFDF8);
-    final shape = AlongCraft.border(
-      AlongRadius.control.x,
-      side: BorderSide(
-        color: palette.ink.withValues(alpha: dark ? 0.55 : 0.32),
-        width: 1,
-      ),
-    );
+    final shape = AlongCraft.border(AlongRadius.card.x);
     return Semantics(
       button: true,
       label: del ? 'Delete' : widget.label,
@@ -1003,10 +988,9 @@ class _KeyCapState extends State<_KeyCap> {
         duration: play ? AlongDurations.press : Duration.zero,
         curve: AlongCurves.settle,
         child: DecoratedBox(
-          decoration: ShapeDecoration(
-            color: fill,
-            shadows: AlongElevation.rest(palette.ink),
-            shape: shape,
+          decoration: AlongCraft.fill(
+            palette.recessed,
+            corner: AlongRadius.card.x,
           ),
           child: Material(
             type: MaterialType.transparency,
@@ -1022,24 +1006,18 @@ class _KeyCapState extends State<_KeyCap> {
                 if (_down) setState(() => _down = false);
                 widget.onKey(widget.label);
               },
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 48),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: roomy ? 8 : 0),
-                  child: Center(
-                    child: del
-                        ? AlongIcon(
-                            AlongIcons.close,
-                            size: 20,
-                            color: palette.ink,
-                          )
-                        : Text(
-                            widget.label,
-                            maxLines: 1,
-                            softWrap: false,
-                            style: AlongType.title(palette).copyWith(height: 1),
-                          ),
-                  ),
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: Center(
+                  child: del
+                      ? Icon(AlongIcons.close, size: 24, color: palette.ink)
+                      : Text(
+                          widget.label,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.title(palette).copyWith(height: 1),
+                        ),
                 ),
               ),
             ),
@@ -1302,22 +1280,13 @@ class _ReceiptSeats extends StatelessWidget {
       children: [
         const _IconLine(icon: AlongIcons.seat, label: 'Window seat'),
         const SizedBox(height: 8),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            const gap = 8.0;
-            final side = ((constraints.maxWidth - gap * 5) / 6).clamp(
-              28.0,
-              40.0,
-            );
-            return Row(
-              children: [
-                for (var i = 0; i < seats.length; i++) ...[
-                  if (i > 0) const SizedBox(width: gap),
-                  AlongSeatGlyph(status: seats[i], width: side),
-                ],
-              ],
-            );
-          },
+        Row(
+          children: [
+            for (var i = 0; i < seats.length; i++) ...[
+              if (i > 0) const SizedBox(width: 8),
+              AlongSeatGlyph(status: seats[i], width: 32),
+            ],
+          ],
         ),
       ],
     );
@@ -1444,23 +1413,12 @@ class _RatingSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return Row(
-      children: [
-        for (var i = 0; i < 5; i++) ...[
-          if (i > 0) const SizedBox(width: 2),
-          Icon(AlongIcons.star, size: 16, color: palette.ink),
-        ],
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            'You rated Chinedu',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.body(palette)
-                .copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ],
+    return Text(
+      'Rated 4 ★',
+      maxLines: 1,
+      softWrap: false,
+      style: AlongType.label(palette)
+          .copyWith(fontWeight: FontWeight.w600, height: 1.1),
     );
   }
 }

@@ -1384,7 +1384,7 @@ bool _sameCell(_HexCell a, _HexCell b) {
 List<Polygon> _demandOutlines(AlongPalette palette) {
   const mPerLat = 111320.0;
   final mPerLon = mPerLat * math.cos(9.05 * math.pi / 180);
-  const stroke = <double>[0.06, 0.12, 0.20];
+  const stroke = <double>[0.03, 0.06, 0.10];
   final cells = _hexCells();
   final hot = _hotCells(cells);
   final polygons = <Polygon>[];
@@ -1426,7 +1426,7 @@ List<List<LatLng>> _demandHotRings() {
   ];
 }
 
-/// Yellow fill at 85 percent, a soft glow, and a 2.4s breath. The controller
+/// Yellow fill at about 42 percent, a soft glow, and a 2.4s breath. The controller
 /// stays stopped when motion does not play, so a golden is the rest glow.
 class _DemandBreath extends StatefulWidget {
   const _DemandBreath({required this.rings, required this.palette});
@@ -1506,7 +1506,7 @@ class _DemandGlowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final glow = palette.accent.withValues(alpha: 0.22 + 0.16 * breath);
+    final glow = palette.accent.withValues(alpha: 0.11 + 0.08 * breath);
     final blur = 8 + 5 * breath;
     for (final ring in rings) {
       final path = Path();
@@ -1527,7 +1527,7 @@ class _DemandGlowPainter extends CustomPainter {
       );
       canvas.drawPath(
         path,
-        Paint()..color = palette.accent.withValues(alpha: 0.85),
+        Paint()..color = palette.accent.withValues(alpha: 0.42),
       );
     }
   }

@@ -360,29 +360,24 @@ class _PassDay extends StatelessWidget {
           width: side,
           height: roomy ? null : 40,
           child: DecoratedBox(
-            decoration: AlongCraft.surface(
-              palette,
-              radius: side >= 36 ? AlongRadius.control.x : AlongRadius.xs.x,
-              hairline: true,
+            decoration: AlongCraft.fill(
+              booked ? palette.ink : const Color(0x00000000),
+              corner: side >= 36 ? AlongRadius.control.x : AlongRadius.xs.x,
+              side: booked
+                  ? BorderSide.none
+                  : BorderSide(color: palette.ink, width: 1.5),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '${_dates[index]}',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: day.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
+            child: Center(
+              child: Text(
+                '${_dates[index]}',
+                maxLines: 1,
+                softWrap: false,
+                style: day.copyWith(
+                  color: booked ? palette.onInk : palette.ink,
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: const [FontFeature.tabularFigures()],
                 ),
-                AlongIcon(
-                  AlongIcons.check,
-                  size: 20,
-                  color: booked ? palette.ink : const Color(0x00000000),
-                ),
-              ],
+              ),
             ),
           ),
         ),

@@ -1082,16 +1082,17 @@ class AlongFlowOnline extends StatelessWidget {
                   palette,
                   radius: AlongRadius.sheet.x,
                 ),
-                child: const SafeArea(
+                child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(24, 20, 24, 16),
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _OnlineRows(),
-                        SizedBox(height: 16),
-                        _GoButton(),
+                        const _OnlineRows(),
+                        const SizedBox(height: 16),
+                        AlongButton(label: 'GO', onPressed: _noop),
                       ],
                     ),
                   ),
@@ -1668,11 +1669,7 @@ class _RatingGrid extends StatelessWidget {
                 ),
               ),
             ),
-            AlongIcon(
-              AlongIcons.check,
-              size: 20,
-              color: selected ? palette.ink : const Color(0x00000000),
-            ),
+            if (selected) Icon(AlongIcons.check, size: 24, color: palette.ink),
           ],
         ),
       );
@@ -2360,29 +2357,6 @@ class _OnlineRows extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _GoButton extends StatelessWidget {
-  const _GoButton();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Container(
-      width: 96,
-      height: 96,
-      alignment: Alignment.center,
-      clipBehavior: Clip.antiAlias,
-      decoration: AlongCraft.fill(palette.ink, corner: AlongRadius.card.x),
-      child: Text(
-        'GO',
-        maxLines: 1,
-        softWrap: false,
-        style: AlongType.display(palette)
-            .copyWith(color: palette.onInk, height: 1),
-      ),
     );
   }
 }
@@ -3643,6 +3617,7 @@ class _GuardianPeople extends StatelessWidget {
             SizedBox(height: 8),
             _GuardianFoot(),
             _ShareToggle(label: 'Share live location', on: true),
+            SizedBox(height: 20),
             _ShareToggle(label: 'Share the plate', on: false),
           ],
         ),
@@ -3684,11 +3659,15 @@ class _AvatarStack extends StatelessWidget {
                 ),
                 Positioned(
                   left: 32,
-                  child: face(const _Monogram(initials: 'CH', size: 44)),
+                  child: face(
+                    const _Monogram(initials: 'CH', size: 44, mark: 0.46),
+                  ),
                 ),
                 Positioned(
                   left: 64,
-                  child: face(const _Monogram(initials: 'NG', size: 44)),
+                  child: face(
+                    const _Monogram(initials: 'NG', size: 44, mark: 0.46),
+                  ),
                 ),
               ],
             ),
@@ -4385,14 +4364,19 @@ class _BidRadio extends StatelessWidget {
 }
 
 class _Monogram extends StatelessWidget {
-  const _Monogram({required this.initials, required this.size});
+  const _Monogram({
+    required this.initials,
+    required this.size,
+    this.mark = 0.34,
+  });
 
   final String initials;
   final double size;
+  final double mark;
 
   @override
   Widget build(BuildContext context) {
-    return AlongMonogram(initials: initials, size: size);
+    return AlongMonogram(initials: initials, size: size, mark: mark);
   }
 }
 
