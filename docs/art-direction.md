@@ -101,7 +101,7 @@ Named lengths live on `AlongDurations`. Curves live on `AlongCurves`. Springs li
 | Expand | `expand` 360ms, `AlongCurves.settle` | A shared element opens or closes. Rest is fully open or fully closed. | Where the control went. | Yes. |
 | ETA | `refresh` 480ms, `AlongCurves.settle` | Each ETA numeral rolls. The window rests on the final digits. | How long the ride is. | Yes. A new value replaces the roll. |
 
-The motions screen shows the rest pose of the sheet, the seat, the fare count-up, the arrival check, and the route draw. Each has one line under it. Gallery frames stay on that rest pose. `sample` 100ms is the Na Me countdown tick, not a transition. Quote clocks and GPS ages are data, not motion.
+The dev frame `dev_motions` shows the rest pose of the sheet, the seat, the fare count-up, the arrival check, and the route draw. Each has one line under it. It is a dev doc, not a product screen. Gallery frames stay on that rest pose. `sample` 100ms is the Na Me countdown tick, not a transition. Quote clocks and GPS ages are data, not motion.
 
 Do not animate every element on entry. `AlongStagger` returns the child. Do not loop decoration: search rings, the map radar, the route pulse, the GO glow, the plate sweep, and the empty-state float stay on a rest pose. Do not bounce a control twice. The skeleton shimmer and the in-flight refresh are progress, not decoration.
 

@@ -37,7 +37,7 @@ void main() {
     'loading': const AlongFlowLoading(),
     'refresh': const AlongFlowRefresh(),
     'phases': const AlongFlowPhases(),
-    'motions': const AlongFlowMotions(),
+    'dev-motions': const AlongFlowMotions(),
     'schedule': const AlongFlowSchedule(),
     'stops': const AlongFlowStops(),
     'options': const AlongFlowRideOptions(
@@ -52,6 +52,7 @@ void main() {
     'offline-home': const AlongFlowOfflineHome(),
     'offline-matching': const AlongFlowOfflineMatching(),
     'offline-live': const AlongFlowOfflineLive(),
+    'offline-reconnecting': const AlongFlowOfflineReconnecting(),
     'empty-routes': const Scaffold(
       body: EmptyState(variant: EmptyStateVariant.coverageGap),
     ),

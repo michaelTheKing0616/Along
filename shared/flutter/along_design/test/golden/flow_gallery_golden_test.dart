@@ -37,7 +37,7 @@ void main() {
     'loading': ({bool legacy = false}) => const AlongFlowLoading(),
     'refresh': ({bool legacy = false}) => const AlongFlowRefresh(),
     'phases': ({bool legacy = false}) => const AlongFlowPhases(),
-    'motions': ({bool legacy = false}) => const AlongFlowMotions(),
+    'dev_motions': ({bool legacy = false}) => const AlongFlowMotions(),
     'schedule': ({bool legacy = false}) => const AlongFlowSchedule(),
     'stops': ({bool legacy = false}) => const AlongFlowStops(),
     'options': ({bool legacy = false}) => const AlongFlowRideOptions(
@@ -53,6 +53,8 @@ void main() {
     'offline_matching': ({bool legacy = false}) =>
         const AlongFlowOfflineMatching(),
     'offline_live': ({bool legacy = false}) => const AlongFlowOfflineLive(),
+    'offline_reconnecting': ({bool legacy = false}) =>
+        const AlongFlowOfflineReconnecting(),
   };
 
   for (final stage in stages.entries) {

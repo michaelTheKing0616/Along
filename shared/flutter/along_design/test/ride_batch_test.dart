@@ -49,7 +49,9 @@ void main() {
       ),
     );
     await tester.pump();
-    final squeeze = tester.widget<Switch>(find.byKey(const Key('squeeze_free')));
+    final squeeze = tester.widget<Switch>(
+      find.byKey(const Key('squeeze_free')),
+    );
     expect(squeeze.value, isTrue);
     expect(find.text('1'), findsOneWidget);
     expect(find.byIcon(AlongIcons.check), findsOneWidget);
