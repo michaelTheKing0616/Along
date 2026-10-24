@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:along_design/src/craft.dart';
 import 'package:along_design/src/flows/driver_portrait.dart';
 import 'package:along_design/src/icons.dart';
 import 'package:along_design/src/motion.dart';
@@ -525,18 +526,58 @@ Path _cabinOutline(Size size) {
   final nose = math.min(28.0, h * 0.16);
   final tail = math.min(18.0, h * 0.12);
   final side = math.max(1.5, w * 0.008);
+  // Door wall still starts at nose + 14. The 24 fillet lives in the nose
+  // and the tail, above and below that line.
+  final shoulder = nose + 14;
+  final tailJoin = h - tail - 8;
+  final fillet = math.min(AlongRadius.card.x, shoulder - 4);
   final path = Path();
   path.moveTo(w * 0.50, 1.2);
-  path.cubicTo(w * 0.66, 1.2, w * 0.78, nose * 0.22, w * 0.88, nose * 0.70);
-  path.cubicTo(w * 0.96, nose * 0.92, w - side, nose + 2, w - side, nose + 14);
-  path.lineTo(w - side, h - tail - 8);
-  path.cubicTo(w - side, h - tail * 0.35, w * 0.84, h - 7, w * 0.72, h - 3.5);
+  path.cubicTo(
+    w * 0.64,
+    1.2,
+    w * 0.76,
+    nose * 0.20,
+    w * 0.86,
+    math.max(4.0, shoulder - fillet),
+  );
+  path.cubicTo(
+    w - side - fillet * 0.12,
+    shoulder - fillet * 0.45,
+    w - side,
+    shoulder - fillet * 0.28,
+    w - side,
+    shoulder,
+  );
+  path.lineTo(w - side, tailJoin);
+  path.cubicTo(
+    w - side,
+    tailJoin + fillet * 0.42,
+    w * 0.88,
+    h - 6,
+    w * 0.72,
+    h - 3.5,
+  );
   path.quadraticBezierTo(w * 0.61, h - 1.2, w * 0.50, h - 1.2);
   path.quadraticBezierTo(w * 0.39, h - 1.2, w * 0.28, h - 3.5);
-  path.cubicTo(w * 0.16, h - 7, side, h - tail * 0.35, side, h - tail - 8);
-  path.lineTo(side, nose + 14);
-  path.cubicTo(side, nose + 2, w * 0.04, nose * 0.92, w * 0.12, nose * 0.70);
-  path.cubicTo(w * 0.22, nose * 0.22, w * 0.34, 1.2, w * 0.50, 1.2);
+  path.cubicTo(
+    w * 0.12,
+    h - 6,
+    side,
+    tailJoin + fillet * 0.42,
+    side,
+    tailJoin,
+  );
+  path.lineTo(side, shoulder);
+  path.cubicTo(
+    side,
+    shoulder - fillet * 0.28,
+    side + fillet * 0.12,
+    shoulder - fillet * 0.45,
+    w * 0.14,
+    math.max(4.0, shoulder - fillet),
+  );
+  path.cubicTo(w * 0.24, nose * 0.20, w * 0.36, 1.2, w * 0.50, 1.2);
   path.close();
   return path;
 }
@@ -617,10 +658,11 @@ class _LegendMark extends StatelessWidget {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(3),
-            border: Border.all(color: border),
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            fill,
+            corner: AlongRadius.xs.x,
+            side: BorderSide(color: border),
           ),
         ),
         const SizedBox(width: 6),
@@ -1157,10 +1199,10 @@ class _SeatPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cushion = _SeatButtonState._fill(seat, palette);
     final selected = seat.status == 'yours';
-    final radius = math.min(16.0, size.shortestSide * 0.25);
-    final pad = RRect.fromRectAndRadius(
+    final radius = math.min(AlongRadius.card.x, size.shortestSide * 0.38);
+    final pad = AlongCraft.path(
       Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
-      Radius.circular(radius),
+      radius,
     );
     final squash = depress.clamp(0.0, 1.0);
     if (squash > 0) {
@@ -1169,8 +1211,8 @@ class _SeatPainter extends CustomPainter {
       canvas.scale(1, 1 - 0.18 * squash);
       canvas.translate(-size.width / 2, -size.height);
     }
-    canvas.drawRRect(pad, Paint()..color = cushion);
-    canvas.drawRRect(
+    canvas.drawPath(pad, Paint()..color = cushion);
+    canvas.drawPath(
       pad,
       Paint()
         ..style = PaintingStyle.stroke
@@ -1180,11 +1222,11 @@ class _SeatPainter extends CustomPainter {
             : _SeatButtonState.hairline(palette),
     );
     final barW = size.width * 0.42;
-    final bar = RRect.fromRectAndRadius(
+    final bar = AlongCraft.path(
       Rect.fromLTWH((size.width - barW) / 2, 7, barW, 3.5),
-      const Radius.circular(2),
+      1,
     );
-    canvas.drawRRect(
+    canvas.drawPath(
       bar,
       Paint()
         ..color = selected
@@ -1215,10 +1257,8 @@ class _CornerBadge extends StatelessWidget {
       width: 16,
       height: 16,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: fill,
-        borderRadius: BorderRadius.circular(4),
-      ),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(fill, corner: AlongRadius.xs.x),
       child: child,
     );
   }
@@ -1428,15 +1468,13 @@ class _CarSeatPainter extends CustomPainter {
       size.height - inset * 2,
     );
     final backH = bounds.height * 0.22;
-    final back = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        bounds.left + bounds.width * 0.10,
-        bounds.top,
-        bounds.width * 0.80,
-        backH,
-      ),
-      Radius.circular(backH / 2),
+    final backRect = Rect.fromLTWH(
+      bounds.left + bounds.width * 0.10,
+      bounds.top,
+      bounds.width * 0.80,
+      backH,
     );
+    final back = AlongCraft.path(backRect, backH * 0.45);
     final pan = _seatPan(
       Rect.fromLTWH(
         bounds.left,
@@ -1454,8 +1492,8 @@ class _CarSeatPainter extends CustomPainter {
       canvas.translate(-pivot.dx, -pivot.dy);
     }
     final fillPaint = Paint()..color = fill;
-    canvas.drawRRect(back, fillPaint);
-    canvas.drawRRect(back, stroke);
+    canvas.drawPath(back, fillPaint);
+    canvas.drawPath(back, stroke);
     canvas.drawPath(pan, fillPaint);
     canvas.drawPath(pan, stroke);
     if (drawWheel && seat.isDriver) {
@@ -1490,9 +1528,9 @@ class _CarSeatPainter extends CustomPainter {
     final r = rect.right;
     final b = rect.bottom;
     final path = Path();
-    path.moveTo(l + w * 0.20, t);
-    path.lineTo(r - w * 0.20, t);
-    path.quadraticBezierTo(r - w * 0.02, t, r, t + h * 0.14);
+    path.moveTo(l + w * 0.28, t);
+    path.lineTo(r - w * 0.28, t);
+    path.quadraticBezierTo(r - w * 0.02, t, r, t + h * 0.24);
     path.lineTo(r, t + h * 0.32);
     path.quadraticBezierTo(
       r - w * 0.12,
@@ -1500,14 +1538,14 @@ class _CarSeatPainter extends CustomPainter {
       r - w * 0.05,
       t + h * 0.54,
     );
-    path.lineTo(r - w * 0.05, b - h * 0.22);
-    path.quadraticBezierTo(r - w * 0.05, b, r - w * 0.24, b);
-    path.lineTo(l + w * 0.24, b);
-    path.quadraticBezierTo(l + w * 0.05, b, l + w * 0.05, b - h * 0.22);
+    path.lineTo(r - w * 0.05, b - h * 0.34);
+    path.quadraticBezierTo(r - w * 0.05, b, r - w * 0.32, b);
+    path.lineTo(l + w * 0.32, b);
+    path.quadraticBezierTo(l + w * 0.05, b, l + w * 0.05, b - h * 0.34);
     path.lineTo(l + w * 0.05, t + h * 0.54);
     path.quadraticBezierTo(l + w * 0.12, t + h * 0.42, l, t + h * 0.32);
-    path.lineTo(l, t + h * 0.14);
-    path.quadraticBezierTo(l + w * 0.02, t, l + w * 0.20, t);
+    path.lineTo(l, t + h * 0.24);
+    path.quadraticBezierTo(l + w * 0.02, t, l + w * 0.28, t);
     path.close();
     return path;
   }

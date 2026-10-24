@@ -11,6 +11,7 @@ import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
@@ -108,13 +109,14 @@ class _DepartureRow extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 3,
+            width: 4,
             height: 22,
-            decoration: BoxDecoration(
-              color: item.best
+            clipBehavior: Clip.antiAlias,
+            decoration: AlongCraft.fill(
+              item.best
                   ? palette.accent
                   : palette.ink.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(2),
+              corner: 1,
             ),
           ),
           const SizedBox(width: 10),
@@ -144,12 +146,12 @@ class _DepartureRow extends StatelessWidget {
           ),
           SizedBox(
             width: 48,
-            height: 6,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(3),
+            height: 12,
+            child: AlongCraft.clip(
+              corner: AlongRadius.xs.x,
               child: LinearProgressIndicator(
                 value: demand,
-                minHeight: 6,
+                minHeight: 12,
                 backgroundColor: palette.ink.withValues(alpha: 0.12),
                 color: item.best
                     ? palette.accent
@@ -211,7 +213,7 @@ class _PassTicket extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 20,
+        radius: AlongRadius.card.x,
         hairline: true,
         shadow: AlongElevation.sheet(palette.ink),
       ),
@@ -243,7 +245,9 @@ class _PassMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: ShapeBorderClipper(shape: AlongCraft.borderVertical(top: 20)),
+      clipper: ShapeBorderClipper(
+        shape: AlongCraft.borderVertical(top: AlongRadius.card.x),
+      ),
       child: const Stack(
         fit: StackFit.expand,
         children: [
@@ -272,7 +276,7 @@ class _PassChip extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 14,
+        radius: AlongRadius.control.x,
         shadow: AlongElevation.rest(palette.ink),
       ),
       child: Padding(
@@ -343,7 +347,11 @@ class _PassDay extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final booked = index < 5;
     return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 12, hairline: true),
+      decoration: AlongCraft.surface(
+        palette,
+        radius: AlongRadius.control.x,
+        hairline: true,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Column(
@@ -510,7 +518,7 @@ class _TripSummary extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 16,
+        radius: AlongRadius.card.x,
         hairline: true,
         shadow: AlongElevation.rest(palette.ink),
       ),
@@ -579,7 +587,11 @@ class _PayMethod extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
+      decoration: AlongCraft.surface(
+        palette,
+        radius: AlongRadius.row.x,
+        hairline: true,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
@@ -672,8 +684,8 @@ class _SplitBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(18),
+    return AlongCraft.clip(
+      corner: AlongRadius.card.x,
       child: SizedBox(
         height: 64,
         child: Row(
@@ -728,7 +740,7 @@ class _PaidRow extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 12,
+        radius: AlongRadius.row.x,
         color: palette.recessed,
       ),
       child: Padding(
@@ -812,7 +824,9 @@ class _LoadingMap extends StatelessWidget {
     final pivot = dark ? 40.0 : 224.0;
     final shift = pivot * (1 - contrast);
     return ClipPath(
-      clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
+      clipper: ShapeBorderClipper(
+        shape: AlongCraft.border(AlongRadius.card.x),
+      ),
       child: ColoredBox(
         color: palette.mapLand,
         child: Stack(
@@ -957,7 +971,7 @@ class _LoadingCard extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 20,
+        radius: AlongRadius.card.x,
         hairline: true,
         shadow: AlongElevation.rest(palette.ink),
       ),
@@ -1087,7 +1101,9 @@ class AlongFlowRefresh extends StatelessWidget {
         _oneLine('Choose a ride', AlongType.bodyMuted(palette)),
         const SizedBox(height: 8),
         ClipPath(
-          clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
+          clipper: ShapeBorderClipper(
+        shape: AlongCraft.border(AlongRadius.card.x),
+      ),
           child: ColoredBox(
             color: palette.mapLand,
             child: const AlongDriveTrack(

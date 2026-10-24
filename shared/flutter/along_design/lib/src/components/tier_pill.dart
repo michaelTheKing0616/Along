@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/fare_tier.dart';
 
@@ -19,9 +20,10 @@ class TierPill extends StatelessWidget {
         horizontal: AlongSpace.s8,
         vertical: AlongSpace.s4,
       ),
-      decoration: BoxDecoration(
-        color: AlongColors.surface100,
-        borderRadius: BorderRadius.circular(AlongRadius.xs.x),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        AlongColors.surface100,
+        corner: AlongRadius.xs.x,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/fare_tier.dart';
 import '../utils/format_money.dart';
@@ -66,7 +67,7 @@ class FareHero extends StatelessWidget {
           const SizedBox(height: AlongSpace.s12),
           InkWell(
             onTap: onToggleExpand,
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+            customBorder: AlongCraft.border(AlongRadius.control.x),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: AlongSpace.s4),
               child: Row(
@@ -126,9 +127,10 @@ class _DeltaBadge extends StatelessWidget {
         horizontal: AlongSpace.s8,
         vertical: AlongSpace.s4,
       ),
-      decoration: BoxDecoration(
-        color: isPositive ? AlongColors.brandYellowTint : AlongColors.semanticWarningTint,
-        borderRadius: BorderRadius.circular(AlongRadius.xs.x),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        isPositive ? AlongColors.brandYellowTint : AlongColors.semanticWarningTint,
+        corner: AlongRadius.xs.x,
       ),
       child: Text(
         '${isPositive ? '+' : '−'}${formatMoney(deltaNaira.abs())}',

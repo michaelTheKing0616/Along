@@ -39,10 +39,11 @@ class AlongQrWidget extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.all(AlongSpace.s12),
-          decoration: BoxDecoration(
-            color: AlongColors.brandYellow,
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-            border: Border.all(color: AlongColors.ink900, width: 2),
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            AlongColors.brandYellow,
+            corner: AlongRadius.card.x,
+            side: const BorderSide(color: AlongColors.ink900, width: 2),
           ),
           child: _renderPixels
               ? QrImageView(

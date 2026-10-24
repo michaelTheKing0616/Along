@@ -91,10 +91,15 @@ class AlongSpace {
 class AlongRadius {
   AlongRadius._();
   static const xs = Radius.circular(4);
-  static const sm = Radius.circular(8);
-  static const md = Radius.circular(12);
-  static const lg = Radius.circular(16);
-  static const sheet = Radius.circular(20);
+  static const control = Radius.circular(16);
+  static const sm = Radius.circular(16);
+  static const row = Radius.circular(20);
+  static const button = Radius.circular(20);
+  static const md = Radius.circular(20);
+  static const card = Radius.circular(24);
+  static const lg = Radius.circular(24);
+  static const dialog = Radius.circular(28);
+  static const sheet = Radius.circular(32);
   static const pill = Radius.circular(999);
 }
 
@@ -121,8 +126,8 @@ class AlongText {
   static TextStyle get body => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 16, height: 1.5, fontWeight: FontWeight.w400, letterSpacing: 0);
   static TextStyle get bodyStrong => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 16, height: 1.5, fontWeight: FontWeight.w600, letterSpacing: 0);
   static TextStyle get label => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 14, height: 1.4285714285714286, fontWeight: FontWeight.w600, letterSpacing: 0);
-  static TextStyle get caption => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 13, height: 1.35, fontWeight: FontWeight.w500, letterSpacing: 0);
-  static TextStyle get overline => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 13, height: 1.35, fontWeight: FontWeight.w600, letterSpacing: 0.4);
+  static TextStyle get caption => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 12, height: 1.3333333333333333, fontWeight: FontWeight.w500, letterSpacing: 0);
+  static TextStyle get overline => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 12, height: 1.3333333333333333, fontWeight: FontWeight.w700, letterSpacing: 0.72);
   static TextStyle get numericL => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 24, height: 1.1666666666666667, fontWeight: FontWeight.w700, letterSpacing: -0.48, fontFeatures: const [FontFeature.tabularFigures()]);
   static TextStyle get numericM => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 18, height: 1.2222222222222223, fontWeight: FontWeight.w700, letterSpacing: 0, fontFeatures: const [FontFeature.tabularFigures()]);
   static TextStyle get buttonPrimary => TextStyle(fontFamily: 'Geist', fontFamilyFallback: const ['Inter'], fontSize: 17, height: 1.411764705882353, fontWeight: FontWeight.w700, letterSpacing: 0);

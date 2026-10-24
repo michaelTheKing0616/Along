@@ -88,9 +88,10 @@ class DocumentsScreen extends ConsumerWidget {
                             horizontal: AlongSpace.s8,
                             vertical: AlongSpace.s4,
                           ),
-                          decoration: BoxDecoration(
-                            color: _statusColor(item.status).withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: AlongCraft.fill(
+                            _statusColor(item.status).withValues(alpha: 0.15),
+                            corner: AlongRadius.xs.x,
                           ),
                           child: Text(
                             _statusLabel(l10n, item.status),

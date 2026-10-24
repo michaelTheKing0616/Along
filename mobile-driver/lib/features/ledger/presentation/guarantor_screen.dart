@@ -86,7 +86,7 @@ class _GuarantorScreenState extends ConsumerState<GuarantorScreen> {
             controller: _nameController,
             decoration: InputDecoration(
               labelText: l10n.guarantorNameLabel,
-              border: const OutlineInputBorder(),
+              border: AlongCraft.input(const BorderSide()),
             ),
           ),
           const SizedBox(height: AlongSpace.s12),
@@ -95,7 +95,7 @@ class _GuarantorScreenState extends ConsumerState<GuarantorScreen> {
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               labelText: l10n.guarantorPhoneLabel,
-              border: const OutlineInputBorder(),
+              border: AlongCraft.input(const BorderSide()),
             ),
           ),
           const SizedBox(height: AlongSpace.s16),

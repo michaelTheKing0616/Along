@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 
 /// Driver availability states (doc 05 §9 `StatusToggle`).
@@ -31,9 +32,10 @@ class StatusToggle extends StatelessWidget {
       label: 'Driver status',
       child: Container(
         height: AlongSpace.sizeCtaPrimary,
-        decoration: BoxDecoration(
-          color: AlongColors.surface100,
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        clipBehavior: Clip.antiAlias,
+        decoration: AlongCraft.fill(
+          AlongColors.surface100,
+          corner: AlongRadius.control.x,
         ),
         padding: const EdgeInsets.all(AlongSpace.s4),
         child: Row(
@@ -48,12 +50,13 @@ class StatusToggle extends StatelessWidget {
                   color: isSelected
                       ? AlongColors.brandYellow
                       : Colors.transparent,
-                  borderRadius: BorderRadius.circular(AlongRadius.sm.x - 2),
+                  shape: AlongCraft.border(AlongRadius.control.x),
+                  clipBehavior: Clip.antiAlias,
                   child: InkWell(
                     onTap: () => onChanged(status),
                     splashFactory: NoSplash.splashFactory,
                     highlightColor: AlongColors.ink900.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(AlongRadius.sm.x - 2),
+                    customBorder: AlongCraft.border(AlongRadius.control.x),
                     child: Center(
                       child: Text(
                         status.label,

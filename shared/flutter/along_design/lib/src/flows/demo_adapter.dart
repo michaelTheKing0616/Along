@@ -3,7 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 
 /// Simulated dispatch, GPS, and payment. The gallery and debug builds read
@@ -205,17 +207,18 @@ class AlongDemoMark extends StatelessWidget {
     return Semantics(
       key: const Key('demo_adapter'),
       label: DemoAdapter.name,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: palette.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: AlongCraft.fill(
+          palette.surface,
+          corner: AlongRadius.control.x,
+          side: BorderSide(
             color: palette.ink.withValues(alpha: 0.14),
             width: 0.5,
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Text(
             'Demo',
             maxLines: 1,

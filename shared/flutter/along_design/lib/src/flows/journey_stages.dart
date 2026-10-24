@@ -9,6 +9,7 @@ import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
@@ -226,15 +227,16 @@ class _LandmarkChip extends StatelessWidget {
         child: Material(
           color: selected ? palette.ink : palette.surface,
           shape: AlongCraft.border(
-            16,
+            AlongRadius.control.x,
             side: BorderSide(
               color: palette.ink.withValues(alpha: 0.14),
               width: 0.5,
             ),
           ),
+          clipBehavior: Clip.antiAlias,
           child: InkWell(
             key: Key('landmark_${mark.id}'),
-            customBorder: AlongCraft.border(16),
+            customBorder: AlongCraft.border(AlongRadius.control.x),
             onTap: onTap,
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 48),
@@ -632,7 +634,9 @@ class AlongFlowTripPin extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ClipPath(
-          clipper: ShapeBorderClipper(shape: AlongCraft.border(16)),
+          clipper: ShapeBorderClipper(
+            shape: AlongCraft.border(AlongRadius.card.x),
+          ),
           child: SizedBox(
             height: short ? 156 : 196,
             width: double.infinity,
@@ -712,9 +716,13 @@ class _PinDriverCard extends StatelessWidget {
           const AlongVehicleMark(kind: AlongVehicleKind.car, width: 148),
           const SizedBox(height: 8),
           DecoratedBox(
-            decoration: AlongCraft.surface(palette, radius: 8, hairline: true),
+            decoration: AlongCraft.surface(
+              palette,
+              radius: AlongRadius.control.x,
+              hairline: true,
+            ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               child: Text(
                 'ABC-123-XY',
                 maxLines: 1,
@@ -779,7 +787,11 @@ class _PinBox extends StatelessWidget {
         : 1.0;
     final wide = MediaQuery.sizeOf(context).width >= 340;
     return DecoratedBox(
-      decoration: AlongCraft.surface(palette, radius: 16, hairline: true),
+      decoration: AlongCraft.surface(
+        palette,
+        radius: AlongRadius.card.x,
+        hairline: true,
+      ),
       child: SizedBox(
         width: (wide ? 72 : 62) * scale,
         height: (wide ? 112 : 96) * scale,
@@ -1002,7 +1014,7 @@ class _KeyCapState extends State<_KeyCap> {
     final dark = palette.brightness == Brightness.dark;
     final fill = dark ? const Color(0xFF3A342C) : const Color(0xFFFFFDF8);
     final shape = AlongCraft.border(
-      16,
+      AlongRadius.control.x,
       side: BorderSide(
         color: palette.ink.withValues(alpha: dark ? 0.55 : 0.32),
         width: 1,
@@ -1267,9 +1279,9 @@ class AlongFlowReceipt extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                child: SizedBox(
+              AlongCraft.clip(
+                corner: AlongRadius.card.x,
+                child: const SizedBox(
                   height: 112,
                   width: double.infinity,
                   child: AlongCityMap(
@@ -1600,7 +1612,11 @@ class _NoticeBanner extends StatelessWidget {
     return Semantics(
       label: label,
       child: DecoratedBox(
-        decoration: AlongCraft.surface(palette, radius: 12, hairline: true),
+        decoration: AlongCraft.surface(
+          palette,
+          radius: AlongRadius.row.x,
+          hairline: true,
+        ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 48),
           child: Padding(
@@ -1891,7 +1907,7 @@ class _SolidCard extends StatelessWidget {
     return DecoratedBox(
       decoration: AlongCraft.surface(
         palette,
-        radius: 20,
+        radius: AlongRadius.card.x,
         shadow: AlongElevation.sheet(palette.ink),
       ),
       child: Padding(padding: padding, child: child),

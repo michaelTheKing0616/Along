@@ -5,6 +5,7 @@ import '../craft.dart';
 import '../elevation.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 
 /// Physics sheet. Resting height is either a fixed dp or a fraction of the
 /// parent. Tests and reduced motion jump to rest so layout stays stable.
@@ -125,7 +126,7 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
             final lifted =
                 rest * (0.90 + 0.10 * t.clamp(0.0, 1.0)) + _lift.value;
             final height = lifted.clamp(96.0, constraints.maxHeight);
-            final shape = AlongCraft.borderVertical(top: 28);
+            final shape = AlongCraft.borderVertical(top: AlongRadius.sheet.x);
             return Align(
               alignment: Alignment.bottomCenter,
               child: Column(
@@ -191,13 +192,9 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                                     child: Container(
                                       width: 36,
                                       height: 4,
-                                      decoration: BoxDecoration(
-                                        color: palette.ink.withValues(
-                                          alpha: 0.18,
-                                        ),
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
+                                      decoration: AlongCraft.fill(
+                                        palette.ink.withValues(alpha: 0.18),
+                                        corner: AlongRadius.xs.x,
                                       ),
                                     ),
                                   ),
@@ -268,7 +265,7 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
   /// Panel height follows the child. No snap, no empty expanded body.
   Widget _shrinkWrapped(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final shape = AlongCraft.borderVertical(top: 28);
+    final shape = AlongCraft.borderVertical(top: AlongRadius.sheet.x);
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -294,9 +291,9 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                         child: Container(
                           width: 36,
                           height: 4,
-                          decoration: BoxDecoration(
-                            color: palette.ink.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(999),
+                          decoration: AlongCraft.fill(
+                            palette.ink.withValues(alpha: 0.18),
+                            corner: AlongRadius.xs.x,
                           ),
                         ),
                       ),

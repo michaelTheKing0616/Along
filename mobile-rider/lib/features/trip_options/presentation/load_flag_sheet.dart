@@ -89,7 +89,7 @@ class _LoadFlagSheetState extends State<LoadFlagSheet> {
             maxLength: 140,
             decoration: InputDecoration(
               hintText: l10n.loadFlagNoteHint,
-              border: const OutlineInputBorder(),
+              border: AlongCraft.input(const BorderSide()),
             ),
             onChanged: (value) {
               _load = _load.copyWith(
@@ -110,9 +110,10 @@ class _LoadFlagSheetState extends State<LoadFlagSheet> {
             const SizedBox(height: AlongSpace.s8),
             Container(
               padding: const EdgeInsets.all(AlongSpace.s12),
-              decoration: BoxDecoration(
-                color: AlongColors.semanticWarningTint,
-                borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+              clipBehavior: Clip.antiAlias,
+              decoration: AlongCraft.fill(
+                AlongColors.semanticWarningTint,
+                corner: AlongRadius.control.x,
               ),
               child: Row(
                 children: [

@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../craft.dart';
+import '../tokens.g.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
@@ -89,11 +90,14 @@ class AlongFrost extends StatelessWidget {
       final shape = circle ? const CircleBorder() : AlongCraft.border(radius);
       return DecoratedBox(
         decoration: ShapeDecoration(color: palette.surface, shape: shape),
-        child: Padding(
-          padding: padding,
-          child: IconTheme.merge(
-            data: IconThemeData(color: palette.ink),
-            child: DefaultTextStyle.merge(child: child),
+        child: ClipPath(
+          clipper: ShapeBorderClipper(shape: shape),
+          child: Padding(
+            padding: padding,
+            child: IconTheme.merge(
+              data: IconThemeData(color: palette.ink),
+              child: DefaultTextStyle.merge(child: child),
+            ),
           ),
         ),
       );
@@ -153,7 +157,7 @@ class AlongGreeting extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: AlongFrost(
         solid: true,
-        radius: 16,
+        radius: AlongRadius.row.x,
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +189,7 @@ class AlongSuggestionChips extends StatelessWidget {
             child: AlongPressable(
               child: AlongFrost(
                 solid: true,
-                radius: 12,
+                radius: AlongRadius.control.x,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 6,
@@ -306,23 +310,22 @@ class AlongTabBarState extends State<AlongTabBar>
                               : 1.0;
                           return Transform.scale(scale: scale, child: child);
                         },
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: i == _index
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: AlongCraft.fill(
+                            i == _index
                                 ? palette.accent
                                 : const Color(0x00000000),
-                            borderRadius: BorderRadius.circular(16),
+                            corner: AlongRadius.control.x,
                           ),
-                          child: SizedBox(
-                            width: 36,
-                            height: 32,
-                            child: Icon(
-                              _icons[i].$1,
-                              size: 20,
-                              color: i == _index
-                                  ? palette.accentInk
-                                  : palette.muted,
-                            ),
+                          child: Icon(
+                            _icons[i].$1,
+                            size: 20,
+                            color: i == _index
+                                ? palette.accentInk
+                                : palette.muted,
                           ),
                         ),
                       ),
@@ -353,10 +356,11 @@ class AlongWordmark extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: const Color(0xFFF7F4EF),
-              borderRadius: BorderRadius.circular(14),
+          Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: AlongCraft.fill(
+              const Color(0xFFF7F4EF),
+              corner: AlongRadius.card.x,
             ),
             child: CustomPaint(
               size: const Size(56, 56),
@@ -636,11 +640,14 @@ class AlongRollingDigitsState extends State<AlongRollingDigits>
                 DecoratedBox(
                   decoration: AlongCraft.surface(
                     palette,
-                    radius: 10,
+                    radius: AlongRadius.control.x,
                     color: palette.recessed,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 6,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -737,10 +744,10 @@ class AlongFareSplit extends StatelessWidget {
       key: const Key('seat_fare_split'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(3),
+        AlongCraft.clip(
+          corner: AlongRadius.xs.x,
           child: SizedBox(
-            height: 6,
+            height: 12,
             child: Row(
               children: [
                 Expanded(
@@ -858,8 +865,8 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
           return SizedBox(
             width: width,
             height: 56,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+            child: AlongCraft.clip(
+              corner: AlongRadius.button.x,
               child: DecoratedBox(
                 decoration: BoxDecoration(color: palette.recessed),
                 child: Stack(
@@ -903,18 +910,17 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
                             _spring(0, velocity);
                           }
                         },
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: palette.accent,
-                            borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: AlongCraft.fill(
+                            palette.accent,
+                            corner: AlongRadius.control.x,
                           ),
-                          child: SizedBox(
-                            width: 48,
-                            height: 48,
-                            child: Icon(
-                              AlongIcons.navigate,
-                              color: palette.accentInk,
-                            ),
+                          child: Icon(
+                            AlongIcons.navigate,
+                            color: palette.accentInk,
                           ),
                         ),
                       ),
@@ -927,11 +933,14 @@ class AlongSwipeConfirmState extends State<AlongSwipeConfirm>
                         label: 'Confirm',
                         child: Material(
                           color: palette.surface,
-                          borderRadius: BorderRadius.circular(12),
+                          shape: AlongCraft.border(AlongRadius.control.x),
+                          clipBehavior: Clip.antiAlias,
                           child: InkWell(
                             key: const Key('confirm_without_swipe'),
                             onTap: _finish,
-                            borderRadius: BorderRadius.circular(12),
+                            customBorder: AlongCraft.border(
+                              AlongRadius.control.x,
+                            ),
                             child: SizedBox(
                               width: 48,
                               height: 48,
@@ -1291,7 +1300,7 @@ class AlongDriveTrack extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final travel = math.max(0.0, constraints.maxWidth - carWidth - 16);
-          final road = math.max(8.0, height * 0.22);
+          final road = math.max(14.0, height * 0.22);
           return Stack(
             children: [
               Positioned(
@@ -1299,11 +1308,12 @@ class AlongDriveTrack extends StatelessWidget {
                 right: 8,
                 bottom: 4,
                 height: road,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: palette.mapRoad,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: AlongCraft.fill(
+                    palette.mapRoad,
+                    corner: AlongRadius.xs.x,
+                    side: BorderSide(
                       color: palette.ink.withValues(alpha: 0.28),
                     ),
                   ),
@@ -1317,14 +1327,13 @@ class AlongDriveTrack extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 3,
                                     ),
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        color: palette.ink.withValues(
-                                          alpha: 0.35,
-                                        ),
-                                        borderRadius: BorderRadius.circular(1),
+                                    child: Container(
+                                      height: 4,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: AlongCraft.fill(
+                                        palette.ink.withValues(alpha: 0.35),
+                                        corner: 1,
                                       ),
-                                      child: const SizedBox(height: 3),
                                     ),
                                   ),
                                 ),
@@ -1444,10 +1453,10 @@ class _ConfettiPainter extends CustomPainter {
           );
       final paint = Paint()
         ..color = (i.isEven ? accent : ink).withValues(alpha: (1 - t) * 0.9);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
+      canvas.drawPath(
+        AlongCraft.path(
           Rect.fromCenter(center: center, width: 6, height: 3),
-          const Radius.circular(1),
+          1,
         ),
         paint,
       );
@@ -1519,8 +1528,8 @@ class AlongContainerTransformState extends State<AlongContainerTransform>
       builder: (context, _) {
         if (_expand.value == 0) return widget.closed;
         final t = Curves.easeOutCubic.transform(_expand.value);
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(20 * (1 - t)),
+        return AlongCraft.clip(
+          corner: AlongRadius.row.x * (1 - t),
           child: ColoredBox(
             color: palette.bg,
             child: Align(
@@ -1586,8 +1595,9 @@ class AlongGyroCardState extends State<AlongGyroCard> {
         Positioned.fill(
           child: IgnorePointer(
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
+              decoration: AlongCraft.fill(
+                const Color(0x00FFFFFF),
+                corner: AlongRadius.card.x,
                 gradient: LinearGradient(
                   begin: Alignment(-0.8 + applied.dx, -1 + applied.dy),
                   end: Alignment(0.8 + applied.dx, 0.2 + applied.dy),

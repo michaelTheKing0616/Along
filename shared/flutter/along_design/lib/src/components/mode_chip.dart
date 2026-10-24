@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 import '../utils/transport_mode.dart';
 
@@ -23,9 +24,8 @@ class ModeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = size == ModeChipSize.small
-        ? AlongSpace.sizeChip - AlongSpace.s8
-        : AlongSpace.sizeChip;
+    // 16 radius on a 28-tall chip is a stadium. Keep a flat side.
+    final height = size == ModeChipSize.small ? 40.0 : 44.0;
     final iconSize = size == ModeChipSize.small ? 16.0 : 20.0;
     final bg = selected ? mode.fillColor : mode.tintColor;
     final fg = selected ? mode.onColor : AlongColors.ink900;
@@ -36,12 +36,13 @@ class ModeChip extends StatelessWidget {
       label: mode.label,
       child: Material(
         color: bg,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        shape: AlongCraft.border(AlongRadius.control.x),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
           splashFactory: NoSplash.splashFactory,
           highlightColor: AlongColors.ink900.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+          customBorder: AlongCraft.border(AlongRadius.control.x),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s8),
             child: SizedBox(

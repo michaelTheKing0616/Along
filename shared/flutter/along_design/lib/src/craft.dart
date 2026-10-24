@@ -4,6 +4,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 import 'palette.dart';
+import 'tokens.g.dart';
 
 /// Continuous corners, photo grade, grain, and the money lockup.
 ///
@@ -34,7 +35,7 @@ abstract final class AlongCraft {
   }
 
   static SmoothRectangleBorder borderVertical({
-    double top = 28,
+    double top = 32,
     BorderSide side = BorderSide.none,
   }) {
     return SmoothRectangleBorder(
@@ -44,6 +45,44 @@ abstract final class AlongCraft {
   }
 
   static Path path(Rect rect, double corner) => radius(corner).toPath(rect);
+
+  /// Clips [child] to the same continuous corner as the surface behind it.
+  static Widget clip({
+    required double corner,
+    required Widget child,
+    bool top = false,
+  }) {
+    final shape = top ? borderVertical(top: corner) : border(corner);
+    return ClipPath(
+      clipper: ShapeBorderClipper(shape: shape),
+      child: child,
+    );
+  }
+
+  static InputBorder input(BorderSide side) {
+    return ShapedInputBorder(
+      borderSide: side,
+      shape: border(AlongRadius.control.x),
+    );
+  }
+
+  static ShapeDecoration fill(
+    Color color, {
+    double corner = 16,
+    BorderSide side = BorderSide.none,
+    List<BoxShadow>? shadow,
+    Gradient? gradient,
+    bool top = false,
+  }) {
+    return ShapeDecoration(
+      color: gradient == null ? color : null,
+      gradient: gradient,
+      shadows: shadow,
+      shape: top
+          ? borderVertical(top: corner, side: side)
+          : border(corner, side: side),
+    );
+  }
 
   static ShapeDecoration surface(
     AlongPalette palette, {
@@ -366,11 +405,14 @@ class _SpotPainter extends CustomPainter {
         );
         ink.style = PaintingStyle.stroke;
       case AlongSpotKind.ticket:
-        final rect = RRect.fromRectAndRadius(
-          Rect.fromLTWH(s * 0.16, s * 0.30, s * 0.68, s * 0.40),
-          const Radius.circular(8),
+        final ticket = Rect.fromLTWH(s * 0.16, s * 0.30, s * 0.68, s * 0.40);
+        canvas.drawPath(
+          AlongCraft.path(
+            ticket,
+            math.min(AlongRadius.control.x, ticket.height * 0.34),
+          ),
+          ink,
         );
-        canvas.drawRRect(rect, ink);
         canvas.drawLine(
           Offset(s * 0.28, s * 0.50),
           Offset(s * 0.70, s * 0.50),

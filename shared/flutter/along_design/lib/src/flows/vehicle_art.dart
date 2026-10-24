@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
+import '../tokens.g.dart';
 import '../elevation.dart';
 import '../palette.dart';
 
@@ -35,11 +36,11 @@ class AlongVehicleMark extends StatelessWidget {
             bottom: 1,
             child: Container(
               width: width * 0.62,
-              height: 8,
-              decoration: BoxDecoration(
-                color: palette.ink.withValues(alpha: 0.001),
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: AlongElevation.rest(palette.ink),
+              height: 10,
+              decoration: AlongCraft.fill(
+                palette.ink.withValues(alpha: 0.001),
+                corner: AlongRadius.xs.x,
+                shadow: AlongElevation.rest(palette.ink),
               ),
             ),
           ),

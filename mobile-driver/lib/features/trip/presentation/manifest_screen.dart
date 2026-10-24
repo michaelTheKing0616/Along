@@ -91,10 +91,11 @@ class _ManifestRow extends StatelessWidget {
 
     return Material(
       color: AlongColors.surface0,
-      borderRadius: BorderRadius.circular(AlongRadius.md.x),
+      shape: AlongCraft.border(AlongRadius.row.x),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.md.x),
+        customBorder: AlongCraft.border(AlongRadius.row.x),
         child: Padding(
           padding: const EdgeInsets.all(AlongSpace.s16),
           child: Column(

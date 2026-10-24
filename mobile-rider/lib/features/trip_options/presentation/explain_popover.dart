@@ -15,9 +15,8 @@ void showExplainPopover(
   showModalBottomSheet<void>(
     context: context,
     backgroundColor: AlongPalette.of(context).bg,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: AlongRadius.sheet),
-    ),
+    shape: AlongCraft.borderVertical(top: AlongRadius.sheet.x),
+    clipBehavior: Clip.antiAlias,
     builder: (context) {
       return Padding(
         padding: const EdgeInsets.all(AlongSpace.s24),
@@ -70,11 +69,11 @@ class _ExplainBar extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AlongSpace.s4),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AlongRadius.xs.x),
+        AlongCraft.clip(
+          corner: AlongRadius.xs.x,
           child: LinearProgressIndicator(
             value: value.clamp(0, 1),
-            minHeight: 8,
+            minHeight: 12,
             backgroundColor: AlongColors.surface100,
             color: AlongColors.brandYellow,
           ),

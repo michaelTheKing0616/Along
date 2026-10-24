@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:io';
 
+import 'package:along_design/along_design.dart';
 import 'package:along_map/src/cache/tile_cache_manager.dart';
 import 'package:along_map/src/camera/map_camera.dart';
 import 'package:along_map/src/layers/layer_ids.dart';
@@ -271,9 +272,10 @@ class _AlongMapDemoBanner extends StatelessWidget {
     return Material(
       elevation: 1,
       color: const Color(0xE6FFF8E1),
-      borderRadius: BorderRadius.circular(8),
+      shape: AlongCraft.border(AlongRadius.control.x),
+      clipBehavior: Clip.antiAlias,
       child: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Text(
           'Demo basemap — set TILES_BASE_URL (or TILES_BASE) to load Along tiles.',
           textAlign: TextAlign.center,

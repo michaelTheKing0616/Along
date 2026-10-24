@@ -91,10 +91,15 @@ class AlongSpace {
 class AlongRadius {
   AlongRadius._();
   static const xs = Radius.circular(4);
-  static const sm = Radius.circular(8);
-  static const md = Radius.circular(12);
-  static const lg = Radius.circular(16);
-  static const sheet = Radius.circular(20);
+  static const control = Radius.circular(16);
+  static const sm = Radius.circular(16);
+  static const row = Radius.circular(20);
+  static const button = Radius.circular(20);
+  static const md = Radius.circular(20);
+  static const card = Radius.circular(24);
+  static const lg = Radius.circular(24);
+  static const dialog = Radius.circular(28);
+  static const sheet = Radius.circular(32);
   static const pill = Radius.circular(999);
 }
 

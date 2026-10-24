@@ -10,6 +10,7 @@ import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import 'delights.dart';
 import 'demo_adapter.dart';
@@ -635,9 +636,9 @@ class AlongCityMap extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               DecoratedBox(
-                decoration: BoxDecoration(
-                  color: palette.surface,
-                  borderRadius: BorderRadius.circular(8),
+                decoration: AlongCraft.fill(
+                  palette.surface,
+                  corner: AlongRadius.xs.x,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -672,12 +673,17 @@ class AlongCityMap extends StatelessWidget {
               Container(
                 width: pickup ? 12 : 10,
                 height: pickup ? 12 : 10,
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: pickup ? BoxShape.circle : BoxShape.rectangle,
-                  borderRadius: pickup ? null : BorderRadius.circular(2),
-                  border: Border.all(color: palette.surface, width: 1.5),
-                ),
+                decoration: pickup
+                    ? BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: palette.surface, width: 1.5),
+                      )
+                    : AlongCraft.fill(
+                        color,
+                        corner: AlongRadius.xs.x,
+                        side: BorderSide(color: palette.surface, width: 1.5),
+                      ),
               ),
             ],
           ),
@@ -714,9 +720,9 @@ class AlongCityMap extends StatelessWidget {
               ),
             ),
             DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: BorderRadius.circular(6),
+              decoration: AlongCraft.fill(
+                palette.surface,
+                corner: AlongRadius.xs.x,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -772,9 +778,9 @@ class AlongCityMap extends StatelessWidget {
                   child: Container(
                     width: emphasized ? 28 : 22,
                     height: 7,
-                    decoration: BoxDecoration(
-                      color: const Color(0x33000000),
-                      borderRadius: BorderRadius.circular(8),
+                    decoration: AlongCraft.fill(
+                      const Color(0x33000000),
+                      corner: AlongRadius.xs.x,
                     ),
                   ),
                 ),
@@ -849,9 +855,9 @@ class AlongCityMap extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             DecoratedBox(
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: BorderRadius.circular(6),
+              decoration: AlongCraft.fill(
+                palette.surface,
+                corner: AlongRadius.xs.x,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -917,10 +923,10 @@ class AlongCityMap extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           DecoratedBox(
-            decoration: BoxDecoration(
-              color: palette.surface,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: AlongElevation.float(palette.ink),
+            decoration: AlongCraft.fill(
+              palette.surface,
+              corner: AlongRadius.xs.x,
+              shadow: AlongElevation.float(palette.ink),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
@@ -1027,9 +1033,9 @@ class _SolidWord extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(6),
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.xs.x,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -1072,9 +1078,9 @@ class _Attribution extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(8),
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.xs.x,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),

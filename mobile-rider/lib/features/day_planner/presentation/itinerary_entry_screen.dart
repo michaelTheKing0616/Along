@@ -290,7 +290,7 @@ class _NaturalLanguageEntry extends StatelessWidget {
           maxLines: 4,
           decoration: InputDecoration(
             hintText: l10n.itineraryEntryNlHint,
-            border: const OutlineInputBorder(),
+            border: AlongCraft.input(const BorderSide()),
           ),
         ),
         const SizedBox(height: AlongSpace.s12),

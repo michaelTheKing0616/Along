@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 
 /// Trip option sort criteria (doc 05 §9 `SortChips`).
@@ -38,16 +39,17 @@ class SortChips extends StatelessWidget {
           label: option.label,
           child: Material(
             color: isSelected ? AlongColors.brandYellow : AlongColors.surface100,
-            borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+            shape: AlongCraft.border(AlongRadius.control.x),
+            clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: () => onSelected(option),
               splashFactory: NoSplash.splashFactory,
               highlightColor: AlongColors.ink900.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+              customBorder: AlongCraft.border(AlongRadius.control.x),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AlongSpace.s12,
-                  vertical: AlongSpace.s8,
+                  vertical: AlongSpace.s12,
                 ),
                 child: Text(
                   option.label,

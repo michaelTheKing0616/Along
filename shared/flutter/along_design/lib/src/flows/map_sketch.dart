@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../elevation.dart';
+import '../tokens.g.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
@@ -160,18 +162,17 @@ class AlongMapButton extends StatelessWidget {
       child: Tooltip(
         message: tooltip ?? '',
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: AlongElevation.float(palette.ink),
+          decoration: ShapeDecoration(
+            shadows: AlongElevation.float(palette.ink),
+            shape: AlongCraft.border(AlongRadius.control.x),
           ),
           child: AlongFrost(
-            radius: 12,
+            radius: AlongRadius.control.x,
             child: Material(
               type: MaterialType.transparency,
+              clipBehavior: Clip.antiAlias,
               child: InkWell(
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                customBorder: AlongCraft.border(AlongRadius.control.x),
                 onTap: onPressed,
                 child: SizedBox(
                   width: 48,

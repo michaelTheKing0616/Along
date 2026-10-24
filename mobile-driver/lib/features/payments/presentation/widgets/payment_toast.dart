@@ -18,7 +18,8 @@ class PaymentToast extends StatelessWidget {
     return Material(
       key: const Key('payment_toast'),
       elevation: 6,
-      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      shape: AlongCraft.border(AlongRadius.row.x),
+      clipBehavior: Clip.antiAlias,
       color: AlongColors.semanticSuccessFill,
       child: Padding(
         padding: const EdgeInsets.symmetric(

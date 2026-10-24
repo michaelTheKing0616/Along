@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../tokens.g.dart';
 
 /// Toast / snackbar variants (doc 05 §9 `Toast/Snackbar`).
@@ -38,7 +39,8 @@ class AlongToast extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: _background,
-      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      shape: AlongCraft.border(AlongRadius.row.x),
+      clipBehavior: Clip.antiAlias,
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(

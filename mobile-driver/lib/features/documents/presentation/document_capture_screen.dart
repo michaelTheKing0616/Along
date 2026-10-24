@@ -116,9 +116,10 @@ class _DocumentCaptureScreenState extends ConsumerState<DocumentCaptureScreen> {
                 Container(
                   height: 160,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AlongColors.ink100,
-                    borderRadius: BorderRadius.circular(AlongRadius.md.x),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: AlongCraft.fill(
+                    AlongColors.ink100,
+                    corner: AlongRadius.card.x,
                   ),
                   alignment: Alignment.center,
                   child: const Icon(Icons.image, size: 48),

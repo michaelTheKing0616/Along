@@ -68,8 +68,8 @@ class AlongButton extends StatelessWidget {
 
     final radius = variant == AlongButtonVariant.secondary ||
             variant == AlongButtonVariant.tertiary
-        ? 14.0
-        : 16.0;
+        ? AlongRadius.control.x
+        : AlongRadius.button.x;
     final shape = AlongCraft.border(radius, side: style.borderSide);
     final yellow = variant == AlongButtonVariant.yellow;
     final button = DecoratedBox(
@@ -124,13 +124,13 @@ class AlongButton extends StatelessWidget {
               Positioned.fill(
                 child: IgnorePointer(
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: _pressedOverlay(
+                    decoration: AlongCraft.fill(
+                      _pressedOverlay(
                         style.backgroundColor,
                         branding,
                         palette,
                       ),
-                      borderRadius: BorderRadius.circular(radius),
+                      corner: radius,
                     ),
                   ),
                 ),

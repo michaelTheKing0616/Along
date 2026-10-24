@@ -375,7 +375,8 @@ class _DemandLabelsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AlongColors.surface0.withValues(alpha: 0.92),
-      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      shape: AlongCraft.border(AlongRadius.card.x),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(AlongSpace.s12),
         child: Column(

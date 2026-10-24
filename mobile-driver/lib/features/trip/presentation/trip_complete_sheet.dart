@@ -276,14 +276,15 @@ class _AmountChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AlongColors.brandYellow,
-      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      shape: AlongCraft.border(AlongRadius.control.x),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        customBorder: AlongCraft.border(AlongRadius.control.x),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AlongSpace.s12,
-            vertical: AlongSpace.s8,
+            vertical: AlongSpace.s12,
           ),
           child: Text(
             label,
@@ -336,14 +337,15 @@ class _TagChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected ? AlongColors.brandYellow : AlongColors.surface100,
-      borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+      shape: AlongCraft.border(AlongRadius.control.x),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AlongRadius.sm.x),
+        customBorder: AlongCraft.border(AlongRadius.control.x),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AlongSpace.s12,
-            vertical: AlongSpace.s8,
+            vertical: AlongSpace.s12,
           ),
           child: Text(
             label,

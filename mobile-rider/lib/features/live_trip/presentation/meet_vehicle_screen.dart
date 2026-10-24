@@ -133,9 +133,11 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AlongSpace.s16),
-              decoration: const BoxDecoration(
-                color: AlongColors.surface0,
-                borderRadius: BorderRadius.vertical(top: AlongRadius.sheet),
+              clipBehavior: Clip.antiAlias,
+              decoration: AlongCraft.fill(
+                AlongColors.surface0,
+                corner: AlongRadius.sheet.x,
+                top: true,
               ),
               child: SingleChildScrollView(
                 child: Column(

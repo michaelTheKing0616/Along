@@ -82,10 +82,15 @@ module.exports = {
       },
       "borderRadius": {
         "xs": "4px",
-        "sm": "8px",
-        "md": "12px",
-        "lg": "16px",
-        "sheet": "20px",
+        "control": "16px",
+        "sm": "16px",
+        "row": "20px",
+        "button": "20px",
+        "md": "20px",
+        "card": "24px",
+        "lg": "24px",
+        "dialog": "28px",
+        "sheet": "32px",
         "pill": "999px"
       },
       "spacing": {

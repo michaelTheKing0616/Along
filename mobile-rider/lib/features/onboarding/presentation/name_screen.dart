@@ -63,9 +63,7 @@ class _NameScreenState extends ConsumerState<NameScreen> {
                 decoration: InputDecoration(
                   hintText: l10n.nameHint,
                   errorText: _localizedError(l10n, state.errorMessage),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AlongRadius.sm.x),
-                  ),
+                  border: AlongCraft.input(const BorderSide()),
                 ),
               ),
               const Spacer(),

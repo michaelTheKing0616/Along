@@ -11,6 +11,7 @@ import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../theme.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import 'batch_stages.dart';
 import 'city_map.dart';
@@ -210,9 +211,10 @@ class _HomeSheetBody extends StatelessWidget {
         Container(
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 16),
+          clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
             color: palette.ink,
-            shape: AlongCraft.border(16),
+            shape: AlongCraft.border(AlongRadius.button.x),
           ),
           child: Row(
             children: [
@@ -453,7 +455,10 @@ class _SeatDriver extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         DecoratedBox(
-          decoration: AlongCraft.surface(palette, radius: 16),
+          decoration: AlongCraft.surface(
+            palette,
+            radius: AlongRadius.control.x,
+          ),
           child: const SizedBox(
             width: 56,
             height: 56,
@@ -722,10 +727,11 @@ class _LiveAction extends StatelessWidget {
                 width: 48,
                 height: 48,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: palette.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: AlongElevation.hairline(palette.ink),
+                clipBehavior: Clip.antiAlias,
+                decoration: AlongCraft.surface(
+                  palette,
+                  radius: AlongRadius.control.x,
+                  hairline: true,
                 ),
                 child: AlongIcon(icon, size: 20, color: palette.ink),
               ),
@@ -762,7 +768,7 @@ class _LiveOverflow extends StatelessWidget {
       tooltip: 'More',
       padding: EdgeInsets.zero,
       offset: const Offset(0, 52),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: AlongCraft.border(AlongRadius.dialog.x),
       onSelected: (_) {},
       itemBuilder: (context) => [
         PopupMenuItem(
@@ -782,10 +788,11 @@ class _LiveOverflow extends StatelessWidget {
               width: 48,
               height: 48,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: AlongElevation.hairline(palette.ink),
+              clipBehavior: Clip.antiAlias,
+              decoration: AlongCraft.surface(
+                palette,
+                radius: AlongRadius.control.x,
+                hairline: true,
               ),
               child: AlongIcon(AlongIcons.dots, size: 20, color: palette.ink),
             ),
@@ -928,7 +935,7 @@ class AlongFlowPlate extends StatelessWidget {
                   DecoratedBox(
                     decoration: AlongCraft.surface(
                       palette,
-                      radius: 20,
+                      radius: AlongRadius.card.x,
                       hairline: true,
                     ),
                     child: const Padding(
@@ -1087,7 +1094,7 @@ class AlongFlowOffer extends StatelessWidget {
             child: DecoratedBox(
               decoration: AlongCraft.surface(
                 palette,
-                radius: 20,
+                radius: AlongRadius.card.x,
                 shadow: AlongElevation.sheet(palette.ink),
               ),
               child: Column(
@@ -1096,8 +1103,8 @@ class AlongFlowOffer extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
+                    child: AlongCraft.clip(
+                      corner: AlongRadius.xs.x,
                       child: SizedBox(
                         height: 6,
                         child: Stack(
@@ -1597,9 +1604,10 @@ class _RatingGrid extends StatelessWidget {
     final palette = AlongPalette.of(context);
     Widget tile(String label, bool selected) {
       return DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
+        decoration: AlongCraft.fill(
+          const Color(0x00000000),
+          corner: AlongRadius.row.x,
+          side: BorderSide(
             color: palette.ink.withValues(alpha: selected ? 1 : 0.28),
             width: selected ? 1.5 : 1,
           ),
@@ -1645,12 +1653,13 @@ class _TipRow extends StatelessWidget {
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     final line = palette.ink.withValues(alpha: 0.28);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: line),
+      decoration: AlongCraft.fill(
+        const Color(0x00000000),
+        corner: AlongRadius.control.x,
+        side: BorderSide(color: line),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(11),
+      child: AlongCraft.clip(
+        corner: AlongRadius.control.x,
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1699,9 +1708,10 @@ class _NoteField extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-        color: palette.recessed,
-        borderRadius: BorderRadius.circular(12),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        palette.recessed,
+        corner: AlongRadius.control.x,
       ),
       child: Text(
         'Add a note',
@@ -1763,8 +1773,8 @@ class _MapHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final map = ClipRRect(
-      borderRadius: BorderRadius.circular(18),
+    final map = AlongCraft.clip(
+      corner: AlongRadius.card.x,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -1880,7 +1890,7 @@ class _StepDots extends StatelessWidget {
               color: i == index
                   ? const Color(0xFFF7D117)
                   : const Color(0xE6FFFFFF),
-              borderRadius: BorderRadius.circular(2),
+              shape: BoxShape.circle,
             ),
           ),
         ],
@@ -2137,7 +2147,7 @@ class _PersonCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: AlongCraft.surface(
         palette,
-        radius: 18,
+        radius: AlongRadius.row.x,
         shadow: AlongElevation.card(palette.ink),
       ),
       child: Row(
@@ -2291,11 +2301,12 @@ class _GoButtonState extends State<_GoButton>
           width: 120,
           height: 120,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: palette.ink,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: palette.accent, width: 3),
-            boxShadow: [
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            palette.ink,
+            corner: AlongRadius.card.x,
+            side: BorderSide(color: palette.accent, width: 3),
+            shadow: [
               ...AlongElevation.raised(palette.ink),
               BoxShadow(
                 color: palette.accent.withValues(alpha: 0.28 + 0.28 * breathe),
@@ -2359,9 +2370,10 @@ class _Field extends StatelessWidget {
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-        color: fill ?? palette.surface,
-        borderRadius: BorderRadius.circular(18),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        fill ?? palette.surface,
+        corner: AlongRadius.control.x,
       ),
       child: child,
     );
@@ -2394,9 +2406,10 @@ class _PlaceRow extends StatelessWidget {
             width: 32,
             height: 32,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: palette.recessed,
-              borderRadius: BorderRadius.circular(12),
+            clipBehavior: Clip.antiAlias,
+            decoration: AlongCraft.fill(
+              palette.recessed,
+              corner: AlongRadius.control.x,
             ),
             child: AlongIcon(icon, size: 20, color: palette.ink),
           ),
@@ -2419,9 +2432,7 @@ class _PlaceRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: AlongCraft.border(AlongRadius.control.x),
               ),
               child: Text(
                 action!,
@@ -2767,8 +2778,8 @@ class _MapChip extends StatelessWidget {
       decoration: BoxDecoration(boxShadow: AlongElevation.float(palette.ink)),
       child: AlongFrost(
         solid: true,
-        radius: 12,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        radius: AlongRadius.control.x,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Text(
           label,
           style: AlongType.caption(palette).copyWith(
@@ -3047,9 +3058,9 @@ class _WeekBar extends StatelessWidget {
                   ? FittedBox(
                       fit: BoxFit.scaleDown,
                       child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: palette.ink,
-                          borderRadius: BorderRadius.circular(6),
+                        decoration: AlongCraft.fill(
+                          palette.ink,
+                          corner: AlongRadius.xs.x,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -3080,11 +3091,12 @@ class _WeekBar extends StatelessWidget {
                   heightFactor: bar.$2 / 60,
                   child: Container(
                     width: 8,
-                    decoration: BoxDecoration(
-                      color: selected
+                    clipBehavior: Clip.antiAlias,
+                    decoration: AlongCraft.fill(
+                      selected
                           ? palette.ink
                           : palette.ink.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(12),
+                      corner: AlongRadius.xs.x,
                     ),
                   ),
                 ),
@@ -3201,8 +3213,8 @@ class _DemandHint extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return AlongFrost(
       solid: true,
-              radius: 12,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              radius: AlongRadius.control.x,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Text(
         'High demand near Wuse',
         maxLines: 1,
@@ -3272,8 +3284,8 @@ class _TodayPillState extends State<_TodayPill> {
             ),
             child: AlongFrost(
               solid: true,
-              radius: 12,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              radius: AlongRadius.control.x,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               child: Text(
                 'Today · ₦18,400',
                 maxLines: 1,
@@ -3320,10 +3332,11 @@ class _HeatLegend extends StatelessWidget {
     );
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: AlongElevation.float(palette.ink),
+      clipBehavior: Clip.antiAlias,
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.control.x,
+        shadow: AlongElevation.float(palette.ink),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -3333,8 +3346,9 @@ class _HeatLegend extends StatelessWidget {
           Container(
             width: 108,
             height: 12,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+            clipBehavior: Clip.antiAlias,
+            decoration: ShapeDecoration(
+              shape: AlongCraft.border(AlongRadius.xs.x),
               gradient: LinearGradient(
                 colors: [
                   palette.ink.withValues(alpha: 0.06),
@@ -3432,13 +3446,13 @@ class _NigeriaPlate extends StatelessWidget {
     }
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F4EA),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: ink, width: 1.5),
+      decoration: AlongCraft.fill(
+        const Color(0xFFF7F4EA),
+        corner: AlongRadius.control.x,
+        side: const BorderSide(color: Color(0xFF141210), width: 1.5),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+      child: AlongCraft.clip(
+        corner: AlongRadius.control.x,
         child: Column(
           children: [
             Expanded(
@@ -3512,14 +3526,14 @@ class _ViewfinderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final cut = RRect.fromRectAndRadius(hole, const Radius.circular(18));
+    final cut = AlongCraft.path(hole, AlongRadius.card.x);
     final dim = Path.combine(
       PathOperation.difference,
       Path()..addRect(Offset.zero & size),
-      Path()..addRRect(cut),
+      cut,
     );
     canvas.drawPath(dim, Paint()..color = const Color(0xB3000000));
-    canvas.drawRRect(
+    canvas.drawPath(
       cut,
       Paint()
         ..style = PaintingStyle.stroke
@@ -3603,8 +3617,8 @@ class _HoldAlertState extends State<_HoldAlert>
       child: AnimatedBuilder(
         animation: _fill,
         builder: (context, _) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+          return AlongCraft.clip(
+            corner: AlongRadius.button.x,
             child: SizedBox(
               height: 56,
               child: Stack(
@@ -3719,11 +3733,11 @@ class _GuardianPeople extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: AlongElevation.hairline(palette.ink),
-        boxShadow: AlongElevation.rest(palette.ink),
+      decoration: AlongCraft.surface(
+        palette,
+        radius: AlongRadius.card.x,
+        hairline: true,
+        shadow: AlongElevation.rest(palette.ink),
       ),
       child: const Padding(
         padding: EdgeInsets.fromLTRB(12, 12, 12, 4),
@@ -3870,8 +3884,8 @@ class _BalanceCard extends StatelessWidget {
     const paper = Color(0xFFF7F4EF);
     return AspectRatio(
       aspectRatio: 1.586,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+      child: AlongCraft.clip(
+        corner: AlongRadius.card.x,
         child: DecoratedBox(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -3952,7 +3966,7 @@ class _WalletAction extends StatelessWidget {
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     return InkWell(
       onTap: _noop,
-      borderRadius: BorderRadius.circular(12),
+      customBorder: AlongCraft.border(AlongRadius.control.x),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Column(
@@ -4364,18 +4378,21 @@ class _BidRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
         color: palette.surface,
-        borderRadius: BorderRadius.circular(16),
+        shape: AlongCraft.border(AlongRadius.row.x),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          customBorder: AlongCraft.border(AlongRadius.row.x),
           child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: selected
-                    ? palette.ink
-                    : palette.ink.withValues(alpha: 0.12),
-                width: selected ? 1.5 : 1,
+            decoration: ShapeDecoration(
+              shape: AlongCraft.border(
+                AlongRadius.row.x,
+                side: BorderSide(
+                  color: selected
+                      ? palette.ink
+                      : palette.ink.withValues(alpha: 0.12),
+                  width: selected ? 1.5 : 1,
+                ),
               ),
             ),
             child: Padding(
@@ -4505,10 +4522,11 @@ class _MapDriver extends StatelessWidget {
         const SizedBox(height: 2),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: palette.surface,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: AlongElevation.float(palette.ink),
+          clipBehavior: Clip.antiAlias,
+          decoration: AlongCraft.fill(
+            palette.surface,
+            corner: AlongRadius.xs.x,
+            shadow: AlongElevation.float(palette.ink),
           ),
           child: Text(
             '$name · $eta',
