@@ -879,20 +879,13 @@ class _SeatButtonState extends State<_SeatButton>
   late final AnimationController _depress;
   var _armed = false;
 
-  /// 0.9, through about 1.05, then rest at 1. The view clamps the peak.
-  static const _select = SpringDescription(
-    mass: 0.5,
-    stiffness: 420,
-    damping: 12,
-  );
-
   @override
   void initState() {
     super.initState();
     _scale = AnimationController.unbounded(vsync: this, value: 1);
     _reveal = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 320),
+      duration: AlongDurations.draw,
       value: 1,
     );
     _depress = AnimationController.unbounded(vsync: this, value: 0)
@@ -907,7 +900,7 @@ class _SeatButtonState extends State<_SeatButton>
       _depress.value = 0;
       return;
     }
-    _scale.animateWith(SpringSimulation(_select, 0.92, 1, 0));
+    _scale.animateWith(SpringSimulation(AlongSprings.select, 0.92, 1, 0));
     _depress.animateWith(
       SpringSimulation(AlongSprings.press, _depress.value, 1, 0),
     );
@@ -933,7 +926,7 @@ class _SeatButtonState extends State<_SeatButton>
       return;
     }
     _scale.value = 0.9;
-    _scale.animateWith(SpringSimulation(_select, 0.9, 1, 0));
+    _scale.animateWith(SpringSimulation(AlongSprings.select, 0.9, 1, 0));
     _reveal.forward(from: 0);
     AlongHaptics.tick(context);
   }
@@ -945,14 +938,7 @@ class _SeatButtonState extends State<_SeatButton>
       return;
     }
     _reveal.forward(from: 0);
-    _scale.animateWith(
-      SpringSimulation(
-        const SpringDescription(mass: 0.4, stiffness: 520, damping: 11),
-        1,
-        1,
-        8,
-      ),
-    );
+    _scale.animateWith(SpringSimulation(AlongSprings.taken, 1, 1, 8));
   }
 
   @override
@@ -1583,7 +1569,7 @@ class AlongStrokeCheckState extends State<AlongStrokeCheck>
     super.initState();
     _draw = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 320),
+      duration: AlongDurations.draw,
       value: 1,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -485,7 +485,7 @@ class AlongSplashState extends State<AlongSplash>
     super.initState();
     _draw = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: AlongDurations.glide,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _start());
   }
@@ -583,7 +583,7 @@ class AlongOdometerState extends State<AlongOdometer>
     if (_roll.value >= 1 || !AlongMotionPolicy.play(context)) {
       return AlongMoney(value: _shown, style: widget.style);
     }
-    final t = Curves.easeOutCubic.transform(_roll.value);
+    final t = AlongCurves.settle.transform(_roll.value);
     final current = (_from + (widget.value - _from) * t).round();
     return AlongMoney(value: current, style: widget.style);
   }
@@ -1403,7 +1403,7 @@ class AlongConfettiState extends State<AlongConfetti>
     super.initState();
     _burst = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: AlongDurations.glide,
     );
   }
 
@@ -1514,7 +1514,7 @@ class AlongContainerTransformState extends State<AlongContainerTransform>
     super.initState();
     _expand = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 360),
+      duration: AlongDurations.expand,
       value: widget.open ? 1 : 0,
     );
   }
@@ -1547,7 +1547,7 @@ class AlongContainerTransformState extends State<AlongContainerTransform>
       animation: _expand,
       builder: (context, _) {
         if (_expand.value == 0) return widget.closed;
-        final t = Curves.easeOutCubic.transform(_expand.value);
+        final t = AlongCurves.settle.transform(_expand.value);
         return AlongCraft.clip(
           corner: AlongRadius.row.x * (1 - t),
           child: ColoredBox(

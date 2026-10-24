@@ -37,6 +37,24 @@ void main() {
     'loading': ({bool legacy = false}) => const AlongFlowLoading(),
     'refresh': ({bool legacy = false}) => const AlongFlowRefresh(),
     'phases': ({bool legacy = false}) => const AlongFlowPhases(),
+    'dev_motions': ({bool legacy = false}) => const AlongFlowMotions(),
+    'schedule': ({bool legacy = false}) => const AlongFlowSchedule(),
+    'stops': ({bool legacy = false}) => const AlongFlowStops(),
+    'options': ({bool legacy = false}) => const AlongFlowRideOptions(
+      options: AlongRideOptions(
+        squeezeFree: true,
+        seatHolds: 1,
+        womenOnlyRows: [2],
+      ),
+    ),
+    'topup': ({bool legacy = false}) => const AlongFlowTopUp(),
+    'payout': ({bool legacy = false}) => const AlongFlowPayout(),
+    'offline_home': ({bool legacy = false}) => const AlongFlowOfflineHome(),
+    'offline_matching': ({bool legacy = false}) =>
+        const AlongFlowOfflineMatching(),
+    'offline_live': ({bool legacy = false}) => const AlongFlowOfflineLive(),
+    'offline_reconnecting': ({bool legacy = false}) =>
+        const AlongFlowOfflineReconnecting(),
   };
 
   for (final stage in stages.entries) {
@@ -100,6 +118,19 @@ void main() {
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('goldens/flows/after/live_route_35_light_360x800.png'),
+    );
+  });
+
+  testWidgets('live route mid draw dark 360', (tester) async {
+    await _pump(
+      tester,
+      child: const AlongFlowLive(progress: 0.35),
+      brightness: Brightness.dark,
+      size: const Size(360, 800),
+    );
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('goldens/flows/after/live_route_35_dark_360x800.png'),
     );
   });
 }

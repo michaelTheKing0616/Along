@@ -1005,7 +1005,7 @@ class AlongCityMap extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SolidWord(palette: palette, text: word),
+            if (word.isNotEmpty) _SolidWord(palette: palette, text: word),
             if (hollow)
               _SolidWord(palette: palette, text: DemoAdapter.gps.ageLabel),
             Container(
@@ -1115,7 +1115,7 @@ class _PulseRadarState extends State<_PulseRadar>
     super.initState();
     _pulse = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2200),
+      duration: AlongDurations.radar,
     );
     _pulse.value = 0.42;
   }
@@ -1209,9 +1209,9 @@ class _HeldProgressState extends State<_HeldProgress>
     _move =
         AnimationController(
           vsync: this,
-          duration: const Duration(milliseconds: 700),
+          duration: AlongDurations.glide,
         )..addListener(() {
-          final t = Curves.easeInOut.transform(_move.value);
+          final t = AlongCurves.breath.transform(_move.value);
           setState(() => _shown = _from + (widget.progress - _from) * t);
         });
   }
@@ -1475,7 +1475,7 @@ class _DemandBreathState extends State<_DemandBreath>
         animation: _breath,
         builder: (context, _) {
           final t = AlongMotionPolicy.play(context)
-              ? Curves.easeInOut.transform(_breath.value)
+              ? AlongCurves.breath.transform(_breath.value)
               : 0.0;
           return CustomPaint(
             painter: _DemandGlowPainter(

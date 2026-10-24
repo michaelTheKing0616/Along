@@ -27,7 +27,7 @@ class AlongSkeleton extends StatefulWidget {
 
 class _AlongSkeletonState extends State<AlongSkeleton>
     with SingleTickerProviderStateMixin {
-  static const _shimmerDuration = Duration(milliseconds: 1200);
+  static const _shimmerDuration = AlongDurations.shimmer;
 
   late AnimationController _controller;
 

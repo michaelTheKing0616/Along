@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../motion.dart';
 import '../tokens.g.dart';
 
 /// Hold-to-fire button types (doc 05 §9 `HoldButton`).
@@ -41,7 +42,7 @@ class HoldButton extends StatefulWidget {
 
 class _HoldButtonState extends State<HoldButton>
     with SingleTickerProviderStateMixin {
-  static const _defaultHoldDuration = Duration(milliseconds: 600);
+  static const _defaultHoldDuration = AlongDurations.sos;
 
   late AnimationController _controller;
 
