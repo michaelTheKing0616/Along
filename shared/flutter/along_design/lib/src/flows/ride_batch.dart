@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../components/along_button.dart';
-import '../components/seat_map.dart';
 import '../craft.dart';
 import '../elevation.dart';
 import '../icons.dart';
-import '../motion.dart';
 import '../palette.dart';
 import '../tokens.g.dart';
 import '../type.dart';
@@ -136,50 +134,19 @@ class AlongFlowMotions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
     return _Page(
       title: 'Motion',
       subtitle: 'Each one, at rest.',
-      children: [
-        _MotionRow(
-          specimen: const _SheetSpecimen(),
-          title: 'Sheet',
-          note: 'Springs into place.',
-        ),
-        const SizedBox(height: 12),
-        _MotionRow(
-          specimen: const Center(
-            child: AlongSeatGlyph(status: 'yours', width: 48),
-          ),
-          title: 'Seat',
-          note: 'Scales, then a tick.',
-        ),
-        const SizedBox(height: 12),
-        _MotionRow(
-          specimen: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: AlongOdometer(
-              value: 1800,
-              style: AlongType.title(palette),
-            ),
-          ),
-          title: 'Fare',
-          note: 'Fare counts up.',
-        ),
-        const SizedBox(height: 12),
-        _MotionRow(
-          specimen: Center(
-            child: AlongStrokeCheck(color: palette.ink, size: 32),
-          ),
-          title: 'Arrival',
-          note: 'Draws itself on.',
-        ),
-        const SizedBox(height: 12),
-        const _MotionRow(
-          specimen: _RouteDraw(),
-          title: 'Route',
-          note: 'Draws along the trip.',
-        ),
+      children: const [
+        _MotionRow(kind: _MotionKind.sheet, title: 'Sheet', note: 'Springs into place.'),
+        SizedBox(height: 12),
+        _MotionRow(kind: _MotionKind.seat, title: 'Seat', note: 'Scales, then a tick.'),
+        SizedBox(height: 12),
+        _MotionRow(kind: _MotionKind.fare, title: 'Fare', note: 'Fare counts up.'),
+        SizedBox(height: 12),
+        _MotionRow(kind: _MotionKind.arrival, title: 'Arrival', note: 'Draws itself on.'),
+        SizedBox(height: 12),
+        _MotionRow(kind: _MotionKind.route, title: 'Route', note: 'Draws along the trip.'),
       ],
     );
   }
@@ -500,6 +467,7 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
             key: Key('topup_${widget.choices[i]}'),
             title: _naira(widget.choices[i]),
             selected: widget.choices[i] == _choice,
+            outlined: true,
             onTap: () => setState(() => _choice = widget.choices[i]),
           ),
         ],
@@ -558,7 +526,9 @@ class AlongFlowPayout extends StatelessWidget {
         const SizedBox(height: 16),
         Row(
           children: [
-            Expanded(child: _MoneyCard(name: 'Pending', amount: pending, edge: true)),
+            Expanded(
+              child: _MoneyCard(name: 'Pending', amount: pending, open: true),
+            ),
             const SizedBox(width: 12),
             Expanded(child: _MoneyCard(name: 'Paid', amount: paid)),
           ],
@@ -585,7 +555,8 @@ class AlongFlowOfflineHome extends StatelessWidget {
     return _MapStage(
       map: const AlongCityMap(
         phase: AlongDayPhase.afternoon,
-        fix: AlongFix.stale,
+        bare: true,
+        fix: AlongFix.hidden,
         demoLabel: false,
       ),
       topButtons: true,
@@ -620,10 +591,9 @@ class AlongFlowOfflineMatching extends StatelessWidget {
         center: AlongCityMap.wuseMarket,
         bare: true,
         demoLabel: false,
-        fix: AlongFix.stale,
+        fix: AlongFix.hidden,
         sheetInset: 0,
       ),
-      alignTop: true,
       card: const _OfflineCard(
         title: 'Search paused',
         body: 'The network dropped',
@@ -647,7 +617,6 @@ class AlongFlowOfflineLive extends StatelessWidget {
         mode: AlongCityMapMode.trip,
         progress: 0.62,
         sheetInset: 0.36,
-        fix: AlongFix.stale,
         demoLabel: false,
       ),
       card: _OfflineCard(
@@ -734,14 +703,16 @@ class _Page extends StatelessWidget {
   }
 }
 
+enum _MotionKind { sheet, seat, fare, arrival, route }
+
 class _MotionRow extends StatelessWidget {
   const _MotionRow({
-    required this.specimen,
+    required this.kind,
     required this.title,
     required this.note,
   });
 
-  final Widget specimen;
+  final _MotionKind kind;
   final String title;
   final String note;
 
@@ -751,8 +722,8 @@ class _MotionRow extends StatelessWidget {
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     return Row(
       children: [
-        SizedBox(width: 88, height: 80, child: specimen),
-        const SizedBox(width: 12),
+        _MotionTile(kind: kind),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,116 +752,119 @@ class _MotionRow extends StatelessWidget {
   }
 }
 
-class _SheetSpecimen extends StatelessWidget {
-  const _SheetSpecimen();
+/// 56px squircle. Radius 24 stays under half of 56, so the tile is not a disc.
+class _MotionTile extends StatelessWidget {
+  const _MotionTile({required this.kind});
+
+  final _MotionKind kind;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return DecoratedBox(
-      decoration: AlongCraft.fill(
-        palette.recessed,
-        corner: AlongRadius.control.x,
-      ),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: SizedBox(
-          height: 68,
-          width: double.infinity,
-          child: DecoratedBox(
-            decoration: AlongCraft.fill(
-              palette.surface,
-              corner: AlongRadius.sheet.x,
-              top: true,
-            ),
-          ),
+    return SizedBox(
+      width: 56,
+      height: 56,
+      child: DecoratedBox(
+        decoration: AlongCraft.fill(
+          palette.surface,
+          corner: AlongRadius.card.x,
+          side: BorderSide(color: palette.ink.withValues(alpha: 0.14)),
+        ),
+        child: CustomPaint(
+          painter: _MotionMarkPainter(kind: kind, color: palette.ink),
         ),
       ),
     );
   }
 }
 
-class _RouteDraw extends StatefulWidget {
-  const _RouteDraw();
+class _MotionMarkPainter extends CustomPainter {
+  _MotionMarkPainter({required this.kind, required this.color});
 
-  @override
-  State<_RouteDraw> createState() => _RouteDrawState();
-}
-
-class _RouteDrawState extends State<_RouteDraw>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _draw;
-
-  @override
-  void initState() {
-    super.initState();
-    _draw = AnimationController(
-      vsync: this,
-      duration: AlongDurations.routeDraw,
-      value: 1,
-    );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !AlongMotionPolicy.play(context)) return;
-      _draw.forward(from: 0);
-    });
-  }
-
-  @override
-  void dispose() {
-    _draw.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return AnimatedBuilder(
-      animation: _draw,
-      builder: (context, _) {
-        final t = AlongMotionPolicy.play(context)
-            ? AlongCurves.settle.transform(_draw.value)
-            : 1.0;
-        return CustomPaint(
-          painter: _RoutePainter(progress: t, color: palette.ink),
-          child: const SizedBox.expand(),
-        );
-      },
-    );
-  }
-}
-
-class _RoutePainter extends CustomPainter {
-  _RoutePainter({required this.progress, required this.color});
-
-  final double progress;
+  final _MotionKind kind;
   final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.75
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = color;
+    switch (kind) {
+      case _MotionKind.sheet:
+        _sheet(canvas, stroke);
+      case _MotionKind.seat:
+        _seat(canvas, stroke);
+      case _MotionKind.fare:
+        _fare(canvas, stroke);
+      case _MotionKind.arrival:
+        _arrival(canvas, stroke);
+      case _MotionKind.route:
+        _route(canvas, stroke);
+    }
+  }
+
+  void _sheet(Canvas canvas, Paint stroke) {
     final path = Path()
-      ..moveTo(8, size.height * 0.72)
-      ..cubicTo(
-        size.width * 0.35,
-        size.height * 0.72,
-        size.width * 0.45,
-        size.height * 0.22,
-        size.width - 8,
-        size.height * 0.28,
-      );
-    final metric = path.computeMetrics().first;
-    canvas.drawPath(
-      metric.extractPath(0, metric.length * progress.clamp(0.0, 1.0)),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3
-        ..strokeCap = StrokeCap.round
-        ..color = color,
+      ..moveTo(16, 42)
+      ..lineTo(16, 26)
+      ..quadraticBezierTo(16, 18, 24, 18)
+      ..lineTo(32, 18)
+      ..quadraticBezierTo(40, 18, 40, 26)
+      ..lineTo(40, 42);
+    canvas.drawPath(path, stroke);
+    canvas.drawLine(const Offset(24, 24), const Offset(32, 24), stroke);
+  }
+
+  void _seat(Canvas canvas, Paint stroke) {
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(19, 14, 18, 14),
+        const Radius.circular(5),
+      ),
+      stroke,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(16, 30, 24, 12),
+        const Radius.circular(4),
+      ),
+      stroke,
     );
   }
 
+  void _fare(Canvas canvas, Paint stroke) {
+    final path = Path()
+      ..moveTo(16, 36)
+      ..lineTo(24, 28)
+      ..lineTo(32, 31)
+      ..lineTo(42, 18);
+    canvas.drawPath(path, stroke);
+    canvas.drawCircle(const Offset(42, 18), 2.25, stroke);
+  }
+
+  void _arrival(Canvas canvas, Paint stroke) {
+    final path = Path()
+      ..moveTo(18, 29)
+      ..lineTo(25, 36)
+      ..lineTo(40, 20);
+    canvas.drawPath(path, stroke);
+  }
+
+  void _route(Canvas canvas, Paint stroke) {
+    final path = Path()
+      ..moveTo(15, 38)
+      ..cubicTo(24, 38, 28, 18, 40, 22);
+    canvas.drawPath(path, stroke);
+    canvas.drawCircle(const Offset(15, 38), 2.25, stroke);
+    canvas.drawCircle(const Offset(40, 22), 2.25, stroke);
+  }
+
   @override
-  bool shouldRepaint(covariant _RoutePainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.color != color;
+  bool shouldRepaint(covariant _MotionMarkPainter oldDelegate) =>
+      oldDelegate.kind != kind || oldDelegate.color != color;
 }
 
 class _DayRow extends StatelessWidget {
@@ -1069,19 +1043,22 @@ class _ChoiceRow extends StatelessWidget {
     required this.onTap,
     this.detail,
     this.marked = false,
+    this.outlined = false,
   });
 
   final String title;
   final String? detail;
   final bool selected;
   final bool marked;
+  final bool outlined;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    final inkFill = selected && !marked;
+    final inkFill = selected && !marked && !outlined;
     final color = inkFill ? palette.onInk : palette.ink;
+    final showMark = selected && (marked || outlined);
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -1091,7 +1068,9 @@ class _ChoiceRow extends StatelessWidget {
           decoration: AlongCraft.fill(
             inkFill ? palette.ink : palette.surface,
             corner: AlongRadius.row.x,
-            side: marked && selected
+            side: outlined && selected
+                ? BorderSide(color: palette.ink, width: 2)
+                : marked && selected
                 ? BorderSide(color: palette.ink, width: 1.5)
                 : marked
                 ? BorderSide(color: palette.ink.withValues(alpha: 0.14))
@@ -1121,7 +1100,7 @@ class _ChoiceRow extends StatelessWidget {
                     softWrap: false,
                     style: AlongType.label(palette).copyWith(color: color),
                   ),
-                if (marked && selected) ...[
+                if (showMark) ...[
                   const SizedBox(width: 8),
                   Icon(AlongIcons.check, size: 24, color: palette.ink),
                 ],
@@ -1201,51 +1180,40 @@ class _StopRow extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(bottom: last ? 0 : 8),
-              child: DecoratedBox(
-                decoration: here
-                    ? AlongCraft.fill(palette.surface, corner: AlongRadius.row.x)
-                    : const BoxDecoration(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: here ? 12 : 0,
-                    vertical: here ? 8 : 4,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              stop.name,
-                              maxLines: 1,
-                              softWrap: false,
-                              style: name,
-                            ),
-                            if (stop.detail != null)
-                              Text(
-                                stop.detail!,
-                                maxLines: 1,
-                                softWrap: false,
-                                style: AlongType.bodyMuted(palette),
-                              ),
-                          ],
+              padding: EdgeInsets.only(top: 2, bottom: last ? 2 : 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          stop.name,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: name,
                         ),
-                      ),
-                      Text(
-                        stop.eta,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.label(palette).copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                          height: 1.1,
-                        ),
-                      ),
-                    ],
+                        if (stop.detail != null)
+                          Text(
+                            stop.detail!,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: AlongType.bodyMuted(palette),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
+                  Text(
+                    stop.eta,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: AlongType.label(palette).copyWith(
+                      fontWeight: here ? FontWeight.w600 : FontWeight.w500,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      height: 1.1,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1361,12 +1329,14 @@ class _MoneyCard extends StatelessWidget {
   const _MoneyCard({
     required this.name,
     required this.amount,
-    this.edge = false,
+    this.open = false,
   });
 
   final String name;
   final int amount;
-  final bool edge;
+
+  /// Pending is the open settlement. Paid is the quieter dot.
+  final bool open;
 
   @override
   Widget build(BuildContext context) {
@@ -1377,19 +1347,34 @@ class _MoneyCard extends StatelessWidget {
       decoration: AlongCraft.fill(
         palette.surface,
         corner: AlongRadius.card.x,
-        side: BorderSide(
-          color: edge ? palette.accent : palette.ink.withValues(alpha: 0.14),
-          width: edge ? 1.5 : 1,
-        ),
+        side: BorderSide(color: palette.ink.withValues(alpha: 0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            name,
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.label(palette),
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: open
+                      ? palette.ink
+                      : palette.ink.withValues(alpha: 0.36),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: AlongType.label(palette),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 4),
           SizedBox(
@@ -1447,9 +1432,17 @@ class _SettlementRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          AlongMoney(
-            value: row.amount,
-            style: AlongType.body(palette).copyWith(fontWeight: FontWeight.w600),
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerRight,
+              child: AlongMoney(
+                value: row.amount,
+                style: AlongType.body(palette).copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -1478,14 +1471,25 @@ class _MapStage extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(child: map),
+          const Positioned.fill(
+            child: IgnorePointer(
+              child: ColoredBox(color: Color(0x33000000)),
+            ),
+          ),
+          const Positioned(
+            top: 32,
+            left: 16,
+            right: 16,
+            child: _OfflineBanner(),
+          ),
           if (topButtons) ...[
             const Positioned(
-              top: 16,
+              top: 80,
               left: 16,
               child: AlongMapButton(icon: AlongIcons.menu, tooltip: 'Menu'),
             ),
             const Positioned(
-              top: 16,
+              top: 80,
               right: 16,
               child: AlongMapButton(
                 icon: AlongIcons.locate,
@@ -1501,6 +1505,36 @@ class _MapStage extends StatelessWidget {
             child: card,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _OfflineBanner extends StatelessWidget {
+  const _OfflineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: AlongCraft.fill(
+        palette.surface,
+        corner: AlongRadius.control.x,
+        side: BorderSide(color: palette.ink.withValues(alpha: 0.14)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Text(
+          'Offline · last updated 40s',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+          textAlign: TextAlign.center,
+          style: AlongType.label(palette).copyWith(
+            fontWeight: FontWeight.w600,
+            height: 1.1,
+          ),
+        ),
       ),
     );
   }

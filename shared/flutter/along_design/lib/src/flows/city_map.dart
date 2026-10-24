@@ -1005,7 +1005,7 @@ class AlongCityMap extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SolidWord(palette: palette, text: word),
+            if (word.isNotEmpty) _SolidWord(palette: palette, text: word),
             if (hollow)
               _SolidWord(palette: palette, text: DemoAdapter.gps.ageLabel),
             Container(
