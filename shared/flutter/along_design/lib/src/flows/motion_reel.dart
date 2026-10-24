@@ -1,58 +1,103 @@
 import 'package:flutter/material.dart';
 
-import '../components/seat_map.dart';
 import '../motion.dart';
-import '../palette.dart';
-import '../tokens.g.dart';
-import '../type.dart';
-import 'delights.dart';
-import 'live_arrival.dart';
-import 'map_sketch.dart';
-import 'spring_sheet.dart';
+import 'flow_stages.dart';
+import 'journey_stages.dart';
 
-/// Fifteen seconds of the ride motions, in one frame.
+/// Fifteen seconds of the ride, on the screens a rider actually sees.
 ///
-/// Sheet spring, seat select, fare count-up, arrival check, and the route
-/// draw. The gallery stays on rest poses. This reel is the recording.
+/// The quote card springs up over the Abuja tiles and the corridor draws in
+/// while the total counts to the quoted fare. The cabin then selects the
+/// front-right seat. The rating screen draws the arrival check.
 class AlongMotionReel extends StatefulWidget {
   const AlongMotionReel({super.key});
+
+  static const length = Duration(seconds: 15);
 
   @override
   State<AlongMotionReel> createState() => _AlongMotionReelState();
 }
 
+class _ReelCue {
+  const _ReelCue({
+    required this.beat,
+    required this.sheet,
+    required this.route,
+    required this.count,
+    required this.seat,
+  });
+
+  final int beat;
+  final bool sheet;
+  final double route;
+  final bool count;
+  final String? seat;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _ReelCue &&
+        other.beat == beat &&
+        other.sheet == sheet &&
+        other.route == route &&
+        other.count == count &&
+        other.seat == seat;
+  }
+
+  @override
+  int get hashCode => Object.hash(beat, sheet, route, count, seat);
+}
+
 class _AlongMotionReelState extends State<AlongMotionReel>
     with SingleTickerProviderStateMixin {
   late final AnimationController _clock;
-  var _fare = 1200;
-  var _held = false;
-  var _arrived = false;
+  _ReelCue _cue = const _ReelCue(
+    beat: 0,
+    sheet: false,
+    route: 0,
+    count: false,
+    seat: null,
+  );
 
   @override
   void initState() {
     super.initState();
-    _clock = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 15),
-    )..forward();
-    _clock.addListener(_cue);
+    _clock = AnimationController(vsync: this, duration: AlongMotionReel.length)
+      ..addListener(_onTick)
+      ..forward();
   }
 
-  void _cue() {
-    final t = _clock.value * 15;
-    var held = _held;
-    var fare = _fare;
-    var arrived = _arrived;
-    if (!held && t >= 4) held = true;
-    if (fare == 1200 && t >= 7) fare = 6400;
-    if (fare == 6400 && t >= 9.5) fare = 18400;
-    if (!arrived && t >= 12) arrived = true;
-    if (held == _held && fare == _fare && arrived == _arrived) return;
-    setState(() {
-      _held = held;
-      _fare = fare;
-      _arrived = arrived;
-    });
+  void _onTick() {
+    final next = _cueAt(_clock.value * 15);
+    if (next == _cue) return;
+    setState(() => _cue = next);
+  }
+
+  _ReelCue _cueAt(double t) {
+    if (t < 5) {
+      return _ReelCue(
+        beat: 0,
+        sheet: t >= 0.28,
+        route: t >= 0.42 ? 1 : 0,
+        count: t >= 0.28,
+        seat: null,
+      );
+    }
+    if (t < 10) {
+      return _ReelCue(
+        beat: 1,
+        sheet: true,
+        route: 1,
+        count: true,
+        seat: t >= 6.3 ? 'fr' : null,
+      );
+    }
+    return const _ReelCue(
+      beat: 2,
+      sheet: true,
+      route: 1,
+      count: true,
+      seat: 'fr',
+    );
   }
 
   @override
@@ -63,82 +108,25 @@ class _AlongMotionReelState extends State<AlongMotionReel>
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    final t = _clock.value * 15;
-    final drawn = (t / 3.2).clamp(0.0, 1.0);
-    return Scaffold(
-      backgroundColor: palette.bg,
-      body: Stack(
-        children: [
-          const Positioned.fill(child: ColoredBox(color: Color(0xFFE6E7EA))),
-          Positioned.fill(
-            child: AlongMapSketch(
-              progress: drawn,
-              showRoute: true,
-              showVehicle: drawn > 0.02,
-            ),
-          ),
-          AlongSpringSheet(
-            fraction: 0.48,
-            child: _ReelSheet(held: _held, fare: _fare, arrived: _arrived),
-          ),
-        ],
+    final cue = _cue;
+    final Widget screen = switch (cue.beat) {
+      0 => AlongFlowQuote(
+        key: const ValueKey('reel_quote'),
+        revealSheet: cue.sheet,
+        routeProgress: cue.route,
+        fareClock: cue.count ? _clock : null,
       ),
-    );
-  }
-}
-
-class _ReelSheet extends StatelessWidget {
-  const _ReelSheet({
-    required this.held,
-    required this.fare,
-    required this.arrived,
-  });
-
-  final bool held;
-  final int fare;
-  final bool arrived;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text('Wuse to Nyanya', style: AlongType.title(palette)),
-        const SizedBox(height: 8),
-        SeatMap(
-          body: 'sedan',
-          onSeatTap: (_) {},
-          rows: [
-            SeatMapRowView(
-              id: 'front',
-              seats: [
-                SeatMapSeat(
-                  id: 'a',
-                  label: 'A',
-                  role: 'passenger',
-                  status: held ? 'yours' : 'open',
-                  statusWord: held ? 'Yours' : 'Open',
-                ),
-                const SeatMapSeat(
-                  id: 'b',
-                  label: 'B',
-                  role: 'passenger',
-                  status: 'open',
-                  statusWord: 'Open',
-                ),
-              ],
-            ),
-          ],
-        ),
-        AlongOdometer(
-          value: fare,
-          style: AlongType.numeric(palette).copyWith(fontSize: 28),
-        ),
-        const SizedBox(height: 8),
-        if (arrived) const AlongArrivalMark() else const SizedBox(height: 28),
-      ],
+      1 => AlongFlowSeats(
+        key: const ValueKey('reel_seats'),
+        selectedSeatId: cue.seat,
+      ),
+      _ => const AlongFlowRating(key: ValueKey('reel_rating')),
+    };
+    return AnimatedSwitcher(
+      duration: AlongDurations.fade,
+      switchInCurve: AlongCurves.fade,
+      switchOutCurve: AlongCurves.fade,
+      child: screen,
     );
   }
 }

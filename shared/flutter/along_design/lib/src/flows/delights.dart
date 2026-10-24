@@ -483,10 +483,7 @@ class AlongSplashState extends State<AlongSplash>
   @override
   void initState() {
     super.initState();
-    _draw = AnimationController(
-      vsync: this,
-      duration: AlongDurations.glide,
-    );
+    _draw = AnimationController(vsync: this, duration: AlongDurations.glide);
     WidgetsBinding.instance.addPostFrameCallback((_) => _start());
   }
 
@@ -580,12 +577,17 @@ class AlongOdometerState extends State<AlongOdometer>
 
   @override
   Widget build(BuildContext context) {
-    if (_roll.value >= 1 || !AlongMotionPolicy.play(context)) {
-      return AlongMoney(value: _shown, style: widget.style);
-    }
-    final t = AlongCurves.settle.transform(_roll.value);
-    final current = (_from + (widget.value - _from) * t).round();
-    return AlongMoney(value: current, style: widget.style);
+    return AnimatedBuilder(
+      animation: _roll,
+      builder: (context, _) {
+        final playing = AlongMotionPolicy.play(context) && _roll.value < 1;
+        final t = playing ? AlongCurves.settle.transform(_roll.value) : 1.0;
+        final current = playing
+            ? (_from + (widget.value - _from) * t).round()
+            : widget.value;
+        return AlongMoney(value: current, style: widget.style);
+      },
+    );
   }
 }
 
@@ -1401,10 +1403,7 @@ class AlongConfettiState extends State<AlongConfetti>
   @override
   void initState() {
     super.initState();
-    _burst = AnimationController(
-      vsync: this,
-      duration: AlongDurations.glide,
-    );
+    _burst = AnimationController(vsync: this, duration: AlongDurations.glide);
   }
 
   @override
