@@ -36,6 +36,7 @@ void main() {
     'split': ({bool legacy = false}) => const AlongFlowSplit(),
     'loading': ({bool legacy = false}) => const AlongFlowLoading(),
     'refresh': ({bool legacy = false}) => const AlongFlowRefresh(),
+    'phases': ({bool legacy = false}) => const AlongFlowPhases(),
   };
 
   for (final stage in stages.entries) {

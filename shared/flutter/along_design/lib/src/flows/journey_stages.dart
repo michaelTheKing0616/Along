@@ -13,6 +13,7 @@ import '../tokens.g.dart';
 import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
+import 'live_arrival.dart';
 import 'demo_adapter.dart';
 import 'driver_portrait.dart';
 import 'trip_machine.dart';
@@ -387,14 +388,9 @@ class AlongFlowQuote extends StatelessWidget {
                     strong: true,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Expires in $clock',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.body(palette).copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
+                  AlongFareLock(
+                    clock: clock,
+                    progress: quote.expiresIn.inSeconds / 120,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -425,11 +421,13 @@ class _FareLine extends StatelessWidget {
     required this.label,
     required this.value,
     this.strong = false,
+    this.dense = false,
   });
 
   final String label;
   final String value;
   final bool strong;
+  final bool dense;
 
   @override
   Widget build(BuildContext context) {
@@ -442,7 +440,9 @@ class _FareLine extends StatelessWidget {
           fontFeatures: const [FontFeature.tabularFigures()],
         );
     return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: strong ? 40 : 32),
+      constraints: BoxConstraints(
+        minHeight: dense ? (strong ? 28 : 22) : (strong ? 40 : 32),
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: roomy ? 4 : 0),
         child: Row(
@@ -667,7 +667,8 @@ class AlongFlowTripPin extends StatelessWidget {
           _clock(DemoAdapter.pinFor),
           maxLines: 1,
           softWrap: false,
-          style: AlongType.numeric(palette).copyWith(fontSize: 22),
+          style: AlongType.title(palette)
+              .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
         ),
         const SizedBox(height: 12),
         const _PinReadout(code: DemoAdapter.pin),
@@ -677,7 +678,7 @@ class AlongFlowTripPin extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           child: roomy
               ? SingleChildScrollView(child: handoff)
               : Align(alignment: Alignment.topCenter, child: handoff),
@@ -693,49 +694,35 @@ class _PinDriverCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
-    return _SolidCard(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              const AlongDriverPortrait(size: 48, verified: true),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Chinedu',
-                  maxLines: 1,
-                  softWrap: false,
-                  style: AlongType.title(palette).copyWith(height: 1.1),
-                ),
-              ),
-              const AlongDemoMark(),
-            ],
-          ),
-          const SizedBox(height: 12),
-          const AlongVehicleMark(kind: AlongVehicleKind.car, width: 148),
-          const SizedBox(height: 8),
-          DecoratedBox(
-            decoration: AlongCraft.surface(
-              palette,
-              radius: AlongRadius.control.x,
-              hairline: true,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const AlongDriverPortrait(size: 48, verified: true),
+            const SizedBox(width: 12),
+            Expanded(
               child: Text(
-                'ABC-123-XY',
+                'Chinedu',
                 maxLines: 1,
                 softWrap: false,
-                style: AlongType.title(palette).copyWith(
-                  height: 1.1,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
+                style: AlongType.title(palette).copyWith(height: 1.1),
               ),
             ),
+            const AlongDemoMark(),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'ABC-123-XY',
+          maxLines: 1,
+          softWrap: false,
+          style: AlongType.title(palette).copyWith(
+            height: 1.1,
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -800,8 +787,7 @@ class _PinBox extends StatelessWidget {
             digit,
             maxLines: 1,
             softWrap: false,
-            style: AlongType.numeric(palette)
-                .copyWith(fontSize: wide ? 48 : 40),
+            style: AlongType.numeric(palette),
           ),
         ),
       ),
@@ -1275,14 +1261,14 @@ class AlongFlowReceipt extends StatelessWidget {
       backgroundColor: palette.bg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AlongCraft.clip(
                 corner: AlongRadius.card.x,
                 child: const SizedBox(
-                  height: 112,
+                  height: 56,
                   width: double.infinity,
                   child: AlongCityMap(
                     mode: AlongCityMapMode.completed,
@@ -1293,7 +1279,7 @@ class AlongFlowReceipt extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
@@ -1311,36 +1297,50 @@ class AlongFlowReceipt extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const _SectionLabel('Fare'),
-              _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
-              _FareLine(label: 'Seat', value: alongNaira(quote.seatMinor)),
-              _FareLine(label: 'Fees', value: alongNaira(quote.feesMinor)),
+              _FareLine(
+                label: 'Base',
+                value: alongNaira(quote.baseMinor),
+                dense: true,
+              ),
+              _FareLine(
+                label: 'Seat',
+                value: alongNaira(quote.seatMinor),
+                dense: true,
+              ),
+              _FareLine(
+                label: 'Fees',
+                value: alongNaira(quote.feesMinor),
+                dense: true,
+              ),
               _FareLine(
                 label: 'Wallet credit',
                 value: alongNaira(-quote.walletCreditMinor),
+                dense: true,
               ),
               _FareLine(
                 label: 'Total',
                 value: alongNaira(quote.totalMinor),
                 strong: true,
+                dense: true,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               const _SectionLabel('Payment'),
               _IconLine(
                 icon: AlongIcons.wallet,
                 label: DemoAdapter.payment.label,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               const _SectionLabel('Seat'),
               const _ReceiptSeats(),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               const _SectionLabel('Trip'),
               const _TimelineRow(label: 'Requested 14:02'),
               const _TimelineRow(label: 'Pickup Wuse Market'),
               const _TimelineRow(label: 'Drop Nyanya', last: true),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               const _SectionLabel('Rating'),
               const _RatingSummary(),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               if (roomy)
                 for (final button in share) ...[
                   button,
@@ -1359,6 +1359,13 @@ class AlongFlowReceipt extends StatelessWidget {
               const AlongButton(
                 key: Key('report_issue'),
                 label: 'Report an issue',
+                variant: AlongButtonVariant.secondary,
+                onPressed: _noop,
+              ),
+              const SizedBox(height: 8),
+              const AlongButton(
+                key: Key('lost_item'),
+                label: 'Report a lost item',
                 variant: AlongButtonVariant.secondary,
                 onPressed: _noop,
               ),
@@ -1851,15 +1858,12 @@ class _AnchoredSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final roomy = _roomy(context);
     return SafeArea(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-          child: roomy
-              ? SingleChildScrollView(reverse: true, child: child)
-              : child,
+          child: SingleChildScrollView(reverse: true, child: child),
         ),
       ),
     );

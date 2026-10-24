@@ -15,6 +15,7 @@ import '../tokens.g.dart';
 import '../type.dart';
 import 'batch_stages.dart';
 import 'city_map.dart';
+import 'live_arrival.dart';
 import 'delights.dart';
 import 'driver_portrait.dart';
 import 'map_sketch.dart';
@@ -112,6 +113,7 @@ class AlongFlowHome extends StatelessWidget {
             builder: (context) {
               Widget map = const AlongCityMap(
                 demoInset: EdgeInsets.only(top: 72, right: 12),
+                phase: AlongDayPhase.afternoon,
               );
               if (extent != 0) {
                 map = Transform.translate(
@@ -171,8 +173,8 @@ class AlongFlowHome extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: SingleChildScrollView(
-                        reverse: true,
-                        child: Column(
+                          reverse: true,
+                          child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [sheet, dock],
                           ),
@@ -208,6 +210,8 @@ class _HomeSheetBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const AlongLiveStrip(),
+        const SizedBox(height: 12),
         Container(
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -699,9 +703,8 @@ class _PlateChip extends StatelessWidget {
       label,
       maxLines: 1,
       softWrap: false,
-      style: AlongType.label(palette).copyWith(
-        fontFeatures: const [FontFeature.tabularFigures()],
-      ),
+      style: AlongType.label(palette)
+          .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
     );
   }
 }
@@ -775,10 +778,7 @@ class _LiveOverflow extends StatelessWidget {
           value: 'share',
           child: Text('Share', style: style),
         ),
-        const PopupMenuItem(
-          value: 'report',
-          child: Text('Report an issue'),
-        ),
+        const PopupMenuItem(value: 'report', child: Text('Report an issue')),
       ],
       child: SizedBox(
         width: 56,
@@ -871,12 +871,7 @@ class AlongFlowGuardian extends StatelessWidget {
         children: [
           Text('Guardian', style: AlongType.display(palette)),
           const SizedBox(height: 4),
-          Text(
-            'On Nyanya road · check-in 14:02',
-            maxLines: 1,
-            softWrap: false,
-            style: AlongType.bodyMuted(palette),
-          ),
+          const _GuardianCheckIn(),
           const SizedBox(height: 8),
           const Expanded(
             child: _MapHero(
@@ -889,6 +884,31 @@ class AlongFlowGuardian extends StatelessWidget {
           const _GuardianPeople(),
         ],
       ),
+    );
+  }
+}
+
+class _GuardianCheckIn extends StatelessWidget {
+  const _GuardianCheckIn();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Row(
+      children: [
+        AlongStrokeCheck(color: palette.ink, size: 16),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'Ada checked in · sent 14:02',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+            style: AlongType.body(palette)
+                .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1011,9 +1031,8 @@ class AlongFlowDay extends StatelessWidget {
           '7 trips · 25 seats · ₦9,300',
           maxLines: 1,
           softWrap: false,
-          style: AlongType.body(palette).copyWith(
-            fontFeatures: const [FontFeature.tabularFigures()],
-          ),
+          style: AlongType.body(palette)
+              .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
         ),
         const SizedBox(height: 16),
         const AlongDepartureBoard(),
@@ -1060,6 +1079,8 @@ class AlongFlowOnline extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                AlongBreakNudge(),
+                SizedBox(height: 8),
                 _TodayPill(),
                 SizedBox(height: 8),
                 _DemandHint(),
@@ -1087,83 +1108,91 @@ class AlongFlowOffer extends StatelessWidget {
           const Positioned.fill(
             child: AlongCityMap(mode: AlongCityMapMode.routeHero),
           ),
-          Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
-            child: DecoratedBox(
-              decoration: AlongCraft.surface(
-                palette,
-                radius: AlongRadius.card.x,
-                shadow: AlongElevation.sheet(palette.ink),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: AlongCraft.clip(
-                      corner: AlongRadius.xs.x,
-                      child: SizedBox(
-                        height: 6,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            ColoredBox(color: palette.recessed),
-                            FractionallySizedBox(
-                              alignment: Alignment.centerLeft,
-                              widthFactor: 0.72,
-                              child: ColoredBox(color: palette.accent),
-                            ),
-                          ],
-                        ),
-                      ),
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: DecoratedBox(
+                    decoration: AlongCraft.surface(
+                      palette,
+                      radius: AlongRadius.card.x,
+                      shadow: AlongElevation.sheet(palette.ink),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const _OfferRoute(),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '₦1,800',
-                                maxLines: 1,
-                                softWrap: false,
-                                style: AlongType.display(palette),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                          child: AlongCraft.clip(
+                            corner: AlongRadius.xs.x,
+                            child: SizedBox(
+                              height: 6,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  ColoredBox(color: palette.recessed),
+                                  FractionallySizedBox(
+                                    alignment: Alignment.centerLeft,
+                                    widthFactor: 0.72,
+                                    child: ColoredBox(color: palette.accent),
+                                  ),
+                                ],
                               ),
                             ),
-                            const AlongSeatCount(count: 2, glyph: 14),
-                            const SizedBox(width: 8),
-                            Text(
-                              '4.2 km',
-                              maxLines: 1,
-                              softWrap: false,
-                              style: AlongType.caption(palette).copyWith(
-                                color: palette.ink,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                        const _RiderRow(),
-                        const SizedBox(height: 8),
-                        const _OfferSeats(),
-                        const SizedBox(height: 12),
-                        const AlongButton(
-                          label: 'Accept · ₦1,800',
-                          onPressed: _noop,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _OfferRoute(),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '₦1,800',
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      style: AlongType.display(palette),
+                                    ),
+                                  ),
+                                  const AlongSeatCount(count: 2, glyph: 14),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '4.2 km',
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: AlongType.caption(palette).copyWith(
+                                      color: palette.ink,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const _RiderRow(),
+                              const SizedBox(height: 8),
+                              const _OfferSeats(),
+                              const SizedBox(height: 12),
+                              const AlongQuickReplies(),
+                              const SizedBox(height: 12),
+                              const AlongButton(
+                                label: 'Accept · ₦1,800',
+                                onPressed: _noop,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -1187,7 +1216,14 @@ class AlongFlowEarnings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Today', style: AlongType.caption(palette)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Today', style: AlongType.caption(palette)),
+                  ),
+                  const AlongGoalSpring(progress: 48200 / 60000, label: '80'),
+                ],
+              ),
               AlongOdometer(value: 48200, style: AlongType.display(palette)),
               Text(
                 '11 trips · goal ₦60,000',
@@ -1519,11 +1555,10 @@ class AlongFlowRating extends StatelessWidget {
             final star = short ? 36.0 : 44.0;
             final hero = Column(
               children: [
+                const AlongArrivalMark(),
+                SizedBox(height: short ? 8 : 12),
                 Center(
-                  child: AlongDriverPortrait(
-                    size: portrait,
-                    verified: true,
-                  ),
+                  child: AlongDriverPortrait(size: portrait, verified: true),
                 ),
                 SizedBox(height: short ? 10 : 14),
                 Text(
@@ -1665,7 +1700,8 @@ class _TipRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (var i = 0; i < _tips.length; i++) ...[
-                if (i > 0) ColoredBox(color: line, child: const SizedBox(width: 1)),
+                if (i > 0)
+                  ColoredBox(color: line, child: const SizedBox(width: 1)),
                 Expanded(
                   child: ColoredBox(
                     color: _tips[i] == '₦200'
@@ -2438,9 +2474,8 @@ class _PlaceRow extends StatelessWidget {
                 action!,
                 maxLines: 1,
                 softWrap: false,
-                style: AlongType.label(palette).copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AlongType.label(palette)
+                    .copyWith(fontWeight: FontWeight.w600),
               ),
             )
           else
@@ -2556,46 +2591,43 @@ class _RideLine extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
-              children: [
-                AlongVehicleHero(kind: kind, width: 48, height: 30),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.body(palette)
-                            .copyWith(fontWeight: FontWeight.w600, height: 1.1),
-                      ),
-                      Text(
-                        badge == null ? eta : '$badge · $eta',
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                        style: AlongType.caption(palette).copyWith(
-                          color: palette.ink.withValues(alpha: 0.72),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Hero(
-                  tag: 'along-fare-${kind.name}',
-                  child: Text(
-                    fare,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: AlongType.body(palette).copyWith(
-                      fontWeight: FontWeight.w600,
-                      height: 1.1,
+            children: [
+              AlongVehicleHero(kind: kind, width: 48, height: 30),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: AlongType.body(palette)
+                          .copyWith(fontWeight: FontWeight.w600, height: 1.1),
                     ),
-                  ),
+                    Text(
+                      badge == null ? eta : '$badge · $eta',
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.caption(palette)
+                          .copyWith(color: palette.ink.withValues(alpha: 0.72)),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+              Hero(
+                tag: 'along-fare-${kind.name}',
+                child: Text(
+                  fare,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: AlongType.body(palette)
+                      .copyWith(fontWeight: FontWeight.w600, height: 1.1),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -2955,7 +2987,6 @@ class _RiderRow extends StatelessWidget {
   }
 }
 
-
 class _WeekBars extends StatelessWidget {
   const _WeekBars();
 
@@ -3213,7 +3244,7 @@ class _DemandHint extends StatelessWidget {
     final palette = AlongPalette.of(context);
     return AlongFrost(
       solid: true,
-              radius: AlongRadius.control.x,
+      radius: AlongRadius.control.x,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Text(
         'High demand near Wuse',
@@ -3331,7 +3362,7 @@ class _HeatLegend extends StatelessWidget {
       fontWeight: FontWeight.w600,
     );
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       clipBehavior: Clip.antiAlias,
       decoration: AlongCraft.fill(
         palette.surface,
@@ -3891,11 +3922,7 @@ class _BalanceCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF3C3832),
-                Color(0xFF241F1B),
-                Color(0xFF141210),
-              ],
+              colors: [Color(0xFF3C3832), Color(0xFF241F1B), Color(0xFF141210)],
             ),
           ),
           child: Stack(
@@ -3910,10 +3937,8 @@ class _BalanceCard extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
-                  style: AlongType.title(palette).copyWith(
-                    color: paper,
-                    letterSpacing: -0.4,
-                  ),
+                  style: AlongType.title(palette)
+                      .copyWith(color: paper, letterSpacing: -0.4),
                 ),
               ),
               Positioned(
@@ -3946,9 +3971,15 @@ class _WalletActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        Expanded(child: _WalletAction(icon: AlongIcons.plus, label: 'Top up')),
-        Expanded(child: _WalletAction(icon: AlongIcons.arrowRight, label: 'Send')),
-        Expanded(child: _WalletAction(icon: AlongIcons.receipt, label: 'Pass')),
+        Expanded(
+          child: _WalletAction(icon: AlongIcons.plus, label: 'Top up'),
+        ),
+        Expanded(
+          child: _WalletAction(icon: AlongIcons.arrowRight, label: 'Send'),
+        ),
+        Expanded(
+          child: _WalletAction(icon: AlongIcons.receipt, label: 'Pass'),
+        ),
       ],
     );
   }
@@ -3995,45 +4026,45 @@ class _ActivityCard extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: const [
-          _TxnGroup(label: 'Today', icon: AlongIcons.schedule),
-          _TxnRow(
-            icon: AlongIcons.navigate,
-            title: 'Nyanya',
-            detail: 'Seat hold',
-            value: '−₦1,200',
-          ),
-          _TxnRow(
-            icon: AlongIcons.plus,
-            title: 'Top up',
-            detail: 'Transfer',
-            value: '+₦5,000',
-          ),
-          _TxnGroup(label: 'Yesterday', icon: AlongIcons.path),
-          _TxnRow(
-            icon: AlongIcons.navigate,
-            title: 'Berger',
-            detail: 'Seat hold',
-            value: '−₦900',
-          ),
-          _TxnGroup(label: 'This week', icon: AlongIcons.receipt),
-          _TxnRow(
-            icon: AlongIcons.navigate,
-            title: 'Jabi',
-            detail: 'Monday',
-            value: '−₦1,600',
-          ),
-          _TxnRow(
-            icon: AlongIcons.wallet,
-            title: 'Cash out',
-            detail: 'Sunday · GTBank',
-            value: '−₦8,000',
-          ),
-          _TxnRow(
-            icon: AlongIcons.receipt,
-            title: 'Along Pass',
-            detail: 'This month',
-            value: '−₦2,000',
-          ),
+        _TxnGroup(label: 'Today', icon: AlongIcons.schedule),
+        _TxnRow(
+          icon: AlongIcons.navigate,
+          title: 'Nyanya',
+          detail: 'Seat hold',
+          value: '−₦1,200',
+        ),
+        _TxnRow(
+          icon: AlongIcons.plus,
+          title: 'Top up',
+          detail: 'Transfer',
+          value: '+₦5,000',
+        ),
+        _TxnGroup(label: 'Yesterday', icon: AlongIcons.path),
+        _TxnRow(
+          icon: AlongIcons.navigate,
+          title: 'Berger',
+          detail: 'Seat hold',
+          value: '−₦900',
+        ),
+        _TxnGroup(label: 'This week', icon: AlongIcons.receipt),
+        _TxnRow(
+          icon: AlongIcons.navigate,
+          title: 'Jabi',
+          detail: 'Monday',
+          value: '−₦1,600',
+        ),
+        _TxnRow(
+          icon: AlongIcons.wallet,
+          title: 'Cash out',
+          detail: 'Sunday · GTBank',
+          value: '−₦8,000',
+        ),
+        _TxnRow(
+          icon: AlongIcons.receipt,
+          title: 'Along Pass',
+          detail: 'This month',
+          value: '−₦2,000',
+        ),
       ],
     );
   }

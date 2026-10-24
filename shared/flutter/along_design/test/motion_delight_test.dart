@@ -457,6 +457,40 @@ void main() {
     expect(find.byIcon(AlongIcons.check), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('the ride pieces rest without ticking', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                AlongLiveStrip(),
+                AlongFareLock(clock: '1:48', progress: 0.9),
+                AlongArrivalMark(),
+                AlongGoalSpring(progress: 48200 / 60000, label: '80'),
+                AlongQuickReplies(),
+                AlongBreakNudge(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.byKey(const Key('live_strip')), findsOneWidget);
+    expect(find.byKey(const Key('fare_lock')), findsOneWidget);
+    expect(find.byKey(const Key('arrival_mark')), findsOneWidget);
+    expect(find.byKey(const Key('goal_spring')), findsOneWidget);
+    expect(find.byKey(const Key('quick_replies')), findsOneWidget);
+    expect(find.byKey(const Key('break_nudge')), findsOneWidget);
+    expect(find.text('Arrived'), findsOneWidget);
+    expect(find.text('I dey come'), findsOneWidget);
+    expect(find.text('Take a break'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(tester.takeException(), isNull);
+  });
 }
 
 double _seatScale(WidgetTester tester) {

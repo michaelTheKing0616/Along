@@ -34,6 +34,26 @@ extension AlongDayPhaseCopy on AlongDayPhase {
     AlongDayPhase.night => '23° · clear',
   };
 
+  /// Dawn, day, dusk, night. Morning is dawn. Afternoon is day.
+  String get dayName => switch (this) {
+    AlongDayPhase.morning => 'Dawn',
+    AlongDayPhase.afternoon => 'Day',
+    AlongDayPhase.evening => 'Dusk',
+    AlongDayPhase.night => 'Night',
+  };
+
+  /// Low-alpha tile veil. Day stays close to the bake.
+  Color veil(bool dark) => switch (this) {
+    AlongDayPhase.morning =>
+      dark ? const Color(0x33C4844A) : const Color(0x40E8B56A),
+    AlongDayPhase.afternoon =>
+      dark ? const Color(0x14000000) : const Color(0x22FFF6D0),
+    AlongDayPhase.evening =>
+      dark ? const Color(0x40A85A32) : const Color(0x38E09058),
+    AlongDayPhase.night =>
+      dark ? const Color(0x55304068) : const Color(0x40405878),
+  };
+
   List<Color> scrim(bool dark) => switch (this) {
     AlongDayPhase.morning => [
       dark ? const Color(0xCC1A1408) : const Color(0x99F6E2A8),
