@@ -60,7 +60,7 @@ async function loadVerificationQueue(cityId: string): Promise<VerificationQueueR
 
   const { data: driverRows, error: driverError } = await supabase
     .from('drivers')
-    .select('id, profiles(display_name, gender, phone_e164)')
+    .select('id, profiles!drivers_id_fkey(display_name, gender, phone_e164)')
     .eq('city_id', cityId);
 
   if (driverError || !driverRows?.length) {

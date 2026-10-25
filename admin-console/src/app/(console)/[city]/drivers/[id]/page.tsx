@@ -39,7 +39,7 @@ export default async function DriverDetailPage({ params }: PageProps) {
       payout_subaccount_code,
       accepts_digital,
       city_id,
-      profiles ( display_name, phone_e164 )
+      profiles!drivers_id_fkey ( display_name, phone_e164 )
     `
     )
     .eq('id', driverId)

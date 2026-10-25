@@ -49,7 +49,7 @@ async function loadIntegrityQueue(cityId: string): Promise<IntegrityFlagRow[]> {
       drivers!inner (
         driver_code,
         city_id,
-        profiles ( display_name )
+        profiles!drivers_id_fkey ( display_name )
       )
     `
     )
