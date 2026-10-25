@@ -6,7 +6,7 @@ String filtersHash(Object? filters) {
 }
 
 Object? _sortKeys(Object? value) {
-  if (value == null || value is! Object) return value;
+  if (value == null) return value;
   if (value is List) return value.map(_sortKeys).toList(growable: false);
   if (value is Map) {
     final sorted = <String, Object?>{};

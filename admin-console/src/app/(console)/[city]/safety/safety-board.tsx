@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, useTransition, type CSSProperties } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import {
@@ -70,6 +71,8 @@ export function SafetyBoard({
   const [incidentRows, setIncidentRows] = useState(initialIncidentRows);
   const [selectedSosId, setSelectedSosId] = useState<string | null>(initialSelectedSosId);
   const [resolveNote, setResolveNote] = useState('');
+  const [liveStatus, setLiveStatus] = useState<string>('connecting');
+  const router = useRouter();
   const [triageStatus, setTriageStatus] = useState('triaged');
   const [triageSeverity, setTriageSeverity] = useState(2);
   const [triageAssignee, setTriageAssignee] = useState('');
@@ -99,15 +102,26 @@ export function SafetyBoard({
         'postgres_changes',
         { event: '*', schema: 'public', table: 'sos_alerts' },
         () => {
-          window.location.reload();
+          // Soft refresh: re-fetch the server rows without tearing down this
+          // subscription or the operator's success/error banner.
+          router.refresh();
         }
       )
-      .subscribe();
+      // SUBSCRIBED only means the channel joined; postgres_changes events flow once
+      // realtime reports the replication listener ready via a system message.
+      .on('system', {}, (payload: { extension?: string; status?: string }) => {
+        if (payload.extension === 'postgres_changes' && payload.status === 'ok') {
+          setLiveStatus('listening');
+        }
+      })
+      .subscribe((status) => {
+        if (status !== 'SUBSCRIBED') setLiveStatus(status);
+      });
 
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [cityId]);
+  }, [cityId, router]);
 
   const selectedSos = useMemo(
     () => sosRows.find((row) => row.id === selectedSosId) ?? null,
@@ -137,7 +151,7 @@ export function SafetyBoard({
   }
 
   return (
-    <div data-testid="safety-board">
+    <div data-testid="safety-board" data-live-status={liveStatus}>
       <p style={{ marginBottom: 'var(--space-4)', fontSize: '0.875rem' }}>
         SLA targets from config: acknowledge within{' '}
         <strong>{sla.ackSlaS}s</strong>, escalate visually at{' '}

@@ -1,5 +1,4 @@
 import 'package:along_core/along_core.dart';
-import 'package:along_data/along_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
@@ -163,7 +162,6 @@ class ItineraryEntryController extends Notifier<ItineraryEntryState> {
 
   void reorderStructuredStop(int oldIndex, int newIndex) {
     final stops = [...state.stops];
-    if (oldIndex < newIndex) newIndex -= 1;
     final item = stops.removeAt(oldIndex);
     stops.insert(newIndex, item);
     state = state.copyWith(stops: stops);

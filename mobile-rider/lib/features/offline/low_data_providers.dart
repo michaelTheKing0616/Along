@@ -8,10 +8,9 @@ class RiderNetworkProbe extends NetworkConditionsProbe {
   RiderNetworkProbe({
     NetworkConditionsProbe? base,
     MethodChannel? channel,
-    PlatformNetworkFlags Function()? flagsOverride,
+    this._flagsOverride,
   })  : _base = base ?? ConnectivityNetworkProbe(),
-        _channel = channel ?? const MethodChannel('ng.along.rider/network'),
-        _flagsOverride = flagsOverride;
+        _channel = channel ?? const MethodChannel('ng.along.rider/network');
 
   final NetworkConditionsProbe _base;
   final MethodChannel _channel;

@@ -76,7 +76,7 @@ class SupabaseAlongGateway implements AlongSupabase {
     String fn, {
     Map<String, dynamic>? params,
   }) async {
-    final result = await _client.rpc(fn, params: params ?? {});
+    final result = await _client.rpc<dynamic>(fn, params: params ?? {});
     return result;
   }
 

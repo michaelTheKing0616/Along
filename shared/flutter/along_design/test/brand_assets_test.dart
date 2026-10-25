@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +75,7 @@ void main() {
       for (final path in iosAppIconAssets) {
         if (path.endsWith('.json')) {
           final json = jsonDecode(await rootBundle.loadString(path)) as Map;
-          expect(json['images'], isA<List>());
+          expect(json['images'], isA<List<dynamic>>());
           continue;
         }
         final data = await rootBundle.load(path);

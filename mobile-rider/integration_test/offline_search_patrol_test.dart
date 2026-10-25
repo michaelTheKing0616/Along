@@ -1,10 +1,9 @@
-import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
-import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/testing/fakes/fake_recent_places_store.dart';
 import 'package:patrol/patrol.dart';

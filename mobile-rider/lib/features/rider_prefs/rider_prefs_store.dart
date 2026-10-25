@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
-import 'package:drift/drift.dart';
 
 /// Local rider UI preferences (`saved_sort`, `wayfinding_mode`) in Drift kv.
 class RiderPrefsStore {

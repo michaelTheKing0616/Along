@@ -1,4 +1,4 @@
-import { assertEquals } from 'jsr:@std/assert';
+import { assertEquals } from 'jsr:@std/assert@1';
 import { handleNegotiationClock } from './handler.ts';
 
 Deno.test('negotiation-clock invokes negotiation_clock_tick RPC', async () => {

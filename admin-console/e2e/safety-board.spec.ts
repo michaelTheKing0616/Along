@@ -1,49 +1,42 @@
-import { createClient } from '@supabase/supabase-js';
+import { execSync } from 'node:child_process';
 import { test, expect } from '@playwright/test';
 import { E2E_CITY } from './global-setup';
 import { signInAs } from './helpers';
 
-const SUPABASE_URL = process.env.SUPABASE_URL ?? 'http://127.0.0.1:54321';
-const SERVICE_ROLE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ??
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU';
+// Fixtures go through psql like the other specs: the local stack no longer grants
+// service_role DML on public tables by default, so PostgREST writes are denied.
+const DATABASE_URL =
+  process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
 
 const OPEN_SOS_ID = 'c5500000-0000-4000-8000-000000000001';
 const LIVE_SOS_ID = 'c5500000-0000-4000-8000-000000000002';
 
+function sqlScalar(query: string): string {
+  return execSync(`psql "${DATABASE_URL}" -v ON_ERROR_STOP=1 -t -A -c ${JSON.stringify(query.replace(/\s+/g, ' '))}`, {
+    encoding: 'utf8',
+  }).trim();
+}
+
 async function sosStatus(sosId: string): Promise<string | null> {
-  const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  const { data, error } = await admin
-    .from('sos_alerts')
-    .select('status')
-    .eq('id', sosId)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  return data?.status ?? null;
+  return sqlScalar(`select status from sos_alerts where id = '${sosId}'`) || null;
 }
 
 async function insertLiveSos(): Promise<void> {
-  const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  await admin.from('sos_alerts').delete().eq('id', LIVE_SOS_ID);
-  const { error } = await admin.from('sos_alerts').insert({
-    id: LIVE_SOS_ID,
-    trip_id: null,
-    journey_id: 'c5300000-0000-4000-8000-000000000001',
-    raised_by: 'c5000000-0000-4000-8000-000000000001',
-    raised_role: 'rider',
-    location: { type: 'Point', coordinates: [7.597, 9.014] },
-    status: 'open',
-    created_at: new Date().toISOString(),
-  });
-  if (error) throw new Error(error.message);
+  // One psql -c runs as one transaction, so the board's reload on the delete
+  // event already sees the inserted row.
+  sqlScalar(
+    `delete from sos_alerts where id = '${LIVE_SOS_ID}';
+     insert into sos_alerts (id, trip_id, journey_id, raised_by, raised_role, location, status, created_at)
+     values ('${LIVE_SOS_ID}', null, 'c5300000-0000-4000-8000-000000000001',
+             'c5000000-0000-4000-8000-000000000001', 'rider',
+             'SRID=4326;POINT(7.597 9.014)', 'open', now())`
+  );
 }
 
 test.describe('Safety board (A-12)', () => {
   test('simulated SOS visible on board; ack updates status', async ({ page }) => {
+    // Idempotent across retries: the ack below flips the seeded alert.
+    sqlScalar(`update sos_alerts set status = 'open', acknowledged_at = null, acknowledged_by = null where id = '${OPEN_SOS_ID}'`);
     await signInAs(page, 'e2e-safety@along.local', {
       landing: `/${E2E_CITY}/safety`,
     });
@@ -56,6 +49,10 @@ test.describe('Safety board (A-12)', () => {
     await expect(seededRow).toBeVisible();
     await expect(seededRow.getByText('open')).toBeVisible();
 
+    // Insert only once the board is listening, or the change event is missed.
+    await expect(page.getByTestId('safety-board')).toHaveAttribute('data-live-status', 'listening', {
+      timeout: 15_000,
+    });
     await insertLiveSos();
     await expect(page.getByTestId(`safety-sos-row-${LIVE_SOS_ID}`)).toBeVisible({
       timeout: 15_000,
@@ -68,6 +65,6 @@ test.describe('Safety board (A-12)', () => {
       .poll(async () => sosStatus(OPEN_SOS_ID), { timeout: 10_000 })
       .toBe('acknowledged');
 
-    await expect(seededRow.getByText('acknowledged')).toBeVisible();
+    await expect(seededRow.locator('.badge-acknowledged')).toBeVisible();
   });
 });

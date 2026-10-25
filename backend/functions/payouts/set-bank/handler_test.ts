@@ -1,5 +1,5 @@
 import { assertEquals } from 'jsr:@std/assert@1';
-import type { PaymentProvider, TripPaymentInitiateParams } from '../../_shared/payments/mod.ts';
+import type { PaymentProvider } from '../../_shared/payments/mod.ts';
 import { handleSetPayoutBank, setPayoutBankSchema } from './handler.ts';
 
 const DRIVER_ID = '0f200000-0000-4000-8000-000000000050';
@@ -43,7 +43,7 @@ function createMockClients(options?: { reauthOk?: boolean; isDriver?: boolean })
   };
 
   const service = {
-    from: (table: string) => ({
+    from: (_table: string) => ({
       select: () => ({
         eq: () => ({
           maybeSingle: () =>

@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
-import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_panel.dart';
-import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
 /// R-19 Wayfinding — standalone screen (coverage gap, transfer walk, etc.).

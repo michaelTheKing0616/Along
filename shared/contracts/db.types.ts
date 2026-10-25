@@ -37,32 +37,45 @@ export type Database = {
       admin_users: {
         Row: {
           city_scope: string[] | null
+          corporate_account_id: string | null
           created_at: string
           deployment_id: string | null
           disabled_at: string | null
           id: string
+          operator_account_id: string | null
           role: Database["public"]["Enums"]["admin_role"]
           updated_at: string
         }
         Insert: {
           city_scope?: string[] | null
+          corporate_account_id?: string | null
           created_at?: string
           deployment_id?: string | null
           disabled_at?: string | null
           id: string
+          operator_account_id?: string | null
           role: Database["public"]["Enums"]["admin_role"]
           updated_at?: string
         }
         Update: {
           city_scope?: string[] | null
+          corporate_account_id?: string | null
           created_at?: string
           deployment_id?: string | null
           disabled_at?: string | null
           id?: string
+          operator_account_id?: string | null
           role?: Database["public"]["Enums"]["admin_role"]
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "admin_users_corporate_account_id_fkey"
+            columns: ["corporate_account_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_accounts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "admin_users_deployment_id_fkey"
             columns: ["deployment_id"]
@@ -75,6 +88,184 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_users_operator_account_id_fkey"
+            columns: ["operator_account_id"]
+            isOneToOne: false
+            referencedRelation: "operator_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      anonymized_od_cells: {
+        Row: {
+          city_id: string
+          destination_geohash: string
+          dow_bucket: number
+          export_id: string
+          hour_bucket: number
+          id: string
+          mode_code: string
+          origin_geohash: string
+          trip_count: number
+        }
+        Insert: {
+          city_id: string
+          destination_geohash: string
+          dow_bucket: number
+          export_id: string
+          hour_bucket: number
+          id?: string
+          mode_code: string
+          origin_geohash: string
+          trip_count: number
+        }
+        Update: {
+          city_id?: string
+          destination_geohash?: string
+          dow_bucket?: number
+          export_id?: string
+          hour_bucket?: number
+          id?: string
+          mode_code?: string
+          origin_geohash?: string
+          trip_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymized_od_cells_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anonymized_od_cells_export_id_fkey"
+            columns: ["export_id"]
+            isOneToOne: false
+            referencedRelation: "anonymized_od_exports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anonymized_od_cells_mode_code_fkey"
+            columns: ["mode_code"]
+            isOneToOne: false
+            referencedRelation: "mode_config"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      anonymized_od_exports: {
+        Row: {
+          cells_emitted: number
+          cells_suppressed: number
+          city_id: string
+          created_at: string
+          geohash_precision: number
+          id: string
+          job_run_id: string
+          k_threshold: number
+          period_end: string
+          period_start: string
+          trips_examined: number
+        }
+        Insert: {
+          cells_emitted?: number
+          cells_suppressed?: number
+          city_id: string
+          created_at?: string
+          geohash_precision: number
+          id?: string
+          job_run_id: string
+          k_threshold: number
+          period_end: string
+          period_start: string
+          trips_examined?: number
+        }
+        Update: {
+          cells_emitted?: number
+          cells_suppressed?: number
+          city_id?: string
+          created_at?: string
+          geohash_precision?: number
+          id?: string
+          job_run_id?: string
+          k_threshold?: number
+          period_end?: string
+          period_start?: string
+          trips_examined?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymized_od_exports_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anonymized_od_exports_job_run_id_fkey"
+            columns: ["job_run_id"]
+            isOneToOne: false
+            referencedRelation: "job_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          owner_organization: string
+          rate_limit_per_min: number
+          revoked_at: string | null
+          scope: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          owner_organization: string
+          rate_limit_per_min: number
+          revoked_at?: string | null
+          scope: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          owner_organization?: string
+          rate_limit_per_min?: number
+          revoked_at?: string | null
+          scope?: string[]
+        }
+        Relationships: []
+      }
+      api_usage: {
+        Row: {
+          api_key_id: string
+          calls: number
+          day: string
+        }
+        Insert: {
+          api_key_id: string
+          calls?: number
+          day: string
+        }
+        Update: {
+          api_key_id?: string
+          calls?: number
+          day?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_usage_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
             referencedColumns: ["id"]
           },
         ]
@@ -175,6 +366,86 @@ export type Database = {
         }
         Relationships: []
       }
+      candidate_park_clusters: {
+        Row: {
+          centroid: unknown
+          city_id: string
+          created_at: string
+          distinct_day_count: number
+          distinct_driver_count: number
+          first_seen: string
+          id: string
+          job_run_id: string
+          last_seen: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          route_stage_id: string | null
+          sample_count: number
+          status: string
+        }
+        Insert: {
+          centroid: unknown
+          city_id: string
+          created_at?: string
+          distinct_day_count: number
+          distinct_driver_count: number
+          first_seen: string
+          id?: string
+          job_run_id: string
+          last_seen: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          route_stage_id?: string | null
+          sample_count: number
+          status?: string
+        }
+        Update: {
+          centroid?: unknown
+          city_id?: string
+          created_at?: string
+          distinct_day_count?: number
+          distinct_driver_count?: number
+          first_seen?: string
+          id?: string
+          job_run_id?: string
+          last_seen?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          route_stage_id?: string | null
+          sample_count?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_park_clusters_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_park_clusters_job_run_id_fkey"
+            columns: ["job_run_id"]
+            isOneToOne: false
+            referencedRelation: "job_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_park_clusters_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_park_clusters_route_stage_id_fkey"
+            columns: ["route_stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cities: {
         Row: {
           boundary: unknown
@@ -222,6 +493,294 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "countries"
             referencedColumns: ["code"]
+          },
+        ]
+      }
+      conductor_sessions: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          day_plan_id: string
+          expires_at: string
+          id: string
+          layout_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          day_plan_id: string
+          expires_at: string
+          id?: string
+          layout_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          day_plan_id?: string
+          expires_at?: string
+          id?: string
+          layout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conductor_sessions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conductor_sessions_day_plan_id_fkey"
+            columns: ["day_plan_id"]
+            isOneToOne: false
+            referencedRelation: "driver_day_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conductor_sessions_layout_id_fkey"
+            columns: ["layout_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle_layouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_accounts: {
+        Row: {
+          billing_address: string | null
+          billing_email: string
+          created_at: string
+          currency: string
+          deployment_id: string
+          id: string
+          monthly_budget: number | null
+          name: string
+          status: Database["public"]["Enums"]["corporate_account_status"]
+          updated_at: string
+        }
+        Insert: {
+          billing_address?: string | null
+          billing_email: string
+          created_at?: string
+          currency?: string
+          deployment_id: string
+          id?: string
+          monthly_budget?: number | null
+          name: string
+          status?: Database["public"]["Enums"]["corporate_account_status"]
+          updated_at?: string
+        }
+        Update: {
+          billing_address?: string | null
+          billing_email?: string
+          created_at?: string
+          currency?: string
+          deployment_id?: string
+          id?: string
+          monthly_budget?: number | null
+          name?: string
+          status?: Database["public"]["Enums"]["corporate_account_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_accounts_deployment_id_fkey"
+            columns: ["deployment_id"]
+            isOneToOne: false
+            referencedRelation: "deployments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_invoices: {
+        Row: {
+          corporate_account_id: string
+          currency: string
+          generated_at: string
+          id: string
+          period_end: string
+          period_start: string
+          status: Database["public"]["Enums"]["corporate_invoice_status"]
+          total: number
+        }
+        Insert: {
+          corporate_account_id: string
+          currency: string
+          generated_at?: string
+          id?: string
+          period_end: string
+          period_start: string
+          status?: Database["public"]["Enums"]["corporate_invoice_status"]
+          total: number
+        }
+        Update: {
+          corporate_account_id?: string
+          currency?: string
+          generated_at?: string
+          id?: string
+          period_end?: string
+          period_start?: string
+          status?: Database["public"]["Enums"]["corporate_invoice_status"]
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_invoices_corporate_account_id_fkey"
+            columns: ["corporate_account_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_members: {
+        Row: {
+          active: boolean
+          corporate_account_id: string
+          default_policy_id: string | null
+          department: string | null
+          employee_ref: string | null
+          rider_id: string
+          since: string
+        }
+        Insert: {
+          active?: boolean
+          corporate_account_id: string
+          default_policy_id?: string | null
+          department?: string | null
+          employee_ref?: string | null
+          rider_id: string
+          since?: string
+        }
+        Update: {
+          active?: boolean
+          corporate_account_id?: string
+          default_policy_id?: string | null
+          department?: string | null
+          employee_ref?: string | null
+          rider_id?: string
+          since?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_members_corporate_account_id_fkey"
+            columns: ["corporate_account_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "corporate_members_default_policy_id_fkey"
+            columns: ["default_policy_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_trip_policies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "corporate_members_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_trip_allocations: {
+        Row: {
+          corporate_account_id: string
+          created_at: string
+          id: string
+          policy_id: string
+          subsidized_amount: number
+          trip_id: string
+        }
+        Insert: {
+          corporate_account_id: string
+          created_at?: string
+          id?: string
+          policy_id: string
+          subsidized_amount: number
+          trip_id: string
+        }
+        Update: {
+          corporate_account_id?: string
+          created_at?: string
+          id?: string
+          policy_id?: string
+          subsidized_amount?: number
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_trip_allocations_corporate_account_id_fkey"
+            columns: ["corporate_account_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "corporate_trip_allocations_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_trip_policies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "corporate_trip_allocations_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_trip_policies: {
+        Row: {
+          active: boolean
+          allowed_hours: Json | null
+          allowed_zones: unknown
+          corporate_account_id: string
+          created_at: string
+          id: string
+          max_per_trip: number | null
+          name: string
+          subsidy_pct: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          allowed_hours?: Json | null
+          allowed_zones?: unknown
+          corporate_account_id: string
+          created_at?: string
+          id?: string
+          max_per_trip?: number | null
+          name: string
+          subsidy_pct: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          allowed_hours?: Json | null
+          allowed_zones?: unknown
+          corporate_account_id?: string
+          created_at?: string
+          id?: string
+          max_per_trip?: number | null
+          name?: string
+          subsidy_pct?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_trip_policies_corporate_account_id_fkey"
+            columns: ["corporate_account_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_accounts"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -430,6 +989,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "data_sources_job_fk"
+            columns: ["job_run_id"]
+            isOneToOne: false
+            referencedRelation: "job_runs"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "data_sources_trip_fk"
             columns: ["trip_id"]
             isOneToOne: false
@@ -606,6 +1172,32 @@ export type Database = {
             columns: ["vehicle_id"]
             isOneToOne: false
             referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_earnings_goals: {
+        Row: {
+          driver_id: string
+          target_minor: number | null
+          updated_at: string
+        }
+        Insert: {
+          driver_id: string
+          target_minor?: number | null
+          updated_at?: string
+        }
+        Update: {
+          driver_id?: string
+          target_minor?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_earnings_goals_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: true
+            referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
         ]
@@ -890,42 +1482,6 @@ export type Database = {
         }
         Relationships: []
       }
-      driver_presence_history_y2026_m09: {
-        Row: {
-          downsampled: boolean
-          driver_id: string
-          heading: number | null
-          id: number
-          location: unknown
-          session_id: string
-          speed_mps: number | null
-          status: Database["public"]["Enums"]["presence_status"]
-          ts: string
-        }
-        Insert: {
-          downsampled?: boolean
-          driver_id: string
-          heading?: number | null
-          id?: number
-          location: unknown
-          session_id: string
-          speed_mps?: number | null
-          status: Database["public"]["Enums"]["presence_status"]
-          ts: string
-        }
-        Update: {
-          downsampled?: boolean
-          driver_id?: string
-          heading?: number | null
-          id?: number
-          location?: unknown
-          session_id?: string
-          speed_mps?: number | null
-          status?: Database["public"]["Enums"]["presence_status"]
-          ts?: string
-        }
-        Relationships: []
-      }
       driver_presence_history_y2026_m10: {
         Row: {
           downsampled: boolean
@@ -997,6 +1553,112 @@ export type Database = {
           ts?: string
         }
         Relationships: []
+      }
+      driver_presence_history_y2026_m12: {
+        Row: {
+          downsampled: boolean
+          driver_id: string
+          heading: number | null
+          id: number
+          location: unknown
+          session_id: string
+          speed_mps: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Insert: {
+          downsampled?: boolean
+          driver_id: string
+          heading?: number | null
+          id?: number
+          location: unknown
+          session_id: string
+          speed_mps?: number | null
+          status: Database["public"]["Enums"]["presence_status"]
+          ts: string
+        }
+        Update: {
+          downsampled?: boolean
+          driver_id?: string
+          heading?: number | null
+          id?: number
+          location?: unknown
+          session_id?: string
+          speed_mps?: number | null
+          status?: Database["public"]["Enums"]["presence_status"]
+          ts?: string
+        }
+        Relationships: []
+      }
+      driver_rest_prefs: {
+        Row: {
+          drive_minutes: number | null
+          driver_id: string
+          rest_minutes: number | null
+          updated_at: string
+        }
+        Insert: {
+          drive_minutes?: number | null
+          driver_id: string
+          rest_minutes?: number | null
+          updated_at?: string
+        }
+        Update: {
+          drive_minutes?: number | null
+          driver_id?: string
+          rest_minutes?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_rest_prefs_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: true
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_rests: {
+        Row: {
+          created_at: string
+          driver_id: string
+          ended_at: string
+          id: string
+          idempotency_key: string
+          priority_until: string | null
+          qualified: boolean
+          started_at: string
+        }
+        Insert: {
+          created_at?: string
+          driver_id: string
+          ended_at: string
+          id?: string
+          idempotency_key: string
+          priority_until?: string | null
+          qualified: boolean
+          started_at: string
+        }
+        Update: {
+          created_at?: string
+          driver_id?: string
+          ended_at?: string
+          id?: string
+          idempotency_key?: string
+          priority_until?: string | null
+          qualified?: boolean
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_rests_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       driver_ride_rules: {
         Row: {
@@ -1484,6 +2146,38 @@ export type Database = {
           },
         ]
       }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          phone_e164: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          phone_e164: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          phone_e164?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fare_corrections: {
         Row: {
           created_at: string
@@ -1607,6 +2301,47 @@ export type Database = {
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fare_observations: {
+        Row: {
+          amount_minor: number
+          client_ref: string
+          corridor_label: string
+          created_at: string
+          hour_of_day: number
+          id: string
+          kind: string
+          rider_id: string
+        }
+        Insert: {
+          amount_minor: number
+          client_ref: string
+          corridor_label: string
+          created_at?: string
+          hour_of_day: number
+          id?: string
+          kind: string
+          rider_id: string
+        }
+        Update: {
+          amount_minor?: number
+          client_ref?: string
+          corridor_label?: string
+          created_at?: string
+          hour_of_day?: number
+          id?: string
+          kind?: string
+          rider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fare_observations_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1926,6 +2661,47 @@ export type Database = {
           },
         ]
       }
+      fuel_notes: {
+        Row: {
+          client_ref: string
+          created_at: string
+          driver_id: string
+          id: string
+          label: string
+          lat: number
+          lng: number
+          price_naira: number
+        }
+        Insert: {
+          client_ref: string
+          created_at?: string
+          driver_id: string
+          id?: string
+          label: string
+          lat: number
+          lng: number
+          price_naira: number
+        }
+        Update: {
+          client_ref?: string
+          created_at?: string
+          driver_id?: string
+          id?: string
+          label?: string
+          lat?: number
+          lng?: number
+          price_naira?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fuel_notes_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       graph_confirmations: {
         Row: {
           confirmer_profile_id: string
@@ -2088,6 +2864,51 @@ export type Database = {
           },
         ]
       }
+      guardian_events: {
+        Row: {
+          created_at: string
+          escalated: boolean
+          id: string
+          idempotency_key: string
+          kind: string
+          rider_id: string
+          trip_id: string
+        }
+        Insert: {
+          created_at?: string
+          escalated?: boolean
+          id?: string
+          idempotency_key: string
+          kind: string
+          rider_id: string
+          trip_id: string
+        }
+        Update: {
+          created_at?: string
+          escalated?: boolean
+          id?: string
+          idempotency_key?: string
+          kind?: string
+          rider_id?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guardian_events_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guardian_events_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incidents: {
         Row: {
           assigned_to: string | null
@@ -2157,6 +2978,42 @@ export type Database = {
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_lines: {
+        Row: {
+          allocation_id: string
+          amount: number
+          id: string
+          invoice_id: string
+        }
+        Insert: {
+          allocation_id: string
+          amount: number
+          id?: string
+          invoice_id: string
+        }
+        Update: {
+          allocation_id?: string
+          amount?: number
+          id?: string
+          invoice_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_lines_allocation_id_fkey"
+            columns: ["allocation_id"]
+            isOneToOne: true
+            referencedRelation: "corporate_trip_allocations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_lines_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_invoices"
             referencedColumns: ["id"]
           },
         ]
@@ -2261,6 +3118,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      job_runs: {
+        Row: {
+          error: string | null
+          finished_at: string | null
+          id: string
+          job_name: string
+          params: Json | null
+          started_at: string
+          stats: Json | null
+          status: string
+        }
+        Insert: {
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          job_name: string
+          params?: Json | null
+          started_at?: string
+          stats?: Json | null
+          status?: string
+        }
+        Update: {
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          job_name?: string
+          params?: Json | null
+          started_at?: string
+          stats?: Json | null
+          status?: string
+        }
+        Relationships: []
       }
       journey_transfer_walks: {
         Row: {
@@ -2392,6 +3282,92 @@ export type Database = {
           },
         ]
       }
+      live_segment_observations: {
+        Row: {
+          city_id: string
+          created_at: string
+          id: string
+          observed_at: string
+          segment_key: string
+          speed_mps: number
+          trip_id: string | null
+        }
+        Insert: {
+          city_id: string
+          created_at?: string
+          id?: string
+          observed_at: string
+          segment_key: string
+          speed_mps: number
+          trip_id?: string | null
+        }
+        Update: {
+          city_id?: string
+          created_at?: string
+          id?: string
+          observed_at?: string
+          segment_key?: string
+          speed_mps?: number
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_segment_observations_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_segment_observations_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matched_traces: {
+        Row: {
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          confidence: number
+          created_at: string
+          geometry: unknown
+          id: string
+          match_meta: Json | null
+          osm_way_ids: number[]
+          trip_id: string
+        }
+        Insert: {
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          confidence: number
+          created_at?: string
+          geometry: unknown
+          id?: string
+          match_meta?: Json | null
+          osm_way_ids?: number[]
+          trip_id: string
+        }
+        Update: {
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          confidence?: number
+          created_at?: string
+          geometry?: unknown
+          id?: string
+          match_meta?: Json | null
+          osm_way_ids?: number[]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matched_traces_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mode_config: {
         Row: {
           active: boolean
@@ -2483,6 +3459,80 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operator_accounts: {
+        Row: {
+          billing_status: Database["public"]["Enums"]["operator_billing_status"]
+          created_at: string
+          deployment_id: string
+          id: string
+          name: string
+          subscription_tier: string
+          type: Database["public"]["Enums"]["operator_account_type"]
+        }
+        Insert: {
+          billing_status?: Database["public"]["Enums"]["operator_billing_status"]
+          created_at?: string
+          deployment_id: string
+          id?: string
+          name: string
+          subscription_tier?: string
+          type: Database["public"]["Enums"]["operator_account_type"]
+        }
+        Update: {
+          billing_status?: Database["public"]["Enums"]["operator_billing_status"]
+          created_at?: string
+          deployment_id?: string
+          id?: string
+          name?: string
+          subscription_tier?: string
+          type?: Database["public"]["Enums"]["operator_account_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operator_accounts_deployment_id_fkey"
+            columns: ["deployment_id"]
+            isOneToOne: false
+            referencedRelation: "deployments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operator_members: {
+        Row: {
+          driver_id: string
+          operator_account_id: string
+          role: string
+          since: string
+        }
+        Insert: {
+          driver_id: string
+          operator_account_id: string
+          role?: string
+          since?: string
+        }
+        Update: {
+          driver_id?: string
+          operator_account_id?: string
+          role?: string
+          since?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operator_members_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "operator_members_operator_account_id_fkey"
+            columns: ["operator_account_id"]
+            isOneToOne: false
+            referencedRelation: "operator_accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -2718,6 +3768,79 @@ export type Database = {
             columns: ["requested_by"]
             isOneToOne: false
             referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pickup_events: {
+        Row: {
+          author_id: string
+          client_ref: string
+          created_at: string
+          ends_at: string
+          id: string
+          lat: number
+          lng: number
+          name: string
+          starts_at: string
+        }
+        Insert: {
+          author_id: string
+          client_ref: string
+          created_at?: string
+          ends_at: string
+          id?: string
+          lat: number
+          lng: number
+          name: string
+          starts_at: string
+        }
+        Update: {
+          author_id?: string
+          client_ref?: string
+          created_at?: string
+          ends_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          name?: string
+          starts_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pickup_events_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      placement_counters: {
+        Row: {
+          day: string
+          impressions: number
+          placement_id: string
+          taps: number
+        }
+        Insert: {
+          day: string
+          impressions?: number
+          placement_id: string
+          taps?: number
+        }
+        Update: {
+          day?: string
+          impressions?: number
+          placement_id?: string
+          taps?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "placement_counters_placement_id_fkey"
+            columns: ["placement_id"]
+            isOneToOne: false
+            referencedRelation: "sponsored_placements"
             referencedColumns: ["id"]
           },
         ]
@@ -3083,6 +4206,77 @@ export type Database = {
         }
         Relationships: []
       }
+      rider_favourites: {
+        Row: {
+          created_at: string
+          driver_id: string
+          rider_id: string
+        }
+        Insert: {
+          created_at?: string
+          driver_id: string
+          rider_id: string
+        }
+        Update: {
+          created_at?: string
+          driver_id?: string
+          rider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rider_favourites_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rider_favourites_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rider_guardian_prefs: {
+        Row: {
+          check_in_minutes: number | null
+          enabled: boolean
+          long_stop_minutes: number | null
+          off_route_m: number | null
+          profile_id: string
+          safe_word: string | null
+          updated_at: string
+        }
+        Insert: {
+          check_in_minutes?: number | null
+          enabled?: boolean
+          long_stop_minutes?: number | null
+          off_route_m?: number | null
+          profile_id: string
+          safe_word?: string | null
+          updated_at?: string
+        }
+        Update: {
+          check_in_minutes?: number | null
+          enabled?: boolean
+          long_stop_minutes?: number | null
+          off_route_m?: number | null
+          profile_id?: string
+          safe_word?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rider_guardian_prefs_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rider_payment_methods: {
         Row: {
           authorization_code: string
@@ -3180,6 +4374,131 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      road_geometry_corrections: {
+        Row: {
+          city_id: string
+          created_at: string
+          geometry: unknown
+          id: string
+          osm_changeset_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          supporting_trace_count: number
+        }
+        Insert: {
+          city_id: string
+          created_at?: string
+          geometry: unknown
+          id?: string
+          osm_changeset_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          supporting_trace_count: number
+        }
+        Update: {
+          city_id?: string
+          created_at?: string
+          geometry?: unknown
+          id?: string
+          osm_changeset_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          supporting_trace_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "road_geometry_corrections_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "road_geometry_corrections_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      route_inference_candidates: {
+        Row: {
+          city_id: string
+          created_at: string
+          destination_cluster: unknown
+          geometry: unknown
+          id: string
+          mode_code: string | null
+          origin_cluster: unknown
+          reviewed_at: string | null
+          reviewed_by: string | null
+          route_id: string | null
+          status: string
+          supporting_trip_count: number
+        }
+        Insert: {
+          city_id: string
+          created_at?: string
+          destination_cluster?: unknown
+          geometry: unknown
+          id?: string
+          mode_code?: string | null
+          origin_cluster?: unknown
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          route_id?: string | null
+          status?: string
+          supporting_trip_count: number
+        }
+        Update: {
+          city_id?: string
+          created_at?: string
+          destination_cluster?: unknown
+          geometry?: unknown
+          id?: string
+          mode_code?: string | null
+          origin_cluster?: unknown
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          route_id?: string | null
+          status?: string
+          supporting_trip_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_inference_candidates_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_inference_candidates_mode_code_fkey"
+            columns: ["mode_code"]
+            isOneToOne: false
+            referencedRelation: "mode_config"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "route_inference_candidates_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_inference_candidates_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
             referencedColumns: ["id"]
           },
         ]
@@ -3288,6 +4607,38 @@ export type Database = {
             columns: ["to_stage_id"]
             isOneToOne: false
             referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      route_requests: {
+        Row: {
+          client_ref: string
+          corridor_label: string
+          created_at: string
+          id: string
+          rider_id: string
+        }
+        Insert: {
+          client_ref: string
+          corridor_label: string
+          created_at?: string
+          id?: string
+          rider_id: string
+        }
+        Update: {
+          client_ref?: string
+          corridor_label?: string
+          created_at?: string
+          id?: string
+          rider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_requests_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3718,6 +5069,7 @@ export type Database = {
           raised_role: string
           resolution_note: string | null
           resolved_at: string | null
+          share_id: string | null
           status: Database["public"]["Enums"]["sos_status"]
           trip_id: string | null
         }
@@ -3733,6 +5085,7 @@ export type Database = {
           raised_role: string
           resolution_note?: string | null
           resolved_at?: string | null
+          share_id?: string | null
           status?: Database["public"]["Enums"]["sos_status"]
           trip_id?: string | null
         }
@@ -3748,6 +5101,7 @@ export type Database = {
           raised_role?: string
           resolution_note?: string | null
           resolved_at?: string | null
+          share_id?: string | null
           status?: Database["public"]["Enums"]["sos_status"]
           trip_id?: string | null
         }
@@ -3771,6 +5125,13 @@ export type Database = {
             columns: ["raised_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sos_alerts_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "trip_shares"
             referencedColumns: ["id"]
           },
           {
@@ -3849,6 +5210,102 @@ export type Database = {
             columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sponsored_placements: {
+        Row: {
+          active_from: string
+          active_to: string
+          advertiser: string
+          content: Json
+          context_type: Database["public"]["Enums"]["placement_context_type"]
+          created_at: string
+          deployment_id: string
+          id: string
+          target_reference: string
+        }
+        Insert: {
+          active_from: string
+          active_to: string
+          advertiser: string
+          content?: Json
+          context_type: Database["public"]["Enums"]["placement_context_type"]
+          created_at?: string
+          deployment_id: string
+          id?: string
+          target_reference: string
+        }
+        Update: {
+          active_from?: string
+          active_to?: string
+          advertiser?: string
+          content?: Json
+          context_type?: Database["public"]["Enums"]["placement_context_type"]
+          created_at?: string
+          deployment_id?: string
+          id?: string
+          target_reference?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsored_placements_deployment_id_fkey"
+            columns: ["deployment_id"]
+            isOneToOne: false
+            referencedRelation: "deployments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stage_dwell_samples: {
+        Row: {
+          city_id: string
+          dwell_s: number
+          hour_bucket: number
+          id: string
+          observed_at: string
+          stage_id: string
+          trip_id: string | null
+        }
+        Insert: {
+          city_id: string
+          dwell_s: number
+          hour_bucket: number
+          id?: string
+          observed_at?: string
+          stage_id: string
+          trip_id?: string | null
+        }
+        Update: {
+          city_id?: string
+          dwell_s?: number
+          hour_bucket?: number
+          id?: string
+          observed_at?: string
+          stage_id?: string
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stage_dwell_samples_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stage_dwell_samples_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "route_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stage_dwell_samples_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
             referencedColumns: ["id"]
           },
         ]
@@ -4117,39 +5574,6 @@ export type Database = {
         }
         Relationships: []
       }
-      trip_location_samples_y2026_m09: {
-        Row: {
-          accuracy_m: number | null
-          actor_type: Database["public"]["Enums"]["actor_type"]
-          heading: number | null
-          id: number
-          location: unknown
-          speed_mps: number | null
-          trip_id: string
-          ts: string
-        }
-        Insert: {
-          accuracy_m?: number | null
-          actor_type: Database["public"]["Enums"]["actor_type"]
-          heading?: number | null
-          id?: number
-          location: unknown
-          speed_mps?: number | null
-          trip_id: string
-          ts: string
-        }
-        Update: {
-          accuracy_m?: number | null
-          actor_type?: Database["public"]["Enums"]["actor_type"]
-          heading?: number | null
-          id?: number
-          location?: unknown
-          speed_mps?: number | null
-          trip_id?: string
-          ts?: string
-        }
-        Relationships: []
-      }
       trip_location_samples_y2026_m10: {
         Row: {
           accuracy_m: number | null
@@ -4215,6 +5639,84 @@ export type Database = {
           ts?: string
         }
         Relationships: []
+      }
+      trip_location_samples_y2026_m12: {
+        Row: {
+          accuracy_m: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading: number | null
+          id: number
+          location: unknown
+          speed_mps: number | null
+          trip_id: string
+          ts: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          actor_type: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location: unknown
+          speed_mps?: number | null
+          trip_id: string
+          ts: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          actor_type?: Database["public"]["Enums"]["actor_type"]
+          heading?: number | null
+          id?: number
+          location?: unknown
+          speed_mps?: number | null
+          trip_id?: string
+          ts?: string
+        }
+        Relationships: []
+      }
+      trip_messages: {
+        Row: {
+          author_id: string
+          author_role: string
+          body: string
+          client_ref: string
+          created_at: string
+          id: string
+          trip_id: string
+        }
+        Insert: {
+          author_id: string
+          author_role: string
+          body: string
+          client_ref: string
+          created_at?: string
+          id?: string
+          trip_id: string
+        }
+        Update: {
+          author_id?: string
+          author_role?: string
+          body?: string
+          client_ref?: string
+          created_at?: string
+          id?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_messages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_messages_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       trip_reconciliation_flags: {
         Row: {
@@ -4935,6 +6437,7 @@ export type Database = {
       }
     }
     Functions: {
+      _admin_graph_source: { Args: { p_note: string }; Returns: string }
       _advance_journey_on_trip_complete: {
         Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
         Returns: undefined
@@ -4965,11 +6468,85 @@ export type Database = {
       }
       _cleanup: { Args: never; Returns: boolean }
       _contract_on: { Args: { "": string }; Returns: unknown }
+      _corridor_import_apply: {
+        Args: { p_city_id: string; p_diff: Json }
+        Returns: Json
+      }
+      _corridor_import_dry_run: {
+        Args: { p_bundle: Json; p_city_id: string }
+        Returns: Json
+      }
+      _corridor_route_label: {
+        Args: {
+          p_destination: string
+          p_mode: string
+          p_name: string
+          p_origin: string
+        }
+        Returns: string
+      }
       _currtest: { Args: never; Returns: number }
       _db_privs: { Args: never; Returns: unknown[] }
       _driver_declared_source: {
         Args: { p_driver_id: string }
         Returns: string
+      }
+      _eta_blend: {
+        Args: {
+          p_baseline: number
+          p_live_median: number
+          p_live_samples: number
+          p_osrm_degraded: boolean
+          p_planned: number
+          p_profile_median: number
+          p_profile_p85: number
+          p_profile_samples: number
+        }
+        Returns: Json
+      }
+      _eta_dwell_s: {
+        Args: { p_default: number; p_hour: number; p_stage_id: string }
+        Returns: number
+      }
+      _eta_format: { Args: { p_high: number; p_low: number }; Returns: Json }
+      _eta_lagos_clock: { Args: { p_at: string }; Returns: string }
+      _eta_live_median: {
+        Args: { p_at: string; p_keys: string[] }
+        Returns: {
+          median_mps: number
+          samples: number
+        }[]
+      }
+      _eta_minute: { Args: { p_seconds: number }; Returns: number }
+      _eta_record_speeds: {
+        Args: { p_points: Json; p_trip_id: string }
+        Returns: undefined
+      }
+      _eta_scaled: {
+        Args: { p_baseline: number; p_planned: number; p_speed: number }
+        Returns: number
+      }
+      _eta_segment_estimate: {
+        Args: {
+          p_at: string
+          p_baseline: number
+          p_city: string
+          p_degraded: boolean
+          p_dow: number
+          p_hour: number
+          p_keys: string[]
+          p_planned: number
+        }
+        Returns: Json
+      }
+      _eta_smooth: {
+        Args: {
+          p_live_speed: number
+          p_previous: Json
+          p_raw_high: number
+          p_raw_low: number
+        }
+        Returns: Json
       }
       _extension_parse_endpoint: {
         Args: { p_value: Json }
@@ -5003,6 +6580,18 @@ export type Database = {
       _get: { Args: { "": string }; Returns: number }
       _get_latest: { Args: { "": string }; Returns: number[] }
       _get_note: { Args: { "": string }; Returns: string }
+      _graph_revision_target_table: {
+        Args: { p_type: string }
+        Returns: string
+      }
+      _intelligence_source: {
+        Args: {
+          p_job_run_id?: string
+          p_note?: string
+          p_source_type: Database["public"]["Enums"]["source_type"]
+        }
+        Returns: string
+      }
       _is_verbose: { Args: never; Returns: boolean }
       _itinerary_next_pending_stop: {
         Args: { p_after_sequence?: number; p_itinerary_id: string }
@@ -5309,6 +6898,16 @@ export type Database = {
         }
         Returns: string[]
       }
+      _slugify_graph_name: { Args: { p_name: string }; Returns: string }
+      _snap_or_create_intelligence_park: {
+        Args: {
+          p_city_id: string
+          p_label: string
+          p_location: unknown
+          p_source_id: string
+        }
+        Returns: string
+      }
       _st_3dintersects: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: boolean
@@ -5391,6 +6990,10 @@ export type Database = {
         Args: { p_trip_id: string }
         Returns: number
       }
+      _validate_config_value: {
+        Args: { p_key: string; p_value: Json }
+        Returns: undefined
+      }
       _validate_load_flag: {
         Args: { p_city_id: string; p_load: Json; p_mode_code: string }
         Returns: undefined
@@ -5436,6 +7039,7 @@ export type Database = {
             Returns: string
           }
       admin_ack_sos: { Args: { p_id: string }; Returns: Json }
+      admin_active_trips_map: { Args: { p_city_id: string }; Returns: Json }
       admin_approve_adjustment: {
         Args: { p_request_id: string }
         Returns: Json
@@ -5445,10 +7049,15 @@ export type Database = {
         Returns: Json
       }
       admin_can_access_city: { Args: { p_city: string }; Returns: boolean }
+      admin_can_access_profile: {
+        Args: { p_profile: string }
+        Returns: boolean
+      }
       admin_check_identity_duplicate: {
         Args: { p_verification_id: string }
         Returns: Json
       }
+      admin_corporate_account_id: { Args: never; Returns: string }
       admin_corridor_analytics: {
         Args: {
           p_corridor_id: string
@@ -5457,6 +7066,86 @@ export type Database = {
           p_limit?: number
           p_to: string
         }
+        Returns: Json
+      }
+      admin_create_api_key: {
+        Args: {
+          p_owner_organization: string
+          p_rate_limit_per_min?: number
+          p_scope: string[]
+        }
+        Returns: Json
+      }
+      admin_create_city: {
+        Args: {
+          p_centroid_lat: number
+          p_centroid_lng: number
+          p_config_overrides?: Json
+          p_country_code: string
+          p_dry_run?: boolean
+          p_name: string
+          p_slug: string
+          p_state_region?: string
+          p_status?: Database["public"]["Enums"]["city_status"]
+        }
+        Returns: Json
+      }
+      admin_create_corporate_account: {
+        Args: {
+          p_billing_email: string
+          p_currency?: string
+          p_deployment_id: string
+          p_monthly_budget?: number
+          p_name: string
+        }
+        Returns: Json
+      }
+      admin_create_operator_account: {
+        Args: {
+          p_deployment_id: string
+          p_name: string
+          p_subscription_tier?: string
+          p_type: Database["public"]["Enums"]["operator_account_type"]
+        }
+        Returns: Json
+      }
+      admin_create_sponsored_placement: {
+        Args: {
+          p_active_from: string
+          p_active_to: string
+          p_advertiser: string
+          p_content: Json
+          p_context_type: Database["public"]["Enums"]["placement_context_type"]
+          p_deployment_id: string
+          p_target_reference: string
+        }
+        Returns: Json
+      }
+      admin_deactivate_graph_entity: {
+        Args: { p_id: string; p_reason?: string; p_type: string }
+        Returns: Json
+      }
+      admin_disable_admin: { Args: { p_user_id: string }; Returns: Json }
+      admin_import_apply: {
+        Args: { p_city_id: string; p_diff: Json }
+        Returns: Json
+      }
+      admin_import_dry_run: {
+        Args: { p_city_id: string; p_csv: string }
+        Returns: Json
+      }
+      admin_invite_admin: {
+        Args: {
+          p_city_scope?: string[]
+          p_deployment_id?: string
+          p_display_name?: string
+          p_email: string
+          p_role: Database["public"]["Enums"]["admin_role"]
+        }
+        Returns: Json
+      }
+      admin_list_admins: {
+        Args: { p_cursor?: string; p_limit?: number }
         Returns: Json
       }
       admin_log_view_document: {
@@ -5468,45 +7157,19 @@ export type Database = {
         Returns: Json
       }
       admin_notify_guarantor: { Args: { p_driver_id: string }; Returns: Json }
+      admin_operator_account_id: { Args: never; Returns: string }
       admin_payout_positive_balance: {
         Args: { p_driver_id: string }
         Returns: Json
       }
       admin_presence_fanout: { Args: { p_city_id: string }; Returns: Json }
-      admin_active_trips_map: { Args: { p_city_id: string }; Returns: Json }
       admin_presence_snapshot: { Args: { p_city_id: string }; Returns: Json }
-      admin_import_apply: {
-        Args: { p_city_id: string; p_diff: Json }
-        Returns: Json
-      }
-      admin_import_dry_run: {
-        Args: { p_city_id: string; p_csv: string }
-        Returns: Json
-      }
-      admin_deactivate_graph_entity: {
-        Args: { p_id: string; p_reason?: string; p_type: string }
+      admin_publish_field_entity: {
+        Args: { p_reconciliation_id: string }
         Returns: Json
       }
       admin_publish_graph_entity: {
         Args: { p_payload: Json; p_type: string }
-        Returns: Json
-      }
-      admin_set_config: {
-        Args: {
-          p_key: string
-          p_reason?: string
-          p_scope_id: string
-          p_scope_type: Database["public"]["Enums"]["config_scope"]
-          p_value: Json
-        }
-        Returns: Json
-      }
-      admin_update_graph_entity: {
-        Args: { p_payload: Json; p_type: string }
-        Returns: Json
-      }
-      admin_publish_field_entity: {
-        Args: { p_reconciliation_id: string }
         Returns: Json
       }
       admin_reconcile_field_entity: {
@@ -5547,6 +7210,10 @@ export type Database = {
         Args: { p_id: string; p_note?: string; p_status: string }
         Returns: Json
       }
+      admin_review_candidate_park: {
+        Args: { action: string; id: string }
+        Returns: Json
+      }
       admin_review_fare_correction: {
         Args: { action: string; id: string; note?: string }
         Returns: Json
@@ -5560,7 +7227,30 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_review_geometry_correction: {
+        Args: { action: string; id: string }
+        Returns: Json
+      }
+      admin_review_route_inference: {
+        Args: { action: string; id: string }
+        Returns: Json
+      }
+      admin_revoke_api_key: { Args: { p_api_key_id: string }; Returns: Json }
       admin_rotate_driver_code: { Args: { p_driver_id: string }; Returns: Json }
+      admin_set_config: {
+        Args: {
+          p_key: string
+          p_reason?: string
+          p_scope_id: string
+          p_scope_type: Database["public"]["Enums"]["config_scope"]
+          p_value: Json
+        }
+        Returns: Json
+      }
+      admin_set_country_schema: {
+        Args: { p_code: string; p_verification_schema: Json }
+        Returns: Json
+      }
       admin_transition_standing: {
         Args: { p_driver_id: string; p_reason: string; p_to: string }
         Returns: Json
@@ -5574,28 +7264,34 @@ export type Database = {
         }
         Returns: Json
       }
-      admin_disable_admin: { Args: { p_user_id: string }; Returns: Json }
-      admin_invite_admin: {
+      admin_update_admin: {
         Args: {
-          p_city_scope?: string[] | null
-          p_deployment_id?: string | null
-          p_display_name?: string | null
-          p_email: string
-          p_role: Database["public"]["Enums"]["admin_role"]
+          p_city_scope?: string[]
+          p_clear_city_scope?: boolean
+          p_deployment_id?: string
+          p_role?: Database["public"]["Enums"]["admin_role"]
+          p_user_id: string
         }
         Returns: Json
       }
-      admin_list_admins: {
-        Args: { p_cursor?: string; p_limit?: number }
+      admin_update_graph_entity: {
+        Args: { p_payload: Json; p_type: string }
         Returns: Json
       }
-      admin_update_admin: {
+      admin_upsert_country: {
         Args: {
-          p_city_scope?: string[] | null
-          p_clear_city_scope?: boolean
-          p_deployment_id?: string | null
-          p_role?: Database["public"]["Enums"]["admin_role"] | null
-          p_user_id: string
+          p_active?: boolean
+          p_code: string
+          p_currency_code: string
+          p_currency_minor_units?: number
+          p_currency_symbol: string
+          p_default_locale: string
+          p_deployment_id: string
+          p_name: string
+          p_payment_provider?: string
+          p_phone_prefix: string
+          p_regulatory_flags?: Json
+          p_timezone: string
         }
         Returns: Json
       }
@@ -5631,6 +7327,31 @@ export type Database = {
         Returns: Json
       }
       angle_diff: { Args: { h1: number; h2: number }; Returns: number }
+      api_fetch_od_cells: {
+        Args: {
+          p_api_key: string
+          p_cursor?: string
+          p_export_id: string
+          p_limit?: number
+        }
+        Returns: Json
+      }
+      api_fetch_placement_stats: {
+        Args: {
+          p_api_key: string
+          p_from?: string
+          p_placement_id: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      app_config_visible_to_user: {
+        Args: {
+          p_scope_id: string
+          p_scope_type: Database["public"]["Enums"]["config_scope"]
+        }
+        Returns: boolean
+      }
       apply_paystack_charge_success: {
         Args: { p_amount: number; p_metadata?: Json; p_reference: string }
         Returns: {
@@ -5688,6 +7409,7 @@ export type Database = {
       }
       assert_payout_reauth: { Args: { p_user_id?: string }; Returns: undefined }
       audit_row_target_id: { Args: { p_row: Json }; Returns: string }
+      auth_user_deployment_id: { Args: never; Returns: string }
       auto_boarding_check: { Args: { p_trip_id: string }; Returns: boolean }
       auto_in_transit_check: { Args: { p_trip_id: string }; Returns: boolean }
       bearing_deg: { Args: { a: unknown; b: unknown }; Returns: number }
@@ -5708,15 +7430,19 @@ export type Database = {
         Args: { p_city?: string; p_corridor?: string; p_key: string }
         Returns: number
       }
+      check_ledger_invariant: { Args: never; Returns: Json }
       check_qr_resolve_rate: {
         Args: { p_ip: string; p_limit?: number }
         Returns: boolean
       }
+      city_centroid: { Args: { p_city_id: string }; Returns: Json }
       city_for_lat_lng: {
         Args: { p_lat: number; p_lng: number }
         Returns: string
       }
       city_for_point: { Args: { p: unknown }; Returns: string }
+      city_graph_version: { Args: { p_city_id: string }; Returns: string }
+      city_in_user_deployment: { Args: { p_city_id: string }; Returns: boolean }
       claim_bundle: {
         Args: {
           p_ack_rule_ids?: string[]
@@ -5734,6 +7460,7 @@ export type Database = {
         }
         Returns: Json
       }
+      cluster_candidate_parks: { Args: { p_city_id?: string }; Returns: Json }
       col_is_null:
         | {
             Args: {
@@ -5770,6 +7497,10 @@ export type Database = {
             }
             Returns: string
           }
+      complete_rider_onboarding: {
+        Args: { display_name?: string; home_city_id?: string }
+        Returns: Json
+      }
       complete_trip: {
         Args: { p_alighting?: Json; p_trip_id: string }
         Returns: Json
@@ -5785,6 +7516,11 @@ export type Database = {
       }
       compute_risk_scores: { Args: never; Returns: undefined }
       compute_trust_weights: { Args: never; Returns: undefined }
+      conductor_board: { Args: { p_code: string }; Returns: Json }
+      conductor_set_seat: {
+        Args: { p_code: string; p_seat_id: string; p_status: string }
+        Returns: Json
+      }
       config_default: {
         Args: {
           p_key: string
@@ -5796,14 +7532,6 @@ export type Database = {
       }
       confirm_agent_settlement: {
         Args: { p_agent_code: string; p_amount: number }
-        Returns: Json
-      }
-      conductor_board: {
-        Args: { p_code: string }
-        Returns: Json
-      }
-      conductor_set_seat: {
-        Args: { p_code: string; p_seat_id: string; p_status: string }
         Returns: Json
       }
       confirm_fare: {
@@ -5825,6 +7553,39 @@ export type Database = {
         Args: { p_city_id?: string; p_profile_id: string; p_role: string }
         Returns: number
       }
+      corporate_allocate_trip: { Args: { p_trip_id: string }; Returns: string }
+      corporate_invite_member: {
+        Args: {
+          p_default_policy_id?: string
+          p_department?: string
+          p_employee_ref?: string
+          p_phone_e164: string
+        }
+        Returns: Json
+      }
+      corporate_overview: { Args: never; Returns: Json }
+      corporate_update_member: {
+        Args: {
+          p_active?: boolean
+          p_default_policy_id?: string
+          p_department?: string
+          p_employee_ref?: string
+          p_rider_id: string
+        }
+        Returns: Json
+      }
+      corporate_upsert_policy: {
+        Args: {
+          p_active?: boolean
+          p_allowed_hours?: Json
+          p_id?: string
+          p_max_per_trip?: number
+          p_name: string
+          p_subsidy_pct: number
+        }
+        Returns: Json
+      }
+      country_currency_meta: { Args: { p_country_code: string }; Returns: Json }
       create_agent_code: { Args: { p_amount: number }; Returns: Json }
       create_itinerary: {
         Args: { p_load?: Json; p_stops: Json }
@@ -5842,12 +7603,8 @@ export type Database = {
       current_profile_id: { Args: never; Returns: string }
       deactivate_route_profile: { Args: { p_id: string }; Returns: undefined }
       decay_confidence: { Args: never; Returns: undefined }
-      delete_ride_rule: {
-        Args: {
-          p_rule_id: string
-        }
-        Returns: Json
-      }
+      delete_emergency_contact: { Args: { p_id: string }; Returns: Json }
+      delete_ride_rule: { Args: { p_rule_id: string }; Returns: Json }
       diag:
         | {
             Args: { msg: unknown }
@@ -5920,6 +7677,7 @@ export type Database = {
       fail:
         | { Args: never; Returns: string }
         | { Args: { "": string }; Returns: string }
+      fare_history: { Args: { p_corridor: string }; Returns: Json }
       fare_outlier_guard: {
         Args: {
           p_city_id?: string
@@ -5933,12 +7691,21 @@ export type Database = {
           neighbour_median: number
         }[]
       }
+      fare_shield: {
+        Args: { p_corridor: string; p_hour: number }
+        Returns: Json
+      }
       findfuncs: { Args: { "": string }; Returns: string[] }
       fingerprint_collusion_factor: {
         Args: { p_city_id?: string; p_profile_id: string }
         Returns: number
       }
       finish: { Args: { exception_on_failure?: boolean }; Returns: string[] }
+      generate_corporate_invoices: {
+        Args: { p_period_end: string; p_period_start: string }
+        Returns: Json
+      }
+      generate_corporate_invoices_monthly: { Args: never; Returns: Json }
       generate_driver_code: { Args: never; Returns: string }
       generate_na_me_pairing: {
         Args: { p_city_id: string; p_driver_id: string; p_rider_id: string }
@@ -6051,6 +7818,15 @@ export type Database = {
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
       gettransactionid: { Args: never; Returns: unknown }
+      graph_bundle_compact: {
+        Args: {
+          p_city_id: string
+          p_max_legs: number
+          p_max_parks: number
+          p_max_stages: number
+        }
+        Returns: Json
+      }
       graph_target_city_id: {
         Args: { p_target_id: string; p_target_type: string }
         Returns: string
@@ -6140,14 +7916,23 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      list_emergency_contacts: { Args: never; Returns: Json }
+      list_favourites: { Args: never; Returns: Json }
+      list_pickup_events: { Args: never; Returns: Json }
+      list_trip_messages: { Args: { p_trip_id: string }; Returns: Json }
       lives_ok: { Args: { "": string }; Returns: string }
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_boarded: { Args: { p_trip_id: string }; Returns: Json }
       mark_no_show: { Args: { p_trip_id: string }; Returns: Json }
       my_day_setup: { Args: never; Returns: Json }
+      my_rest_status: { Args: never; Returns: Json }
       my_route_profiles: { Args: never; Returns: Json }
       my_standing_history: { Args: never; Returns: Json }
       my_verifications: { Args: never; Returns: Json }
+      nearby_fuel: {
+        Args: { p_lat: number; p_lng: number; p_radius_m: number }
+        Returns: Json
+      }
       nearby_settlement_agents: { Args: { p_location?: Json }; Returns: Json }
       negotiation_clock_tick: { Args: never; Returns: Json }
       negotiation_round: {
@@ -6162,11 +7947,7 @@ export type Database = {
       }
       num_failed: { Args: never; Returns: number }
       online_vehicle_cards: {
-        Args: {
-          p_city_id: string
-          p_preset_ids?: string[]
-          p_query?: string
-        }
+        Args: { p_city_id: string; p_preset_ids?: string[]; p_query?: string }
         Returns: Json
       }
       open_conductor_session: { Args: never; Returns: Json }
@@ -6181,6 +7962,25 @@ export type Database = {
         }
         Returns: Json
       }
+      open_pickup_event: {
+        Args: {
+          p_client_ref: string
+          p_ends: string
+          p_lat: number
+          p_lng: number
+          p_name: string
+          p_starts: string
+        }
+        Returns: Json
+      }
+      operator_driver_aggregates: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      operator_overview: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
       os_name: { Args: never; Returns: string }
       pass:
         | { Args: never; Returns: string }
@@ -6190,6 +7990,7 @@ export type Database = {
         Returns: Json
       }
       payment_token_hmac_key: { Args: never; Returns: string }
+      peek_log_otp: { Args: { p_phone: string }; Returns: string }
       persist_driver_payout_bank: {
         Args: { p_bank_last4: string; p_subaccount_code: string }
         Returns: Json
@@ -6260,6 +8061,10 @@ export type Database = {
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
+      post_trip_message: {
+        Args: { p_body: string; p_client_ref: string; p_trip_id: string }
+        Returns: Json
+      }
       postgis_constraint_dims: {
         Args: { geomcolumn: string; geomschema: string; geomtable: string }
         Returns: number
@@ -6379,6 +8184,10 @@ export type Database = {
         Returns: boolean
       }
       reconcile_cancelled_trips: { Args: never; Returns: undefined }
+      reconcile_corporate_invoice: {
+        Args: { p_invoice_id: string }
+        Returns: Json
+      }
       reconcile_field_submission: {
         Args: { p_submission_id: string }
         Returns: string
@@ -6407,7 +8216,54 @@ export type Database = {
         }
         Returns: Json
       }
+      record_driver_rest: {
+        Args: {
+          p_ended_at: string
+          p_idempotency_key: string
+          p_started_at: string
+        }
+        Returns: Json
+      }
+      record_fare_observation: {
+        Args: {
+          p_amount_minor: number
+          p_client_ref: string
+          p_corridor: string
+          p_hour: number
+          p_kind: string
+        }
+        Returns: Json
+      }
+      record_fuel_note: {
+        Args: {
+          p_client_ref: string
+          p_label: string
+          p_lat: number
+          p_lng: number
+          p_price_naira: number
+        }
+        Returns: Json
+      }
+      record_guardian_event: {
+        Args: {
+          p_escalate?: boolean
+          p_idempotency_key: string
+          p_kind: string
+          p_location?: Json
+          p_trip_id: string
+        }
+        Returns: Json
+      }
+      record_log_otp: {
+        Args: { p_otp: string; p_phone: string }
+        Returns: undefined
+      }
       record_phone_reauth: { Args: never; Returns: string }
+      record_placement_counter: {
+        Args: { p_metric: string; p_placement_id: string }
+        Returns: undefined
+      }
+      refresh_trip_eta: { Args: { p_trip_id: string }; Returns: Json }
       refresh_wait: { Args: { p_trip_id: string }; Returns: Json }
       register_device_token: {
         Args: { p_app: string; p_platform: string; p_token: string }
@@ -6437,10 +8293,7 @@ export type Database = {
       }
       release_match: { Args: { p_trip_id: string }; Returns: Json }
       release_seat: {
-        Args: {
-          p_layout_id: string
-          p_seat_id: string
-        }
+        Args: { p_layout_id: string; p_seat_id: string }
         Returns: Json
       }
       remove_rider_payment_method: {
@@ -6457,6 +8310,10 @@ export type Database = {
         Returns: Json
       }
       request_qr_sticker: { Args: never; Returns: Json }
+      request_route: {
+        Args: { p_client_ref: string; p_corridor: string }
+        Returns: Json
+      }
       request_trip: {
         Args: {
           p_candidate_id: string
@@ -6493,6 +8350,14 @@ export type Database = {
         Args: { p_driver_code: string; p_rider_id?: string; p_token?: string }
         Returns: Json
       }
+      resolve_sponsored_placements: {
+        Args: {
+          p_context_type: Database["public"]["Enums"]["placement_context_type"]
+          p_deployment_id?: string
+          p_target_reference: string
+        }
+        Returns: Json
+      }
       respond_extension: {
         Args: { p_extension_id: string; p_response: string }
         Returns: Json
@@ -6527,6 +8392,33 @@ export type Database = {
       runtests:
         | { Args: never; Returns: string[] }
         | { Args: { "": string }; Returns: string[] }
+      save_earnings_goal: {
+        Args: { p_target_minor: number }
+        Returns: undefined
+      }
+      save_favourite: {
+        Args: { p_driver_id: string; p_on: boolean }
+        Returns: undefined
+      }
+      save_guardian_prefs: {
+        Args: {
+          p_check_in_minutes?: number
+          p_enabled: boolean
+          p_idempotency_key?: string
+          p_long_stop_minutes?: number
+          p_off_route_m?: number
+          p_safe_word?: string
+        }
+        Returns: Json
+      }
+      save_rest_prefs: {
+        Args: {
+          p_drive_minutes?: number
+          p_idempotency_key?: string
+          p_rest_minutes?: number
+        }
+        Returns: Json
+      }
       save_ride_rule: {
         Args: {
           p_body?: string
@@ -6549,12 +8441,7 @@ export type Database = {
         }
         Returns: Json
       }
-      seat_board: {
-        Args: {
-          p_layout_id?: string
-        }
-        Returns: Json
-      }
+      seat_board: { Args: { p_layout_id?: string }; Returns: Json }
       sector8: { Args: { p_bearing: number }; Returns: number }
       segment_speed_profiles_lookup: {
         Args: {
@@ -6571,16 +8458,15 @@ export type Database = {
       }
       set_accepts_digital: { Args: { p_enabled: boolean }; Returns: Json }
       set_all_seats: {
-        Args: {
-          p_layout_id: string
-          p_status: string
-        }
+        Args: { p_layout_id: string; p_status: string }
         Returns: Json
       }
       set_default_rider_payment_method: {
         Args: { p_payment_method_id: string }
         Returns: undefined
       }
+      set_driver_city: { Args: { p_city_id: string }; Returns: undefined }
+      set_home_city: { Args: { p_city_id: string }; Returns: undefined }
       set_presence: {
         Args: {
           p_declared_route_leg_id?: string
@@ -6594,11 +8480,7 @@ export type Database = {
         Returns: Json
       }
       set_seat_status: {
-        Args: {
-          p_layout_id: string
-          p_seat_id: string
-          p_status: string
-        }
+        Args: { p_layout_id: string; p_seat_id: string; p_status: string }
         Returns: Json
       }
       shared_trip_view: { Args: { p_token: string }; Returns: Json }
@@ -7205,6 +9087,7 @@ export type Database = {
         Args: { geom: unknown; move: number; wrap: number }
         Returns: unknown
       }
+      stage_board: { Args: { p_park_id: string }; Returns: Json }
       stage_points: {
         Args: { p_stage_ids: string[] }
         Returns: {
@@ -7323,6 +9206,10 @@ export type Database = {
         }
         Returns: string
       }
+      upsert_emergency_contact: {
+        Args: { p_display_name: string; p_id?: string; p_phone_e164: string }
+        Returns: Json
+      }
       upsert_rider_payment_method: {
         Args: {
           p_authorization_code: string
@@ -7336,11 +9223,10 @@ export type Database = {
         Returns: string
       }
       upsert_route_profile: { Args: { p_profile: Json }; Returns: Json }
-      vehicle_card_for_trip: {
-        Args: {
-          p_trip_id: string
-        }
-        Returns: Json
+      vehicle_card_for_trip: { Args: { p_trip_id: string }; Returns: Json }
+      verification_doc_provider: {
+        Args: { p_country_code: string; p_document_type: string }
+        Returns: string
       }
       verification_doc_type_allowed: {
         Args: { p_country_code: string; p_document_type: string }
@@ -7393,6 +9279,8 @@ export type Database = {
         | "corporate_admin"
       city_status: "pre_seed" | "alpha" | "beta" | "live" | "paused"
       config_scope: "global" | "country" | "city" | "corridor"
+      corporate_account_status: "active" | "suspended"
+      corporate_invoice_status: "draft" | "generated" | "sent" | "paid"
       correction_status: "pending" | "approved" | "rejected" | "auto_merged"
       doc_status: "pending" | "approved" | "rejected" | "expired"
       driver_payout_status: "pending" | "confirmed" | "failed"
@@ -7440,7 +9328,10 @@ export type Database = {
       load_size: "small" | "medium" | "large"
       negotiation_context: "park" | "roaming" | "extension" | "load_surcharge"
       negotiation_status: "open" | "agreed" | "lapsed" | "declined"
+      operator_account_type: "park" | "union" | "vehicle_owner" | "corporate"
+      operator_billing_status: "active" | "suspended"
       payment_method: "cash" | "digital"
+      placement_context_type: "destination" | "park" | "corridor"
       presence_status:
         | "offline"
         | "at_park"
@@ -7650,6 +9541,8 @@ export const Constants = {
       ],
       city_status: ["pre_seed", "alpha", "beta", "live", "paused"],
       config_scope: ["global", "country", "city", "corridor"],
+      corporate_account_status: ["active", "suspended"],
+      corporate_invoice_status: ["draft", "generated", "sent", "paid"],
       correction_status: ["pending", "approved", "rejected", "auto_merged"],
       doc_status: ["pending", "approved", "rejected", "expired"],
       driver_payout_status: ["pending", "confirmed", "failed"],
@@ -7702,7 +9595,10 @@ export const Constants = {
       load_size: ["small", "medium", "large"],
       negotiation_context: ["park", "roaming", "extension", "load_surcharge"],
       negotiation_status: ["open", "agreed", "lapsed", "declined"],
+      operator_account_type: ["park", "union", "vehicle_owner", "corporate"],
+      operator_billing_status: ["active", "suspended"],
       payment_method: ["cash", "digital"],
+      placement_context_type: ["destination", "park", "corridor"],
       presence_status: [
         "offline",
         "at_park",

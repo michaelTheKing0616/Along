@@ -8,7 +8,6 @@ import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/account/presentation/emergency_contacts_section.dart';
 import 'package:mobile_rider/features/marketplace/presentation/fare_shield_screen.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
-import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
@@ -134,7 +133,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           DropdownButtonFormField<String>(
             key: const Key('account_city_dropdown'),
             isExpanded: true,
-            value: profile?.homeCityId,
+            initialValue: profile?.homeCityId,
             decoration: InputDecoration(hintText: l10n.accountCityHint),
             items: _cities
                 .map(

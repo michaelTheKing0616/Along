@@ -1142,14 +1142,12 @@ class _SwitchRow extends StatelessWidget {
 
 class _ChoiceRow extends StatelessWidget {
   const _ChoiceRow({
-    super.key,
     required this.title,
     required this.selected,
     required this.onTap,
     this.detail,
-    this.outlined = false,
     this.accentEdge = false,
-  });
+  }) : outlined = false;
 
   final String title;
   final String? detail;
@@ -1693,10 +1691,9 @@ class _MapStage extends StatelessWidget {
   const _MapStage({
     required this.map,
     required this.card,
-    this.alignTop = false,
     this.topButtons = false,
     this.reconnecting = false,
-  });
+  }) : alignTop = false;
 
   final Widget map;
   final Widget card;

@@ -261,7 +261,7 @@ class DriverPricingNotifier extends Notifier<DriverPricingState> {
 
     if (amountRaw == null) return;
 
-    final amountNaira = _parseAmountNaira(amountRaw, currency: view.amount.currency);
+    final amountNaira = _parseAmountNaira(amountRaw as Object, currency: view.amount.currency);
     final nextView = _copyView(
       view,
       round: round is num ? round.toInt() : view.round,

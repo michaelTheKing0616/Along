@@ -67,12 +67,13 @@ Deno.test('TS-QR-09: webhook payment_id triggers payment_received notify', async
       },
     } as unknown as SupabaseClient,
     realtime: {
+      // deno-lint-ignore require-await -- test double satisfies an async interface
       send: async () => {
         notifyCalled = true;
       },
     },
     fcm: {
-      sendDataMessage: async () => ({ messageId: 'test' }),
+      sendDataMessage: () => Promise.resolve({ messageId: 'test' }),
     },
   };
 

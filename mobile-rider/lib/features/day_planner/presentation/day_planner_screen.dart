@@ -193,7 +193,7 @@ class _StopTimeline extends StatelessWidget {
           ReorderableListView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            onReorder: onReorder,
+            onReorderItem: onReorder,
             children: [
               for (var i = 0; i < pending.length; i++)
                 _buildPendingStopTile(

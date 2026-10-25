@@ -50,8 +50,8 @@ async function loadStaticLayers(cityId: string): Promise<LiveMapStaticPayload> {
         location,
         profiles!sos_alerts_raised_by_fkey ( display_name ),
         trips (
-          rider:profiles!trips_rider_id_fkey ( display_name ),
-          driver:profiles!trips_driver_id_fkey ( display_name ),
+          rider:riders!trips_rider_id_fkey ( ...profiles!riders_id_fkey ( display_name ) ),
+          driver:drivers!trips_driver_id_fkey ( ...profiles!drivers_id_fkey ( display_name ) ),
           vehicles ( plate_number ),
           journeys ( city_id )
         )

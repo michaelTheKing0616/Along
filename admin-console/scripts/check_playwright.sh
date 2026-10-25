@@ -60,6 +60,8 @@ echo "Seeding E2E safety board fixture..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-safety-board.sql"
 echo "Seeding E2E graph editor fixture..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-graph-editor.sql"
+echo "Seeding E2E W-01 shared trip fixture..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$ADMIN/e2e/seed-shared-trip.sql"
 chmod +x "$ADMIN/e2e/seed-verification-storage.sh"
 "$ADMIN/e2e/seed-verification-storage.sh"
 

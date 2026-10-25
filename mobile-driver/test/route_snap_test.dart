@@ -1,6 +1,5 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_driver/config/app_config.dart';

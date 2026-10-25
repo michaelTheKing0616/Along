@@ -104,7 +104,7 @@ Deno.test('settlement/initiate: creates pending settlement and returns authoriza
     provider: createMockProvider(() => {
       providerCalls += 1;
     }),
-    cfgInitiateTtlMin: async () => 30,
+    cfgInitiateTtlMin: () => Promise.resolve(30),
   });
 
   assertEquals(res.status, 200);
@@ -146,6 +146,7 @@ Deno.test('cash-trip gate: PaymentProvider not invoked when settlement/initiate 
   assertEquals(providerCalls, 0);
 });
 
+// deno-lint-ignore require-await -- test double satisfies an async interface
 Deno.test('cash-trip gate: fetch spy records zero Paystack calls during cash flow simulation', async () => {
   let paystackCalls = 0;
   const originalFetch = globalThis.fetch;

@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 

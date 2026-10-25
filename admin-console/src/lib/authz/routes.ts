@@ -43,6 +43,11 @@ export function isPayPath(pathname: string): boolean {
   return pathname === '/p' || pathname.startsWith('/p/');
 }
 
+/** W-01 shared-trip link — anonymous viewers by design. */
+export function isSharePath(pathname: string): boolean {
+  return pathname.startsWith('/s/');
+}
+
 /** Universal / App Link association files (P4-E-03) — no auth. */
 export function isWellKnownPath(pathname: string): boolean {
   return pathname.startsWith('/.well-known/');
@@ -60,6 +65,7 @@ export function isAgentPath(pathname: string): boolean {
 export function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.has(pathname)) return true;
   if (isPayPath(pathname)) return true;
+  if (isSharePath(pathname)) return true;
   if (isWellKnownPath(pathname)) return true;
   if (isLegalPath(pathname)) return true;
   return false;

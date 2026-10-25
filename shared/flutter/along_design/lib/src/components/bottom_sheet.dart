@@ -89,55 +89,60 @@ class _AlongBottomSheetState extends State<AlongBottomSheet>
                 shadow: AlongElevation.sheet(palette.ink),
                 top: true,
               ),
-              child: AlongCraft.clip(
-                corner: AlongRadius.sheet.x,
-                top: true,
-                child: SizedBox(
-                  height: 640 * _heightFactor(),
-                  width: double.infinity,
-                  child: Column(
-                  children: [
-                    const SizedBox(height: AlongSpace.s8),
-                    Container(
-                      width: 32,
-                      height: 4,
-                      decoration: AlongCraft.fill(
-                        palette.line,
-                        corner: AlongRadius.xs.x,
-                      ),
-                    ),
-                    if (widget.title != null)
-                      Padding(
-                        padding: const EdgeInsets.all(AlongSpace.s16),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            widget.title!,
-                            style: AlongText.heading2.copyWith(
-                              color: palette.ink,
-                            ),
+              child: Material(
+                // Gives ListTile/InkWell in sheet content their own ink surface
+                // above the decorated background.
+                type: MaterialType.transparency,
+                child: AlongCraft.clip(
+                  corner: AlongRadius.sheet.x,
+                  top: true,
+                  child: SizedBox(
+                    height: 640 * _heightFactor(),
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: AlongSpace.s8),
+                        Container(
+                          width: 32,
+                          height: 4,
+                          decoration: AlongCraft.fill(
+                            palette.line,
+                            corner: AlongRadius.xs.x,
                           ),
                         ),
-                      ),
-                    Expanded(
-                      child: widget.size == AlongBottomSheetSize.full
-                          ? SingleChildScrollView(
-                              primary: false,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AlongSpace.s16,
+                        if (widget.title != null)
+                          Padding(
+                            padding: const EdgeInsets.all(AlongSpace.s16),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                widget.title!,
+                                style: AlongText.heading2.copyWith(
+                                  color: palette.ink,
+                                ),
                               ),
-                              child: widget.child,
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AlongSpace.s16,
-                              ),
-                              child: widget.child,
                             ),
+                          ),
+                        Expanded(
+                          child: widget.size == AlongBottomSheetSize.full
+                              ? SingleChildScrollView(
+                                  primary: false,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AlongSpace.s16,
+                                  ),
+                                  child: widget.child,
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AlongSpace.s16,
+                                  ),
+                                  child: widget.child,
+                                ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
               ),
             ),
           ),

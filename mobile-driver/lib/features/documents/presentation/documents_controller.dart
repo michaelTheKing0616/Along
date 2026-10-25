@@ -3,9 +3,7 @@ import 'package:along_data/along_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/documents/domain/ocr_confirm_policy.dart';
-import 'package:mobile_driver/features/documents/presentation/documents_controller.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum DocumentUiStatus { notStarted, pending, approved, rejected }
 

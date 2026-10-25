@@ -20,7 +20,7 @@ select is(
 
 select is(
   (select count(*)::int from ride_rule_presets),
-  4,
+  6, -- four from 0084 plus two day-rule presets from 0085
   'TS-SEAT-01: rule presets are seeded data'
 );
 

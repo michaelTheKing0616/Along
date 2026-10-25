@@ -63,7 +63,7 @@ async function defaultOcrUpstream(
   providerName: string,
 ): Promise<OcrUpstreamResult> {
   const provider = resolveVerificationProvider(providerName);
-  return provider.runOcr(path, documentType);
+  return await provider.runOcr(path, documentType);
 }
 
 function byteaToBase64(value: unknown): string | null {

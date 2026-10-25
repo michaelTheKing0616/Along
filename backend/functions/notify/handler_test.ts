@@ -59,6 +59,7 @@ Deno.test('notify: kind=sos pushes FCM and logs SMS for safety admins', async ()
       service: createMockService(),
       realtime: { send: () => Promise.resolve() },
       fcm: {
+        // deno-lint-ignore require-await -- test double satisfies an async interface
         sendDataMessage: async (message) => {
           fcmPayload = message.data;
           return { messageId: 'stub' };
@@ -121,6 +122,7 @@ Deno.test('notify: kind=sos_ack pushes FCM to raiser', async () => {
       service: createMockServiceForSosAck(),
       realtime: { send: () => Promise.resolve() },
       fcm: {
+        // deno-lint-ignore require-await -- test double satisfies an async interface
         sendDataMessage: async (message) => {
           fcmPayload = message.data;
           return { messageId: 'stub' };
@@ -142,6 +144,7 @@ Deno.test('notify: non-service caller is rejected before any send', async () => 
       service: createMockService(),
       realtime: { send: () => Promise.resolve() },
       fcm: {
+        // deno-lint-ignore require-await -- test double satisfies an async interface
         sendDataMessage: async () => {
           sent += 1;
           return { messageId: 'nope' };

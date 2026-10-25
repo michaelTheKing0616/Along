@@ -4,9 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_driver/app.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
-import 'package:mobile_driver/features/documents/presentation/documents_controller.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
-import 'package:mobile_driver/features/verification/presentation/verification_pending_screen.dart';
 import 'package:mobile_driver/routing/app_router.dart';
 import 'package:mobile_driver/routing/routes.dart';
 import 'package:mobile_driver/testing/fakes/fake_along_supabase.dart';
@@ -26,7 +24,7 @@ void main() {
         createdAt: DateTime.now().toIso8601String(),
       ),
       countryConfig: {
-        'code': 'NG',
+        ...defaultTestCountry(),
         'verification_schema': [
           {
             'type': 'nin',

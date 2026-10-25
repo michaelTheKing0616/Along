@@ -6,8 +6,8 @@ class FakeAlongSupabase implements AlongSupabase {
   FakeAlongSupabase({
     this.rpcHandler,
     this.functionHandler,
-    User? user,
-  }) : _user = user;
+    this._user,
+  });
 
   User? _user;
   dynamic Function(String fn, Map<String, dynamic> params)? rpcHandler;

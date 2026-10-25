@@ -100,8 +100,8 @@ async function loadOpenSos(cityId: string): Promise<SosBoardRow[]> {
         id,
         status,
         journeys ( city_id, destination_label ),
-        rider:profiles!trips_rider_id_fkey ( display_name ),
-        driver:profiles!trips_driver_id_fkey ( display_name ),
+        rider:riders!trips_rider_id_fkey ( ...profiles!riders_id_fkey ( display_name ) ),
+        driver:drivers!trips_driver_id_fkey ( ...profiles!drivers_id_fkey ( display_name ) ),
         vehicles ( plate_number )
       ),
       journeys ( city_id, destination_label )

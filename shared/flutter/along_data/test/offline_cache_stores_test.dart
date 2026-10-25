@@ -54,8 +54,8 @@ void main() {
           'parks': [
             {'id': 'p1', 'name': 'Area 1 Park', 'lat': 9.05, 'lng': 7.45},
           ],
-          'stages': [],
-          'legs': [],
+          'stages': <dynamic>[],
+          'legs': <dynamic>[],
         },
       );
 

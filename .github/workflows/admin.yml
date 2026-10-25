@@ -36,5 +36,9 @@ jobs:
       - name: Test admin-console
         run: pnpm --filter @along/admin-console test
 
+      - name: Install Playwright Chromium
+        working-directory: admin-console
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Playwright E2E against local stack
         run: bash admin-console/scripts/check_playwright.sh

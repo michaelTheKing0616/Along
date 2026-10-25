@@ -27,6 +27,18 @@ class PlacementContext {
   final PlacementContextType type;
   final String targetReference;
   final String? deploymentId;
+
+  // Value equality: used as a Riverpod family key, so a context rebuilt with
+  // the same fields must map to the same provider instead of refetching.
+  @override
+  bool operator ==(Object other) =>
+      other is PlacementContext &&
+      other.type == type &&
+      other.targetReference == targetReference &&
+      other.deploymentId == deploymentId;
+
+  @override
+  int get hashCode => Object.hash(type, targetReference, deploymentId);
 }
 
 /// Resolved sponsored placement row from `resolve_sponsored_placements`.

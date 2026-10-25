@@ -30,17 +30,6 @@ const _testConfig = AppConfig(
   batteryGuardPercent: 15,
 );
 
-class _FixedClock extends Clock {
-  _FixedClock(this._now);
-
-  DateTime _now;
-
-  @override
-  DateTime now() => _now;
-
-  void advance(Duration delta) => _now = _now.add(delta);
-}
-
 Widget _harness({
   required ProviderContainer container,
   required Widget child,

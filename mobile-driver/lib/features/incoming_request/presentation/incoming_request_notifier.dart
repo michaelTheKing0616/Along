@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:along_core/along_core.dart';
-import 'package:along_data/src/mappers/domain_mappers.dart';
-import 'package:along_data/src/trips/trips_repository.dart';
+import 'package:along_data/along_data.dart' show DomainMappers;
 import 'package:along_notifications/along_notifications.dart';
-import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';

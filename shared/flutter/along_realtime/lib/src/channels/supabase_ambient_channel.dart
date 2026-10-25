@@ -41,7 +41,7 @@ class SupabaseAmbientChannel implements AmbientChannel {
       },
     );
 
-    await channel.subscribe();
+    channel.subscribe();
     _channel = channel;
     _activeTopic = topic;
   }

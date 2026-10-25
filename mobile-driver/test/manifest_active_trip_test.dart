@@ -17,7 +17,6 @@ import 'package:mobile_driver/features/trip/presentation/manifest_controller.dar
 import 'package:mobile_driver/features/trip/presentation/manifest_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/na_me_screen.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
-import 'package:mobile_driver/routing/routes.dart';
 import 'package:mobile_driver/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_driver/testing/fakes/fake_driver_channel.dart';
 

@@ -32,7 +32,7 @@ function mockOsrmClient(): OsrmClient {
 
 function createMockService(): SupabaseClient {
   return {
-    rpc: (name: string, args?: Record<string, unknown>) => {
+    rpc: (name: string, _args?: Record<string, unknown>) => {
       if (name === 'transfer_prefetch_context') {
         return Promise.resolve({
           data: {

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:along_core/along_core.dart' show Money, TripExtensionProposal, TripStatus, TripSummary;
+import 'package:along_core/along_core.dart' show Money, TripExtensionProposal, TripSummary;
 import 'package:along_data/along_data.dart' hide Money;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

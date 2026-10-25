@@ -43,7 +43,6 @@ import 'package:mobile_rider/routing/routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
-  final shellNavigatorKey = GlobalKey<NavigatorState>();
 
   final router = GoRouter(
     navigatorKey: rootNavigatorKey,

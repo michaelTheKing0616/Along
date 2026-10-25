@@ -48,7 +48,7 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: AlongSpace.s8),
                   DropdownButtonFormField<String>(
                     key: const Key('profile_city_dropdown'),
-                    value: state.selectedCityId,
+                    initialValue: state.selectedCityId,
                     items: state.cities
                         .map(
                           (city) => DropdownMenuItem(

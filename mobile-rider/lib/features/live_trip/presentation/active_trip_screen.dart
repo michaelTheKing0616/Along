@@ -6,7 +6,6 @@ import 'package:along_design/along_design.dart' as design show TransportMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
-import 'package:mobile_rider/features/live_trip/domain/na_me_chip_mapper.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 import 'package:mobile_rider/features/live_trip/domain/live_trip_config.dart';
 import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.dart';
@@ -16,7 +15,6 @@ import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.da
 import 'package:mobile_rider/features/live_trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
 import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
-import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';

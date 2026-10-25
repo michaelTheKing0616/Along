@@ -261,7 +261,6 @@ class _CabinFit {
 
   /// Label and price sit under the cushion, not inside it.
   static const captionGap = 4.0;
-  static const captionSlot = 36.0;
 
   /// Empty nose and tail so the cushions sit in the door section,
   /// past the taper in [_cabinOutline].

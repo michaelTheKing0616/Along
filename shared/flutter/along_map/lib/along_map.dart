@@ -6,7 +6,6 @@ export 'src/benchmark/map_pan_benchmark.dart';
 export 'src/cache/corridor_tile_precache.dart';
 export 'src/cache/tile_cache_manager.dart';
 export 'src/camera/map_camera.dart';
-export 'src/constants/abuja.dart';
 export 'src/geojson/geojson_builder.dart';
 export 'src/layers/layer_ids.dart';
 export 'src/layers/map_layer_controller.dart';

@@ -7,6 +7,11 @@
 
 begin;
 
+-- pgTAP so pg_prove (db CI) runs it too; the extension is created inside the
+-- transaction and rolled back, so a restored database is left untouched.
+create extension if not exists pgtap;
+select plan(3);
+
 create temp table ts_ops_01_counts (
   table_name text primary key,
   row_count bigint not null
@@ -35,13 +40,14 @@ begin
   end loop;
 end;
 $$;
+select pass('TS-OPS-01: every key table exists after restore');
 
-\echo '=== TS-OPS-01 row counts ==='
-select table_name, row_count
+select diag('=== TS-OPS-01 row counts ===');
+select diag(table_name || ': ' || row_count)
 from ts_ops_01_counts
 order by table_name;
 
-\echo '=== TS-OPS-01 ledger invariant (TS-LEDGER-01) ==='
+select diag('=== TS-OPS-01 ledger invariant (TS-LEDGER-01) ===');
 do $$
 declare
   v_violations int;
@@ -71,8 +77,9 @@ begin
   raise notice 'TS-OPS-01 PASS: ledger invariant holds for all drivers with ledger rows';
 end;
 $$;
+select pass('TS-OPS-01: ledger invariant holds (TS-LEDGER-01)');
 
-\echo '=== TS-OPS-01 driver_balances view consistency ==='
+select diag('=== TS-OPS-01 driver_balances view consistency ===');
 do $$
 begin
   if exists (
@@ -101,7 +108,8 @@ begin
   raise notice 'TS-OPS-01 PASS: driver_balances view agrees with ledger';
 end;
 $$;
+select pass('TS-OPS-01: driver_balances view agrees with ledger');
 
-commit;
-
-\echo 'TS-OPS-01: verification complete'
+select diag('TS-OPS-01: verification complete');
+select * from finish();
+rollback;

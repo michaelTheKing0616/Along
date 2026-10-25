@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:along_core/along_core.dart';
 import 'package:along_location/src/battery_monitor.dart';
 import 'package:along_location/src/location_sample.dart';
 import 'package:along_location/src/location_stream.dart';
@@ -10,12 +9,11 @@ typedef PresencePingCallback = Future<void> Function(LocationSample sample);
 /// Schedules `presence_ping` while the driver is online (testable without isolates).
 class PresencePingScheduler {
   PresencePingScheduler({
-    required LocationStreamSource locationSource,
-    required BatteryMonitor batteryMonitor,
+    required this._locationSource,
+    required this._batteryMonitor,
     required this.batteryGuardPercent,
     required this.onPing,
-  })  : _locationSource = locationSource,
-        _batteryMonitor = batteryMonitor;
+  });
 
   final LocationStreamSource _locationSource;
   final BatteryMonitor _batteryMonitor;
@@ -28,6 +26,9 @@ class PresencePingScheduler {
   Duration _baseInterval = const Duration(seconds: 4);
   Duration _effectiveInterval = const Duration(seconds: 4);
   int? _seatsAvailable;
+
+  /// Seats last reported via [start] or [updateSeats].
+  int? get seatsAvailable => _seatsAvailable;
   bool _batteryGuardActive = false;
   bool _running = false;
 
@@ -140,17 +141,16 @@ class InMemoryDriverForegroundNotifier implements DriverForegroundNotifier {
 /// Combines foreground notification + ping scheduler for driver online state.
 class DriverPresenceSession {
   DriverPresenceSession({
-    required PresencePingScheduler scheduler,
-    required DriverForegroundNotifier foregroundNotifier,
-  })  : _scheduler = scheduler,
-        _foregroundNotifier = foregroundNotifier;
+    required this._scheduler,
+    required this._foregroundNotifier,
+  });
 
   final PresencePingScheduler _scheduler;
   final DriverForegroundNotifier _foregroundNotifier;
 
   bool get isOnline => _scheduler.isRunning;
   bool get notificationVisible => _foregroundNotifier is InMemoryDriverForegroundNotifier
-      ? (_foregroundNotifier as InMemoryDriverForegroundNotifier).visible
+      ? (_foregroundNotifier).visible
       : _scheduler.isRunning;
 
   Future<void> goOnline({

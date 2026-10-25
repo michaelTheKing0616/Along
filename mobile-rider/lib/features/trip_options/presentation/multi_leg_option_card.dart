@@ -1,4 +1,4 @@
-import 'package:along_core/along_core.dart' show PlanCandidate, PlanTransfer;
+import 'package:along_core/along_core.dart' show PlanCandidate;
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';

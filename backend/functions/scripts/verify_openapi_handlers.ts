@@ -18,6 +18,9 @@ const DOC03_EDGE_FUNCTIONS = [
   'qr/resolve/{driver_code}',
   'payments/methods',
   'payments/receipt/{payment_id}',
+  'cache-metrics',
+  'graph-bundle',
+  'verification-ocr',
 ];
 
 function normalizeOpenApiPath(path: string): string {
@@ -32,7 +35,7 @@ async function loadYamlPaths(): Promise<string[]> {
     throw new Error('Could not parse paths section from openapi.yaml');
   }
   for (const line of pathBlock[1].split('\n')) {
-    const m = line.match(/^  \/([^:]+):/);
+    const m = line.match(/^ {2}\/([^:]+):/);
     if (m) paths.push(normalizeOpenApiPath('/' + m[1]));
   }
   return paths.sort();

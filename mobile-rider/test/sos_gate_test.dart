@@ -7,7 +7,6 @@ import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
-import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';

@@ -22,9 +22,9 @@ export async function inviteAdmin(input: {
   const { data, error } = await supabase.rpc('admin_invite_admin', {
     p_email: input.email,
     p_role: input.role,
-    p_deployment_id: input.deploymentId,
-    p_city_scope: input.cityScope.length > 0 ? input.cityScope : null,
-    p_display_name: input.displayName || null,
+    p_deployment_id: input.deploymentId ?? undefined, // omitted arg = SQL default null
+    p_city_scope: input.cityScope.length > 0 ? input.cityScope : undefined,
+    p_display_name: input.displayName || undefined,
   });
 
   if (error) return { ok: false, error: error.message };
@@ -53,8 +53,8 @@ export async function updateAdmin(input: {
   const { error } = await supabase.rpc('admin_update_admin', {
     p_user_id: input.userId,
     p_role: input.role,
-    p_deployment_id: input.deploymentId,
-    p_city_scope: input.cityScope.length > 0 ? input.cityScope : null,
+    p_deployment_id: input.deploymentId ?? undefined, // omitted arg = SQL default null
+    p_city_scope: input.cityScope.length > 0 ? input.cityScope : undefined,
     p_clear_city_scope: input.cityScope.length === 0,
   });
 

@@ -137,32 +137,6 @@ void main() {
   });
 
   group('IncomingRequestNotifier', () {
-    ProviderContainer buildContainer({
-      required FakeAlongSupabase fake,
-      FakeDriverChannel? channel,
-    }) {
-      final container = ProviderContainer(
-        overrides: buildProviderOverrides(
-          config: testConfig,
-          supabase: fake,
-          database: AlongDatabase.memory(),
-          driverChannel: channel ?? FakeDriverChannel(),
-          clock: Clock.fixed(DateTime.utc(2026, 9, 5, 13, 59, 40)),
-          locationStreamSource: FakeLocationStreamSource(
-            permissionGranted: true,
-            fixedSamples: [
-              LocationSample(
-                point: const GeoPoint(lat: 9.05, lng: 7.49),
-                accuracyM: 8,
-                recordedAt: DateTime.utc(2026, 9, 5),
-              ),
-            ],
-          ),
-        ),
-      );
-      addTearDown(container.dispose);
-      return container;
-    }
 
     test('accept calls respond_to_trip once', () async {
       final fake = FakeAlongSupabase(

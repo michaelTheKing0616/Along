@@ -2183,8 +2183,7 @@ class _PersonCard extends StatelessWidget {
     required this.name,
     required this.detail,
     required this.trailing,
-    this.verified = true,
-  });
+  }) : verified = true;
 
   final String name;
   final String detail;

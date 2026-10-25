@@ -10,8 +10,7 @@ import 'package:along_data/src/supabase/error_mapper.dart';
 /// A retryable failure is stored on the offline queue with the same
 /// idempotency key the server will accept once.
 class RobustnessRepository {
-  RobustnessRepository(this._gateway, {PendingActionQueue? queue})
-    : _queue = queue;
+  RobustnessRepository(this._gateway, {this._queue});
 
   final AlongSupabase _gateway;
   final PendingActionQueue? _queue;

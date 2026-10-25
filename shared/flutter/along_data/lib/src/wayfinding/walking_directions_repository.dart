@@ -4,7 +4,6 @@ import 'package:along_core/along_core.dart';
 import 'package:along_data/src/database/along_database.dart';
 import 'package:along_data/src/supabase/along_supabase.dart';
 import 'package:along_data/src/supabase/error_mapper.dart';
-import 'package:drift/drift.dart';
 
 /// Fetches and caches OSRM foot directions from the `walking-directions` Edge fn.
 class WalkingDirectionsRepository {

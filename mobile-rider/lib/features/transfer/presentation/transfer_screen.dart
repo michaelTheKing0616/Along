@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
-import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_screen.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_panel.dart';
-import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
 

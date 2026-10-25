@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:along_core/along_core.dart';
-import 'package:along_data/along_data.dart' hide Money;
 import 'package:along_design/along_design.dart' hide formatMoney;
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';

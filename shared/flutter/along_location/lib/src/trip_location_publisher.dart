@@ -21,9 +21,9 @@ typedef TripLocationSampleCallback = Future<void> Function({
 /// Batches GPS samples and publishes via `trip_location_sample` during active trips.
 class TripLocationPublisher {
   TripLocationPublisher({
-    required LocationStreamSource locationSource,
+    required this._locationSource,
     required this.onSample,
-  }) : _locationSource = locationSource;
+  });
 
   final LocationStreamSource _locationSource;
   final TripLocationSampleCallback onSample;

@@ -100,6 +100,7 @@ language plpgsql
 as $$
 begin
   if coalesce(current_setting('role', true), '') = 'service_role'
+    -- nosemgrep: along-postgres-current-user-bypass -- reviewed: protect_* trigger, migration/service path only
      or current_user in ('postgres', 'supabase_admin') then
     return new;
   end if;

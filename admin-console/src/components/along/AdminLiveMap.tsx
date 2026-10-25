@@ -1,7 +1,8 @@
 'use client';
+import type * as GeoJSON from 'geojson';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { createClient } from '@/lib/supabase/client';
 import {

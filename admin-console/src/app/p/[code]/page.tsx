@@ -97,7 +97,9 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
         </p>
       ) : null}
 
-      <div className="w04-amount-display" data-testid="w04-amount">
+      {/* The inline script below rewrites this text before hydration; without the
+          suppression React re-renders the tree and drops the script's listeners. */}
+      <div className="w04-amount-display" data-testid="w04-amount" suppressHydrationWarning>
         {formatNaira(resolvedAmount ?? 0)}
       </div>
 
@@ -164,6 +166,7 @@ export default async function PayDriverPage({ params, searchParams }: PageProps)
         type="button"
         className="w04-pay-btn"
         data-testid="w04-pay-btn"
+        suppressHydrationWarning
         data-min={minAmount}
         data-locked={resolvedAmount != null ? String(resolvedAmount) : ''}
         data-code={code}

@@ -1,27 +1,21 @@
-import { createClient } from '@supabase/supabase-js';
+import { execSync } from 'node:child_process';
 import { test, expect } from '@playwright/test';
 import { E2E_CITY } from './global-setup';
 import { signInAs } from './helpers';
 
-const SUPABASE_URL = process.env.SUPABASE_URL ?? 'http://127.0.0.1:54321';
-const SERVICE_ROLE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ??
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU';
+// psql, not a service_role client: the local stack denies service_role reads on audit_log.
+const DATABASE_URL =
+  process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
 
 const APPROVE_ID = 'c2200000-0000-4000-8000-000000000010';
 const REJECT_ID = 'c2200000-0000-4000-8000-000000000011';
 
 async function countViewDocumentAudit(targetId: string): Promise<number> {
-  const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  const { count, error } = await admin
-    .from('audit_log')
-    .select('*', { count: 'exact', head: true })
-    .eq('action', 'view_document')
-    .eq('target_id', targetId);
-  if (error) throw new Error(error.message);
-  return count ?? 0;
+  const out = execSync(
+    `psql "${DATABASE_URL}" -v ON_ERROR_STOP=1 -t -A -c "select count(*) from audit_log where action = 'view_document' and target_id = '${targetId}'"`,
+    { encoding: 'utf8' }
+  ).trim();
+  return Number(out);
 }
 
 test.describe('Verification queue (A-04)', () => {
@@ -32,7 +26,7 @@ test.describe('Verification queue (A-04)', () => {
       landing: `/${E2E_CITY}/verification`,
     });
 
-    await expect(page.getByRole('heading', { name: 'Verification' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Verification', exact: true })).toBeVisible();
     await expect(page.getByTestId('verification-table')).toBeVisible();
 
     const approveRow = page.getByTestId(`verification-row-${APPROVE_ID}`);

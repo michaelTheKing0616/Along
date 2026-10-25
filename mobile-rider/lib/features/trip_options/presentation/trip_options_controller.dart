@@ -5,7 +5,6 @@ import 'package:along_data/along_data.dart';
 import 'package:along_map/along_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
-import 'package:mobile_rider/features/rider_prefs/rider_prefs_store.dart';
 import 'package:mobile_rider/features/transfer/active_journey_monitor.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';

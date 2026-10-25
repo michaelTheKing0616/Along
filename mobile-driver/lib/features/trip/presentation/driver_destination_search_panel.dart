@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
-import 'package:mobile_driver/l10n/app_localizations.dart';
 
 class DriverDestinationPick {
   const DriverDestinationPick({
@@ -112,7 +111,7 @@ class _DriverDestinationSearchPanelState
           ListTile(
             key: Key('driver_extend_place_${place.name}'),
             title: Text(place.name),
-            subtitle: Text(place.area ?? ''),
+            subtitle: Text(place.area),
             onTap: () => widget.onDestinationSelected(
               DriverDestinationPick.fromPlace(place),
             ),

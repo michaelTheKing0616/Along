@@ -36,7 +36,7 @@ function pemToPkcs8(pem: string): ArrayBuffer {
 }
 
 async function importPrivateKey(pem: string): Promise<CryptoKey> {
-  return crypto.subtle.importKey(
+  return await crypto.subtle.importKey(
     'pkcs8',
     pemToPkcs8(pem),
     { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
