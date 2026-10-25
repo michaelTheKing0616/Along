@@ -295,7 +295,8 @@ void main() {
       expect(find.byKey(const Key('active_trip_sos')), findsOneWidget);
       expect(find.byKey(const Key('active_trip_share')), findsOneWidget);
       expect(find.byKey(const Key('active_trip_eta')), findsOneWidget);
-      expect(find.textContaining('Calculating…'), findsOneWidget);
+      expect(find.byKey(const Key('live_eta_calculating')), findsOneWidget);
+      expect(find.text('Working out your arrival'), findsOneWidget);
 
       _stopLiveTripPoll(container, trip);
     });
@@ -355,7 +356,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
 
-      expect(find.textContaining('In transit · 8 min'), findsOneWidget);
+      expect(find.byKey(const Key('live_eta_window')), findsOneWidget);
+      expect(find.text('8'), findsOneWidget);
       expect(find.text('Wuse · 7:12'), findsOneWidget);
       expect(find.text('Garki · 7:45'), findsOneWidget);
       expect(find.textContaining('14 min'), findsNothing);

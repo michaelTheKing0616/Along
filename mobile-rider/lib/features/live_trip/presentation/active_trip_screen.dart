@@ -1,5 +1,5 @@
 import 'package:along_core/along_core.dart'
-    show TripEtaStop, TripStatus, TripSummary;
+    show TripEta, TripEtaStop, TripStatus, TripSummary;
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart' hide TransportMode;
 import 'package:along_design/along_design.dart' as design show TransportMode;
@@ -13,6 +13,7 @@ import 'package:mobile_rider/features/live_trip/presentation/live_trip_controlle
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_complete_sheet.dart';
+import 'package:mobile_rider/features/live_trip/presentation/trip_receipt_page.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
 import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
@@ -42,6 +43,24 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
   DateTime _lastConfirm = DateTime.now();
   DateTime? _promptSince;
   var _escalated = false;
+  TripEta? _lastEta;
+  TripEta? _prevEta;
+
+  /// Keeps the reading before the current one so a slowdown can be shown.
+  void _trackEta(TripEta? eta) {
+    if (eta == null || eta.updatedAt == _lastEta?.updatedAt) return;
+    _prevEta = _lastEta;
+    _lastEta = eta;
+  }
+
+  /// Seconds until the driver reaches the pickup, from the live estimator.
+  int? _pickupSeconds(TripSummary trip) {
+    final eta = trip.eta;
+    final pickup = eta != null && eta.isReady ? eta.pickup : null;
+    if (pickup != null) return pickup.lowS;
+    final minutes = trip.etaMinutes;
+    return minutes == null ? null : minutes * 60;
+  }
 
   @override
   void dispose() {
@@ -124,7 +143,18 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
           context,
           trip: next.trip,
           receipt: next.completeReceipt,
-          onFinished: controller.acknowledgeCompleteSheet,
+          onFinished: () {
+            controller.acknowledgeCompleteSheet();
+            // The sheet pops itself right after this; push once it is gone.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              TripReceiptPage.show(
+                context,
+                trip: next.trip,
+                receipt: next.completeReceipt,
+              );
+            });
+          },
         );
       }
       if (next.pendingExtension != null &&
@@ -146,7 +176,14 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
         liveTrip.status == TripStatus.boarded;
     final colour = naMeColourFromToken(liveTrip.naMe.colorToken);
     final shape = naMeShapeFromToken(liveTrip.naMe.shape);
-    final etaLabel = liveTrip.eta?.headline ?? 'Calculating…';
+    _trackEta(liveTrip.eta);
+    final pickupSeconds = liveTrip.status == TripStatus.accepted
+        ? _pickupSeconds(liveTrip)
+        : null;
+    final car = [
+      liveTrip.vehicle.color,
+      liveTrip.vehicle.makeModel,
+    ].where((part) => part.trim().isNotEmpty).join(' ');
     final fare = liveTrip.totalFare;
     final holdDuration = ref
         .watch(liveTripConfigProvider)
@@ -250,20 +287,37 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'In transit · $etaLabel · ${formatAppMoney(ref, liveTrip.totalFare)} Standard fare',
+                        KeyedSubtree(
                           key: const Key('active_trip_eta'),
-                          style: AlongText.heading2,
+                          child: pickupSeconds != null
+                              ? AlongHandoffPanel(
+                                  key: const Key('active_trip_handoff'),
+                                  secondsAway: pickupSeconds,
+                                  driverName: liveTrip.driver.displayName,
+                                  plate: liveTrip.vehicle.plateNumber,
+                                  car: car,
+                                  pickupPoint: liveTrip.board.name,
+                                )
+                              : AlongLiveEtaPanel(
+                                  eta: liveTrip.eta,
+                                  previous: _prevEta,
+                                  destination: liveTrip.alight.name,
+                                  failed: state.livePaused,
+                                ),
                         ),
-                        for (final stop in liveTrip.eta?.stops ?? const <TripEtaStop>[])
-                          Padding(
-                            padding: const EdgeInsets.only(top: AlongSpace.s4),
-                            child: Text(
-                              '${stop.name} · ${stop.label}',
-                              key: Key('active_trip_stop_${stop.id}'),
-                              style: AlongText.caption,
+                        if (pickupSeconds == null)
+                          for (final stop
+                              in liveTrip.eta?.stops ?? const <TripEtaStop>[])
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: AlongSpace.s4,
+                              ),
+                              child: Text(
+                                '${stop.name} · ${stop.label}',
+                                key: Key('active_trip_stop_${stop.id}'),
+                                style: AlongText.caption,
+                              ),
                             ),
-                          ),
                       ],
                     ),
                   ),
@@ -281,11 +335,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AlongSpace.s12),
-                  Text(
-                    '${liveTrip.driver.displayName} · ${liveTrip.vehicle.plateNumber}',
-                    style: AlongText.body,
-                  ),
+                  if (pickupSeconds == null) ...[
+                    const SizedBox(height: AlongSpace.s12),
+                    Text(
+                      '${liveTrip.driver.displayName} · ${liveTrip.vehicle.plateNumber}',
+                      style: AlongText.body,
+                    ),
+                  ],
                   if (showNaMe) ...[
                     const SizedBox(height: AlongSpace.s8),
                     Row(
