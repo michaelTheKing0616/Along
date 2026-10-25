@@ -50,6 +50,11 @@ dev_dependencies:
   patrol: 3.14.1
 
 flutter:
+  # iOS native deps are pinned by ios/Podfile.lock. Flutter's SwiftPM default
+  # resolves plugin packages by range instead (sentry-cocoa "from: 8.46.0" pulls a
+  # newer 8.x that sentry_flutter 8.14.2 does not compile against).
+  config:
+    enable-swift-package-manager: false
   uses-material-design: true
   generate: true
 
