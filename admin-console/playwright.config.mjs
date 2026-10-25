@@ -31,6 +31,8 @@ export default defineConfig({
         webServer: {
           command: 'pnpm start',
           url: 'http://127.0.0.1:3000',
+          // check_playwright.sh already starts the server; reuse it instead of racing for :3000.
+          reuseExistingServer: true,
           timeout: 60_000,
           env: {
             NEXT_PUBLIC_SUPABASE_URL: SUPABASE_URL,
