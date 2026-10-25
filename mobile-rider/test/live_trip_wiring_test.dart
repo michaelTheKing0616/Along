@@ -84,16 +84,14 @@ void main() {
           'label': '3 min',
         },
       );
-      json['handoff'] = {'pin': '4827', 'driver_phone': '+2348031234567'};
+      json['handoff'] = {'pin': '4827', 'contact_available': true};
       final trip = tripSummaryFromFixture(json);
       final launched = <Uri>[];
-      final container = _container(
-        FakeAlongSupabase(
-          configRows: defaultTestConfigRows(),
-          requestTripResponse: json,
-        ),
-        launched: launched,
+      final supabase = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        requestTripResponse: json,
       );
+      final container = _container(supabase, launched: launched);
       await tester.pumpWidget(
         _harness(container, ActiveTripScreen(trip: trip)),
       );
@@ -109,7 +107,14 @@ void main() {
       }
       await tester.ensureVisible(find.byKey(const Key('handoff_call')));
       await tester.tap(find.byKey(const Key('handoff_call')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('handoff_message')));
+      await tester.pump();
+      // Contact goes through the trip-contact relay, never a payload phone.
+      expect(supabase.tripContactCalls.map((c) => c['channel']), [
+        'call',
+        'sms',
+      ]);
       expect(launched, [
         Uri(scheme: 'tel', path: '+2348031234567'),
         Uri(scheme: 'sms', path: '+2348031234567'),
@@ -195,16 +200,27 @@ void main() {
     await tester.tap(find.byKey(const Key('receipt_star_3')));
     await tester.tap(find.byKey(const Key('receipt_star_4')));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('receipt_tag_safe_driving')));
+    await tester.tap(find.byKey(const Key('receipt_tag_on_time')));
+    await tester.tap(find.byKey(const Key('receipt_tag_safe_driving')));
+    await tester.tap(find.byKey(const Key('receipt_tag_polite')));
+    await tester.pump();
     expect(supabase.rateTripInvokeCount, 0);
     await tester.tap(find.byKey(const Key('receipt_done')));
     await tester.pumpAndSettle();
     expect(supabase.rateTripInvokeCount, 1);
     expect(supabase.lastRateTripParams?['p_score'], 4);
+    expect(supabase.lastRateTripParams?['p_tags'], ['on_time', 'polite']);
     expect(find.byKey(const Key('trip_receipt_page')), findsNothing);
 
     _stop(container, trip);
     await tester.pump();
     container.dispose();
+  });
+
+  test('rating tag labels', () {
+    expect(ratingTagLabel('clean_vehicle'), 'Clean car');
+    expect(ratingTagLabel('great_music'), 'Great music');
   });
 
   test('receipt view maps server lines and total', () {

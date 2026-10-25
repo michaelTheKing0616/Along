@@ -404,6 +404,9 @@ class FakeAlongSupabase implements AlongSupabase {
   final List<(Map<String, dynamic>, Map<String, String>)> stagingOtpCalls = [];
   String? stagingOtpCode;
 
+  final List<Map<String, dynamic>> tripContactCalls = [];
+  String tripContactTarget = '+2348031234567';
+
   @override
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
@@ -412,6 +415,17 @@ class FakeAlongSupabase implements AlongSupabase {
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
   }) async {
+    if (slug == 'trip-contact') {
+      tripContactCalls.add(Map<String, dynamic>.from(body ?? {}));
+      final channel = body?['channel'] == 'sms' ? 'sms' : 'tel';
+      return {
+        'data': {
+          'uri': '$channel:$tripContactTarget',
+          'masked': false,
+          'expires_at': '2026-10-25T20:02:00Z',
+        },
+      };
+    }
     if (slug == 'staging-otp') {
       stagingOtpCalls.add((Map<String, dynamic>.from(body ?? {}), Map<String, String>.from(headers ?? {})));
       return {'otp': stagingOtpCode};

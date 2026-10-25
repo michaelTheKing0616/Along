@@ -4,6 +4,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 
 /// R-22 receipt shown once a trip completes. Built from the server receipt
 /// when it arrived, otherwise from the trip's own fare. This is the only
@@ -32,6 +33,7 @@ class TripReceiptPage extends ConsumerStatefulWidget {
 
 class _TripReceiptPageState extends ConsumerState<TripReceiptPage> {
   int _score = 0;
+  Set<String> _tags = const {};
   bool _sent = false;
   late final _trips = ref.read(tripsRepositoryProvider);
 
@@ -39,7 +41,11 @@ class _TripReceiptPageState extends ConsumerState<TripReceiptPage> {
     if (_sent || _score == 0) return;
     _sent = true;
     _trips
-        .rateTrip(tripId: widget.trip.tripId, score: _score, tags: const [])
+        .rateTrip(
+          tripId: widget.trip.tripId,
+          score: _score,
+          tags: _tags.toList(),
+        )
         .catchError((_) {});
   }
 
@@ -57,16 +63,36 @@ class _TripReceiptPageState extends ConsumerState<TripReceiptPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tags = ref.watch(ratingTagsProvider).value ?? const <String>[];
     return AlongTripReceiptScreen(
       key: const Key('trip_receipt_page'),
       receipt: receiptViewFor(widget.trip, widget.receipt, DateTime.now()),
       onRate: (score) => _score = score,
+      ratingTags: {for (final t in tags) t: ratingTagLabel(t)},
+      onTagsChanged: (selected) => _tags = selected,
       onDone: () {
         _submitOnce();
         Navigator.of(context).maybePop();
       },
     );
   }
+}
+
+/// 'clean_vehicle' -> 'Clean car'. Known ids get short copy; unknown ones
+/// are humanised from the id so a new config tag still reads well.
+String ratingTagLabel(String id) {
+  const known = {
+    'safe_driving': 'Safe driving',
+    'fair_fare': 'Fair fare',
+    'clean_vehicle': 'Clean car',
+    'polite': 'Polite',
+    'on_time': 'On time',
+  };
+  final hit = known[id];
+  if (hit != null) return hit;
+  final words = id.replaceAll('_', ' ').trim();
+  if (words.isEmpty) return id;
+  return words[0].toUpperCase() + words.substring(1);
 }
 
 int _naira(Money m) => m.minorUnits ~/ 100;

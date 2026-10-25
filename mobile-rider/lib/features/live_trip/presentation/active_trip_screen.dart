@@ -299,21 +299,24 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                   car: car,
                                   pickupPoint: liveTrip.board.name,
                                   pin: liveTrip.handoff?.pin,
-                                  onCall: liveTrip.handoff?.driverPhone == null
-                                      ? null
-                                      : () => ref.read(contactLauncherProvider)(
-                                          driverCallUri(
-                                            liveTrip.handoff!.driverPhone!,
-                                          ),
-                                        ),
+                                  onCall:
+                                      liveTrip.handoff?.contactAvailable == true
+                                      ? () => contactDriver(
+                                          context,
+                                          ref,
+                                          tripId: liveTrip.tripId,
+                                          sms: false,
+                                        )
+                                      : null,
                                   onMessage:
-                                      liveTrip.handoff?.driverPhone == null
-                                      ? null
-                                      : () => ref.read(contactLauncherProvider)(
-                                          driverMessageUri(
-                                            liveTrip.handoff!.driverPhone!,
-                                          ),
-                                        ),
+                                      liveTrip.handoff?.contactAvailable == true
+                                      ? () => contactDriver(
+                                          context,
+                                          ref,
+                                          tripId: liveTrip.tripId,
+                                          sms: true,
+                                        )
+                                      : null,
                                 )
                               : AlongLiveEtaPanel(
                                   eta: liveTrip.eta,
