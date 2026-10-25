@@ -555,10 +555,10 @@ class AlongLiveEtaPanel extends StatelessWidget {
     final p = AlongPalette.of(context);
     final window = AlongEtaWindow.fromEta(eta);
     final slow = failed ? null : alongEtaSlowdownMinutes(previous, eta);
-    final line = failed
-        ? 'Last estimate to $destination'
-        : window == null
+    final line = window == null
         ? 'Working out your arrival'
+        : failed
+        ? 'Last estimate to $destination'
         : 'Arriving at $destination';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -572,13 +572,22 @@ class AlongLiveEtaPanel extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         _EtaHeadline(window: window, eta: eta, failed: failed),
-        AnimatedSize(
+        AnimatedSwitcher(
           duration: AlongMoves.arrive.of(context),
-          curve: AlongMoves.arrive.curve,
-          alignment: Alignment.topCenter,
+          switchInCurve: AlongMoves.arrive.curve,
+          switchOutCurve: AlongMoves.arrive.curve,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: SizeTransition(
+              sizeFactor: animation,
+              alignment: Alignment.topCenter,
+              child: child,
+            ),
+          ),
           child: slow == null && !failed
-              ? const SizedBox(width: double.infinity)
+              ? const SizedBox(key: ValueKey('none'), width: double.infinity)
               : Padding(
+                  key: ValueKey(failed ? 'paused' : 'slow'),
                   padding: const EdgeInsets.only(top: 16),
                   child: failed
                       ? _Notice(
