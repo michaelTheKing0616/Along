@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:along_core/along_core.dart' show Money, TripExtensionProposal, TripSummary;
+import 'package:along_core/along_core.dart'
+    show Money, TripExtensionProposal, TripSummary;
 import 'package:along_data/along_data.dart' hide Money;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,10 +28,7 @@ import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 
 import 'support/trip_options_fixtures.dart';
 
-Widget _harness({
-  required ProviderContainer container,
-  required Widget child,
-}) {
+Widget _harness({required ProviderContainer container, required Widget child}) {
   return UncontrolledProviderScope(
     container: container,
     child: MaterialApp(
@@ -43,15 +41,18 @@ Widget _harness({
 
 void _stopLiveTripPoll(ProviderContainer container, TripSummary trip) {
   container
-      .read(liveTripControllerFamilyProvider(LiveTripArgs(
-        tripId: trip.tripId,
-        initialTrip: trip,
-      )).notifier)
+      .read(
+        liveTripControllerFamilyProvider(
+          LiveTripArgs(tripId: trip.tripId, initialTrip: trip),
+        ).notifier,
+      )
       .stopPolling();
 }
 
 Future<void> _seedNaMePairing(AlongDatabase db, String tripId) async {
-  await db.into(db.kvStore).insertOnConflictUpdate(
+  await db
+      .into(db.kvStore)
+      .insertOnConflictUpdate(
         KvStoreCompanion.insert(
           key: 'na_me:$tripId',
           value: jsonEncode({
@@ -99,9 +100,14 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('shows plate and directional arrow from live heading', (tester) async {
+    testWidgets('shows plate and directional arrow from live heading', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _harness(container: container, child: MeetVehicleScreen(trip: trip)),
+        _harness(
+          container: container,
+          child: MeetVehicleScreen(trip: trip),
+        ),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
@@ -109,7 +115,10 @@ void main() {
       expect(find.byKey(const Key('meet_vehicle_plate')), findsOneWidget);
       expect(find.text('ABC-123-XY'), findsOneWidget);
       expect(find.byKey(const Key('vehicle_direction_arrow')), findsOneWidget);
-      expect(find.byKey(const Key('meet_vehicle_na_me_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('meet_vehicle_na_me_button')),
+        findsOneWidget,
+      );
 
       _stopLiveTripPoll(container, trip);
     });
@@ -142,10 +151,11 @@ void main() {
       await tester.pump();
 
       await container
-          .read(liveTripControllerFamilyProvider(LiveTripArgs(
-            tripId: trip.tripId,
-            initialTrip: trip,
-          )).notifier)
+          .read(
+            liveTripControllerFamilyProvider(
+              LiveTripArgs(tripId: trip.tripId, initialTrip: trip),
+            ).notifier,
+          )
           .markBoarded();
 
       expect(fakeSupabase.markBoardedInvokeCount, 1);
@@ -161,9 +171,8 @@ void main() {
           ),
           GoRoute(
             path: AppRoutes.wayfinding,
-            builder: (context, state) => WayfindingScreen(
-              args: state.extra as WayfindingRouteArgs,
-            ),
+            builder: (context, state) =>
+                WayfindingScreen(args: state.extra as WayfindingRouteArgs),
           ),
         ],
       );
@@ -229,7 +238,9 @@ void main() {
 
     tearDown(() => container.dispose());
 
-    testWidgets('renders strobe from cached pairing without network RPC', (tester) async {
+    testWidgets('renders strobe from cached pairing without network RPC', (
+      tester,
+    ) async {
       await _seedNaMePairing(database, 'trip-offline-1');
 
       await tester.pumpWidget(
@@ -271,7 +282,9 @@ void main() {
           ),
           supabase: FakeAlongSupabase(
             configRows: defaultTestConfigRows(),
-            requestTripResponse: sampleAcceptedTripResponse(status: 'in_transit'),
+            requestTripResponse: sampleAcceptedTripResponse(
+              status: 'in_transit',
+            ),
           ),
           ambientChannel: FakeAmbientChannel(),
           database: AlongDatabase.memory(),
@@ -285,9 +298,14 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('shows LegTimeline compact and SOS placeholder', (tester) async {
+    testWidgets('shows LegTimeline compact and SOS placeholder', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _harness(container: container, child: ActiveTripScreen(trip: trip)),
+        _harness(
+          container: container,
+          child: ActiveTripScreen(trip: trip),
+        ),
       );
       await tester.pump();
 
@@ -303,7 +321,9 @@ void main() {
   });
 
   group('live eta payload', () {
-    testWidgets('shows the shared eta payload on the live sheet and stops', (tester) async {
+    testWidgets('shows the shared eta payload on the live sheet and stops', (
+      tester,
+    ) async {
       final json = sampleAcceptedTripResponse(
         tripId: 'trip-eta-1',
         status: 'in_transit',
@@ -318,12 +338,7 @@ void main() {
           'label': '8 min',
         },
         'stops': [
-          {
-            'id': 'wuse',
-            'name': 'Wuse',
-            'state': 'passed',
-            'label': '7:12',
-          },
+          {'id': 'wuse', 'name': 'Wuse', 'state': 'passed', 'label': '7:12'},
           {
             'id': 'garki',
             'name': 'Garki',
@@ -351,7 +366,10 @@ void main() {
         ),
       );
       await tester.pumpWidget(
-        _harness(container: etaContainer, child: ActiveTripScreen(trip: ready)),
+        _harness(
+          container: etaContainer,
+          child: ActiveTripScreen(trip: ready),
+        ),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
@@ -407,7 +425,9 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('default path is 2 taps: Yes then Done', (tester) async {
+    testWidgets('default path is 1 tap: Yes closes, no rating here', (
+      tester,
+    ) async {
       var taps = 0;
       await tester.pumpWidget(
         _harness(
@@ -432,17 +452,16 @@ void main() {
       await tester.tap(find.byKey(const Key('trip_complete_yes')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('trip_complete_done')));
-      await tester.pumpAndSettle();
-
       expect(fakeSupabase.confirmFareInvokeCount, 1);
       expect(fakeSupabase.lastConfirmFareParams?['p_outcome'], 'as_shown');
-      expect(fakeSupabase.rateTripInvokeCount, 1);
+      expect(fakeSupabase.rateTripInvokeCount, 0);
       expect(find.byType(TripCompleteSheet), findsNothing);
       expect(taps, 1);
     });
 
-    testWidgets('digital-enabled default is Pay then cash overflow', (tester) async {
+    testWidgets('digital-enabled default is Pay then cash overflow', (
+      tester,
+    ) async {
       fakeSupabase = FakeAlongSupabase(
         configRows: [
           ...defaultTestConfigRows().where(
@@ -499,7 +518,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(fakeSupabase.confirmFareInvokeCount, 1);
-      expect(find.byKey(const Key('trip_complete_done')), findsOneWidget);
+      expect(find.byKey(const Key('trip_complete_done')), findsNothing);
+      expect(find.byType(TripCompleteSheet), findsNothing);
     });
   });
 
@@ -515,7 +535,9 @@ void main() {
 
     tearDown(() => container.dispose());
 
-    testWidgets('cash trip hides Pay when digital_enabled is false', (tester) async {
+    testWidgets('cash trip hides Pay when digital_enabled is false', (
+      tester,
+    ) async {
       final fakeSupabase = FakeAlongSupabase(
         configRows: defaultTestConfigRows(),
         requestTripResponse: sampleAcceptedTripResponse(status: 'in_transit'),
@@ -535,7 +557,10 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _harness(container: container, child: ActiveTripScreen(trip: trip)),
+        _harness(
+          container: container,
+          child: ActiveTripScreen(trip: trip),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -677,16 +702,18 @@ void main() {
       expect(fakeSupabase.lastRespondExtensionParams?['p_response'], 'accept');
     });
 
-    test('resolvePendingExtension prefers TripView.extension over table poll',
-        () async {
-      final trip = tripSummaryFromFixture(sampleTripWithPendingExtension());
-      final proposal = await container
-          .read(tripsRepositoryProvider)
-          .resolvePendingExtension(trip);
+    test(
+      'resolvePendingExtension prefers TripView.extension over table poll',
+      () async {
+        final trip = tripSummaryFromFixture(sampleTripWithPendingExtension());
+        final proposal = await container
+            .read(tripsRepositoryProvider)
+            .resolvePendingExtension(trip);
 
-      expect(proposal?.extensionId, 'ext-view-1');
-      expect(proposal?.destinationName, 'Wuse Market');
-    });
+        expect(proposal?.extensionId, 'ext-view-1');
+        expect(proposal?.destinationName, 'Wuse Market');
+      },
+    );
 
     testWidgets('extend sheet embeds R-06 destination search', (tester) async {
       final trip = tripSummaryFromFixture(

@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/driver_contact.dart';
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_receipt_page.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
@@ -28,18 +29,26 @@ Map<String, dynamic> _eta({
   'updated_at': '2026-10-25T06:30:00.000Z',
 };
 
-ProviderContainer _container(FakeAlongSupabase supabase) => ProviderContainer(
-  overrides: buildProviderOverrides(
-    config: const AppConfig(
-      flavor: 'dev',
-      supabaseUrl: 'https://test.supabase.co',
-      supabaseAnonKey: 'test-key',
+ProviderContainer _container(
+  FakeAlongSupabase supabase, {
+  List<Uri>? launched,
+}) => ProviderContainer(
+  overrides: [
+    ...buildProviderOverrides(
+      config: const AppConfig(
+        flavor: 'dev',
+        supabaseUrl: 'https://test.supabase.co',
+        supabaseAnonKey: 'test-key',
+      ),
+      supabase: supabase,
+      ambientChannel: FakeAmbientChannel(),
+      database: AlongDatabase.memory(),
+      wayfindingTts: FakeWayfindingTts(),
     ),
-    supabase: supabase,
-    ambientChannel: FakeAmbientChannel(),
-    database: AlongDatabase.memory(),
-    wayfindingTts: FakeWayfindingTts(),
-  ),
+    contactLauncherProvider.overrideWithValue(
+      (uri) async => launched?.add(uri),
+    ),
+  ],
 );
 
 Widget _harness(ProviderContainer container, Widget child) =>
@@ -75,12 +84,15 @@ void main() {
           'label': '3 min',
         },
       );
+      json['handoff'] = {'pin': '4827', 'driver_phone': '+2348031234567'};
       final trip = tripSummaryFromFixture(json);
+      final launched = <Uri>[];
       final container = _container(
         FakeAlongSupabase(
           configRows: defaultTestConfigRows(),
           requestTripResponse: json,
         ),
+        launched: launched,
       );
       await tester.pumpWidget(
         _harness(container, ActiveTripScreen(trip: trip)),
@@ -91,6 +103,17 @@ void main() {
       expect(find.text('2:30'), findsOneWidget);
       expect(find.text(trip.vehicle.plateNumber), findsWidgets);
       expect(find.byType(AlongLiveEtaPanel), findsNothing);
+      expect(find.byKey(const Key('handoff_pin')), findsOneWidget);
+      for (final d in ['4', '8', '2', '7']) {
+        expect(find.text(d), findsWidgets);
+      }
+      await tester.ensureVisible(find.byKey(const Key('handoff_call')));
+      await tester.tap(find.byKey(const Key('handoff_call')));
+      await tester.tap(find.byKey(const Key('handoff_message')));
+      expect(launched, [
+        Uri(scheme: 'tel', path: '+2348031234567'),
+        Uri(scheme: 'sms', path: '+2348031234567'),
+      ]);
 
       _stop(container, trip);
       await tester.pump();
@@ -164,11 +187,20 @@ void main() {
       await tester.tap(paidCash);
       await tester.pumpAndSettle();
     }
-    await tester.tap(find.byKey(const Key('trip_complete_done')));
-    await tester.pumpAndSettle();
-
+    expect(find.byKey(const Key('trip_complete_done')), findsNothing);
     expect(find.byKey(const Key('trip_receipt_page')), findsOneWidget);
     expect(find.byKey(const Key('receipt_stars')), findsOneWidget);
+
+    // One rating, sent once, when the rider leaves the receipt.
+    await tester.tap(find.byKey(const Key('receipt_star_3')));
+    await tester.tap(find.byKey(const Key('receipt_star_4')));
+    await tester.pumpAndSettle();
+    expect(supabase.rateTripInvokeCount, 0);
+    await tester.tap(find.byKey(const Key('receipt_done')));
+    await tester.pumpAndSettle();
+    expect(supabase.rateTripInvokeCount, 1);
+    expect(supabase.lastRateTripParams?['p_score'], 4);
+    expect(find.byKey(const Key('trip_receipt_page')), findsNothing);
 
     _stop(container, trip);
     await tester.pump();

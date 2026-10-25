@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 import 'package:mobile_rider/features/live_trip/domain/live_trip_config.dart';
+import 'package:mobile_rider/features/live_trip/presentation/driver_contact.dart';
 import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
@@ -297,6 +298,22 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                   plate: liveTrip.vehicle.plateNumber,
                                   car: car,
                                   pickupPoint: liveTrip.board.name,
+                                  pin: liveTrip.handoff?.pin,
+                                  onCall: liveTrip.handoff?.driverPhone == null
+                                      ? null
+                                      : () => ref.read(contactLauncherProvider)(
+                                          driverCallUri(
+                                            liveTrip.handoff!.driverPhone!,
+                                          ),
+                                        ),
+                                  onMessage:
+                                      liveTrip.handoff?.driverPhone == null
+                                      ? null
+                                      : () => ref.read(contactLauncherProvider)(
+                                          driverMessageUri(
+                                            liveTrip.handoff!.driverPhone!,
+                                          ),
+                                        ),
                                 )
                               : AlongLiveEtaPanel(
                                   eta: liveTrip.eta,

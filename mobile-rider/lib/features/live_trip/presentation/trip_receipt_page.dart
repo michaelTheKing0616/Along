@@ -1,12 +1,14 @@
-import 'package:along_core/along_core.dart' show Money, TripReceipt, TripSummary;
+import 'package:along_core/along_core.dart'
+    show Money, TripReceipt, TripSummary;
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 
 /// R-22 receipt shown once a trip completes. Built from the server receipt
-/// when it arrived, otherwise from the trip's own fare.
-class TripReceiptPage extends ConsumerWidget {
+/// when it arrived, otherwise from the trip's own fare. This is the only
+/// place the rider rates a trip; the rating is sent once, when they leave.
+class TripReceiptPage extends ConsumerStatefulWidget {
   const TripReceiptPage({super.key, required this.trip, this.receipt});
 
   final TripSummary trip;
@@ -25,15 +27,44 @@ class TripReceiptPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TripReceiptPage> createState() => _TripReceiptPageState();
+}
+
+class _TripReceiptPageState extends ConsumerState<TripReceiptPage> {
+  int _score = 0;
+  bool _sent = false;
+  late final _trips = ref.read(tripsRepositoryProvider);
+
+  void _submitOnce() {
+    if (_sent || _score == 0) return;
+    _sent = true;
+    _trips
+        .rateTrip(tripId: widget.trip.tripId, score: _score, tags: const [])
+        .catchError((_) {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _trips; // resolve while ref is usable.
+  }
+
+  @override
+  void dispose() {
+    _submitOnce();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AlongTripReceiptScreen(
       key: const Key('trip_receipt_page'),
-      receipt: receiptViewFor(trip, receipt, DateTime.now()),
-      onRate: (score) => ref
-          .read(tripsRepositoryProvider)
-          .rateTrip(tripId: trip.tripId, score: score, tags: const [])
-          .catchError((_) {}),
-      onDone: () => Navigator.of(context).maybePop(),
+      receipt: receiptViewFor(widget.trip, widget.receipt, DateTime.now()),
+      onRate: (score) => _score = score,
+      onDone: () {
+        _submitOnce();
+        Navigator.of(context).maybePop();
+      },
     );
   }
 }

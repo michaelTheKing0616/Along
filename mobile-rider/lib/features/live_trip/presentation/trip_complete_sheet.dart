@@ -1,4 +1,5 @@
-import 'package:along_core/along_core.dart' show FareTier, Money, TripReceipt, TripSummary;
+import 'package:along_core/along_core.dart'
+    show FareTier, Money, TripReceipt, TripSummary;
 import 'package:along_design/along_design.dart' hide FareTier;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +10,8 @@ import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.da
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
-/// R-17 Trip complete — fare confirm + rating (2-tap default path).
+/// R-17 Trip complete — fare confirm only. Rating lives on the receipt
+/// ([TripReceiptPage]) so the rider is asked once.
 class TripCompleteSheet extends ConsumerStatefulWidget {
   const TripCompleteSheet({
     super.key,
@@ -28,6 +30,11 @@ class TripCompleteSheet extends ConsumerStatefulWidget {
     TripReceipt? receipt,
     VoidCallback? onFinished,
   }) {
+    if (trip.paymentMethod == 'digital') {
+      // Already paid in-app: nothing to confirm, go straight to the receipt.
+      onFinished?.call();
+      return Future<void>.value();
+    }
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -45,11 +52,7 @@ class TripCompleteSheet extends ConsumerStatefulWidget {
 }
 
 class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
-  late _CompleteStep _step = widget.trip.paymentMethod == 'digital'
-      ? _CompleteStep.rating
-      : _CompleteStep.fare;
-  int _rating = 5;
-  final Set<String> _tags = {};
+  _CompleteStep _step = _CompleteStep.fare;
   bool _busy = false;
 
   int get _fareNaira => widget.trip.totalFare.minorUnits ~/ 100;
@@ -61,11 +64,10 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   Future<void> _confirmAsShown() async {
     setState(() => _busy = true);
     try {
-      await ref.read(tripsRepositoryProvider).confirmFare(
-            tripId: widget.trip.tripId,
-            outcome: 'as_shown',
-          );
-      if (mounted) setState(() => _step = _CompleteStep.rating);
+      await ref
+          .read(tripsRepositoryProvider)
+          .confirmFare(tripId: widget.trip.tripId, outcome: 'as_shown');
+      if (mounted) _finish();
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -74,7 +76,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   Future<void> _confirmDifferent(int amountNaira) async {
     setState(() => _busy = true);
     try {
-      await ref.read(tripsRepositoryProvider).confirmFare(
+      await ref
+          .read(tripsRepositoryProvider)
+          .confirmFare(
             tripId: widget.trip.tripId,
             outcome: 'different',
             paidAmount: Money.fromMinorUnits(
@@ -82,27 +86,15 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
               currency: widget.trip.totalFare.currency,
             ),
           );
-      if (mounted) setState(() => _step = _CompleteStep.rating);
+      if (mounted) _finish();
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _submitRating() async {
-    setState(() => _busy = true);
-    try {
-      await ref.read(tripsRepositoryProvider).rateTrip(
-            tripId: widget.trip.tripId,
-            score: _rating,
-            tags: _tags.toList(growable: false),
-          );
-      if (mounted) {
-        widget.onFinished?.call();
-        Navigator.of(context).pop();
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
+  void _finish() {
+    widget.onFinished?.call();
+    Navigator.of(context).pop();
   }
 
   bool get _alreadyPaidDigitally => widget.trip.paymentMethod == 'digital';
@@ -122,10 +114,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider).maybeWhen(
-          data: (value) => value,
-          orElse: () => false,
-        );
+    final digitalEnabled = ref
+        .watch(digitalPaymentsEnabledProvider)
+        .maybeWhen(data: (value) => value, orElse: () => false);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -147,7 +138,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                 const SizedBox(height: AlongSpace.s16),
                 AlongButton(
                   key: const Key('trip_complete_pay'),
-                  label: l10n.payDriverCta(formatAppMoney(ref, widget.trip.totalFare)),
+                  label: l10n.payDriverCta(
+                    formatAppMoney(ref, widget.trip.totalFare),
+                  ),
                   variant: AlongButtonVariant.yellow,
                   visualState: _busy
                       ? AlongButtonVisualState.loading
@@ -198,7 +191,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                           (amount) => _AmountChip(
                             key: Key('trip_complete_chip_$amount'),
                             label: formatAppMoneyMajor(ref, amount),
-                            onTap: _busy ? null : () => _confirmDifferent(amount),
+                            onTap: _busy
+                                ? null
+                                : () => _confirmDifferent(amount),
                           ),
                         )
                         .toList(),
@@ -230,46 +225,6 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                     )
                     .toList(),
               ),
-            ] else ...[
-              Text(l10n.tripCompleteRateTitle, style: AlongText.heading2),
-              const SizedBox(height: AlongSpace.s12),
-              _StarRow(
-                rating: _rating,
-                onChanged: (value) => setState(() => _rating = value),
-              ),
-              const SizedBox(height: AlongSpace.s12),
-              ref.watch(ratingTagsProvider).when(
-                    data: (tags) => Wrap(
-                      spacing: AlongSpace.s8,
-                      runSpacing: AlongSpace.s8,
-                      children: tags
-                          .map(
-                            (tag) => _TagChip(
-                              label: tag.replaceAll('_', ' '),
-                              selected: _tags.contains(tag),
-                              onTap: () => setState(() {
-                                if (_tags.contains(tag)) {
-                                  _tags.remove(tag);
-                                } else {
-                                  _tags.add(tag);
-                                }
-                              }),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
-              const SizedBox(height: AlongSpace.s16),
-              AlongButton(
-                key: const Key('trip_complete_done'),
-                label: l10n.loadFlagDone,
-                visualState: _busy
-                    ? AlongButtonVisualState.loading
-                    : AlongButtonVisualState.normal,
-                onPressed: _busy ? null : _submitRating,
-              ),
             ],
           ],
         ),
@@ -278,14 +233,10 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   }
 }
 
-enum _CompleteStep { fare, different, rating }
+enum _CompleteStep { fare, different }
 
 class _AmountChip extends StatelessWidget {
-  const _AmountChip({
-    super.key,
-    required this.label,
-    required this.onTap,
-  });
+  const _AmountChip({super.key, required this.label, required this.onTap});
 
   final String label;
   final VoidCallback? onTap;
@@ -310,69 +261,6 @@ class _AmountChip extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TagChip extends StatelessWidget {
-  const _TagChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? AlongColors.brandYellow : AlongColors.surface100,
-      shape: AlongCraft.border(AlongRadius.control.x),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: AlongCraft.border(AlongRadius.control.x),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AlongSpace.s12,
-            vertical: AlongSpace.s12,
-          ),
-          child: Text(
-            label,
-            style: AlongText.label.copyWith(
-              color: selected ? AlongColors.brandYellowOn : AlongColors.ink700,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StarRow extends StatelessWidget {
-  const _StarRow({required this.rating, required this.onChanged});
-
-  final int rating;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(5, (index) {
-        final star = index + 1;
-        return IconButton(
-          key: Key('trip_complete_star_$star'),
-          iconSize: 40,
-          onPressed: () => onChanged(star),
-          icon: Icon(
-            star <= rating ? Icons.star_rounded : Icons.star_outline_rounded,
-            color: AlongColors.brandYellow,
-          ),
-        );
-      }),
     );
   }
 }
