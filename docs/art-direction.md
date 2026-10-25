@@ -90,11 +90,18 @@ Named lengths live on `AlongDurations`. Curves live on `AlongCurves`. Springs li
 | Route | `routeDraw` 900ms, `AlongCurves.settle` (easeOutCubic), `AlongSprings.route` | The traveled stroke. | How far along the trip is. | Yes. A new progress replaces it. |
 | Breath | `breath` 2400ms, easeInOut, reverse. Reduced motion and gallery frames hold the rest glow. | The glow on the three hot hexes. | Demand is alive, quietly. | Yes. It stops when motion does not play. |
 | Refresh | `refresh` 480ms | A car drives across the list, only while the refresh future is running. A still frame parks it mid-road. | The list is loading. | Yes. It stops when the future ends. |
-| Hold | `hold` 1400ms for a one-shot status. The SOS hold control is 600ms. | A bar fills while the finger stays down. | Keep holding to call 112. Release cancels. | Yes. |
+| Hold | `hold` 1400ms for a one-shot status. The SOS hold control is `sos` 600ms. | A bar fills while the finger stays down. | Keep holding to call 112. Release cancels. | Yes. |
 | Scan | `scan` 1800ms | Was a sweep. It now holds a rest pose. | Nothing. The words carry the status. | — |
-| Skeleton | 1200ms shimmer | A sheen crosses the block. Gallery frames hold the sheen at rest. | Content is on its way. | Yes. Real content replaces it. |
-| Seat | `AlongSprings.press` | The cushion sinks under the finger, and the seat springs back. A light haptic fires on release. Rest geometry is unchanged. | That seat was chosen. | Yes. Lift the finger and it returns. |
+| Radar | `radar` 2200ms | The matching rings hold a rest pose. They do not loop. | Nothing. The words carry the status. | — |
+| Skeleton | `shimmer` 1200ms | A sheen crosses the block. Gallery frames hold the sheen at rest. | Content is on its way. | Yes. Real content replaces it. |
+| Seat | `AlongSprings.press` for the cushion. `AlongSprings.select` for the scale. `draw` 320ms reveals the mark. | The cushion sinks under the finger, and the seat springs back. A light haptic fires on release. Rest geometry is unchanged. | That seat was chosen. | Yes. Lift the finger and it returns. |
+| Check | `draw` 320ms | The arrival stroke draws itself on. The rest pose is the finished check. | You have arrived. | Yes. |
+| Fare | `refresh` 480ms, `AlongCurves.settle` | The fare counts up. The window rests on the final digits. | What the ride costs. | Yes. A new value replaces the count. |
+| Glide | `glide` 700ms, `AlongCurves.breath` or `AlongCurves.settle` | The splash mark, confetti, and a held progress value catch up. | Something finished. | Yes. |
+| Expand | `expand` 360ms, `AlongCurves.settle` | A shared element opens or closes. Rest is fully open or fully closed. | Where the control went. | Yes. |
 | ETA | `refresh` 480ms, `AlongCurves.settle` | Each ETA numeral rolls. The window rests on the final digits. | How long the ride is. | Yes. A new value replaces the roll. |
+
+The dev frame `dev_motions` shows the rest pose of the sheet, the seat, the fare count-up, the arrival check, and the route draw. Each has one line under it. It is a dev doc, not a product screen. Gallery frames stay on that rest pose. `sample` 100ms is the Na Me countdown tick, not a transition. Quote clocks and GPS ages are data, not motion.
 
 Do not animate every element on entry. `AlongStagger` returns the child. Do not loop decoration: search rings, the map radar, the route pulse, the GO glow, the plate sweep, and the empty-state float stay on a rest pose. Do not bounce a control twice. The skeleton shimmer and the in-flight refresh are progress, not decoration.
 

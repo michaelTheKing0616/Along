@@ -261,7 +261,11 @@ class _HomeSheetBody extends StatelessWidget {
 }
 
 class AlongFlowSeats extends StatelessWidget {
-  const AlongFlowSeats({super.key});
+  const AlongFlowSeats({super.key, this.selectedSeatId = 'fr'});
+
+  /// Passenger seat showing the selection spring. Null leaves the front
+  /// right seat free. The gallery default is the held front-right seat.
+  final String? selectedSeatId;
 
   @override
   Widget build(BuildContext context) {
@@ -293,13 +297,13 @@ class AlongFlowSeats extends StatelessWidget {
                       child: _SeatDriver(),
                     ),
                     SizedBox(height: gap),
-                    const SeatMap(
+                    SeatMap(
                       body: 'cabin',
                       rows: [
                         SeatMapRowView(
                           id: 'front',
                           seats: [
-                            SeatMapSeat(
+                            const SeatMapSeat(
                               id: 'drv',
                               label: 'Driver',
                               role: 'driver',
@@ -310,8 +314,10 @@ class AlongFlowSeats extends StatelessWidget {
                               id: 'fr',
                               label: 'FR',
                               role: 'passenger',
-                              status: 'yours',
-                              statusWord: 'Yours',
+                              status: selectedSeatId == 'fr' ? 'yours' : 'free',
+                              statusWord: selectedSeatId == 'fr'
+                                  ? 'Yours'
+                                  : 'Free',
                               price: '₦1,200',
                             ),
                           ],

@@ -873,7 +873,7 @@ class _MapShimmerState extends State<_MapShimmer>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: AlongDurations.shimmer,
       value: 0.42,
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
@@ -318,7 +319,23 @@ class _PinPainter extends CustomPainter {
 
 /// Fare breakdown, a frozen expiry, and the cancel line.
 class AlongFlowQuote extends StatelessWidget {
-  const AlongFlowQuote({super.key});
+  const AlongFlowQuote({
+    super.key,
+    this.routeProgress = 0,
+    this.revealSheet = true,
+    this.fareClock,
+  });
+
+  /// Traveled fraction of the corridor. The map eases a change while motion
+  /// plays, so a reel can draw the route on.
+  final double routeProgress;
+
+  /// False parks the card below the frame. Turning it on springs the card up.
+  final bool revealSheet;
+
+  /// When set, the total follows this 0–1 clock over 15 seconds and counts
+  /// from zero to the quoted fare. The gallery leaves it null.
+  final Animation<double>? fareClock;
 
   @override
   Widget build(BuildContext context) {
@@ -331,63 +348,80 @@ class AlongFlowQuote extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const Positioned.fill(
+          Positioned.fill(
             child: AlongCityMap(
               mode: AlongCityMapMode.trip,
-              progress: 0,
+              progress: routeProgress,
               sheetInset: 0.62,
               demoLabel: false,
             ),
           ),
-          _AnchoredSheet(
-            child: _SolidCard(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Quote', style: AlongType.title(palette)),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Wuse Market to Nyanya',
-                    maxLines: roomy ? 2 : 1,
-                    softWrap: roomy,
-                    style: AlongType.body(palette)
-                        .copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 12),
-                  _FareLine(label: 'Base', value: alongNaira(quote.baseMinor)),
-                  _FareLine(label: 'Seat', value: alongNaira(quote.seatMinor)),
-                  _FareLine(label: 'Fees', value: alongNaira(quote.feesMinor)),
-                  _FareLine(
-                    label: 'Wallet credit',
-                    value: alongNaira(-quote.walletCreditMinor),
-                  ),
+          _RisingQuote(
+            open: revealSheet,
+            child: _AnchoredSheet(
+              child: _SolidCard(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Quote', style: AlongType.title(palette)),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Wuse Market to Nyanya',
+                      maxLines: roomy ? 2 : 1,
+                      softWrap: roomy,
+                      style: AlongType.body(palette)
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 12),
+                    _FareLine(
+                      label: 'Base',
+                      value: alongNaira(quote.baseMinor),
+                    ),
+                    _FareLine(
+                      label: 'Seat',
+                      value: alongNaira(quote.seatMinor),
+                    ),
+                    _FareLine(
+                      label: 'Fees',
+                      value: alongNaira(quote.feesMinor),
+                    ),
+                    _FareLine(
+                      label: 'Wallet credit',
+                      value: alongNaira(-quote.walletCreditMinor),
+                    ),
                   const SizedBox(height: 8),
-                  _FareLine(
-                    label: 'Total',
-                    value: alongNaira(quote.totalMinor),
-                    strong: true,
-                  ),
-                  const SizedBox(height: 16),
-                  AlongFareLock(
-                    clock: clock,
-                    progress: quote.expiresIn.inSeconds / 120,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    quote.cancelTerms,
-                    maxLines: roomy ? 2 : 1,
-                    softWrap: roomy,
-                    style: AlongType.caption(palette)
-                        .copyWith(color: palette.ink),
-                  ),
-                  const SizedBox(height: 12),
-                  const AlongButton(
-                    key: Key('quote_accept'),
-                    label: 'Confirm fare',
-                    onPressed: _noop,
-                  ),
-                ],
+                  fareClock == null
+                      ? _FareLine(
+                          label: 'Total',
+                          value: alongNaira(quote.totalMinor),
+                          strong: true,
+                        )
+                      : _ClockFare(
+                          clock: fareClock!,
+                          total: quote.totalMinor,
+                        ),
+                    const SizedBox(height: 16),
+                    AlongFareLock(
+                      clock: clock,
+                      progress: quote.expiresIn.inSeconds / 120,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      quote.cancelTerms,
+                      maxLines: roomy ? 2 : 1,
+                      softWrap: roomy,
+                      style: AlongType.caption(palette)
+                          .copyWith(color: palette.ink),
+                    ),
+                    const SizedBox(height: 12),
+                    const AlongButton(
+                      key: Key('quote_accept'),
+                      label: 'Confirm fare',
+                      onPressed: _noop,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -1756,6 +1790,120 @@ class _SettingsRow extends StatelessWidget {
           if (trailing != null) trailing!,
         ],
       ),
+    );
+  }
+}
+
+/// The quote card. Resting frames paint it in place. Motion springs it up
+/// from below the frame with the sheet spring.
+class _RisingQuote extends StatefulWidget {
+  const _RisingQuote({required this.open, required this.child});
+
+  final bool open;
+  final Widget child;
+
+  @override
+  State<_RisingQuote> createState() => _RisingQuoteState();
+}
+
+class _RisingQuoteState extends State<_RisingQuote>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _motion;
+  var _animated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final still =
+        !widget.open ||
+        (AlongMotionPolicy.inWidgetTest && !AlongMotionPolicy.debugPlayMotion);
+    _motion = AnimationController.unbounded(
+      vsync: this,
+      value: still ? (widget.open ? 1 : 0) : 0,
+    );
+    if (widget.open && !still) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _spring(1));
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _RisingQuote oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.open && !oldWidget.open) _spring(1);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (AlongMotionPolicy.reduced(context)) {
+      _motion.value = widget.open ? 1 : 0;
+    }
+  }
+
+  void _spring(double target) {
+    if (!mounted) return;
+    if (!AlongMotionPolicy.play(context)) {
+      _motion.value = target;
+      return;
+    }
+    _animated = true;
+    _motion.animateWith(
+      SpringSimulation(AlongSprings.sheet, _motion.value, target, 0),
+    );
+  }
+
+  @override
+  void dispose() {
+    _motion.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Gallery frames never spring, so they paint the card directly. Once a
+    // spring starts, the card stays under one builder so the fare count
+    // inside it keeps its place.
+    if (!_animated && _motion.value == 1 && !_motion.isAnimating) {
+      return widget.child;
+    }
+    return AnimatedBuilder(
+      animation: _motion,
+      builder: (context, child) {
+        final dy = (1 - _motion.value) * 640;
+        return Transform.translate(offset: Offset(0, dy), child: child);
+      },
+      child: widget.child,
+    );
+  }
+}
+
+/// Quote total driven by the reel clock. The glyphs match the other fare lines.
+class _ClockFare extends StatelessWidget {
+  const _ClockFare({required this.clock, required this.total});
+
+  final Animation<double> clock;
+  final int total;
+
+  static const _start = 0.28;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: clock,
+      builder: (context, _) {
+        // The reel clock runs 0–1 across its 15 second length.
+        final seconds = clock.value * 15;
+        final dur = AlongDurations.glide.inMilliseconds / 1000;
+        final u = seconds <= _start
+            ? 0.0
+            : ((seconds - _start) / dur).clamp(0.0, 1.0);
+        final eased = AlongCurves.settle.transform(u);
+        return _FareLine(
+          label: 'Total',
+          value: alongNaira((total * eased).round()),
+          strong: true,
+        );
+      },
     );
   }
 }

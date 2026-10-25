@@ -37,6 +37,22 @@ void main() {
     'loading': const AlongFlowLoading(),
     'refresh': const AlongFlowRefresh(),
     'phases': const AlongFlowPhases(),
+    'dev-motions': const AlongFlowMotions(),
+    'schedule': const AlongFlowSchedule(),
+    'stops': const AlongFlowStops(),
+    'options': const AlongFlowRideOptions(
+      options: AlongRideOptions(
+        squeezeFree: true,
+        seatHolds: 1,
+        womenOnlyRows: [2],
+      ),
+    ),
+    'topup': const AlongFlowTopUp(),
+    'payout': const AlongFlowPayout(),
+    'offline-home': const AlongFlowOfflineHome(),
+    'offline-matching': const AlongFlowOfflineMatching(),
+    'offline-live': const AlongFlowOfflineLive(),
+    'offline-reconnecting': const AlongFlowOfflineReconnecting(),
     'empty-routes': const Scaffold(
       body: EmptyState(variant: EmptyStateVariant.coverageGap),
     ),

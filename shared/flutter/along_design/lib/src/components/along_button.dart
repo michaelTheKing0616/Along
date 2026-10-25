@@ -24,12 +24,16 @@ class AlongButton extends StatelessWidget {
     required this.label,
     this.variant = AlongButtonVariant.primary,
     this.size = AlongButtonSize.primary,
+    this.subtitle,
     this.onPressed,
     this.fullWidth = true,
     this.visualState = AlongButtonVisualState.normal,
   });
 
   final String label;
+
+  /// Second line inside the button. Schedule uses it for the commute note.
+  final String? subtitle;
   final AlongButtonVariant variant;
   final AlongButtonSize size;
   final VoidCallback? onPressed;
@@ -53,20 +57,48 @@ class AlongButton extends StatelessWidget {
     final palette = AlongPalette.of(context);
     final style = _styleForVariant(branding, palette);
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
+    final caption = subtitle;
     final child = _isLoading
         ? const AlongSkeleton(width: 72, height: 10)
-        : Text(
+        : caption == null
+        ? Text(
             label,
             maxLines: roomy ? 2 : 1,
             overflow: TextOverflow.ellipsis,
             softWrap: roomy,
             textAlign: TextAlign.center,
-            style: AlongType.button(palette).copyWith(
-              color: style.foregroundColor,
-            ),
+            style: AlongType.button(palette)
+                .copyWith(color: style.foregroundColor),
+          )
+        : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                maxLines: roomy ? 2 : 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: roomy,
+                textAlign: TextAlign.center,
+                style: AlongType.button(palette)
+                    .copyWith(color: style.foregroundColor, height: 1.1),
+              ),
+              Text(
+                caption,
+                maxLines: roomy ? 2 : 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: roomy,
+                textAlign: TextAlign.center,
+                style: AlongType.caption(palette).copyWith(
+                  color: style.foregroundColor.withValues(alpha: 0.72),
+                  height: 1.1,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           );
 
-    final radius = variant == AlongButtonVariant.secondary ||
+    final radius =
+        variant == AlongButtonVariant.secondary ||
             variant == AlongButtonVariant.tertiary
         ? AlongRadius.control.x
         : AlongRadius.button.x;
@@ -125,11 +157,7 @@ class AlongButton extends StatelessWidget {
                 child: IgnorePointer(
                   child: DecoratedBox(
                     decoration: AlongCraft.fill(
-                      _pressedOverlay(
-                        style.backgroundColor,
-                        branding,
-                        palette,
-                      ),
+                      _pressedOverlay(style.backgroundColor, branding, palette),
                       corner: radius,
                     ),
                   ),
