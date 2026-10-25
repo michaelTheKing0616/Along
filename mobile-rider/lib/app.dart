@@ -8,6 +8,7 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_rider/features/live_trip/presentation/trip_chat.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/offline/low_data_providers.dart';
@@ -63,17 +64,24 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
   final mapCacheDir = Directory('${mapDir.path}/map_cache');
 
   final container = ProviderContainer(
-    overrides: buildProviderOverrides(
-      config: config,
-      supabase: supabase,
-      ambientChannel: SupabaseAmbientChannel(Supabase.instance.client),
-      negotiationChannel: SupabaseNegotiationChannel(Supabase.instance.client),
-      database: await AlongDatabase.open(fileName: 'rider.db'),
-      networkProbe: RiderNetworkProbe(),
-      corridorTilePrecache: CorridorTilePrecacheService(
-        cacheDirectory: mapCacheDir,
+    overrides: [
+      ...buildProviderOverrides(
+        config: config,
+        supabase: supabase,
+        ambientChannel: SupabaseAmbientChannel(Supabase.instance.client),
+        negotiationChannel: SupabaseNegotiationChannel(
+          Supabase.instance.client,
+        ),
+        database: await AlongDatabase.open(fileName: 'rider.db'),
+        networkProbe: RiderNetworkProbe(),
+        corridorTilePrecache: CorridorTilePrecacheService(
+          cacheDirectory: mapCacheDir,
+        ),
       ),
-    ),
+      tripChatChannelFactoryProvider.overrideWithValue(
+        () => SupabaseTripChatChannel(Supabase.instance.client),
+      ),
+    ],
   );
   AppStartupMetrics.instance.markBootstrapComplete();
   return container;

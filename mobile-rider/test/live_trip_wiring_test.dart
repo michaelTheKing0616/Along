@@ -108,17 +108,22 @@ void main() {
       await tester.ensureVisible(find.byKey(const Key('handoff_call')));
       await tester.tap(find.byKey(const Key('handoff_call')));
       await tester.pump();
+      // Call goes through the trip-contact relay, never a payload phone.
+      expect(supabase.tripContactCalls.map((c) => c['channel']), ['call']);
+      expect(launched, [Uri(scheme: 'tel', path: '+2348031234567')]);
+
+      // Message opens the free in-app chat; a quick reply is one tap.
       await tester.tap(find.byKey(const Key('handoff_message')));
+      await tester.pumpAndSettle(const Duration(milliseconds: 50));
+      expect(find.byKey(const Key('trip_chat')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('trip_chat_quick_0')));
       await tester.pump();
-      // Contact goes through the trip-contact relay, never a payload phone.
-      expect(supabase.tripContactCalls.map((c) => c['channel']), [
-        'call',
-        'sms',
-      ]);
-      expect(launched, [
-        Uri(scheme: 'tel', path: '+2348031234567'),
-        Uri(scheme: 'sms', path: '+2348031234567'),
-      ]);
+      await tester.pump();
+      expect(supabase.postedTripMessages.single['body'], "I'm at the pickup");
+      expect(find.byKey(const Key('trip_chat_status_sent')), findsOneWidget);
+      expect(launched.length, 1, reason: 'no SMS handoff');
+      await tester.tap(find.byKey(const Key('trip_chat_close')));
+      await tester.pumpAndSettle(const Duration(milliseconds: 50));
 
       // Rider can mint a fresh PIN in one tap; the card shows it at once.
       await tester.ensureVisible(find.byKey(const Key('handoff_new_pin')));

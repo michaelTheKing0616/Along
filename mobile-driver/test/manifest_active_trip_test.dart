@@ -239,6 +239,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
       expect(find.byKey(const Key('active_trip_start')), findsNothing);
 
+      await tester.ensureVisible(
+        find.byKey(const Key('active_trip_enter_pin')),
+      );
       await tester.tap(find.byKey(const Key('active_trip_enter_pin')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('pin_entry')), findsOneWidget);
@@ -278,6 +281,9 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
+      await tester.ensureVisible(
+        find.byKey(const Key('active_trip_enter_pin')),
+      );
       await tester.tap(find.byKey(const Key('active_trip_enter_pin')));
       await tester.pumpAndSettle();
       for (final d in '0000'.split('')) {
@@ -291,6 +297,35 @@ void main() {
       await tester.tap(find.byKey(const Key('pin_key_1')));
       await tester.pump();
       expect(fakeSupabase.pinAttempts, ['0000']);
+      container.read(tripLocationPublisherProvider).stop().ignore();
+      await tester.pump(const Duration(seconds: 6));
+    });
+
+    testWidgets('Message opens in-app chat; quick reply is one tap', (
+      tester,
+    ) async {
+      fakeSupabase.tripStatuses['trip-chat-1'] = 'accepted';
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-chat-1'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.ensureVisible(find.byKey(const Key('active_trip_message')));
+      await tester.tap(find.byKey(const Key('active_trip_message')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('trip_chat')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('trip_chat_quick_0')));
+      await tester.pump();
+      await tester.pump();
+      expect(fakeSupabase.postedTripMessages.single['body'], "I'm here");
+      expect(find.byKey(const Key('trip_chat_status_sent')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('trip_chat_close')));
+      await tester.pumpAndSettle();
       container.read(tripLocationPublisherProvider).stop().ignore();
       await tester.pump(const Duration(seconds: 6));
     });

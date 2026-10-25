@@ -14,6 +14,7 @@ import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.d
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
+import 'package:mobile_rider/features/live_trip/presentation/trip_chat.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_receipt_page.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
@@ -151,6 +152,11 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     context.push(AppRoutes.sosActive, extra: SosActiveRouteArgs(trip: trip));
   }
 
+  static bool _chatLive(TripStatus status) =>
+      status == TripStatus.accepted ||
+      status == TripStatus.boarded ||
+      status == TripStatus.inTransit;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -208,6 +214,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
     final pickupSeconds = liveTrip.status == TripStatus.accepted
         ? _pickupSeconds(liveTrip)
         : null;
+    // Preloaded for the whole live trip so the sheet opens on a full thread.
+    final chat = _chatLive(liveTrip.status)
+        ? ref.watch(tripChatProvider(liveTrip.tripId))
+        : null;
+    chat?.onIncoming = () {
+      if (mounted) AlongHaptics.tick(context);
+    };
     final car = [
       liveTrip.vehicle.color,
       liveTrip.vehicle.makeModel,
@@ -346,16 +359,16 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                               sms: false,
                                             )
                                           : null,
-                                      onMessage:
-                                          liveTrip.handoff?.contactAvailable ==
-                                              true
-                                          ? () => contactDriver(
+                                      unread: chat?.unread ?? 0,
+                                      onMessage: chat == null
+                                          ? null
+                                          : () => openTripChat(
                                               context,
                                               ref,
                                               tripId: liveTrip.tripId,
-                                              sms: true,
-                                            )
-                                          : null,
+                                              otherName:
+                                                  liveTrip.driver.displayName,
+                                            ),
                                     )
                                   : AlongLiveEtaPanel(
                                       eta: liveTrip.eta,

@@ -111,6 +111,7 @@ class FakeAlongSupabase implements AlongSupabase {
   int confirmFareInvokeCount = 0;
   int rateTripInvokeCount = 0;
   int regeneratePinCalls = 0;
+  final List<Map<String, dynamic>> postedTripMessages = [];
   int proposeExtensionInvokeCount = 0;
   int respondExtensionInvokeCount = 0;
   int qrResolveInvokeCount = 0;
@@ -243,6 +244,22 @@ class FakeAlongSupabase implements AlongSupabase {
       regeneratePinCalls++;
       return {'pin': '1593', 'regenerated': true};
     }
+    if (fn == 'post_trip_message') {
+      final row = <String, dynamic>{
+        'id': 'msg-${postedTripMessages.length}',
+        'author_role': 'rider',
+        'body': params?['p_body'],
+        'client_ref': params?['p_client_ref'],
+        'created_at': '2026-10-25T18:00:00Z',
+        'read_at': null,
+      };
+      postedTripMessages.add(row);
+      return row;
+    }
+    if (fn == 'list_trip_messages') {
+      return List<Map<String, dynamic>>.of(postedTripMessages);
+    }
+    if (fn == 'mark_trip_messages_read') return 0;
     if (fn == 'rate_trip') {
       rateTripInvokeCount++;
       lastRateTripParams = params;

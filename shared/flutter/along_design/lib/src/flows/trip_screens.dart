@@ -1172,7 +1172,7 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
           onPressed: widget.onCall,
         ),
       if (widget.onMessage != null)
-        _Badged(
+        AlongUnreadBadge(
           count: widget.unread,
           child: AlongButton(
             key: const Key('handoff_message'),
@@ -2423,8 +2423,9 @@ class _TripRow extends StatelessWidget {
 }
 
 /// Unread count on a button's top-right corner; pops in on [AlongMoves.pop].
-class _Badged extends StatelessWidget {
-  const _Badged({required this.count, required this.child});
+/// Hidden at zero.
+class AlongUnreadBadge extends StatelessWidget {
+  const AlongUnreadBadge({super.key, required this.count, required this.child});
 
   final int count;
   final Widget child;
