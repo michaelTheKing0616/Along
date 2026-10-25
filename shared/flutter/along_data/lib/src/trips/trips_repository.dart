@@ -175,6 +175,25 @@ class TripsRepository {
     }
   }
 
+  /// Rider asks for a fresh pickup PIN (accepted, not yet boarded). Returns
+  /// the PIN now in force: the new one, or the old one when rate limited.
+  Future<TripPinRefresh> regenerateTripPin(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'regenerate_trip_pin',
+        params: {'p_trip_id': tripId},
+      );
+      final m = Map<String, dynamic>.from(raw as Map);
+      return TripPinRefresh(
+        pin: m['pin']?.toString() ?? '',
+        regenerated: m['regenerated'] == true,
+        limited: m['rate_limited'] == true || m['limit_reached'] == true,
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
   /// A short-lived call/SMS action from the trip-contact relay. Null when the
   /// relay is not available.
   Future<TripContactAction?> tripContact(String tripId, String channel) async {
@@ -464,6 +483,18 @@ class TripsRepository {
           ),
         );
   }
+}
+
+class TripPinRefresh {
+  const TripPinRefresh({
+    required this.pin,
+    required this.regenerated,
+    required this.limited,
+  });
+
+  final String pin;
+  final bool regenerated;
+  final bool limited;
 }
 
 class TripPinResult {

@@ -1850,6 +1850,36 @@ class RateTripRequest {
   };
 }
 
+class RegenerateTripPinResponse {
+  final String pin;
+  final bool regenerated;
+  final bool? rate_limited;
+  final bool? limit_reached;
+
+  const RegenerateTripPinResponse({
+    required this.pin,
+    required this.regenerated,
+    this.rate_limited,
+    this.limit_reached,
+  });
+
+  factory RegenerateTripPinResponse.fromJson(Map<String, dynamic> json) {
+    return RegenerateTripPinResponse(
+      pin: json["pin"] as String,
+      regenerated: json["regenerated"] as bool,
+      rate_limited: json["rate_limited"] as bool?,
+      limit_reached: json["limit_reached"] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "pin": pin,
+    "regenerated": regenerated,
+    "rate_limited": rate_limited,
+    "limit_reached": limit_reached,
+  };
+}
+
 class RegisterDeviceTokenRequest {
   final String platform;
   final String token;
