@@ -92,7 +92,16 @@ void main() {
       onCall: () {},
       onSos: () {},
       eta: _eta(lowS: 780, highS: 1020),
-      previous: _eta(lowS: 660, highS: 840),
+      previous: _eta(lowS: 780, highS: 1020),
+      driverName: 'Musa Bello',
+      vehicle: 'Yellow keke · ABJ 482 KE',
+      destination: 'Nyanya',
+    ),
+    'trip_live_slow': () => AlongLiveTripScreen(
+      onCall: () {},
+      onSos: () {},
+      eta: _eta(lowS: 780, highS: 1020),
+      previous: _eta(lowS: 600, highS: 780),
       driverName: 'Musa Bello',
       vehicle: 'Yellow keke · ABJ 482 KE',
       destination: 'Nyanya',
@@ -150,19 +159,13 @@ void main() {
       payout: const AlongPayout(
         state: AlongPayoutState.failed,
         amount: 96200,
-        when: 'Friday',
-        account: 'GTBank ••21',
+        when: 'sent Fri',
+        account: 'Paystack ••4821',
       ),
     ),
     'trip_earnings_empty': () => const AlongDriverEarningsScreen(
       today: AlongEarningsPeriod.emptyToday,
       week: AlongEarningsPeriod.empty,
-      payout: AlongPayout(
-        state: AlongPayoutState.paid,
-        amount: 0,
-        when: 'Nothing to pay out',
-        account: 'GTBank ••21',
-      ),
     ),
   };
   const scaled = {'trip_live', 'trip_handoff', 'trip_receipt', 'trip_earnings'};

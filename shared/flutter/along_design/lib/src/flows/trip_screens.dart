@@ -280,6 +280,7 @@ class _Page extends StatelessWidget {
     this.subtitle,
     this.meta,
     this.footer,
+    this.fill,
   });
 
   final String title;
@@ -287,6 +288,9 @@ class _Page extends StatelessWidget {
   final String? meta;
   final List<Widget> children;
   final Widget? footer;
+
+  /// Replaces the scrolling body: centred in the space above [footer].
+  final Widget? fill;
 
   @override
   Widget build(BuildContext context) {
@@ -297,30 +301,47 @@ class _Page extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(_gutter, 24, _gutter, 32),
-                children: [
-                  Text(title, style: AlongType.display(p)),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle!,
-                      style: AlongType.body(p).copyWith(color: _soft(p)),
-                    ),
-                  ],
-                  if (meta != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      meta!,
-                      style: AlongType.label(p).copyWith(color: _soft(p)),
-                    ),
-                  ],
-                  const SizedBox(height: 24),
-                  ...children,
-                ],
+            if (fill != null) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(_gutter, 24, _gutter, 0),
+                child: Text(title, style: AlongType.display(p)),
               ),
-            ),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, box) => SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: _gutter),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: box.maxHeight),
+                      child: Center(child: fill),
+                    ),
+                  ),
+                ),
+              ),
+            ] else
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(_gutter, 24, _gutter, 32),
+                  children: [
+                    Text(title, style: AlongType.display(p)),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle!,
+                        style: AlongType.body(p).copyWith(color: _soft(p)),
+                      ),
+                    ],
+                    if (meta != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        meta!,
+                        style: AlongType.label(p).copyWith(color: _soft(p)),
+                      ),
+                    ],
+                    const SizedBox(height: 24),
+                    ...children,
+                  ],
+                ),
+              ),
             if (footer != null)
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -339,22 +360,83 @@ class _Page extends StatelessWidget {
   }
 }
 
-class _StateBlock extends StatelessWidget {
-  const _StateBlock({
+/// A whole-page empty or failure state: icon tile, title, body, centred.
+class _FullState extends StatelessWidget {
+  const _FullState({
     required this.icon,
     required this.title,
     required this.body,
-    this.action,
-    this.onAction,
-    this.actionKey,
   });
 
   final IconData icon;
   final String title;
   final String body;
-  final String? action;
-  final VoidCallback? onAction;
-  final Key? actionKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _IconTile(icon: icon, size: 72, radius: _rCard, glyph: 36),
+          const SizedBox(height: 20),
+          Text(title, textAlign: TextAlign.center, style: AlongType.title(p)),
+          const SizedBox(height: 8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 300),
+            child: Text(
+              body,
+              textAlign: TextAlign.center,
+              style: AlongType.body(p).copyWith(color: _soft(p)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconTile extends StatelessWidget {
+  const _IconTile({
+    required this.icon,
+    this.size = 48,
+    this.radius = _rControl,
+    this.glyph = 24,
+  });
+
+  final IconData icon;
+  final double size;
+  final double radius;
+  final double glyph;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: ShapeDecoration(
+        color: p.ink.withValues(alpha: 0.06),
+        shape: AlongCraft.border(radius),
+      ),
+      child: AlongIcon(icon, size: glyph, color: p.ink),
+    );
+  }
+}
+
+class _StateBlock extends StatelessWidget {
+  const _StateBlock({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
 
   @override
   Widget build(BuildContext context) {
@@ -365,20 +447,28 @@ class _StateBlock extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AlongIcon(icon, size: 24, color: tint),
-          const SizedBox(height: 12),
-          Text(title, style: AlongType.title(p).copyWith(color: tint)),
-          const SizedBox(height: 4),
-          Text(body, style: AlongType.body(p).copyWith(color: _soft(p))),
-          if (action != null) ...[
-            const SizedBox(height: 16),
-            AlongButton(
-              key: actionKey,
-              label: action!,
-              variant: AlongButtonVariant.secondary,
-              onPressed: onAction,
-            ),
-          ],
+          Row(
+            children: [
+              _IconTile(icon: icon),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AlongType.title(p).copyWith(color: tint),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      body,
+                      style: AlongType.body(p).copyWith(color: _soft(p)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -1296,16 +1386,17 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
     if (r == null) {
       return _Page(
         title: 'Receipt',
-        children: [
-          _StateBlock(
-            icon: AlongIcons.receipt,
-            title: 'Receipt not ready',
-            body: 'It is still on its way. It will also be in Trips.',
-            action: 'Try again',
-            actionKey: const Key('receipt_retry'),
-            onAction: widget.onRetry,
-          ),
-        ],
+        fill: const _FullState(
+          icon: AlongIcons.receipt,
+          title: 'Receipt not ready',
+          body: 'It is still on its way. It will also be in Trips.',
+        ),
+        footer: AlongButton(
+          key: const Key('receipt_retry'),
+          label: 'Try again',
+          onPressed: widget.onRetry,
+        ),
+        children: const [],
       );
     }
     return _Page(
@@ -1435,13 +1526,19 @@ class _StarsState extends State<_Stars> {
                         curve: pop.curve,
                         builder: (context, scale, child) =>
                             Transform.scale(scale: scale, child: child),
-                        child: AlongIcon(
-                          AlongIcons.star,
-                          size: 36,
-                          color: i <= widget.value
-                              ? p.ink
-                              : p.ink.withValues(alpha: 0.28),
-                        ),
+                        child: i <= widget.value
+                            ? AlongIcon(
+                                AlongIcons.star,
+                                size: 36,
+                                color: p.ink,
+                                toneColor: p.accent,
+                              )
+                            : AlongIcon(
+                                AlongIcons.star,
+                                size: 36,
+                                tone: false,
+                                color: p.ink.withValues(alpha: 0.36),
+                              ),
                       ),
                     ),
                   ),
@@ -1613,14 +1710,14 @@ class AlongPayout {
   /// "Friday" or "Paid Mon 09:00".
   final String when;
 
-  /// "GTBank ••21". Null when the app does not know the account.
+  /// "Paystack ••4821". Null when the app does not know the account.
   final String? account;
 
   static const sample = AlongPayout(
     state: AlongPayoutState.scheduled,
     amount: 96200,
-    when: 'Friday',
-    account: 'GTBank ••21',
+    when: 'sent Fri',
+    account: 'Paystack ••4821',
   );
 }
 
@@ -1629,7 +1726,7 @@ class AlongDriverEarningsScreen extends StatelessWidget {
     super.key,
     required this.today,
     required this.week,
-    required this.payout,
+    this.payout,
     this.initialWeek = false,
     this.onFixPayout,
   });
@@ -1790,6 +1887,9 @@ class _Bars extends StatelessWidget {
       fontFeatures: const [FontFeature.tabularFigures()],
     );
     final best = peak == 0 ? null : bars.indexWhere((b) => b.amount == peak);
+    // Large text: every other label so none clip; the current one stays.
+    final thin =
+        bars.length > 7 && MediaQuery.textScalerOf(context).scale(10) >= 12.5;
     return Semantics(
       label: peak == 0
           ? 'No earnings yet'
@@ -1857,7 +1957,9 @@ class _Bars extends StatelessWidget {
                 for (var i = 0; i < bars.length; i++)
                   Expanded(
                     child: Text(
-                      bars[i].label,
+                      thin && i.isOdd && i != period.highlight
+                          ? ''
+                          : bars[i].label,
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.clip,
@@ -1952,7 +2054,7 @@ class _PayoutCard extends StatelessWidget {
       AlongPayoutState.paid => (payout.when, p.success, AlongIcons.check),
       AlongPayoutState.failed => ('Payout failed', p.danger, AlongIcons.info),
     };
-    final account = payout.account ?? 'your bank account';
+    final account = payout.account;
     return _Surface(
       key: const Key('earnings_payout'),
       child: Column(
@@ -1980,13 +2082,15 @@ class _PayoutCard extends StatelessWidget {
                       style: AlongType.label(p)
                           .copyWith(color: tint, fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      payout.state == AlongPayoutState.failed
-                          ? 'Check $account'
-                          : 'To $account',
-                      style: AlongType.caption(p).copyWith(color: _soft(p)),
-                    ),
+                    if (account != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        payout.state == AlongPayoutState.failed
+                            ? 'Check $account'
+                            : 'To $account',
+                        style: AlongType.caption(p).copyWith(color: _soft(p)),
+                      ),
+                    ],
                   ],
                 ),
               ),
