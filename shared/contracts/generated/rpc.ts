@@ -377,6 +377,27 @@ export interface DriverBalanceResponse {
   };
 }
 
+/** ledger.json → DriverEarningsContextRequest */
+export interface DriverEarningsContextRequest {
+  p_days?: number;
+}
+
+/** ledger.json → DriverEarningsContextResponse */
+export interface DriverEarningsContextResponse {
+  from: string;
+  online_seconds_by_day: {
+    [k: string]: number;
+  };
+  latest_payout: {
+    status: "pending" | "confirmed" | "failed";
+    amount: number;
+    currency: string;
+    created_at: string;
+    confirmed_at: string | null;
+    account_label: string;
+  } | null;
+}
+
 /** ledger.json → DriverLedgerRequest */
 export interface DriverLedgerRequest {
   p_cursor?: string;

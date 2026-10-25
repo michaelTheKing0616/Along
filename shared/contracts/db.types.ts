@@ -5718,6 +5718,32 @@ export type Database = {
           },
         ]
       }
+      trip_pins: {
+        Row: {
+          created_at: string
+          pin: string
+          trip_id: string
+        }
+        Insert: {
+          created_at?: string
+          pin: string
+          trip_id: string
+        }
+        Update: {
+          created_at?: string
+          pin?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_pins_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trip_reconciliation_flags: {
         Row: {
           corroborating_rider_count: number
@@ -6462,6 +6488,10 @@ export type Database = {
         }
         Returns: Json
       }
+      _build_trip_view_core: {
+        Args: { p_trip_id: string; p_viewer_id?: string }
+        Returns: Json
+      }
       _candidate_token_payload: {
         Args: { p_driver_id: string; p_exp: number; p_session_id: string }
         Returns: string
@@ -6661,6 +6691,7 @@ export type Database = {
         Args: { p_trip_id: string }
         Returns: undefined
       }
+      _mint_trip_pin: { Args: never; Returns: string }
       _mode_ref: { Args: { p_mode_code: string }; Returns: Json }
       _na_me_label: {
         Args: { p_color_token: string; p_locale?: string; p_shape: string }
@@ -7633,6 +7664,7 @@ export type Database = {
         | { Args: never; Returns: string[] }
         | { Args: { "": string }; Returns: string[] }
       driver_balance: { Args: never; Returns: Json }
+      driver_earnings_context: { Args: { p_days?: number }; Returns: Json }
       driver_is_matchable: { Args: { p_driver_id: string }; Returns: boolean }
       driver_ledger: {
         Args: { p_cursor?: string; p_limit?: number }

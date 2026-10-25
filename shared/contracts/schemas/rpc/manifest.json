@@ -63,6 +63,7 @@
     { "name": "suggested_stop_price", "tier": "I", "request": "presence.json#/$defs/SuggestedStopPriceRequest" },
     { "name": "driver_balance", "tier": "I", "response": "ledger.json#/$defs/DriverBalanceResponse" },
     { "name": "driver_ledger", "tier": "I", "request": "ledger.json#/$defs/DriverLedgerRequest" },
+    { "name": "driver_earnings_context", "tier": "I", "request": "ledger.json#/$defs/DriverEarningsContextRequest", "response": "ledger.json#/$defs/DriverEarningsContextResponse" },
     { "name": "create_agent_code", "tier": "I", "request": "ledger.json#/$defs/CreateAgentCodeRequest", "response": "ledger.json#/$defs/CreateAgentCodeResponse" },
     { "name": "confirm_agent_settlement", "tier": "I", "request": "ledger.json#/$defs/ConfirmAgentSettlementRequest" },
     { "name": "qr_suggested_amounts", "tier": "A", "response": "ledger.json#/$defs/QrSuggestedAmountsResponse" },

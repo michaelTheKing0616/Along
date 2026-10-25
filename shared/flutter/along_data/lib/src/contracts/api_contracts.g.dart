@@ -974,6 +974,50 @@ class DriverBalanceResponse {
   };
 }
 
+class DriverEarningsContextRequest {
+  final int? p_days;
+
+  const DriverEarningsContextRequest({
+    this.p_days,
+  });
+
+  factory DriverEarningsContextRequest.fromJson(Map<String, dynamic> json) {
+    return DriverEarningsContextRequest(
+      p_days: (json["p_days"] as num?)?.toInt(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "p_days": p_days,
+  };
+}
+
+class DriverEarningsContextResponse {
+  final String from;
+  final Map<String, dynamic> online_seconds_by_day;
+  final Object? latest_payout;
+
+  const DriverEarningsContextResponse({
+    required this.from,
+    required this.online_seconds_by_day,
+    required this.latest_payout,
+  });
+
+  factory DriverEarningsContextResponse.fromJson(Map<String, dynamic> json) {
+    return DriverEarningsContextResponse(
+      from: json["from"] as String,
+      online_seconds_by_day: Map<String, dynamic>.from(json["online_seconds_by_day"] as Map),
+      latest_payout: json["latest_payout"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "from": from,
+    "online_seconds_by_day": online_seconds_by_day,
+    "latest_payout": latest_payout,
+  };
+}
+
 class DriverLedgerRequest {
   final String? p_cursor;
   final int? p_limit;
@@ -2526,6 +2570,28 @@ class SuggestedStopPriceRequest {
   };
 }
 
+class TripHandoff {
+  final Object? pin;
+  final Object? driver_phone;
+
+  const TripHandoff({
+    required this.pin,
+    required this.driver_phone,
+  });
+
+  factory TripHandoff.fromJson(Map<String, dynamic> json) {
+    return TripHandoff(
+      pin: json["pin"],
+      driver_phone: json["driver_phone"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "pin": pin,
+    "driver_phone": driver_phone,
+  };
+}
+
 class TripLocationSampleRequest {
   final String p_trip_id;
   final List<LocationSamplePoint> p_points;
@@ -2609,6 +2675,7 @@ class TripView {
   final String? approach_band;
   final Object? wait;
   final EtaPayload? eta;
+  final TripHandoff? handoff;
 
   const TripView({
     required this.trip_id,
@@ -2635,6 +2702,7 @@ class TripView {
     this.approach_band,
     this.wait,
     this.eta,
+    this.handoff,
   });
 
   factory TripView.fromJson(Map<String, dynamic> json) {
@@ -2663,6 +2731,7 @@ class TripView {
       approach_band: json["approach_band"] as String?,
       wait: json["wait"],
       eta: json["eta"] == null ? null : EtaPayload.fromJson(json["eta"] as Map<String, dynamic>),
+      handoff: json["handoff"] == null ? null : TripHandoff.fromJson(json["handoff"] as Map<String, dynamic>),
     );
   }
 
@@ -2691,6 +2760,7 @@ class TripView {
     "approach_band": approach_band,
     "wait": wait,
     "eta": eta?.toJson(),
+    "handoff": handoff?.toJson(),
   };
 }
 
