@@ -85,7 +85,7 @@ class TripSummary {
   final TripWaitInfo? wait;
 
   /// Rider-only PIN and driver phone while the trip is live.
-  final TripHandoff? handoff;
+  final TripPickupHandoff? handoff;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||

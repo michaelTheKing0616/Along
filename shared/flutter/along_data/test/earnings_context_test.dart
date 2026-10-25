@@ -23,16 +23,19 @@ void main() {
   });
 
   test('handoff keeps only a valid PIN and a phone', () {
-    expect(TripHandoff.fromJson(null), isNull);
-    expect(TripHandoff.fromJson({'pin': null, 'driver_phone': null}), isNull);
-    final h = TripHandoff.fromJson({
+    expect(TripPickupHandoff.fromJson(null), isNull);
+    expect(
+      TripPickupHandoff.fromJson({'pin': null, 'driver_phone': null}),
+      isNull,
+    );
+    final h = TripPickupHandoff.fromJson({
       'pin': '0482',
       'driver_phone': '+2348031234567',
     });
     expect(h?.pin, '0482');
     expect(h?.driverPhone, '+2348031234567');
     expect(
-      TripHandoff.fromJson({'pin': '12', 'driver_phone': '+234'})?.pin,
+      TripPickupHandoff.fromJson({'pin': '12', 'driver_phone': '+234'})?.pin,
       isNull,
     );
   });
