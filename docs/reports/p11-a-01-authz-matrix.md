@@ -1,6 +1,6 @@
 # P11-A-01 Authorization Matrix
 
-**Generated:** 2026-10-25T19:59:48Z (UTC) from live `pg_policies` on `postgresql://postgres:postgres@…`
+**Generated:** 2026-10-25T20:35:42Z (UTC) from live `pg_policies` on `postgresql://postgres:postgres@…`
 **Source of truth for expectations:** doc 02 §16 + per-table `-- RLS:` comments
 
 ## Legend

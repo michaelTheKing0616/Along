@@ -114,6 +114,17 @@
         "rate_limited": { "type": "boolean" }
       }
     },
+    "RegenerateTripPinResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pin", "regenerated"],
+      "properties": {
+        "pin": { "type": "string", "pattern": "^[0-9]{4}$" },
+        "regenerated": { "type": "boolean" },
+        "rate_limited": { "type": "boolean" },
+        "limit_reached": { "type": "boolean" }
+      }
+    },
     "TripSnapshotRequest": {
       "type": "object",
       "required": ["p_trip_id"],

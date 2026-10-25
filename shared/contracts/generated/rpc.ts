@@ -924,6 +924,14 @@ export interface VerifyTripPinResponse {
   rate_limited?: boolean;
 }
 
+/** trips.json → RegenerateTripPinResponse */
+export interface RegenerateTripPinResponse {
+  pin: string;
+  regenerated: boolean;
+  rate_limited?: boolean;
+  limit_reached?: boolean;
+}
+
 /** trips.json → TripSnapshotRequest */
 export interface TripSnapshotRequest {
   p_trip_id: string;

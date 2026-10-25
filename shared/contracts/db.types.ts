@@ -5727,6 +5727,8 @@ export type Database = {
           created_at: string
           last_attempt_at: string | null
           pin: string
+          regenerated_at: string | null
+          regenerations: number
           trip_id: string
           verified_at: string | null
           verified_by: Database["public"]["Enums"]["actor_type"] | null
@@ -5736,6 +5738,8 @@ export type Database = {
           created_at?: string
           last_attempt_at?: string | null
           pin: string
+          regenerated_at?: string | null
+          regenerations?: number
           trip_id: string
           verified_at?: string | null
           verified_by?: Database["public"]["Enums"]["actor_type"] | null
@@ -5745,6 +5749,8 @@ export type Database = {
           created_at?: string
           last_attempt_at?: string | null
           pin?: string
+          regenerated_at?: string | null
+          regenerations?: number
           trip_id?: string
           verified_at?: string | null
           verified_by?: Database["public"]["Enums"]["actor_type"] | null
@@ -8321,6 +8327,7 @@ export type Database = {
       }
       refresh_trip_eta: { Args: { p_trip_id: string }; Returns: Json }
       refresh_wait: { Args: { p_trip_id: string }; Returns: Json }
+      regenerate_trip_pin: { Args: { p_trip_id: string }; Returns: Json }
       register_device_token: {
         Args: { p_app: string; p_platform: string; p_token: string }
         Returns: undefined
