@@ -46,7 +46,7 @@ test.describe('Admin users (A-17)', () => {
     await page.getByTestId('admins-invite-submit').click();
 
     await expect(page.getByTestId('admins-success')).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByText(email)).toBeVisible();
+    await expect(page.getByRole('cell', { name: email })).toBeVisible();
 
     const userId = sqlScalar(
       `select id::text from auth.users where email = '${email}' limit 1`
