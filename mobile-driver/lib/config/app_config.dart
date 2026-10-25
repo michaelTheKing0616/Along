@@ -13,6 +13,7 @@ class AppConfig {
     this.sentryTracesSampleRate = 0.2,
     this.stagingOtpKey,
     this.batteryGuardPercent = 15,
+    this.supportUrl,
   });
 
   final String flavor;
@@ -40,7 +41,22 @@ class AppConfig {
       );
     }
   }
+
   final int batteryGuardPercent;
+
+  /// `SUPPORT_URL`: a free support route (https://wa.me/…, tel:…, mailto:…).
+  /// Empty means no route; screens hide their Get help action.
+  final String? supportUrl;
+
+  /// The support link when it parses as a launchable URI, else null.
+  Uri? get supportUri {
+    final raw = supportUrl?.trim() ?? '';
+    if (raw.isEmpty) return null;
+    final uri = Uri.tryParse(raw);
+    const schemes = {'https', 'tel', 'mailto', 'sms', 'whatsapp'};
+    if (uri == null || !schemes.contains(uri.scheme)) return null;
+    return uri;
+  }
 
   bool get hasSentry => sentryDsn != null && sentryDsn!.trim().isNotEmpty;
 
@@ -86,8 +102,11 @@ class AppConfig {
       defaultValue: 15,
     );
 
+    const supportUrl = String.fromEnvironment('SUPPORT_URL');
+
     return AppConfig(
       flavor: flavor,
+      supportUrl: supportUrl.isEmpty ? null : supportUrl,
       stagingOtpKey: stagingOtpKey.isEmpty ? null : stagingOtpKey,
       supabaseUrl: supabaseUrl,
       supabaseAnonKey: supabaseAnonKey,

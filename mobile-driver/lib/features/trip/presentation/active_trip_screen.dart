@@ -10,6 +10,7 @@ import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 import 'package:mobile_driver/features/payments/data/payments_providers.dart';
@@ -265,6 +266,15 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                         ? 'your rider'
                                         : riderName.split(' ').first,
                                     onSubmit: controller.verifyPin,
+                                    onGetHelp: switch (ref
+                                        .read(appConfigProvider)
+                                        .supportUri) {
+                                      final uri? => () => launchUrl(
+                                        uri,
+                                        mode: LaunchMode.externalApplication,
+                                      ),
+                                      null => null,
+                                    },
                                     onVerified: () {
                                       final nav = Navigator.of(context);
                                       Future.delayed(

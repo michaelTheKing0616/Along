@@ -286,6 +286,8 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(find.textContaining('Too many tries'), findsOneWidget);
+      // No SUPPORT_URL in this build: no dead Get help action.
+      expect(find.byKey(const Key('pin_get_help')), findsNothing);
       await tester.tap(find.byKey(const Key('pin_key_1')));
       await tester.pump();
       expect(fakeSupabase.pinAttempts, ['0000']);

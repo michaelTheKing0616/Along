@@ -18,7 +18,7 @@ psql "$DATABASE_URL" -c "SELECT ac.key, COALESCE(k.description,''), ac.value::te
 | `CONTACT_PROVIDER_API_KEY` | Masked-relay provider key. **Needed from ops before masking can go live.** |
 | `CONTACT_PROXY_NUMBER` | Provider proxy/virtual number callers dial. **Needed from ops.** |
 
-The masked adapters are stubs until a provider account and its session API are confirmed; they fail closed (503 `CONTACT_UNAVAILABLE`) instead of falling back to the real number.
+**Decision (Tope, 2026-10-25): no paid plans for now.** `CONTACT_PROVIDER` stays `tel`; nothing in any environment needs `CONTACT_PROVIDER_API_KEY` or `CONTACT_PROXY_NUMBER`, and leaving them unset is the supported state. The masked adapters are stubs until a provider account and its session API are confirmed; they fail closed (503 `CONTACT_UNAVAILABLE`) instead of falling back to the real number.
 
 Copy example files and fill placeholders from your Supabase project dashboard — do not commit real secrets.
 ## Critical switches
@@ -209,3 +209,9 @@ These come from `backend/db/seed_core.sql` for pilot/Test City fixtures — not 
 - `backend/db/tests/app_config_keys.sql` — pgTAP presence check (TS-CFG-*)
 - ADR-0016 (`app_config` defaults owned by migrations)
 - Admin console A-09 — runtime config editor
+
+## Mobile: support route (driver app)
+
+| Dart define | Purpose |
+|---|---|
+| `SUPPORT_URL` | Free support link opened by **Get help** on the driver's locked-PIN screen: `https://wa.me/<number>`, `tel:<number>`, `mailto:<address>` or `sms:<number>`. Empty (the default in `env/*.json`) hides the action; other schemes are ignored. |
