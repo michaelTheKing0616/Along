@@ -14,6 +14,8 @@ describe('authz routes', () => {
     expect(isPublicPath('/sign-in')).toBe(true);
     expect(isPublicPath('/mfa')).toBe(true);
     expect(isPublicPath('/p/W04TEST1')).toBe(true);
+    expect(isPublicPath('/s/abc123')).toBe(true);
+    expect(isPublicPath('/sign-in-x')).toBe(false);
     expect(isPublicPath('/.well-known/apple-app-site-association')).toBe(true);
     expect(isPublicPath('/.well-known/assetlinks.json')).toBe(true);
     expect(isWellKnownPath('/.well-known/assetlinks.json')).toBe(true);
