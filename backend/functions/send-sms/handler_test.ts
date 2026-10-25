@@ -1,4 +1,4 @@
-import { assertEquals } from 'jsr:@std/assert@1';
+import { assertEquals, assertRejects } from 'jsr:@std/assert@1';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { handleSendSms } from './handler.ts';
 
@@ -38,11 +38,11 @@ async function signedRequest(body: unknown): Promise<Request> {
   });
 }
 
-function createMockService(provider = 'log'): SupabaseClient {
+function createMockService(provider: string | null = 'log'): SupabaseClient {
   return {
     rpc: (name: string, args?: Record<string, unknown>) => {
       if (name === 'cfg' && args?.p_key === 'sms.provider') {
-        return Promise.resolve({ data: JSON.stringify(provider), error: null });
+        return Promise.resolve({ data: provider === null ? null : JSON.stringify(provider), error: null });
       }
       if (name === 'record_log_otp') {
         return Promise.resolve({ data: null, error: null });
@@ -104,4 +104,25 @@ Deno.test('send-sms: rejects unsigned webhook', async () => {
   });
 
   assertEquals(res.status, 401);
+});
+
+Deno.test('send-sms: unset sms.provider fails closed instead of defaulting to log', async () => {
+  const req = await signedRequest({
+    user: { id: USER_ID, phone: '+2348012345678' },
+    sms: { otp: '561166' },
+  });
+  const rpcs: string[] = [];
+  const base = createMockService(null);
+  const service = {
+    rpc: (name: string, args?: Record<string, unknown>) => {
+      rpcs.push(name);
+      return base.rpc(name, args);
+    },
+  } as unknown as SupabaseClient;
+  await assertRejects(
+    () => handleSendSms(req, { service, hookSecrets: `v1,whsec_${HOOK_SECRET}`, log: () => {} }),
+    Error,
+    'sms.provider is not configured',
+  );
+  assertEquals(rpcs.includes('record_log_otp'), false);
 });

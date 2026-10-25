@@ -11,6 +11,7 @@ class AppConfig {
     this.otpResendCooldownS = 30,
     this.otpRateLimitRetryS = 60,
     this.sentryTracesSampleRate = 0.2,
+    this.stagingOtpKey,
   });
 
   final String flavor;
@@ -21,6 +22,23 @@ class AppConfig {
   final int otpResendCooldownS;
   final int otpRateLimitRetryS;
   final double sentryTracesSampleRate;
+
+  /// `--dart-define=STAGING_OTP_KEY=…` for staging smoke builds only.
+  final String? stagingOtpKey;
+
+  /// OTP auto-fill runs only on staging builds that carry the key.
+  bool get stagingOtpAutofillEnabled =>
+      flavor == 'staging' && (stagingOtpKey?.isNotEmpty ?? false);
+
+  /// Throws when a non-staging build carries the staging OTP key, so a prod
+  /// (or dev) binary with the key cannot even start.
+  static void assertStagingOtpKeyAllowed(String flavor, String? key) {
+    if ((key?.isNotEmpty ?? false) && flavor != 'staging') {
+      throw StateError(
+        'STAGING_OTP_KEY must only be defined for FLAVOR=staging (got $flavor).',
+      );
+    }
+  }
 
   bool get hasSentry => sentryDsn != null && sentryDsn!.trim().isNotEmpty;
 
@@ -46,6 +64,8 @@ class AppConfig {
     const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
     const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
     const sentryDsn = String.fromEnvironment('SENTRY_DSN');
+    const stagingOtpKey = String.fromEnvironment('STAGING_OTP_KEY');
+    assertStagingOtpKeyAllowed(flavor, stagingOtpKey);
     // Mobile env files use TILES_BASE_URL; root env/staging.json uses TILES_BASE
     // (mapped by scripts/wire_staging.sh). Accept both so a mis-keyed define
     // still wires tiles.
@@ -70,6 +90,7 @@ class AppConfig {
 
     return AppConfig(
       flavor: flavor,
+      stagingOtpKey: stagingOtpKey.isEmpty ? null : stagingOtpKey,
       supabaseUrl: supabaseUrl,
       supabaseAnonKey: supabaseAnonKey,
       sentryDsn: sentryDsn.isEmpty ? null : sentryDsn,

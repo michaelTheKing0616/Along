@@ -184,13 +184,14 @@ class OnboardingController extends Notifier<OnboardingState> {
     state = state.copyWith(clearError: true);
   }
 
+  /// Staging smoke builds only (flavor + --dart-define key); null otherwise.
   Future<String?> peekStagingOtp() {
     final phone = state.phoneE164;
-    if (phone == null) return Future.value(null);
-    if (ref.read(appConfigProvider).flavor == 'prod') {
+    final config = ref.read(appConfigProvider);
+    if (phone == null || !config.stagingOtpAutofillEnabled) {
       return Future.value(null);
     }
-    return _auth.peekLogOtp(phone);
+    return _auth.peekStagingOtp(phone, key: config.stagingOtpKey!);
   }
 
   Future<LaunchDestination> resolveLaunchDestination() async {

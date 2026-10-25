@@ -31,7 +31,9 @@ async function smsProvider(service: SupabaseClient): Promise<string> {
   const { data, error } = await service.rpc('cfg', { p_key: 'sms.provider', p_city: null });
   if (error) throw error;
   if (typeof data === 'string') return data.replace(/^"|"$/g, '');
-  return String(data ?? 'log');
+  // Fail closed: a missing setting must never silently fall back to log mode.
+  if (data == null) throw new Error('sms.provider is not configured');
+  return String(data);
 }
 
 export async function handleSendSms(
@@ -62,7 +64,7 @@ export async function handleSendSms(
   const phone = parsed.data.user.phone ?? null;
 
   if (provider === 'log') {
-    // OTP stays out of stdout (ADR-0012). Staging device smokes read via peek_log_otp.
+    // OTP stays out of stdout (ADR-0012). Smokes read it via peek_log_otp (service_role only).
     await deps.service.rpc('record_log_otp', {
       p_phone: phone ?? '',
       p_otp: parsed.data.sms.otp,

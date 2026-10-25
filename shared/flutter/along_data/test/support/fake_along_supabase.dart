@@ -56,6 +56,7 @@ class FakeAlongSupabase implements AlongSupabase {
     Map<String, dynamic>? body,
     AlongHttpMethod method = AlongHttpMethod.post,
     Map<String, String>? queryParameters,
+    Map<String, String>? headers,
   }) async {
     final b = body ?? {};
     functionCalls.add((slug, b));

@@ -18,6 +18,7 @@ abstract class AlongSupabase {
     Map<String, dynamic>? body,
     AlongHttpMethod method = AlongHttpMethod.post,
     Map<String, String>? queryParameters,
+    Map<String, String>? headers,
   });
 
   /// Reads rows from a Supabase table (e.g. `app_config`).
@@ -86,12 +87,14 @@ class SupabaseAlongGateway implements AlongSupabase {
     Map<String, dynamic>? body,
     AlongHttpMethod method = AlongHttpMethod.post,
     Map<String, String>? queryParameters,
+    Map<String, String>? headers,
   }) async {
     final result = await _client.functions.invoke(
       slug,
       body: method == AlongHttpMethod.post ? (body ?? {}) : null,
       method: method == AlongHttpMethod.get ? HttpMethod.get : HttpMethod.post,
       queryParameters: queryParameters,
+      headers: headers,
     );
     final data = result.data;
     if (data is Map<String, dynamic>) return data;
