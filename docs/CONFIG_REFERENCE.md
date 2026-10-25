@@ -52,6 +52,7 @@ Copy example files and fill placeholders from your Supabase project dashboard โ€
 | `cache.graph_bundle_ttl_s` | graph-bundle Edge cache TTL (seconds) | `3600` | `{global,city}` | no |
 | `cache.places_ttl_s` | places-search Edge KV TTL (seconds) | `86400` | `{global,city}` | no |
 | `cache.plan_trip_ttl_s` | plan-trip hot OD pair cache TTL (seconds) | `60` | `{global,city}` | no |
+| `chat.quick_replies` | Migration default (migration 98). One-tap trip chat replies per role. | `{"rider": [...], "driver": [...]}` | `{global,city,country,corridor}` | no |
 | `client.ambient_poll_interval_s` | LowDataMode: ambient RPC poll interval (seconds) when Broadcast is disabled | `30` | `{global,city}` | no |
 | `client.low_data_tile_max_zoom` | LowDataMode: cap MapLibre tile refresh at this zoom when 2G or OS data saver is on | `15` | `{global,city}` | no |
 | `client.trip_location_sample_interval_s` | Migration default (see blueprint doc 02 ยง2.3). | `5` | `{global,city,country,corridor}` | no |
