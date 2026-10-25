@@ -162,6 +162,16 @@ class AuthController extends Notifier<AuthState> {
     state = state.copyWith(clearError: true);
   }
 
+  /// Staging smoke builds only (flavor + --dart-define key); null otherwise.
+  Future<String?> peekStagingOtp() {
+    final phone = state.phoneE164;
+    final config = ref.read(appConfigProvider);
+    if (phone == null || !config.stagingOtpAutofillEnabled) {
+      return Future.value(null);
+    }
+    return _auth.peekStagingOtp(phone, key: config.stagingOtpKey!);
+  }
+
   Future<DriverOnboardingStep> resolveLaunchStep() async {
     final user = _auth.currentUser;
     if (user == null) return DriverOnboardingStep.auth;

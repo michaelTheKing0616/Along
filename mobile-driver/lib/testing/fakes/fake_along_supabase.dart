@@ -619,13 +619,22 @@ class FakeAlongSupabase implements AlongSupabase {
     };
   }
 
+  /// staging-otp invocations: (body, headers).
+  final List<(Map<String, dynamic>, Map<String, String>)> stagingOtpCalls = [];
+  String? stagingOtpCode;
+
   @override
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
     Map<String, dynamic>? body,
     AlongHttpMethod method = AlongHttpMethod.post,
     Map<String, String>? queryParameters,
+    Map<String, String>? headers,
   }) async {
+    if (slug == 'staging-otp') {
+      stagingOtpCalls.add((Map<String, dynamic>.from(body ?? {}), Map<String, String>.from(headers ?? {})));
+      return {'otp': stagingOtpCode};
+    }
     if (slug.startsWith('qr/resolve/')) {
       final code = slug.split('/').last;
       if (code != driverCode) {

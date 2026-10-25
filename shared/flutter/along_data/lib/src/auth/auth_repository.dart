@@ -20,6 +20,23 @@ class AuthRepository {
     }
   }
 
+  /// Staging only: asks the guarded `staging-otp` Edge Function for the
+  /// log-mode OTP. Returns null on any denial or error (the user types it).
+  Future<String?> peekStagingOtp(String phoneE164, {required String key}) async {
+    try {
+      final result = await _gateway.invokeFunction(
+        'staging-otp',
+        body: {'phone': phoneE164},
+        headers: {'x-staging-otp-key': key},
+      );
+      final otp = result['otp'];
+      if (otp is String && otp.trim().isNotEmpty) return otp.trim();
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<User?> verifyOtp({
     required String phoneE164,
     required String token,
