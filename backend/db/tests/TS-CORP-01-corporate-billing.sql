@@ -124,7 +124,8 @@ select trip_transition(
 select set_config('request.jwt.claim.sub', '0f200000-0000-4000-8000-000000000001', true);
 select set_config('request.jwt.claim.role', 'authenticated', true);
 
-select mark_boarded('0f900000-0000-4000-8000-000000000001'::uuid);
+select verify_trip_pin('0f900000-0000-4000-8000-000000000001'::uuid,
+  (select pin::text from trip_pins where trip_id = '0f900000-0000-4000-8000-000000000001'));
 select start_trip('0f900000-0000-4000-8000-000000000001'::uuid);
 select complete_trip('0f900000-0000-4000-8000-000000000001'::uuid);
 

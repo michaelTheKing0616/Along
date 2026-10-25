@@ -2074,6 +2074,7 @@ export type Database = {
           home_park_id: string | null
           id: string
           payout_bank_last4: string | null
+          payout_bank_name: string | null
           payout_subaccount_code: string | null
           rating: number | null
           rating_count: number
@@ -2093,6 +2094,7 @@ export type Database = {
           home_park_id?: string | null
           id: string
           payout_bank_last4?: string | null
+          payout_bank_name?: string | null
           payout_subaccount_code?: string | null
           rating?: number | null
           rating_count?: number
@@ -2112,6 +2114,7 @@ export type Database = {
           home_park_id?: string | null
           id?: string
           payout_bank_last4?: string | null
+          payout_bank_name?: string | null
           payout_subaccount_code?: string | null
           rating?: number | null
           rating_count?: number
@@ -5720,19 +5723,31 @@ export type Database = {
       }
       trip_pins: {
         Row: {
+          attempts: number
           created_at: string
+          last_attempt_at: string | null
           pin: string
           trip_id: string
+          verified_at: string | null
+          verified_by: Database["public"]["Enums"]["actor_type"] | null
         }
         Insert: {
+          attempts?: number
           created_at?: string
+          last_attempt_at?: string | null
           pin: string
           trip_id: string
+          verified_at?: string | null
+          verified_by?: Database["public"]["Enums"]["actor_type"] | null
         }
         Update: {
+          attempts?: number
           created_at?: string
+          last_attempt_at?: string | null
           pin?: string
           trip_id?: string
+          verified_at?: string | null
+          verified_by?: Database["public"]["Enums"]["actor_type"] | null
         }
         Relationships: [
           {
@@ -6476,6 +6491,10 @@ export type Database = {
         Args: { p_city_id: string; p_women_only: boolean }
         Returns: undefined
       }
+      _auto_in_transit_check_core: {
+        Args: { p_trip_id: string }
+        Returns: boolean
+      }
       _build_itinerary_prepared_plan: {
         Args: {
           p_city_id: string
@@ -7017,6 +7036,7 @@ export type Database = {
         Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
         Returns: unknown
       }
+      _trip_pin_cleared: { Args: { p_trip_id: string }; Returns: boolean }
       _trip_planned_in_vehicle_s: {
         Args: { p_trip_id: string }
         Returns: number
@@ -8024,7 +8044,11 @@ export type Database = {
       payment_token_hmac_key: { Args: never; Returns: string }
       peek_log_otp: { Args: { p_phone: string }; Returns: string }
       persist_driver_payout_bank: {
-        Args: { p_bank_last4: string; p_subaccount_code: string }
+        Args: {
+          p_bank_last4: string
+          p_bank_name?: string
+          p_subaccount_code: string
+        }
         Returns: Json
       }
       pg_version: { Args: never; Returns: string }
@@ -9201,6 +9225,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      trip_contact_target: {
+        Args: { p_caller: string; p_trip_id: string }
+        Returns: Json
+      }
       trip_location_sample: {
         Args: { p_points: Json; p_trip_id: string }
         Returns: Json
@@ -9286,6 +9314,10 @@ export type Database = {
           driver_id: string
           trip_id: string
         }[]
+      }
+      verify_trip_pin: {
+        Args: { p_pin: string; p_trip_id: string }
+        Returns: Json
       }
       weighted_median_fare: {
         Args: { p_fares: number[]; p_weights: number[] }

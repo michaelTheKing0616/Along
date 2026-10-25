@@ -394,7 +394,9 @@ export interface DriverEarningsContextResponse {
     currency: string;
     created_at: string;
     confirmed_at: string | null;
-    account_label: string;
+    account_label: string | null;
+    bank_name?: string | null;
+    account_last4?: string | null;
   } | null;
 }
 
@@ -906,6 +908,20 @@ export interface NegotiationRoundRequest {
 /** trips.json → NegotiationSplitRequest */
 export interface NegotiationSplitRequest {
   p_negotiation_id: string;
+}
+
+/** trips.json → VerifyTripPinRequest */
+export interface VerifyTripPinRequest {
+  p_trip_id: string;
+  p_pin: string;
+}
+
+/** trips.json → VerifyTripPinResponse */
+export interface VerifyTripPinResponse {
+  verified: boolean;
+  attempts_left: number;
+  locked?: boolean;
+  rate_limited?: boolean;
 }
 
 /** trips.json → TripSnapshotRequest */

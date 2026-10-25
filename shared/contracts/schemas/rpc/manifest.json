@@ -45,6 +45,7 @@
     { "name": "trip_snapshot", "tier": "B", "request": "trips.json#/$defs/TripSnapshotRequest", "response": "common.json#/$defs/TripView" },
     { "name": "trip_location_sample", "tier": "B", "request": "trips.json#/$defs/TripLocationSampleRequest", "response": "trips.json#/$defs/TripLocationSampleResponse" },
     { "name": "mark_boarded", "tier": "B", "request": "trips.json#/$defs/TripSnapshotRequest", "response": "common.json#/$defs/TripView" },
+    { "name": "verify_trip_pin", "tier": "B", "request": "trips.json#/$defs/VerifyTripPinRequest", "response": "trips.json#/$defs/VerifyTripPinResponse" },
     { "name": "start_trip", "tier": "B", "request": "trips.json#/$defs/TripSnapshotRequest", "response": "common.json#/$defs/TripView" },
     { "name": "complete_trip", "tier": "B", "request": "trips.json#/$defs/TripSnapshotRequest", "response": "trips.json#/$defs/CompleteTripResponse" },
     { "name": "mark_no_show", "tier": "B", "request": "trips.json#/$defs/TripSnapshotRequest", "response": "common.json#/$defs/TripView" },

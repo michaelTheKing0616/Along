@@ -39,7 +39,9 @@
             "currency": { "type": "string" },
             "created_at": { "type": "string", "format": "date-time" },
             "confirmed_at": { "type": ["string", "null"], "format": "date-time" },
-            "account_label": { "type": "string" }
+            "account_label": { "type": ["string", "null"] },
+            "bank_name": { "type": ["string", "null"] },
+            "account_last4": { "type": ["string", "null"], "pattern": "^[0-9]{4}$" }
           }
         }
       }

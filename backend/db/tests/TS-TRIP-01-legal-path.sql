@@ -94,8 +94,10 @@ select trip_transition(
 select set_config('request.jwt.claim.sub', '0c200000-0000-4000-8000-000000000001', true);
 select set_config('request.jwt.claim.role', 'authenticated', true);
 
--- accepted → boarded (manual driver)
-select mark_boarded('0c700000-0000-4000-8000-000000000001'::uuid);
+
+-- accepted → boarded: the driver enters the rider's PIN (PR #17)
+select verify_trip_pin('0c700000-0000-4000-8000-000000000001'::uuid,
+  (select pin::text from trip_pins where trip_id = '0c700000-0000-4000-8000-000000000001'));
 
 -- boarded → in_transit
 select start_trip('0c700000-0000-4000-8000-000000000001'::uuid);

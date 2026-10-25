@@ -1,4 +1,4 @@
--- pgTAP: TS-TRIP-16 — rider handoff (PIN + driver phone) and driver earnings context (PR #16)
+-- pgTAP: TS-TRIP-16 — rider handoff (PIN + contact flag) and driver earnings context (PR #16)
 create extension if not exists pgtap;
 
 begin;
@@ -119,10 +119,10 @@ select is(
   (select pin::text from trip_pins where trip_id = current_setting('test.trip_id')::uuid),
   'rider sees the trip PIN while the driver is arriving'
 );
-select is(
-  build_trip_view(current_setting('test.trip_id')::uuid)->'handoff'->>'driver_phone',
-  '+2348000016002',
-  'rider gets the driver phone for Call/Message'
+select ok(
+  (build_trip_view(current_setting('test.trip_id')::uuid)->'handoff'->>'driver_phone') is null
+    and (build_trip_view(current_setting('test.trip_id')::uuid)->'handoff'->>'contact_available')::boolean,
+  'rider never receives the raw driver phone; contact goes through the relay'
 );
 select is(
   (select count(*)::int from trip_pins where trip_id = current_setting('test.trip_id')::uuid),
@@ -163,8 +163,9 @@ select set_config('request.jwt.claim.sub', '1d100000-0000-4000-8000-000000000001
 set local role authenticated;
 select ok(
   build_trip_view(current_setting('test.trip_id')::uuid)->'handoff'->>'pin' is null
-    and build_trip_view(current_setting('test.trip_id')::uuid)->'handoff'->>'driver_phone' is not null,
-  'in transit: no PIN, driver phone kept'
+    and (build_trip_view(current_setting('test.trip_id')::uuid)->'handoff'->>'contact_available')::boolean
+    and not (build_trip_view(current_setting('test.trip_id')::uuid)->'handoff' ? 'driver_phone'),
+  'in transit: no PIN, contact via relay, no raw phone'
 );
 
 select throws_ok(
@@ -178,9 +179,16 @@ select throws_ok(
 reset role;
 insert into driver_presence_history (driver_id, session_id, ts, location, status) values
   ('1d200000-0000-4000-8000-000000000001', '1d700000-0000-4000-8000-000000000001',
-   now() - interval '2 hours', st_setsrid(st_makepoint(7.7, 11.06), 4326)::geography, 'at_park'),
+   now() - interval '62 minutes', st_setsrid(st_makepoint(7.7, 11.06), 4326)::geography, 'at_park'),
   ('1d200000-0000-4000-8000-000000000001', '1d700000-0000-4000-8000-000000000001',
-   now() - interval '1 hour', st_setsrid(st_makepoint(7.7, 11.06), 4326)::geography, 'roaming_available');
+   now() - interval '58 minutes', st_setsrid(st_makepoint(7.7, 11.06), 4326)::geography, 'roaming_available'),
+  ('1d200000-0000-4000-8000-000000000001', '1d700000-0000-4000-8000-000000000001',
+   now() - interval '55 minutes', st_setsrid(st_makepoint(7.7, 11.06), 4326)::geography, 'roaming_available'),
+  -- a 45-minute silence does not count
+  ('1d200000-0000-4000-8000-000000000001', '1d700000-0000-4000-8000-000000000001',
+   now() - interval '10 minutes', st_setsrid(st_makepoint(7.7, 11.06), 4326)::geography, 'roaming_available');
+update drivers set payout_bank_name = 'GTBank', payout_bank_last4 = '4821'
+where id = '1d200000-0000-4000-8000-000000000001';
 insert into admin_users (id, role) values ('1d300000-0000-4000-8000-000000000001', 'finance')
 on conflict (id) do nothing;
 insert into driver_payouts (driver_id, amount, currency, status, provider_reference, recipient_subaccount_code, initiated_by, confirmed_at)
@@ -191,13 +199,13 @@ select set_config('request.jwt.claim.sub', '1d200000-0000-4000-8000-000000000001
 set local role authenticated;
 
 select ok(
-  (select sum(value::int) from jsonb_each_text(driver_earnings_context(7)->'online_seconds_by_day')) between 3500 and 3700,
-  'online time derives from presence sessions'
+  (select sum(value::int) from jsonb_each_text(driver_earnings_context(7)->'online_seconds_by_day')) between 415 and 425,
+  'online time counts only ping gaps of 5 minutes or less'
 );
 select is(
   driver_earnings_context(7)->'latest_payout'->>'account_label',
-  'Paystack ••4821',
-  'latest payout carries the account label'
+  'GTBank ••4821',
+  'latest payout is labelled with the bank name and last 4'
 );
 select is(
   driver_earnings_context(7)->'latest_payout'->>'status',

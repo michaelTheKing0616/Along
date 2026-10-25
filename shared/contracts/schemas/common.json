@@ -326,10 +326,10 @@
     "TripHandoff": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["pin", "driver_phone"],
+      "required": ["pin", "contact_available"],
       "properties": {
         "pin": { "type": ["string", "null"], "pattern": "^[0-9]{4}$" },
-        "driver_phone": { "type": ["string", "null"] }
+        "contact_available": { "type": "boolean" }
       }
     },
     "EtaValue": {
