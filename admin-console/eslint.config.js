@@ -14,6 +14,6 @@ export default tseslint.config(
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', '.next/**', 'e2e/**', 'playwright-report/**', 'test-results/**', 'playwright.config.mjs'],
+    ignores: ['dist/**', 'node_modules/**', '.next/**', 'e2e/**', 'playwright-report/**', 'test-results/**', 'playwright.config.mjs', 'next-env.d.ts'],
   },
 );

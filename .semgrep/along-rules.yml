@@ -6,14 +6,20 @@ rules:
       use phone_suffix only for the sms log provider.
     severity: ERROR
     languages: [typescript, javascript]
-    patterns:
-      - pattern-either:
-          - pattern: |
-              console.log(..., { ..., otp: $OTP, ... }, ...)
-          - pattern: |
-              $LOG({ ..., otp: $OTP, ... })
-          - pattern: |
-              $LOG({ ..., OTP: $OTP, ... })
+    pattern-either:
+      - pattern: |
+          console.log(..., { ..., otp: $OTP, ... }, ...)
+      # $LOG must be a logger call; otherwise any object literal with an otp
+      # key (e.g. a zod schema) is flagged.
+      - patterns:
+          - pattern-either:
+              - pattern: |
+                  $LOG({ ..., otp: $OTP, ... })
+              - pattern: |
+                  $LOG({ ..., OTP: $OTP, ... })
+          - metavariable-regex:
+              metavariable: $LOG
+              regex: (?i)^(.*\.)?(log|info|warn|warning|error|debug|trace)$
     paths:
       exclude:
         - "**/*_test.ts"
@@ -59,36 +65,34 @@ rules:
         - "**/*_test.tsx"
         - "**/*_test.dart"
 
+  # Semgrep OSS has no SQL parser ("invalid language: sql"), so the SQL rules
+  # below use the generic engine with regexes that encode the same checks.
   - id: along-postgres-current-user-bypass
     message: >-
       Column-protection trigger bypass via current_user postgres/supabase_admin.
       Allowed only inside protect_* triggers for migrations/service paths — verify
       search_path and that no client role can reach this branch.
     severity: WARNING
-    languages: [sql]
-    pattern: |
-      current_user in ('postgres', 'supabase_admin')
+    languages: [generic]
+    pattern-regex: (?i)current_user\s+in\s*\(\s*'postgres'\s*,\s*'supabase_admin'\s*\)
     paths:
       include:
-        - "backend/db/migrations/**"
-        - "backend/db/policies/**"
+        - "/backend/db/migrations/**"
+        - "/backend/db/policies/**"
 
   - id: along-digital-enabled-migration-flip
     message: >-
       Do not set payments.digital_enabled to true in migrations (P4-E-02 / doc 11).
       Default stays false via config_default(); enable only via A-09 after counsel.
     severity: ERROR
-    languages: [sql]
+    languages: [generic]
     pattern-either:
-      - pattern: |
-          update app_config set value = 'true' ... payments.digital_enabled ...
-      - pattern: |
-          insert into app_config ... payments.digital_enabled ... 'true' ...
-      - pattern: |
-          config_default('payments.digital_enabled', 'true')
+      - pattern-regex: (?is)update\s+app_config\s+set\s+value\s*=\s*'true'[^;]*payments\.digital_enabled
+      - pattern-regex: (?is)insert\s+into\s+app_config\b[^;]*payments\.digital_enabled[^;]*'true'
+      - pattern-regex: (?i)config_default\(\s*'payments\.digital_enabled'\s*,\s*'true'
     paths:
       include:
-        - "backend/db/migrations/**"
+        - "/backend/db/migrations/**"
       exclude:
         - "**/*_test.sql"
         - "**/seed/**"
@@ -98,22 +102,9 @@ rules:
       Riders must not have SELECT on driver_presence (doc 12 T1 / TS-DISC-01).
       Tier-A disclosure uses ambient_vehicles() only.
     severity: ERROR
-    languages: [sql]
-    patterns:
-      - pattern: |
-          create policy $POLICY
-            on driver_presence for select ...
-            ...
-            $COND
-      - metavariable-pattern:
-          metavariable: $COND
-          patterns:
-            - pattern-either:
-                - pattern: |
-                    profiles.role = 'rider'
-                - pattern: |
-                    (select role from profiles ...) = 'rider'
+    languages: [generic]
+    pattern-regex: (?is)create\s+policy\s+\S+\s+on\s+(public\.)?driver_presence\s+for\s+select[^;]*(profiles\.role\s*=\s*'rider'|\(\s*select\s+role\s+from\s+profiles[^)]*\)\s*=\s*'rider')
     paths:
       include:
-        - "backend/db/policies/**"
-        - "backend/db/migrations/**"
+        - "/backend/db/policies/**"
+        - "/backend/db/migrations/**"
