@@ -185,3 +185,38 @@ class _AlongPressableState extends State<AlongPressable> {
     );
   }
 }
+
+/// A named move: one length and one curve. Trip screens pick moves by name
+/// instead of pairing durations and curves inline.
+class AlongMove {
+  const AlongMove(this.duration, this.curve);
+
+  final Duration duration;
+  final Curve curve;
+
+  /// Zero length when motion is off (reduced motion, gallery frames).
+  Duration of(BuildContext context) {
+    return AlongMotionPolicy.play(context) ? duration : Duration.zero;
+  }
+}
+
+/// The trip-screen motion set. See docs/art-direction.md, "Named moves".
+abstract final class AlongMoves {
+  /// A live number changes: ETA range, countdown, period total.
+  static const roll = AlongMove(AlongDurations.fade, AlongCurves.settle);
+
+  /// A notice or state block arrives in the sheet.
+  static const arrive = AlongMove(AlongDurations.sheet, AlongCurves.settle);
+
+  /// Selection inside a control: period switch, star fill.
+  static const select = AlongMove(AlongDurations.press, AlongCurves.fade);
+
+  /// Content swap between two states of one screen.
+  static const swap = AlongMove(AlongDurations.stagger, AlongCurves.settle);
+
+  /// A placeholder breathes while a value is worked out: the ETA skeleton.
+  static const breathe = AlongMove(AlongDurations.shimmer, AlongCurves.breath);
+
+  /// A tapped choice pops on a spring and settles: rating stars.
+  static const pop = AlongMove(AlongDurations.expand, Curves.elasticOut);
+}

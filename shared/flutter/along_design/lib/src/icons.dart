@@ -254,20 +254,38 @@ abstract final class AlongIcons {
   };
 }
 
-/// Duotone Phosphor glyph. Sizes snap to 20 or 24.
+/// Duotone Phosphor glyph. Small sizes snap to 20 or 24; hero sizes (28+)
+/// render as given. Glyphs never follow the text scaler.
 class AlongIcon extends StatelessWidget {
-  const AlongIcon(this.icon, {super.key, this.size = 24, this.color});
+  const AlongIcon(
+    this.icon, {
+    super.key,
+    this.size = 24,
+    this.color,
+    this.toneColor,
+    this.tone = true,
+  });
 
   final IconData icon;
   final double size;
   final Color? color;
 
+  /// Fill colour for the duotone layer. Defaults to [color] at 32%.
+  final Color? toneColor;
+
+  /// False draws the outline alone, for an unselected state.
+  final bool tone;
+
   @override
   Widget build(BuildContext context) {
-    final snapped = size <= 20 ? 20.0 : 24.0;
+    final snapped = size <= 20
+        ? 20.0
+        : size <= 24
+        ? 24.0
+        : size;
     final paint =
         color ?? IconTheme.of(context).color ?? const Color(0xFF111111);
-    final tone = AlongIcons.tone[icon.codePoint];
+    final glyph = tone ? AlongIcons.tone[icon.codePoint] : null;
     final style = TextStyle(
       fontFamily: icon.fontFamily,
       package: icon.fontPackage,
@@ -281,12 +299,19 @@ class AlongIcon extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          if (tone != null)
+          if (glyph != null)
             Text(
-              String.fromCharCode(tone),
-              style: style.copyWith(color: paint.withValues(alpha: 0.32)),
+              String.fromCharCode(glyph),
+              textScaler: TextScaler.noScaling,
+              style: style.copyWith(
+                color: toneColor ?? paint.withValues(alpha: 0.32),
+              ),
             ),
-          Text(String.fromCharCode(icon.codePoint), style: style),
+          Text(
+            String.fromCharCode(icon.codePoint),
+            textScaler: TextScaler.noScaling,
+            style: style,
+          ),
         ],
       ),
     );

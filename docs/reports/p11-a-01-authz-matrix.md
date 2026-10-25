@@ -1,6 +1,6 @@
 # P11-A-01 Authorization Matrix
 
-**Generated:** 2026-10-25T15:19:46Z (UTC) from live `pg_policies` on `postgresql://postgres:postgres@…`
+**Generated:** 2026-10-25T19:27:39Z (UTC) from live `pg_policies` on `postgresql://postgres:postgres@…`
 **Source of truth for expectations:** doc 02 §16 + per-table `-- RLS:` comments
 
 ## Legend
@@ -14,7 +14,7 @@
 ## Summary
 
 | DOC-STALE | 14 |
-| MATCH | 96 |
+| MATCH | 97 |
 
 ## Per-table matrix
 
@@ -124,6 +124,7 @@
 | public | trip_events | yes | 3 | trip_events | MATCH |  |
 | public | trip_extensions | yes | 3 | trip_extensions | MATCH |  |
 | public | trip_messages | yes | 1 | (not in §16 matrix) | MATCH |  |
+| public | trip_pins | yes | 2 | (not in §16 matrix) | MATCH |  |
 | public | trip_reconciliation_flags | yes | 2 | trip_reconciliation_flags | MATCH |  |
 | public | trip_shares | yes | 2 | trip_shares | MATCH |  |
 | public | trips | yes | 4 | trips | MATCH | city-scoped admin via admin_can_access_* (00079) |

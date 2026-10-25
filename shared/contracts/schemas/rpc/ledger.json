@@ -14,6 +14,36 @@
         "deposit_held": { "$ref": "../common.json#/$defs/Money" }
       }
     },
+    "DriverEarningsContextRequest": {
+      "type": "object",
+      "properties": {
+        "p_days": { "type": "integer", "minimum": 1, "maximum": 31 }
+      }
+    },
+    "DriverEarningsContextResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "online_seconds_by_day", "latest_payout"],
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "online_seconds_by_day": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "latest_payout": {
+          "type": ["object", "null"],
+          "required": ["status", "amount", "currency", "created_at", "confirmed_at", "account_label"],
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "confirmed", "failed"] },
+            "amount": { "type": "number" },
+            "currency": { "type": "string" },
+            "created_at": { "type": "string", "format": "date-time" },
+            "confirmed_at": { "type": ["string", "null"], "format": "date-time" },
+            "account_label": { "type": "string" }
+          }
+        }
+      }
+    },
     "DriverLedgerRequest": {
       "type": "object",
       "properties": {

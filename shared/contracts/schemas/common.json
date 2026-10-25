@@ -313,7 +313,23 @@
             { "$ref": "#/$defs/EtaPayload" },
             { "type": "null" }
           ]
+        },
+        "handoff": {
+          "description": "Rider-only while the trip is live: pickup PIN (accepted only) and the driver's phone for Call/Message.",
+          "oneOf": [
+            { "$ref": "#/$defs/TripHandoff" },
+            { "type": "null" }
+          ]
         }
+      }
+    },
+    "TripHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pin", "driver_phone"],
+      "properties": {
+        "pin": { "type": ["string", "null"], "pattern": "^[0-9]{4}$" },
+        "driver_phone": { "type": ["string", "null"] }
       }
     },
     "EtaValue": {

@@ -19,6 +19,7 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Map<String, dynamic>>? routeProfiles,
     List<Map<String, dynamic>>? placesSearchResults,
     this.driverBalanceResponse,
+    this.earningsContextResponse,
     List<Map<String, dynamic>>? driverLedgerEntries,
     List<Map<String, dynamic>>? tripExtensionRows,
     List<Map<String, dynamic>>? settlementRows,
@@ -64,6 +65,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
   }
 
+  final Map<String, dynamic>? earningsContextResponse;
   final String otpCode;
   List<Map<String, dynamic>> cities;
   List<Map<String, dynamic>> modes;
@@ -352,6 +354,10 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'trip_location_sample') {
       onTripLocationSample?.call(params ?? {});
       return {'boarded_auto': false};
+    }
+    if (fn == 'driver_earnings_context') {
+      return earningsContextResponse ??
+          {'online_seconds_by_day': <String, int>{}, 'latest_payout': null};
     }
     if (fn == 'driver_balance') {
       return driverBalanceResponse ?? defaultDriverBalanceResponse();

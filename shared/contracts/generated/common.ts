@@ -324,6 +324,19 @@ export interface TripView {
     }[];
     updated_at: string;
   } | null;
+  /**
+   * Rider-only while the trip is live: pickup PIN (accepted only) and the driver's phone for Call/Message.
+   */
+  handoff?: {
+    pin: string | null;
+    driver_phone: string | null;
+  } | null;
+}
+
+/** common.json → TripHandoff */
+export interface TripHandoff {
+  pin: string | null;
+  driver_phone: string | null;
 }
 
 /** common.json → EtaValue */

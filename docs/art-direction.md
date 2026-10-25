@@ -123,3 +123,18 @@ On every visual pass:
 6. Log each pass's top five in [visual-review.md](visual-review.md).
 
 A pass is done when all of these are true: one branded product, a clear focal point and next action on each screen, no clipping, overlap, or placeholder, designed loading, success, empty, and error states, and the essential actions still readable with reduced motion and large text.
+
+## Named moves
+
+Motion is named, not tuned per widget. `AlongMoves` in `motion.dart`:
+
+- **roll**: fade and settle when a figure changes (ETA window, totals).
+- **arrive**: sheet timing for content entering from below.
+- **select**: press timing for segmented controls and ratings.
+- **swap**: stagger and settle when a list is replaced (period switch).
+- **breathe**: slow opacity pulse on skeletons while the ETA is worked out.
+- **pop**: elastic scale-in on the star that was just rated.
+
+`AlongMove.of(context)` returns zero duration when reduced motion is on or in
+tests. Haptics pair with moves: tick on a rating star, selection on a period
+switch, confirm on SOS and when the driver arrives, success on Done.

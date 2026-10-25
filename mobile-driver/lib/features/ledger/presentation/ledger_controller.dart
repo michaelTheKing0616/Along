@@ -26,8 +26,7 @@ class DriverLedgerSnapshot {
   final bool isLoading;
 
   bool get isLedgerBlocked =>
-      standing == 'matching_paused' ||
-      balance.compareTo(blockThreshold) <= 0;
+      standing == 'matching_paused' || balance.compareTo(blockThreshold) <= 0;
 
   DriverLedgerSnapshot copyWith({
     core.Money? balance,
@@ -52,18 +51,18 @@ class DriverLedgerSnapshot {
   }
 
   static DriverLedgerSnapshot initial() => DriverLedgerSnapshot(
-        balance: core.Money.zero(),
-        blockThreshold: core.Money.parse('-5000.00', currency: 'NGN'),
-        standing: 'good_standing',
-        standingLabel: core.standingLabel('good_standing'),
-        cardState: BalanceCardState.good,
-      );
+    balance: core.Money.zero(),
+    blockThreshold: core.Money.parse('-5000.00', currency: 'NGN'),
+    standing: 'good_standing',
+    standingLabel: core.standingLabel('good_standing'),
+    cardState: BalanceCardState.good,
+  );
 }
 
 final driverLedgerControllerProvider =
     NotifierProvider<DriverLedgerController, DriverLedgerSnapshot>(
-  DriverLedgerController.new,
-);
+      DriverLedgerController.new,
+    );
 
 class DriverLedgerController extends Notifier<DriverLedgerSnapshot> {
   @override
@@ -75,8 +74,7 @@ class DriverLedgerController extends Notifier<DriverLedgerSnapshot> {
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true);
     try {
-      final response =
-          await ref.read(ledgerRepositoryProvider).driverBalance();
+      final response = await ref.read(ledgerRepositoryProvider).driverBalance();
       final balance = DomainMappers.moneyFromDto(response.balance);
       final threshold = DomainMappers.moneyFromDto(response.block_threshold);
       final standing = response.standing;
@@ -114,15 +112,20 @@ class DriverLedgerController extends Notifier<DriverLedgerSnapshot> {
 
 final earningsLedgerPageProvider =
     FutureProvider.autoDispose<core.DriverLedgerPage>((ref) async {
-  return ref.read(ledgerRepositoryProvider).driverLedger(limit: 50);
-});
+      return ref.read(ledgerRepositoryProvider).driverLedger(limit: 50);
+    });
 
 final earningsCashTripsProvider =
     FutureProvider.autoDispose<List<TripCashSummary>>((ref) async {
-  return ref.read(ledgerRepositoryProvider).todaysCashTrips();
-});
+      return ref.read(ledgerRepositoryProvider).recentCashTrips(days: 7);
+    });
+
+final earningsContextProvider =
+    FutureProvider.autoDispose<DriverEarningsContext>((ref) async {
+      return ref.read(ledgerRepositoryProvider).earningsContext(days: 7);
+    });
 
 final standingHistoryProvider =
     FutureProvider.autoDispose<List<StandingTransitionEntry>>((ref) async {
-  return ref.read(ledgerRepositoryProvider).standingHistory();
-});
+      return ref.read(ledgerRepositoryProvider).standingHistory();
+    });

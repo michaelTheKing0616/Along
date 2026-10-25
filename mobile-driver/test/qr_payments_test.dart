@@ -30,10 +30,7 @@ const _testConfig = AppConfig(
   batteryGuardPercent: 15,
 );
 
-Widget _harness({
-  required ProviderContainer container,
-  required Widget child,
-}) {
+Widget _harness({required ProviderContainer container, required Widget child}) {
   return UncontrolledProviderScope(
     container: container,
     child: MaterialApp(
@@ -109,7 +106,9 @@ void main() {
       expect(fake.paymentRequestsByTrip['trip-in-transit-1'], isNotNull);
     });
 
-    testWidgets('D-26 paid state within 2s after Broadcast payment_received', (tester) async {
+    testWidgets('D-26 paid state within 2s after Broadcast payment_received', (
+      tester,
+    ) async {
       final fake = FakeAlongSupabase(digitalPaymentsEnabled: true);
       final channel = FakeDriverChannel();
       final container = _qrContainer(fake: fake, channel: channel);
@@ -139,7 +138,9 @@ void main() {
       expect(find.textContaining('450'), findsWidgets);
     });
 
-    testWidgets('D-25 static QR renders with driver code and share stub', (tester) async {
+    testWidgets('D-25 static QR renders with driver code and share stub', (
+      tester,
+    ) async {
       final fake = FakeAlongSupabase(
         digitalPaymentsEnabled: true,
         driverCode: 'ABC12345',
@@ -169,7 +170,9 @@ void main() {
       expect(share.lastPayloadUrl, contains('ABC12345'));
     });
 
-    testWidgets('D-25 verify sticker confirms matching resolve', (tester) async {
+    testWidgets('D-25 verify sticker confirms matching resolve', (
+      tester,
+    ) async {
       final fake = FakeAlongSupabase(
         digitalPaymentsEnabled: true,
         driverCode: 'ABC12345',
@@ -188,16 +191,15 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 
-      final verifyFuture = container.read(myQrControllerProvider.notifier).verifySticker(scanner);
+      final verifyFuture = container
+          .read(myQrControllerProvider.notifier)
+          .verifySticker(scanner);
       await tester.pump();
       scanner.emit('along://p/ABC12345');
       await verifyFuture;
       await tester.pump();
 
-      expect(
-        container.read(myQrControllerProvider).verifyMessage,
-        'match',
-      );
+      expect(container.read(myQrControllerProvider).verifyMessage, 'match');
     });
 
     testWidgets('D-19 shows digital payments received section', (tester) async {
@@ -224,16 +226,60 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('earnings_digital_list')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.byKey(const Key('earnings_digital_list')), findsOneWidget);
       expect(find.textContaining('416'), findsWidgets);
     });
 
-    testWidgets('D-08 payment toast on unattributed payment_received', (tester) async {
+    testWidgets('earnings tab shows the summary from real payments', (
+      tester,
+    ) async {
+      final fake = FakeAlongSupabase(
+        digitalPayments: [
+          {
+            'id': 'pay-now',
+            'amount': 450,
+            'driver_amount': 416,
+            'commission_amount': 34,
+            'currency': 'NGN',
+            'source': 'qr_dynamic',
+            'status': 'succeeded',
+            'created_at': DateTime.now().toUtc().toIso8601String(),
+            'driver_id': 'test-driver-id',
+          },
+        ],
+      );
+      final container = _qrContainer(fake: fake, channel: FakeDriverChannel());
+
+      await tester.pumpWidget(
+        _harness(container: container, child: const EarningsScreen()),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byKey(const Key('earnings_summary')), findsOneWidget);
+      expect(find.byKey(const Key('earnings_bars')), findsOneWidget);
+      expect(find.text('QR payment'), findsOneWidget);
+      expect(find.byKey(const Key('earnings_total')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('earnings_week')));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('QR payment'), findsOneWidget);
+    });
+
+    testWidgets('D-08 payment toast on unattributed payment_received', (
+      tester,
+    ) async {
       final fake = FakeAlongSupabase();
       final channel = FakeDriverChannel();
       final container = _qrContainer(fake: fake, channel: channel);
 
-      await container.read(paymentToastProvider.notifier).start('test-driver-id');
+      await container
+          .read(paymentToastProvider.notifier)
+          .start('test-driver-id');
 
       channel.emitPaymentReceived(
         paymentId: 'pay-unattributed',
@@ -328,7 +374,10 @@ void main() {
       expect(find.textContaining('Paid digitally'), findsOneWidget);
       expect(find.textContaining('416'), findsWidgets);
       expect(find.textContaining('already deducted'), findsOneWidget);
-      expect(find.byKey(const Key('trip_complete_digital_done')), findsOneWidget);
+      expect(
+        find.byKey(const Key('trip_complete_digital_done')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('trip_complete_yes')), findsNothing);
       expect(find.byKey(const Key('trip_complete_different')), findsNothing);
       expect(find.text('Confirm cash received?'), findsNothing);
