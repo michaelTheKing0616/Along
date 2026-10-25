@@ -3,6 +3,7 @@ import 'package:along_core/src/enums/trip_status.dart';
 import 'package:along_core/src/models/fare_quote.dart';
 import 'package:along_core/src/models/na_me_pairing.dart';
 import 'package:along_core/src/models/trip_eta.dart';
+import 'package:along_core/src/models/trip_handoff.dart';
 import 'package:along_core/src/models/trip_extension_proposal.dart';
 import 'package:along_core/src/models/trip_live.dart';
 import 'package:along_core/src/models/trip_load.dart';
@@ -53,6 +54,7 @@ class TripSummary {
     this.paymentMethod,
     this.approachBand,
     this.wait,
+    this.handoff,
   });
 
   final String tripId;
@@ -81,6 +83,9 @@ class TripSummary {
   final String? paymentMethod;
   final TripApproachBand? approachBand;
   final TripWaitInfo? wait;
+
+  /// Rider-only PIN and driver phone while the trip is live.
+  final TripHandoff? handoff;
 
   bool get isActive => switch (status) {
         TripStatus.requested ||

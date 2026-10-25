@@ -54,10 +54,7 @@ class LedgerRepository {
     try {
       final raw = await _gateway.invokeFunction(
         'settlement/initiate',
-        body: {
-          'amount': amount.amount.toDouble(),
-          'channel': channel,
-        },
+        body: {'amount': amount.amount.toDouble(), 'channel': channel},
       );
       final data = raw['data'] as Map<String, dynamic>? ?? raw;
       return SettlementInitiateResult.fromJson(data);
@@ -115,7 +112,9 @@ class LedgerRepository {
     }
   }
 
-  Future<SettlementStatusSnapshot?> settlementStatus(String settlementId) async {
+  Future<SettlementStatusSnapshot?> settlementStatus(
+    String settlementId,
+  ) async {
     try {
       final rows = await _gateway.selectRows(
         'settlements',
@@ -136,12 +135,51 @@ class LedgerRepository {
       if (location != null) {
         params['p_location'] = {'lat': location.lat, 'lng': location.lng};
       }
-      final raw = await _gateway.rpc('nearby_settlement_agents', params: params);
+      final raw = await _gateway.rpc(
+        'nearby_settlement_agents',
+        params: params,
+      );
       final rows = raw as List<dynamic>? ?? [];
       return rows
           .whereType<Map<String, dynamic>>()
           .map(NearbySettlementAgent.fromJson)
           .toList(growable: false);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Completed cash trips since Lagos midnight [days] - 1 days ago (RLS: own trips).
+  Future<List<TripCashSummary>> recentCashTrips({
+    int days = 7,
+    DateTime? now,
+  }) async {
+    try {
+      final rows = await _gateway.selectRows('trips');
+      final start = lagosDayStart(now ?? DateTime.now(), daysBack: days - 1);
+      return rows
+          .where((row) {
+            if (row['status'] != 'completed') return false;
+            if (row['payment_method'] == 'digital') return false;
+            final ended = row['ended_at'] as String?;
+            if (ended == null) return false;
+            return !DateTime.parse(ended).toUtc().isBefore(start);
+          })
+          .map(TripCashSummary.fromTripRow)
+          .toList(growable: false);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Online time per Lagos day and the latest payout record.
+  Future<DriverEarningsContext> earningsContext({int days = 7}) async {
+    try {
+      final raw = await _gateway.rpc(
+        'driver_earnings_context',
+        params: {'p_days': days},
+      );
+      return DriverEarningsContext.fromJson(raw);
     } catch (e) {
       throw mapSupabaseError(e);
     }
@@ -237,6 +275,83 @@ class TripCashSummary {
       fare: Money.parse(fareAmount.toString(), currency: 'NGN'),
       completedAt: DateTime.parse(row['ended_at'] as String),
       destinationLabel: row['destination_label'] as String? ?? 'Trip',
+    );
+  }
+}
+
+/// UTC instant of Lagos (UTC+1, no DST) midnight, [daysBack] days before [now].
+DateTime lagosDayStart(DateTime now, {int daysBack = 0}) {
+  final lagos = now.toUtc().add(const Duration(hours: 1));
+  return DateTime.utc(
+    lagos.year,
+    lagos.month,
+    lagos.day - daysBack,
+  ).subtract(const Duration(hours: 1));
+}
+
+enum DriverPayoutStatus { pending, confirmed, failed }
+
+class DriverPayoutRecord {
+  const DriverPayoutRecord({
+    required this.status,
+    required this.amount,
+    required this.createdAt,
+    required this.accountLabel,
+    this.confirmedAt,
+  });
+
+  final DriverPayoutStatus status;
+  final Money amount;
+  final DateTime createdAt;
+  final DateTime? confirmedAt;
+  final String accountLabel;
+}
+
+class DriverEarningsContext {
+  const DriverEarningsContext({
+    this.onlineSecondsByDay = const {},
+    this.latestPayout,
+  });
+
+  /// Keyed by Lagos calendar day, `yyyy-mm-dd`.
+  final Map<String, int> onlineSecondsByDay;
+  final DriverPayoutRecord? latestPayout;
+
+  factory DriverEarningsContext.fromJson(Object? raw) {
+    if (raw is! Map) return const DriverEarningsContext();
+    final online = <String, int>{};
+    final byDay = raw['online_seconds_by_day'];
+    if (byDay is Map) {
+      for (final e in byDay.entries) {
+        final v = e.value;
+        if (v is num) online['${e.key}'] = v.round();
+      }
+    }
+    DriverPayoutRecord? payout;
+    final p = raw['latest_payout'];
+    if (p is Map) {
+      final status = switch (p['status']) {
+        'confirmed' => DriverPayoutStatus.confirmed,
+        'failed' => DriverPayoutStatus.failed,
+        _ => DriverPayoutStatus.pending,
+      };
+      final created = DateTime.tryParse('${p['created_at']}');
+      if (created != null) {
+        payout = DriverPayoutRecord(
+          status: status,
+          amount: Money.parse(
+            '${p['amount'] ?? 0}',
+            currency: '${p['currency'] ?? 'NGN'}',
+          ),
+          createdAt: created,
+          confirmedAt: DateTime.tryParse('${p['confirmed_at']}'),
+          accountLabel: '${p['account_label'] ?? ''}',
+        );
+      }
+    }
+    return DriverEarningsContext(
+      onlineSecondsByDay: online,
+      latestPayout: payout,
     );
   }
 }

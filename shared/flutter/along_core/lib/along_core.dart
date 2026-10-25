@@ -44,6 +44,7 @@ export 'src/models/trip_load.dart';
 export 'src/models/trip_party.dart';
 export 'src/models/trip_stop.dart';
 export 'src/models/trip_eta.dart';
+export 'src/models/trip_handoff.dart';
 export 'src/models/trip_summary.dart';
 export 'src/models/trip_wait.dart';
 export 'src/payments/qr_payload_parser.dart';
