@@ -5684,6 +5684,7 @@ export type Database = {
           client_ref: string
           created_at: string
           id: string
+          read_at: string | null
           trip_id: string
         }
         Insert: {
@@ -5693,6 +5694,7 @@ export type Database = {
           client_ref: string
           created_at?: string
           id?: string
+          read_at?: string | null
           trip_id: string
         }
         Update: {
@@ -5702,6 +5704,7 @@ export type Database = {
           client_ref?: string
           created_at?: string
           id?: string
+          read_at?: string | null
           trip_id?: string
         }
         Relationships: [
@@ -7042,6 +7045,10 @@ export type Database = {
         Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
         Returns: unknown
       }
+      _trip_chat_open: {
+        Args: { v_trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: boolean
+      }
       _trip_pin_cleared: { Args: { p_trip_id: string }; Returns: boolean }
       _trip_planned_in_vehicle_s: {
         Args: { p_trip_id: string }
@@ -7982,6 +7989,7 @@ export type Database = {
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_boarded: { Args: { p_trip_id: string }; Returns: Json }
       mark_no_show: { Args: { p_trip_id: string }; Returns: Json }
+      mark_trip_messages_read: { Args: { p_trip_id: string }; Returns: number }
       my_day_setup: { Args: never; Returns: Json }
       my_rest_status: { Args: never; Returns: Json }
       my_route_profiles: { Args: never; Returns: Json }
@@ -8239,6 +8247,10 @@ export type Database = {
       }
       realtime_negotiation_party: {
         Args: { p_topic: string; p_user_id: string }
+        Returns: boolean
+      }
+      realtime_trip_chat_party: {
+        Args: { p_topic: string; p_uid: string }
         Returns: boolean
       }
       realtime_trip_party: {
