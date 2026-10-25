@@ -94,7 +94,7 @@ class EarningsSummaryData {
         DriverPayoutStatus.pending => AlongPayout(
           state: AlongPayoutState.scheduled,
           amount: _naira(record.amount),
-          when: 'started ${day(created)}',
+          when: 'sent ${weekdays[created.weekday - 1]}',
           account: record.accountLabel,
         ),
         DriverPayoutStatus.failed => AlongPayout(
