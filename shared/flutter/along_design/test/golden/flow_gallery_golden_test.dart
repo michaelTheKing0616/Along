@@ -141,6 +141,29 @@ void main() {
       pin: '1593',
       pickupPoint: 'Wuse Market, Gate 2',
     ),
+    'trip_handoff_unread': () => AlongPickupHandoffScreen(
+      onCall: () {},
+      onMessage: () {},
+      unread: 2,
+      secondsAway: 95,
+      driverName: 'Musa',
+      plate: 'ABJ 482 KE',
+      car: 'Silver Toyota Corolla',
+      pin: '4827',
+      pickupPoint: 'Wuse Market, Gate 2',
+    ),
+    'trip_chat': () => _chatStage(_chatLines),
+    'trip_chat_empty': () => _chatStage(const []),
+    'trip_chat_failed': () => _chatStage([
+      ..._chatLines.take(2),
+      AlongChatLine(
+        id: 'f1',
+        body: 'Running 2 min late',
+        mine: true,
+        at: DateTime.utc(2026, 10, 25, 18, 4),
+        status: AlongChatStatus.failed,
+      ),
+    ]),
     'trip_handoff_here': () => AlongPickupHandoffScreen(
       onCall: () {},
       onMessage: () {},
@@ -214,6 +237,8 @@ void main() {
     'trip_earnings_week_failed',
     'trip_pin',
     'trip_pin_locked',
+    'trip_handoff_unread',
+    'trip_chat',
   };
   for (final stage in tripStages.entries) {
     final frames = [
@@ -564,3 +589,56 @@ const _ratingTags = {
   'polite': 'Polite',
   'on_time': 'On time',
 };
+
+final _chatLines = [
+  AlongChatLine(
+    id: 'a',
+    body: "I'm at the pickup",
+    mine: true,
+    at: DateTime.utc(2026, 10, 25, 18, 1),
+    status: AlongChatStatus.read,
+  ),
+  AlongChatLine(
+    id: 'b',
+    body: 'Arriving in 2 min',
+    mine: false,
+    at: DateTime.utc(2026, 10, 25, 18, 2),
+  ),
+  AlongChatLine(
+    id: 'c',
+    body: 'I have a blue bag, standing by the pharmacy',
+    mine: true,
+    at: DateTime.utc(2026, 10, 25, 18, 3),
+    status: AlongChatStatus.sent,
+  ),
+];
+
+/// The chat as it sits over the live trip: a 32-radius sheet on a scrim.
+Widget _chatStage(List<AlongChatLine> lines) {
+  return Builder(
+    builder: (context) {
+      final p = AlongPalette.of(context);
+      return Scaffold(
+        backgroundColor: Color.alphaBlend(p.ink.withValues(alpha: 0.32), p.bg),
+        body: Align(
+          alignment: Alignment.bottomCenter,
+          child: DecoratedBox(
+            decoration: AlongCraft.fill(p.bg, corner: 32, top: true),
+            child: AlongTripChatSheet(
+              otherName: 'Musa',
+              lines: lines,
+              quickReplies: const [
+                "I'm at the pickup",
+                'Running 2 min late',
+                'Where are you?',
+                'Okay, thanks',
+              ],
+              onSend: (_) {},
+              onRetry: (_) {},
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}

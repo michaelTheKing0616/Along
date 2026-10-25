@@ -1027,6 +1027,7 @@ class AlongPickupHandoffScreen extends StatelessWidget {
     this.onCall,
     this.onMessage,
     this.onNewPin,
+    this.unread = 0,
   });
 
   final int secondsAway;
@@ -1038,6 +1039,7 @@ class AlongPickupHandoffScreen extends StatelessWidget {
   final VoidCallback? onCall;
   final VoidCallback? onMessage;
   final VoidCallback? onNewPin;
+  final int unread;
 
   @override
   Widget build(BuildContext context) {
@@ -1063,6 +1065,7 @@ class AlongPickupHandoffScreen extends StatelessWidget {
         onCall: onCall,
         onMessage: onMessage,
         onNewPin: onNewPin,
+        unread: unread,
       ),
     );
   }
@@ -1082,6 +1085,7 @@ class AlongHandoffPanel extends StatefulWidget {
     this.onCall,
     this.onMessage,
     this.onNewPin,
+    this.unread = 0,
   });
 
   /// Seconds until the driver reaches the pickup point. 0 means arrived.
@@ -1103,6 +1107,9 @@ class AlongHandoffPanel extends StatefulWidget {
   /// Rider asks for a fresh PIN (for example after the driver locked it).
   /// Null hides the action.
   final VoidCallback? onNewPin;
+
+  /// Unread chat lines; badges the Message button.
+  final int unread;
 
   @override
   State<AlongHandoffPanel> createState() => _AlongHandoffPanelState();
@@ -1165,11 +1172,14 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
           onPressed: widget.onCall,
         ),
       if (widget.onMessage != null)
-        AlongButton(
-          key: const Key('handoff_message'),
-          label: 'Message',
-          variant: AlongButtonVariant.secondary,
-          onPressed: widget.onMessage,
+        _Badged(
+          count: widget.unread,
+          child: AlongButton(
+            key: const Key('handoff_message'),
+            label: 'Message',
+            variant: AlongButtonVariant.secondary,
+            onPressed: widget.onMessage,
+          ),
         ),
     ];
     final pin = widget.pin;
@@ -2408,6 +2418,51 @@ class _TripRow extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Unread count on a button's top-right corner; pops in on [AlongMoves.pop].
+class _Badged extends StatelessWidget {
+  const _Badged({required this.count, required this.child});
+
+  final int count;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        Positioned(
+          top: -6,
+          right: -2,
+          child: AnimatedScale(
+            scale: count > 0 ? 1 : 0,
+            duration: AlongMoves.pop.of(context),
+            curve: AlongMoves.pop.curve,
+            child: Container(
+              key: const Key('handoff_message_unread'),
+              constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              alignment: Alignment.center,
+              decoration: AlongCraft.fill(
+                p.danger,
+                corner: 8,
+                side: BorderSide(color: p.bg, width: 2),
+              ),
+              child: Text(
+                count > 9 ? '9+' : '$count',
+                textScaler: TextScaler.noScaling,
+                style: AlongType.caption(p)
+                    .copyWith(color: p.dangerOn, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
