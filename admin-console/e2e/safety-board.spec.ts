@@ -22,9 +22,11 @@ async function sosStatus(sosId: string): Promise<string | null> {
 }
 
 async function insertLiveSos(): Promise<void> {
-  sqlScalar(`delete from sos_alerts where id = '${LIVE_SOS_ID}'`);
+  // One psql -c runs as one transaction, so the board's reload on the delete
+  // event already sees the inserted row.
   sqlScalar(
-    `insert into sos_alerts (id, trip_id, journey_id, raised_by, raised_role, location, status, created_at)
+    `delete from sos_alerts where id = '${LIVE_SOS_ID}';
+     insert into sos_alerts (id, trip_id, journey_id, raised_by, raised_role, location, status, created_at)
      values ('${LIVE_SOS_ID}', null, 'c5300000-0000-4000-8000-000000000001',
              'c5000000-0000-4000-8000-000000000001', 'rider',
              'SRID=4326;POINT(7.597 9.014)', 'open', now())`
@@ -33,6 +35,8 @@ async function insertLiveSos(): Promise<void> {
 
 test.describe('Safety board (A-12)', () => {
   test('simulated SOS visible on board; ack updates status', async ({ page }) => {
+    // Idempotent across retries: the ack below flips the seeded alert.
+    sqlScalar(`update sos_alerts set status = 'open', acknowledged_at = null, acknowledged_by = null where id = '${OPEN_SOS_ID}'`);
     await signInAs(page, 'e2e-safety@along.local', {
       landing: `/${E2E_CITY}/safety`,
     });
@@ -45,6 +49,10 @@ test.describe('Safety board (A-12)', () => {
     await expect(seededRow).toBeVisible();
     await expect(seededRow.getByText('open')).toBeVisible();
 
+    // Insert only once the board is listening, or the change event is missed.
+    await expect(page.getByTestId('safety-board')).toHaveAttribute('data-live-status', 'listening', {
+      timeout: 15_000,
+    });
     await insertLiveSos();
     await expect(page.getByTestId(`safety-sos-row-${LIVE_SOS_ID}`)).toBeVisible({
       timeout: 15_000,
@@ -57,6 +65,6 @@ test.describe('Safety board (A-12)', () => {
       .poll(async () => sosStatus(OPEN_SOS_ID), { timeout: 10_000 })
       .toBe('acknowledged');
 
-    await expect(seededRow.getByText('acknowledged')).toBeVisible();
+    await expect(seededRow.locator('.badge-acknowledged')).toBeVisible();
   });
 });
