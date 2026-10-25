@@ -5,6 +5,7 @@ import 'package:along_design/along_design.dart' hide TransportMode;
 import 'package:along_design/along_design.dart' as design show TransportMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 import 'package:mobile_rider/features/live_trip/domain/live_trip_config.dart';
@@ -34,6 +35,32 @@ class ActiveTripScreen extends ConsumerStatefulWidget {
 }
 
 class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
+  /// PIN minted by "Get a new PIN" until the trip view catches up.
+  String? _freshPin;
+
+  Future<void> _newPin(String tripId) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final r = await ref
+          .read(tripsRepositoryProvider)
+          .regenerateTripPin(tripId);
+      if (!mounted) return;
+      if (r.pin.isNotEmpty) setState(() => _freshPin = r.pin);
+      AlongHaptics.success(context);
+      if (!r.regenerated) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('You just got a new PIN. Try again in a moment.'),
+          ),
+        );
+      }
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text("Couldn't get a new PIN. Try again.")),
+      );
+    }
+  }
+
   LiveTripArgs get _args =>
       LiveTripArgs(tripId: widget.trip.tripId, initialTrip: widget.trip);
 
@@ -243,217 +270,233 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                 corner: AlongRadius.sheet.x,
                 top: true,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (prompt != GuardianPrompt.none &&
-                      prompt != GuardianPrompt.missed)
-                    GuardianCheckCard(
-                      title: l10n.guardianTitle,
-                      body: switch (prompt) {
-                        GuardianPrompt.offRoute => l10n.guardianOffRouteBody,
-                        GuardianPrompt.longStop => l10n.guardianLongStopBody,
-                        GuardianPrompt.checkIn => l10n.guardianCheckInBody,
-                        GuardianPrompt.missed => l10n.guardianMissedBody,
-                        GuardianPrompt.none => '',
-                      },
-                      confirmLabel: l10n.guardianOk,
-                      onConfirm: () => setState(() {
-                        _lastConfirm = DateTime.now();
-                        _promptSince = null;
-                        _escalated = false;
-                      }),
-                    ),
-                  if (prefs.safeWord.trim().isNotEmpty)
-                    TextField(
-                      key: const Key('active_trip_safe_word'),
-                      controller: _safeWord,
-                      decoration: InputDecoration(
-                        hintText: l10n.guardianSafeWordHint,
-                      ),
-                      onSubmitted: (value) {
-                        if (!safeWordMatches(prefs.safeWord, value)) return;
-                        _safeWord.clear();
-                        _raiseSilent(liveTrip);
-                      },
-                    ),
-                  GestureDetector(
-                    onTap: () {
-                      if (!prefs.enabled) return;
-                      if (_silentTaps.register(DateTime.now())) {
-                        _raiseSilent(liveTrip);
-                      }
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        KeyedSubtree(
-                          key: const Key('active_trip_eta'),
-                          child: pickupSeconds != null
-                              ? AlongHandoffPanel(
-                                  key: const Key('active_trip_handoff'),
-                                  secondsAway: pickupSeconds,
-                                  driverName: liveTrip.driver.displayName,
-                                  plate: liveTrip.vehicle.plateNumber,
-                                  car: car,
-                                  pickupPoint: liveTrip.board.name,
-                                  pin: liveTrip.handoff?.pin,
-                                  onCall:
-                                      liveTrip.handoff?.contactAvailable == true
-                                      ? () => contactDriver(
-                                          context,
-                                          ref,
-                                          tripId: liveTrip.tripId,
-                                          sms: false,
-                                        )
-                                      : null,
-                                  onMessage:
-                                      liveTrip.handoff?.contactAvailable == true
-                                      ? () => contactDriver(
-                                          context,
-                                          ref,
-                                          tripId: liveTrip.tripId,
-                                          sms: true,
-                                        )
-                                      : null,
-                                )
-                              : AlongLiveEtaPanel(
-                                  eta: liveTrip.eta,
-                                  previous: _prevEta,
-                                  destination: liveTrip.alight.name,
-                                  failed: state.livePaused,
-                                ),
-                        ),
-                        if (pickupSeconds == null)
-                          for (final stop
-                              in liveTrip.eta?.stops ?? const <TripEtaStop>[])
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: AlongSpace.s4,
-                              ),
-                              child: Text(
-                                '${stop.name} · ${stop.label}',
-                                key: Key('active_trip_stop_${stop.id}'),
-                                style: AlongText.caption,
-                              ),
-                            ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AlongSpace.s12),
-                  LegTimeline(
-                    key: const Key('active_trip_leg_timeline'),
-                    variant: LegTimelineVariant.compact,
-                    legs: [
-                      LegTimelineLeg(
-                        mode: _designMode(liveTrip.modeCode),
-                        boardLabel: liveTrip.board.name,
-                        alightLabel: liveTrip.alight.name,
-                        fareNaira: fare.minorUnits ~/ 100,
-                        state: LegTimelineLegState.current,
-                      ),
-                    ],
-                  ),
-                  if (pickupSeconds == null) ...[
-                    const SizedBox(height: AlongSpace.s12),
-                    Text(
-                      '${liveTrip.driver.displayName} · ${liveTrip.vehicle.plateNumber}',
-                      style: AlongText.body,
-                    ),
-                  ],
-                  if (showNaMe) ...[
-                    const SizedBox(height: AlongSpace.s8),
-                    Row(
-                      children: [
-                        NaMeChip(colour: colour, shape: shape),
-                        const SizedBox(width: AlongSpace.s8),
-                        HoldButton(
-                          key: const Key('active_trip_na_me'),
-                          type: HoldButtonType.naMe,
-                          onFired: () => context.push(
-                            AppRoutes.naMe,
-                            extra: NaMeRouteArgs(tripId: liveTrip.tripId),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  if (digitalEnabled) ...[
-                    const SizedBox(height: AlongSpace.s12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AlongButton(
-                            key: const Key('active_trip_scan'),
-                            label: l10n.activeTripScan,
-                            variant: AlongButtonVariant.secondary,
-                            onPressed: () => context.push(AppRoutes.scanToPay),
-                          ),
-                        ),
-                        const SizedBox(width: AlongSpace.s8),
-                        Expanded(
-                          child: AlongButton(
-                            key: const Key('active_trip_pay'),
-                            label: l10n.payDriverCta(
-                              formatAppMoney(ref, liveTrip.totalFare),
-                            ),
-                            variant: AlongButtonVariant.yellow,
-                            onPressed: () => PayDriverSheet.show(
-                              context,
-                              trip: liveTrip,
-                              autoInitiate: true,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  const SizedBox(height: AlongSpace.s12),
-                  Row(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.72,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: AlongButton(
-                          key: const Key('active_trip_extend'),
-                          label: l10n.activeTripExtend,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed:
-                              liveTrip.status == TripStatus.inTransit ||
-                                  liveTrip.status == TripStatus.boarded
-                              ? () => ExtendTripSheet.show(
+                      if (prompt != GuardianPrompt.none &&
+                          prompt != GuardianPrompt.missed)
+                        GuardianCheckCard(
+                          title: l10n.guardianTitle,
+                          body: switch (prompt) {
+                            GuardianPrompt.offRoute =>
+                              l10n.guardianOffRouteBody,
+                            GuardianPrompt.longStop =>
+                              l10n.guardianLongStopBody,
+                            GuardianPrompt.checkIn => l10n.guardianCheckInBody,
+                            GuardianPrompt.missed => l10n.guardianMissedBody,
+                            GuardianPrompt.none => '',
+                          },
+                          confirmLabel: l10n.guardianOk,
+                          onConfirm: () => setState(() {
+                            _lastConfirm = DateTime.now();
+                            _promptSince = null;
+                            _escalated = false;
+                          }),
+                        ),
+                      if (prefs.safeWord.trim().isNotEmpty)
+                        TextField(
+                          key: const Key('active_trip_safe_word'),
+                          controller: _safeWord,
+                          decoration: InputDecoration(
+                            hintText: l10n.guardianSafeWordHint,
+                          ),
+                          onSubmitted: (value) {
+                            if (!safeWordMatches(prefs.safeWord, value)) return;
+                            _safeWord.clear();
+                            _raiseSilent(liveTrip);
+                          },
+                        ),
+                      GestureDetector(
+                        onTap: () {
+                          if (!prefs.enabled) return;
+                          if (_silentTaps.register(DateTime.now())) {
+                            _raiseSilent(liveTrip);
+                          }
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            KeyedSubtree(
+                              key: const Key('active_trip_eta'),
+                              child: pickupSeconds != null
+                                  ? AlongHandoffPanel(
+                                      key: const Key('active_trip_handoff'),
+                                      secondsAway: pickupSeconds,
+                                      driverName: liveTrip.driver.displayName,
+                                      plate: liveTrip.vehicle.plateNumber,
+                                      car: car,
+                                      pickupPoint: liveTrip.board.name,
+                                      pin: _freshPin ?? liveTrip.handoff?.pin,
+                                      onNewPin: liveTrip.handoff?.pin == null
+                                          ? null
+                                          : () => _newPin(liveTrip.tripId),
+                                      onCall:
+                                          liveTrip.handoff?.contactAvailable ==
+                                              true
+                                          ? () => contactDriver(
+                                              context,
+                                              ref,
+                                              tripId: liveTrip.tripId,
+                                              sms: false,
+                                            )
+                                          : null,
+                                      onMessage:
+                                          liveTrip.handoff?.contactAvailable ==
+                                              true
+                                          ? () => contactDriver(
+                                              context,
+                                              ref,
+                                              tripId: liveTrip.tripId,
+                                              sms: true,
+                                            )
+                                          : null,
+                                    )
+                                  : AlongLiveEtaPanel(
+                                      eta: liveTrip.eta,
+                                      previous: _prevEta,
+                                      destination: liveTrip.alight.name,
+                                      failed: state.livePaused,
+                                    ),
+                            ),
+                            if (pickupSeconds == null)
+                              for (final stop
+                                  in liveTrip.eta?.stops ??
+                                      const <TripEtaStop>[])
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: AlongSpace.s4,
+                                  ),
+                                  child: Text(
+                                    '${stop.name} · ${stop.label}',
+                                    key: Key('active_trip_stop_${stop.id}'),
+                                    style: AlongText.caption,
+                                  ),
+                                ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AlongSpace.s12),
+                      LegTimeline(
+                        key: const Key('active_trip_leg_timeline'),
+                        variant: LegTimelineVariant.compact,
+                        legs: [
+                          LegTimelineLeg(
+                            mode: _designMode(liveTrip.modeCode),
+                            boardLabel: liveTrip.board.name,
+                            alightLabel: liveTrip.alight.name,
+                            fareNaira: fare.minorUnits ~/ 100,
+                            state: LegTimelineLegState.current,
+                          ),
+                        ],
+                      ),
+                      if (pickupSeconds == null) ...[
+                        const SizedBox(height: AlongSpace.s12),
+                        Text(
+                          '${liveTrip.driver.displayName} · ${liveTrip.vehicle.plateNumber}',
+                          style: AlongText.body,
+                        ),
+                      ],
+                      if (showNaMe) ...[
+                        const SizedBox(height: AlongSpace.s8),
+                        Row(
+                          children: [
+                            NaMeChip(colour: colour, shape: shape),
+                            const SizedBox(width: AlongSpace.s8),
+                            HoldButton(
+                              key: const Key('active_trip_na_me'),
+                              type: HoldButtonType.naMe,
+                              onFired: () => context.push(
+                                AppRoutes.naMe,
+                                extra: NaMeRouteArgs(tripId: liveTrip.tripId),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      if (digitalEnabled) ...[
+                        const SizedBox(height: AlongSpace.s12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: AlongButton(
+                                key: const Key('active_trip_scan'),
+                                label: l10n.activeTripScan,
+                                variant: AlongButtonVariant.secondary,
+                                onPressed: () =>
+                                    context.push(AppRoutes.scanToPay),
+                              ),
+                            ),
+                            const SizedBox(width: AlongSpace.s8),
+                            Expanded(
+                              child: AlongButton(
+                                key: const Key('active_trip_pay'),
+                                label: l10n.payDriverCta(
+                                  formatAppMoney(ref, liveTrip.totalFare),
+                                ),
+                                variant: AlongButtonVariant.yellow,
+                                onPressed: () => PayDriverSheet.show(
                                   context,
                                   trip: liveTrip,
-                                )
-                              : null,
+                                  autoInitiate: true,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: AlongSpace.s8),
-                      Expanded(
-                        child: AlongButton(
-                          key: const Key('active_trip_share'),
-                          label: l10n.activeTripShare,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: () => ShareTripSheet.show(
-                            context,
-                            journeyId: liveTrip.journeyId,
+                      ],
+                      const SizedBox(height: AlongSpace.s12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AlongButton(
+                              key: const Key('active_trip_extend'),
+                              label: l10n.activeTripExtend,
+                              variant: AlongButtonVariant.secondary,
+                              onPressed:
+                                  liveTrip.status == TripStatus.inTransit ||
+                                      liveTrip.status == TripStatus.boarded
+                                  ? () => ExtendTripSheet.show(
+                                      context,
+                                      trip: liveTrip,
+                                    )
+                                  : null,
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: AlongSpace.s8),
-                      Expanded(
-                        child: AlongButton(
-                          key: const Key('active_trip_report'),
-                          label: l10n.activeTripReport,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: () => context.push(
-                            AppRoutes.reportIncident,
-                            extra: liveTrip.tripId,
+                          const SizedBox(width: AlongSpace.s8),
+                          Expanded(
+                            child: AlongButton(
+                              key: const Key('active_trip_share'),
+                              label: l10n.activeTripShare,
+                              variant: AlongButtonVariant.secondary,
+                              onPressed: () => ShareTripSheet.show(
+                                context,
+                                journeyId: liveTrip.journeyId,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: AlongSpace.s8),
+                          Expanded(
+                            child: AlongButton(
+                              key: const Key('active_trip_report'),
+                              label: l10n.activeTripReport,
+                              variant: AlongButtonVariant.secondary,
+                              onPressed: () => context.push(
+                                AppRoutes.reportIncident,
+                                extra: liveTrip.tripId,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

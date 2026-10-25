@@ -120,6 +120,15 @@ void main() {
         Uri(scheme: 'sms', path: '+2348031234567'),
       ]);
 
+      // Rider can mint a fresh PIN in one tap; the card shows it at once.
+      await tester.ensureVisible(find.byKey(const Key('handoff_new_pin')));
+      await tester.tap(find.byKey(const Key('handoff_new_pin')));
+      await tester.pump();
+      await tester.pump();
+      expect(supabase.regeneratePinCalls, 1);
+      expect(find.text('1'), findsWidgets);
+      expect(find.text('5'), findsWidgets);
+
       _stop(container, trip);
       await tester.pump();
       container.dispose();

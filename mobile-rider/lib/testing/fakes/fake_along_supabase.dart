@@ -110,6 +110,7 @@ class FakeAlongSupabase implements AlongSupabase {
   int markBoardedInvokeCount = 0;
   int confirmFareInvokeCount = 0;
   int rateTripInvokeCount = 0;
+  int regeneratePinCalls = 0;
   int proposeExtensionInvokeCount = 0;
   int respondExtensionInvokeCount = 0;
   int qrResolveInvokeCount = 0;
@@ -237,6 +238,10 @@ class FakeAlongSupabase implements AlongSupabase {
       confirmFareInvokeCount++;
       lastConfirmFareParams = params;
       return {};
+    }
+    if (fn == 'regenerate_trip_pin') {
+      regeneratePinCalls++;
+      return {'pin': '1593', 'regenerated': true};
     }
     if (fn == 'rate_trip') {
       rateTripInvokeCount++;
