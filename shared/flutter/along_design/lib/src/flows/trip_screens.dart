@@ -1026,6 +1026,7 @@ class AlongPickupHandoffScreen extends StatelessWidget {
     this.pin,
     this.onCall,
     this.onMessage,
+    this.onNewPin,
   });
 
   final int secondsAway;
@@ -1036,6 +1037,7 @@ class AlongPickupHandoffScreen extends StatelessWidget {
   final String? pin;
   final VoidCallback? onCall;
   final VoidCallback? onMessage;
+  final VoidCallback? onNewPin;
 
   @override
   Widget build(BuildContext context) {
@@ -1060,6 +1062,7 @@ class AlongPickupHandoffScreen extends StatelessWidget {
         pin: pin,
         onCall: onCall,
         onMessage: onMessage,
+        onNewPin: onNewPin,
       ),
     );
   }
@@ -1078,6 +1081,7 @@ class AlongHandoffPanel extends StatefulWidget {
     this.pin,
     this.onCall,
     this.onMessage,
+    this.onNewPin,
   });
 
   /// Seconds until the driver reaches the pickup point. 0 means arrived.
@@ -1095,6 +1099,10 @@ class AlongHandoffPanel extends StatefulWidget {
   /// Actions hide when neither is available.
   final VoidCallback? onCall;
   final VoidCallback? onMessage;
+
+  /// Rider asks for a fresh PIN (for example after the driver locked it).
+  /// Null hides the action.
+  final VoidCallback? onNewPin;
 
   @override
   State<AlongHandoffPanel> createState() => _AlongHandoffPanelState();
@@ -1262,6 +1270,17 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
               _PinDigits(pin: pin),
             ],
           ),
+          if (widget.onNewPin != null) ...[
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: _InlineAction(
+                key: const Key('handoff_new_pin'),
+                label: 'Get a new PIN',
+                onTap: widget.onNewPin!,
+              ),
+            ),
+          ],
         ],
         if (actions.isNotEmpty) ...[
           const SizedBox(height: 20),
@@ -1280,6 +1299,49 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
             ),
         ],
       ],
+    );
+  }
+}
+
+/// Quiet text action with a 44 pt tap height, for secondary steps inside
+/// a card. Ink label, underline-free, squircle press highlight.
+class _InlineAction extends StatelessWidget {
+  const _InlineAction({super.key, required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Transform.translate(
+      offset: const Offset(-8, 0),
+      child: Material(
+        color: Colors.transparent,
+        shape: AlongCraft.border(_rControl),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AlongIcon(AlongIcons.password, size: 20, color: p.ink),
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    style: AlongType.label(p)
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

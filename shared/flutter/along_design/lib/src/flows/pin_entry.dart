@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../components/along_button.dart';
 import '../craft.dart';
 import '../icons.dart';
 import '../motion.dart';
@@ -30,6 +31,7 @@ class AlongPinEntryScreen extends StatefulWidget {
     required this.onSubmit,
     this.onVerified,
     this.onClose,
+    this.onGetHelp,
     this.initialDigits = '',
     this.initialResult,
   });
@@ -38,6 +40,9 @@ class AlongPinEntryScreen extends StatefulWidget {
   final Future<AlongPinResult> Function(String pin) onSubmit;
   final VoidCallback? onVerified;
   final VoidCallback? onClose;
+
+  /// Shown once the PIN locks. Null (no support route) hides the action.
+  final VoidCallback? onGetHelp;
 
   /// Gallery and test seeds.
   final String initialDigits;
@@ -156,12 +161,8 @@ class _AlongPinEntryScreenState extends State<AlongPinEntryScreen>
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: IconButton(
-                  key: const Key('pin_close'),
-                  tooltip: 'Close',
-                  onPressed:
-                      widget.onClose ?? () => Navigator.maybePop(context),
-                  icon: AlongIcon(AlongIcons.close, size: 24, color: p.ink),
+                child: _CloseButton(
+                  onTap: widget.onClose ?? () => Navigator.maybePop(context),
                 ),
               ),
               const SizedBox(height: 8),
@@ -205,9 +206,56 @@ class _AlongPinEntryScreenState extends State<AlongPinEntryScreen>
                         ),
                       ),
               ),
+              if (_locked && widget.onGetHelp != null) ...[
+                const SizedBox(height: 8),
+                AlongButton(
+                  key: const Key('pin_get_help'),
+                  label: 'Get help',
+                  variant: AlongButtonVariant.secondary,
+                  onPressed: widget.onGetHelp,
+                ),
+              ],
               const Spacer(),
               _Keypad(enabled: _enabled, onDigit: _press, onBack: _back),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 48 x 48 squircle close. Outline-only glyph: the duotone X fill reads
+/// as a smudge at this size.
+class _CloseButton extends StatelessWidget {
+  const _CloseButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Semantics(
+      button: true,
+      label: 'Close',
+      excludeSemantics: true,
+      child: Material(
+        color: p.surface,
+        shape: AlongCraft.border(16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          key: const Key('pin_close'),
+          onTap: onTap,
+          child: SizedBox.square(
+            dimension: 48,
+            child: Center(
+              child: AlongIcon(
+                AlongIcons.close,
+                size: 24,
+                color: p.ink,
+                tone: false,
+              ),
+            ),
           ),
         ),
       ),

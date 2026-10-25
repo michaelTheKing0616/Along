@@ -130,6 +130,17 @@ void main() {
       pin: '4827',
       pickupPoint: 'Wuse Market, Gate 2',
     ),
+    'trip_handoff_new_pin': () => AlongPickupHandoffScreen(
+      onCall: () {},
+      onMessage: () {},
+      onNewPin: () {},
+      secondsAway: 0,
+      driverName: 'Musa',
+      plate: 'ABJ 482 KE',
+      car: 'Silver Toyota Corolla',
+      pin: '1593',
+      pickupPoint: 'Wuse Market, Gate 2',
+    ),
     'trip_handoff_here': () => AlongPickupHandoffScreen(
       onCall: () {},
       onMessage: () {},
@@ -184,6 +195,7 @@ void main() {
     ),
     'trip_pin_locked': () => AlongPinEntryScreen(
       riderName: 'Ada',
+      onGetHelp: () {},
       initialResult: const AlongPinResult(AlongPinVerdict.locked),
       onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.locked),
     ),
@@ -195,6 +207,7 @@ void main() {
   const scaled = {
     'trip_live',
     'trip_handoff',
+    'trip_handoff_new_pin',
     'trip_receipt',
     'trip_receipt_tags',
     'trip_earnings',
