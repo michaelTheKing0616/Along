@@ -61,6 +61,106 @@ void main() {
       expect(summary.status, TripStatus.accepted);
       expect(summary.naMe.label, 'Green Diamond');
       expect(summary.fare.total.minorUnits, 45000);
+      expect(summary.eta, isNull);
+    });
+
+    test('maps the shared eta payload and does not invent a minute', () {
+      final view = TripView(
+        trip_id: 't1',
+        journey_id: 'j1',
+        journey_sequence: 1,
+        status: 'in_transit',
+        mode: const ModeRef(
+          code: 'car',
+          label: 'Car',
+          icon_key: 'car',
+          color_token: 'mode.car',
+        ),
+        rider: const {},
+        driver: const {},
+        vehicle: const {},
+        board: BoardStop(
+          stage_id: 's1',
+          name: 'Wuse',
+          location: const Point(lat: 9.0, lng: 7.0),
+          walk_m: 0,
+          walk_s: 0,
+          wayfinding_available: false,
+        ),
+        alight: StageLocation(
+          stage_id: 's2',
+          name: 'Garki',
+          location: const Point(lat: 9.1, lng: 7.1),
+        ),
+        route_leg_ids: const ['leg1'],
+        fare: Fare(
+          total: const Money(amount: '450.00', currency: 'NGN'),
+          tier: 1,
+          confidence: 0.9,
+          unconfirmed: false,
+          components: const [],
+          quote_id: 'q1',
+          expires_at: '2026-09-04T12:00:00Z',
+        ),
+        load: const LoadFlag(flagged: false, size: 'none'),
+        women_only: false,
+        na_me: const {
+          'color_token': 'green',
+          'shape': 'diamond',
+          'label': 'Green Diamond',
+        },
+        live_channel: 'trip:t1',
+        expires_at: '2026-09-04T12:15:00Z',
+        timestamps: const {},
+      );
+
+      final calculating = DomainMappers.tripFromDto(view, raw: {
+        'eta': {
+          'status': 'calculating',
+          'pickup': null,
+          'trip': null,
+          'stops': [],
+          'updated_at': '2026-10-24T06:30:00.000Z',
+        },
+      });
+      expect(calculating.etaMinutes, isNull);
+      expect(calculating.eta?.headline, 'Calculating…');
+
+      final ready = DomainMappers.tripFromDto(view, raw: {
+        'eta': {
+          'status': 'ready',
+          'pickup': {
+            'kind': 'single',
+            'low_s': 240,
+            'high_s': 240,
+            'label': '4 min',
+          },
+          'trip': {
+            'kind': 'range',
+            'low_s': 480,
+            'high_s': 720,
+            'label': '8–12 min',
+          },
+          'stops': [
+            {
+              'id': 'wuse',
+              'name': 'Wuse',
+              'state': 'passed',
+              'label': '7:12',
+            },
+            {
+              'id': 'garki',
+              'name': 'Garki',
+              'state': 'upcoming',
+              'label': '7:45',
+            },
+          ],
+          'updated_at': '2026-10-24T06:30:00.000Z',
+        },
+      });
+      expect(ready.eta?.headline, '8–12 min');
+      expect(ready.eta?.driverLine, 'Pickup 4 min · 8–12 min');
+      expect(ready.eta?.stops.last.label, '7:45');
     });
   });
 

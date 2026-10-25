@@ -307,7 +307,60 @@
             },
             "updated_at": { "type": "string", "format": "date-time" }
           }
+        },
+        "eta": {
+          "oneOf": [
+            { "$ref": "#/$defs/EtaPayload" },
+            { "type": "null" }
+          ]
         }
+      }
+    },
+    "EtaValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "low_s", "high_s", "label"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["single", "range"] },
+        "low_s": { "type": "integer", "minimum": 0 },
+        "high_s": { "type": "integer", "minimum": 0 },
+        "label": { "type": "string" }
+      }
+    },
+    "EtaStop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "state", "label"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "state": { "type": "string", "enum": ["passed", "current", "upcoming"] },
+        "label": { "type": "string" }
+      }
+    },
+    "EtaPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "stops", "updated_at"],
+      "properties": {
+        "status": { "type": "string", "enum": ["calculating", "ready"] },
+        "pickup": {
+          "oneOf": [
+            { "$ref": "#/$defs/EtaValue" },
+            { "type": "null" }
+          ]
+        },
+        "trip": {
+          "oneOf": [
+            { "$ref": "#/$defs/EtaValue" },
+            { "type": "null" }
+          ]
+        },
+        "stops": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/EtaStop" }
+        },
+        "updated_at": { "type": "string", "format": "date-time" }
       }
     },
     "LivePosition": {

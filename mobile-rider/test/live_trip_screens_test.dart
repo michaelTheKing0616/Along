@@ -294,8 +294,75 @@ void main() {
       expect(find.byKey(const Key('active_trip_leg_timeline')), findsOneWidget);
       expect(find.byKey(const Key('active_trip_sos')), findsOneWidget);
       expect(find.byKey(const Key('active_trip_share')), findsOneWidget);
+      expect(find.byKey(const Key('active_trip_eta')), findsOneWidget);
+      expect(find.textContaining('Calculating…'), findsOneWidget);
 
       _stopLiveTripPoll(container, trip);
+    });
+  });
+
+  group('live eta payload', () {
+    testWidgets('shows the shared eta payload on the live sheet and stops', (tester) async {
+      final json = sampleAcceptedTripResponse(
+        tripId: 'trip-eta-1',
+        status: 'in_transit',
+      );
+      json['eta'] = {
+        'status': 'ready',
+        'pickup': null,
+        'trip': {
+          'kind': 'single',
+          'low_s': 500,
+          'high_s': 500,
+          'label': '8 min',
+        },
+        'stops': [
+          {
+            'id': 'wuse',
+            'name': 'Wuse',
+            'state': 'passed',
+            'label': '7:12',
+          },
+          {
+            'id': 'garki',
+            'name': 'Garki',
+            'state': 'upcoming',
+            'label': '7:45',
+          },
+        ],
+        'updated_at': '2026-10-24T06:30:00.000Z',
+      };
+      final ready = tripSummaryFromFixture(json);
+      final etaContainer = ProviderContainer(
+        overrides: buildProviderOverrides(
+          config: const AppConfig(
+            flavor: 'dev',
+            supabaseUrl: 'https://test.supabase.co',
+            supabaseAnonKey: 'test-key',
+          ),
+          supabase: FakeAlongSupabase(
+            configRows: defaultTestConfigRows(),
+            requestTripResponse: json,
+          ),
+          ambientChannel: FakeAmbientChannel(),
+          database: AlongDatabase.memory(),
+          wayfindingTts: FakeWayfindingTts(),
+        ),
+      );
+      await tester.pumpWidget(
+        _harness(container: etaContainer, child: ActiveTripScreen(trip: ready)),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      expect(find.textContaining('In transit · 8 min'), findsOneWidget);
+      expect(find.text('Wuse · 7:12'), findsOneWidget);
+      expect(find.text('Garki · 7:45'), findsOneWidget);
+      expect(find.textContaining('14 min'), findsNothing);
+
+      _stopLiveTripPoll(etaContainer, ready);
+      await tester.pump();
+      etaContainer.dispose();
     });
   });
 

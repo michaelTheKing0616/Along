@@ -288,9 +288,10 @@ class _StopTimeline extends StatelessWidget {
   ) {
     return switch (stop.status) {
       ItineraryStopStatus.completed => l10n.dayPlannerStopDone,
-      ItineraryStopStatus.inProgress => l10n.dayPlannerStopInProgress(
-          stop.etaMinutes ?? 12,
-        ),
+      ItineraryStopStatus.inProgress => stop.etaLabel ??
+          (stop.etaMinutes != null
+              ? l10n.dayPlannerStopInProgress(stop.etaMinutes!)
+              : 'Calculating…'),
       ItineraryStopStatus.pending when isNext =>
         itinerary.hasPreparedPlan
             ? l10n.dayPlannerStopReady

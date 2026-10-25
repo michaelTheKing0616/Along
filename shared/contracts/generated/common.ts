@@ -302,6 +302,68 @@ export interface TripView {
     approach: "approaching" | "stalled" | "unknown";
     updated_at: string;
   } | null;
+  eta?: {
+    status: "calculating" | "ready";
+    pickup?: {
+      kind: "single" | "range";
+      low_s: number;
+      high_s: number;
+      label: string;
+    } | null;
+    trip?: {
+      kind: "single" | "range";
+      low_s: number;
+      high_s: number;
+      label: string;
+    } | null;
+    stops: {
+      id: string;
+      name: string;
+      state: "passed" | "current" | "upcoming";
+      label: string;
+    }[];
+    updated_at: string;
+  } | null;
+}
+
+/** common.json → EtaValue */
+export interface EtaValue {
+  kind: "single" | "range";
+  low_s: number;
+  high_s: number;
+  label: string;
+}
+
+/** common.json → EtaStop */
+export interface EtaStop {
+  id: string;
+  name: string;
+  state: "passed" | "current" | "upcoming";
+  label: string;
+}
+
+/** common.json → EtaPayload */
+export interface EtaPayload {
+  status: "calculating" | "ready";
+  pickup?: {
+    kind: "single" | "range";
+    low_s: number;
+    high_s: number;
+    label: string;
+  } | null;
+  trip?: {
+    kind: "single" | "range";
+    low_s: number;
+    high_s: number;
+    label: string;
+  } | null;
+  stops: {
+    id: string;
+    name: string;
+    state: "passed" | "current" | "upcoming";
+    label: string;
+  }[];
+  updated_at: string;
 }
 
 /** common.json → LivePosition */

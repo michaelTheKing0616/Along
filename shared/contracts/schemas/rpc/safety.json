@@ -88,6 +88,7 @@
         "current_location": { "$ref": "../common.json#/$defs/Point" },
         "destination_label": { "type": "string" },
         "eta_s": { "type": "integer", "minimum": 0 },
+        "eta": { "$ref": "../common.json#/$defs/EtaPayload" },
         "legs_progress": { "type": "array", "items": { "type": "object" } }
       }
     },

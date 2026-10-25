@@ -69,6 +69,7 @@ class ItineraryStopView {
     this.preparedPlan,
     this.linkedJourneyId,
     this.etaMinutes,
+    this.etaLabel,
   });
 
   final String stopId;
@@ -79,6 +80,7 @@ class ItineraryStopView {
   final PlanResult? preparedPlan;
   final String? linkedJourneyId;
   final int? etaMinutes;
+  final String? etaLabel;
 }
 
 /// Parsed NL proposal item from `parse-itinerary` (never persisted until confirm).

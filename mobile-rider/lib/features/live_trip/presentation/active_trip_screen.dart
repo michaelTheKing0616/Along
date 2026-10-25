@@ -1,4 +1,5 @@
-import 'package:along_core/along_core.dart' show TripStatus, TripSummary;
+import 'package:along_core/along_core.dart'
+    show TripEtaStop, TripStatus, TripSummary;
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart' hide TransportMode;
 import 'package:along_design/along_design.dart' as design show TransportMode;
@@ -147,7 +148,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
         liveTrip.status == TripStatus.boarded;
     final colour = naMeColourFromToken(liveTrip.naMe.colorToken);
     final shape = naMeShapeFromToken(liveTrip.naMe.shape);
-    final eta = liveTrip.etaMinutes ?? 14;
+    final etaLabel = liveTrip.eta?.headline ?? 'Calculating…';
     final fare = liveTrip.totalFare;
     final holdDuration = ref
         .watch(liveTripConfigProvider)
@@ -248,12 +249,24 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                         _raiseSilent(liveTrip);
                       }
                     },
-                    child: Text(
-                      l10n.activeTripStatus(
-                        eta,
-                        formatAppMoney(ref, liveTrip.totalFare),
-                      ),
-                      style: AlongText.heading2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'In transit · $etaLabel · ${formatAppMoney(ref, liveTrip.totalFare)} Standard fare',
+                          key: const Key('active_trip_eta'),
+                          style: AlongText.heading2,
+                        ),
+                        for (final stop in liveTrip.eta?.stops ?? const <TripEtaStop>[])
+                          Padding(
+                            padding: const EdgeInsets.only(top: AlongSpace.s4),
+                            child: Text(
+                              '${stop.name} · ${stop.label}',
+                              key: Key('active_trip_stop_${stop.id}'),
+                              style: AlongText.caption,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: AlongSpace.s12),

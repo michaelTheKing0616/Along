@@ -1018,6 +1018,100 @@ class ErrorEnvelope {
   };
 }
 
+class EtaPayload {
+  final String status;
+  final EtaValue? pickup;
+  final EtaValue? trip;
+  final List<EtaStop> stops;
+  final String updated_at;
+
+  const EtaPayload({
+    required this.status,
+    this.pickup,
+    this.trip,
+    required this.stops,
+    required this.updated_at,
+  });
+
+  factory EtaPayload.fromJson(Map<String, dynamic> json) {
+    return EtaPayload(
+      status: json["status"] as String,
+      pickup: json["pickup"] == null ? null : EtaValue.fromJson(json["pickup"] as Map<String, dynamic>),
+      trip: json["trip"] == null ? null : EtaValue.fromJson(json["trip"] as Map<String, dynamic>),
+      stops: (json["stops"] as List<dynamic>).map((e) => EtaStop.fromJson(e as Map<String, dynamic>)).toList(),
+      updated_at: json["updated_at"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "pickup": pickup?.toJson(),
+    "trip": trip?.toJson(),
+    "stops": stops.map((e) => e.toJson()).toList(),
+    "updated_at": updated_at,
+  };
+}
+
+class EtaStop {
+  final String id;
+  final String name;
+  final String state;
+  final String label;
+
+  const EtaStop({
+    required this.id,
+    required this.name,
+    required this.state,
+    required this.label,
+  });
+
+  factory EtaStop.fromJson(Map<String, dynamic> json) {
+    return EtaStop(
+      id: json["id"] as String,
+      name: json["name"] as String,
+      state: json["state"] as String,
+      label: json["label"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "state": state,
+    "label": label,
+  };
+}
+
+class EtaValue {
+  final String kind;
+  final int low_s;
+  final int high_s;
+  final String label;
+
+  const EtaValue({
+    required this.kind,
+    required this.low_s,
+    required this.high_s,
+    required this.label,
+  });
+
+  factory EtaValue.fromJson(Map<String, dynamic> json) {
+    return EtaValue(
+      kind: json["kind"] as String,
+      low_s: (json["low_s"] as num).toInt(),
+      high_s: (json["high_s"] as num).toInt(),
+      label: json["label"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "kind": kind,
+    "low_s": low_s,
+    "high_s": high_s,
+    "label": label,
+  };
+}
+
 class Fare {
   final Money total;
   final int tier;
@@ -2197,6 +2291,7 @@ class SharedTripViewResponse {
   final Point current_location;
   final String destination_label;
   final int eta_s;
+  final EtaPayload? eta;
   final List<Map<String, dynamic>> legs_progress;
 
   const SharedTripViewResponse({
@@ -2208,6 +2303,7 @@ class SharedTripViewResponse {
     required this.current_location,
     required this.destination_label,
     required this.eta_s,
+    this.eta,
     required this.legs_progress,
   });
 
@@ -2221,6 +2317,7 @@ class SharedTripViewResponse {
       current_location: Point.fromJson(json["current_location"] as Map<String, dynamic>),
       destination_label: json["destination_label"] as String,
       eta_s: (json["eta_s"] as num).toInt(),
+      eta: json["eta"] == null ? null : EtaPayload.fromJson(json["eta"] as Map<String, dynamic>),
       legs_progress: (json["legs_progress"] as List<dynamic>).map((e) => Map<String, dynamic>.from(e as Map)).toList(),
     );
   }
@@ -2234,6 +2331,7 @@ class SharedTripViewResponse {
     "current_location": current_location.toJson(),
     "destination_label": destination_label,
     "eta_s": eta_s,
+    "eta": eta?.toJson(),
     "legs_progress": legs_progress,
   };
 }
@@ -2510,6 +2608,7 @@ class TripView {
   final Map<String, dynamic>? live;
   final String? approach_band;
   final Object? wait;
+  final EtaPayload? eta;
 
   const TripView({
     required this.trip_id,
@@ -2535,6 +2634,7 @@ class TripView {
     this.live,
     this.approach_band,
     this.wait,
+    this.eta,
   });
 
   factory TripView.fromJson(Map<String, dynamic> json) {
@@ -2562,6 +2662,7 @@ class TripView {
       live: json["live"] == null ? null : Map<String, dynamic>.from(json["live"] as Map),
       approach_band: json["approach_band"] as String?,
       wait: json["wait"],
+      eta: json["eta"] == null ? null : EtaPayload.fromJson(json["eta"] as Map<String, dynamic>),
     );
   }
 
@@ -2589,6 +2690,7 @@ class TripView {
     "live": live,
     "approach_band": approach_band,
     "wait": wait,
+    "eta": eta?.toJson(),
   };
 }
 
