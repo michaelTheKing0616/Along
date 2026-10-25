@@ -24,6 +24,50 @@ $$;
 
 revoke execute on function _trip_chat_open(trips) from public, anon, authenticated;
 
+-- Free FCM wake-up for the other party (no message text in the push).
+create or replace function private.enqueue_fcm_trip_message(p_trip_id uuid, p_recipient uuid)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public, private
+as $$
+declare
+  v_url text;
+  v_key text;
+begin
+  if p_recipient is null then
+    return;
+  end if;
+  begin
+    v_url := nullif(current_setting('app.settings.api_external_url', true), '');
+    v_key := nullif(current_setting('app.settings.service_role_key', true), '');
+  exception
+    when others then
+      return;
+  end;
+  if v_url is null or v_key is null then
+    return;
+  end if;
+  perform net.http_post(
+    url := rtrim(v_url, '/') || '/functions/v1/notify',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer ' || v_key
+    ),
+    body := jsonb_build_object(
+      'kind', 'trip_message', 'trip_id', p_trip_id, 'recipient_id', p_recipient
+    )
+  );
+exception
+  when others then
+    null;
+end;
+$$;
+
+revoke all on function private.enqueue_fcm_trip_message(uuid, uuid) from public;
+grant execute on function private.enqueue_fcm_trip_message(uuid, uuid) to service_role;
+
 create or replace function post_trip_message(
   p_trip_id uuid,
   p_body text,
@@ -97,6 +141,10 @@ begin
   perform realtime.send(
     jsonb_build_object('type', 'message', 'message', v_out),
     'chat', 'trip_chat:' || p_trip_id::text, true
+  );
+  perform private.enqueue_fcm_trip_message(
+    p_trip_id,
+    case when v_role = 'rider' then v_trip.driver_id else v_trip.rider_id end
   );
   return v_out;
 end;

@@ -27,6 +27,11 @@ export const notifyRequestSchema = z.discriminatedUnion('kind', [
     kind: z.literal('sos_ack'),
     sos_id: z.string().uuid(),
   }),
+  z.object({
+    kind: z.literal('trip_message'),
+    trip_id: z.string().uuid(),
+    recipient_id: z.string().uuid(),
+  }),
 ]);
 
 export type NotifyRequest = z.infer<typeof notifyRequestSchema>;
@@ -273,6 +278,32 @@ export async function handleNotify(
         driver_id: driverId,
         fcm_sent: pushes,
       },
+      meta: { request_id: rid },
+    });
+  }
+
+  if (body.kind === 'trip_message') {
+    // Wake-up only: no message text leaves Postgres; the app fetches on open.
+    const { data: tokens, error: tokenError } = await deps.service
+      .from('device_tokens')
+      .select('token, platform')
+      .eq('profile_id', body.recipient_id);
+    if (tokenError) {
+      throw new Error(tokenError.message);
+    }
+    let pushes = 0;
+    for (const row of (tokens ?? []) as DeviceTokenRow[]) {
+      await deps.fcm.sendDataMessage({
+        token: row.token,
+        data: { type: 'trip_message', trip_id: body.trip_id },
+        ttlSeconds: 600,
+        collapseKey: `chat_${body.trip_id}`,
+        priority: 'high',
+      });
+      pushes += 1;
+    }
+    return jsonResponse({
+      data: { kind: body.kind, trip_id: body.trip_id, fcm_sent: pushes },
       meta: { request_id: rid },
     });
   }
