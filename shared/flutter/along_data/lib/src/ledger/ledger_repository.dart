@@ -296,15 +296,19 @@ class DriverPayoutRecord {
     required this.status,
     required this.amount,
     required this.createdAt,
-    required this.accountLabel,
     this.confirmedAt,
+    this.bankName,
+    this.accountLast4,
   });
 
   final DriverPayoutStatus status;
   final Money amount;
   final DateTime createdAt;
   final DateTime? confirmedAt;
-  final String accountLabel;
+
+  /// Short bank name, e.g. "GTBank". Null when the bank code was unknown.
+  final String? bankName;
+  final String? accountLast4;
 }
 
 class DriverEarningsContext {
@@ -345,7 +349,8 @@ class DriverEarningsContext {
           ),
           createdAt: created,
           confirmedAt: DateTime.tryParse('${p['confirmed_at']}'),
-          accountLabel: '${p['account_label'] ?? ''}',
+          bankName: _nonEmpty(p['bank_name']),
+          accountLast4: _nonEmpty(p['account_last4']),
         );
       }
     }
@@ -355,3 +360,6 @@ class DriverEarningsContext {
     );
   }
 }
+
+String? _nonEmpty(Object? v) =>
+    v is String && v.trim().isNotEmpty ? v.trim() : null;

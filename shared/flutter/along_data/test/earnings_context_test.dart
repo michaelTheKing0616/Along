@@ -13,31 +13,48 @@ void main() {
         'currency': 'NGN',
         'created_at': '2026-10-23T09:00:00Z',
         'confirmed_at': '2026-10-23T09:05:00Z',
-        'account_label': 'Paystack ••4821',
+        'account_label': 'GTBank ••4821',
+        'bank_name': 'GTBank',
+        'account_last4': '4821',
       },
     });
     expect(ctx.onlineSecondsByDay['2026-10-25'], 24000);
     expect(ctx.latestPayout?.status, DriverPayoutStatus.confirmed);
     expect(ctx.latestPayout?.amount.minorUnits, 960000);
-    expect(ctx.latestPayout?.accountLabel, 'Paystack ••4821');
+    expect(ctx.latestPayout?.bankName, 'GTBank');
+    expect(ctx.latestPayout?.accountLast4, '4821');
   });
 
-  test('handoff keeps only a valid PIN and a phone', () {
+  test('handoff carries the PIN and a contact flag, never a phone', () {
     expect(TripPickupHandoff.fromJson(null), isNull);
     expect(
-      TripPickupHandoff.fromJson({'pin': null, 'driver_phone': null}),
+      TripPickupHandoff.fromJson({'pin': null, 'contact_available': false}),
       isNull,
     );
     final h = TripPickupHandoff.fromJson({
       'pin': '0482',
-      'driver_phone': '+2348031234567',
+      'contact_available': true,
     });
     expect(h?.pin, '0482');
-    expect(h?.driverPhone, '+2348031234567');
-    expect(
-      TripPickupHandoff.fromJson({'pin': '12', 'driver_phone': '+234'})?.pin,
-      isNull,
-    );
+    expect(h?.contactAvailable, isTrue);
+    expect(TripPickupHandoff.fromJson({'pin': '12'}), isNull);
+  });
+
+  test('PIN result and contact action parse', () {
+    final r = TripPinResult.fromJson({
+      'verified': false,
+      'attempts_left': 3,
+      'locked': false,
+    });
+    expect(r.verified, isFalse);
+    expect(r.attemptsLeft, 3);
+    final a = TripContactAction.fromJson({
+      'uri': 'tel:+2348031234567',
+      'masked': false,
+      'expires_at': '2026-10-25T20:02:00Z',
+    });
+    expect(a?.uri.scheme, 'tel');
+    expect(TripContactAction.fromJson({'uri': 'https://x'}), isNull);
   });
 
   test('lagosDayStart is Lagos midnight in UTC', () {
