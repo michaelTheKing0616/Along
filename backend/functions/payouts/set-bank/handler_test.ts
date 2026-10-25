@@ -16,12 +16,15 @@ function createMockProvider(): PaymentProvider {
   };
 }
 
+const calls: { name: string; args?: Record<string, unknown> }[] = [];
+
 function createMockClients(options?: { reauthOk?: boolean; isDriver?: boolean }) {
   const reauthOk = options?.reauthOk ?? true;
   const isDriver = options?.isDriver ?? true;
 
   const userClient = {
-    rpc: (name: string) => {
+    rpc: (name: string, args?: Record<string, unknown>) => {
+      calls.push({ name, args });
       if (name === 'assert_payout_reauth') {
         if (!reauthOk) {
           return Promise.resolve({ data: null, error: { message: 'REAUTH_REQUIRED' } });
@@ -113,4 +116,22 @@ Deno.test('payouts/set-bank: rejects non-driver', async () => {
   });
 
   assertEquals(res.status, 403);
+});
+
+Deno.test('payouts/set-bank: stores the bank name with the last 4', async () => {
+  calls.length = 0;
+  const body = setPayoutBankSchema.parse({ bank_code: '058', account_number: ACCOUNT_NUMBER });
+  const { userClient, service } = createMockClients();
+  const res = await handleSetPayoutBank(body, {
+    userClient: userClient as never,
+    service: service as never,
+    driverId: DRIVER_ID,
+    driverDisplayName: 'Test Driver',
+    provider: createMockProvider(),
+  });
+  assertEquals(res.status, 200);
+  const persist = calls.find((c) => c.name === 'persist_driver_payout_bank');
+  assertEquals(persist?.args?.p_bank_name, 'GTBank');
+  assertEquals(persist?.args?.p_bank_last4, '6789');
+  assertEquals((await res.json()).data.payout_bank_name, 'GTBank');
 });

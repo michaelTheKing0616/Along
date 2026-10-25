@@ -4,6 +4,7 @@ import {
   createPaystackProvider,
   type PaymentProvider,
 } from '../../_shared/payments/mod.ts';
+import { ngBankName } from '../../_shared/payments/ng_banks.ts';
 import { createServiceClient, createUserClient } from '../../_shared/supabase.ts';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -84,6 +85,7 @@ export async function handleSetPayoutBank(
     {
       p_subaccount_code: subaccountCode,
       p_bank_last4: last4,
+      p_bank_name: ngBankName(body.bank_code),
     },
   );
 
@@ -99,6 +101,7 @@ export async function handleSetPayoutBank(
     data: {
       payout_subaccount_code: subaccountCode,
       payout_bank_last4: last4,
+      payout_bank_name: ngBankName(body.bank_code),
       driver_code: (persisted as { driver_code?: string })?.driver_code,
       account_name: accountName,
     },

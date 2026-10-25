@@ -11,6 +11,15 @@ psql "$DATABASE_URL" -c "SELECT ac.key, COALESCE(k.description,''), ac.value::te
 | `env/staging.example.json` | Mobile `--dart-define-from-file` template for staging (Supabase URL, bundle IDs, Sentry placeholders) |
 | `admin-console/.env.example` | Next.js local/staging env (Supabase URL + anon/service keys, tiles, public origin) |
 
+### Edge Function secrets: rider/driver contact relay (`trip-contact`)
+| Secret | Purpose |
+|---|---|
+| `CONTACT_PROVIDER` | `tel` (default; dev/staging, NOT masked: hands out the real number on tap, logged by suffix), `termii` or `africastalking` (masked relay) |
+| `CONTACT_PROVIDER_API_KEY` | Masked-relay provider key. **Needed from ops before masking can go live.** |
+| `CONTACT_PROXY_NUMBER` | Provider proxy/virtual number callers dial. **Needed from ops.** |
+
+The masked adapters are stubs until a provider account and its session API are confirmed; they fail closed (503 `CONTACT_UNAVAILABLE`) instead of falling back to the real number.
+
 Copy example files and fill placeholders from your Supabase project dashboard — do not commit real secrets.
 ## Critical switches
 | Key | Default (global) | Read-only | Notes |
