@@ -1,6 +1,10 @@
-import 'package:along_core/along_core.dart' show DriverLedgerEntry, Money;
+import 'package:along_core/along_core.dart' show Money;
 import 'package:along_data/along_data.dart'
-    show DriverDigitalPayment, TripCashSummary;
+    show
+        DriverDigitalPayment,
+        DriverEarningsContext,
+        DriverPayoutStatus,
+        TripCashSummary;
 import 'package:along_design/along_design.dart';
 
 /// Builds the earnings summary view models from the driver's real ledger,
@@ -17,9 +21,9 @@ class EarningsSummaryData {
   final AlongPayout? payout;
 
   factory EarningsSummaryData.from({
-    required List<TripCashSummary> cashToday,
+    required List<TripCashSummary> cashTrips,
     required List<DriverDigitalPayment> digital,
-    required List<DriverLedgerEntry> ledger,
+    DriverEarningsContext? context,
     required DateTime now,
   }) {
     final local = now.toLocal();
@@ -27,7 +31,7 @@ class EarningsSummaryData {
     final weekStart = midnight.subtract(const Duration(days: 6));
 
     final earned = <_Earned>[
-      for (final trip in cashToday)
+      for (final trip in cashTrips)
         _Earned(
           trip.destinationLabel,
           trip.completedAt.toLocal(),
@@ -66,31 +70,46 @@ class EarningsSummaryData {
         '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
     const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+    String dayKey(DateTime d) =>
+        '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    final online = context?.onlineSecondsByDay ?? const <String, int>{};
+    final todayOnline = online[dayKey(_lagos(now))];
+    final weekOnline = online.isEmpty
+        ? null
+        : online.values.fold<int>(0, (sum, v) => sum + v);
+
     AlongPayout? payout;
-    final paid = ledger.where((e) => e.entryType == 'payout_debit').toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    final pendingDigital = weekItems
-        .where((e) => e.method == 'Wallet')
-        .fold<int>(0, (sum, e) => sum + e.amount);
-    if (paid.isNotEmpty) {
-      final last = paid.first;
-      final at = last.createdAt.toLocal();
-      payout = AlongPayout(
-        state: AlongPayoutState.paid,
-        amount: _naira(last.amount).abs(),
-        when: 'Paid ${weekdays[at.weekday - 1]} ${hm(at)}',
-      );
-    } else if (pendingDigital > 0) {
-      payout = AlongPayout(
-        state: AlongPayoutState.scheduled,
-        amount: pendingDigital,
-        when: 'pending',
-      );
+    final record = context?.latestPayout;
+    if (record != null) {
+      final created = record.createdAt.toLocal();
+      final confirmed = record.confirmedAt?.toLocal();
+      String day(DateTime t) => '${weekdays[t.weekday - 1]} ${hm(t)}';
+      payout = switch (record.status) {
+        DriverPayoutStatus.confirmed => AlongPayout(
+          state: AlongPayoutState.paid,
+          amount: _naira(record.amount),
+          when: 'Paid ${day(confirmed ?? created)}',
+          account: record.accountLabel,
+        ),
+        DriverPayoutStatus.pending => AlongPayout(
+          state: AlongPayoutState.scheduled,
+          amount: _naira(record.amount),
+          when: 'started ${day(created)}',
+          account: record.accountLabel,
+        ),
+        DriverPayoutStatus.failed => AlongPayout(
+          state: AlongPayoutState.failed,
+          amount: _naira(record.amount),
+          when: day(created),
+          account: record.accountLabel,
+        ),
+      };
     }
 
     return EarningsSummaryData(
       today: AlongEarningsPeriod(
         total: todayItems.fold(0, (sum, e) => sum + e.amount),
+        online: todayOnline == null ? null : formatOnline(todayOnline),
         trips: [
           for (final e in todayItems)
             AlongEarnedTrip(
@@ -108,6 +127,7 @@ class EarningsSummaryData {
       ),
       week: AlongEarningsPeriod(
         total: weekItems.fold(0, (sum, e) => sum + e.amount),
+        online: weekOnline == null ? null : formatOnline(weekOnline),
         trips: [
           for (final e in weekItems)
             AlongEarnedTrip(
@@ -139,6 +159,17 @@ class _Earned {
   final int amount;
   final String method;
 }
+
+/// "6h 40m", "45m". Whole minutes, rounded down.
+String formatOnline(int seconds) {
+  final minutes = seconds ~/ 60;
+  final h = minutes ~/ 60;
+  final m = minutes % 60;
+  if (h == 0) return '${m}m';
+  return m == 0 ? '${h}h' : '${h}h ${m}m';
+}
+
+DateTime _lagos(DateTime now) => now.toUtc().add(const Duration(hours: 1));
 
 int _naira(Money m) => m.minorUnits ~/ 100;
 

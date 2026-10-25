@@ -22,9 +22,9 @@ class EarningsScreen extends ConsumerWidget {
     final cashTripsAsync = ref.watch(earningsCashTripsProvider);
     final digitalPaymentsAsync = ref.watch(driverDigitalPaymentsProvider);
     final summary = EarningsSummaryData.from(
-      cashToday: cashTripsAsync.valueOrNull ?? const [],
+      cashTrips: cashTripsAsync.valueOrNull ?? const [],
       digital: digitalPaymentsAsync.valueOrNull ?? const [],
-      ledger: entriesAsync.valueOrNull?.entries ?? const [],
+      context: ref.watch(earningsContextProvider).valueOrNull,
       now: DateTime.now(),
     );
 
@@ -46,6 +46,7 @@ class EarningsScreen extends ConsumerWidget {
           await ref.read(driverLedgerControllerProvider.notifier).refresh();
           ref.invalidate(earningsLedgerPageProvider);
           ref.invalidate(earningsCashTripsProvider);
+          ref.invalidate(earningsContextProvider);
           ref.invalidate(driverDigitalPaymentsProvider);
         },
         child: ListView(

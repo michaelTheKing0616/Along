@@ -12,7 +12,7 @@ void main() {
   test('today and week come from cash trips and digital payments', () {
     final data = EarningsSummaryData.from(
       now: now,
-      cashToday: [
+      cashTrips: [
         TripCashSummary(
           tripId: 't1',
           fare: _ngn('1450'),
@@ -30,7 +30,6 @@ void main() {
           createdAt: DateTime(2026, 10, 23, 18, 0),
         ),
       ],
-      ledger: const [],
     );
     expect(data.today.total, 1450);
     expect(data.today.trips.single.route, 'Nyanya');
@@ -39,28 +38,55 @@ void main() {
     expect(data.week.total, 2370);
     expect(data.week.bars.last.amount, 1450);
     expect(data.week.bars[4].amount, 920); // Friday
-    expect(data.payout?.state, AlongPayoutState.scheduled);
-    expect(data.payout?.amount, 920);
+    expect(data.payout, isNull, reason: 'no payout record, no guess');
+    expect(data.today.online, isNull);
   });
 
-  test('a payout debit in the ledger reads as paid', () {
+  test('earlier-day cash trips count toward the week only', () {
     final data = EarningsSummaryData.from(
       now: now,
-      cashToday: const [],
-      digital: const [],
-      ledger: [
-        DriverLedgerEntry(
-          id: 'l1',
-          entryType: 'payout_debit',
-          amount: _ngn('-5000'),
-          balanceAfter: _ngn('0'),
-          createdAt: DateTime(2026, 10, 24, 9, 0),
+      cashTrips: [
+        TripCashSummary(
+          tripId: 't0',
+          fare: _ngn('800'),
+          completedAt: DateTime(2026, 10, 21, 17, 10),
+          destinationLabel: 'Wuse',
         ),
       ],
+      digital: const [],
     );
-    expect(data.today.trips, isEmpty);
     expect(data.today.total, 0);
+    expect(data.week.total, 800);
+    expect(data.week.bars[2].amount, 800); // Wednesday
+  });
+
+  test('online time and payout come from the earnings context', () {
+    final data = EarningsSummaryData.from(
+      now: DateTime.utc(2026, 10, 25, 8, 30),
+      cashTrips: const [],
+      digital: const [],
+      context: DriverEarningsContext.fromJson({
+        'online_seconds_by_day': {'2026-10-25': 9000, '2026-10-24': 24000},
+        'latest_payout': {
+          'status': 'confirmed',
+          'amount': 5000,
+          'currency': 'NGN',
+          'created_at': '2026-10-24T08:00:00Z',
+          'confirmed_at': '2026-10-24T08:05:00Z',
+          'account_label': 'Paystack ••4821',
+        },
+      }),
+    );
+    expect(data.today.online, '2h 30m');
+    expect(data.week.online, '9h 10m');
     expect(data.payout?.state, AlongPayoutState.paid);
     expect(data.payout?.amount, 5000);
+    expect(data.payout?.account, 'Paystack ••4821');
+    expect(data.payout?.when, startsWith('Paid Sat'));
+  });
+
+  test('formatOnline', () {
+    expect(formatOnline(2700), '45m');
+    expect(formatOnline(7200), '2h');
   });
 }
