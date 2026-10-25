@@ -84,24 +84,28 @@ class EarningsSummaryData {
       final created = record.createdAt.toLocal();
       final confirmed = record.confirmedAt?.toLocal();
       String day(DateTime t) => '${weekdays[t.weekday - 1]} ${hm(t)}';
+      final last4 = record.accountLast4;
+      final account = last4 == null
+          ? null
+          : '${record.bankName ?? 'Bank'} ••$last4';
       payout = switch (record.status) {
         DriverPayoutStatus.confirmed => AlongPayout(
           state: AlongPayoutState.paid,
           amount: _naira(record.amount),
           when: 'Paid ${day(confirmed ?? created)}',
-          account: record.accountLabel,
+          account: account,
         ),
         DriverPayoutStatus.pending => AlongPayout(
           state: AlongPayoutState.scheduled,
           amount: _naira(record.amount),
           when: 'sent ${weekdays[created.weekday - 1]}',
-          account: record.accountLabel,
+          account: account,
         ),
         DriverPayoutStatus.failed => AlongPayout(
           state: AlongPayoutState.failed,
           amount: _naira(record.amount),
           when: day(created),
-          account: record.accountLabel,
+          account: account,
         ),
       };
     }

@@ -150,9 +150,12 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             key: const Key('active_trip_eta'),
                             style: AlongText.body,
                           ),
-                          for (final stop in trip?.eta?.stops ?? const <TripEtaStop>[])
+                          for (final stop
+                              in trip?.eta?.stops ?? const <TripEtaStop>[])
                             Padding(
-                              padding: const EdgeInsets.only(top: AlongSpace.s4),
+                              padding: const EdgeInsets.only(
+                                top: AlongSpace.s4,
+                              ),
                               child: Text(
                                 '${stop.name} · ${stop.label}',
                                 key: Key('active_trip_stop_${stop.id}'),
@@ -250,8 +253,30 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             ),
                             const SizedBox(height: AlongSpace.s8),
                           ],
-                          if (status == TripStatus.accepted ||
-                              status == TripStatus.transfer)
+                          if (status == TripStatus.accepted)
+                            AlongButton(
+                              key: const Key('active_trip_enter_pin'),
+                              label: 'Enter pickup PIN',
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  fullscreenDialog: true,
+                                  builder: (_) => AlongPinEntryScreen(
+                                    riderName: riderName.isEmpty
+                                        ? 'your rider'
+                                        : riderName.split(' ').first,
+                                    onSubmit: controller.verifyPin,
+                                    onVerified: () {
+                                      final nav = Navigator.of(context);
+                                      Future.delayed(
+                                        const Duration(milliseconds: 360),
+                                        () => nav.maybePop(),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (status == TripStatus.transfer)
                             AlongButton(
                               key: const Key('active_trip_mark_boarded'),
                               label: l10n.manifestMarkBoarded,

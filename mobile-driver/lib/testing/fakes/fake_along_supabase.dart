@@ -91,6 +91,11 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(Map<String, dynamic> params)? onProposeExtension;
   void Function(Map<String, dynamic> params)? onRespondExtension;
   void Function(String tripId)? onMarkBoarded;
+
+  /// Pickup PIN the fake accepts, and the attempts the server allows.
+  String tripPin = '4827';
+  int pinAttemptsLeft = 5;
+  final List<String> pinAttempts = [];
   void Function(String tripId)? onReleaseMatch;
   void Function(String tripId)? onCancelTrip;
 
@@ -328,6 +333,24 @@ class FakeAlongSupabase implements AlongSupabase {
         _manifestEntry(tripId: 'trip-accepted-1', status: 'accepted'),
         _manifestEntry(tripId: 'trip-boarded-1', status: 'boarded'),
       ];
+    }
+    if (fn == 'verify_trip_pin') {
+      final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
+      final pin = params?['p_pin'] as String? ?? '';
+      pinAttempts.add(pin);
+      if (pinAttemptsLeft <= 0) {
+        return {'verified': false, 'attempts_left': 0, 'locked': true};
+      }
+      if (pin == tripPin) {
+        tripStatuses[tripId] = 'boarded';
+        return {'verified': true, 'attempts_left': pinAttemptsLeft};
+      }
+      pinAttemptsLeft--;
+      return {
+        'verified': false,
+        'attempts_left': pinAttemptsLeft,
+        if (pinAttemptsLeft == 0) 'locked': true,
+      };
     }
     if (fn == 'mark_boarded') {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
