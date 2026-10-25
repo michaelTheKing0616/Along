@@ -144,6 +144,12 @@ void main() {
       receipt: AlongReceipt.sample,
       initialRating: 4,
     ),
+    'trip_receipt_tags': () => const AlongTripReceiptScreen(
+      receipt: AlongReceipt.sample,
+      initialRating: 5,
+      ratingTags: _ratingTags,
+      initialTags: {'safe_driving', 'on_time'},
+    ),
     'trip_receipt_missing': () =>
         AlongTripReceiptScreen(receipt: null, onRetry: () {}),
     'trip_earnings': () => const AlongDriverEarningsScreen(
@@ -160,15 +166,42 @@ void main() {
         state: AlongPayoutState.failed,
         amount: 96200,
         when: 'sent Fri',
-        account: 'Paystack ••4821',
+        account: 'Standard Chartered ••4821',
       ),
+    ),
+    'trip_pin': () => AlongPinEntryScreen(
+      riderName: 'Ada',
+      initialDigits: '48',
+      onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.verified),
+    ),
+    'trip_pin_wrong': () => AlongPinEntryScreen(
+      riderName: 'Ada',
+      initialResult: const AlongPinResult(
+        AlongPinVerdict.wrong,
+        attemptsLeft: 3,
+      ),
+      onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.wrong),
+    ),
+    'trip_pin_locked': () => AlongPinEntryScreen(
+      riderName: 'Ada',
+      initialResult: const AlongPinResult(AlongPinVerdict.locked),
+      onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.locked),
     ),
     'trip_earnings_empty': () => const AlongDriverEarningsScreen(
       today: AlongEarningsPeriod.emptyToday,
       week: AlongEarningsPeriod.empty,
     ),
   };
-  const scaled = {'trip_live', 'trip_handoff', 'trip_receipt', 'trip_earnings'};
+  const scaled = {
+    'trip_live',
+    'trip_handoff',
+    'trip_receipt',
+    'trip_receipt_tags',
+    'trip_earnings',
+    'trip_earnings_week_failed',
+    'trip_pin',
+    'trip_pin_locked',
+  };
   for (final stage in tripStages.entries) {
     final frames = [
       (Brightness.light, 1.0, 'light'),
@@ -510,3 +543,11 @@ TripEta _eta({required int lowS, required int highS, String status = 'ready'}) {
     updatedAt: DateTime(2026, 10, 25, 7, 36),
   );
 }
+
+const _ratingTags = {
+  'safe_driving': 'Safe driving',
+  'fair_fare': 'Fair fare',
+  'clean_vehicle': 'Clean car',
+  'polite': 'Polite',
+  'on_time': 'On time',
+};

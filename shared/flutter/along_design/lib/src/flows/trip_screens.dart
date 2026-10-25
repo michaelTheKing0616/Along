@@ -319,37 +319,66 @@ class _Page extends StatelessWidget {
               ),
             ] else
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(_gutter, 24, _gutter, 32),
+                child: Stack(
                   children: [
-                    Text(title, style: AlongType.display(p)),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle!,
-                        style: AlongType.body(p).copyWith(color: _soft(p)),
+                    Positioned.fill(
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(
+                          _gutter,
+                          24,
+                          _gutter,
+                          32,
+                        ),
+                        children: [
+                          Text(title, style: AlongType.display(p)),
+                          if (subtitle != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              subtitle!,
+                              style: AlongType.body(p)
+                                  .copyWith(color: _soft(p)),
+                            ),
+                          ],
+                          if (meta != null) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              meta!,
+                              style: AlongType.label(p)
+                                  .copyWith(color: _soft(p)),
+                            ),
+                          ],
+                          const SizedBox(height: 24),
+                          ...children,
+                        ],
                       ),
-                    ],
-                    if (meta != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        meta!,
-                        style: AlongType.label(p).copyWith(color: _soft(p)),
+                    ),
+                    if (footer != null)
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: 32,
+                        child: IgnorePointer(
+                          child: DecoratedBox(
+                            key: const Key('page_footer_fade'),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [p.bg.withValues(alpha: 0), p.bg],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                    const SizedBox(height: 24),
-                    ...children,
                   ],
                 ),
               ),
             if (footer != null)
               DecoratedBox(
-                decoration: BoxDecoration(
-                  color: p.bg,
-                  border: Border(top: _hair(p)),
-                ),
+                decoration: BoxDecoration(color: p.bg),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(_gutter, 12, _gutter, 16),
+                  padding: const EdgeInsets.fromLTRB(_gutter, 4, _gutter, 16),
                   child: footer,
                 ),
               ),
@@ -1355,6 +1384,9 @@ class AlongTripReceiptScreen extends StatefulWidget {
     required this.receipt,
     this.initialRating = 0,
     this.onRate,
+    this.ratingTags = const {},
+    this.initialTags = const {},
+    this.onTagsChanged,
     this.onDone,
     this.onRetry,
   });
@@ -1363,6 +1395,11 @@ class AlongTripReceiptScreen extends StatefulWidget {
   final AlongReceipt? receipt;
   final int initialRating;
   final ValueChanged<int>? onRate;
+
+  /// Tag id to label. Shown once a star is tapped; empty hides the row.
+  final Map<String, String> ratingTags;
+  final Set<String> initialTags;
+  final ValueChanged<Set<String>>? onTagsChanged;
   final VoidCallback? onDone;
   final VoidCallback? onRetry;
 
@@ -1372,6 +1409,13 @@ class AlongTripReceiptScreen extends StatefulWidget {
 
 class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
   late int _stars = widget.initialRating;
+  late final Set<String> _tags = {...widget.initialTags};
+
+  void _toggle(String id) {
+    setState(() => _tags.contains(id) ? _tags.remove(id) : _tags.add(id));
+    AlongHaptics.tick(context);
+    widget.onTagsChanged?.call(Set.unmodifiable(_tags));
+  }
 
   void _rate(int value) {
     setState(() => _stars = value);
@@ -1420,6 +1464,27 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
               Text('How was ${r.driverName}?', style: AlongType.title(p)),
               const SizedBox(height: 8),
               _Stars(value: _stars, onChanged: _rate),
+              _Reveal(
+                child: _stars == 0 || widget.ratingTags.isEmpty
+                    ? const SizedBox(width: double.infinity)
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 12, bottom: 8),
+                        child: Wrap(
+                          key: const Key('receipt_tags'),
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final e in widget.ratingTags.entries)
+                              _TagChip(
+                                key: Key('receipt_tag_${e.key}'),
+                                label: e.value,
+                                selected: _tags.contains(e.key),
+                                onTap: () => _toggle(e.key),
+                              ),
+                          ],
+                        ),
+                      ),
+              ),
             ],
           ),
         ),
@@ -1467,6 +1532,80 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// Grows to fit its child on [AlongMoves.arrive]. With motion off it lays
+/// out at once: AnimatedSize with a zero duration re-dirties itself.
+class _Reveal extends StatelessWidget {
+  const _Reveal({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!AlongMotionPolicy.play(context)) return child;
+    return AnimatedSize(
+      duration: AlongMoves.arrive.duration,
+      curve: AlongMoves.arrive.curve,
+      alignment: Alignment.topCenter,
+      child: child,
+    );
+  }
+}
+
+/// Rating tag: a radius-16 squircle, never a pill. Selected is solid ink.
+class _TagChip extends StatelessWidget {
+  const _TagChip({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final shape = AlongCraft.border(
+      _rControl,
+      side: selected ? BorderSide.none : _hair(p),
+    );
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: Material(
+        color: selected ? p.ink : Colors.transparent,
+        shape: shape,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 40),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (selected) ...[
+                    AlongIcon(AlongIcons.check, size: 16, color: p.onInk),
+                    const SizedBox(width: 6),
+                  ],
+                  Text(
+                    label,
+                    style: AlongType.label(p)
+                        .copyWith(color: selected ? p.bg : p.ink),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -1717,7 +1856,7 @@ class AlongPayout {
     state: AlongPayoutState.scheduled,
     amount: 96200,
     when: 'sent Fri',
-    account: 'Paystack ••4821',
+    account: 'GTBank ••4821',
   );
 }
 
@@ -2061,6 +2200,7 @@ class _PayoutCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: 48,
@@ -2075,32 +2215,42 @@ class _PayoutCard extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      status,
-                      style: AlongType.label(p)
-                          .copyWith(color: tint, fontWeight: FontWeight.w600),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            status,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AlongType.label(p).copyWith(
+                              color: tint,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          alongNaira(payout.amount),
+                          textAlign: TextAlign.right,
+                          style: AlongType.body(p).copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ],
                     ),
                     if (account != null) ...[
                       const SizedBox(height: 2),
-                      Text(
-                        payout.state == AlongPayoutState.failed
-                            ? 'Check $account'
-                            : 'To $account',
-                        style: AlongType.caption(p).copyWith(color: _soft(p)),
+                      _AccountLine(
+                        prefix: payout.state == AlongPayoutState.failed
+                            ? 'Check'
+                            : 'To',
+                        account: account,
                       ),
                     ],
                   ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                alongNaira(payout.amount),
-                textAlign: TextAlign.right,
-                style: AlongType.body(p).copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
             ],
@@ -2116,6 +2266,40 @@ class _PayoutCard extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// "To GTBank ••4821" on one line at any text scale: the bank name gives
+/// way (ellipsis) so the last four digits always stay visible.
+class _AccountLine extends StatelessWidget {
+  const _AccountLine({required this.prefix, required this.account});
+
+  final String prefix;
+  final String account;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final style = AlongType.caption(p).copyWith(color: _soft(p));
+    final cut = account.lastIndexOf(' ••');
+    final name = cut < 0 ? account : account.substring(0, cut);
+    final tail = cut < 0 ? '' : account.substring(cut);
+    return Row(
+      key: const Key('earnings_payout_account'),
+      children: [
+        Flexible(
+          child: Text(
+            '$prefix $name',
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            style: style,
+          ),
+        ),
+        if (tail.isNotEmpty)
+          Text(tail, maxLines: 1, softWrap: false, style: style),
+      ],
     );
   }
 }

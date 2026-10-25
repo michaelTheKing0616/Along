@@ -219,4 +219,7 @@ abstract final class AlongMoves {
 
   /// A tapped choice pops on a spring and settles: rating stars.
   static const pop = AlongMove(AlongDurations.expand, Curves.elasticOut);
+
+  /// A wrong entry is refused: the PIN boxes shake side to side.
+  static const shake = AlongMove(AlongDurations.expand, Curves.linear);
 }
