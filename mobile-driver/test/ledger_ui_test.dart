@@ -9,7 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/ledger/presentation/widgets/ledger_blocked_banner.dart';
-import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/features/ledger/presentation/settle_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
@@ -70,14 +69,6 @@ ProviderContainer _ledgerContainer(FakeAlongSupabase fake) {
   );
   addTearDown(container.dispose);
   return container;
-}
-
-Future<void> _pumpLedger(ProviderContainer container) async {
-  for (var i = 0; i < 20; i++) {
-    await Future<void>.delayed(const Duration(milliseconds: 50));
-    final ledger = container.read(driverLedgerControllerProvider);
-    if (ledger.balance.amount.toString() != '0') return;
-  }
 }
 
 CompleteTripResult _sampleCompleteResult() {

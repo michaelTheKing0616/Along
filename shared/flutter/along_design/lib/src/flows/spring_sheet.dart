@@ -78,7 +78,7 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
   }
 
   void _reportExtent() {
-    final scope = AlongMapMotion.maybeOf(context);
+    final scope = AlongMapMotion._maybeOf(context);
     if (scope == null) return;
     final box = context.findRenderObject();
     if (box is! RenderBox || !box.hasSize) return;
@@ -157,8 +157,9 @@ class _AlongSpringSheetState extends State<AlongSpringSheet>
                                 onVerticalDragUpdate: (details) {
                                   var delta = -details.delta.dy;
                                   final next = _lift.value + delta;
-                                  if (next < 0 || next > maxExtra)
+                                  if (next < 0 || next > maxExtra) {
                                     delta *= 0.22;
+                                  }
                                   _lift.value += delta;
                                 },
                                 onVerticalDragEnd: (details) {
@@ -322,7 +323,7 @@ class AlongMapMotion extends StatefulWidget {
 
   final Widget Function(BuildContext context, double extent) builder;
 
-  static _AlongMapMotionState? maybeOf(BuildContext context) {
+  static _AlongMapMotionState? _maybeOf(BuildContext context) {
     return context.findAncestorWidgetOfExactType<_AlongMapScope>()?.state;
   }
 

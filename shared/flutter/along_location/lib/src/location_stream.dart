@@ -28,7 +28,7 @@ class FilteredLocationStream {
     )) {
       if (sample.accuracyM > maxAccuracyM) continue;
       if (lastEmit != null &&
-          sample.recordedAt.difference(lastEmit!) < minInterval) {
+          sample.recordedAt.difference(lastEmit) < minInterval) {
         continue;
       }
       lastEmit = sample.recordedAt;

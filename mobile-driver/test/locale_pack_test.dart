@@ -1,5 +1,4 @@
 import 'package:along_design/along_design.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';

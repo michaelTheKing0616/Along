@@ -24,14 +24,15 @@ rules:
       Full phone numbers must not be logged (doc 12 T12). Log phone_suffix (last 4) only.
     severity: WARNING
     languages: [typescript, javascript, dart]
-    pattern-either:
-      - pattern: |
-          console.log(..., { ..., phone: $PHONE, ... }, ...)
-      - pattern: |
-          $LOG(..., { ..., phone: $PHONE, ... }, ...)
-    metavariable-regex:
-      metavariable: $PHONE
-      regex: ^(?!.*suffix).*$
+    patterns:
+      - pattern-either:
+          - pattern: |
+              console.log(..., { ..., phone: $PHONE, ... }, ...)
+          - pattern: |
+              $LOG(..., { ..., phone: $PHONE, ... }, ...)
+      - metavariable-regex:
+          metavariable: $PHONE
+          regex: ^(?!.*suffix).*$
     paths:
       exclude:
         - "**/*_test.ts"

@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(14);
+select plan(12);
 
 select ok(
   to_regprocedure('admin_review_candidate_park(uuid,text)') is not null,

@@ -1,6 +1,5 @@
 import 'package:along_core/along_core.dart' as core;
 import 'package:along_data/along_data.dart' hide Money;
-import 'package:along_data/src/contracts/api_contracts.g.dart' show StandingTransitionEntry;
 import 'package:along_design/along_design.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';

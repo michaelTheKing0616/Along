@@ -69,6 +69,7 @@ Deno.test('exchangeServiceAccountJwt: posts JWT bearer grant', async () => {
   const account = parseFcmServiceAccount(json);
 
   let capturedBody = '';
+  // deno-lint-ignore require-await -- test double satisfies an async interface
   const token = await exchangeServiceAccountJwt(account, async (_url, init) => {
     capturedBody = String(init.body);
     return new Response(JSON.stringify({
@@ -89,6 +90,7 @@ Deno.test('getFcmAccessToken: caches until expiry', async () => {
   Deno.env.set('FCM_SERVICE_ACCOUNT', json);
 
   let fetchCount = 0;
+  // deno-lint-ignore require-await -- test double satisfies an async interface
   const fetchFn = async () => {
     fetchCount += 1;
     return new Response(JSON.stringify({

@@ -1,4 +1,3 @@
-import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';

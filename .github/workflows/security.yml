@@ -19,10 +19,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
 
-      - name: Semgrep (Along ruleset)
-        uses: semgrep/semgrep-action@v1
+      - uses: actions/setup-python@v5
         with:
-          config: .semgrep/along-rules.yml
+          python-version: '3.12'
+
+      # semgrep/semgrep-action@v1 is deprecated and pins semgrep 1.36, which rejects
+      # the current rule schema. Run the maintained CLI directly.
+      - name: Semgrep (Along ruleset)
+        run: |
+          pip install semgrep==1.182.1
+          semgrep scan --config .semgrep/along-rules.yml --error --metrics=off
 
       - uses: pnpm/action-setup@v4
         with:

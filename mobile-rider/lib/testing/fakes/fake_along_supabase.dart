@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
-import 'package:along_data/src/placements/placements_repository.dart';
 import 'package:mobile_rider/features/onboarding/data/onboarding_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -1279,9 +1278,6 @@ class _FakeNegotiation {
     required this.proposedBy,
     required this.round,
     required this.riderAmount,
-    this.driverAmount,
-    this.status = 'open',
-    this.trip,
   });
 
   final String id;
@@ -1296,7 +1292,7 @@ class _FakeNegotiation {
   int round;
   int riderAmount;
   int? driverAmount;
-  String status;
+  String status = 'open';
   Map<String, dynamic>? trip;
 
   Map<String, dynamic> openPayload(List<int> chipSteps) => {

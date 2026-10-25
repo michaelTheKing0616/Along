@@ -86,7 +86,7 @@ class ModeConfigRow {
       code: json['code'] as String,
       label: json['label'] as String,
       labelI18n: rawI18n.map(
-        (key, value) => MapEntry(key as String, value as String),
+        (key, value) => MapEntry(key, value as String),
       ),
       iconKey: json['icon_key'] as String,
       colorToken: json['color_token'] as String,
@@ -240,7 +240,7 @@ class CatalogRepository {
         throw StateError('No active country configured');
       }
       rows.sort((a, b) => (a['code'] as String).compareTo(b['code'] as String));
-      return countryConfig(rows.first['code'] as String);
+      return await countryConfig(rows.first['code'] as String);
     } catch (e) {
       throw mapSupabaseError(e);
     }

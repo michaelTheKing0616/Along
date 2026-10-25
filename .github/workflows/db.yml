@@ -11,6 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install pg_prove, psql and ripgrep
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libtap-parser-sourcehandler-pgtap-perl postgresql-client ripgrep
+          pg_prove --version
+
       - uses: supabase/setup-cli@v1
         with:
           version: 2.115.0

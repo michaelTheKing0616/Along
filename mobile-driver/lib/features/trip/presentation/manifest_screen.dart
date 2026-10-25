@@ -3,7 +3,6 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/manifest_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';

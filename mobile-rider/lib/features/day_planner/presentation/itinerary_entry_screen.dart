@@ -1,4 +1,3 @@
-import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,7 +222,7 @@ class _StructuredEntry extends StatelessWidget {
           child: ReorderableListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
             itemCount: stops.length,
-            onReorder: onReorder,
+            onReorderItem: onReorder,
             itemBuilder: (context, index) {
               final stop = stops[index];
               return Row(

@@ -1,5 +1,4 @@
 import 'package:along_data/along_data.dart';
-import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/payments/domain/qr_scanner_port.dart';

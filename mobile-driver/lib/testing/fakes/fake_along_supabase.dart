@@ -15,7 +15,7 @@ class FakeAlongSupabase implements AlongSupabase {
     List<Map<String, dynamic>>? verificationSchema,
     List<Map<String, dynamic>>? verifications,
     User? signedInUser,
-    Map<String, dynamic>? suggestedRoute,
+    this.suggestedRoute,
     List<Map<String, dynamic>>? routeProfiles,
     List<Map<String, dynamic>>? placesSearchResults,
     this.driverBalanceResponse,
@@ -40,7 +40,6 @@ class FakeAlongSupabase implements AlongSupabase {
         countryConfig = countryConfig ?? defaultTestCountry(),
         verificationSchema = verificationSchema ?? defaultVerificationSchema(),
         verifications = verifications ?? [],
-        suggestedRoute = suggestedRoute,
         routeProfiles = routeProfiles ?? [],
         placesSearchResults = placesSearchResults ?? [],
         driverLedgerEntries = driverLedgerEntries ?? [],
@@ -554,8 +553,8 @@ class FakeAlongSupabase implements AlongSupabase {
         'rating': 4.8,
         'trip_count': 12,
       },
-      'driver': {},
-      'vehicle': {},
+      'driver': <String, dynamic>{},
+      'vehicle': <String, dynamic>{},
       'board': {
         'stage_id': 's1',
         'name': 'Lugbe Park',
@@ -569,13 +568,13 @@ class FakeAlongSupabase implements AlongSupabase {
         'name': 'Area 1 Park',
         'location': {'lat': 9.1, 'lng': 7.1},
       },
-      'route_leg_ids': [],
+      'route_leg_ids': <dynamic>[],
       'fare': {
         'total': {'amount': '450.00', 'currency': 'NGN'},
         'tier': 1,
         'confidence': 1,
         'unconfirmed': false,
-        'components': [],
+        'components': <dynamic>[],
         'quote_id': 'q1',
         'expires_at': '2026-09-05T13:00:00Z',
       },
@@ -592,7 +591,7 @@ class FakeAlongSupabase implements AlongSupabase {
       },
       'live_channel': 'trip:$tripId',
       'expires_at': '2026-09-05T14:00:00Z',
-      'timestamps': {},
+      'timestamps': <String, dynamic>{},
       'payment_method': paymentMethod,
       if (isRequested)
         'approach_band': approachBand ?? 'under_2',
@@ -633,7 +632,7 @@ class FakeAlongSupabase implements AlongSupabase {
     if (slug.startsWith('qr/resolve/')) {
       final code = slug.split('/').last;
       if (code != driverCode) {
-        return const {'data': {}};
+        return const {'data': <String, dynamic>{}};
       }
       return {
         'data': {

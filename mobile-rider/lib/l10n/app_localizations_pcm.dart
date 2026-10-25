@@ -656,8 +656,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get sosTeamAlerted => 'Ready to call 112';
 
   @override
-  String get sosSharingDetails =>
-      'Share your live location with your contacts';
+  String get sosSharingDetails => 'Share your live location with your contacts';
 
   @override
   String sosCallEmergency(String number) {
@@ -708,8 +707,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get reportIncidentDescriptionRequired => 'Add a short description';
 
   @override
-  String get reportIncidentSubmitted =>
-      'Report saved on this phone';
+  String get reportIncidentSubmitted => 'Report saved on this phone';
 
   @override
   String get incidentCategorySafety => 'Safety';

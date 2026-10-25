@@ -52,14 +52,12 @@ function createMockProvider(onCall?: (params: TripPaymentInitiateParams) => void
 }
 
 function createMockService(options?: {
-  digitalEnabled?: boolean;
   existingPaid?: boolean;
   driverRow?: typeof DRIVER_ROW;
   tripPayableTotal?: number;
   otherActiveTrip?: boolean;
 }) {
   const payments: Record<string, unknown>[] = [];
-  const digitalEnabled = options?.digitalEnabled ?? true;
   const driverRow = options?.driverRow ?? DRIVER_ROW;
 
   return {
@@ -112,7 +110,7 @@ function createMockService(options?: {
       if (table === 'payments') {
         return {
           select: () => ({
-            eq: (_col: string, val: unknown) => ({
+            eq: (_col: string, _val: unknown) => ({
               eq: () => ({
                 maybeSingle: () =>
                   Promise.resolve({
@@ -183,9 +181,9 @@ Deno.test('TS-UI-04: payments/initiate with digital_enabled=false → STATE_INVA
     provider: createMockProvider(() => {
       providerCalls += 1;
     }),
-    cfgBool: async () => false,
-    cfgNum: async () => 100,
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(false),
+    cfgNum: () => Promise.resolve(100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 409);
@@ -211,9 +209,9 @@ Deno.test('TS-UI-04: payments/initiate with trip_id rejects client amount mismat
     provider: createMockProvider(() => {
       providerCalls += 1;
     }),
-    cfgBool: async () => true,
-    cfgNum: async () => 100,
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(true),
+    cfgNum: () => Promise.resolve(100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 400);
@@ -234,9 +232,9 @@ Deno.test('TS-UI-04: payments/initiate stores server trip total and ignores omit
     provider: createMockProvider(() => {
       providerCalls += 1;
     }),
-    cfgBool: async () => true,
-    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(true),
+    cfgNum: (key) => Promise.resolve(key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 200);
@@ -264,9 +262,9 @@ Deno.test('TS-QR-03: initiate without confirm_other_driver → VALIDATION', asyn
     service: service as never,
     riderId: RIDER_ID,
     provider: createMockProvider(),
-    cfgBool: async () => true,
-    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(true),
+    cfgNum: (key) => Promise.resolve(key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 400);
@@ -286,9 +284,9 @@ Deno.test('TS-QR-05: split amounts equal fare − commission to the kobo', async
     provider: createMockProvider((params) => {
       capturedParams = params;
     }),
-    cfgBool: async () => true,
-    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(true),
+    cfgNum: (key) => Promise.resolve(key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 200);
@@ -331,9 +329,9 @@ Deno.test('TS-QR-08: second initiate for paid trip returns CONFLICT with payment
     service: service as never,
     riderId: RIDER_ID,
     provider: createMockProvider(),
-    cfgBool: async () => true,
-    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(true),
+    cfgNum: (key) => Promise.resolve(key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 409);
@@ -355,9 +353,9 @@ Deno.test('TS-QR-09: anonymous web initiate stores web_anonymous source', async 
     service: service as never,
     riderId: null,
     provider: createMockProvider(),
-    cfgBool: async () => true,
-    cfgNum: async (key) => (key === 'payments.initiate_ttl_s' ? 1800 : 100),
-    cfgText: async () => 'account',
+    cfgBool: () => Promise.resolve(true),
+    cfgNum: (key) => Promise.resolve(key === 'payments.initiate_ttl_s' ? 1800 : 100),
+    cfgText: () => Promise.resolve('account'),
   });
 
   assertEquals(res.status, 200);

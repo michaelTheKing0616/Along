@@ -1,3 +1,4 @@
+import type * as GeoJSON from 'geojson';
 import { coverageGapHeatOpacity, coverageGapHeatRadius } from './filters';
 import type {
   LiveMapActiveTrip,

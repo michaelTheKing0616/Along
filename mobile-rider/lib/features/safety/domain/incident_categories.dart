@@ -1,4 +1,3 @@
-import 'package:along_core/along_core.dart';
 
 /// R-24 incident category grid (doc 02 §11 `incident_type` enum).
 class IncidentCategory {

@@ -119,7 +119,7 @@ void main() {
           'status': 'calculating',
           'pickup': null,
           'trip': null,
-          'stops': [],
+          'stops': <dynamic>[],
           'updated_at': '2026-10-24T06:30:00.000Z',
         },
       });
@@ -180,9 +180,9 @@ void main() {
               'icon_key': 'keke',
               'color_token': 'mode.keke',
             },
-            'rider': {},
-            'driver': {},
-            'vehicle': {},
+            'rider': <String, dynamic>{},
+            'driver': <String, dynamic>{},
+            'vehicle': <String, dynamic>{},
             'board': {
               'stage_id': 's1',
               'name': 'A',
@@ -196,13 +196,13 @@ void main() {
               'name': 'B',
               'location': {'lat': 3, 'lng': 4},
             },
-            'route_leg_ids': [],
+            'route_leg_ids': <dynamic>[],
             'fare': {
               'total': {'amount': '300.00', 'currency': 'NGN'},
               'tier': 2,
               'confidence': 0.8,
               'unconfirmed': false,
-              'components': [],
+              'components': <dynamic>[],
               'quote_id': 'q2',
               'expires_at': '2026-09-04T12:00:00Z',
             },
@@ -215,7 +215,7 @@ void main() {
             },
             'live_channel': 'trip:t1',
             'expires_at': '2026-09-04T12:10:00Z',
-            'timestamps': {},
+            'timestamps': <String, dynamic>{},
           };
         },
       );
@@ -270,7 +270,7 @@ void main() {
                       'tier': 1,
                       'confidence': 1,
                       'unconfirmed': false,
-                      'components': [],
+                      'components': <dynamic>[],
                       'quote_id': 'fq1',
                       'expires_at': '2026-09-04T12:00:00Z',
                     },
@@ -292,7 +292,7 @@ void main() {
       );
 
       final repo = PlannerRepository(fake);
-      final outcome = await repo.planTrip(requestBody: {'origin': {}});
+      final outcome = await repo.planTrip(requestBody: {'origin': <String, dynamic>{}});
 
       expect(outcome.result.candidates, hasLength(1));
       expect(outcome.result.candidates.first.kind, 'direct');
@@ -303,7 +303,7 @@ void main() {
 
   group('PresenceRepository', () {
     test('setPresence forwards RPC params', () async {
-      final fake = FakeAlongSupabase(rpcHandler: (_, __) => {});
+      final fake = FakeAlongSupabase(rpcHandler: (_, __) => <String, dynamic>{});
       final repo = PresenceRepository(fake);
 
       await repo.setPresence(
@@ -318,7 +318,7 @@ void main() {
     });
 
     test('setPresence offline invokes set_presence RPC immediately', () async {
-      final fake = FakeAlongSupabase(rpcHandler: (_, __) => {});
+      final fake = FakeAlongSupabase(rpcHandler: (_, __) => <String, dynamic>{});
       final repo = PresenceRepository(fake);
 
       await repo.setPresence(

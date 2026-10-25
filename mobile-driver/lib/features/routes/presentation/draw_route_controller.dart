@@ -110,6 +110,7 @@ class DrawRouteController extends StateNotifier<DrawRouteState> {
       cityId: cityId,
     )).round();
     final currencyCode = await _catalogRepo.currencyCodeForCity(cityId);
+    if (!mounted) return;
 
     state = state.copyWith(
       cityId: cityId,
@@ -186,7 +187,6 @@ class DrawRouteController extends StateNotifier<DrawRouteState> {
 
   void reorderStop(int oldIndex, int newIndex) {
     final stops = [...state.stops];
-    if (newIndex > oldIndex) newIndex -= 1;
     final item = stops.removeAt(oldIndex);
     stops.insert(newIndex, item);
 

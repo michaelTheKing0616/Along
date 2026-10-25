@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(35);
+select plan(36);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 select ensure_partitions();

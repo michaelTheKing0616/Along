@@ -1,20 +1,12 @@
 import { errorResponse, jsonResponse, requestId } from '../../_shared/http.ts';
-import { createServiceClient, createUserClient } from '../../_shared/supabase.ts';
+import { createServiceClient } from '../../_shared/supabase.ts';
 
 export async function handlePaymentsReceipt(
   paymentId: string,
   receiptToken: string | null,
-  authHeader: string | null,
+  _authHeader: string | null,
 ): Promise<Response> {
   const rid = requestId();
-  let riderId: string | null = null;
-
-  if (authHeader?.startsWith('Bearer ')) {
-    const userClient = createUserClient(authHeader);
-    const { data: userData } = await userClient.auth.getUser();
-    riderId = userData.user?.id ?? null;
-  }
-
   const service = createServiceClient();
   const { data, error } = await service.rpc('payment_receipt_payload', {
     p_payment_id: paymentId,

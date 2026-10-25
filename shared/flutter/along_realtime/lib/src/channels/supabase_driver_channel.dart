@@ -44,7 +44,7 @@ class SupabaseDriverChannel implements DriverChannel {
       },
     );
 
-    await channel.subscribe();
+    channel.subscribe();
     _channel = channel;
     _activeDriverId = driverId;
   }

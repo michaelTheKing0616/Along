@@ -129,9 +129,7 @@ class VehicleScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AlongSpace.s24),
                   Text(l10n.ownerQuestion, style: theme.textTheme.labelLarge),
-                  RadioListTile<bool>(
-                    title: Text(l10n.ownerYes),
-                    value: true,
+                  RadioGroup<bool>(
                     groupValue: state.ownerIsMe,
                     onChanged: (value) {
                       if (value != null) {
@@ -140,18 +138,18 @@ class VehicleScreen extends ConsumerWidget {
                             .setOwnerIsMe(value);
                       }
                     },
-                  ),
-                  RadioListTile<bool>(
-                    title: Text(l10n.ownerNo),
-                    value: false,
-                    groupValue: state.ownerIsMe,
-                    onChanged: (value) {
-                      if (value != null) {
-                        ref
-                            .read(vehicleControllerProvider.notifier)
-                            .setOwnerIsMe(value);
-                      }
-                    },
+                    child: Column(
+                      children: [
+                        RadioListTile<bool>(
+                          title: Text(l10n.ownerYes),
+                          value: true,
+                        ),
+                        RadioListTile<bool>(
+                          title: Text(l10n.ownerNo),
+                          value: false,
+                        ),
+                      ],
+                    ),
                   ),
                   if (!state.ownerIsMe) ...[
                     TextField(

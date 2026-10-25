@@ -3,6 +3,8 @@ create extension if not exists pgtap;
 
 begin;
 select plan(11);
+-- Ambient cells embed a signed candidate_token (migration 0025); tests supply the key.
+select set_config('app.settings.candidate_token_hmac_key', 'along-test-candidate-hmac-do-not-commit', true);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 

@@ -159,7 +159,7 @@ class AccountScreen extends ConsumerWidget {
                 DropdownButtonFormField<String>(
                   key: const Key('account_city_dropdown'),
                   isExpanded: true,
-                  value: state.cityId,
+                  initialValue: state.cityId,
                   decoration: InputDecoration(hintText: l10n.accountCityHint),
                   items: state.cities
                       .map(

@@ -90,13 +90,13 @@ Map<String, dynamic> sampleRoamingTripRequestEnvelope({
         'name': 'Drop-off',
         'location': {'lat': 9.1, 'lng': 7.5},
       },
-      'route_leg_ids': [],
+      'route_leg_ids': <dynamic>[],
       'fare': {
         'total': {'amount': '450.00', 'currency': 'NGN'},
         'tier': 3,
         'confidence': 0,
         'unconfirmed': unconfirmedFare,
-        'components': [],
+        'components': <dynamic>[],
         'quote_id': 'q-roam',
         'expires_at': '2026-09-05T13:00:00Z',
       },
@@ -111,7 +111,7 @@ Map<String, dynamic> sampleRoamingTripRequestEnvelope({
       'expires_at': '2026-09-05T14:00:00Z',
       'dispatch_attempt': dispatchAttempt,
       'is_roaming_hail': true,
-      'timestamps': {},
+      'timestamps': <String, dynamic>{},
     },
   };
 }

@@ -1,17 +1,13 @@
-import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/account/presentation/account_settings_screen.dart';
-import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
-import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';

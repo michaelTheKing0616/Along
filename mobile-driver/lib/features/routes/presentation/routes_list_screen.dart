@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/routes/domain/route_draft.dart';
 import 'package:mobile_driver/features/routes/presentation/draw_route_controller.dart';
-import 'package:mobile_driver/features/routes/presentation/fast_route_setup_controller.dart';
 import 'package:mobile_driver/features/routes/presentation/routes_list_controller.dart';
 import 'package:mobile_driver/features/routes/presentation/widgets/route_widgets.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';

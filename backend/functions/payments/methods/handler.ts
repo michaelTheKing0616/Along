@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { corsHeaders, errorResponse, jsonResponse, requestId } from '../../_shared/http.ts';
+import { errorResponse, jsonResponse, requestId } from '../../_shared/http.ts';
 import { createServiceClient, createUserClient } from '../../_shared/supabase.ts';
 import type { SupabaseClient } from '@supabase/supabase-js';
 

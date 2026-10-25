@@ -4,7 +4,7 @@ import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart'
     show DriverVoiceIntent, parseDriverVoice;
 import 'package:along_design/along_design.dart' hide FareTier, formatMoney;
-import 'package:along_design/src/utils/fare_tier.dart' as design_fare;
+import 'package:along_design/along_design.dart' as design_fare show FareTier;
 import 'package:flutter/material.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';

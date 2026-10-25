@@ -9,7 +9,7 @@ import type {
   SponsoredPlacementRow,
 } from '@/lib/revenue/types';
 import { createClient } from '@/lib/supabase/server';
-import { fromUntyped, rpcUntyped } from '@/lib/supabase/untyped';
+import { fromUntyped } from '@/lib/supabase/untyped';
 import { RevenueConsole } from './revenue-console';
 
 interface PageProps {

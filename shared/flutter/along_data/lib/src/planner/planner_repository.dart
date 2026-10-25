@@ -1,14 +1,12 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_data/src/cache/plan_cache_key.dart';
 import 'package:along_data/src/cache/plan_cache_store.dart';
-import 'package:along_data/src/mappers/domain_mappers.dart';
 import 'package:along_data/src/supabase/along_supabase.dart';
 import 'package:along_data/src/supabase/error_mapper.dart';
 
 /// Calls the `plan-trip` Edge function and maps to [PlanResult].
 class PlannerRepository {
-  PlannerRepository(this._gateway, {PlanCacheStore? planCache})
-      : _planCache = planCache;
+  PlannerRepository(this._gateway, {this._planCache});
 
   final AlongSupabase _gateway;
   final PlanCacheStore? _planCache;
@@ -34,9 +32,9 @@ class PlannerRepository {
       if (!allowStaleRead || cacheKey == null || _planCache == null) {
         throw mapSupabaseError(e);
       }
-      final cached = await _planCache!.readPayload(cacheKey);
+      final cached = await _planCache.readPayload(cacheKey);
       if (cached == null) throw mapSupabaseError(e);
-      final row = await _planCache!.read(cacheKey);
+      final row = await _planCache.read(cacheKey);
       return PlanTripOutcome(
         result: planResultFromData(cached),
         fromCache: true,
@@ -52,9 +50,9 @@ class PlannerRepository {
     if (_planCache == null) return null;
     final cacheKey = _cacheKeyForRequest(requestBody);
     if (cacheKey == null) return null;
-    final cached = await _planCache!.readPayload(cacheKey);
+    final cached = await _planCache.readPayload(cacheKey);
     if (cached == null) return null;
-    final row = await _planCache!.read(cacheKey);
+    final row = await _planCache.read(cacheKey);
     return PlanTripOutcome(
       result: planResultFromData(cached),
       fromCache: true,

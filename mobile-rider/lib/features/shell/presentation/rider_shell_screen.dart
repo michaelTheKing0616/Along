@@ -1,8 +1,6 @@
-import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
-import 'package:mobile_rider/routing/routes.dart';
 
 /// Bottom nav shell — Home / Trips / Account (doc 06 R-05).
 class RiderShellScreen extends StatelessWidget {

@@ -1,7 +1,5 @@
-import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_driver/features/account/presentation/account_screen.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
 /// Bottom nav shell — Home · Routes · Earnings · Account (doc 06 D-08).

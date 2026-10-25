@@ -1,4 +1,3 @@
-import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_map/along_map.dart';

@@ -1,5 +1,4 @@
 import 'package:along_data/along_data.dart';
-import 'package:along_data/src/placements/placements_repository.dart';
 import '../test/support/fake_along_supabase.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -62,7 +61,7 @@ void main() {
               },
             ];
           }
-          return {};
+          return <String, dynamic>{};
         },
       );
       final repo = PlacementsRepository(fake);

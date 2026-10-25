@@ -26,6 +26,9 @@ jobs:
       - name: Dart analyze
         run: melos exec -- dart analyze --fatal-infos
 
+      - name: Install sqlite3 shared library (sqlite3 FFI in tests)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsqlite3-dev
+
       - name: Dart test
         run: melos exec -- flutter test
 

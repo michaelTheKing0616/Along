@@ -16,6 +16,7 @@ const PARAMS: TripPaymentInitiateParams = {
 Deno.test('bank_transfer uses /charge and returns virtual account', async () => {
   let url = '';
   let body: Record<string, unknown> = {};
+  // deno-lint-ignore require-await -- test double satisfies an async interface
   const provider = createPaystackProvider('sk_test', async (input, init) => {
     url = String(input);
     body = JSON.parse(String(init?.body ?? '{}')) as Record<string, unknown>;
@@ -47,6 +48,7 @@ Deno.test('bank_transfer uses /charge and returns virtual account', async () => 
 
 Deno.test('card still uses transaction/initialize', async () => {
   let url = '';
+  // deno-lint-ignore require-await -- test double satisfies an async interface
   const provider = createPaystackProvider('sk_test', async (input) => {
     url = String(input);
     return new Response(

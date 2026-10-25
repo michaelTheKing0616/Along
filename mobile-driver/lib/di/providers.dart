@@ -8,8 +8,6 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
-import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
-import 'package:mobile_driver/features/negotiation/presentation/driver_pricing_controller.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
 import 'package:mobile_driver/features/onboarding/domain/phone_number_formatter.dart';
 import 'package:mobile_driver/features/payments/domain/qr_scanner_port.dart';

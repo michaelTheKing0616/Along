@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:along_data/src/database/along_database.dart';
 import 'package:along_data/src/safety/phase_d_rules.dart';
-import 'package:drift/drift.dart';
 
 /// Offline copy of the rider's guardian rules and the driver's rest rules.
 class PhaseDStore {

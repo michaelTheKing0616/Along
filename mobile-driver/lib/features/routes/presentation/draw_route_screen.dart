@@ -91,7 +91,7 @@ class _DrawRouteScreenState extends ConsumerState<DrawRouteScreen> {
                             )
                           : ReorderableListView.builder(
                               itemCount: state.stops.length,
-                              onReorder: controller.reorderStop,
+                              onReorderItem: controller.reorderStop,
                               itemBuilder: (context, index) {
                                 final stop = state.stops[index];
                                 return RouteStopRow(

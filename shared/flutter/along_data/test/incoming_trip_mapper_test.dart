@@ -1,4 +1,3 @@
-import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -23,8 +22,8 @@ void main() {
           'rating': 4.8,
           'trip_count': 12,
         },
-        'driver': {},
-        'vehicle': {},
+        'driver': <String, dynamic>{},
+        'vehicle': <String, dynamic>{},
         'board': {
           'stage_id': 's1',
           'name': 'Lugbe Park',
@@ -38,13 +37,13 @@ void main() {
           'name': 'Area 1 Park',
           'location': {'lat': 9.1, 'lng': 7.1},
         },
-        'route_leg_ids': [],
+        'route_leg_ids': <dynamic>[],
         'fare': {
           'total': {'amount': '450.00', 'currency': 'NGN'},
           'tier': 1,
           'confidence': 1,
           'unconfirmed': false,
-          'components': [],
+          'components': <dynamic>[],
           'quote_id': 'q1',
           'expires_at': '2026-09-05T13:00:00Z',
         },
@@ -61,7 +60,7 @@ void main() {
         },
         'live_channel': 'trip:t1',
         'expires_at': '2026-09-05T13:30:00Z',
-        'timestamps': {},
+        'timestamps': <String, dynamic>{},
       },
     });
 

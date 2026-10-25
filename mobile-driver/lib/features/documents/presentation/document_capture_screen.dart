@@ -79,6 +79,7 @@ class _DocumentCaptureScreenState extends ConsumerState<DocumentCaptureScreen> {
     if (!mounted) return;
 
     final step = await ref.read(driverOnboardingPreferencesProvider).currentStep();
+    if (!mounted) return;
     if (step == DriverOnboardingStep.pending || refreshed.allSubmitted) {
       ref.read(routerProvider).go(AppRoutes.pending);
     } else {

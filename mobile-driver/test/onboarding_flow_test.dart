@@ -9,7 +9,6 @@ import 'package:mobile_driver/features/onboarding/presentation/auth_controller.d
 import 'package:mobile_driver/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_driver/features/profile/presentation/profile_screen.dart';
 import 'package:mobile_driver/features/vehicle/presentation/vehicle_screen.dart';
-import 'package:mobile_driver/features/verification/presentation/verification_pending_screen.dart';
 import 'package:mobile_driver/routing/app_router.dart';
 import 'package:mobile_driver/routing/routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

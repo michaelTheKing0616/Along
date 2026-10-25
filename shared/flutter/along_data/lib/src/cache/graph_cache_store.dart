@@ -5,7 +5,6 @@ import 'package:along_data/src/database/along_database.dart';
 import 'package:along_data/src/routes/routes_repository.dart';
 import 'package:along_data/src/supabase/along_supabase.dart';
 import 'package:along_data/src/supabase/error_mapper.dart';
-import 'package:drift/drift.dart';
 
 /// Persists compact graph bundles per city (doc 07 §4 `graph_cache`).
 class GraphCacheStore {
