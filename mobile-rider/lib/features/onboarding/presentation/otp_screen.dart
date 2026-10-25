@@ -19,20 +19,6 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   final _controller = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _tryStagingOtp());
-  }
-
-  Future<void> _tryStagingOtp() async {
-    final code =
-        await ref.read(onboardingControllerProvider.notifier).peekStagingOtp();
-    if (!mounted || code == null || code.length != 6) return;
-    _controller.text = code;
-    await _verify(code);
-  }
-
-  @override
   void dispose() {
     _controller.dispose();
     super.dispose();

@@ -24,7 +24,7 @@ adb install -r build/app/outputs/flutter-apk/app-staging-release.apk
 | Step | Action | Pass criterion |
 | --- | --- | --- |
 | 1 | Open app → enter Nigerian phone (10 digits, or `0803…`) → Continue | No crash; OTP request succeeds. Keyboard Done also submits. |
-| 2 | OTP screen | Staging auto-fills from `peek_log_otp` when `sms.provider=log`. Or SQL: `select peek_log_otp('+234…');` |
+| 2 | OTP screen | Enter the code by hand. With `sms.provider=log`, read it as service_role (SQL editor / psql): `select peek_log_otp('+234…');` — not callable by anon/authenticated (0094). |
 | 3 | Enter OTP → complete sign-in | Lands on home / search screen |
 | 4 | Search destination inside seeded pilot corridor → plan trip | HTTP 200; `candidates` array non-empty **or** `degraded: true` with honest empty-state when graph/tunnel unavailable |
 | 5 | When OSRM tunnel up | `meta.degraded` is `false` and time estimates lack forced straight-line fallback |

@@ -203,9 +203,6 @@ class FakeAlongSupabase implements AlongSupabase {
   }) async {
     final p = params ?? {};
     rpcCalls.add((fn, Map<String, dynamic>.from(p)));
-    if (fn == 'peek_log_otp') {
-      return null;
-    }
     if (fn == 'set_driver_city') {
       final nextCityId = p['p_city_id'] as String?;
       if (nextCityId != null) {

@@ -184,15 +184,6 @@ class OnboardingController extends Notifier<OnboardingState> {
     state = state.copyWith(clearError: true);
   }
 
-  Future<String?> peekStagingOtp() {
-    final phone = state.phoneE164;
-    if (phone == null) return Future.value(null);
-    if (ref.read(appConfigProvider).flavor == 'prod') {
-      return Future.value(null);
-    }
-    return _auth.peekLogOtp(phone);
-  }
-
   Future<LaunchDestination> resolveLaunchDestination() async {
     final user = _auth.currentUser;
     if (user == null) return LaunchDestination.phoneEntry;

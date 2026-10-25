@@ -184,9 +184,6 @@ class FakeAlongSupabase implements AlongSupabase {
       onCompleteOnboarding?.call(params?['display_name'] as String?);
       return {};
     }
-    if (fn == 'peek_log_otp') {
-      return null;
-    }
     if (fn == 'ambient_vehicles') {
       return {
         'as_of': DateTime.now().toUtc().toIso8601String(),

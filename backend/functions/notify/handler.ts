@@ -59,7 +59,9 @@ async function smsProvider(service: SupabaseClient): Promise<string> {
   const { data, error } = await service.rpc('cfg', { p_key: 'sms.provider', p_city: null });
   if (error) throw new Error(error.message);
   if (typeof data === 'string') return data.replace(/^"|"$/g, '');
-  return String(data ?? 'log');
+  // Fail closed: a missing setting must never silently fall back to log mode.
+  if (data == null) throw new Error('sms.provider is not configured');
+  return String(data);
 }
 
 async function notifySafetyOnCall(
