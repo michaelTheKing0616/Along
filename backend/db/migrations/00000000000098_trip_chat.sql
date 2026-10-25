@@ -219,7 +219,13 @@ begin
   get diagnostics v_n = row_count;
   if v_n > 0 then
     perform realtime.send(
-      jsonb_build_object('type', 'read', 'read_at', now()),
+      jsonb_build_object(
+        'type', 'read',
+        'reader_role', case when exists (
+          select 1 from trips where id = p_trip_id and rider_id = v_user
+        ) then 'rider' else 'driver' end,
+        'read_at', now()
+      ),
       'chat', 'trip_chat:' || p_trip_id::text, true
     );
   end if;

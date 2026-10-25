@@ -34,6 +34,7 @@ export 'src/safety/phase_d_rules.dart';
 export 'src/safety/plate_match.dart';
 export 'src/safety/phase_d_store.dart';
 export 'src/safety/robustness_repository.dart';
+export 'src/chat/trip_chat_controller.dart';
 export 'src/safety/safety_repository.dart';
 export 'src/seats/ride_rules.dart';
 export 'src/trips/trip_transition.dart';
