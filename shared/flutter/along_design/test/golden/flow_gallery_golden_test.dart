@@ -1,3 +1,4 @@
+import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -83,6 +84,112 @@ void main() {
     }
   }
 
+  // Live trip, pickup handoff, receipt, earnings: 360 light and dark, plus
+  // 1.3x text on the main state of each. Status-bar and home-indicator insets
+  // are simulated so safe areas are exercised.
+  final tripStages = <String, Widget Function()>{
+    'trip_live': () => AlongLiveTripScreen(
+      onCall: () {},
+      onSos: () {},
+      eta: _eta(lowS: 780, highS: 1020),
+      previous: _eta(lowS: 660, highS: 840),
+      driverName: 'Musa Bello',
+      vehicle: 'Yellow keke · ABJ 482 KE',
+      destination: 'Nyanya',
+    ),
+    'trip_live_calculating': () => AlongLiveTripScreen(
+      eta: _eta(lowS: 0, highS: 0, status: 'calculating'),
+      driverName: 'Musa Bello',
+      vehicle: 'Yellow keke · ABJ 482 KE',
+      destination: 'Nyanya',
+    ),
+    'trip_live_paused': () => AlongLiveTripScreen(
+      eta: _eta(lowS: 780, highS: 1020),
+      failed: true,
+      onRetry: () {},
+      driverName: 'Musa Bello',
+      vehicle: 'Yellow keke · ABJ 482 KE',
+      destination: 'Nyanya',
+    ),
+    'trip_handoff': () => AlongPickupHandoffScreen(
+      onCall: () {},
+      onMessage: () {},
+      secondsAway: 160,
+      driverName: 'Musa',
+      plate: 'ABJ 482 KE',
+      car: 'Silver Toyota Corolla',
+      pin: '4827',
+      pickupPoint: 'Wuse Market, Gate 2',
+    ),
+    'trip_handoff_here': () => AlongPickupHandoffScreen(
+      onCall: () {},
+      onMessage: () {},
+      secondsAway: 0,
+      driverName: 'Musa',
+      plate: 'ABJ 482 KE',
+      car: 'Silver Toyota Corolla',
+      pin: '4827',
+      pickupPoint: 'Wuse Market, Gate 2',
+    ),
+    'trip_receipt': () => const AlongTripReceiptScreen(
+      receipt: AlongReceipt.sample,
+      initialRating: 4,
+    ),
+    'trip_receipt_missing': () =>
+        AlongTripReceiptScreen(receipt: null, onRetry: () {}),
+    'trip_earnings': () => const AlongDriverEarningsScreen(
+      today: AlongEarningsPeriod.today,
+      week: AlongEarningsPeriod.week,
+      payout: AlongPayout.sample,
+    ),
+    'trip_earnings_week_failed': () => AlongDriverEarningsScreen(
+      onFixPayout: () {},
+      today: AlongEarningsPeriod.today,
+      week: AlongEarningsPeriod.week,
+      initialWeek: true,
+      payout: const AlongPayout(
+        state: AlongPayoutState.failed,
+        amount: 96200,
+        when: 'Friday',
+        account: 'GTBank ••21',
+      ),
+    ),
+    'trip_earnings_empty': () => const AlongDriverEarningsScreen(
+      today: AlongEarningsPeriod.empty,
+      week: AlongEarningsPeriod.empty,
+      payout: AlongPayout(
+        state: AlongPayoutState.paid,
+        amount: 0,
+        when: 'Nothing to pay out',
+        account: 'GTBank ••21',
+      ),
+    ),
+  };
+  const scaled = {'trip_live', 'trip_handoff', 'trip_receipt', 'trip_earnings'};
+  for (final stage in tripStages.entries) {
+    final frames = [
+      (Brightness.light, 1.0, 'light'),
+      (Brightness.dark, 1.0, 'dark'),
+      if (scaled.contains(stage.key)) (Brightness.light, 1.3, 'light_text130'),
+    ];
+    for (final (brightness, scale, tag) in frames) {
+      testWidgets('${stage.key} $tag 360x800', (tester) async {
+        await _pump(
+          tester,
+          child: stage.value(),
+          brightness: brightness,
+          textScale: scale,
+          insets: const EdgeInsets.only(top: 24, bottom: 16),
+        );
+        if (scale == 1) _expectNoLabelWrap(tester, '${stage.key} $tag');
+        await expectLater(
+          find.byType(Scaffold),
+          matchesGoldenFile('goldens/trip/${stage.key}_${tag}_360x800.png'),
+        );
+      });
+    }
+  }
+
   for (final layout in ['2x4', 'danfo']) {
     for (final brightness in [Brightness.light, Brightness.dark]) {
       for (final size in const [Size(360, 800), Size(320, 640)]) {
@@ -141,6 +248,8 @@ Future<void> _pump(
   Size size = const Size(360, 800),
   Brightness brightness = Brightness.light,
   bool legacy = false,
+  double textScale = 1,
+  EdgeInsets insets = EdgeInsets.zero,
 }) async {
   // The previous screen's decoded tiles stay in the cache after their
   // ImageInfo is disposed. The next map then waits forever on those three
@@ -158,7 +267,12 @@ Future<void> _pump(
       : alongTheme(brightness: brightness);
   await tester.pumpWidget(
     MediaQuery(
-      data: MediaQueryData(size: size),
+      data: MediaQueryData(
+        size: size,
+        textScaler: TextScaler.linear(textScale),
+        padding: insets,
+        viewPadding: insets,
+      ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme,
@@ -374,4 +488,22 @@ List<SeatMapRowView> _danfoRows() {
       ],
     ),
   ];
+}
+
+TripEta _eta({required int lowS, required int highS, String status = 'ready'}) {
+  return TripEta(
+    status: status,
+    trip: TripEtaValue(
+      kind: lowS == highS ? 'single' : 'range',
+      lowS: lowS,
+      highS: highS,
+      label: '',
+    ),
+    stops: const [
+      TripEtaStop(id: 'a', name: 'Berger', state: 'passed', label: 'Passed'),
+      TripEtaStop(id: 'b', name: 'AYA', state: 'next', label: '07:44'),
+      TripEtaStop(id: 'c', name: 'Nyanya', state: 'upcoming', label: '07:53'),
+    ],
+    updatedAt: DateTime(2026, 10, 25, 7, 36),
+  );
 }

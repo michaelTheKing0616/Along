@@ -19,6 +19,7 @@ export 'src/flows/journey_stages.dart';
 export 'src/flows/live_arrival.dart';
 export 'src/flows/ride_batch.dart';
 export 'src/flows/trip_machine.dart';
+export 'src/flows/trip_screens.dart';
 export 'src/flows/map_sketch.dart';
 export 'src/flows/motion_reel.dart';
 export 'src/flows/spring_sheet.dart';
