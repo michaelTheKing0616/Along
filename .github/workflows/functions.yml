@@ -25,3 +25,6 @@ jobs:
 
       - name: OpenAPI contract check
         run: bash backend/functions/scripts/check_openapi_contract.sh
+
+      - name: Staging-only functions excluded from prod deploy
+        run: bash backend/functions/scripts/check_staging_only_excluded.sh
