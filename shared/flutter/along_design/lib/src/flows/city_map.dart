@@ -63,6 +63,7 @@ class AlongCityMap extends StatelessWidget {
     this.zoom,
     this.nearby = false,
     this.approach = false,
+    this.pickupPin = false,
     this.place = false,
     this.phase,
   });
@@ -111,6 +112,10 @@ class AlongCityMap extends StatelessWidget {
 
   /// A short drive toward a pickup. The rider PIN map uses this.
   final bool approach;
+
+  /// With [approach] and [bare]: the stop is drawn as one art-directed
+  /// pickup pin (halo, ring, core) instead of a dot. No labels.
+  final bool pickupPin;
 
   /// Building footprints, street names, and a walk to the pin. Pickup uses
   /// this. The screen pin stays fixed; these layers move with the map.
@@ -419,7 +424,8 @@ class AlongCityMap extends StatelessWidget {
     final markers = <Marker>[];
     if (bare) {
       if (approach) {
-        final at = _along(approachRoute, drawn);
+        // The handoff camera shows where the car is now, not a drawn-in line.
+        final at = _along(approachRoute, pickupPin ? progress : drawn);
         markers.add(
           _vehicle(
             context,
@@ -431,7 +437,11 @@ class AlongCityMap extends StatelessWidget {
             emphasized: true,
           ),
         );
-        markers.add(_approachStop(approachRoute.last, palette));
+        markers.add(
+          pickupPin
+              ? _pickupPin(approachRoute.last, palette)
+              : _approachStop(approachRoute.last, palette),
+        );
         return markers;
       }
       if (place) {
@@ -630,6 +640,37 @@ class AlongCityMap extends StatelessWidget {
           color: palette.accent,
           shape: BoxShape.circle,
           border: Border.all(color: palette.surface, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Marker _pickupPin(LatLng at, AlongPalette palette) {
+    return Marker(
+      point: at,
+      width: 56,
+      height: 56,
+      child: Container(
+        decoration: BoxDecoration(
+          color: palette.accent.withValues(alpha: 0.24),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: Container(
+          width: 24,
+          height: 24,
+          decoration: BoxDecoration(
+            color: palette.accent,
+            shape: BoxShape.circle,
+            border: Border.all(color: palette.ink, width: 4),
+            boxShadow: [
+              BoxShadow(
+                color: palette.ink.withValues(alpha: 0.24),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
         ),
       ),
     );

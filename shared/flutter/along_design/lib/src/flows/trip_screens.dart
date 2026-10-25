@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:along_core/along_core.dart' show TripEta, TripEtaStop;
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../components/along_button.dart';
 import '../craft.dart';
@@ -298,7 +299,7 @@ class _Page extends StatelessWidget {
           children: [
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(_gutter, 24, _gutter, 16),
+                padding: const EdgeInsets.fromLTRB(_gutter, 24, _gutter, 32),
                 children: [
                   Text(title, style: AlongType.display(p)),
                   if (subtitle != null) ...[
@@ -321,9 +322,15 @@ class _Page extends StatelessWidget {
               ),
             ),
             if (footer != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(_gutter, 8, _gutter, 16),
-                child: footer,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: p.bg,
+                  border: Border(top: _hair(p)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(_gutter, 12, _gutter, 16),
+                  child: footer,
+                ),
               ),
           ],
         ),
@@ -451,8 +458,6 @@ class AlongLiveTripScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
-    final window = AlongEtaWindow.fromEta(eta);
-    final slow = failed ? null : alongEtaSlowdownMinutes(previous, eta);
     final stops = (eta?.stops ?? const <TripEtaStop>[])
         .where((s) => s.state != 'passed')
         .take(2)
@@ -474,39 +479,12 @@ class AlongLiveTripScreen extends StatelessWidget {
       sheet: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            failed
-                ? 'Last estimate to $destination'
-                : 'Arriving at $destination',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AlongType.label(p).copyWith(color: _soft(p)),
-          ),
-          const SizedBox(height: 4),
-          _EtaHeadline(window: window, eta: eta, failed: failed),
-          AnimatedSize(
-            duration: AlongMoves.arrive.of(context),
-            curve: AlongMoves.arrive.curve,
-            alignment: Alignment.topCenter,
-            child: slow == null && !failed
-                ? const SizedBox(width: double.infinity)
-                : Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: failed
-                        ? _Notice(
-                            key: const Key('live_eta_paused'),
-                            icon: AlongIcons.info,
-                            text: 'Live times paused',
-                            action: onRetry == null ? null : 'Retry',
-                            onAction: onRetry,
-                          )
-                        : _Notice(
-                            key: const Key('live_eta_slowdown'),
-                            icon: AlongIcons.schedule,
-                            text: 'Traffic ahead. About $slow min later.',
-                            warn: true,
-                          ),
-                  ),
+          AlongLiveEtaPanel(
+            eta: eta,
+            previous: previous,
+            destination: destination,
+            failed: failed,
+            onRetry: onRetry,
           ),
           const SizedBox(height: 20),
           Divider(height: 1, thickness: 1, color: _hair(p).color),
@@ -554,6 +532,147 @@ class AlongLiveTripScreen extends StatelessWidget {
   }
 }
 
+/// ETA readout: destination line, median to p85 window, and the notices.
+/// Embedded in the rider app's live trip sheet and in [AlongLiveTripScreen].
+class AlongLiveEtaPanel extends StatelessWidget {
+  const AlongLiveEtaPanel({
+    super.key,
+    required this.eta,
+    required this.destination,
+    this.previous,
+    this.failed = false,
+    this.onRetry,
+  });
+
+  final TripEta? eta;
+  final TripEta? previous;
+  final String destination;
+  final bool failed;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final window = AlongEtaWindow.fromEta(eta);
+    final slow = failed ? null : alongEtaSlowdownMinutes(previous, eta);
+    final line = failed
+        ? 'Last estimate to $destination'
+        : window == null
+        ? 'Working out your arrival'
+        : 'Arriving at $destination';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          line,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AlongType.label(p).copyWith(color: _soft(p)),
+        ),
+        const SizedBox(height: 4),
+        _EtaHeadline(window: window, eta: eta, failed: failed),
+        AnimatedSize(
+          duration: AlongMoves.arrive.of(context),
+          curve: AlongMoves.arrive.curve,
+          alignment: Alignment.topCenter,
+          child: slow == null && !failed
+              ? const SizedBox(width: double.infinity)
+              : Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: failed
+                      ? _Notice(
+                          key: const Key('live_eta_paused'),
+                          icon: AlongIcons.info,
+                          text: 'Live times paused',
+                          action: onRetry == null ? null : 'Retry',
+                          onAction: onRetry,
+                        )
+                      : _Notice(
+                          key: const Key('live_eta_slowdown'),
+                          icon: AlongIcons.schedule,
+                          text: 'Traffic ahead. About $slow min later.',
+                          warn: true,
+                        ),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Placeholder for the ETA window while the estimator has no reading yet.
+/// Breathes on [AlongMoves.breathe]; holds still when motion is off.
+class _EtaSkeleton extends StatefulWidget {
+  const _EtaSkeleton();
+
+  @override
+  State<_EtaSkeleton> createState() => _EtaSkeletonState();
+}
+
+class _EtaSkeletonState extends State<_EtaSkeleton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: AlongMoves.breathe.duration,
+    value: 0.5,
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (AlongMotionPolicy.play(context)) {
+      if (!_c.isAnimating) _c.repeat(reverse: true);
+    } else {
+      _c
+        ..stop()
+        ..value = 0.5;
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    Widget bar(double w, double h, double r, Color c) => Container(
+      width: w,
+      height: h,
+      decoration: ShapeDecoration(color: c, shape: AlongCraft.border(r)),
+    );
+    return Semantics(
+      liveRegion: true,
+      label: 'Working out your arrival',
+      child: ExcludeSemantics(
+        child: AnimatedBuilder(
+          animation: _c,
+          builder: (context, _) {
+            final t = AlongMoves.breathe.curve.transform(_c.value);
+            final strong = p.ink.withValues(alpha: 0.10 + 0.08 * t);
+            final light = p.ink.withValues(alpha: 0.08 + 0.06 * t);
+            return Row(
+              key: const Key('live_eta_calculating'),
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                bar(136, 40, 12, strong),
+                const SizedBox(width: 12),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: bar(88, 20, 6, light),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class _EtaHeadline extends StatelessWidget {
   const _EtaHeadline({
     required this.window,
@@ -570,14 +689,7 @@ class _EtaHeadline extends StatelessWidget {
     final p = AlongPalette.of(context);
     final w = window;
     if (w == null) {
-      return Semantics(
-        liveRegion: true,
-        child: Text(
-          'Calculating…',
-          key: const Key('live_eta_calculating'),
-          style: AlongType.display(p).copyWith(color: _soft(p)),
-        ),
-      );
+      return const _EtaSkeleton();
     }
     final updated = eta!.updatedAt.toLocal();
     final first = updated.add(Duration(minutes: w.lowMin));
@@ -670,7 +782,7 @@ class _Notice extends StatelessWidget {
                   onPressed: onAction,
                   style: TextButton.styleFrom(
                     foregroundColor: p.ink,
-                    minimumSize: const Size(48, 40),
+                    minimumSize: const Size(48, 48),
                     shape: AlongCraft.border(_rControl),
                     textStyle: AlongType.label(p)
                         .copyWith(fontWeight: FontWeight.w600),
@@ -751,7 +863,7 @@ class _SosButton extends StatelessWidget {
                     onTap!();
                   },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -775,15 +887,67 @@ class _SosButton extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // 2. Pickup handoff
 
-class AlongPickupHandoffScreen extends StatefulWidget {
+class AlongPickupHandoffScreen extends StatelessWidget {
   const AlongPickupHandoffScreen({
     super.key,
     required this.secondsAway,
     required this.driverName,
     required this.plate,
     required this.car,
-    required this.pin,
     required this.pickupPoint,
+    this.pin,
+    this.onCall,
+    this.onMessage,
+  });
+
+  final int secondsAway;
+  final String driverName;
+  final String plate;
+  final String car;
+  final String pickupPoint;
+  final String? pin;
+  final VoidCallback? onCall;
+  final VoidCallback? onMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    return _MapSheet(
+      map: AlongCityMap(
+        approach: true,
+        bare: true,
+        pickupPin: true,
+        progress: (1 - secondsAway / 300).clamp(0.12, 0.86),
+        // Route sits in the top third, clear of the sheet.
+        center: const LatLng(9.05790, 7.46690),
+        zoom: 16,
+        sheetInset: 0.6,
+        demoLabel: false,
+      ),
+      sheet: AlongHandoffPanel(
+        secondsAway: secondsAway,
+        driverName: driverName,
+        plate: plate,
+        car: car,
+        pickupPoint: pickupPoint,
+        pin: pin,
+        onCall: onCall,
+        onMessage: onMessage,
+      ),
+    );
+  }
+}
+
+/// Driver-arrival phase: countdown, pickup point, plate and car, PIN.
+/// Embedded in the rider app's live trip sheet while the driver approaches.
+class AlongHandoffPanel extends StatefulWidget {
+  const AlongHandoffPanel({
+    super.key,
+    required this.secondsAway,
+    required this.driverName,
+    required this.plate,
+    required this.car,
+    required this.pickupPoint,
+    this.pin,
     this.onCall,
     this.onMessage,
   });
@@ -795,34 +959,43 @@ class AlongPickupHandoffScreen extends StatefulWidget {
 
   /// "Silver Toyota Corolla".
   final String car;
-
-  /// Four digits the rider says before getting in.
-  final String pin;
   final String pickupPoint;
+
+  /// Digits the rider says before getting in. Hidden when the trip has none.
+  final String? pin;
+
+  /// Actions hide when neither is available.
   final VoidCallback? onCall;
   final VoidCallback? onMessage;
 
   @override
-  State<AlongPickupHandoffScreen> createState() =>
-      _AlongPickupHandoffScreenState();
+  State<AlongHandoffPanel> createState() => _AlongHandoffPanelState();
 }
 
-class _AlongPickupHandoffScreenState extends State<AlongPickupHandoffScreen> {
+class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
   late int _left = widget.secondsAway;
   Timer? _timer;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _timer ??= AlongMotionPolicy.play(context) && _left > 0
+    _arm();
+  }
+
+  void _arm() {
+    _timer?.cancel();
+    _timer = AlongMotionPolicy.play(context) && _left > 0
         ? Timer.periodic(const Duration(seconds: 1), (_) => _tick())
         : null;
   }
 
   @override
-  void didUpdateWidget(AlongPickupHandoffScreen old) {
+  void didUpdateWidget(AlongHandoffPanel old) {
     super.didUpdateWidget(old);
-    if (old.secondsAway != widget.secondsAway) _left = widget.secondsAway;
+    if (old.secondsAway != widget.secondsAway) {
+      _left = widget.secondsAway;
+      _arm();
+    }
   }
 
   void _tick() {
@@ -848,89 +1021,99 @@ class _AlongPickupHandoffScreenState extends State<AlongPickupHandoffScreen> {
     final ss = (_left % 60).toString().padLeft(2, '0');
     final roomy = _roomy(context);
     final actions = [
-      AlongButton(
-        key: const Key('handoff_call'),
-        label: 'Call',
-        variant: AlongButtonVariant.secondary,
-        onPressed: widget.onCall,
-      ),
-      AlongButton(
-        key: const Key('handoff_message'),
-        label: 'Message',
-        variant: AlongButtonVariant.secondary,
-        onPressed: widget.onMessage,
-      ),
+      if (widget.onCall != null)
+        AlongButton(
+          key: const Key('handoff_call'),
+          label: 'Call',
+          variant: AlongButtonVariant.secondary,
+          onPressed: widget.onCall,
+        ),
+      if (widget.onMessage != null)
+        AlongButton(
+          key: const Key('handoff_message'),
+          label: 'Message',
+          variant: AlongButtonVariant.secondary,
+          onPressed: widget.onMessage,
+        ),
     ];
-    return _MapSheet(
-      map: const AlongCityMap(
-        approach: true,
-        sheetInset: 0.62,
-        demoLabel: false,
-      ),
-      sheet: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      here
-                          ? '${widget.driverName} is here'
-                          : '${widget.driverName} arrives in',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AlongType.label(p).copyWith(color: _soft(p)),
-                    ),
-                    const SizedBox(height: 4),
-                    _Roll(
-                      value: here ? 'here' : _left,
-                      child: Text(
-                        here ? widget.pickupPoint : '$mm:$ss',
-                        key: const Key('handoff_countdown'),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: here ? AlongType.title(p) : AlongType.numeric(p),
+    final pin = widget.pin;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          here
+              ? '${widget.driverName} is here'
+              : '${widget.driverName} arrives in',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AlongType.label(p).copyWith(color: _soft(p)),
+        ),
+        const SizedBox(height: 4),
+        _Roll(
+          value: here ? 'here' : _left,
+          child: Semantics(
+            liveRegion: true,
+            label: here ? 'Driver is here' : '$mm minutes $ss seconds',
+            child: ExcludeSemantics(
+              child: Text(
+                here ? 'Meet at pickup' : '$mm:$ss',
+                key: const Key('handoff_countdown'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: here
+                    ? AlongType.display(p)
+                    : AlongType.numeric(p).copyWith(
+                        fontFeatures: const [FontFeature.tabularFigures()],
                       ),
-                    ),
-                  ],
-                ),
               ),
-              if (!here)
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 12, bottom: 4),
-                    child: Text(
-                      widget.pickupPoint,
-                      maxLines: 2,
-                      textAlign: TextAlign.right,
-                      style: AlongType.label(p).copyWith(color: _soft(p)),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _Surface(
-            color: p.recessed,
-            corner: _rRow,
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.plate,
-                  key: const Key('handoff_plate'),
-                  style: AlongType.numeric(p).copyWith(letterSpacing: 1.2),
-                ),
-                const SizedBox(height: 2),
-                Text(widget.car, style: AlongType.body(p)),
-              ],
             ),
           ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: AlongIcon(AlongIcons.locate, size: 20, color: p.ink),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                widget.pickupPoint,
+                key: const Key('handoff_pickup'),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AlongType.body(p),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        _Surface(
+          color: p.recessed,
+          corner: _rRow,
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.plate,
+                key: const Key('handoff_plate'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AlongType.numeric(p).copyWith(letterSpacing: 1.2),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                widget.car,
+                style: AlongType.body(p).copyWith(color: _soft(p)),
+              ),
+            ],
+          ),
+        ),
+        if (pin != null && pin.isNotEmpty) ...[
           const SizedBox(height: 16),
           Row(
             children: [
@@ -948,14 +1131,17 @@ class _AlongPickupHandoffScreenState extends State<AlongPickupHandoffScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              _PinDigits(pin: widget.pin),
+              _PinDigits(pin: pin),
             ],
           ),
+        ],
+        if (actions.isNotEmpty) ...[
           const SizedBox(height: 20),
-          if (roomy)
-            Column(
-              children: [actions[0], const SizedBox(height: 8), actions[1]],
-            )
+          if (roomy || actions.length == 1)
+            for (var i = 0; i < actions.length; i++) ...[
+              if (i > 0) const SizedBox(height: 8),
+              actions[i],
+            ]
           else
             Row(
               children: [
@@ -965,7 +1151,7 @@ class _AlongPickupHandoffScreenState extends State<AlongPickupHandoffScreen> {
               ],
             ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -1025,8 +1211,9 @@ class AlongReceipt {
     required this.when,
     required this.driverName,
     required this.lines,
-    required this.paidCash,
-    required this.walletBalance,
+    this.paidCash,
+    this.walletBalance,
+    this.fareTotal,
   });
 
   final String route;
@@ -1035,11 +1222,19 @@ class AlongReceipt {
   final List<AlongReceiptLine> lines;
 
   /// Cash handed over. Anything above the fare goes to the wallet.
-  final int paidCash;
-  final int walletBalance;
+  /// Null when the rider paid digitally or the server did not report cash.
+  final int? paidCash;
+  final int? walletBalance;
 
-  int get total => lines.fold(0, (sum, l) => sum + l.amount);
-  int get change => (paidCash - total).clamp(0, 1 << 30);
+  /// Server total when it differs from the sum of [lines].
+  final int? fareTotal;
+
+  int get total => fareTotal ?? lines.fold(0, (sum, l) => sum + l.amount);
+  int get change {
+    final cash = paidCash;
+    if (cash == null) return 0;
+    return (cash - total).clamp(0, 1 << 30);
+  }
 
   static const sample = AlongReceipt(
     route: 'Wuse Market to Nyanya',
@@ -1118,6 +1313,20 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
       ),
       children: [
         _Surface(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('How was ${r.driverName}?', style: AlongType.title(p)),
+              const SizedBox(height: 8),
+              _Stars(value: _stars, onChanged: _rate),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text('Fare', style: AlongType.label(p).copyWith(color: _soft(p))),
+        const SizedBox(height: 8),
+        _Surface(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Column(
             children: [
@@ -1129,78 +1338,100 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
                 ),
               Divider(height: 17, thickness: 1, color: _hair(p).color),
               _MoneyLine(
-                label: 'Fare',
+                label: 'Total',
                 amount: alongNaira(r.total),
                 strong: true,
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        _Surface(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Column(
-            children: [
-              _MoneyLine(label: 'Cash paid', amount: alongNaira(r.paidCash)),
-              if (r.change > 0)
-                _MoneyLine(
-                  key: const Key('receipt_change'),
-                  label: 'Change to wallet',
-                  detail: 'Wallet now ${alongNaira(r.walletBalance)}',
-                  amount: '+${alongNaira(r.change)}',
-                  color: p.success,
-                ),
-            ],
+        if (r.paidCash != null) ...[
+          const SizedBox(height: 12),
+          _Surface(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Column(
+              children: [
+                _MoneyLine(label: 'Cash paid', amount: alongNaira(r.paidCash!)),
+                if (r.change > 0)
+                  _MoneyLine(
+                    key: const Key('receipt_change'),
+                    label: 'Change to wallet',
+                    detail: r.walletBalance == null
+                        ? null
+                        : 'Wallet now ${alongNaira(r.walletBalance!)}',
+                    amount: '+${alongNaira(r.change)}',
+                    color: p.success,
+                  ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 32),
-        Text('Rate ${r.driverName}', style: AlongType.title(p)),
-        const SizedBox(height: 12),
-        _Stars(value: _stars, onChanged: _rate),
+        ],
       ],
     );
   }
 }
 
-class _Stars extends StatelessWidget {
+/// Five stars. Selected stars are ink, the rest a quiet outline tone; the
+/// tapped star pops on [AlongMoves.pop]. No filled tiles.
+class _Stars extends StatefulWidget {
   const _Stars({required this.value, required this.onChanged});
 
   final int value;
   final ValueChanged<int> onChanged;
 
   @override
+  State<_Stars> createState() => _StarsState();
+}
+
+class _StarsState extends State<_Stars> {
+  int _taps = 0;
+  int? _last;
+
+  @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
-    final move = AlongMoves.select;
+    final pop = AlongMoves.pop;
+    final play = AlongMotionPolicy.play(context);
     return Row(
       key: const Key('receipt_stars'),
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         for (var i = 1; i <= 5; i++)
-          Semantics(
-            button: true,
-            selected: i <= value,
-            label: '$i star${i == 1 ? '' : 's'}',
-            child: AlongPressable(
+          Expanded(
+            child: Semantics(
+              button: true,
+              selected: i <= widget.value,
+              label: '$i star${i == 1 ? '' : 's'}',
               child: Material(
-                color: i <= value ? p.accent : p.recessed,
-                shape: AlongCraft.border(_rControl),
+                type: MaterialType.transparency,
                 child: InkWell(
                   key: Key('receipt_star_$i'),
                   customBorder: AlongCraft.border(_rControl),
-                  onTap: () => onChanged(i),
+                  onTap: () {
+                    setState(() {
+                      _last = i;
+                      _taps++;
+                    });
+                    widget.onChanged(i);
+                  },
                   child: SizedBox(
-                    width: 56,
-                    height: 52,
+                    height: 56,
                     child: Center(
-                      child: AnimatedScale(
-                        scale: i == value ? 1.08 : 1,
-                        duration: move.of(context),
-                        curve: move.curve,
+                      child: TweenAnimationBuilder<double>(
+                        key: ValueKey(i == _last ? 'pop$_taps' : 'still$i'),
+                        tween: Tween(
+                          begin: i == _last && play ? 0.72 : 1,
+                          end: 1,
+                        ),
+                        duration: pop.of(context),
+                        curve: pop.curve,
+                        builder: (context, scale, child) =>
+                            Transform.scale(scale: scale, child: child),
                         child: AlongIcon(
                           AlongIcons.star,
-                          size: 24,
-                          color: i <= value ? p.accentInk : _soft(p),
+                          size: 36,
+                          color: i <= widget.value
+                              ? p.ink
+                              : p.ink.withValues(alpha: 0.28),
                         ),
                       ),
                     ),
@@ -1233,22 +1464,47 @@ class AlongEarnedTrip {
   final String method;
 }
 
+/// One bar of the earnings chart: an hour block for Today, a day for Week.
+class AlongEarningsBar {
+  const AlongEarningsBar(this.label, this.amount);
+
+  final String label;
+  final int amount;
+}
+
 class AlongEarningsPeriod {
   const AlongEarningsPeriod({
     required this.total,
-    required this.online,
     required this.trips,
+    this.online,
+    this.bars = const [],
+    this.highlight,
   });
 
   final int total;
 
-  /// "6h 40m".
-  final String online;
+  /// "6h 40m". Null when the app has no online-time record.
+  final String? online;
   final List<AlongEarnedTrip> trips;
+  final List<AlongEarningsBar> bars;
+
+  /// Index of the current bar (this hour block, today).
+  final int? highlight;
 
   static const today = AlongEarningsPeriod(
     total: 18400,
     online: '6h 40m',
+    highlight: 1,
+    bars: [
+      AlongEarningsBar('6a', 4200),
+      AlongEarningsBar('8a', 5800),
+      AlongEarningsBar('10a', 2100),
+      AlongEarningsBar('12p', 1500),
+      AlongEarningsBar('2p', 0),
+      AlongEarningsBar('4p', 0),
+      AlongEarningsBar('6p', 0),
+      AlongEarningsBar('8p', 0),
+    ],
     trips: [
       AlongEarnedTrip(
         route: 'Wuse Market to Nyanya',
@@ -1274,6 +1530,16 @@ class AlongEarningsPeriod {
   static const week = AlongEarningsPeriod(
     total: 96200,
     online: '38h 15m',
+    highlight: 6,
+    bars: [
+      AlongEarningsBar('M', 14800),
+      AlongEarningsBar('T', 12300),
+      AlongEarningsBar('W', 16900),
+      AlongEarningsBar('T', 19400),
+      AlongEarningsBar('F', 9800),
+      AlongEarningsBar('S', 4600),
+      AlongEarningsBar('S', 18400),
+    ],
     trips: [
       AlongEarnedTrip(
         route: 'Wuse Market to Nyanya',
@@ -1294,7 +1560,20 @@ class AlongEarningsPeriod {
     ],
   );
 
-  static const empty = AlongEarningsPeriod(total: 0, online: '0m', trips: []);
+  static const empty = AlongEarningsPeriod(
+    total: 0,
+    online: '0m',
+    trips: [],
+    bars: [
+      AlongEarningsBar('M', 0),
+      AlongEarningsBar('T', 0),
+      AlongEarningsBar('W', 0),
+      AlongEarningsBar('T', 0),
+      AlongEarningsBar('F', 0),
+      AlongEarningsBar('S', 0),
+      AlongEarningsBar('S', 0),
+    ],
+  );
 }
 
 class AlongPayout {
@@ -1302,7 +1581,7 @@ class AlongPayout {
     required this.state,
     required this.amount,
     required this.when,
-    required this.account,
+    this.account,
   });
 
   final AlongPayoutState state;
@@ -1311,8 +1590,8 @@ class AlongPayout {
   /// "Friday" or "Paid Mon 09:00".
   final String when;
 
-  /// "GTBank ••21".
-  final String account;
+  /// "GTBank ••21". Null when the app does not know the account.
+  final String? account;
 
   static const sample = AlongPayout(
     state: AlongPayoutState.scheduled,
@@ -1322,7 +1601,7 @@ class AlongPayout {
   );
 }
 
-class AlongDriverEarningsScreen extends StatefulWidget {
+class AlongDriverEarningsScreen extends StatelessWidget {
   const AlongDriverEarningsScreen({
     super.key,
     required this.today,
@@ -1334,16 +1613,54 @@ class AlongDriverEarningsScreen extends StatefulWidget {
 
   final AlongEarningsPeriod today;
   final AlongEarningsPeriod week;
-  final AlongPayout payout;
+  final AlongPayout? payout;
   final bool initialWeek;
   final VoidCallback? onFixPayout;
 
   @override
-  State<AlongDriverEarningsScreen> createState() =>
-      _AlongDriverEarningsScreenState();
+  Widget build(BuildContext context) {
+    return _Page(
+      title: 'Earnings',
+      children: [
+        AlongEarningsSummary(
+          today: today,
+          week: week,
+          payout: payout,
+          initialWeek: initialWeek,
+          onFixPayout: onFixPayout,
+        ),
+      ],
+    );
+  }
 }
 
-class _AlongDriverEarningsScreenState extends State<AlongDriverEarningsScreen> {
+/// Today/Week switch, hero total with bar chart, payout, trip list.
+/// Embedded at the top of the driver app's earnings tab.
+class AlongEarningsSummary extends StatefulWidget {
+  const AlongEarningsSummary({
+    super.key,
+    required this.today,
+    required this.week,
+    this.payout,
+    this.initialWeek = false,
+    this.onFixPayout,
+    this.maxTrips,
+  });
+
+  final AlongEarningsPeriod today;
+  final AlongEarningsPeriod week;
+  final AlongPayout? payout;
+  final bool initialWeek;
+  final VoidCallback? onFixPayout;
+
+  /// Caps the trip list when embedded above other sections.
+  final int? maxTrips;
+
+  @override
+  State<AlongEarningsSummary> createState() => _AlongEarningsSummaryState();
+}
+
+class _AlongEarningsSummaryState extends State<AlongEarningsSummary> {
   late bool _week = widget.initialWeek;
 
   void _set(bool week) {
@@ -1358,11 +1675,50 @@ class _AlongDriverEarningsScreenState extends State<AlongDriverEarningsScreen> {
     final period = _week ? widget.week : widget.today;
     final count = period.trips.length;
     final swap = AlongMoves.swap;
-    return _Page(
-      title: 'Earnings',
+    final trips = widget.maxTrips == null
+        ? period.trips
+        : period.trips.take(widget.maxTrips!).toList();
+    final meta = [
+      '$count ${count == 1 ? 'trip' : 'trips'}',
+      if (period.online != null) '${period.online} online',
+    ].join(' · ');
+    final payout = widget.payout;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _Segmented(week: _week, onChanged: _set),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
+        _Surface(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _Roll(
+                value: '$_week${period.total}',
+                child: Text(
+                  alongNaira(period.total),
+                  key: const Key('earnings_total'),
+                  style: AlongType.numeric(p).copyWith(
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(meta, style: AlongType.label(p).copyWith(color: _soft(p))),
+              if (period.bars.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                _Bars(period: period),
+              ],
+            ],
+          ),
+        ),
+        if (payout != null) ...[
+          const SizedBox(height: 12),
+          _PayoutCard(payout: payout, onFix: widget.onFixPayout),
+        ],
+        const SizedBox(height: 28),
+        Text('Trips', style: AlongType.title(p)),
+        const SizedBox(height: 4),
         AnimatedSwitcher(
           duration: swap.of(context),
           switchInCurve: swap.curve,
@@ -1371,33 +1727,124 @@ class _AlongDriverEarningsScreenState extends State<AlongDriverEarningsScreen> {
             key: ValueKey(_week),
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                alongNaira(period.total),
-                key: const Key('earnings_total'),
-                style: AlongType.numeric(p),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '$count ${count == 1 ? 'trip' : 'trips'} · ${period.online} online',
-                style: AlongType.body(p).copyWith(color: _soft(p)),
-              ),
-              const SizedBox(height: 20),
-              _PayoutCard(payout: widget.payout, onFix: widget.onFixPayout),
-              const SizedBox(height: 32),
-              Text('Trips', style: AlongType.title(p)),
-              const SizedBox(height: 8),
-              if (period.trips.isEmpty)
-                _StateBlock(
-                  icon: AlongIcons.receipt,
-                  title: _week ? 'No trips this week' : 'No trips today',
-                  body: 'Finished trips and what you made on each show here.',
+              if (trips.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: _StateBlock(
+                    icon: AlongIcons.receipt,
+                    title: _week ? 'No trips this week' : 'No trips today',
+                    body: 'Finished trips and what you made on each show here.',
+                  ),
                 )
               else
-                for (final trip in period.trips) _TripRow(trip: trip),
+                for (final trip in trips) _TripRow(trip: trip),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Earnings bars. Squircle tops, tabular labels, the current bar in accent.
+class _Bars extends StatelessWidget {
+  const _Bars({required this.period});
+
+  final AlongEarningsPeriod period;
+
+  static const _plot = 88.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final bars = period.bars;
+    final peak = bars.fold<int>(0, (m, b) => b.amount > m ? b.amount : m);
+    final move = AlongMoves.swap;
+    final tabular = AlongType.caption(p).copyWith(
+      color: _soft(p),
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
+    final best = peak == 0 ? null : bars.indexWhere((b) => b.amount == peak);
+    return Semantics(
+      label: peak == 0
+          ? 'No earnings yet'
+          : 'Best ${bars[best!].label}, ${alongNaira(peak)}',
+      child: ExcludeSemantics(
+        child: Column(
+          key: const Key('earnings_bars'),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: _plot,
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: _hair(p).color,
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      for (var i = 0; i < bars.length; i++)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: AnimatedContainer(
+                              duration: move.of(context),
+                              curve: move.curve,
+                              height: peak == 0
+                                  ? 6
+                                  : (bars[i].amount / peak * _plot).clamp(
+                                      6,
+                                      _plot,
+                                    ),
+                              decoration: ShapeDecoration(
+                                color: i == period.highlight
+                                    ? p.accent
+                                    : bars[i].amount == 0
+                                    ? p.ink.withValues(alpha: 0.08)
+                                    : p.ink.withValues(alpha: 0.22),
+                                shape: AlongCraft.border(
+                                  bars[i].amount == 0 || peak == 0 ? 2 : 8,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                for (var i = 0; i < bars.length; i++)
+                  Expanded(
+                    child: Text(
+                      bars[i].label,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                      style: i == period.highlight
+                          ? tabular.copyWith(
+                              color: p.ink,
+                              fontWeight: FontWeight.w600,
+                            )
+                          : tabular,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1425,7 +1872,7 @@ class _Segmented extends StatelessWidget {
             child: AnimatedContainer(
               duration: move.of(context),
               curve: move.curve,
-              constraints: const BoxConstraints(minHeight: 44),
+              constraints: const BoxConstraints(minHeight: 48),
               alignment: Alignment.center,
               decoration: ShapeDecoration(
                 color: on ? p.surface : p.recessed,
@@ -1476,15 +1923,24 @@ class _PayoutCard extends StatelessWidget {
       AlongPayoutState.paid => (payout.when, p.success, AlongIcons.check),
       AlongPayoutState.failed => ('Payout failed', p.danger, AlongIcons.info),
     };
+    final account = payout.account ?? 'your bank account';
     return _Surface(
       key: const Key('earnings_payout'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AlongIcon(icon, size: 24, color: tint),
+              Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  color: tint.withValues(alpha: 0.12),
+                  shape: AlongCraft.border(_rControl),
+                ),
+                child: AlongIcon(icon, size: 28, color: tint),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -1498,8 +1954,8 @@ class _PayoutCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       payout.state == AlongPayoutState.failed
-                          ? 'Check ${payout.account}'
-                          : 'To ${payout.account}',
+                          ? 'Check $account'
+                          : 'To $account',
                       style: AlongType.caption(p).copyWith(color: _soft(p)),
                     ),
                   ],
@@ -1509,7 +1965,10 @@ class _PayoutCard extends StatelessWidget {
               Text(
                 alongNaira(payout.amount),
                 textAlign: TextAlign.right,
-                style: AlongType.label(p).copyWith(fontWeight: FontWeight.w600),
+                style: AlongType.body(p).copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
             ],
           ),

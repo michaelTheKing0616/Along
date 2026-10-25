@@ -213,4 +213,10 @@ abstract final class AlongMoves {
 
   /// Content swap between two states of one screen.
   static const swap = AlongMove(AlongDurations.stagger, AlongCurves.settle);
+
+  /// A placeholder breathes while a value is worked out: the ETA skeleton.
+  static const breathe = AlongMove(AlongDurations.shimmer, AlongCurves.breath);
+
+  /// A tapped choice pops on a spring and settles: rating stars.
+  static const pop = AlongMove(AlongDurations.expand, Curves.elasticOut);
 }
