@@ -1569,9 +1569,23 @@ class AlongEarningsPeriod {
     ],
   );
 
+  static const emptyToday = AlongEarningsPeriod(
+    total: 0,
+    trips: [],
+    bars: [
+      AlongEarningsBar('6a', 0),
+      AlongEarningsBar('8a', 0),
+      AlongEarningsBar('10a', 0),
+      AlongEarningsBar('12p', 0),
+      AlongEarningsBar('2p', 0),
+      AlongEarningsBar('4p', 0),
+      AlongEarningsBar('6p', 0),
+      AlongEarningsBar('8p', 0),
+    ],
+  );
+
   static const empty = AlongEarningsPeriod(
     total: 0,
-    online: '0m',
     trips: [],
     bars: [
       AlongEarningsBar('M', 0),
@@ -1687,10 +1701,12 @@ class _AlongEarningsSummaryState extends State<AlongEarningsSummary> {
     final trips = widget.maxTrips == null
         ? period.trips
         : period.trips.take(widget.maxTrips!).toList();
-    final meta = [
-      '$count ${count == 1 ? 'trip' : 'trips'}',
-      if (period.online != null) '${period.online} online',
-    ].join(' · ');
+    final meta = count == 0
+        ? 'No trips yet'
+        : [
+            '$count ${count == 1 ? 'trip' : 'trips'}',
+            if (period.online != null) '${period.online} online',
+          ].join(' · ');
     final payout = widget.payout;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1797,36 +1813,40 @@ class _Bars extends StatelessWidget {
                       color: _hair(p).color,
                     ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      for (var i = 0; i < bars.length; i++)
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: AnimatedContainer(
-                              duration: move.of(context),
-                              curve: move.curve,
-                              height: peak == 0
-                                  ? 6
-                                  : (bars[i].amount / peak * _plot).clamp(
-                                      6,
-                                      _plot,
-                                    ),
-                              decoration: ShapeDecoration(
-                                color: i == period.highlight
-                                    ? p.accent
-                                    : bars[i].amount == 0
-                                    ? p.ink.withValues(alpha: 0.08)
-                                    : p.ink.withValues(alpha: 0.22),
-                                shape: AlongCraft.border(
-                                  bars[i].amount == 0 || peak == 0 ? 2 : 8,
+                  Positioned.fill(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (var i = 0; i < bars.length; i++)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              child: AnimatedContainer(
+                                duration: move.of(context),
+                                curve: move.curve,
+                                height: peak == 0
+                                    ? 6
+                                    : (bars[i].amount / peak * _plot).clamp(
+                                        6,
+                                        _plot,
+                                      ),
+                                decoration: ShapeDecoration(
+                                  color: i == period.highlight
+                                      ? p.accent
+                                      : bars[i].amount == 0
+                                      ? p.ink.withValues(alpha: 0.08)
+                                      : p.ink.withValues(alpha: 0.22),
+                                  shape: AlongCraft.border(
+                                    bars[i].amount == 0 || peak == 0 ? 2 : 8,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

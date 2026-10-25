@@ -155,7 +155,7 @@ void main() {
       ),
     ),
     'trip_earnings_empty': () => const AlongDriverEarningsScreen(
-      today: AlongEarningsPeriod.empty,
+      today: AlongEarningsPeriod.emptyToday,
       week: AlongEarningsPeriod.empty,
       payout: AlongPayout(
         state: AlongPayoutState.paid,

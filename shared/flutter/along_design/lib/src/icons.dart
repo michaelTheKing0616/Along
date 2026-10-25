@@ -254,7 +254,8 @@ abstract final class AlongIcons {
   };
 }
 
-/// Duotone Phosphor glyph. Sizes snap to 20 or 24.
+/// Duotone Phosphor glyph. Small sizes snap to 20 or 24; hero sizes (28+)
+/// render as given. Glyphs never follow the text scaler.
 class AlongIcon extends StatelessWidget {
   const AlongIcon(this.icon, {super.key, this.size = 24, this.color});
 
@@ -264,7 +265,11 @@ class AlongIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final snapped = size <= 20 ? 20.0 : 24.0;
+    final snapped = size <= 20
+        ? 20.0
+        : size <= 24
+        ? 24.0
+        : size;
     final paint =
         color ?? IconTheme.of(context).color ?? const Color(0xFF111111);
     final tone = AlongIcons.tone[icon.codePoint];
@@ -284,9 +289,14 @@ class AlongIcon extends StatelessWidget {
           if (tone != null)
             Text(
               String.fromCharCode(tone),
+              textScaler: TextScaler.noScaling,
               style: style.copyWith(color: paint.withValues(alpha: 0.32)),
             ),
-          Text(String.fromCharCode(icon.codePoint), style: style),
+          Text(
+            String.fromCharCode(icon.codePoint),
+            textScaler: TextScaler.noScaling,
+            style: style,
+          ),
         ],
       ),
     );

@@ -132,6 +132,8 @@ Motion is named, not tuned per widget. `AlongMoves` in `motion.dart`:
 - **arrive**: sheet timing for content entering from below.
 - **select**: press timing for segmented controls and ratings.
 - **swap**: stagger and settle when a list is replaced (period switch).
+- **breathe**: slow opacity pulse on skeletons while the ETA is worked out.
+- **pop**: elastic scale-in on the star that was just rated.
 
 `AlongMove.of(context)` returns zero duration when reduced motion is on or in
 tests. Haptics pair with moves: tick on a rating star, selection on a period

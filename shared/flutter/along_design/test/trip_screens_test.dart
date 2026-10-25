@@ -79,7 +79,7 @@ void main() {
     await _pump(
       tester,
       const AlongDriverEarningsScreen(
-        today: AlongEarningsPeriod.empty,
+        today: AlongEarningsPeriod.emptyToday,
         week: AlongEarningsPeriod.week,
         payout: AlongPayout.sample,
       ),
