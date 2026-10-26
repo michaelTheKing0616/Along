@@ -124,6 +124,19 @@ class _DestinationSearchPanelState
   Widget build(BuildContext context) {
     final state = ref.watch(searchControllerProvider);
     final l10n = AppLocalizations.of(context);
+    final palette = AlongPalette.of(context);
+    Widget resultRow(PlaceResult result) => AlongPlaceRow(
+      place: AlongPlace(
+        key: Key('result_${result.name}'),
+        icon: AlongIcons.locate,
+        title: result.name,
+        detail: l10n.searchResultSubtitle(
+          result.area,
+          result.distanceM.round(),
+        ),
+        onTap: () => _selectPlace(result),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,14 +150,17 @@ class _DestinationSearchPanelState
           onChanged: ref.read(searchControllerProvider.notifier).onQueryChanged,
         ),
         const SizedBox(height: AlongSpace.s16),
-        Text(l10n.searchRecentsTitle, style: AlongText.bodyStrong),
-        const SizedBox(height: AlongSpace.s8),
+        if (state.recents.isNotEmpty)
+          Text(l10n.searchRecentsTitle, style: AlongType.label(palette)),
+        const SizedBox(height: AlongSpace.s4),
         ...state.recents.map(
-          (recent) => ListTile(
-            key: Key('recent_${recent.label}'),
-            leading: const Icon(Icons.history_rounded),
-            title: Text(recent.label),
-            onTap: () => _selectRecent(recent),
+          (recent) => AlongPlaceRow(
+            place: AlongPlace(
+              key: Key('recent_${recent.label}'),
+              icon: AlongIcons.schedule,
+              title: recent.label,
+              onTap: () => _selectRecent(recent),
+            ),
           ),
         ),
         if (state.isOffline)
@@ -152,7 +168,7 @@ class _DestinationSearchPanelState
             padding: const EdgeInsets.only(top: AlongSpace.s8),
             child: Text(
               l10n.searchOfflineHint,
-              style: AlongText.caption.copyWith(color: AlongColors.ink500),
+              style: AlongType.caption(palette),
             ),
           ),
         if (state.isStaleResults) ...[
@@ -161,9 +177,8 @@ class _DestinationSearchPanelState
         ],
         if (state.query.length >= 2) ...[
           const SizedBox(height: AlongSpace.s16),
-          Text(l10n.searchResultsTitle, style: AlongText.bodyStrong),
-          const SizedBox(height: AlongSpace.s8),
-          if (state.isSearching) const LinearProgressIndicator(),
+          Text(l10n.searchResultsTitle, style: AlongType.label(palette)),
+          const SizedBox(height: AlongSpace.s4),
           if (widget.embedded)
             ListView.builder(
               shrinkWrap: true,
@@ -171,17 +186,7 @@ class _DestinationSearchPanelState
               itemCount: state.results.length,
               itemBuilder: (context, index) {
                 final result = state.results[index];
-                return ListTile(
-                  key: Key('result_${result.name}'),
-                  title: Text(result.name),
-                  subtitle: Text(
-                    l10n.searchResultSubtitle(
-                      result.area,
-                      result.distanceM.round(),
-                    ),
-                  ),
-                  onTap: () => _selectPlace(result),
-                );
+                return resultRow(result);
               },
             )
           else
@@ -190,17 +195,7 @@ class _DestinationSearchPanelState
                 itemCount: state.results.length,
                 itemBuilder: (context, index) {
                   final result = state.results[index];
-                  return ListTile(
-                    key: Key('result_${result.name}'),
-                    title: Text(result.name),
-                    subtitle: Text(
-                      l10n.searchResultSubtitle(
-                        result.area,
-                        result.distanceM.round(),
-                      ),
-                    ),
-                    onTap: () => _selectPlace(result),
-                  );
+                  return resultRow(result);
                 },
               ),
             ),

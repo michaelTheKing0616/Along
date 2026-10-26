@@ -1,3 +1,4 @@
+import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -11,29 +12,26 @@ class RiderShellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final palette = AlongPalette.of(context);
 
     return Scaffold(
+      backgroundColor: palette.bg,
       body: navigationShell,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: navigationShell.goBranch,
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home_rounded),
-            label: l10n.navHome,
+      bottomNavigationBar: ColoredBox(
+        color: palette.surface,
+        child: SafeArea(
+          top: false,
+          child: AlongTabBar(
+            key: const Key('rider_tab_bar'),
+            index: navigationShell.currentIndex,
+            tabs: [
+              (AlongIcons.home, l10n.navHome),
+              (AlongIcons.path, l10n.navTrips),
+              (AlongIcons.user, l10n.navAccount),
+            ],
+            onSelect: navigationShell.goBranch,
           ),
-          NavigationDestination(
-            icon: const Icon(Icons.route_outlined),
-            selectedIcon: const Icon(Icons.route_rounded),
-            label: l10n.navTrips,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.person_outline_rounded),
-            selectedIcon: const Icon(Icons.person_rounded),
-            label: l10n.navAccount,
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -16,7 +16,8 @@ import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
-/// R-05 Home — ambient clusters, peek sheet, recents (doc 06).
+/// R-05 Home — ambient clusters, the Where-to sheet, recents, nearby rides
+/// (doc 06). One tap from any row to search or a quote.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -26,7 +27,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   MapLayerController? _layerController;
-  bool _expandedNearby = false;
 
   @override
   Widget build(BuildContext context) {
@@ -130,37 +130,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               icon: AlongIcons.locate,
             ),
           ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 72,
-            child: _expandedNearby && state.nearbyRows.isNotEmpty
-                ? HomeNearbySheet(
-                    rows: state.nearbyRows,
-                    onRowTap: (row) => _onNearbyRowTap(row),
-                  )
-                : HomePeekSheet(
-                    state: state,
-                    onSearchTap: () => context.push(AppRoutes.search),
-                    onRecentTap: (_) => context.push(AppRoutes.tripOptions),
-                    onNearbyTap: _onNearbyRowTap,
-                  ),
-          ),
-          if (state.nearbyRows.isNotEmpty)
-            Positioned(
-              right: AlongSpace.s16,
-              bottom: 180,
-              child: TextButton(
-                key: const Key('home_expand_nearby'),
-                onPressed: () =>
-                    setState(() => _expandedNearby = !_expandedNearby),
-                child: Text(
-                  _expandedNearby
-                      ? l10n.homeCollapseNearby
-                      : l10n.homeExpandNearby,
-                ),
+          Positioned.fill(
+            top: null,
+            child: AlongSpringSheet(
+              shrinkWrap: true,
+              child: HomePeekSheet(
+                state: state,
+                onSearchTap: () => context.push(AppRoutes.search),
+                onRecentTap: (_) => context.push(AppRoutes.tripOptions),
+                onNearbyTap: _onNearbyRowTap,
               ),
             ),
+          ),
         ],
       ),
     );

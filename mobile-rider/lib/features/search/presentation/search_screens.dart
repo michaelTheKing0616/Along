@@ -31,55 +31,84 @@ class _DestinationSearchScreenState
     final l10n = AppLocalizations.of(context);
     final hail = ref.watch(hailIntentProvider);
 
+    final palette = AlongPalette.of(context);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(hail != null ? l10n.hailSearchTitle : l10n.searchTitle),
-        leading: BackButton(onPressed: () => context.pop()),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              key: const Key('voice_booking_field'),
-              decoration: InputDecoration(hintText: l10n.voiceBookingHint),
-              textInputAction: TextInputAction.search,
-              onSubmitted: (value) {
-                final phrase = parseBookingPhrase(value);
-                setState(() {
-                  _voiceQuery = phrase?.destination;
-                  _voiceOrigin = phrase?.origin;
-                });
-              },
-            ),
-            if (_voiceOrigin != null)
-              Padding(
-                padding: const EdgeInsets.only(top: AlongSpace.s8),
-                child: Text(
-                  _voiceOrigin!,
-                  key: const Key('voice_booking_origin'),
-                  style: AlongText.caption,
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AlongSpace.s16,
+            AlongSpace.s8,
+            AlongSpace.s16,
+            AlongSpace.s8,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  AlongMapButton(
+                    key: const Key('search_back'),
+                    icon: AlongIcons.back,
+                    tooltip: MaterialLocalizations.of(context)
+                        .backButtonTooltip,
+                    onPressed: () => context.pop(),
+                  ),
+                  const SizedBox(width: AlongSpace.s12),
+                  Expanded(
+                    child: Text(
+                      hail != null ? l10n.hailSearchTitle : l10n.searchTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.heading(palette),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AlongSpace.s16),
+              Expanded(
+                child: DestinationSearchPanel(
+                  initialQuery: _voiceQuery,
+                  onDestinationSelected: (pick) {
+                    _startTripPlan(ref, pick);
+                    if (context.mounted) {
+                      _afterDestinationSelected(context, ref);
+                    }
+                  },
                 ),
               ),
-            const SizedBox(height: AlongSpace.s8),
-            Expanded(
-              child: DestinationSearchPanel(
-                initialQuery: _voiceQuery,
-                onDestinationSelected: (pick) {
-                  _startTripPlan(ref, pick);
-                  if (context.mounted) {
-                    _afterDestinationSelected(context, ref);
-                  }
+              const SizedBox(height: AlongSpace.s8),
+              TextField(
+                key: const Key('voice_booking_field'),
+                decoration: InputDecoration(hintText: l10n.voiceBookingHint),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) {
+                  final phrase = parseBookingPhrase(value);
+                  setState(() {
+                    _voiceQuery = phrase?.destination;
+                    _voiceOrigin = phrase?.origin;
+                  });
                 },
               ),
-            ),
-            TextButton(
-              key: const Key('search_choose_on_map'),
-              onPressed: () => context.push(AppRoutes.adjustPickup),
-              child: Text(l10n.homeChooseOnMap),
-            ),
-          ],
+              if (_voiceOrigin != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AlongSpace.s8),
+                  child: Text(
+                    _voiceOrigin!,
+                    key: const Key('voice_booking_origin'),
+                    style: AlongType.caption(palette),
+                  ),
+                ),
+              const SizedBox(height: AlongSpace.s8),
+              AlongButton(
+                key: const Key('search_choose_on_map'),
+                label: l10n.homeChooseOnMap,
+                variant: AlongButtonVariant.secondary,
+                onPressed: () => context.push(AppRoutes.adjustPickup),
+              ),
+            ],
+          ),
         ),
       ),
     );
