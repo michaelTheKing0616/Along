@@ -224,29 +224,28 @@ class _OpticalFace extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Expanded(
-            child: Center(
-              child: Semantics(
-                label: 'Colour code for the driver\'s camera',
-                // Photosensitivity (WCAG 2.3.1): the white sync frame
-                // flashes ~0.5/s; the 6 Hz colour frames stay under the
-                // small-area limit (152 dp is well below 25% of a 10°
-                // field at arm's length).
-                child: DecoratedBox(
-                  decoration: ShapeDecoration(
-                    color: p.recessed,
-                    shape: AlongCraft.border(28),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: SizedBox.square(
-                      key: const Key('na_me_signal'),
-                      dimension: 152,
-                      child: DecoratedBox(
-                        decoration: ShapeDecoration(
-                          color: Color(0xFF000000 | frame),
-                          shape: AlongCraft.border(20),
-                        ),
+          const Spacer(),
+          Center(
+            child: Semantics(
+              label: 'Colour code for the driver\'s camera',
+              // Photosensitivity (WCAG 2.3.1): the white sync frame
+              // flashes ~0.5/s; the 6 Hz colour frames stay under the
+              // small-area limit (152 dp is well below 25% of a 10°
+              // field at arm's length).
+              child: DecoratedBox(
+                decoration: ShapeDecoration(
+                  color: p.recessed,
+                  shape: AlongCraft.border(28),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SizedBox.square(
+                    key: const Key('na_me_signal'),
+                    dimension: 152,
+                    child: DecoratedBox(
+                      decoration: ShapeDecoration(
+                        color: Color(0xFF000000 | frame),
+                        shape: AlongCraft.border(20),
                       ),
                     ),
                   ),
@@ -259,7 +258,7 @@ class _OpticalFace extends StatelessWidget {
             'Camera code',
             style: AlongType.label(p).copyWith(color: p.muted),
           ),
-          const SizedBox(height: 16),
+          const Spacer(),
           Container(height: 1, color: p.line),
           const SizedBox(height: 16),
           Row(
@@ -644,11 +643,11 @@ class AlongNaMeNoMatch extends StatelessWidget {
         !result.tapLocked &&
         result.verdict != AlongNaMeVerdict.locked &&
         (left == null || left > 0);
+    final offline = result.verdict == AlongNaMeVerdict.failed;
     final body = switch (result.verdict) {
       AlongNaMeVerdict.rateLimited =>
         'Too fast. Wait a moment, then try again.',
-      AlongNaMeVerdict.failed =>
-        'Couldn\'t check. Check your connection, or use the PIN.',
+      AlongNaMeVerdict.failed => 'Check your connection, or use the PIN.',
       AlongNaMeVerdict.locked =>
         'Too many tries. Ask $riderName for their PIN.',
       _ =>
@@ -665,27 +664,20 @@ class AlongNaMeNoMatch extends StatelessWidget {
             children: [
               const Spacer(),
               Center(
-                child: DecoratedBox(
-                  decoration: ShapeDecoration(
-                    color: p.recessed,
-                    shape: AlongCraft.border(24),
-                  ),
-                  child: SizedBox.square(
-                    dimension: 80,
-                    child: Center(
-                      child: AlongIcon(
-                        AlongIcons.notEquals,
-                        size: 40,
-                        color: p.ink,
-                        tone: false,
-                      ),
-                    ),
+                child: CustomPaint(
+                  key: const Key('na_me_no_match_art'),
+                  size: const Size(208, 112),
+                  painter: _MismatchArt(
+                    waiting: offline,
+                    line: p.ink,
+                    fill: p.recessed,
+                    soft: p.muted,
                   ),
                 ),
               ),
               const SizedBox(height: 24),
               Text(
-                'Not a match',
+                offline ? 'Couldn\'t check' : 'Not a match',
                 textAlign: TextAlign.center,
                 style: AlongType.display(p),
               ),
@@ -823,21 +815,13 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
           final bloom = phase(0.15, 0.62, Curves.easeInOutCubic);
           // Seal: an ink disc lands on the shape, then the check draws.
           final seal = phase(0.38, 0.68, Curves.easeOutBack);
-          final check = phase(0.5, 0.82, Curves.easeOutCubic);
+          final check = phase(0.46, 0.66, Curves.easeOutQuart);
           final text = phase(0.55, 0.9, Curves.easeOutCubic);
           // The button is live from frame one: the moment never blocks.
           final button = phase(0, 0.2);
           return Stack(
             fit: StackFit.expand,
             children: [
-              ClipPath(
-                // Starts at the seal: higher when the Start button is below.
-                clipper: _CircleReveal(
-                  bloom,
-                  Alignment(0, widget.onStart != null ? -0.17 : -0.05),
-                ),
-                child: ColoredBox(color: flood),
-              ),
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -856,6 +840,10 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
                               flood: flood,
                               line: Color.lerp(p.ink, ink, bloom)!,
                               seal: seal.clamp(0.0, 1.0),
+                              // Bloom radius: reaches every corner from
+                              // wherever the seal sits, at any text scale.
+                              reach:
+                                  MediaQuery.sizeOf(context).longestSide * 1.2,
                               ink: ink,
                             ),
                             child: Center(
@@ -954,7 +942,10 @@ class _LinkPainter extends CustomPainter {
     required this.line,
     required this.seal,
     required this.ink,
+    required this.reach,
   });
+
+  final double reach;
 
   final double seal;
   final Color ink;
@@ -966,6 +957,10 @@ class _LinkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
+    // The bloom grows out of the shape itself (paints past this box).
+    if (bloom > 0) {
+      canvas.drawCircle(c, reach * bloom, Paint()..color = flood);
+    }
     // Rest pose: two tone-on-tone halos hold the seal.
     for (final r in [80.0, 100.0]) {
       canvas.drawCircle(
@@ -1017,10 +1012,83 @@ class _LinkPainter extends CustomPainter {
   bool shouldRepaint(_LinkPainter old) =>
       old.link != link ||
       old.seal != seal ||
+      old.reach != reach ||
       old.ink != ink ||
       old.bloom != bloom ||
       old.flood != flood ||
       old.line != line;
+}
+
+/// No-match art: two phones leaning apart, each showing a different shape,
+/// with a soft dotted gap between them. Calm, no red, no cross.
+class _MismatchArt extends CustomPainter {
+  const _MismatchArt({
+    required this.waiting,
+    required this.line,
+    required this.fill,
+    required this.soft,
+  });
+
+  /// Couldn't check (offline): phones upright, blank, still connecting.
+  final bool waiting;
+  final Color line;
+  final Color fill;
+  final Color soft;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = line;
+    final solid = Paint()..color = line;
+    void phone(Offset c, double tilt, void Function() glyph) {
+      canvas.save();
+      canvas.translate(c.dx, c.dy);
+      canvas.rotate(tilt);
+      final body = RRect.fromRectAndRadius(
+        Rect.fromCenter(center: Offset.zero, width: 56, height: 96),
+        const Radius.circular(14),
+      );
+      canvas.drawRRect(body, Paint()..color = fill);
+      canvas.drawRRect(body, stroke);
+      canvas.drawLine(const Offset(-8, 38), const Offset(8, 38), stroke);
+      glyph();
+      canvas.restore();
+    }
+
+    final tilt = waiting ? 0.0 : 0.12;
+    phone(Offset(size.width * 0.2, size.height / 2), -tilt, () {
+      if (waiting) return;
+      canvas.drawCircle(const Offset(0, -6), 14, solid);
+    });
+    phone(Offset(size.width * 0.8, size.height / 2), tilt, () {
+      if (waiting) return;
+      canvas.drawPath(
+        Path()
+          ..moveTo(0, -22)
+          ..lineTo(15, 6)
+          ..lineTo(-15, 6)
+          ..close(),
+        solid,
+      );
+    });
+    // The gap: three soft dots, the middle one slightly larger.
+    final dots = Paint()..color = soft;
+    final cy = size.height / 2;
+    for (final dx in [-16.0, 0.0, 16.0]) {
+      canvas.drawCircle(Offset(size.width / 2 + dx, cy), dx == 0 ? 4 : 3, dots);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_MismatchArt old) =>
+      old.waiting != waiting ||
+      old.line != line ||
+      old.fill != fill ||
+      old.soft != soft;
 }
 
 class _FloodButton extends StatelessWidget {
@@ -1063,22 +1131,6 @@ class _FloodButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _CircleReveal extends CustomClipper<Path> {
-  _CircleReveal(this.t, this.origin);
-  final double t;
-  final Alignment origin;
-
-  @override
-  Path getClip(Size size) {
-    final r = size.longestSide * 1.1 * t;
-    return Path()
-      ..addOval(Rect.fromCircle(center: origin.alongSize(size), radius: r));
-  }
-
-  @override
-  bool shouldReclip(_CircleReveal old) => old.t != t || old.origin != origin;
 }
 
 class _CheckPainter extends CustomPainter {
