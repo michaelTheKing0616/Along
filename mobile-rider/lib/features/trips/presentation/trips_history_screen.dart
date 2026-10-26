@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/placements/presentation/placement_providers.dart';
 import 'package:mobile_rider/features/placements/presentation/sponsored_placement_slot.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
@@ -19,102 +19,160 @@ class TripsHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     final history = ref.watch(tripsHistoryProvider);
     final placementsAsync = ref.watch(tripsHistoryPlacementProvider);
+    final locale = Localizations.localeOf(context).toLanguageTag();
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.navTrips)),
-      body: history.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text(error.toString())),
+    return TripPage(
+      title: l10n.navTrips,
+      children: history.when(
+        loading: () => const [
+          AlongSkeleton(variant: SkeletonVariant.line),
+          SizedBox(height: AlongSpace.s12),
+          AlongSkeleton(variant: SkeletonVariant.line),
+        ],
+        error: (error, _) => [
+          TripNotice(
+            icon: AlongIcons.info,
+            text: l10n.tripsLoadFailed,
+            warn: true,
+          ),
+        ],
         data: (entries) {
           if (entries.isEmpty) {
-            return Center(child: Text(l10n.tripsEmpty));
-          }
-          final grouped = _groupByDay(entries);
-          return ListView(
-            children: [
-              placementsAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-                data: (placements) => Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AlongSpace.s16,
-                    AlongSpace.s16,
-                    AlongSpace.s16,
-                    0,
-                  ),
-                  child: SponsoredPlacementSlot(placements: placements),
-                ),
+            return [
+              const SizedBox(height: AlongSpace.s48),
+              Center(
+                child: AlongIcon(AlongIcons.history, size: 40, color: p.muted),
               ),
-              for (final group in grouped.entries) ...[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AlongSpace.s16,
-                    AlongSpace.s16,
-                    AlongSpace.s16,
-                    AlongSpace.s8,
-                  ),
-                  child: Text(group.key, style: AlongText.bodyStrong),
+              const SizedBox(height: AlongSpace.s12),
+              Text(
+                l10n.tripsEmpty,
+                textAlign: TextAlign.center,
+                style: AlongType.bodyMuted(p),
+              ),
+            ];
+          }
+          final grouped = _groupByDay(entries, locale);
+          return [
+            placementsAsync.maybeWhen(
+              data: (placements) => Padding(
+                padding: const EdgeInsets.only(bottom: AlongSpace.s16),
+                child: SponsoredPlacementSlot(placements: placements),
+              ),
+              orElse: () => const SizedBox.shrink(),
+            ),
+            for (final group in grouped.entries) ...[
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: AlongSpace.s8,
+                  bottom: AlongSpace.s8,
                 ),
-                for (final entry in group.value)
-                  ListTile(
+                child: Text(group.key, style: AlongType.label(p)),
+              ),
+              for (final entry in group.value)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+                  child: _HistoryRow(
                     key: Key('trip_history_${entry.tripId}'),
-                    title: Text(entry.routeLabel),
-                    subtitle: Text(
-                      '${DateFormat.jm().format(entry.completedAt)} · ${formatAppMoney(ref, entry.totalFare)}',
+                    entry: entry,
+                    detail: l10n.tripsRowDetail(
+                      DateFormat.Hm(locale).format(cityTime(entry.completedAt)),
+                      formatAppMoney(ref, entry.totalFare),
                     ),
-                    leading: ModeChip(
-                      mode: designMode(entry.modeCode),
-                      size: ModeChipSize.small,
-                    ),
-                    trailing: _StatusPill(status: entry.status),
-                    onTap: () => context.push(
-                      AppRoutes.tripDetail,
-                      extra: entry.tripId,
-                    ),
+                    onTap: () =>
+                        context.push(AppRoutes.tripDetail, extra: entry.tripId),
                   ),
-              ],
+                ),
             ],
-          );
+          ];
         },
       ),
     );
   }
 
-  Map<String, List<TripHistoryEntry>> _groupByDay(List<TripHistoryEntry> entries) {
+  Map<String, List<TripHistoryEntry>> _groupByDay(
+    List<TripHistoryEntry> entries,
+    String locale,
+  ) {
     final map = <String, List<TripHistoryEntry>>{};
     for (final entry in entries) {
-      final key = DateFormat.yMMMMd().format(entry.completedAt.toLocal());
+      final key = DateFormat.yMMMMd(locale).format(cityTime(entry.completedAt));
       map.putIfAbsent(key, () => []).add(entry);
     }
     return map;
   }
 }
 
-class _StatusPill extends StatelessWidget {
-  const _StatusPill({required this.status});
+class _HistoryRow extends StatelessWidget {
+  const _HistoryRow({
+    super.key,
+    required this.entry,
+    required this.detail,
+    required this.onTap,
+  });
 
-  final TripStatus status;
+  final TripHistoryEntry entry;
+  final String detail;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final label = switch (status) {
-      TripStatus.completed => 'Completed',
-      TripStatus.cancelled => 'Cancelled',
-      _ => status.name,
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AlongSpace.s8,
-        vertical: AlongSpace.s4,
-      ),
+    final p = AlongPalette.of(context);
+    final l10n = AppLocalizations.of(context);
+    final cancelled = entry.status == TripStatus.cancelled;
+    return Material(
+      color: p.recessed,
+      shape: AlongCraft.border(20),
       clipBehavior: Clip.antiAlias,
-      decoration: AlongCraft.fill(
-        AlongColors.surface100,
-        corner: AlongRadius.xs.x,
+      child: InkWell(
+        onTap: () {
+          AlongHaptics.tick(context);
+          onTap();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(AlongSpace.s12),
+          child: Row(
+            children: [
+              TripModeTile(modeCode: entry.modeCode, size: 40),
+              const SizedBox(width: AlongSpace.s12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.routeLabel,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.label(p),
+                    ),
+                    Text(detail, style: AlongType.caption(p)),
+                  ],
+                ),
+              ),
+              if (cancelled) ...[
+                const SizedBox(width: AlongSpace.s8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: AlongCraft.compactFill(
+                    p.danger.withValues(alpha: 0.12),
+                    24,
+                    corner: 8,
+                  ),
+                  child: Text(
+                    l10n.tripStatusCancelled,
+                    style: AlongType.caption(p).copyWith(color: p.danger),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
-      child: Text(label, style: AlongText.caption),
     );
   }
 }

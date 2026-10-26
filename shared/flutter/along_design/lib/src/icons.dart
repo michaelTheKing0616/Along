@@ -272,6 +272,20 @@ abstract final class AlongIcons {
     fontPackage: _package,
   );
 
+  /// Camera: attach a photo.
+  static const camera = IconData(
+    0xe10f,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Clock with a forward arrow: add time, extend.
+  static const addTime = IconData(
+    0xe19f,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
   /// Fill layer that sits under the stroke in the duotone font.
   static const tone = <int, int>{
     0xe317: 0xe316,
@@ -280,6 +294,8 @@ abstract final class AlongIcons {
     0xe89d: 0xe89c,
     0xe327: 0xe326,
     0xe1a1: 0xe1a0,
+    0xe19f: 0xe19e,
+    0xe10f: 0xe10e,
     0xe397: 0xe396,
     0xe53b: 0xe53a,
     0xe0af: 0xe0ae,

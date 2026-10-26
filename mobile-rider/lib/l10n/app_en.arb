@@ -168,29 +168,9 @@
       }
     }
   },
-  "homeExpandNearby": "Show nearby",
-  "@homeExpandNearby": {
-    "description": "Expand home sheet to half"
-  },
-  "homeCollapseNearby": "Hide nearby",
-  "@homeCollapseNearby": {
-    "description": "Collapse home sheet to peek"
-  },
-  "modeCar": "cars",
-  "@modeCar": {
-    "description": "Ambient row mode label — car/along"
-  },
   "modeKeke": "kekes",
   "@modeKeke": {
     "description": "Ambient row mode label — keke"
-  },
-  "modeOkada": "okadas",
-  "@modeOkada": {
-    "description": "Ambient row mode label — okada"
-  },
-  "modeMinibus": "minibuses",
-  "@modeMinibus": {
-    "description": "Ambient row mode label — minibus"
   },
   "searchTitle": "Where to?",
   "@searchTitle": {
@@ -212,20 +192,6 @@
   "@cachedOptionsStaleBadge": {
     "description": "Offline/stale plan or search results badge (doc 07 §4)"
   },
-  "searchResultSubtitle": "{area} · {distanceM} m away",
-  "@searchResultSubtitle": {
-    "description": "R-06 result subtitle",
-    "placeholders": {
-      "area": {
-        "type": "String",
-        "example": "Wuse"
-      },
-      "distanceM": {
-        "type": "int",
-        "example": "450"
-      }
-    }
-  },
   "adjustPickupTitle": "Adjust pickup",
   "@adjustPickupTitle": {
     "description": "R-06b title"
@@ -244,26 +210,6 @@
   "@adjustPickupConfirm": {
     "description": "R-06b confirm CTA"
   },
-  "tripsStubBody": "Your trips will appear here.",
-  "@tripsStubBody": {
-    "description": "Trips tab stub until later phase"
-  },
-  "accountStubBody": "Account settings arrive in a later task.",
-  "@accountStubBody": {
-    "description": "Account tab stub until later phase"
-  },
-  "tripOptionsStubTitle": "Trip options",
-  "@tripOptionsStubTitle": {
-    "description": "R-07 stub title until P1-B-03"
-  },
-  "tripOptionsStubBody": "Route and fare options arrive in the next task.",
-  "@tripOptionsStubBody": {
-    "description": "R-07 stub body until P1-B-03"
-  },
-  "tripOptionsTitle": "Trip options",
-  "@tripOptionsTitle": {
-    "description": "R-07 screen title"
-  },
   "tripOptionsHeading": "Choose how to go",
   "@tripOptionsHeading": {
     "description": "R-07 sheet heading"
@@ -279,10 +225,6 @@
   "tripOptionsAgreePrice": "Agree price",
   "@tripOptionsAgreePrice": {
     "description": "R-07 Tier 3 CTA placeholder"
-  },
-  "tripOptionsAgreePricePlaceholder": "Along Pricing arrives in a later phase",
-  "@tripOptionsAgreePricePlaceholder": {
-    "description": "R-07 Tier 3 toast — negotiation is P2"
   },
   "pricingTitle": "Along Pricing",
   "@pricingTitle": {
@@ -353,16 +295,6 @@
   "@loadFlagDone": {
     "description": "R-09 apply load flag"
   },
-  "requestingTitle": "Requesting a {mode}…",
-  "@requestingTitle": {
-    "description": "R-10 sheet title",
-    "placeholders": {
-      "mode": {
-        "type": "String",
-        "example": "keke"
-      }
-    }
-  },
   "requestingCountdown": "{seconds}s remaining",
   "@requestingCountdown": {
     "description": "R-10 countdown from server expires_at",
@@ -384,10 +316,6 @@
   "requestingExpired": "No driver responded — see other options",
   "@requestingExpired": {
     "description": "R-10 expired state"
-  },
-  "requestingAcceptedPlaceholder": "Driver accepted — meet your vehicle arrives next",
-  "@requestingAcceptedPlaceholder": {
-    "description": "R-10 accepted placeholder until R-11"
   },
   "coverageGapTitle": "No mapped routes here yet",
   "@coverageGapTitle": {
@@ -557,16 +485,6 @@
   "@wayfindingDegraded": {
     "description": "R-19 OSRM degraded banner"
   },
-  "wayfindingMapHint": "Route with {count} points",
-  "@wayfindingMapHint": {
-    "description": "R-19 map mode placeholder",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "12"
-      }
-    }
-  },
   "wayfindingNoSteps": "No steps available",
   "@wayfindingNoSteps": {
     "description": "R-19 empty steps fallback"
@@ -595,16 +513,6 @@
       }
     }
   },
-  "meetVehicleNaMeHint": "Show this to your driver — {label}",
-  "@meetVehicleNaMeHint": {
-    "description": "R-11 Na Me chip caption",
-    "placeholders": {
-      "label": {
-        "type": "String",
-        "example": "GREEN DIAMOND"
-      }
-    }
-  },
   "meetVehicleDriverSignalLost": "Driver signal lost",
   "@meetVehicleDriverSignalLost": {
     "description": "R-11 driver offline > threshold"
@@ -625,20 +533,6 @@
   "@meetVehicleBoarded": {
     "description": "R-11 manual boarding override"
   },
-  "activeTripStatus": "In transit · ETA {minutes} min · {fare} Standard fare",
-  "@activeTripStatus": {
-    "description": "R-13 sheet peek line",
-    "placeholders": {
-      "minutes": {
-        "type": "int",
-        "example": "14"
-      },
-      "fare": {
-        "type": "String",
-        "example": "₦450"
-      }
-    }
-  },
   "activeTripExtend": "Extend",
   "@activeTripExtend": {
     "description": "R-13 extend placeholder"
@@ -651,49 +545,9 @@
   "@activeTripReport": {
     "description": "R-13 report placeholder"
   },
-  "sharePlaceholder": "Share trip — coming in Phase 5",
-  "@sharePlaceholder": {
-    "description": "R-25 placeholder snackbar"
-  },
-  "sosPlaceholder": "SOS — coming in Phase 5",
-  "@sosPlaceholder": {
-    "description": "R-23 placeholder snackbar"
-  },
-  "extendPlaceholder": "Extend trip — coming in Phase 5",
-  "@extendPlaceholder": {
-    "description": "R-15 placeholder snackbar"
-  },
-  "reportPlaceholder": "Report incident — coming in Phase 5",
-  "@reportPlaceholder": {
-    "description": "R-24 placeholder snackbar"
-  },
   "tripCompleteTitle": "Trip complete",
   "@tripCompleteTitle": {
     "description": "R-17 sheet title"
-  },
-  "tripCompletePaidQuestion": "Did you pay {amount}?",
-  "@tripCompletePaidQuestion": {
-    "description": "R-17 cash fare confirm when digital is off",
-    "placeholders": {
-      "amount": {
-        "type": "String",
-        "example": "₦450"
-      }
-    }
-  },
-  "tripCompletePayQuestion": "Pay {amount} to {name}",
-  "@tripCompletePayQuestion": {
-    "description": "R-17 digital-first close-out heading",
-    "placeholders": {
-      "amount": {
-        "type": "String",
-        "example": "₦450"
-      },
-      "name": {
-        "type": "String",
-        "example": "Musa"
-      }
-    }
   },
   "tripCompletePaidCash": "Paid cash",
   "@tripCompletePaidCash": {
@@ -714,10 +568,6 @@
   "tripCompleteDifferentPrompt": "Pick the amount you paid",
   "@tripCompleteDifferentPrompt": {
     "description": "R-17 different-amount chips heading"
-  },
-  "tripCompleteRateTitle": "Rate your trip",
-  "@tripCompleteRateTitle": {
-    "description": "R-17 rating step heading"
   },
   "extendTripTitle": "Extend trip",
   "@extendTripTitle": {
@@ -1218,7 +1068,6 @@
     }
   },
   "seatStale": "Seat map is more than a minute old",
-  "seatMapTitle": "Seat map",
   "filterRulesHint": "Search a driver's rules",
   "seatTaken": "That seat was just taken",
   "acknowledgeToClaim": "I agree",
@@ -1368,22 +1217,6 @@
   "tripSortEasiest": "Least walking",
   "@tripSortEasiest": {
     "description": "tripSortEasiest"
-  },
-  "fareTierVerified": "Standard fare",
-  "@fareTierVerified": {
-    "description": "fareTierVerified"
-  },
-  "fareTierCrowd": "Community fare",
-  "@fareTierCrowd": {
-    "description": "fareTierCrowd"
-  },
-  "fareTierCandidate": "Unconfirmed",
-  "@fareTierCandidate": {
-    "description": "fareTierCandidate"
-  },
-  "fareTierEstimate": "Estimate, agree price",
-  "@fareTierEstimate": {
-    "description": "fareTierEstimate"
   },
   "distanceKm": "{km} km",
   "@distanceKm": {
@@ -1894,5 +1727,41 @@
       }
     }
   },
-  "meetVehicleNaMeShow": "Hold it up so your driver can spot you"
+  "meetVehicleNaMeShow": "Hold it up so your driver can spot you",
+  "reportIncidentSubtitle": "Tell us what happened. Our safety team reads every report.",
+  "shareTripRevoke": "Stop sharing",
+  "tripsRowDetail": "{first} · {second}",
+  "@tripsRowDetail": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDriverFallback": "Your driver",
+  "tripsLoadFailed": "Couldn't load your trips. Pull to try again.",
+  "tripStatusCancelled": "Cancelled",
+  "tripHoldForSos": "Hold for SOS",
+  "tripNaMe": "Na Me",
+  "tripCall112": "Call 112",
+  "tripSignalSent": "Sent",
+  "fareTierVerified": "Standard fare",
+  "@fareTierVerified": {
+    "description": "fareTierVerified"
+  },
+  "fareTierCrowd": "Community fare",
+  "@fareTierCrowd": {
+    "description": "fareTierCrowd"
+  },
+  "fareTierCandidate": "Unconfirmed",
+  "@fareTierCandidate": {
+    "description": "fareTierCandidate"
+  },
+  "fareTierEstimate": "Estimate, agree price",
+  "@fareTierEstimate": {
+    "description": "fareTierEstimate"
+  }
 }

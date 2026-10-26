@@ -21,6 +21,10 @@ class AlongTripStrings {
     this.minutesRangeLabel = _minutesRangeLabel,
     this.emergency = 'Emergency',
     this.sos = 'SOS',
+    this.holdForSos = 'Hold for SOS',
+    this.naMe = 'Na Me',
+    this.call112 = 'Call 112',
+    this.fired = 'Sent',
     this.call = 'Call',
     this.callName = _callName,
     this.message = 'Message',
@@ -63,6 +67,10 @@ class AlongTripStrings {
   final String Function(int minutes) minutesLabel;
   final String Function(int low, int high) minutesRangeLabel;
   final String emergency;
+  final String holdForSos;
+  final String naMe;
+  final String call112;
+  final String fired;
   final String sos;
   final String call;
   final String Function(String name) callName;

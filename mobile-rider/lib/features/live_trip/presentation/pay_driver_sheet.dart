@@ -2,14 +2,10 @@ import 'dart:async';
 
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart' hide Money;
-import 'package:along_design/along_design.dart'
-    as design
-    show FareTier, formatMoney;
 import 'package:along_design/along_design.dart' hide FareTier, formatMoney;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/payments/data/payments_providers.dart';
 import 'package:mobile_rider/features/payments/domain/informal_pay_amount.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_methods_screen.dart';
@@ -339,32 +335,32 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
     final driver = _resolve?.driver;
     final amountNaira = majorUnits(_amount);
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: AlongBottomSheet(
-        size: AlongBottomSheetSize.full,
-        title: l10n.payDriverTitle,
-        child: switch (_phase) {
+    return TripModalSheet(
+      title: l10n.payDriverTitle,
+      icon: AlongIcons.wallet,
+      children: [
+        switch (_phase) {
           _PayPhase.loading => const Center(
             key: Key('pay_driver_loading'),
             child: Padding(
               padding: EdgeInsets.all(AlongSpace.s24),
-              child: CircularProgressIndicator(color: AlongColors.brandYellow),
+              child: AlongSkeleton(variant: SkeletonVariant.line),
             ),
           ),
-          _PayPhase.cashOnly => Text(
+          _PayPhase.cashOnly => TripNotice(
             key: const Key('pay_driver_cash_only'),
-            l10n.payDriverCashOnly(driver?.firstName ?? ''),
-            style: AlongText.heading2,
+            icon: AlongIcons.wallet,
+            text: l10n.payDriverCashOnly(driver?.firstName ?? ''),
           ),
-          _PayPhase.inactive => Text(
+          _PayPhase.inactive => TripNotice(
             key: const Key('pay_driver_inactive'),
-            l10n.payDriverInactive,
-            style: AlongText.heading2,
+            icon: AlongIcons.info,
+            text: l10n.payDriverInactive,
+            warn: true,
           ),
           _PayPhase.pending => _PendingView(
             result: _initiateResult!,
-            amountLabel: design.formatMoney(amountNaira),
+            amountLabel: formatAppMoneyMajor(ref, amountNaira),
             onRetry: () {
               _receiptPoll?.cancel();
               setState(() => _phase = _PayPhase.ready);
@@ -381,11 +377,10 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
           _PayPhase.failed => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                _errorMessage ?? l10n.payDriverFailed,
-                style: AlongText.body.copyWith(
-                  color: AlongColors.semanticDanger,
-                ),
+              TripNotice(
+                icon: AlongIcons.info,
+                text: _errorMessage ?? l10n.payDriverFailed,
+                warn: true,
               ),
               const SizedBox(height: AlongSpace.s16),
               AlongButton(
@@ -430,7 +425,7 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
             onPay: _submitPay,
           ),
         },
-      ),
+      ],
     );
   }
 }
@@ -483,6 +478,11 @@ class _ReadyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
+    String money(int major) =>
+        ProviderScope.containerOf(context)
+            .read(appMoneyFormatterProvider)
+            .formatMajor(major);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -490,19 +490,17 @@ class _ReadyView extends StatelessWidget {
           Container(
             key: const Key('pay_driver_different_driver'),
             padding: const EdgeInsets.all(AlongSpace.s12),
-            clipBehavior: Clip.antiAlias,
-            decoration: AlongCraft.fill(
-              AlongColors.semanticDanger.withValues(alpha: 0.12),
-              corner: AlongRadius.row.x,
+            decoration: AlongCraft.compactFill(
+              p.danger.withValues(alpha: 0.10),
+              96,
+              corner: 20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   l10n.payDriverDifferentDriver,
-                  style: AlongText.bodyStrong.copyWith(
-                    color: AlongColors.semanticDanger,
-                  ),
+                  style: AlongType.label(p).copyWith(color: p.danger),
                 ),
                 const SizedBox(height: AlongSpace.s8),
                 AlongButton(
@@ -516,46 +514,74 @@ class _ReadyView extends StatelessWidget {
           ),
           const SizedBox(height: AlongSpace.s16),
         ],
-        if (attachedTrip != null || driver != null) ...[
-          Text(
-            attachedTrip != null
-                ? '${attachedTrip!.driver.displayName} · ${attachedTrip!.vehicle.plateNumber}'
-                : '${driver!.firstName} · ${driver!.plate}',
-            style: AlongText.bodyStrong,
-          ),
-          const SizedBox(height: AlongSpace.s8),
-          if (attachedTrip != null)
-            ModeChip(mode: designMode(attachedTrip!.modeCode))
-          else if (driver != null)
-            Text(driver!.plate, style: AlongText.numericL),
-          const SizedBox(height: AlongSpace.s16),
-        ],
-        FareHero(
+        TripPanel(
           key: const Key('pay_driver_amount'),
-          amountNaira: amountNaira,
-          tier: attachedTrip != null
-              ? designFareTier(
-                  attachedTrip!.fare.tier,
-                  unconfirmed: attachedTrip!.fare.unconfirmed,
-                )
-              : design.FareTier.verified,
-          lineItems:
-              receipt?.lines
-                  .map(
-                    (line) => FareHeroLineItem(
-                      label: line.label,
-                      amountNaira: majorUnits(line.amount),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (attachedTrip != null || driver != null) ...[
+                Row(
+                  children: [
+                    TripDriverAvatar(
+                      name:
+                          attachedTrip?.driver.displayName ?? driver!.firstName,
+                      size: 40,
                     ),
-                  )
-                  .toList() ??
-              const [],
-          expanded: receipt != null,
+                    const SizedBox(width: AlongSpace.s12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            attachedTrip?.driver.displayName ??
+                                driver!.firstName,
+                            style: AlongType.label(p),
+                          ),
+                          Text(
+                            attachedTrip?.vehicle.plateNumber ?? driver!.plate,
+                            style: AlongType.caption(p),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (attachedTrip != null)
+                      TripModeTile(modeCode: attachedTrip!.modeCode, size: 36),
+                  ],
+                ),
+                const SizedBox(height: AlongSpace.s16),
+              ],
+              Text(l10n.tripCompleteFareLabel, style: AlongType.caption(p)),
+              Text(money(amountNaira), style: AlongType.display(p)),
+              if (receipt != null) ...[
+                const SizedBox(height: AlongSpace.s8),
+                for (final line in receipt!.lines)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AlongSpace.s4),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(line.label, style: AlongType.caption(p)),
+                        ),
+                        Text(
+                          money(majorUnits(line.amount)),
+                          style: AlongType.caption(p),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ],
+          ),
         ),
         if (hideAmountPicker && !showLockedCaption) ...[
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton(
               key: const Key('pay_driver_other_amount'),
+              style: TextButton.styleFrom(
+                foregroundColor: p.ink,
+                shape: AlongCraft.border(12),
+              ),
               onPressed: onShowOther,
               child: Text(l10n.payDriverOtherAmount),
             ),
@@ -566,11 +592,12 @@ class _ReadyView extends StatelessWidget {
             key: const Key('pay_driver_other_field'),
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              hintText: l10n.payDriverOtherHint,
-              prefixText:
-                  '${ProviderScope.containerOf(context).read(appMoneyFormatterProvider).currencySymbol} ',
-            ),
+            style: AlongType.body(p),
+            decoration: tripInputDecoration(p, hint: l10n.payDriverOtherHint)
+                .copyWith(
+                  prefixText:
+                      '${ProviderScope.containerOf(context).read(appMoneyFormatterProvider).currencySymbol} ',
+                ),
             onChanged: (value) {
               final naira = int.tryParse(value);
               if (naira != null) onOtherChanged(naira);
@@ -582,7 +609,7 @@ class _ReadyView extends StatelessWidget {
             padding: const EdgeInsets.only(top: AlongSpace.s8),
             child: Text(
               l10n.payDriverAmountLocked,
-              style: AlongText.caption.copyWith(color: AlongColors.ink700),
+              style: AlongType.caption(p),
             ),
           )
         else if (!hideAmountPicker) ...[
@@ -590,22 +617,22 @@ class _ReadyView extends StatelessWidget {
             const SizedBox(height: AlongSpace.s12),
             Wrap(
               spacing: AlongSpace.s8,
+              runSpacing: AlongSpace.s8,
               children: [
-                ...suggested.map(
-                  (money) => ActionChip(
-                    key: Key('pay_amount_chip_${majorUnits(money)}'),
-                    label: Text(
-                      ProviderScope.containerOf(context)
-                          .read(appMoneyFormatterProvider)
-                          .format(money),
-                    ),
-                    onPressed: () => onSelectAmount(money),
+                for (final m in suggested)
+                  _AmountChoice(
+                    key: Key('pay_amount_chip_${majorUnits(m)}'),
+                    label: ProviderScope.containerOf(context)
+                        .read(appMoneyFormatterProvider)
+                        .format(m),
+                    selected: selectedAmount == m,
+                    onTap: () => onSelectAmount(m),
                   ),
-                ),
-                ActionChip(
+                _AmountChoice(
                   key: const Key('pay_driver_other_amount'),
-                  label: Text(l10n.payDriverOtherAmount),
-                  onPressed: onShowOther,
+                  label: l10n.payDriverOtherAmount,
+                  selected: showOtherKeypad,
+                  onTap: onShowOther,
                 ),
               ],
             ),
@@ -616,11 +643,12 @@ class _ReadyView extends StatelessWidget {
               key: const Key('pay_driver_other_field'),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                hintText: l10n.payDriverOtherHint,
-                prefixText:
-                    '${ProviderScope.containerOf(context).read(appMoneyFormatterProvider).currencySymbol} ',
-              ),
+              style: AlongType.body(p),
+              decoration: tripInputDecoration(p, hint: l10n.payDriverOtherHint)
+                  .copyWith(
+                    prefixText:
+                        '${ProviderScope.containerOf(context).read(appMoneyFormatterProvider).currencySymbol} ',
+                  ),
               onChanged: (value) {
                 final naira = int.tryParse(value);
                 if (naira != null) onOtherChanged(naira);
@@ -629,21 +657,35 @@ class _ReadyView extends StatelessWidget {
           ],
         ],
         const SizedBox(height: AlongSpace.s16),
-        Row(
-          children: [
-            Expanded(child: Text(methodLabel, style: AlongText.body)),
-            TextButton(
-              key: const Key('pay_driver_change_method'),
-              onPressed: onChangeMethod,
-              child: Text(l10n.payDriverChangeMethod),
-            ),
-          ],
+        TripPanel(
+          padding: const EdgeInsets.fromLTRB(
+            AlongSpace.s16,
+            AlongSpace.s4,
+            AlongSpace.s4,
+            AlongSpace.s4,
+          ),
+          child: Row(
+            children: [
+              AlongIcon(AlongIcons.wallet, size: 20, color: p.ink),
+              const SizedBox(width: AlongSpace.s12),
+              Expanded(child: Text(methodLabel, style: AlongType.label(p))),
+              TextButton(
+                key: const Key('pay_driver_change_method'),
+                style: TextButton.styleFrom(
+                  foregroundColor: p.ink,
+                  minimumSize: const Size(48, 48),
+                  shape: AlongCraft.border(12),
+                ),
+                onPressed: onChangeMethod,
+                child: Text(l10n.payDriverChangeMethod),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: AlongSpace.s16),
         AlongButton(
           key: const Key('pay_driver_submit'),
-          label: l10n.payDriverCta(design.formatMoney(amountNaira)),
-          variant: AlongButtonVariant.yellow,
+          label: l10n.payDriverCta(money(amountNaira)),
           visualState: busy
               ? AlongButtonVisualState.loading
               : AlongButtonVisualState.normal,
@@ -668,32 +710,33 @@ class _PendingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     final transfer = result.transfer;
     final remaining = result.expiresAt.difference(DateTime.now()).inSeconds;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.payDriverPending(amountLabel), style: AlongText.heading2),
+        Text(l10n.payDriverPending(amountLabel), style: AlongType.title(p)),
         if (transfer != null && transfer.accountNumber.isNotEmpty) ...[
           const SizedBox(height: AlongSpace.s16),
           if (transfer.bankName.isNotEmpty)
             Text(
               transfer.bankName,
-              style: AlongText.bodyStrong,
+              style: AlongType.label(p),
               textAlign: TextAlign.center,
             ),
           const SizedBox(height: AlongSpace.s8),
           Text(
             key: const Key('pay_driver_account_number'),
             transfer.accountNumber,
-            style: AlongText.numericL,
+            style: AlongType.numeric(p),
             textAlign: TextAlign.center,
           ),
           if (transfer.accountName.isNotEmpty) ...[
             const SizedBox(height: AlongSpace.s4),
             Text(
               transfer.accountName,
-              style: AlongText.caption.copyWith(color: AlongColors.ink700),
+              style: AlongType.caption(p),
               textAlign: TextAlign.center,
             ),
           ],
@@ -715,7 +758,10 @@ class _PendingView extends StatelessWidget {
         ],
         if (result.ussdCode != null) ...[
           const SizedBox(height: AlongSpace.s8),
-          Text(result.ussdCode!, style: AlongText.numericM),
+          Text(
+            result.ussdCode!,
+            style: AlongType.numeric(p).copyWith(fontSize: 22),
+          ),
         ],
         if (result.authorizationUrl != null &&
             (transfer == null || transfer.accountNumber.isEmpty)) ...[
@@ -735,14 +781,14 @@ class _PendingView extends StatelessWidget {
         const SizedBox(height: AlongSpace.s16),
         Text(
           l10n.payDriverWaitingTransfer,
-          style: AlongText.bodyStrong,
+          style: AlongType.label(p),
           textAlign: TextAlign.center,
         ),
         if (remaining > 0) ...[
           const SizedBox(height: AlongSpace.s8),
           Text(
             l10n.payDriverExpires(remaining),
-            style: AlongText.caption.copyWith(color: AlongColors.ink700),
+            style: AlongType.caption(p),
             textAlign: TextAlign.center,
           ),
         ],
@@ -777,30 +823,37 @@ class _SuccessView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
+    String money(int major) =>
+        ProviderScope.containerOf(context)
+            .read(appMoneyFormatterProvider)
+            .formatMajor(major);
     final driverNaira = majorUnits(receipt.driverAmount);
     final feeNaira = majorUnits(receipt.commissionAmount);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.payDriverSuccessTitle, style: AlongText.heading2),
+        Text(l10n.payDriverSuccessTitle, style: AlongType.title(p)),
         const SizedBox(height: AlongSpace.s12),
         Text(
           key: const Key('pay_driver_success_itemised'),
           l10n.payDriverSuccessItemised(
-            design.formatMoney(driverNaira),
+            money(driverNaira),
             receipt.driverFirstName,
-            design.formatMoney(feeNaira),
+            money(feeNaira),
           ),
-          style: AlongText.body,
+          style: AlongType.body(p),
         ),
         if (showHistoryOptIn) ...[
           const SizedBox(height: AlongSpace.s16),
           CheckboxListTile(
             key: const Key('pay_driver_history_opt_in'),
+            activeColor: p.ink,
+            checkColor: p.onInk,
             value: historyOptIn,
             onChanged: (v) => onHistoryChanged(v ?? false),
-            title: Text(l10n.payDriverHistoryOptIn),
+            title: Text(l10n.payDriverHistoryOptIn, style: AlongType.body(p)),
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
@@ -813,6 +866,55 @@ class _SuccessView extends StatelessWidget {
           onPressed: onDone,
         ),
       ],
+    );
+  }
+}
+
+/// A squircle amount choice; ink when selected.
+class _AmountChoice extends StatelessWidget {
+  const _AmountChoice({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: Material(
+        color: selected ? p.ink : p.recessed,
+        shape: AlongCraft.border(12),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            AlongHaptics.tick(context);
+            onTap();
+          },
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44, minWidth: 72),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AlongSpace.s16,
+                vertical: AlongSpace.s12,
+              ),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: AlongType.label(p)
+                    .copyWith(color: selected ? p.onInk : p.ink),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

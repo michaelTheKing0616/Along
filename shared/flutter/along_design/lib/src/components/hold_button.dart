@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../flows/trip_strings.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../tokens.g.dart';
@@ -118,8 +119,9 @@ class _HoldButtonState extends State<HoldButton>
         ? (isFired ? AlongColors.semanticDangerFill : dangerTint)
         : p.ink;
     final Color fg = _isSos ? (isFired ? Colors.white : danger) : p.onInk;
-    final label = widget.label ?? (_isSos ? 'Hold for SOS' : 'Na Me');
-    final firedLabel = _isSos ? 'Call 112' : 'Fired';
+    final strings = AlongTripStrings.of(context);
+    final label = widget.label ?? (_isSos ? strings.holdForSos : strings.naMe);
+    final firedLabel = _isSos ? strings.call112 : strings.fired;
     const tile = AlongSpace.s48;
     const frame = tile + 8;
 

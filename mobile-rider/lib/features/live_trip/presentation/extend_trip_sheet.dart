@@ -1,10 +1,9 @@
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart' hide formatMoney;
-import 'package:along_design/along_design.dart' as design show formatMoney;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
-import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/features/search/presentation/destination_search_panel.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -64,49 +63,62 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: AlongBottomSheet(
-        size: AlongBottomSheetSize.full,
-        title: l10n.extendTripTitle,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            DestinationSearchPanel(
-              embedded: true,
-              hint: l10n.extendTripSearchHint,
-              onDestinationSelected: _busy ? (_) {} : _previewExtension,
+    final p = AlongPalette.of(context);
+    final preview = _preview;
+    final delta = preview == null ? 0 : majorUnits(preview.fareDelta);
+    return TripModalSheet(
+      title: l10n.extendTripTitle,
+      icon: AlongIcons.addTime,
+      footer: preview == null
+          ? null
+          : AlongButton(
+              key: const Key('extend_send_to_driver'),
+              label: l10n.extendTripSend,
+              visualState: _busy
+                  ? AlongButtonVisualState.loading
+                  : AlongButtonVisualState.normal,
+              onPressed: _busy || _newAlight == null ? null : _sendToDriver,
             ),
-            if (_preview != null) ...[
-              const SizedBox(height: AlongSpace.s16),
-              Text(
-                l10n.extendTripDestination(_destinationName ?? ''),
-                style: AlongText.bodyStrong,
-              ),
-              const SizedBox(height: AlongSpace.s8),
-              FareHero(
-                key: const Key('extend_fare_hero'),
-                amountNaira: majorUnits(_preview!.newTotal),
-                deltaNaira: majorUnits(_preview!.fareDelta),
-                tier: designFareTier(
-                  _preview!.tier,
-                  unconfirmed: _preview!.unconfirmed,
-                ),
-              ),
-              const SizedBox(height: AlongSpace.s16),
-              AlongButton(
-                key: const Key('extend_send_to_driver'),
-                label: l10n.extendTripSend,
-                visualState: _busy
-                    ? AlongButtonVisualState.loading
-                    : AlongButtonVisualState.normal,
-                onPressed: _busy || _newAlight == null ? null : _sendToDriver,
-              ),
-            ],
-          ],
+      children: [
+        DestinationSearchPanel(
+          embedded: true,
+          hint: l10n.extendTripSearchHint,
+          onDestinationSelected: _busy ? (_) {} : _previewExtension,
         ),
-      ),
+        if (preview != null) ...[
+          const SizedBox(height: AlongSpace.s16),
+          TripPanel(
+            key: const Key('extend_fare_hero'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AlongIcon(AlongIcons.mapPin, size: 20, color: p.ink),
+                    const SizedBox(width: AlongSpace.s8),
+                    Expanded(
+                      child: Text(
+                        l10n.extendTripDestination(_destinationName ?? ''),
+                        style: AlongType.label(p),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AlongSpace.s12),
+                Text(
+                  formatAppMoney(ref, preview.newTotal),
+                  style: AlongType.display(p),
+                ),
+                if (delta != 0)
+                  Text(
+                    '${delta > 0 ? '+' : '−'}${formatAppMoneyMajor(ref, delta.abs())}',
+                    style: AlongType.caption(p),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -147,68 +159,60 @@ class IncomingExtensionSheet extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final deltaNaira = majorUnits(proposal.fareDelta);
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: AlongBottomSheet(
-        size: AlongBottomSheetSize.half,
-        title: l10n.incomingExtensionTitle,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.incomingExtensionBody(
-                proposal.destinationName,
-                design.formatMoney(deltaNaira),
-              ),
-              style: AlongText.body,
+    return TripModalSheet(
+      title: l10n.incomingExtensionTitle,
+      icon: AlongIcons.addTime,
+      footer: Row(
+        children: [
+          Expanded(
+            child: AlongButton(
+              key: const Key('extension_decline'),
+              label: l10n.incomingExtensionDecline,
+              variant: AlongButtonVariant.secondary,
+              onPressed: () async {
+                await ref
+                    .read(tripsRepositoryProvider)
+                    .respondExtension(
+                      extensionId: proposal.extensionId,
+                      response: 'decline',
+                    );
+                if (context.mounted) {
+                  onResponded?.call(null);
+                  Navigator.of(context).pop();
+                }
+              },
             ),
-            const SizedBox(height: AlongSpace.s16),
-            Row(
-              children: [
-                Expanded(
-                  child: AlongButton(
-                    key: const Key('extension_decline'),
-                    label: l10n.incomingExtensionDecline,
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: () async {
-                      await ref
-                          .read(tripsRepositoryProvider)
-                          .respondExtension(
-                            extensionId: proposal.extensionId,
-                            response: 'decline',
-                          );
-                      if (context.mounted) {
-                        onResponded?.call(null);
-                        Navigator.of(context).pop();
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(width: AlongSpace.s8),
-                Expanded(
-                  child: AlongButton(
-                    key: const Key('extension_accept'),
-                    label: l10n.incomingExtensionAccept,
-                    variant: AlongButtonVariant.yellow,
-                    onPressed: () async {
-                      final updated = await ref
-                          .read(tripsRepositoryProvider)
-                          .respondExtension(
-                            extensionId: proposal.extensionId,
-                            response: 'accept',
-                          );
-                      if (context.mounted) {
-                        onResponded?.call(updated);
-                        Navigator.of(context).pop();
-                      }
-                    },
-                  ),
-                ),
-              ],
+          ),
+          const SizedBox(width: AlongSpace.s8),
+          Expanded(
+            child: AlongButton(
+              key: const Key('extension_accept'),
+              label: l10n.incomingExtensionAccept,
+              onPressed: () async {
+                final updated = await ref
+                    .read(tripsRepositoryProvider)
+                    .respondExtension(
+                      extensionId: proposal.extensionId,
+                      response: 'accept',
+                    );
+                if (context.mounted) {
+                  onResponded?.call(updated);
+                  Navigator.of(context).pop();
+                }
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+      children: [
+        Text(
+          l10n.incomingExtensionBody(
+            proposal.destinationName,
+            formatAppMoneyMajor(ref, deltaNaira),
+          ),
+          style: AlongType.body(AlongPalette.of(context)),
+        ),
+      ],
     );
   }
 }
