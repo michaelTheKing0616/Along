@@ -248,4 +248,7 @@ abstract final class AlongMoves {
   /// Na Me handshake confirmed: both phones flood with the shared colour and
   /// the shape morphs into a check (docs/art-direction.md "The match").
   static const match = AlongMove(AlongDurations.match, AlongCurves.settle);
+
+  /// Offset into [match] where the seal lands: haptic and chime fire here.
+  static const matchSeal = Duration(milliseconds: 450);
 }
