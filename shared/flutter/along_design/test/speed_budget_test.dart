@@ -317,4 +317,26 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
     });
   });
+
+  testWidgets('Na Me signal panel stays small-area (photosensitivity)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: alongTheme(),
+        home: const AlongNaMeShowScreen(
+          pairing: AlongNaMeChoice(
+            colorToken: 'color.naMe.green',
+            shape: 'circle',
+            label: 'Green Circle',
+          ),
+          driverName: 'Musa',
+          frames: [0xFFFFFF, 0xFF0000],
+          frameIndex: 0,
+        ),
+      ),
+    );
+    final size = tester.getSize(find.byKey(const Key('na_me_signal')));
+    expect(size.width * size.height, lessThanOrEqualTo(160 * 160));
+  });
 }

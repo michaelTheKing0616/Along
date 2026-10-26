@@ -151,4 +151,11 @@ void main() {
       'step': 7,
     });
   });
+
+  test('photosensitivity: white sync flashes under 3 per second', () {
+    final frames = NaMeOptical.frames(secret, 1000);
+    final syncs = frames.where((f) => f == NaMeOptical.sync).length;
+    final loopSeconds = frames.length * NaMeOptical.frameMs / 1000;
+    expect(syncs / loopSeconds, lessThan(3));
+  });
 }
