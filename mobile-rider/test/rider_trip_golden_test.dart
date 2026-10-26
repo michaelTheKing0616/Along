@@ -326,11 +326,18 @@ void main() {
     testWidgets('rider trip complete $name', (tester) async {
       await tester.binding.setSurfaceSize(const Size(360, 800));
       addTearDown(() => tester.binding.setSurfaceSize(null));
-      final json = sampleAcceptedTripResponse(status: 'completed');
-      final trip = tripSummaryFromFixture(json);
+      final liveJson = sampleAcceptedTripResponse(
+        status: 'in_transit',
+        liveAsOf: DateTime.utc(2026, 9, 5, 16, 4, 2),
+      );
+      _placeDriver(liveJson, 9.031, 7.428);
+      final live = tripSummaryFromFixture(liveJson);
+      final trip = tripSummaryFromFixture(
+        sampleAcceptedTripResponse(status: 'completed'),
+      );
       final fake = FakeAlongSupabase(
         configRows: defaultTestConfigRows(),
-        requestTripResponse: json,
+        requestTripResponse: liveJson,
       );
       final c = containerFor(fake);
       addTearDown(() {
@@ -338,26 +345,17 @@ void main() {
         c.dispose();
       });
       await tester.pumpWidget(
-        app(
-          c,
-          Builder(
-            builder: (context) => Scaffold(
-              body: Center(
-                child: AlongButton(
-                  key: const Key('open'),
-                  label: 'open',
-                  onPressed: () => TripCompleteSheet.show(context, trip: trip),
-                ),
-              ),
-            ),
-          ),
-          brightness,
-          scale,
-        ),
+        app(c, ActiveTripScreen(trip: live), brightness, scale),
       );
-      await tester.tap(find.byKey(const Key('open')));
+      await settle(tester);
+      stopPoll(c, live);
+      TripCompleteSheet.show(
+        tester.element(find.byType(ActiveTripScreen)),
+        trip: trip,
+      );
       await settle(tester);
       await shoot(tester, 'rider_trip_complete_$name');
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('rider receipt $name', (tester) async {
