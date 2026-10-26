@@ -177,7 +177,8 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
                 currencySymbol: _currencySymbol,
               ),
             ),
-            style: AlongText.body,
+            key: const Key('settle_balance_hero'),
+            style: AlongText.heading2,
           ),
           const SizedBox(height: AlongSpace.s16),
           TextField(
@@ -216,7 +217,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
           AlongButton(
             key: const Key('settle_agent'),
             label: l10n.settleChannelAgent,
-            variant: AlongButtonVariant.yellow,
+            variant: AlongButtonVariant.secondary,
             onPressed: _busy ? null : () => _initiateChannel('agent'),
           ),
           if (_agentCode != null) ...[
@@ -230,7 +231,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
             if (_agentExpiresAt != null)
               Text(
                 l10n.settleAgentExpires(_agentExpiresAt!),
-                style: AlongText.caption.copyWith(color: AlongColors.ink500),
+                style: AlongText.caption.copyWith(color: AlongPalette.of(context).muted),
               ),
             if (_nearbyAgents.isNotEmpty) ...[
               const SizedBox(height: AlongSpace.s16),
@@ -243,7 +244,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
                   title: Text(agent.businessName, style: AlongText.bodyStrong),
                   trailing: Text(
                     l10n.settleNearbyAgentDistance(agent.distanceM),
-                    style: AlongText.caption.copyWith(color: AlongColors.ink500),
+                    style: AlongText.caption.copyWith(color: AlongPalette.of(context).muted),
                   ),
                 ),
               ),
@@ -261,7 +262,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
               style: AlongText.bodyStrong.copyWith(
                 color: _activeSettlementId != null
                     ? AlongColors.semanticSuccess
-                    : AlongColors.ink700,
+                    : AlongPalette.of(context).ink,
               ),
             ),
           ],

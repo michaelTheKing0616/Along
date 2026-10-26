@@ -16,6 +16,7 @@ import 'package:mobile_driver/features/incoming_request/presentation/incoming_re
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/settle_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
@@ -377,6 +378,27 @@ void main() {
       // No golden: EarningsScreen reads DateTime.now(), so the chart and
       // trip times move with the wall clock.
       expect(find.byKey(const Key('earnings_summary')), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      container.dispose();
+      await tester.pump(const Duration(seconds: 1));
+    });
+
+    testWidgets('settle $name', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final supabase = FakeAlongSupabase();
+      addTearDown(supabase.dispose);
+      final container = _container(supabase, AlongDatabase.memory());
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: _app(brightness, scale, const SettleScreen()),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(tester.takeException(), isNull);
+      await _shoot(tester, 'settle_$name');
       await tester.pumpWidget(const SizedBox());
       container.dispose();
       await tester.pump(const Duration(seconds: 1));

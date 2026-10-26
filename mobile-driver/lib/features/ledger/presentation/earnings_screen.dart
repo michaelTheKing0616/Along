@@ -75,7 +75,7 @@ class EarningsScreen extends ConsumerWidget {
                 if (page.entries.isEmpty) {
                   return Text(
                     l10n.earningsLedgerEmpty,
-                    style: AlongText.body.copyWith(color: AlongColors.ink500),
+                    style: AlongText.body.copyWith(color: AlongPalette.of(context).muted),
                   );
                 }
                 return Column(
@@ -104,7 +104,7 @@ class EarningsScreen extends ConsumerWidget {
             const SizedBox(height: AlongSpace.s4),
             Text(
               l10n.earningsDigitalCaption,
-              style: AlongText.caption.copyWith(color: AlongColors.ink500),
+              style: AlongText.caption.copyWith(color: AlongPalette.of(context).muted),
             ),
             const SizedBox(height: AlongSpace.s8),
             digitalPaymentsAsync.when(
@@ -112,7 +112,7 @@ class EarningsScreen extends ConsumerWidget {
                 if (payments.isEmpty) {
                   return Text(
                     l10n.earningsDigitalEmpty,
-                    style: AlongText.body.copyWith(color: AlongColors.ink500),
+                    style: AlongText.body.copyWith(color: AlongPalette.of(context).muted),
                   );
                 }
                 return Column(
