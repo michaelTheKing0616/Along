@@ -35,6 +35,9 @@ class _NaMeHandshakeScreenState extends ConsumerState<NaMeHandshakeScreen> {
   CameraController? _camera;
   final _proofs = StreamController<NaMeOpticalProof>.broadcast();
   final _decoder = NaMeOpticalDecoder();
+  final _signal = ValueNotifier<bool>(false);
+  DateTime _lastSync = DateTime(0);
+  DateTime _lastData = DateTime(0);
   bool _ready = false;
 
   String get _tripId => widget.args.tripId;
@@ -99,10 +102,16 @@ class _NaMeHandshakeScreenState extends ConsumerState<NaMeHandshakeScreen> {
             height: img.height,
             rowStride: img.planes[0].bytesPerRow,
           );
-    final proof = _decoder.add(
-      NaMeCameraSampler.normalise(rgb),
-      DateTime.now(),
-    );
+    final now = DateTime.now();
+    final sample = NaMeCameraSampler.normalise(rgb);
+    // Lock-on hint: both the white sync frame and a code colour seen lately.
+    final symbol = _decoder.classify(sample);
+    if (symbol == -1) _lastSync = now;
+    if (symbol != null && symbol >= 0) _lastData = now;
+    _signal.value =
+        now.difference(_lastSync).inMilliseconds < 2500 &&
+        now.difference(_lastData).inMilliseconds < 2500;
+    final proof = _decoder.add(sample, now);
     if (proof != null && !_proofs.isClosed) _proofs.add(proof);
   }
 
@@ -111,6 +120,7 @@ class _NaMeHandshakeScreenState extends ConsumerState<NaMeHandshakeScreen> {
     final c = _camera;
     _camera = null;
     unawaited(_proofs.close());
+    _signal.dispose();
     if (c != null) unawaited(c.dispose());
     super.dispose();
   }
@@ -192,6 +202,7 @@ class _NaMeHandshakeScreenState extends ConsumerState<NaMeHandshakeScreen> {
       options: options,
       cameraPreview: camera == null ? null : CameraPreview(camera),
       opticalProofs: camera == null ? null : _proofs.stream,
+      opticalSignal: _signal,
       onOptical: camera == null ? null : _optical,
       onTap: _tap,
       onPin: controller.verifyPin,

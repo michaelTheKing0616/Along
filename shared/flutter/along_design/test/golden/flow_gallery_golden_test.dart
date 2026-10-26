@@ -276,6 +276,14 @@ void main() {
       onPickInstead: () {},
       onClose: () {},
     ),
+    'na_me_camera_lock': () => AlongNaMeCameraView(
+      riderName: 'Ada',
+      preview: const _CameraScene(),
+      fallbackProgress: 0.55,
+      locked: true,
+      onPickInstead: () {},
+      onClose: () {},
+    ),
     'na_me_tap': () => AlongNaMeTapMatch(
       riderName: 'Ada',
       options: _naMeOptions,
@@ -809,26 +817,46 @@ const _naMeOptions = [
 class _CameraScene extends StatelessWidget {
   const _CameraScene();
 
+  // A rider's phone held up in a street at dusk: flat shapes only, so the
+  // render is identical on every host.
   @override
-  // Flat colour, not a gradient: gradients dither differently per host.
-  Widget build(BuildContext context) => const ColoredBox(
-    color: Color(0xFF2A303B),
-    child: Align(
-      alignment: Alignment(0, -0.3),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color(0xFF0E0F12),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+  Widget build(BuildContext context) => const Stack(
+    fit: StackFit.expand,
+    children: [
+      ColoredBox(color: Color(0xFF39414E)),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: FractionallySizedBox(
+          heightFactor: 0.42,
+          widthFactor: 1,
+          child: ColoredBox(color: Color(0xFF262B33)),
         ),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(8, 24, 8, 24),
-          child: SizedBox(
-            width: 96,
-            height: 96,
-            child: ColoredBox(color: Color(0xFF2F6BFF)),
+      ),
+      Align(
+        alignment: Alignment(0, -0.3),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xFF0E0F12),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(6),
+            child: SizedBox(
+              width: 112,
+              height: 196,
+              child: ColoredBox(
+                color: Color(0xFFF2F1EC),
+                child: Center(
+                  child: SizedBox.square(
+                    dimension: 72,
+                    child: ColoredBox(color: Color(0xFF2F6BFF)),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
-    ),
+    ],
   );
 }

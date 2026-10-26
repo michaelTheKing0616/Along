@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:along_core/along_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../components/along_button.dart';
@@ -11,6 +12,7 @@ import '../craft.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
+import '../tokens.g.dart';
 import '../type.dart';
 import '../utils/name_signal.dart';
 import 'pin_entry.dart';
@@ -247,12 +249,16 @@ class AlongNaMeCameraView extends StatelessWidget {
     required this.riderName,
     required this.preview,
     required this.fallbackProgress,
+    this.locked = false,
     this.onPickInstead,
     this.onClose,
   });
 
   final String riderName;
   final Widget preview;
+
+  /// The camera sees the code's sync frame: the brackets close in on it.
+  final bool locked;
 
   /// 0 → just opened, 1 → switching to tap-match.
   final double fallbackProgress;
@@ -269,40 +275,40 @@ class AlongNaMeCameraView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           preview,
-          const ColoredBox(color: Color(0x66000000)),
+          // Vignette: clear over the reticle, darker toward the edges, so
+          // the eye lands on the frame and the white UI reads on any scene.
+          const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(0, -0.3),
+                radius: 0.9,
+                colors: [Color(0x33000000), Color(0xB3000000)],
+                stops: [0.35, 1],
+              ),
+            ),
+          ),
           Align(
             alignment: const Alignment(0, -0.3),
-            // Corner brackets from straight bars: crisp at any scale.
-            child: SizedBox(
-              width: 240,
-              height: 240,
-              child: Stack(
-                children: [
-                  for (final a in const [
-                    Alignment.topLeft,
-                    Alignment.topRight,
-                    Alignment.bottomLeft,
-                    Alignment.bottomRight,
-                  ]) ...[
-                    Align(
-                      alignment: a,
-                      child: const SizedBox(
-                        width: 36,
-                        height: 4,
-                        child: ColoredBox(color: Colors.white),
-                      ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _Reticle(locked: locked),
+                const SizedBox(height: 20),
+                AnimatedSwitcher(
+                  duration: AlongMoves.lockOn.duration,
+                  child: Text(
+                    locked
+                        ? 'Got it. Hold still.'
+                        : 'Fit their screen inside the corners',
+                    key: ValueKey(locked),
+                    textAlign: TextAlign.center,
+                    style: AlongType.label(p).copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
                     ),
-                    Align(
-                      alignment: a,
-                      child: const SizedBox(
-                        width: 4,
-                        height: 36,
-                        child: ColoredBox(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
           SafeArea(
@@ -435,7 +441,7 @@ class AlongNaMeTapMatch extends StatelessWidget {
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, c) {
-                    final tileH = math.min(168.0, (c.maxHeight - 12) / 2);
+                    final tileH = math.min(196.0, (c.maxHeight - 12) / 2);
                     return Wrap(
                       spacing: 12,
                       runSpacing: 12,
@@ -509,9 +515,9 @@ class _ChoiceTile extends StatelessWidget {
               children: [
                 Opacity(
                   opacity: busy ? 0.32 : 1,
-                  child: _Shape(choice: choice, size: 64),
+                  child: _Shape(choice: choice, size: 72),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 Text(
                   busy ? 'Checking…' : choice.label,
                   style: AlongType.label(p)
@@ -580,7 +586,11 @@ class AlongNaMeNoMatch extends StatelessWidget {
                   child: SizedBox.square(
                     dimension: 72,
                     child: Center(
-                      child: AlongIcon(AlongIcons.info, size: 32, color: p.ink),
+                      child: AlongIcon(
+                        AlongIcons.notEquals,
+                        size: 32,
+                        color: p.ink,
+                      ),
                     ),
                   ),
                 ),
@@ -940,6 +950,7 @@ class AlongNaMeDriverFlow extends StatefulWidget {
     required this.onStart,
     this.cameraPreview,
     this.opticalProofs,
+    this.opticalSignal,
     this.onOptical,
     this.onChime,
     this.fallbackAfter = const Duration(seconds: 6),
@@ -956,6 +967,9 @@ class AlongNaMeDriverFlow extends StatefulWidget {
   final VoidCallback onStart;
   final Widget? cameraPreview;
   final Stream<NaMeOpticalProof>? opticalProofs;
+
+  /// True while the camera sees the code's sync frame (reticle lock-on).
+  final ValueListenable<bool>? opticalSignal;
   final Future<AlongNaMeResult> Function(NaMeOpticalProof proof)? onOptical;
   final VoidCallback? onChime;
   final Duration fallbackAfter;
@@ -1042,6 +1056,7 @@ class _AlongNaMeDriverFlowState extends State<AlongNaMeDriverFlow> {
     final child = switch (_stage) {
       _Stage.camera => AlongNaMeCameraView(
         riderName: name,
+        locked: widget.opticalSignal?.value ?? false,
         preview: widget.cameraPreview ?? const ColoredBox(color: Colors.black),
         fallbackProgress:
             _clock.elapsedMilliseconds / widget.fallbackAfter.inMilliseconds,
@@ -1078,5 +1093,60 @@ class _AlongNaMeDriverFlowState extends State<AlongNaMeDriverFlow> {
       ),
     };
     return KeyedSubtree(key: ValueKey(_stage), child: child);
+  }
+}
+
+/// Four corner brackets drawn from straight bars (crisp on every host).
+/// When the camera finds the code they pull in 12 px and thicken: the
+/// lock-on hint ([AlongMoves.lockOn]).
+class _Reticle extends StatelessWidget {
+  const _Reticle({required this.locked});
+
+  final bool locked;
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.of(context).disableAnimations;
+    final d = reduce ? Duration.zero : AlongMoves.lockOn.duration;
+    final inset = locked ? 12.0 : 0.0;
+    final w = locked ? 5.0 : 4.0;
+    final len = locked ? 28.0 : 36.0;
+    final c = locked ? AlongColors.brandYellow : Colors.white;
+    return SizedBox.square(
+      key: Key(locked ? 'na_me_reticle_locked' : 'na_me_reticle'),
+      dimension: 240,
+      child: AnimatedPadding(
+        duration: d,
+        curve: AlongMoves.lockOn.curve,
+        padding: EdgeInsets.all(inset),
+        child: Stack(
+          children: [
+            for (final a in const [
+              Alignment.topLeft,
+              Alignment.topRight,
+              Alignment.bottomLeft,
+              Alignment.bottomRight,
+            ]) ...[
+              Align(
+                alignment: a,
+                child: SizedBox(
+                  width: len,
+                  height: w,
+                  child: ColoredBox(color: c),
+                ),
+              ),
+              Align(
+                alignment: a,
+                child: SizedBox(
+                  width: w,
+                  height: len,
+                  child: ColoredBox(color: c),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }
