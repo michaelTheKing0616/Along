@@ -1,3 +1,4 @@
+import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/app.dart';
@@ -9,7 +10,11 @@ Future<void> main() async {
   final config = AppConfig.fromEnvironment();
 
   Future<void> runAlongApp() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Geist/Inter load beside bootstrap, so first frame has the real type.
+    final fonts = AlongFonts.ensureLoaded();
     final container = await bootstrapApp(configOverride: config);
+    await fonts;
     runApp(
       UncontrolledProviderScope(
         container: container,
