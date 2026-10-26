@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/offline/stale_badge.dart';
+import 'package:mobile_rider/features/search/data/popular_places.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/l10n/l10n_format.dart';
 
@@ -144,6 +145,21 @@ class _DestinationSearchPanelState
     final l10n = AppLocalizations.of(context);
     final palette = AlongPalette.of(context);
     final searching = state.query.length >= 2;
+    // Search opens from home, so home is alive; never boot it from here.
+    final home = ref.exists(homeControllerProvider)
+        ? ref.watch(homeControllerProvider)
+        : null;
+    final city = home?.cityName;
+    final here = home?.userLocation;
+    String? away(GeoPoint to) => here == null
+        ? null
+        : l10n.placeAway(l10n.distance(haversineDistanceM(here, to)));
+    final recentNames = {for (final r in state.recents) r.label};
+    final popular = [
+      for (final p
+          in popularPlacesByCity[city?.toLowerCase()] ?? const <PopularPlace>[])
+        if (!recentNames.contains(p.name)) p,
+    ];
 
     Widget section(String title) => Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -229,11 +245,34 @@ class _DestinationSearchPanelState
         card([
           for (final recent in state.recents)
             AlongPlaceRow(
+              stacked: true,
               place: AlongPlace(
                 key: Key('recent_${recent.label}'),
                 icon: AlongIcons.history,
                 title: recent.label,
+                detail: away(recent.location),
                 onTap: () => _selectRecent(recent),
+              ),
+            ),
+        ]),
+      ],
+      if (!searching && popular.isNotEmpty && city != null) ...[
+        section(l10n.searchPopularTitle(city)),
+        card([
+          for (final place in popular)
+            AlongPlaceRow(
+              stacked: true,
+              place: AlongPlace(
+                key: Key('popular_${place.name}'),
+                icon: kindIcon(place.kind),
+                title: place.name,
+                detail: here == null
+                    ? place.area
+                    : l10n.searchResultDetail(
+                        place.area,
+                        l10n.distance(haversineDistanceM(here, place.location)),
+                      ),
+                onTap: () => _selectRecent(place.toRecent()),
               ),
             ),
         ]),
@@ -248,7 +287,10 @@ class _DestinationSearchPanelState
                 key: Key('result_${result.name}'),
                 icon: kindIcon(result.kind),
                 title: result.name,
-                detail: l10n.searchResultDetail(result.area, l10n.distance(result.distanceM)),
+                detail: l10n.searchResultDetail(
+                  result.area,
+                  l10n.distance(result.distanceM),
+                ),
                 onTap: () => _selectPlace(result),
               ),
             ),
@@ -318,7 +360,10 @@ class _ShortcutTile extends StatelessWidget {
           },
           child: Container(
             padding: const EdgeInsets.all(AlongSpace.s12),
-            decoration: AlongCraft.surface(palette, radius: AlongRadius.button.x),
+            decoration: AlongCraft.surface(
+              palette,
+              radius: AlongRadius.button.x,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

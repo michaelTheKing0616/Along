@@ -1,3 +1,4 @@
+import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 
 IconData _modeIcon(String code) => switch (code) {
   'keke' => AlongIcons.keke,
@@ -59,12 +61,20 @@ class HomePeekSheet extends StatelessWidget {
             key: Key('home_recent_${recent.label}'),
             icon: AlongIcons.schedule,
             title: recent.label,
+            detail: state.userLocation == null
+                ? null
+                : l10n.placeAway(
+                    l10n.distance(
+                      haversineDistanceM(state.userLocation!, recent.location),
+                    ),
+                  ),
             onTap: () => onRecentTap(recent),
           ),
         AlongPlace(
           key: const Key('home_plan_day'),
           icon: AlongIcons.path,
           title: l10n.homePlanYourDay,
+          detail: l10n.homePlanYourDayDetail,
           onTap: () => context.push(AppRoutes.itineraryEntry),
         ),
       ],

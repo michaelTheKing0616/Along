@@ -38,5 +38,8 @@
   "searchShortcutHome": "Ilé",
   "searchShortcutWork": "Iṣẹ́",
   "searchShortcutAdd": "Fi kún",
-  "searchShortcutPinDetail": "Lórí máàpù"
+  "searchShortcutPinDetail": "Lórí máàpù",
+  "placeAway": "{distance} sí ibí",
+  "homePlanYourDayDetail": "So àwọn ibùdó rẹ pọ̀ sí ìrìn kan",
+  "searchPopularTitle": "Gbajúmọ̀ ní {city}"
 }

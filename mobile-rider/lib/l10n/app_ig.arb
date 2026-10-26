@@ -38,5 +38,8 @@
   "searchShortcutHome": "Ụlọ",
   "searchShortcutWork": "Ọrụ",
   "searchShortcutAdd": "Tinye",
-  "searchShortcutPinDetail": "Na maapụ"
+  "searchShortcutPinDetail": "Na maapụ",
+  "placeAway": "{distance} site ebe a",
+  "homePlanYourDayDetail": "Jikọta ebe ị na-aga n'otu njem",
+  "searchPopularTitle": "Ndị a ma ama na {city}"
 }

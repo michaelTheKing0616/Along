@@ -1281,4 +1281,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchShortcutPinDetail => 'On the map';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance away';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Chain your stops into one trip';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Popular in $city';
+  }
 }

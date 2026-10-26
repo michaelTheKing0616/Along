@@ -228,7 +228,8 @@ class AlongHomeSheet extends StatelessWidget {
         if (lead != null) ...[lead!, const SizedBox(height: 12)],
         AlongWhereToBar(key: whereToKey, label: whereTo, onTap: onWhereTo),
         if (places.isNotEmpty) const SizedBox(height: 16),
-        ..._rows(places, divider),
+        // Places read title over detail; nearby keeps its ETA trailing.
+        ..._rows(places, divider, stacked: true),
         if (section.isNotEmpty) ...[
           SizedBox(height: places.isEmpty ? 24 : 20),
           if (sectionTitle != null)
@@ -245,15 +246,20 @@ class AlongHomeSheet extends StatelessWidget {
             ),
           ..._rows(section, divider),
         ],
-        const SizedBox(height: 16),
+        // Same 24 rhythm as above Nearby, so the last row clears the tabs.
+        const SizedBox(height: 24),
       ],
     );
   }
 
-  static List<Widget> _rows(List<AlongPlace> rows, Widget divider) => [
+  static List<Widget> _rows(
+    List<AlongPlace> rows,
+    Widget divider, {
+    bool stacked = false,
+  }) => [
     for (var i = 0; i < rows.length; i++) ...[
       if (i > 0) divider,
-      AlongPlaceRow(place: rows[i]),
+      AlongPlaceRow(place: rows[i], stacked: stacked),
     ],
   ];
 }

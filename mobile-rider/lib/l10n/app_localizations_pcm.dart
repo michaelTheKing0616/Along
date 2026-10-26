@@ -1278,4 +1278,17 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get searchShortcutPinDetail => 'For map';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance from here';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Join your stops for one trip';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Wetin people dey go for $city';
+  }
 }

@@ -115,7 +115,7 @@ void main() {
           locationStreamSource: FakeLocationStreamSource(
             fixedSamples: [
               LocationSample(
-                point: const GeoPoint(lat: 9.0765, lng: 7.3986),
+                point: const GeoPoint(lat: 9.072, lng: 7.481),
                 accuracyM: 10,
                 recordedAt: DateTime.utc(2026, 1, 1),
               ),
@@ -209,8 +209,8 @@ void main() {
           .read(tripPlanSessionProvider.notifier)
           .setSession(
             const TripPlanSession(
-              origin: GeoPoint(lat: 9.0765, lng: 7.3986),
-              destination: GeoPoint(lat: 9.08, lng: 7.45),
+              origin: GeoPoint(lat: 9.0, lng: 7.4),
+              destination: GeoPoint(lat: 9.045, lng: 7.452),
               destinationLabel: 'Area 1 Park',
             ),
           );
@@ -257,8 +257,8 @@ void main() {
           .read(tripPlanSessionProvider.notifier)
           .setSession(
             const TripPlanSession(
-              origin: GeoPoint(lat: 9.0765, lng: 7.3986),
-              destination: GeoPoint(lat: 9.08, lng: 7.45),
+              origin: GeoPoint(lat: 9.0, lng: 7.4),
+              destination: GeoPoint(lat: 9.045, lng: 7.452),
               destinationLabel: 'Area 1 Park',
             ),
           );

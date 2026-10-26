@@ -140,6 +140,14 @@ class RouteLayout {
   static const double _marker = 12;
   static const double _gap = 6;
 
+  static Offset _cubic(Offset p0, Offset p1, Offset p2, Offset p3, double t) {
+    final u = 1 - t;
+    return p0 * (u * u * u) +
+        p1 * (3 * u * u * t) +
+        p2 * (3 * u * t * t) +
+        p3 * (t * t * t);
+  }
+
   static RouteLayout compute({
     required Size size,
     double topInset = 88,
@@ -185,9 +193,11 @@ class RouteLayout {
     final c = band.center;
     final a = c - v * (k / 2);
     final b = c + v * (k / 2);
-    // Streets run square, so the route bends once each way.
-    final turnY = a.dy + (b.dy - a.dy) * 0.55;
-    final path = [a, Offset(a.dx, turnY), Offset(b.dx, turnY), b];
+    // A soft S between the two places, like a road that leaves one way
+    // and arrives another. Sampled so tags can avoid every part of it.
+    final c1 = Offset(a.dx + (b.dx - a.dx) * 0.1, a.dy + (b.dy - a.dy) * 0.75);
+    final c2 = Offset(a.dx + (b.dx - a.dx) * 0.6, b.dy + (a.dy - b.dy) * 0.35);
+    final path = [for (var i = 0; i <= 24; i++) _cubic(a, c1, c2, b, i / 24)];
 
     final bounds = Rect.fromLTRB(_edge, topInset + 4, w - _edge, visible - 8);
     final obstacles = <Rect>[
@@ -360,6 +370,29 @@ class _StreetsPainter extends CustomPainter {
   void paint(Canvas canvas, Size s) {
     final w = s.width, h = s.height;
     canvas.drawRect(Offset.zero & s, Paint()..color = p.mapLand);
+    // Drawn first so parks, water and roads sit over them.
+    // Building footprints give the blocks texture, like a real basemap.
+    final darkLand =
+        ThemeData.estimateBrightnessForColor(p.mapLand) == Brightness.dark;
+    final block = Paint()
+      ..color = (darkLand ? Colors.white : Colors.black).withValues(
+        alpha: darkLand ? 0.03 : 0.035,
+      );
+    final rnd = math.Random(7);
+    for (var gx = 0.0; gx < 1; gx += 0.085) {
+      for (var gy = 0.0; gy < 1; gy += 0.07) {
+        if (rnd.nextDouble() < 0.45) continue;
+        final bw = w * (0.03 + rnd.nextDouble() * 0.03);
+        final bh = h * (0.025 + rnd.nextDouble() * 0.025);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(w * gx + 4, h * gy + 4, bw, bh),
+            const Radius.circular(2),
+          ),
+          block,
+        );
+      }
+    }
     // Park and water blocks, placed in fractions so any size reads well.
     final rr = Radius.circular(w * 0.04);
     canvas.drawRRect(

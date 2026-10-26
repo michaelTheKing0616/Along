@@ -38,5 +38,8 @@
   "searchShortcutHome": "Gida",
   "searchShortcutWork": "Aiki",
   "searchShortcutAdd": "Ƙara",
-  "searchShortcutPinDetail": "A taswira"
+  "searchShortcutPinDetail": "A taswira",
+  "placeAway": "{distance} daga nan",
+  "homePlanYourDayDetail": "Haɗa tashoshinka a tafiya ɗaya",
+  "searchPopularTitle": "Shahararru a {city}"
 }

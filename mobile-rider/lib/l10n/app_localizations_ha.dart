@@ -1278,4 +1278,17 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get searchShortcutPinDetail => 'A taswira';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance daga nan';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Haɗa tashoshinka a tafiya ɗaya';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Shahararru a $city';
+  }
 }

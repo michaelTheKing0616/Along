@@ -31,6 +31,7 @@ void main() {
 
   const state = HomeState(
     cityName: 'Abuja',
+    userLocation: GeoPoint(lat: 9.072, lng: 7.481),
     recents: [
       RecentPlace(
         label: 'Wuse Market',

@@ -317,9 +317,28 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.tripOptionsHeading,
-                style: AlongType.heading(AlongPalette.of(context)),
+              // "Why?" explains the order, so it sits with the heading
+              // instead of breaking the rhythm between cards.
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.tripOptionsHeading,
+                      style: AlongType.heading(AlongPalette.of(context)),
+                    ),
+                  ),
+                  if (recommended != null &&
+                      !recommended.isMultiLeg &&
+                      recommended.metrics != null)
+                    AlongTextLink(
+                      key: Key('why_${recommended.candidateId}'),
+                      label: l10n.tripOptionsWhy,
+                      onPressed: () => showExplainPopover(
+                        context,
+                        explain: recommended.metrics!.explain,
+                      ),
+                    ),
+                ],
               ),
               // Sorting one option is noise; chips appear from two.
               if ((state.plan?.candidates.length ?? 0) > 1) ...[
@@ -456,21 +475,6 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                   .read(tripOptionsControllerProvider.notifier)
                   .requestCandidate(candidate),
         ),
-        if (recommended && candidate.metrics != null)
-          Padding(
-            padding: const EdgeInsets.only(top: AlongSpace.s8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AlongTextLink(
-                key: Key('why_${candidate.candidateId}'),
-                label: l10n.tripOptionsWhy,
-                onPressed: () => showExplainPopover(
-                  context,
-                  explain: candidate.metrics!.explain,
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }

@@ -2356,6 +2356,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'On the map'**
   String get searchShortcutPinDetail;
+
+  /// placeAway
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} away'**
+  String placeAway(String distance);
+
+  /// homePlanYourDayDetail
+  ///
+  /// In en, this message translates to:
+  /// **'Chain your stops into one trip'**
+  String get homePlanYourDayDetail;
+
+  /// searchPopularTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Popular in {city}'**
+  String searchPopularTitle(String city);
 }
 
 class _AppLocalizationsDelegate

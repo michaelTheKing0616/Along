@@ -38,5 +38,8 @@
   "searchShortcutHome": "House",
   "searchShortcutWork": "Work",
   "searchShortcutAdd": "Add am",
-  "searchShortcutPinDetail": "For map"
+  "searchShortcutPinDetail": "For map",
+  "placeAway": "{distance} from here",
+  "homePlanYourDayDetail": "Join your stops for one trip",
+  "searchPopularTitle": "Wetin people dey go for {city}"
 }

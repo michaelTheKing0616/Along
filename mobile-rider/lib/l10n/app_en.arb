@@ -1346,5 +1346,11 @@
   "searchShortcutAdd": "Add",
   "@searchShortcutAdd": {"description": "searchShortcutAdd"},
   "searchShortcutPinDetail": "On the map",
-  "@searchShortcutPinDetail": {"description": "searchShortcutPinDetail"}
+  "@searchShortcutPinDetail": {"description": "searchShortcutPinDetail"},
+  "placeAway": "{distance} away",
+  "@placeAway": {"description": "placeAway", "placeholders": {"distance": {"type": "String"}}},
+  "homePlanYourDayDetail": "Chain your stops into one trip",
+  "@homePlanYourDayDetail": {"description": "homePlanYourDayDetail"},
+  "searchPopularTitle": "Popular in {city}",
+  "@searchPopularTitle": {"description": "searchPopularTitle", "placeholders": {"city": {"type": "String"}}}
 }

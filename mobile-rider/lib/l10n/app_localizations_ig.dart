@@ -1278,4 +1278,17 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get searchShortcutPinDetail => 'Na maapụ';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance site ebe a';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Jikọta ebe ị na-aga n\'otu njem';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Ndị a ma ama na $city';
+  }
 }
