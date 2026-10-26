@@ -169,6 +169,8 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // At large text the method name alone reads; details would wrap.
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     final l10n = AppLocalizations.of(context);
     final p = AlongPalette.of(context);
     final ledger = ref.watch(driverLedgerControllerProvider);
@@ -292,7 +294,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
                   key: c.$2,
                   icon: c.$5,
                   title: c.$3,
-                  detail: c.$4,
+                  detail: largeText ? null : c.$4,
                   selected: _channel == c.$1,
                   onTap: _busy ? null : () => setState(() => _channel = c.$1),
                 ),

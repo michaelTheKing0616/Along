@@ -375,6 +375,30 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       final supabase = FakeAlongSupabase();
       addTearDown(supabase.dispose);
+      const fares = [
+        1800,
+        1200,
+        900,
+        1400,
+        1600,
+        3200,
+        2100,
+        1500,
+        1700,
+        1300,
+        1700,
+      ];
+      const places = ['Nyanya', 'Wuse', 'Garki', 'Berger', 'Jabi', 'Airport'];
+      for (final (n, fare) in fares.indexed) {
+        supabase.tripRows.add({
+          'id': 'trip_$n',
+          'status': 'completed',
+          'payment_method': 'cash',
+          'fare_shown': fare,
+          'destination_label': places[n % places.length],
+          'ended_at': DateTime.utc(2026, 9, 6, 7 + n).toIso8601String(),
+        });
+      }
       final container = _container(supabase, AlongDatabase.memory());
       await tester.pumpWidget(
         UncontrolledProviderScope(

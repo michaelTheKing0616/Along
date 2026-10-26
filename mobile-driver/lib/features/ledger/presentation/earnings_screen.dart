@@ -11,12 +11,6 @@ import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
 import 'package:mobile_driver/widgets/drive_kit.dart';
 
-/// Wall clock for the earnings summary. Goldens pin it so the chart and
-/// "today" do not move between runs.
-final earningsClockProvider = Provider<DateTime Function()>(
-  (ref) => DateTime.now,
-);
-
 /// D-19 Earnings & balance — Along balance + Trips sections (doc 06).
 class EarningsScreen extends ConsumerWidget {
   const EarningsScreen({super.key});

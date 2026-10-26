@@ -165,10 +165,9 @@ class DriverHomePanel extends StatelessWidget {
                     ],
                   ],
                   const SizedBox(height: AlongSpace.s12),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    clipBehavior: Clip.none,
+                  IntrinsicHeight(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         for (final (i, (key, icon, label, onTap))
                             in <(String, IconData, String, VoidCallback)>[
@@ -198,11 +197,13 @@ class DriverHomePanel extends StatelessWidget {
                               ),
                             ].indexed) ...[
                           if (i > 0) const SizedBox(width: AlongSpace.s8),
-                          _Shortcut(
-                            key: Key(key),
-                            icon: icon,
-                            label: label,
-                            onTap: onTap,
+                          Expanded(
+                            child: _Shortcut(
+                              key: Key(key),
+                              icon: icon,
+                              label: label,
+                              onTap: onTap,
+                            ),
                           ),
                         ],
                       ],
@@ -430,13 +431,22 @@ class _Shortcut extends StatelessWidget {
             },
             child: Ink(
               decoration: AlongCraft.compactFill(p.recessed, 48, corner: 14),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AlongIcon(icon, size: 18, color: p.ink),
-                  const SizedBox(width: AlongSpace.s8),
-                  Text(label, style: AlongType.label(p)),
+                  AlongIcon(icon, size: 20, color: p.ink),
+                  const SizedBox(height: AlongSpace.s4),
+                  // Words never split mid-word; a long word shrinks instead.
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label.replaceFirst(' ', '\n'),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: AlongType.caption(p).copyWith(color: p.ink),
+                    ),
+                  ),
                 ],
               ),
             ),

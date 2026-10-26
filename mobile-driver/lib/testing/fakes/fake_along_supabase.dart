@@ -136,6 +136,9 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? suggestedRoute;
   List<Map<String, dynamic>> placesSearchResults;
   Map<String, dynamic>? driverBalanceResponse;
+
+  /// Rows served for `trips` selects (earnings, home today line).
+  final List<Map<String, dynamic>> tripRows = [];
   List<Map<String, dynamic>> driverLedgerEntries;
   List<Map<String, dynamic>> tripExtensionRows;
   List<Map<String, dynamic>> settlementRows;
@@ -754,6 +757,7 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       return cities;
     }
+    if (table == 'trips') return List.of(tripRows);
     if (table == 'mode_config') return modes;
     if (table == 'countries') {
       final code = filters['code'];
