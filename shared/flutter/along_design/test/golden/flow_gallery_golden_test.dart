@@ -334,6 +334,12 @@ void main() {
       ),
       onUsePin: () {},
     ),
+    'na_me_rate_limited': () => AlongNaMeNoMatch(
+      riderName: 'Ada',
+      result: const AlongNaMeResult(AlongNaMeVerdict.rateLimited),
+      onRetry: () {},
+      onUsePin: () {},
+    ),
     'na_me_no_match_retry': () => AlongNaMeNoMatch(
       riderName: 'Ada',
       result: const AlongNaMeResult(AlongNaMeVerdict.failed),
@@ -862,52 +868,82 @@ class _Hand extends CustomPainter {
   static const _skin = Color(0xFF9A6A4A);
   static const _shade = Color(0xFF7E5439);
 
+  static const _nail = Color(0xFFC49A7C);
+
   @override
   void paint(Canvas canvas, Size size) {
     final skin = Paint()..color = _skin;
     final shade = Paint()..color = _shade;
     if (!front) {
-      // Palm and wrist below the phone, shaded on the far side.
+      // Palm and wrist under the phone, far side in shade.
       final palm = RRect.fromLTRBR(
-        36,
-        196,
-        128,
+        34,
+        212,
+        134,
         340,
-        const Radius.circular(34),
+        const Radius.circular(36),
       );
       canvas.drawRRect(palm, skin);
       canvas.save();
       canvas.clipRRect(palm);
-      canvas.drawRect(const Rect.fromLTRB(108, 196, 128, 340), shade);
+      canvas.drawRect(const Rect.fromLTRB(112, 212, 134, 340), shade);
       canvas.restore();
+      // Backs of the four fingers behind the right edge.
+      canvas.drawRRect(
+        RRect.fromLTRBR(128, 136, 152, 262, const Radius.circular(12)),
+        shade,
+      );
       return;
     }
-    // Thumb: rests on the lower left edge, pointing up and in.
+    // Thumb: base pad, then a tapered digit along the left edge with a nail.
+    canvas.drawCircle(const Offset(34, 262), 22, skin);
     canvas.save();
-    canvas.translate(26, 236);
-    canvas.rotate(-0.4);
+    canvas.translate(30, 250);
+    canvas.rotate(0.32);
     canvas.drawRRect(
-      RRect.fromLTRBR(-13, -44, 13, 10, const Radius.circular(13)),
+      RRect.fromLTRBR(-12, -66, 12, 0, const Radius.circular(12)),
       skin,
     );
     canvas.drawRRect(
-      RRect.fromLTRBR(-13, -44, 13, -28, const Radius.circular(12)),
-      shade..color = _shade.withValues(alpha: 0.6),
+      RRect.fromLTRBR(-7, -62, 7, -46, const Radius.circular(7)),
+      Paint()..color = _nail,
+    );
+    // Crease where the thumb bends.
+    canvas.drawRect(
+      const Rect.fromLTRB(-12, -34, 12, -32),
+      Paint()..color = _shade,
     );
     canvas.restore();
-    // Fingertips curl round the right edge.
-    for (final y in [176.0, 200.0, 224.0]) {
+    // Four fingertips curl round the right edge, pinky smallest.
+    const tips = [
+      (142.0, 20.0, 20.0),
+      (168.0, 22.0, 22.0),
+      (194.0, 22.0, 21.0),
+      (220.0, 18.0, 17.0),
+    ];
+    for (final (y, h, w) in tips) {
       final tip = RRect.fromLTRBR(
-        132,
+        150 - w,
         y,
-        154,
-        y + 20,
-        const Radius.circular(10),
+        150,
+        y + h,
+        Radius.circular(h / 2),
       );
       canvas.drawRRect(tip, skin);
-      canvas.drawRect(
-        Rect.fromLTRB(132, y + 17, 154, y + 20),
-        Paint()..color = _shade,
+      // Round side in shade, nail edge catching the light.
+      canvas.save();
+      canvas.clipRRect(tip);
+      canvas.drawRect(Rect.fromLTRB(150 - w, y + h * 0.7, 150, y + h), shade);
+      canvas.restore();
+      canvas.drawRRect(
+        RRect.fromLTRBR(
+          151 - w,
+          y + 4,
+          157 - w,
+          y + h - 6,
+          const Radius.circular(3),
+        ),
+        Paint()..color = _nail,
       );
     }
   }
