@@ -824,7 +824,7 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Ìbámu dúró tí gbèsè bá ju $amount lọ';
   }
 
   @override
@@ -1546,4 +1546,29 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Sanwó kíákíá';
+
+  @override
+  String get guarantorWhoTitle => 'Ta ló máa ṣe onígbọ̀wọ́ rẹ';
+
+  @override
+  String get guarantorDetailsTitle => 'Àlàyé wọn';
+
+  @override
+  String get seatToolsTitle => 'Irinṣẹ́ kíákíá';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Ṣètò ọjọ́ rẹ láti ṣètò ìjókòó ọkọ̀ rẹ. Lẹ́yìn náà o lè sàmì sí àwọn tó wà nínú rẹ̀ níbí.';
+
+  @override
+  String get mpGoalSection => 'Àfojúsùn òní';
+
+  @override
+  String get mpDemandSection => 'Ibi tí èrò wà';
+
+  @override
+  String get mpFuelSection => 'Iye epo';
+
+  @override
+  String get mpEventSection => 'Ìṣẹ̀lẹ̀ nítòsí';
 }

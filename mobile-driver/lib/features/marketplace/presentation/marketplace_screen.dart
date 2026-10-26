@@ -2,6 +2,7 @@ import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
@@ -121,108 +122,114 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
     final l10n = AppLocalizations.of(context);
     final progress = _progress;
     final tip = corridorTip(_demand);
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.marketplaceTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        children: [
-          TextField(
-            key: const Key('marketplace_goal'),
-            controller: _goal,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.marketplaceGoal),
-            onChanged: (_) => setState(() {}),
+    return DrivePage(
+      title: l10n.marketplaceTitle,
+      children: [
+        DriveSection(l10n.mpGoalSection),
+        TextField(
+          key: const Key('marketplace_goal'),
+          controller: _goal,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.marketplaceGoal),
+          onChanged: (_) => setState(() {}),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TextField(
+          key: const Key('marketplace_earned'),
+          controller: _earned,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.marketplaceEarned),
+          onChanged: (_) => setState(() {}),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TextField(
+          key: const Key('marketplace_typical'),
+          controller: _typical,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.marketplaceTypical),
+          onChanged: (_) => setState(() {}),
+        ),
+        if (progress != null)
+          Text(
+            progress.seatsLeft == 0
+                ? l10n.marketplaceGoalMet
+                : l10n.marketplaceSeats(progress.seatsLeft),
+            key: const Key('marketplace_seats'),
+            style: AlongType.label(AlongPalette.of(context)),
           ),
-          TextField(
-            key: const Key('marketplace_earned'),
-            controller: _earned,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.marketplaceEarned),
-            onChanged: (_) => setState(() {}),
+        const SizedBox(height: AlongSpace.s8),
+        AlongButton(
+          key: const Key('marketplace_goal_save'),
+          label: l10n.marketplaceSave,
+          onPressed: _saveGoal,
+        ),
+        DriveSection(l10n.mpDemandSection),
+        TextField(
+          key: const Key('marketplace_corridor'),
+          controller: _corridor,
+          decoration: driveInput(context, l10n.marketplaceCorridor),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TextField(
+          key: const Key('marketplace_requests'),
+          controller: _requests,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.marketplaceRequests),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        AlongButton(
+          key: const Key('marketplace_add_corridor'),
+          label: l10n.marketplaceAddCorridor,
+          variant: AlongButtonVariant.secondary,
+          onPressed: _addCorridor,
+        ),
+        if (tip != null)
+          Text(
+            l10n.marketplaceTip(tip),
+            key: const Key('marketplace_tip'),
+            style: AlongType.body(AlongPalette.of(context)),
           ),
-          TextField(
-            key: const Key('marketplace_typical'),
-            controller: _typical,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.marketplaceTypical),
-            onChanged: (_) => setState(() {}),
-          ),
-          if (progress != null)
-            Text(
-              progress.seatsLeft == 0
-                  ? l10n.marketplaceGoalMet
-                  : l10n.marketplaceSeats(progress.seatsLeft),
-              key: const Key('marketplace_seats'),
-              style: AlongText.bodyStrong,
-            ),
-          const SizedBox(height: AlongSpace.s8),
-          AlongButton(
-            key: const Key('marketplace_goal_save'),
-            label: l10n.marketplaceSave,
-            onPressed: _saveGoal,
-          ),
-          const SizedBox(height: AlongSpace.s16),
-          TextField(
-            key: const Key('marketplace_corridor'),
-            controller: _corridor,
-            decoration: InputDecoration(labelText: l10n.marketplaceCorridor),
-          ),
-          TextField(
-            key: const Key('marketplace_requests'),
-            controller: _requests,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.marketplaceRequests),
-          ),
-          AlongButton(
-            key: const Key('marketplace_add_corridor'),
-            label: l10n.marketplaceAddCorridor,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _addCorridor,
-          ),
-          if (tip != null)
-            Text(
-              l10n.marketplaceTip(tip),
-              key: const Key('marketplace_tip'),
-              style: AlongText.body,
-            ),
-          const SizedBox(height: AlongSpace.s16),
-          TextField(
-            key: const Key('marketplace_fuel_label'),
-            controller: _fuelLabel,
-            decoration: InputDecoration(labelText: l10n.marketplaceFuelLabel),
-          ),
-          TextField(
-            key: const Key('marketplace_fuel_price'),
-            controller: _fuelPrice,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.marketplaceFuel),
-          ),
-          AlongButton(
-            key: const Key('marketplace_fuel_save'),
-            label: l10n.marketplaceFuelSave,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _saveFuel,
-          ),
-          const SizedBox(height: AlongSpace.s16),
-          TextField(
-            key: const Key('marketplace_event'),
-            controller: _eventName,
-            decoration: InputDecoration(labelText: l10n.marketplaceEventName),
-          ),
-          TextField(
-            key: const Key('marketplace_event_hours'),
-            controller: _eventHours,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.marketplaceEventHours),
-          ),
-          AlongButton(
-            key: const Key('marketplace_event_save'),
-            label: l10n.marketplaceEventSave,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _openEvent,
-          ),
-        ],
-      ),
+        DriveSection(l10n.mpFuelSection),
+        TextField(
+          key: const Key('marketplace_fuel_label'),
+          controller: _fuelLabel,
+          decoration: driveInput(context, l10n.marketplaceFuelLabel),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TextField(
+          key: const Key('marketplace_fuel_price'),
+          controller: _fuelPrice,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.marketplaceFuel),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        AlongButton(
+          key: const Key('marketplace_fuel_save'),
+          label: l10n.marketplaceFuelSave,
+          variant: AlongButtonVariant.secondary,
+          onPressed: _saveFuel,
+        ),
+        DriveSection(l10n.mpEventSection),
+        TextField(
+          key: const Key('marketplace_event'),
+          controller: _eventName,
+          decoration: driveInput(context, l10n.marketplaceEventName),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TextField(
+          key: const Key('marketplace_event_hours'),
+          controller: _eventHours,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.marketplaceEventHours),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        AlongButton(
+          key: const Key('marketplace_event_save'),
+          label: l10n.marketplaceEventSave,
+          variant: AlongButtonVariant.secondary,
+          onPressed: _openEvent,
+        ),
+      ],
     );
   }
 }

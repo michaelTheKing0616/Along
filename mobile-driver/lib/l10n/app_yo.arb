@@ -71,5 +71,14 @@
   "ratingTagOnTime": "Ní àkókò",
   "ratingTagReady": "Ṣetán níbi ìgbéra",
   "ratingTagPaidPromptly": "Sanwó kíákíá",
-  "incomingRequestAlongFee": "Owó Along {amount} · {percent}%"
+  "incomingRequestAlongFee": "Owó Along {amount} · {percent}%",
+  "guarantorWhoTitle": "Ta ló máa ṣe onígbọ̀wọ́ rẹ",
+  "guarantorDetailsTitle": "Àlàyé wọn",
+  "seatToolsTitle": "Irinṣẹ́ kíákíá",
+  "standingBlockThreshold": "Ìbámu dúró tí gbèsè bá ju {amount} lọ",
+  "seatBoardEmptyBody": "Ṣètò ọjọ́ rẹ láti ṣètò ìjókòó ọkọ̀ rẹ. Lẹ́yìn náà o lè sàmì sí àwọn tó wà nínú rẹ̀ níbí.",
+  "mpGoalSection": "Àfojúsùn òní",
+  "mpDemandSection": "Ibi tí èrò wà",
+  "mpFuelSection": "Iye epo",
+  "mpEventSection": "Ìṣẹ̀lẹ̀ nítòsí"
 }

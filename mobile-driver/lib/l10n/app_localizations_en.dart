@@ -824,7 +824,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Matching pauses if you owe more than $amount';
   }
 
   @override
@@ -1546,4 +1546,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Paid promptly';
+
+  @override
+  String get guarantorWhoTitle => 'Who vouches for you';
+
+  @override
+  String get guarantorDetailsTitle => 'Their details';
+
+  @override
+  String get seatToolsTitle => 'Quick tools';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Plan your day to set up your vehicle\'s seats. Then you can mark who\'s on board here.';
+
+  @override
+  String get mpGoalSection => 'Today\'s goal';
+
+  @override
+  String get mpDemandSection => 'Where riders are';
+
+  @override
+  String get mpFuelSection => 'Fuel price';
+
+  @override
+  String get mpEventSection => 'Events nearby';
 }

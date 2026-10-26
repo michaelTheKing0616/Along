@@ -825,7 +825,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Daidaitawa na tsayawa idan bashin ya wuce $amount';
   }
 
   @override
@@ -1548,4 +1548,29 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Ya biya da wuri';
+
+  @override
+  String get guarantorWhoTitle => 'Wanda zai tsaya maka';
+
+  @override
+  String get guarantorDetailsTitle => 'Bayanansu';
+
+  @override
+  String get seatToolsTitle => 'Kayan aiki';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Tsara ranarka don saita kujerun motarka. Sannan za ka iya nuna wanda ke ciki a nan.';
+
+  @override
+  String get mpGoalSection => 'Burin yau';
+
+  @override
+  String get mpDemandSection => 'Inda fasinjoji suke';
+
+  @override
+  String get mpFuelSection => 'Farashin mai';
+
+  @override
+  String get mpEventSection => 'Taruka na kusa';
 }

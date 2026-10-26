@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/account/presentation/account_controller.dart';
 import 'package:mobile_driver/features/account/presentation/emergency_contacts_section.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
 
@@ -34,182 +35,167 @@ class AccountScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final asyncState = ref.watch(accountControllerProvider);
 
-    return Scaffold(
+    final p = AlongPalette.of(context);
+    return KeyedSubtree(
       key: const Key('account_screen'),
-      appBar: AppBar(
-        title: Text(l10n.navAccount),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
-      ),
-      body: asyncState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(child: Text(l10n.errorGeneric)),
+      child: asyncState.when(
+        loading: () => DrivePage(
+          title: l10n.navAccount,
+          children: const [
+            SizedBox(height: AlongSpace.s16),
+            AlongSkeleton(variant: SkeletonVariant.line),
+          ],
+        ),
+        error: (_, __) => DrivePage(
+          title: l10n.navAccount,
+          children: [Text(l10n.errorGeneric)],
+        ),
         data: (state) {
           if (state.errorMessage != null) {
-            return Center(child: Text(l10n.errorGeneric));
+            return DrivePage(
+              title: l10n.navAccount,
+              children: [Text(l10n.errorGeneric)],
+            );
           }
-
           final activeVehicle = state.vehicles
               .where((v) => v.active)
               .firstOrNull;
-
-          return ListView(
-            padding: const EdgeInsets.all(AlongSpace.s16),
+          final verified = state.verifiedStatus == 'verified';
+          return DrivePage(
+            title: l10n.navAccount,
             children: [
-              Text(l10n.accountProfileHeading, style: AlongText.overline),
-              const SizedBox(height: AlongSpace.s8),
-              ListTile(
-                key: const Key('account_profile_tile'),
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  state.displayName ?? l10n.accountProfileUnknown,
-                  style: AlongText.title,
-                ),
-                subtitle: Text(state.phoneE164 ?? '—', style: AlongText.body),
-                trailing: Text(
-                  _verifiedLabel(l10n, state.verifiedStatus),
-                  style: AlongText.caption,
-                ),
-                onTap: () => context.push(AppRoutes.profile),
+              const SizedBox(height: AlongSpace.s16),
+              DriveRows(
+                children: [
+                  DriveRow(
+                    key: const Key('account_profile_tile'),
+                    icon: AlongIcons.user,
+                    title: state.displayName ?? l10n.accountProfileUnknown,
+                    detail:
+                        '${state.phoneE164 ?? '—'} · ${_verifiedLabel(l10n, state.verifiedStatus)}',
+                    trailingStyle: verified
+                        ? AlongType.caption(p).copyWith(color: p.success)
+                        : null,
+                    chevron: true,
+                    onTap: () => context.push(AppRoutes.profile),
+                  ),
+                ],
               ),
-              const SizedBox(height: AlongSpace.s24),
-              Text(l10n.accountVehicleHeading, style: AlongText.overline),
-              const SizedBox(height: AlongSpace.s8),
-              if (activeVehicle != null)
-                ListTile(
-                  key: const Key('account_vehicle_tile'),
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.directions_car_outlined),
-                  title: Text(activeVehicle.plate, style: AlongText.bodyStrong),
-                  subtitle: state.hasMultipleVehicles
-                      ? Text(
-                          l10n.accountVehicleActiveHint,
-                          style: AlongText.caption,
-                        )
-                      : null,
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push(AppRoutes.vehicle),
-                )
-              else
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.accountVehicleEmpty, style: AlongText.body),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push(AppRoutes.vehicle),
-                ),
-              if (state.hasMultipleVehicles) ...[
-                const SizedBox(height: AlongSpace.s8),
-                Text(l10n.accountVehicleSwitchHint, style: AlongText.caption),
-              ],
-              const SizedBox(height: AlongSpace.s24),
-              Text(l10n.accountDocumentsHeading, style: AlongText.overline),
-              const SizedBox(height: AlongSpace.s8),
-              ListTile(
-                key: const Key('account_documents_tile'),
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.description_outlined),
-                title: Text(l10n.documentsTitle, style: AlongText.bodyStrong),
-                subtitle: Text(
-                  _documentSummaryLabel(l10n, state.documentSummary),
-                  style: AlongText.caption,
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.documents),
+              DriveSection(l10n.accountVehicleHeading),
+              DriveRows(
+                children: [
+                  DriveRow(
+                    key: activeVehicle != null
+                        ? const Key('account_vehicle_tile')
+                        : null,
+                    icon: AlongIcons.danfo,
+                    title: activeVehicle?.plate ?? l10n.accountVehicleEmpty,
+                    detail: state.hasMultipleVehicles
+                        ? l10n.accountVehicleActiveHint
+                        : null,
+                    chevron: true,
+                    onTap: () => context.push(AppRoutes.vehicle),
+                  ),
+                  DriveRow(
+                    key: const Key('account_documents_tile'),
+                    icon: AlongIcons.receipt,
+                    title: l10n.documentsTitle,
+                    detail: _documentSummaryLabel(l10n, state.documentSummary),
+                    chevron: true,
+                    onTap: () => context.push(AppRoutes.documents),
+                  ),
+                ],
               ),
-              const SizedBox(height: AlongSpace.s24),
-              Text(l10n.accountPayoutHeading, style: AlongText.overline),
-              const SizedBox(height: AlongSpace.s8),
-              ListTile(
-                key: const Key('account_payout_tile'),
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.account_balance_outlined),
-                title: Text(
-                  l10n.accountPayoutBank,
-                  style: AlongText.bodyStrong,
-                ),
-                subtitle: Text(
-                  state.hasPayoutSubaccount
-                      ? l10n.accountPayoutConfigured(
-                          state.payoutBankLast4 ?? '****',
-                        )
-                      : l10n.accountPayoutNotConfigured,
-                  style: AlongText.caption,
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.myQr),
+              DriveSection(l10n.accountPayoutHeading),
+              DriveRows(
+                children: [
+                  DriveRow(
+                    key: const Key('account_payout_tile'),
+                    icon: AlongIcons.bank,
+                    title: l10n.accountPayoutBank,
+                    detail: state.hasPayoutSubaccount
+                        ? l10n.accountPayoutConfigured(
+                            state.payoutBankLast4 ?? '****',
+                          )
+                        : l10n.accountPayoutNotConfigured,
+                    chevron: true,
+                    onTap: () => context.push(AppRoutes.myQr),
+                  ),
+                  DriveRow(
+                    key: const Key('account_my_qr_link'),
+                    icon: AlongIcons.qrCode,
+                    title: l10n.myQrTitle,
+                    detail: l10n.myQrAccountSubtitle,
+                    chevron: true,
+                    onTap: () => context.push(AppRoutes.myQr),
+                  ),
+                ],
               ),
-              ListTile(
-                key: const Key('account_my_qr_link'),
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.qr_code_2_outlined),
-                title: Text(l10n.myQrTitle, style: AlongText.bodyStrong),
-                subtitle: Text(
-                  l10n.myQrAccountSubtitle,
-                  style: AlongText.caption,
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.myQr),
-              ),
-              const SizedBox(height: AlongSpace.s24),
-              Text(l10n.accountPreferencesHeading, style: AlongText.overline),
-              const SizedBox(height: AlongSpace.s8),
+              DriveSection(l10n.accountPreferencesHeading),
               if (state.cities.isNotEmpty) ...[
-                Text(l10n.accountCityLabel, style: AlongText.bodyStrong),
+                DriveCard(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AlongSpace.s16,
+                    vertical: AlongSpace.s4,
+                  ),
+                  child: DropdownButtonFormField<String>(
+                    key: const Key('account_city_dropdown'),
+                    isExpanded: true,
+                    initialValue: state.cityId,
+                    style: AlongType.label(p),
+                    decoration: InputDecoration(
+                      labelText: l10n.accountCityLabel,
+                      hintText: l10n.accountCityHint,
+                      border: InputBorder.none,
+                    ),
+                    items: state.cities
+                        .map(
+                          (city) => DropdownMenuItem(
+                            value: city.id,
+                            child: Text(city.name),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (cityId) async {
+                      if (cityId == null) return;
+                      await ref
+                          .read(accountControllerProvider.notifier)
+                          .switchCity(cityId);
+                    },
+                  ),
+                ),
                 const SizedBox(height: AlongSpace.s8),
-                DropdownButtonFormField<String>(
-                  key: const Key('account_city_dropdown'),
-                  isExpanded: true,
-                  initialValue: state.cityId,
-                  decoration: InputDecoration(hintText: l10n.accountCityHint),
-                  items: state.cities
-                      .map(
-                        (city) => DropdownMenuItem(
-                          value: city.id,
-                          child: Text(city.name),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (cityId) async {
-                    if (cityId == null) return;
-                    await ref
-                        .read(accountControllerProvider.notifier)
-                        .switchCity(cityId);
-                  },
-                ),
-                const SizedBox(height: AlongSpace.s16),
               ],
-              ListTile(
-                key: const Key('account_language_tile'),
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.language_outlined),
-                title: Text(l10n.accountLanguage, style: AlongText.bodyStrong),
-                subtitle: Text(
-                  l10n.accountLanguageValue,
-                  style: AlongText.caption,
-                ),
+              DriveRows(
+                children: [
+                  DriveRow(
+                    key: const Key('account_language_tile'),
+                    icon: AlongIcons.chat,
+                    title: l10n.accountLanguage,
+                    trailing: l10n.accountLanguageValue,
+                  ),
+                ],
               ),
-              const SizedBox(height: AlongSpace.s24),
-              Text(l10n.accountSafetyHeading, style: AlongText.overline),
-              const SizedBox(height: AlongSpace.s8),
-              ListTile(
-                key: const Key('account_safety_tile'),
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  l10n.accountSafetyHowSos,
-                  style: AlongText.bodyStrong,
-                ),
-                subtitle: Text(
-                  l10n.accountSafetyHowSosBody,
-                  style: AlongText.caption,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.accountHelp, style: AlongText.bodyStrong),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.accountLegal, style: AlongText.bodyStrong),
+              DriveSection(l10n.accountSafetyHeading),
+              DriveRows(
+                children: [
+                  DriveRow(
+                    key: const Key('account_safety_tile'),
+                    icon: AlongIcons.sos,
+                    title: l10n.accountSafetyHowSos,
+                    detail: l10n.accountSafetyHowSosBody,
+                  ),
+                  DriveRow(
+                    icon: AlongIcons.info,
+                    title: l10n.accountHelp,
+                    chevron: true,
+                  ),
+                  DriveRow(
+                    icon: AlongIcons.shield,
+                    title: l10n.accountLegal,
+                    chevron: true,
+                  ),
+                ],
               ),
               const SizedBox(height: AlongSpace.s24),
               const EmergencyContactsSection(),

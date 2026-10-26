@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 
 /// D-22 Guarantor registration (doc 06).
 class GuarantorScreen extends ConsumerStatefulWidget {
@@ -32,7 +33,9 @@ class _GuarantorScreenState extends ConsumerState<GuarantorScreen> {
       _message = null;
     });
     try {
-      await ref.read(ledgerRepositoryProvider).registerGuarantor(
+      await ref
+          .read(ledgerRepositoryProvider)
+          .registerGuarantor(
             guarantorType: _type,
             name: _nameController.text.trim(),
             phoneE164: _phoneController.text.trim(),
@@ -55,60 +58,65 @@ class _GuarantorScreenState extends ConsumerState<GuarantorScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
+    final p = AlongPalette.of(context);
+    InputDecoration field(String label) => InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: p.recessed,
+      border: AlongCraft.input(BorderSide.none),
+      enabledBorder: AlongCraft.input(BorderSide.none),
+      focusedBorder: AlongCraft.input(BorderSide(color: p.ink, width: 1.5)),
+    );
+    return KeyedSubtree(
       key: const Key('guarantor_screen'),
-      appBar: AppBar(
-        title: Text(l10n.guarantorTitle),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
+      child: DrivePage(
+        title: l10n.guarantorTitle,
+        subtitle: l10n.guarantorExplainer,
+        footer: AlongButton(
+          key: const Key('guarantor_submit'),
+          label: l10n.guarantorSubmit,
+          visualState: _busy
+              ? AlongButtonVisualState.loading
+              : AlongButtonVisualState.normal,
+          onPressed: _busy ? null : _submit,
+        ),
         children: [
-          Text(l10n.guarantorExplainer, style: AlongText.body),
-          const SizedBox(height: AlongSpace.s16),
-          SegmentedButton<String>(
-            segments: [
-              ButtonSegment(
-                value: 'fellow_driver',
-                label: Text(l10n.guarantorTypeDriver),
+          DriveSection(l10n.guarantorWhoTitle),
+          DriveRows(
+            children: [
+              DriveRow(
+                key: const Key('guarantor_type_driver'),
+                icon: AlongIcons.user,
+                title: l10n.guarantorTypeDriver,
+                selected: _type == 'fellow_driver',
+                onTap: () => setState(() => _type = 'fellow_driver'),
               ),
-              ButtonSegment(
-                value: 'vehicle_owner',
-                label: Text(l10n.guarantorTypeOwner),
+              DriveRow(
+                key: const Key('guarantor_type_owner'),
+                icon: AlongIcons.danfo,
+                title: l10n.guarantorTypeOwner,
+                selected: _type == 'vehicle_owner',
+                onTap: () => setState(() => _type = 'vehicle_owner'),
               ),
             ],
-            selected: {_type},
-            onSelectionChanged: (value) => setState(() => _type = value.first),
           ),
-          const SizedBox(height: AlongSpace.s16),
+          DriveSection(l10n.guarantorDetailsTitle),
           TextField(
+            key: const Key('guarantor_name'),
             controller: _nameController,
-            decoration: InputDecoration(
-              labelText: l10n.guarantorNameLabel,
-              border: AlongCraft.input(const BorderSide()),
-            ),
+            textCapitalization: TextCapitalization.words,
+            decoration: field(l10n.guarantorNameLabel),
           ),
           const SizedBox(height: AlongSpace.s12),
           TextField(
+            key: const Key('guarantor_phone'),
             controller: _phoneController,
             keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: l10n.guarantorPhoneLabel,
-              border: AlongCraft.input(const BorderSide()),
-            ),
-          ),
-          const SizedBox(height: AlongSpace.s16),
-          AlongButton(
-            key: const Key('guarantor_submit'),
-            label: l10n.guarantorSubmit,
-            visualState:
-                _busy ? AlongButtonVisualState.loading : AlongButtonVisualState.normal,
-            onPressed: _busy ? null : _submit,
+            decoration: field(l10n.guarantorPhoneLabel),
           ),
           if (_message != null) ...[
             const SizedBox(height: AlongSpace.s12),
-            Text(_message!, style: AlongText.bodyStrong),
+            Text(_message!, style: AlongType.label(p)),
           ],
         ],
       ),

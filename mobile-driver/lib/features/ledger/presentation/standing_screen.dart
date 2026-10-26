@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 
 /// D-21 Standing — reason, balance, grace, history (doc 06).
 class StandingScreen extends ConsumerWidget {
@@ -17,82 +18,83 @@ class StandingScreen extends ConsumerWidget {
     final ledger = ref.watch(driverLedgerControllerProvider);
     final historyAsync = ref.watch(standingHistoryProvider);
 
-    return Scaffold(
+    final p = AlongPalette.of(context);
+    final paused = ledger.cardState == BalanceCardState.paused;
+    return KeyedSubtree(
       key: const Key('standing_screen'),
-      appBar: AppBar(
-        title: Text(l10n.standingTitle),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
+      child: DrivePage(
+        title: l10n.standingTitle,
+        footer: AlongButton(
+          key: const Key('standing_settle'),
+          label: l10n.settleCta,
+          onPressed: () => context.push(AppRoutes.settle),
+        ),
         children: [
-          Text(
-            ledger.standingLabel,
-            style: AlongText.displayL.copyWith(
-              color: ledger.cardState == BalanceCardState.paused
-                  ? AlongColors.semanticDanger
-                  : AlongColors.ink900,
-            ),
-          ),
-          const SizedBox(height: AlongSpace.s8),
-          Text(
-            l10n.standingBalanceAt(formatMoney(ledger.balance)),
-            style: AlongText.body,
-          ),
-          Text(
-            l10n.standingBlockThreshold(formatMoney(ledger.blockThreshold)),
-            style: AlongText.caption.copyWith(color: AlongColors.ink500),
-          ),
-          if (ledger.graceDeadline != null) ...[
-            const SizedBox(height: AlongSpace.s8),
-            Text(
-              l10n.standingGraceDeadline(
-                MaterialLocalizations.of(context).formatShortDate(
-                  ledger.graceDeadline!.toLocal(),
-                ),
-              ),
-              style: AlongText.bodyStrong.copyWith(color: AlongColors.semanticWarning),
-            ),
-          ],
-          const SizedBox(height: AlongSpace.s8),
-          Text(
-            l10n.standingRestoreHint,
-            style: AlongText.body.copyWith(color: AlongColors.ink700),
-          ),
           const SizedBox(height: AlongSpace.s16),
-          AlongButton(
-            key: const Key('standing_settle'),
-            label: l10n.settleCta,
-            variant: AlongButtonVariant.yellow,
-            onPressed: () => context.push(AppRoutes.settle),
+          DriveCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DriveTag(
+                  label: ledger.standingLabel,
+                  tone: paused ? DriveTagTone.warning : DriveTagTone.neutral,
+                ),
+                const SizedBox(height: AlongSpace.s12),
+                Text(
+                  formatMoney(ledger.balance),
+                  style: AlongType.display(p).copyWith(fontSize: 40),
+                ),
+                const SizedBox(height: AlongSpace.s4),
+                Text(
+                  l10n.standingBlockThreshold(
+                    formatMoney(
+                      Money.parse(
+                        ledger.blockThreshold.amount.abs().toString(),
+                        currency: ledger.blockThreshold.currency,
+                      ),
+                    ),
+                  ),
+                  style: AlongType.bodyMuted(p),
+                ),
+                if (ledger.graceDeadline != null) ...[
+                  const SizedBox(height: AlongSpace.s8),
+                  Text(
+                    l10n.standingGraceDeadline(
+                      MaterialLocalizations.of(context)
+                          .formatShortDate(ledger.graceDeadline!.toLocal()),
+                    ),
+                    style: AlongType.label(p).copyWith(color: p.danger),
+                  ),
+                ],
+              ],
+            ),
           ),
-          const SizedBox(height: AlongSpace.s24),
-          Text(l10n.standingHistoryTitle, style: AlongText.overline),
-          const SizedBox(height: AlongSpace.s8),
+          const SizedBox(height: AlongSpace.s12),
+          Text(l10n.standingRestoreHint, style: AlongType.bodyMuted(p)),
+          DriveSection(l10n.standingHistoryTitle),
           historyAsync.when(
             data: (rows) {
               if (rows.isEmpty) {
-                return Text(
-                  l10n.standingHistoryEmpty,
-                  style: AlongText.body.copyWith(color: AlongColors.ink500),
+                return DriveCard(
+                  child: Text(
+                    l10n.standingHistoryEmpty,
+                    style: AlongType.bodyMuted(p),
+                  ),
                 );
               }
-              return Column(
+              return DriveRows(
                 children: [
                   for (final row in rows)
-                    ListTile(
+                    DriveRow(
                       key: Key('standing_history_${row.created_at}'),
-                      title: Text(standingLabel(row.to_standing)),
-                      subtitle: Text(row.reason),
-                      trailing: row.balance_at != null
-                          ? Text(
-                              formatMoney(
-                                Money.parse(row.balance_at!, currency: 'NGN'),
-                              ),
-                              style: AlongText.caption,
-                            )
-                          : null,
+                      icon: AlongIcons.history,
+                      title: standingLabel(row.to_standing),
+                      detail: row.reason,
+                      trailing: row.balance_at == null
+                          ? null
+                          : formatMoney(
+                              Money.parse(row.balance_at!, currency: 'NGN'),
+                            ),
                     ),
                 ],
               );

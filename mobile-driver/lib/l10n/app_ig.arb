@@ -71,5 +71,14 @@
   "ratingTagOnTime": "N'oge",
   "ratingTagReady": "Dị njikere",
   "ratingTagPaidPromptly": "Kwụrụ ngwa ngwa",
-  "incomingRequestAlongFee": "Ụgwọ Along {amount} · {percent}%"
+  "incomingRequestAlongFee": "Ụgwọ Along {amount} · {percent}%",
+  "guarantorWhoTitle": "Onye ga-akwado gị",
+  "guarantorDetailsTitle": "Nkọwa ha",
+  "seatToolsTitle": "Ngwa ọrụ ngwa ngwa",
+  "standingBlockThreshold": "Nhazi na-akwụsị ma ụgwọ gafere {amount}",
+  "seatBoardEmptyBody": "Hazie ụbọchị gị iji hazie oche ụgbọ gị. Mgbe ahụ ị nwere ike igosi ndị nọ n'ime ebe a.",
+  "mpGoalSection": "Ebumnuche taa",
+  "mpDemandSection": "Ebe ndị njem nọ",
+  "mpFuelSection": "Ọnụ ahịa mmanụ",
+  "mpEventSection": "Mmemme dị nso"
 }

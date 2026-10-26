@@ -1559,7 +1559,7 @@ abstract class AppLocalizations {
   /// No description provided for @standingBlockThreshold.
   ///
   /// In en, this message translates to:
-  /// **'Matching pauses below {amount}'**
+  /// **'Matching pauses if you owe more than {amount}'**
   String standingBlockThreshold(String amount);
 
   /// No description provided for @standingGraceDeadline.
@@ -2821,6 +2821,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paid promptly'**
   String get ratingTagPaidPromptly;
+
+  /// No description provided for @guarantorWhoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who vouches for you'**
+  String get guarantorWhoTitle;
+
+  /// No description provided for @guarantorDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Their details'**
+  String get guarantorDetailsTitle;
+
+  /// No description provided for @seatToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick tools'**
+  String get seatToolsTitle;
+
+  /// No description provided for @seatBoardEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your day to set up your vehicle\'s seats. Then you can mark who\'s on board here.'**
+  String get seatBoardEmptyBody;
+
+  /// No description provided for @mpGoalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s goal'**
+  String get mpGoalSection;
+
+  /// No description provided for @mpDemandSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Where riders are'**
+  String get mpDemandSection;
+
+  /// No description provided for @mpFuelSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel price'**
+  String get mpFuelSection;
+
+  /// No description provided for @mpEventSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Events nearby'**
+  String get mpEventSection;
 }
 
 class _AppLocalizationsDelegate

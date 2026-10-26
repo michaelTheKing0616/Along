@@ -71,5 +71,14 @@
   "ratingTagOnTime": "A kan lokaci",
   "ratingTagReady": "A shirye a wurin ɗauka",
   "ratingTagPaidPromptly": "Ya biya da wuri",
-  "incomingRequestAlongFee": "Kuɗin Along {amount} · {percent}%"
+  "incomingRequestAlongFee": "Kuɗin Along {amount} · {percent}%",
+  "guarantorWhoTitle": "Wanda zai tsaya maka",
+  "guarantorDetailsTitle": "Bayanansu",
+  "seatToolsTitle": "Kayan aiki",
+  "standingBlockThreshold": "Daidaitawa na tsayawa idan bashin ya wuce {amount}",
+  "seatBoardEmptyBody": "Tsara ranarka don saita kujerun motarka. Sannan za ka iya nuna wanda ke ciki a nan.",
+  "mpGoalSection": "Burin yau",
+  "mpDemandSection": "Inda fasinjoji suke",
+  "mpFuelSection": "Farashin mai",
+  "mpEventSection": "Taruka na kusa"
 }

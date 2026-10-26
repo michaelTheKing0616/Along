@@ -2,6 +2,7 @@ import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
@@ -108,55 +109,56 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     if (!_ready) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: AlongSkeleton(variant: SkeletonVariant.line)),
+      );
     }
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.restTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        children: [
-          TextField(
-            key: const Key('rest_drive_minutes'),
-            controller: _drive,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.restDriveMinutes),
-          ),
-          TextField(
-            key: const Key('rest_minutes'),
-            controller: _rest,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.restMinutes),
-          ),
-          const SizedBox(height: AlongSpace.s16),
+    return DrivePage(
+      title: l10n.restTitle,
+      children: [
+        const SizedBox(height: AlongSpace.s16),
+        TextField(
+          key: const Key('rest_drive_minutes'),
+          controller: _drive,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.restDriveMinutes),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TextField(
+          key: const Key('rest_minutes'),
+          controller: _rest,
+          keyboardType: TextInputType.number,
+          decoration: driveInput(context, l10n.restMinutes),
+        ),
+        const SizedBox(height: AlongSpace.s16),
+        AlongButton(
+          key: const Key('rest_save'),
+          label: l10n.restSave,
+          onPressed: _save,
+        ),
+        const SizedBox(height: AlongSpace.s16),
+        if (_restingSince == null)
           AlongButton(
-            key: const Key('rest_save'),
-            label: l10n.restSave,
-            onPressed: _save,
+            key: const Key('rest_begin'),
+            label: l10n.restStart,
+            variant: AlongButtonVariant.secondary,
+            onPressed: _startRest,
+          )
+        else
+          AlongButton(
+            key: const Key('rest_finish'),
+            label: l10n.restFinish,
+            onPressed: _endRest,
           ),
-          const SizedBox(height: AlongSpace.s16),
-          if (_restingSince == null)
-            AlongButton(
-              key: const Key('rest_begin'),
-              label: l10n.restStart,
-              variant: AlongButtonVariant.secondary,
-              onPressed: _startRest,
-            )
-          else
-            AlongButton(
-              key: const Key('rest_finish'),
-              label: l10n.restFinish,
-              onPressed: _endRest,
-            ),
-          if (_priority) ...[
-            const SizedBox(height: AlongSpace.s12),
-            Text(
-              l10n.restPriority,
-              key: const Key('rest_priority_label'),
-              style: AlongText.body,
-            ),
-          ],
+        if (_priority) ...[
+          const SizedBox(height: AlongSpace.s12),
+          Text(
+            l10n.restPriority,
+            key: const Key('rest_priority_label'),
+            style: AlongType.body(AlongPalette.of(context)),
+          ),
         ],
-      ),
+      ],
     );
   }
 }

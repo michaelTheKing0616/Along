@@ -71,5 +71,14 @@
   "ratingTagOnTime": "On time",
   "ratingTagReady": "Ready for pickup",
   "ratingTagPaidPromptly": "Pay sharp sharp",
-  "incomingRequestAlongFee": "Along fee {amount} · {percent}%, e go add for drop"
+  "incomingRequestAlongFee": "Along fee {amount} · {percent}%, e go add for drop",
+  "guarantorWhoTitle": "Who go stand for you",
+  "guarantorDetailsTitle": "Their details",
+  "seatToolsTitle": "Quick tools",
+  "standingBlockThreshold": "Matching go pause if you owe pass {amount}",
+  "seatBoardEmptyBody": "Plan your day to set your motor seats. Then you fit mark who dey inside for here.",
+  "mpGoalSection": "Today target",
+  "mpDemandSection": "Where passengers dey",
+  "mpFuelSection": "Fuel price",
+  "mpEventSection": "Events near you"
 }

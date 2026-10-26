@@ -546,7 +546,7 @@
       }
     }
   },
-  "standingBlockThreshold": "Matching pauses below {amount}",
+  "standingBlockThreshold": "Matching pauses if you owe more than {amount}",
   "@standingBlockThreshold": {
     "placeholders": {
       "amount": {
@@ -1011,5 +1011,13 @@
   "ratingTagPolite": "Polite",
   "ratingTagOnTime": "On time",
   "ratingTagReady": "Ready at pickup",
-  "ratingTagPaidPromptly": "Paid promptly"
+  "ratingTagPaidPromptly": "Paid promptly",
+  "guarantorWhoTitle": "Who vouches for you",
+  "guarantorDetailsTitle": "Their details",
+  "seatToolsTitle": "Quick tools",
+  "seatBoardEmptyBody": "Plan your day to set up your vehicle's seats. Then you can mark who's on board here.",
+  "mpGoalSection": "Today's goal",
+  "mpDemandSection": "Where riders are",
+  "mpFuelSection": "Fuel price",
+  "mpEventSection": "Events nearby"
 }
