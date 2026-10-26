@@ -259,30 +259,37 @@ class _OpticalFace extends StatelessWidget {
             style: AlongType.label(p).copyWith(color: p.muted),
           ),
           const Spacer(),
-          Container(height: 1, color: p.line),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _Shape(choice: pairing, size: 48),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pairing.label,
-                      key: const Key('na_me_show_label'),
-                      style: AlongType.title(p),
+          DecoratedBox(
+            decoration: ShapeDecoration(
+              color: p.recessed,
+              shape: AlongCraft.border(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  _Shape(choice: pairing, size: 48),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          pairing.label,
+                          key: const Key('na_me_show_label'),
+                          style: AlongType.title(p),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Backup: they tap this',
+                          style: AlongType.label(p).copyWith(color: p.muted),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'If the camera misses, they tap this',
-                      style: AlongType.label(p).copyWith(color: p.muted),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -643,10 +650,19 @@ class AlongNaMeNoMatch extends StatelessWidget {
         !result.tapLocked &&
         result.verdict != AlongNaMeVerdict.locked &&
         (left == null || left > 0);
-    final offline = result.verdict == AlongNaMeVerdict.failed;
+    final art = switch (result.verdict) {
+      AlongNaMeVerdict.failed => _Art.offline,
+      AlongNaMeVerdict.rateLimited => _Art.wait,
+      _ => _Art.mismatch,
+    };
+    final title = switch (result.verdict) {
+      AlongNaMeVerdict.failed => 'Couldn\'t check',
+      AlongNaMeVerdict.rateLimited => 'One moment',
+      AlongNaMeVerdict.locked => 'Use their PIN',
+      _ => 'Not a match',
+    };
     final body = switch (result.verdict) {
-      AlongNaMeVerdict.rateLimited =>
-        'Too fast. Wait a moment, then try again.',
+      AlongNaMeVerdict.rateLimited => 'Wait a few seconds, then try again.',
       AlongNaMeVerdict.failed => 'Check your connection, or use the PIN.',
       AlongNaMeVerdict.locked =>
         'Too many tries. Ask $riderName for their PIN.',
@@ -668,7 +684,7 @@ class AlongNaMeNoMatch extends StatelessWidget {
                   key: const Key('na_me_no_match_art'),
                   size: const Size(208, 112),
                   painter: _MismatchArt(
-                    waiting: offline,
+                    art: art,
                     line: p.ink,
                     fill: p.recessed,
                     soft: p.muted,
@@ -677,7 +693,8 @@ class AlongNaMeNoMatch extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                offline ? 'Couldn\'t check' : 'Not a match',
+                title,
+                key: const Key('na_me_no_match_title'),
                 textAlign: TextAlign.center,
                 style: AlongType.display(p),
               ),
@@ -983,8 +1000,13 @@ class _LinkPainter extends CustomPainter {
         56 + 64 * r,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 3
-          ..color = flood.withValues(alpha: (1 - r) * 0.7 * fade),
+          ..strokeWidth = 4
+          // Flood deepened toward ink so the rings hold on light paper.
+          ..color = Color.lerp(
+            flood,
+            line,
+            0.35,
+          )!.withValues(alpha: (1 - r) * 0.9 * fade),
       );
     }
     // Phones: travel from the edges to just outside the shape.
@@ -1019,18 +1041,21 @@ class _LinkPainter extends CustomPainter {
       old.line != line;
 }
 
+/// What the no-match art shows: different shapes, still connecting, or a
+/// short wait.
+enum _Art { mismatch, offline, wait }
+
 /// No-match art: two phones leaning apart, each showing a different shape,
 /// with a soft dotted gap between them. Calm, no red, no cross.
 class _MismatchArt extends CustomPainter {
   const _MismatchArt({
-    required this.waiting,
+    required this.art,
     required this.line,
     required this.fill,
     required this.soft,
   });
 
-  /// Couldn't check (offline): phones upright, blank, still connecting.
-  final bool waiting;
+  final _Art art;
   final Color line;
   final Color fill;
   final Color soft;
@@ -1059,6 +1084,7 @@ class _MismatchArt extends CustomPainter {
       canvas.restore();
     }
 
+    final waiting = art != _Art.mismatch;
     final tilt = waiting ? 0.0 : 0.12;
     phone(Offset(size.width * 0.2, size.height / 2), -tilt, () {
       if (waiting) return;
@@ -1076,8 +1102,21 @@ class _MismatchArt extends CustomPainter {
       );
     });
     // The gap: three soft dots, the middle one slightly larger.
-    final dots = Paint()..color = soft;
     final cy = size.height / 2;
+    if (art == _Art.wait) {
+      // A small clock in the gap: try again shortly.
+      final c = Offset(size.width / 2, cy);
+      final ring = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..strokeCap = StrokeCap.round
+        ..color = soft;
+      canvas.drawCircle(c, 13, ring);
+      canvas.drawLine(c, c + const Offset(0, -7), ring);
+      canvas.drawLine(c, c + const Offset(5, 3), ring);
+      return;
+    }
+    final dots = Paint()..color = soft;
     for (final dx in [-16.0, 0.0, 16.0]) {
       canvas.drawCircle(Offset(size.width / 2 + dx, cy), dx == 0 ? 4 : 3, dots);
     }
@@ -1085,7 +1124,7 @@ class _MismatchArt extends CustomPainter {
 
   @override
   bool shouldRepaint(_MismatchArt old) =>
-      old.waiting != waiting ||
+      old.art != art ||
       old.line != line ||
       old.fill != fill ||
       old.soft != soft;
