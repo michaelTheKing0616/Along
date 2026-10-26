@@ -1571,4 +1571,67 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get mpEventSection => 'Ìṣẹ̀lẹ̀ nítòsí';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count ṣófo · tẹ ìjókòó láti yí i padà';
+  }
+
+  @override
+  String get mpSubtitle => 'Ṣètò àfojúsùn, wo ibi tí èrò wà, kí o pín ìmọ̀ràn.';
+
+  @override
+  String get mpGoalEmpty => 'Ṣètò àfojúsùn láti rí iye ìjókòó tó kù';
+
+  @override
+  String get mpMoreSection => 'Pín fún àwọn awakọ̀';
+
+  @override
+  String get mpFuelDetail => 'Iye epo òní nítòsí';
+
+  @override
+  String get mpEventDetail => 'Ṣí ibi ìgbérò fún èrò púpọ̀';
+
+  @override
+  String get restSubtitle =>
+      'Sinmi dáadáa lẹ́yìn ìrìn gígùn. Ìsinmi kíkún ń gbé ọ sókè nínú ìlà.';
+
+  @override
+  String get restStatusDriving => 'Lójú ọ̀nà';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Ń sinmi láti $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return 'Ìsinmi ìṣẹ́jú $rest ní gbogbo ìṣẹ́jú $drive';
+  }
+
+  @override
+  String get restPlanEmpty => 'Ṣètò bí o ṣe ń wakọ̀ pẹ́ tó kí o tó sinmi';
+
+  @override
+  String get restRhythmSection => 'Ìlànà rẹ';
+
+  @override
+  String get conductorSubtitle =>
+      'Ran awakọ̀ lọ́wọ́ láti mú ìjókòó dójú ìwọ̀n.';
+
+  @override
+  String get conductorHowTo =>
+      'Awakọ̀ á ṣí Àwòrán ìjókòó → Kóòdù kọ́ndọ́ktọ̀ á sì ka kóòdù oní-lẹ́tà 8 fún ọ.';
+
+  @override
+  String get restDriveShort => 'Wakọ̀ (ìṣẹ́jú)';
+
+  @override
+  String get restBreakShort => 'Ìsinmi (ìṣẹ́jú)';
+
+  @override
+  String get mpTargetShort => 'Àfojúsùn';
+
+  @override
+  String get mpEarnedShort => 'Tí o rí';
 }

@@ -30,6 +30,10 @@ void main() {
       'Nyanya',
     );
     await tester.enterText(find.byKey(const Key('marketplace_requests')), '11');
+    await tester.ensureVisible(
+      find.byKey(const Key('marketplace_add_corridor')),
+    );
+    await tester.pump();
     await tester.tap(find.byKey(const Key('marketplace_add_corridor')));
     await tester.pump();
     expect(find.text('Queue toward Nyanya'), findsOneWidget);

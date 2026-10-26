@@ -118,6 +118,52 @@ class FakeAlongSupabase implements AlongSupabase {
     'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
   };
 
+
+
+  /// A sedan cabin: driver + front right, three in the back.
+  static Map<String, dynamic> sampleSeatBoard() => {
+    'layout_id': 'layout-1',
+    'vehicle_id': 'vehicle-1',
+    'free': 2,
+    'layout': {
+      'version': 1,
+      'body': 'cabin',
+      'rows': [
+        {
+          'id': 'front',
+          'seats': [
+            {'id': 'drv', 'role': 'driver', 'label': 'Driver'},
+            {'id': 'fr', 'role': 'passenger', 'label': 'FR'},
+          ],
+        },
+        {
+          'id': 'back',
+          'seats': [
+            {'id': 'bl', 'role': 'passenger', 'label': 'BL'},
+            {'id': 'bm', 'role': 'passenger', 'label': 'BM'},
+            {'id': 'br', 'role': 'passenger', 'label': 'BR'},
+          ],
+        },
+      ],
+    },
+    'seats': [
+      {'seat_id': 'fr', 'status': 'occupied', 'version': 2},
+      {'seat_id': 'bl', 'status': 'free', 'version': 1},
+      {'seat_id': 'bm', 'status': 'held', 'version': 1},
+      {'seat_id': 'br', 'status': 'free', 'version': 1},
+    ],
+    'rules': [
+      {
+        'id': 'r1',
+        'effect': 'badge',
+        'target_scope': 'vehicle',
+        'title': 'Window stays open',
+        'body': 'No AC on short hops.',
+        'enabled': true,
+      },
+    ],
+  };
+
   int confirmFareInvokeCount = 0;
   final List<Map<String, dynamic>> postedTripMessages = [];
   int respondExtensionInvokeCount = 0;
@@ -136,6 +182,9 @@ class FakeAlongSupabase implements AlongSupabase {
   Map<String, dynamic>? suggestedRoute;
   List<Map<String, dynamic>> placesSearchResults;
   Map<String, dynamic>? driverBalanceResponse;
+
+  /// `seat_board` RPC payload; null keeps the driver without a layout.
+  Map<String, dynamic>? seatBoardResponse;
 
   /// Rows served for `trips` selects (earnings, home today line).
   final List<Map<String, dynamic>> tripRows = [];
@@ -426,6 +475,9 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'driver_earnings_context') {
       return earningsContextResponse ??
           {'online_seconds_by_day': <String, int>{}, 'latest_payout': null};
+    }
+    if (fn == 'seat_board' && seatBoardResponse != null) {
+      return seatBoardResponse;
     }
     if (fn == 'driver_balance') {
       return driverBalanceResponse ?? defaultDriverBalanceResponse();

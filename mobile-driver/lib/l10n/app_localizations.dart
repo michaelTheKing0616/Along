@@ -2869,6 +2869,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Events nearby'**
   String get mpEventSection;
+
+  /// No description provided for @seatBoardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free · tap a seat to switch it'**
+  String seatBoardSubtitle(int count);
+
+  /// No description provided for @mpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target, see where riders are, and share local tips.'**
+  String get mpSubtitle;
+
+  /// No description provided for @mpGoalEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target to see how many seats to go'**
+  String get mpGoalEmpty;
+
+  /// No description provided for @mpMoreSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with drivers'**
+  String get mpMoreSection;
+
+  /// No description provided for @mpFuelDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s pump price nearby'**
+  String get mpFuelDetail;
+
+  /// No description provided for @mpEventDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a pickup point for a crowd'**
+  String get mpEventDetail;
+
+  /// No description provided for @restSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a proper break after a long stretch. A full rest moves you up the queue.'**
+  String get restSubtitle;
+
+  /// No description provided for @restStatusDriving.
+  ///
+  /// In en, this message translates to:
+  /// **'On the road'**
+  String get restStatusDriving;
+
+  /// No description provided for @restStatusResting.
+  ///
+  /// In en, this message translates to:
+  /// **'Resting since {time}'**
+  String restStatusResting(String time);
+
+  /// No description provided for @restPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'{rest} min break every {drive} min'**
+  String restPlan(int rest, int drive);
+
+  /// No description provided for @restPlanEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Set how long you drive before a break'**
+  String get restPlanEmpty;
+
+  /// No description provided for @restRhythmSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Your rhythm'**
+  String get restRhythmSection;
+
+  /// No description provided for @conductorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help the driver keep seats up to date.'**
+  String get conductorSubtitle;
+
+  /// No description provided for @conductorHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'The driver opens Seat map → Conductor code and reads you the 8-character code.'**
+  String get conductorHowTo;
+
+  /// No description provided for @restDriveShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive (min)'**
+  String get restDriveShort;
+
+  /// No description provided for @restBreakShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Break (min)'**
+  String get restBreakShort;
+
+  /// No description provided for @mpTargetShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get mpTargetShort;
+
+  /// No description provided for @mpEarnedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned'**
+  String get mpEarnedShort;
 }
 
 class _AppLocalizationsDelegate

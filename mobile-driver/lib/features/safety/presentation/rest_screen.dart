@@ -108,56 +108,95 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     if (!_ready) {
-      return const Scaffold(
-        body: Center(child: AlongSkeleton(variant: SkeletonVariant.line)),
+      return DrivePage(
+        title: l10n.restTitle,
+        children: const [
+          SizedBox(height: AlongSpace.s16),
+          AlongSkeleton(variant: SkeletonVariant.line),
+        ],
       );
     }
+    final prefs = _prefs;
+    final since = _restingSince;
     return DrivePage(
       title: l10n.restTitle,
+      subtitle: l10n.restSubtitle,
+      footer: since == null
+          ? AlongButton(
+              key: const Key('rest_begin'),
+              label: l10n.restStart,
+              onPressed: _startRest,
+            )
+          : AlongButton(
+              key: const Key('rest_finish'),
+              label: l10n.restFinish,
+              onPressed: _endRest,
+            ),
       children: [
         const SizedBox(height: AlongSpace.s16),
-        TextField(
-          key: const Key('rest_drive_minutes'),
-          controller: _drive,
-          keyboardType: TextInputType.number,
-          decoration: driveInput(context, l10n.restDriveMinutes),
+        DriveCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DriveTag(
+                label: since == null
+                    ? l10n.restStatusDriving
+                    : l10n.restStatusResting(
+                        TimeOfDay.fromDateTime(since.toLocal()).format(context),
+                      ),
+                tone: since == null ? DriveTagTone.neutral : DriveTagTone.info,
+              ),
+              const SizedBox(height: AlongSpace.s12),
+              Text(
+                prefs.driveMinutes != null && prefs.restMinutes != null
+                    ? l10n.restPlan(prefs.restMinutes!, prefs.driveMinutes!)
+                    : l10n.restPlanEmpty,
+                style: AlongType.title(p),
+              ),
+              if (_priority) ...[
+                const SizedBox(height: AlongSpace.s8),
+                Text(
+                  l10n.restPriority,
+                  key: const Key('rest_priority_label'),
+                  style: AlongType.label(p).copyWith(color: p.success),
+                ),
+              ],
+            ],
+          ),
         ),
-        const SizedBox(height: AlongSpace.s12),
-        TextField(
-          key: const Key('rest_minutes'),
-          controller: _rest,
-          keyboardType: TextInputType.number,
-          decoration: driveInput(context, l10n.restMinutes),
+        DriveSection(l10n.restRhythmSection),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                key: const Key('rest_drive_minutes'),
+                controller: _drive,
+                keyboardType: TextInputType.number,
+                decoration: driveInput(context, l10n.restDriveShort),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+            const SizedBox(width: AlongSpace.s8),
+            Expanded(
+              child: TextField(
+                key: const Key('rest_minutes'),
+                controller: _rest,
+                keyboardType: TextInputType.number,
+                decoration: driveInput(context, l10n.restBreakShort),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: AlongSpace.s16),
+        const SizedBox(height: AlongSpace.s8),
         AlongButton(
           key: const Key('rest_save'),
           label: l10n.restSave,
+          variant: AlongButtonVariant.secondary,
           onPressed: _save,
         ),
-        const SizedBox(height: AlongSpace.s16),
-        if (_restingSince == null)
-          AlongButton(
-            key: const Key('rest_begin'),
-            label: l10n.restStart,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _startRest,
-          )
-        else
-          AlongButton(
-            key: const Key('rest_finish'),
-            label: l10n.restFinish,
-            onPressed: _endRest,
-          ),
-        if (_priority) ...[
-          const SizedBox(height: AlongSpace.s12),
-          Text(
-            l10n.restPriority,
-            key: const Key('rest_priority_label'),
-            style: AlongType.body(AlongPalette.of(context)),
-          ),
-        ],
       ],
     );
   }

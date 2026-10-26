@@ -1571,4 +1571,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mpEventSection => 'Events nearby';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count free · tap a seat to switch it';
+  }
+
+  @override
+  String get mpSubtitle =>
+      'Set a target, see where riders are, and share local tips.';
+
+  @override
+  String get mpGoalEmpty => 'Set a target to see how many seats to go';
+
+  @override
+  String get mpMoreSection => 'Share with drivers';
+
+  @override
+  String get mpFuelDetail => 'Today\'s pump price nearby';
+
+  @override
+  String get mpEventDetail => 'Open a pickup point for a crowd';
+
+  @override
+  String get restSubtitle =>
+      'Take a proper break after a long stretch. A full rest moves you up the queue.';
+
+  @override
+  String get restStatusDriving => 'On the road';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Resting since $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return '$rest min break every $drive min';
+  }
+
+  @override
+  String get restPlanEmpty => 'Set how long you drive before a break';
+
+  @override
+  String get restRhythmSection => 'Your rhythm';
+
+  @override
+  String get conductorSubtitle => 'Help the driver keep seats up to date.';
+
+  @override
+  String get conductorHowTo =>
+      'The driver opens Seat map → Conductor code and reads you the 8-character code.';
+
+  @override
+  String get restDriveShort => 'Drive (min)';
+
+  @override
+  String get restBreakShort => 'Break (min)';
+
+  @override
+  String get mpTargetShort => 'Target';
+
+  @override
+  String get mpEarnedShort => 'Earned';
 }

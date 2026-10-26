@@ -65,39 +65,51 @@ class _ConductorScreenState extends ConsumerState<ConductorScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final board = _board;
+    final p = AlongPalette.of(context);
     return DrivePage(
       title: l10n.conductorTitle,
+      subtitle: board == null
+          ? l10n.conductorSubtitle
+          : l10n.seatBoardSubtitle(board.freeCount),
+      footer: board == null
+          ? AlongButton(
+              key: const Key('conductor_join_button'),
+              label: l10n.conductorJoin,
+              visualState: _busy
+                  ? AlongButtonVisualState.loading
+                  : AlongButtonVisualState.normal,
+              onPressed: _busy ? null : _join,
+            )
+          : null,
       children: [
         const SizedBox(height: AlongSpace.s16),
-        TextField(
-          key: const Key('conductor_code_field'),
-          controller: _code,
-          decoration: driveInput(context, l10n.conductorCode),
-        ),
-        const SizedBox(height: AlongSpace.s12),
-        AlongButton(
-          key: const Key('conductor_join_button'),
-          label: l10n.conductorJoin,
-          visualState: _busy
-              ? AlongButtonVisualState.loading
-              : AlongButtonVisualState.normal,
-          onPressed: _busy ? null : _join,
-        ),
+        if (board == null)
+          DriveCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.conductorCode, style: AlongType.label(p)),
+                const SizedBox(height: AlongSpace.s8),
+                TextField(
+                  key: const Key('conductor_code_field'),
+                  controller: _code,
+                  textAlign: TextAlign.center,
+                  style: AlongType.title(p).copyWith(letterSpacing: 4),
+                  decoration: driveInput(
+                    context,
+                    '',
+                  ).copyWith(labelText: null, hintText: '— — — — — —'),
+                ),
+                const SizedBox(height: AlongSpace.s12),
+                Text(l10n.conductorHowTo, style: AlongType.bodyMuted(p)),
+              ],
+            ),
+          ),
         if (_error != null) ...[
           const SizedBox(height: AlongSpace.s12),
-          Text(
-            _error!,
-            style: AlongType.caption(AlongPalette.of(context))
-                .copyWith(color: AlongPalette.of(context).danger),
-          ),
+          Text(_error!, style: AlongType.caption(p).copyWith(color: p.danger)),
         ],
-        if (board != null) ...[
-          const SizedBox(height: AlongSpace.s16),
-          Text(
-            l10n.freeSeatCount(board.freeCount),
-            style: AlongType.label(AlongPalette.of(context)),
-          ),
-          const SizedBox(height: AlongSpace.s12),
+        if (board != null)
           SeatMap(
             body: board.layout.body,
             rows: [
@@ -125,7 +137,6 @@ class _ConductorScreenState extends ConsumerState<ConductorScreen> {
               _set(id, status == 'free' ? 'occupied' : 'free');
             },
           ),
-        ],
       ],
     );
   }

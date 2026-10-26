@@ -154,7 +154,7 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
     }
     return DrivePage(
       title: l10n.seatMapTitle,
-      subtitle: l10n.freeSeatCount(board.freeCount),
+      subtitle: l10n.seatBoardSubtitle(board.freeCount),
       footer: Row(
         children: [
           Expanded(
@@ -194,36 +194,34 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
             style: AlongType.caption(p).copyWith(color: p.danger),
           ),
         const SizedBox(height: AlongSpace.s16),
-        DriveCard(
-          child: SeatMap(
-            body: board.layout.body,
-            rows: [
-              for (final row in board.layout.rows)
-                SeatMapRowView(
-                  id: row.id,
-                  ruleTitle: _rowRule(board.rules, row.id),
-                  seats: [
-                    for (final seat in row.seats)
-                      SeatMapSeat(
-                        id: seat.id,
-                        label: seat.label,
-                        role: seat.role,
-                        status: _status(board, seat.id),
-                        statusWord: seat.isCargo
-                            ? l10n.seatLuggage
-                            : seat.isPassenger
-                            ? _word(l10n, _status(board, seat.id))
-                            : l10n.seatDriver,
-                      ),
-                  ],
-                ),
-            ],
-            onSeatTap: (id) {
-              final status = _status(board, id);
-              _set(id, status == 'free' ? 'occupied' : 'free');
-            },
-            onSeatLongPress: (id) => _set(id, 'held'),
-          ),
+        SeatMap(
+          body: board.layout.body,
+          rows: [
+            for (final row in board.layout.rows)
+              SeatMapRowView(
+                id: row.id,
+                ruleTitle: _rowRule(board.rules, row.id),
+                seats: [
+                  for (final seat in row.seats)
+                    SeatMapSeat(
+                      id: seat.id,
+                      label: seat.label,
+                      role: seat.role,
+                      status: _status(board, seat.id),
+                      statusWord: seat.isCargo
+                          ? l10n.seatLuggage
+                          : seat.isPassenger
+                          ? _word(l10n, _status(board, seat.id))
+                          : l10n.seatDriver,
+                    ),
+                ],
+              ),
+          ],
+          onSeatTap: (id) {
+            final status = _status(board, id);
+            _set(id, status == 'free' ? 'occupied' : 'free');
+          },
+          onSeatLongPress: (id) => _set(id, 'held'),
         ),
         DriveSection(l10n.seatToolsTitle),
         TextField(

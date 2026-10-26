@@ -1571,4 +1571,66 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get mpEventSection => 'Mmemme dị nso';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count tọgbọrọ chakoo · pịa oche iji gbanwee ya';
+  }
+
+  @override
+  String get mpSubtitle => 'Tọọ ebumnuche, hụ ebe ndị njem nọ, kesaa ndụmọdụ.';
+
+  @override
+  String get mpGoalEmpty => 'Tọọ ebumnuche ka ịhụ oche ole fọdụrụ';
+
+  @override
+  String get mpMoreSection => 'Kesaa ndị ọkwọ ụgbọ';
+
+  @override
+  String get mpFuelDetail => 'Ọnụ ahịa mmanụ taa nso';
+
+  @override
+  String get mpEventDetail => 'Mepee ebe nnabata maka igwe mmadụ';
+
+  @override
+  String get restSubtitle =>
+      'Zuru ike nke ọma mgbe ogologo ịnya. Ezumike zuru oke na-ebuli gị n\'ahịrị.';
+
+  @override
+  String get restStatusDriving => 'N\'okporo ụzọ';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Na-ezu ike kemgbe $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return 'Ezumike nkeji $rest kwa nkeji $drive';
+  }
+
+  @override
+  String get restPlanEmpty => 'Tọọ ogologo ị na-anya tupu ezumike';
+
+  @override
+  String get restRhythmSection => 'Usoro gị';
+
+  @override
+  String get conductorSubtitle => 'Nyere onye ọkwọ aka ka oche dị ọhụrụ.';
+
+  @override
+  String get conductorHowTo =>
+      'Onye ọkwọ na-emepe Map oche → Koodu kondọkta wee gụọrọ gị koodu mkpụrụ 8.';
+
+  @override
+  String get restDriveShort => 'Ịnya (nkeji)';
+
+  @override
+  String get restBreakShort => 'Ezumike (nkeji)';
+
+  @override
+  String get mpTargetShort => 'Ebumnuche';
+
+  @override
+  String get mpEarnedShort => 'Enwetara';
 }

@@ -1019,5 +1019,47 @@
   "mpGoalSection": "Today's goal",
   "mpDemandSection": "Where riders are",
   "mpFuelSection": "Fuel price",
-  "mpEventSection": "Events nearby"
+  "mpEventSection": "Events nearby",
+  "seatBoardSubtitle": "{count} free · tap a seat to switch it",
+  "@seatBoardSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mpSubtitle": "Set a target, see where riders are, and share local tips.",
+  "mpGoalEmpty": "Set a target to see how many seats to go",
+  "mpMoreSection": "Share with drivers",
+  "mpFuelDetail": "Today's pump price nearby",
+  "mpEventDetail": "Open a pickup point for a crowd",
+  "restSubtitle": "Take a proper break after a long stretch. A full rest moves you up the queue.",
+  "restStatusDriving": "On the road",
+  "restStatusResting": "Resting since {time}",
+  "@restStatusResting": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "restPlan": "{rest} min break every {drive} min",
+  "@restPlan": {
+    "placeholders": {
+      "rest": {
+        "type": "int"
+      },
+      "drive": {
+        "type": "int"
+      }
+    }
+  },
+  "restPlanEmpty": "Set how long you drive before a break",
+  "restRhythmSection": "Your rhythm",
+  "conductorSubtitle": "Help the driver keep seats up to date.",
+  "conductorHowTo": "The driver opens Seat map → Conductor code and reads you the 8-character code.",
+  "restDriveShort": "Drive (min)",
+  "restBreakShort": "Break (min)",
+  "mpTargetShort": "Target",
+  "mpEarnedShort": "Earned"
 }

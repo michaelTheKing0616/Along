@@ -457,6 +457,7 @@ void main() {
       ('guarantor', const GuarantorScreen()),
       ('account', const AccountScreen()),
       ('seat_board', const SeatBoardScreen()),
+      ('seat_board_empty', const SeatBoardScreen()),
       ('conductor', const ConductorScreen()),
       ('rest', const RestScreen()),
       ('marketplace', const MarketplaceScreen()),
@@ -466,6 +467,9 @@ void main() {
         addTearDown(() => tester.binding.setSurfaceSize(null));
         final supabase = FakeAlongSupabase();
         addTearDown(supabase.dispose);
+        if (screen == 'seat_board') {
+          supabase.seatBoardResponse = FakeAlongSupabase.sampleSeatBoard();
+        }
         final container = _container(supabase, AlongDatabase.memory());
         await tester.pumpWidget(
           UncontrolledProviderScope(

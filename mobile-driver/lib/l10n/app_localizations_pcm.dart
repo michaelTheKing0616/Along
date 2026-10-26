@@ -1571,4 +1571,66 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get mpEventSection => 'Events near you';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count free · touch seat to change am';
+  }
+
+  @override
+  String get mpSubtitle => 'Set target, see where passengers dey, share tips.';
+
+  @override
+  String get mpGoalEmpty => 'Set target to see how many seats remain';
+
+  @override
+  String get mpMoreSection => 'Share with drivers';
+
+  @override
+  String get mpFuelDetail => 'Today pump price near you';
+
+  @override
+  String get mpEventDetail => 'Open pickup point for crowd';
+
+  @override
+  String get restSubtitle =>
+      'Rest well after long driving. Full rest go move you up for queue.';
+
+  @override
+  String get restStatusDriving => 'For road';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Resting since $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return '$rest min rest every $drive min';
+  }
+
+  @override
+  String get restPlanEmpty => 'Set how long you go drive before rest';
+
+  @override
+  String get restRhythmSection => 'Your rhythm';
+
+  @override
+  String get conductorSubtitle => 'Help driver keep seats correct.';
+
+  @override
+  String get conductorHowTo =>
+      'Driver go open Seat map → Conductor code come read the 8-character code give you.';
+
+  @override
+  String get restDriveShort => 'Drive (min)';
+
+  @override
+  String get restBreakShort => 'Rest (min)';
+
+  @override
+  String get mpTargetShort => 'Target';
+
+  @override
+  String get mpEarnedShort => 'Don make';
 }
