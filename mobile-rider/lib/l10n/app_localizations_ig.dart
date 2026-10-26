@@ -1472,9 +1472,6 @@ class AppLocalizationsIg extends AppLocalizations {
   String get tripsLoadFailed => 'Anyị enweghị ike ibulite njem gị. Nwaa ọzọ.';
 
   @override
-  String get tripStatusCancelled => 'Akagbuola';
-
-  @override
   String get tripHoldForSos => 'Jide maka SOS';
 
   @override
@@ -1497,4 +1494,28 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get fareTierEstimate => 'Atụmatụ, kwekọrịta ọnụ';
+
+  @override
+  String get receiptExtension => 'Mgbatị njem';
+
+  @override
+  String receiptIncludesFee(String amount) {
+    return 'Gụnyere ụgwọ Along $amount';
+  }
+
+  @override
+  String get receiptShareHeader => 'Akwụkwọ ụgwọ njem Along';
+
+  @override
+  String get tripStatusCompleted => 'Emechara';
+
+  @override
+  String get extendTripNowFare => 'Ụgwọ ugbu a';
+
+  @override
+  String get extendTripNewTotal => 'Mkpokọta ọhụrụ';
+
+  @override
+  String get extendTripDriverConfirms =>
+      'Onye ọkwọ ụgbọ gị ga-akwado tupu ihe ọ bụla agbanwee';
 }

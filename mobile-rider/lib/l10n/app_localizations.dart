@@ -2645,12 +2645,6 @@ abstract class AppLocalizations {
   /// **'Couldn\'t load your trips. Pull to try again.'**
   String get tripsLoadFailed;
 
-  /// No description provided for @tripStatusCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled'**
-  String get tripStatusCancelled;
-
   /// No description provided for @tripHoldForSos.
   ///
   /// In en, this message translates to:
@@ -2698,6 +2692,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Estimate, agree price'**
   String get fareTierEstimate;
+
+  /// No description provided for @receiptExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip extension'**
+  String get receiptExtension;
+
+  /// No description provided for @receiptIncludesFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes {amount} Along fee'**
+  String receiptIncludesFee(String amount);
+
+  /// No description provided for @receiptShareHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Along trip receipt'**
+  String get receiptShareHeader;
+
+  /// No description provided for @tripStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get tripStatusCompleted;
+
+  /// No description provided for @extendTripNowFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Current fare'**
+  String get extendTripNowFare;
+
+  /// No description provided for @extendTripNewTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'New total'**
+  String get extendTripNewTotal;
+
+  /// No description provided for @extendTripDriverConfirms.
+  ///
+  /// In en, this message translates to:
+  /// **'Your driver confirms before anything changes'**
+  String get extendTripDriverConfirms;
 }
 
 class _AppLocalizationsDelegate

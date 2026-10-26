@@ -1743,7 +1743,6 @@
   },
   "tripDriverFallback": "Your driver",
   "tripsLoadFailed": "Couldn't load your trips. Pull to try again.",
-  "tripStatusCancelled": "Cancelled",
   "tripHoldForSos": "Hold for SOS",
   "tripNaMe": "Na Me",
   "tripCall112": "Call 112",
@@ -1763,5 +1762,19 @@
   "fareTierEstimate": "Estimate, agree price",
   "@fareTierEstimate": {
     "description": "fareTierEstimate"
-  }
+  },
+  "receiptExtension": "Trip extension",
+  "receiptIncludesFee": "Includes {amount} Along fee",
+  "@receiptIncludesFee": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptShareHeader": "Along trip receipt",
+  "tripStatusCompleted": "Completed",
+  "extendTripNowFare": "Current fare",
+  "extendTripNewTotal": "New total",
+  "extendTripDriverConfirms": "Your driver confirms before anything changes"
 }

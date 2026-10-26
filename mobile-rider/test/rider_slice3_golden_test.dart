@@ -11,7 +11,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
+import 'package:mobile_rider/features/live_trip/presentation/active_trip_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.dart';
+import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
 import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
@@ -140,7 +142,7 @@ void main() {
     },
     {
       'id': 'trip-hist-2',
-      'status': 'cancelled',
+      'status': 'completed',
       'ended_at': '2026-09-04T08:30:00Z',
       'boarding_name': 'Wuse Market',
       'alighting_name': 'Berger Junction',
@@ -148,14 +150,12 @@ void main() {
       'mode_label': 'Taxi',
       'fare_shown': '1200.00',
       'load_surcharge_amount': 0,
-      'commission_amount': '0',
+      'commission_amount': '90.00',
       'fare_currency': 'NGN',
+      'driver_name': 'Chinedu Okafor',
+      'plate_number': 'KUJ-552-AB',
     },
   ];
-
-  Widget sheet(Widget child) => Scaffold(
-    body: Align(alignment: Alignment.bottomCenter, child: child),
-  );
 
   for (final (name, brightness, scale) in variants) {
     Future<ProviderContainer> pumpScreen(
@@ -199,51 +199,154 @@ void main() {
       await shoot(tester, 'rider_report_incident_$name');
     });
 
+    /// Opens [sheet] over the real live-trip screen so frames read true.
+    Future<void> overLiveTrip(
+      WidgetTester tester,
+      Widget sheet, {
+      List<Map<String, dynamic>> places = const [],
+    }) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final json = liveTripJson();
+      final live = tripSummaryFromFixture(json);
+      final fake = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        requestTripResponse: json,
+        tripRows: tripRows,
+        placeResults: places,
+      );
+      final c = containerFor(fake);
+      addTearDown(() {
+        fake.dispose();
+        c.dispose();
+      });
+      await tester.pumpWidget(
+        app(c, ActiveTripScreen(trip: live), brightness, scale),
+      );
+      await settle(tester);
+      c
+          .read(
+            liveTripControllerFamilyProvider(
+              LiveTripArgs(tripId: live.tripId, initialTrip: live),
+            ).notifier,
+          )
+          .stopPolling();
+      showModalBottomSheet<void>(
+        context: tester.element(find.byType(ActiveTripScreen)),
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => sheet,
+      );
+      await settle(tester);
+    }
+
     testWidgets('rider share trip $name', (tester) async {
-      await pumpScreen(tester, sheet(ShareTripSheet(journeyId: 'j-1')));
+      await overLiveTrip(tester, ShareTripSheet(journeyId: 'j-1'));
       await shoot(tester, 'rider_share_trip_$name');
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('rider pay driver $name', (tester) async {
-      await pumpScreen(
+      await overLiveTrip(
         tester,
-        sheet(
-          PayDriverSheet(
-            trip: trip,
-            receipt: TripReceipt(
-              fare: Money.parse('450', currency: 'NGN'),
-              surcharge: Money.parse('50', currency: 'NGN'),
-              total: Money.parse('500', currency: 'NGN'),
-            ),
+        PayDriverSheet(
+          trip: trip,
+          receipt: TripReceipt(
+            fare: Money.parse('450', currency: 'NGN'),
+            surcharge: Money.parse('50', currency: 'NGN'),
+            total: Money.parse('500', currency: 'NGN'),
           ),
         ),
       );
+      // Hero total, breakdown and Pay button all show what is charged.
+      expect(find.text('₦500'), findsWidgets);
+      expect(find.text('Pay ₦500'), findsOneWidget);
       await shoot(tester, 'rider_pay_driver_$name');
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('rider extend trip $name', (tester) async {
-      await pumpScreen(tester, sheet(ExtendTripSheet(trip: trip)));
+      await overLiveTrip(tester, ExtendTripSheet(trip: trip));
       await shoot(tester, 'rider_extend_trip_$name');
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('rider extend preview $name', (tester) async {
+      await overLiveTrip(
+        tester,
+        ExtendTripSheet(trip: trip),
+        places: [
+          {
+            'kind': 'market',
+            'name': 'Wuse Market',
+            'area': 'Wuse',
+            'location': {'lat': 9.06, 'lng': 7.47},
+            'distance_m': 5200,
+          },
+        ],
+      );
+      await tester.enterText(
+        find.byKey(const Key('destination_search_field')),
+        'Wuse',
+      );
+      await settle(tester);
+      await tester.pump(const Duration(milliseconds: 600));
+      await settle(tester);
+      await tester.tap(find.byKey(const Key('result_Wuse Market')));
+      await settle(tester);
+      expect(find.byKey(const Key('extend_send_to_driver')), findsOneWidget);
+      await shoot(tester, 'rider_extend_preview_$name');
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('rider incoming extension $name', (tester) async {
-      await pumpScreen(
+      await overLiveTrip(
         tester,
-        sheet(
-          IncomingExtensionSheet(
-            trip: trip,
-            proposal: TripExtensionProposal(
-              extensionId: 'ext-1',
-              tripId: trip.tripId,
-              proposedBy: 'driver',
-              destinationName: 'Wuse Market',
-              fareDelta: Money.parse('200', currency: 'NGN'),
-              currency: 'NGN',
-            ),
+        IncomingExtensionSheet(
+          trip: trip,
+          proposal: TripExtensionProposal(
+            extensionId: 'ext-1',
+            tripId: trip.tripId,
+            proposedBy: 'driver',
+            destinationName: 'Wuse Market',
+            fareDelta: Money.parse('200', currency: 'NGN'),
+            currency: 'NGN',
           ),
         ),
       );
       await shoot(tester, 'rider_incoming_extension_$name');
+      await tester.pumpWidget(const SizedBox());
     });
   }
+}
+
+/// The in-transit trip the live-trip golden uses, driver part-way along.
+Map<String, dynamic> liveTripJson() {
+  final json = sampleAcceptedTripResponse(
+    status: 'in_transit',
+    liveAsOf: DateTime.utc(2026, 9, 5, 16, 4, 2),
+  );
+  final driver =
+      (json['live'] as Map<String, dynamic>)['driver'] as Map<String, dynamic>;
+  driver['lat'] = 9.031;
+  driver['lng'] = 7.428;
+  json['eta'] = {
+    'status': 'ready',
+    'updated_at': '2026-09-05T16:04:00Z',
+    'stops': [
+      {
+        'id': 'stop-1',
+        'name': 'Area 1 Park',
+        'state': 'upcoming',
+        'label': '16:16',
+      },
+    ],
+    'trip': {
+      'kind': 'range',
+      'label': '16:16–16:19',
+      'low_s': 720,
+      'high_s': 900,
+    },
+  };
+  return json;
 }

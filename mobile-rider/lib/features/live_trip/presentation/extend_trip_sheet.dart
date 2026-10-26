@@ -80,40 +80,98 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
               onPressed: _busy || _newAlight == null ? null : _sendToDriver,
             ),
       children: [
-        DestinationSearchPanel(
-          embedded: true,
-          hint: l10n.extendTripSearchHint,
-          onDestinationSelected: _busy ? (_) {} : _previewExtension,
-        ),
-        if (preview != null) ...[
-          const SizedBox(height: AlongSpace.s16),
-          TripPanel(
-            key: const Key('extend_fare_hero'),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        if (preview == null)
+          DestinationSearchPanel(
+            embedded: true,
+            hint: l10n.extendTripSearchHint,
+            onDestinationSelected: _busy ? (_) {} : _previewExtension,
+          )
+        else ...[
+          Material(
+            color: p.recessed,
+            shape: AlongCraft.border(16),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              key: const Key('extend_change_destination'),
+              onTap: _busy
+                  ? null
+                  : () => setState(() {
+                      _preview = null;
+                      _newAlight = null;
+                    }),
+              child: Padding(
+                padding: const EdgeInsets.all(AlongSpace.s12),
+                child: Row(
                   children: [
                     AlongIcon(AlongIcons.mapPin, size: 20, color: p.ink),
-                    const SizedBox(width: AlongSpace.s8),
+                    const SizedBox(width: AlongSpace.s12),
                     Expanded(
                       child: Text(
                         l10n.extendTripDestination(_destinationName ?? ''),
                         style: AlongType.label(p),
                       ),
                     ),
+                    Text(l10n.payDriverChangeMethod, style: AlongType.label(p)),
                   ],
                 ),
-                const SizedBox(height: AlongSpace.s12),
-                Text(
-                  formatAppMoney(ref, preview.newTotal),
-                  style: AlongType.display(p),
+              ),
+            ),
+          ),
+          const SizedBox(height: AlongSpace.s12),
+          TripPanel(
+            key: const Key('extend_fare_hero'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.extendTripNowFare,
+                        style: AlongType.body(p),
+                      ),
+                    ),
+                    Text(
+                      formatAppMoney(ref, preview.newTotal - preview.fareDelta),
+                      style: AlongType.body(p),
+                    ),
+                  ],
                 ),
-                if (delta != 0)
-                  Text(
-                    '${delta > 0 ? '+' : '−'}${formatAppMoneyMajor(ref, delta.abs())}',
-                    style: AlongType.caption(p),
-                  ),
+                const SizedBox(height: AlongSpace.s8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.receiptExtension,
+                        style: AlongType.body(p),
+                      ),
+                    ),
+                    Text(
+                      '${delta >= 0 ? '+' : '−'}${formatAppMoneyMajor(ref, delta.abs())}',
+                      style: AlongType.body(p),
+                    ),
+                  ],
+                ),
+                Divider(height: AlongSpace.s24, color: p.line),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.extendTripNewTotal,
+                        style: AlongType.title(p),
+                      ),
+                    ),
+                    Text(
+                      formatAppMoney(ref, preview.newTotal),
+                      style: AlongType.display(p).copyWith(fontSize: 28),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AlongSpace.s4),
+                Text(
+                  l10n.extendTripDriverConfirms,
+                  style: AlongType.caption(p),
+                ),
               ],
             ),
           ),

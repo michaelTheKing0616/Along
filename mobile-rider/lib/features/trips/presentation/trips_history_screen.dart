@@ -77,10 +77,9 @@ class TripsHistoryScreen extends ConsumerWidget {
                   child: _HistoryRow(
                     key: Key('trip_history_${entry.tripId}'),
                     entry: entry,
-                    detail: l10n.tripsRowDetail(
-                      DateFormat.Hm(locale).format(cityTime(entry.completedAt)),
-                      formatAppMoney(ref, entry.totalFare),
-                    ),
+                    time: DateFormat.Hm(locale)
+                        .format(cityTime(entry.completedAt)),
+                    fare: formatAppMoney(ref, entry.totalFare),
                     onTap: () =>
                         context.push(AppRoutes.tripDetail, extra: entry.tripId),
                   ),
@@ -109,19 +108,24 @@ class _HistoryRow extends StatelessWidget {
   const _HistoryRow({
     super.key,
     required this.entry,
-    required this.detail,
+    required this.time,
+    required this.fare,
     required this.onTap,
   });
 
   final TripHistoryEntry entry;
-  final String detail;
+  final String time;
+  final String fare;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
     final l10n = AppLocalizations.of(context);
-    final cancelled = entry.status == TripStatus.cancelled;
+    final who = [
+      if ((entry.driverName ?? '').isNotEmpty) entry.driverName!,
+      entry.modeLabel,
+    ].join(' · ');
     return Material(
       color: p.recessed,
       shape: AlongCraft.border(20),
@@ -134,6 +138,7 @@ class _HistoryRow extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AlongSpace.s12),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TripModeTile(modeCode: entry.modeCode, size: 40),
               const SizedBox(width: AlongSpace.s12),
@@ -147,28 +152,22 @@ class _HistoryRow extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: AlongType.label(p),
                     ),
-                    Text(detail, style: AlongType.caption(p)),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.tripsRowDetail(time, l10n.tripStatusCompleted),
+                      style: AlongType.caption(p),
+                    ),
+                    Text(
+                      who,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.caption(p),
+                    ),
                   ],
                 ),
               ),
-              if (cancelled) ...[
-                const SizedBox(width: AlongSpace.s8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: AlongCraft.compactFill(
-                    p.danger.withValues(alpha: 0.12),
-                    24,
-                    corner: 8,
-                  ),
-                  child: Text(
-                    l10n.tripStatusCancelled,
-                    style: AlongType.caption(p).copyWith(color: p.danger),
-                  ),
-                ),
-              ],
+              const SizedBox(width: AlongSpace.s8),
+              Text(fare, style: AlongType.label(p)),
             ],
           ),
         ),

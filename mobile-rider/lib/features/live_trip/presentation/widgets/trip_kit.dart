@@ -765,3 +765,108 @@ class TripChoiceTile extends StatelessWidget {
     );
   }
 }
+
+/// Itemised fare: Fare, load surcharge, any accepted extension, a rule,
+/// then Total. The Along fee sits inside the fare, so it is a caption,
+/// never a row that looks additive. [payable] is what is charged; when
+/// it exceeds the receipt, the gap is an accepted extension.
+class TripFareBreakdown extends StatelessWidget {
+  const TripFareBreakdown({
+    super.key,
+    required this.receipt,
+    required this.payable,
+    required this.money,
+    this.totalStyle,
+  });
+
+  final TripReceipt? receipt;
+  final Money payable;
+  final String Function(Money) money;
+  final TextStyle? totalStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final l10n = AppLocalizations.of(context);
+    final r = receipt;
+    Widget row(String label, Money m, {Key? key}) => Padding(
+      key: key,
+      padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: AlongType.body(p))),
+          Text(money(m), style: AlongType.body(p)),
+        ],
+      ),
+    );
+    final extra = r == null ? null : payable - r.total;
+    final commission = r?.commission;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (r != null) ...[
+          row(l10n.receiptFare, r.fare, key: const Key('fare_row_fare')),
+          if (r.surcharge != null && r.surcharge!.minorUnits > 0)
+            row(
+              l10n.receiptLoadSurcharge,
+              r.surcharge!,
+              key: const Key('fare_row_surcharge'),
+            ),
+          if (extra != null && extra.minorUnits > 0)
+            row(
+              l10n.receiptExtension,
+              extra,
+              key: const Key('fare_row_extension'),
+            ),
+          Divider(height: AlongSpace.s16, color: p.line),
+        ],
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.receiptTotal,
+                style: totalStyle ?? AlongType.title(p),
+              ),
+            ),
+            Text(
+              money(payable),
+              key: const Key('fare_row_total'),
+              style: totalStyle ?? AlongType.title(p),
+            ),
+          ],
+        ),
+        if (commission != null && commission.minorUnits > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: AlongSpace.s4),
+            child: Text(
+              l10n.receiptIncludesFee(money(commission)),
+              style: AlongType.caption(p),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Plain-text receipt in the rider's language.
+String tripReceiptShareText(
+  AppLocalizations l10n, {
+  required TripReceipt receipt,
+  required String routeLabel,
+  required String driverName,
+  required String plate,
+  required String Function(Money) money,
+}) {
+  final b = StringBuffer('${l10n.receiptShareHeader}\n')
+    ..writeln(routeLabel)
+    ..writeln(plate.isEmpty ? driverName : '$driverName · $plate')
+    ..writeln('${l10n.receiptFare}: ${money(receipt.fare)}');
+  if (receipt.surcharge != null && receipt.surcharge!.minorUnits > 0) {
+    b.writeln('${l10n.receiptLoadSurcharge}: ${money(receipt.surcharge!)}');
+  }
+  b.write('${l10n.receiptTotal}: ${money(receipt.total)}');
+  if (receipt.commission != null && receipt.commission!.minorUnits > 0) {
+    b.write('\n${l10n.receiptIncludesFee(money(receipt.commission!))}');
+  }
+  return b.toString();
+}

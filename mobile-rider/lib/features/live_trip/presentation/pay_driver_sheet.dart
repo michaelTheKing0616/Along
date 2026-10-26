@@ -96,7 +96,14 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
   );
 
   Money get _amount {
+    // The server charges trip_payable_total (fare + load surcharge +
+    // accepted extensions) for an attached trip and ignores any client
+    // amount. Show the same number: the resolved context first, then the
+    // receipt total, and only then the bare quoted fare.
     if (_resolve?.context != null) return _resolve!.context!.amount;
+    if (widget.receipt != null && widget.trip != null) {
+      return widget.receipt!.total;
+    }
     if (widget.trip != null) return widget.trip!.totalFare;
     if (_selectedAmount != null) return _selectedAmount!;
     final unique = uniqueSuggestedAmount(
@@ -396,6 +403,7 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
             driver: driver,
             receipt: widget.receipt,
             amountNaira: amountNaira,
+            amount: _amount,
             hideAmountPicker: _amountMode == InformalPayAmountMode.uniqueFare,
             showLockedCaption: _amountLocked,
             amountMode: _amountMode,
@@ -436,6 +444,7 @@ class _ReadyView extends StatelessWidget {
     required this.driver,
     required this.receipt,
     required this.amountNaira,
+    required this.amount,
     required this.hideAmountPicker,
     required this.showLockedCaption,
     required this.amountMode,
@@ -458,6 +467,7 @@ class _ReadyView extends StatelessWidget {
   final QrDriverInfo? driver;
   final TripReceipt? receipt;
   final int amountNaira;
+  final Money amount;
   final bool hideAmountPicker;
   final bool showLockedCaption;
   final InformalPayAmountMode amountMode;
@@ -550,26 +560,31 @@ class _ReadyView extends StatelessWidget {
                 ),
                 const SizedBox(height: AlongSpace.s16),
               ],
-              Text(l10n.tripCompleteFareLabel, style: AlongType.caption(p)),
-              Text(money(amountNaira), style: AlongType.display(p)),
-              if (receipt != null) ...[
-                const SizedBox(height: AlongSpace.s8),
-                for (final line in receipt!.lines)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AlongSpace.s4),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(line.label, style: AlongType.caption(p)),
-                        ),
-                        Text(
-                          money(majorUnits(line.amount)),
+              TripFareBreakdown(
+                receipt: receipt,
+                payable: amount,
+                money: (m) =>
+                    ProviderScope.containerOf(context)
+                        .read(appMoneyFormatterProvider)
+                        .format(m),
+                totalStyle: AlongType.display(p).copyWith(fontSize: 28),
+              ),
+              if (showLockedCaption)
+                Padding(
+                  padding: const EdgeInsets.only(top: AlongSpace.s8),
+                  child: Row(
+                    children: [
+                      AlongIcon(AlongIcons.lock, size: 14, color: p.muted),
+                      const SizedBox(width: AlongSpace.s4),
+                      Expanded(
+                        child: Text(
+                          l10n.payDriverAmountLocked,
                           style: AlongType.caption(p),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-              ],
+                ),
             ],
           ),
         ),
@@ -604,15 +619,7 @@ class _ReadyView extends StatelessWidget {
             },
           ),
         ],
-        if (showLockedCaption)
-          Padding(
-            padding: const EdgeInsets.only(top: AlongSpace.s8),
-            child: Text(
-              l10n.payDriverAmountLocked,
-              style: AlongType.caption(p),
-            ),
-          )
-        else if (!hideAmountPicker) ...[
+        if (!showLockedCaption && !hideAmountPicker) ...[
           if (amountMode == InformalPayAmountMode.chips) ...[
             const SizedBox(height: AlongSpace.s12),
             Wrap(

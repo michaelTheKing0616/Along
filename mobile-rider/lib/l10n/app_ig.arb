@@ -154,7 +154,6 @@
   "tripsRowDetail": "{first} · {second}",
   "tripDriverFallback": "Onye ọkwọ ụgbọ gị",
   "tripsLoadFailed": "Anyị enweghị ike ibulite njem gị. Nwaa ọzọ.",
-  "tripStatusCancelled": "Akagbuola",
   "tripHoldForSos": "Jide maka SOS",
   "tripNaMe": "Ọ bụ M",
   "tripCall112": "Kpọọ 112",
@@ -162,5 +161,12 @@
   "fareTierVerified": "Ụgwọ nkịtị",
   "fareTierCrowd": "Ụgwọ ndị mmadụ",
   "fareTierCandidate": "Ejibeghị n'aka",
-  "fareTierEstimate": "Atụmatụ, kwekọrịta ọnụ"
+  "fareTierEstimate": "Atụmatụ, kwekọrịta ọnụ",
+  "receiptExtension": "Mgbatị njem",
+  "receiptIncludesFee": "Gụnyere ụgwọ Along {amount}",
+  "receiptShareHeader": "Akwụkwọ ụgwọ njem Along",
+  "tripStatusCompleted": "Emechara",
+  "extendTripNowFare": "Ụgwọ ugbu a",
+  "extendTripNewTotal": "Mkpokọta ọhụrụ",
+  "extendTripDriverConfirms": "Onye ọkwọ ụgbọ gị ga-akwado tupu ihe ọ bụla agbanwee"
 }

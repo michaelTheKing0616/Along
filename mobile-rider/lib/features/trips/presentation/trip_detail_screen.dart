@@ -68,40 +68,12 @@ class TripDetailScreen extends ConsumerWidget {
           const SizedBox(height: AlongSpace.s16),
         ],
         if (receipt != null) ...[
-          Text(l10n.tripCompleteFareLabel, style: AlongType.label(p)),
-          const SizedBox(height: AlongSpace.s8),
           TripPanel(
             key: const Key('trip_detail_fare'),
-            child: Column(
-              children: [
-                for (final line in receipt.lines)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AlongSpace.s8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(line.label, style: AlongType.body(p)),
-                        ),
-                        Text(
-                          formatAppMoney(ref, line.amount),
-                          style: AlongType.body(p),
-                        ),
-                      ],
-                    ),
-                  ),
-                Divider(height: AlongSpace.s16, color: p.line),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(l10n.receiptTotal, style: AlongType.title(p)),
-                    ),
-                    Text(
-                      formatAppMoney(ref, receipt.total),
-                      style: AlongType.title(p),
-                    ),
-                  ],
-                ),
-              ],
+            child: TripFareBreakdown(
+              receipt: receipt,
+              payable: receipt.total,
+              money: (m) => formatAppMoney(ref, m),
             ),
           ),
           const SizedBox(height: AlongSpace.s16),
@@ -113,13 +85,16 @@ class TripDetailScreen extends ConsumerWidget {
               icon: AlongIcons.receipt,
               label: l10n.tripDetailShareReceipt,
               onPressed: () {
-                final text =
-                    receipt?.toShareText(
-                      routeLabel: entry.routeLabel,
-                      driverName: entry.driverName ?? l10n.tripDriverFallback,
-                      plate: entry.plateNumber ?? '',
-                    ) ??
-                    entry.routeLabel;
+                final text = receipt == null
+                    ? entry.routeLabel
+                    : tripReceiptShareText(
+                        l10n,
+                        receipt: receipt,
+                        routeLabel: entry.routeLabel,
+                        driverName: entry.driverName ?? l10n.tripDriverFallback,
+                        plate: entry.plateNumber ?? '',
+                        money: (m) => formatAppMoney(ref, m),
+                      );
                 Clipboard.setData(ClipboardData(text: text));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(l10n.tripDetailReceiptCopied)),

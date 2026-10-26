@@ -154,7 +154,6 @@
   "tripsRowDetail": "{first} · {second}",
   "tripDriverFallback": "Your driver",
   "tripsLoadFailed": "We no fit load your trips. Try again.",
-  "tripStatusCancelled": "Cancelled",
   "tripHoldForSos": "Hold am for SOS",
   "tripNaMe": "Na Me",
   "tripCall112": "Call 112",
@@ -162,5 +161,12 @@
   "fareTierVerified": "Normal price",
   "fareTierCrowd": "Wetin people dey pay",
   "fareTierCandidate": "No sure yet",
-  "fareTierEstimate": "Estimate, price am"
+  "fareTierEstimate": "Estimate, price am",
+  "receiptExtension": "Trip extension",
+  "receiptIncludesFee": "E don include {amount} Along fee",
+  "receiptShareHeader": "Along trip receipt",
+  "tripStatusCompleted": "Don finish",
+  "extendTripNowFare": "Fare wey you dey pay",
+  "extendTripNewTotal": "New total",
+  "extendTripDriverConfirms": "Your driver go confirm before anything change"
 }

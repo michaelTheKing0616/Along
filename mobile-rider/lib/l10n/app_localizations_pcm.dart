@@ -1476,9 +1476,6 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get tripsLoadFailed => 'We no fit load your trips. Try again.';
 
   @override
-  String get tripStatusCancelled => 'Cancelled';
-
-  @override
   String get tripHoldForSos => 'Hold am for SOS';
 
   @override
@@ -1501,4 +1498,28 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get fareTierEstimate => 'Estimate, price am';
+
+  @override
+  String get receiptExtension => 'Trip extension';
+
+  @override
+  String receiptIncludesFee(String amount) {
+    return 'E don include $amount Along fee';
+  }
+
+  @override
+  String get receiptShareHeader => 'Along trip receipt';
+
+  @override
+  String get tripStatusCompleted => 'Don finish';
+
+  @override
+  String get extendTripNowFare => 'Fare wey you dey pay';
+
+  @override
+  String get extendTripNewTotal => 'New total';
+
+  @override
+  String get extendTripDriverConfirms =>
+      'Your driver go confirm before anything change';
 }

@@ -1476,9 +1476,6 @@ class AppLocalizationsHa extends AppLocalizations {
       'Ba mu iya loda tafiye-tafiyenka ba. Sake gwadawa.';
 
   @override
-  String get tripStatusCancelled => 'An soke';
-
-  @override
   String get tripHoldForSos => 'Riƙe don SOS';
 
   @override
@@ -1501,4 +1498,28 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get fareTierEstimate => 'Ƙiyasi, ku daidaita';
+
+  @override
+  String get receiptExtension => 'Ƙarin tafiya';
+
+  @override
+  String receiptIncludesFee(String amount) {
+    return 'Ya haɗa da kuɗin Along $amount';
+  }
+
+  @override
+  String get receiptShareHeader => 'Rasidin tafiyar Along';
+
+  @override
+  String get tripStatusCompleted => 'An gama';
+
+  @override
+  String get extendTripNowFare => 'Kuɗin yanzu';
+
+  @override
+  String get extendTripNewTotal => 'Sabon jimilla';
+
+  @override
+  String get extendTripDriverConfirms =>
+      'Direbanka zai tabbatar kafin wani abu ya canza';
 }

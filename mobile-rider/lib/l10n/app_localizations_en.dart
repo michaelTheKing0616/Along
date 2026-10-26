@@ -1476,9 +1476,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripsLoadFailed => 'Couldn\'t load your trips. Pull to try again.';
 
   @override
-  String get tripStatusCancelled => 'Cancelled';
-
-  @override
   String get tripHoldForSos => 'Hold for SOS';
 
   @override
@@ -1501,4 +1498,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fareTierEstimate => 'Estimate, agree price';
+
+  @override
+  String get receiptExtension => 'Trip extension';
+
+  @override
+  String receiptIncludesFee(String amount) {
+    return 'Includes $amount Along fee';
+  }
+
+  @override
+  String get receiptShareHeader => 'Along trip receipt';
+
+  @override
+  String get tripStatusCompleted => 'Completed';
+
+  @override
+  String get extendTripNowFare => 'Current fare';
+
+  @override
+  String get extendTripNewTotal => 'New total';
+
+  @override
+  String get extendTripDriverConfirms =>
+      'Your driver confirms before anything changes';
 }

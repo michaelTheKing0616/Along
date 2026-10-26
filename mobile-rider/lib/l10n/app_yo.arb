@@ -154,7 +154,6 @@
   "tripsRowDetail": "{first} · {second}",
   "tripDriverFallback": "Awakọ̀ rẹ",
   "tripsLoadFailed": "A kò lè gbé àwọn ìrìn rẹ wá. Gbìyànjú lẹ́ẹ̀kan sí i.",
-  "tripStatusCancelled": "Fagilé",
   "tripHoldForSos": "Dì í mú fún SOS",
   "tripNaMe": "Èmi Nìyí",
   "tripCall112": "Pe 112",
@@ -162,5 +161,12 @@
   "fareTierVerified": "Owó ọkọ̀ déédé",
   "fareTierCrowd": "Owó tí àwọn èèyàn ń san",
   "fareTierCandidate": "Kò tíì dájú",
-  "fareTierEstimate": "Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan"
+  "fareTierEstimate": "Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan",
+  "receiptExtension": "Ìfàgùn ìrìn",
+  "receiptIncludesFee": "Ó ní owó Along {amount} nínú",
+  "receiptShareHeader": "Ìwé owó ìrìn Along",
+  "tripStatusCompleted": "Ti parí",
+  "extendTripNowFare": "Owó ọkọ̀ lọ́wọ́lọ́wọ́",
+  "extendTripNewTotal": "Àpapọ̀ tuntun",
+  "extendTripDriverConfirms": "Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà"
 }

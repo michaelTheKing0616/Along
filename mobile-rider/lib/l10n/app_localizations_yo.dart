@@ -1473,9 +1473,6 @@ class AppLocalizationsYo extends AppLocalizations {
       'A kò lè gbé àwọn ìrìn rẹ wá. Gbìyànjú lẹ́ẹ̀kan sí i.';
 
   @override
-  String get tripStatusCancelled => 'Fagilé';
-
-  @override
   String get tripHoldForSos => 'Dì í mú fún SOS';
 
   @override
@@ -1498,4 +1495,28 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get fareTierEstimate => 'Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan';
+
+  @override
+  String get receiptExtension => 'Ìfàgùn ìrìn';
+
+  @override
+  String receiptIncludesFee(String amount) {
+    return 'Ó ní owó Along $amount nínú';
+  }
+
+  @override
+  String get receiptShareHeader => 'Ìwé owó ìrìn Along';
+
+  @override
+  String get tripStatusCompleted => 'Ti parí';
+
+  @override
+  String get extendTripNowFare => 'Owó ọkọ̀ lọ́wọ́lọ́wọ́';
+
+  @override
+  String get extendTripNewTotal => 'Àpapọ̀ tuntun';
+
+  @override
+  String get extendTripDriverConfirms =>
+      'Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà';
 }

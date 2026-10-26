@@ -154,7 +154,6 @@
   "tripsRowDetail": "{first} · {second}",
   "tripDriverFallback": "Direbanka",
   "tripsLoadFailed": "Ba mu iya loda tafiye-tafiyenka ba. Sake gwadawa.",
-  "tripStatusCancelled": "An soke",
   "tripHoldForSos": "Riƙe don SOS",
   "tripNaMe": "Ni Ne",
   "tripCall112": "Kira 112",
@@ -162,5 +161,12 @@
   "fareTierVerified": "Kuɗin da aka saba",
   "fareTierCrowd": "Kuɗin jama'a",
   "fareTierCandidate": "Ba a tabbatar ba",
-  "fareTierEstimate": "Ƙiyasi, ku daidaita"
+  "fareTierEstimate": "Ƙiyasi, ku daidaita",
+  "receiptExtension": "Ƙarin tafiya",
+  "receiptIncludesFee": "Ya haɗa da kuɗin Along {amount}",
+  "receiptShareHeader": "Rasidin tafiyar Along",
+  "tripStatusCompleted": "An gama",
+  "extendTripNowFare": "Kuɗin yanzu",
+  "extendTripNewTotal": "Sabon jimilla",
+  "extendTripDriverConfirms": "Direbanka zai tabbatar kafin wani abu ya canza"
 }
