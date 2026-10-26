@@ -224,6 +224,9 @@ abstract final class AlongMoves {
   /// Na Me camera: the reticle closes in once the code is seen.
   static const lockOn = AlongMove(AlongDurations.fade, AlongCurves.settle);
 
+  /// Na Me camera: the reticle cross-fades white to yellow on lock-on.
+  static const lockTint = AlongMove(AlongDurations.press, AlongCurves.fade);
+
   /// A notice or state block arrives in the sheet.
   static const arrive = AlongMove(AlongDurations.sheet, AlongCurves.settle);
 
