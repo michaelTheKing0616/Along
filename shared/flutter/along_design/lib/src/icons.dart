@@ -118,6 +118,11 @@ abstract final class AlongIcons {
     fontFamily: _family,
     fontPackage: _package,
   );
+  static const notEquals = IconData(
+    0xeda7,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
   static const close = IconData(
     0xe4f7,
     fontFamily: _family,
@@ -265,6 +270,7 @@ abstract final class AlongIcons {
     0xe607: 0xe606,
     0xe183: 0xe182,
     0xe2cf: 0xe2ce,
+    0xeda7: 0xeda6,
     0xe4f7: 0xe4f6,
     0xeadf: 0xeade,
     0xe825: 0xe824,
