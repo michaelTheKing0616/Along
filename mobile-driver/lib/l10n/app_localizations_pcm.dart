@@ -1339,4 +1339,12 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get activeTripMessageRiderUnknown => 'Send message give rider';
+
+  @override
+  String get tripEtaCalculating => 'We dey calculate…';
+
+  @override
+  String tripEtaPickup(String label) {
+    return 'Pickup $label';
+  }
 }

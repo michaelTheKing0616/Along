@@ -4,6 +4,8 @@ import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:along_core/along_core.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/l10n/l10n_format.dart';
@@ -165,96 +167,176 @@ class AdjustPickupScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(adjustPickupControllerProvider);
     final l10n = AppLocalizations.of(context);
+    final palette = AlongPalette.of(context);
+    final controller = ref.read(adjustPickupControllerProvider.notifier);
+    final stage = state.snappedStage;
+    final nearest = state.nearbyPlaces.firstOrNull;
+    final pinLabel = stage?.name ?? nearest?.name ?? l10n.adjustPickupPinLabel;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.adjustPickupTitle),
-        leading: BackButton(onPressed: () => context.pop()),
+    return TripSheetScaffold(
+      mapFraction: 0.44,
+      leading: AlongMapButton(
+        key: const Key('adjust_pickup_back'),
+        icon: AlongIcons.back,
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        onPressed: () => context.pop(),
       ),
-      body: Column(
+      map: (top, bottom) => Stack(
         children: [
-          Expanded(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned.fill(
-                  child: AlongMap(
-                    styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
-                    allowDemoStyleFallback: false,
-                    initialCameraPosition: state.center == null
-                        ? null
-                        : MapCamera.forCenter(
-                            lat: state.center!.lat,
-                            lng: state.center!.lng,
-                            zoom: 16,
-                          ),
-                  ),
-                ),
-                const Icon(Icons.place, size: 48, color: AlongColors.ink900),
-                if (state.isLoading)
-                  const Positioned(
-                    top: AlongSpace.s16,
-                    child: CircularProgressIndicator(),
-                  ),
-              ],
-            ),
-          ),
-          if (state.snappedStage != null)
-            Padding(
-              padding: const EdgeInsets.all(AlongSpace.s16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  l10n.adjustPickupBoardingAt(state.snappedStage!.name),
-                  style: AlongText.bodyStrong,
-                ),
+          Positioned.fill(
+            child: AlongMap(
+              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
+              allowDemoStyleFallback: false,
+              placeholder: AlongRoutePreview(
+                route: false,
+                topInset: top,
+                bottomInset: bottom,
               ),
-            ),
-          Expanded(
-            flex: 0,
-            child: SizedBox(
-              height: 220,
-              child: ListView.builder(
-                itemCount: state.nearbyPlaces.length,
-                itemBuilder: (context, index) {
-                  final place = state.nearbyPlaces[index];
-                  return ListTile(
-                    title: Text(place.name),
-                    subtitle: Text(
-                      l10n.searchResultDetail(
-                        place.area,
-                        l10n.distance(place.distanceM),
-                      ),
+              initialCameraPosition: state.center == null
+                  ? null
+                  : MapCamera.forCenter(
+                      lat: state.center!.lat,
+                      lng: state.center!.lng,
+                      zoom: 16,
                     ),
-                  );
-                },
-              ),
+              onMapClick: (_, at) {
+                AlongHaptics.tick(context);
+                controller.refresh(
+                  GeoPoint(lat: at.latitude, lng: at.longitude),
+                );
+              },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(AlongSpace.s16),
-            child: AlongButton(
-              key: const Key('adjust_pickup_confirm'),
-              label: l10n.adjustPickupConfirm,
-              onPressed: () {
+          Positioned.fill(
+            top: top,
+            bottom: bottom,
+            child: IgnorePointer(
+              child: Center(child: _CentrePin(label: pinLabel)),
+            ),
+          ),
+        ],
+      ),
+      footer: AlongButton(
+        key: const Key('adjust_pickup_confirm'),
+        label: l10n.adjustPickupConfirm,
+        onPressed: state.center == null
+            ? null
+            : () {
                 final home = ref.read(homeControllerProvider);
                 final origin = home.userLocation ?? home.mapCenter;
-                if (origin == null || state.center == null) return;
+                if (origin == null) return;
                 ref
                     .read(tripPlanSessionProvider.notifier)
                     .setSession(
                       TripPlanSession(
                         origin: origin,
                         destination: state.center!,
-                        destinationLabel: l10n.adjustPickupConfirm,
+                        destinationLabel: pinLabel,
                       ),
                     );
                 context.push(AppRoutes.tripOptions);
               },
-            ),
-          ),
-        ],
       ),
+      children: [
+        Text(l10n.adjustPickupTitle, style: AlongType.title(palette)),
+        const SizedBox(height: 2),
+        Text(l10n.adjustPickupHint, style: AlongType.caption(palette)),
+        const SizedBox(height: AlongSpace.s12),
+        AnimatedSwitcher(
+          duration: AlongMoves.arrive.of(context),
+          child: stage != null
+              ? TripNotice(
+                  key: ValueKey(stage.stageId),
+                  icon: AlongIcons.signpost,
+                  text: l10n.adjustPickupBoardingAt(stage.name),
+                )
+              : state.isLoading
+              ? const AlongSkeleton(
+                  key: ValueKey('loading'),
+                  variant: SkeletonVariant.line,
+                )
+              : const SizedBox.shrink(),
+        ),
+        if (state.nearbyPlaces.isNotEmpty) ...[
+          const SizedBox(height: AlongSpace.s16),
+          Text(l10n.adjustPickupNearby, style: AlongType.label(palette)),
+          const SizedBox(height: AlongSpace.s4),
+          for (final place in state.nearbyPlaces)
+            AlongPlaceRow(
+              key: Key('adjust_pickup_place_${place.name}'),
+              stacked: true,
+              place: AlongPlace(
+                icon: place.kind == 'park'
+                    ? AlongIcons.storefront
+                    : AlongIcons.signpost,
+                title: place.name,
+                detail: l10n.searchResultDetail(
+                  place.area,
+                  l10n.distance(place.distanceM),
+                ),
+                onTap: () {
+                  AlongHaptics.tick(context);
+                  controller.refresh(place.location);
+                },
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+/// The pin at the map centre: an ink squircle with a short stem, and the
+/// name it will snap to above it.
+class _CentrePin extends StatelessWidget {
+  const _CentrePin({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final dark = p.brightness == Brightness.dark;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          constraints: const BoxConstraints(maxWidth: 220),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: AlongCraft.compactFill(
+            p.surface,
+            30,
+            corner: 10,
+            side: BorderSide(color: p.line),
+          ),
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AlongType.label(p),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          width: 36,
+          height: 36,
+          alignment: Alignment.center,
+          decoration: AlongCraft.compactFill(
+            dark ? p.accent : p.ink,
+            36,
+            corner: 12,
+            side: BorderSide(color: dark ? p.bg : p.surface, width: 2),
+          ),
+          child: AlongIcon(
+            AlongIcons.mapPin,
+            size: 18,
+            color: dark ? p.bg : p.onInk,
+          ),
+        ),
+        Container(width: 2, height: 10, color: dark ? p.accent : p.ink),
+        // Keeps the stem tip, not the column centre, on the map centre.
+        const SizedBox(height: 82),
+      ],
     );
   }
 }

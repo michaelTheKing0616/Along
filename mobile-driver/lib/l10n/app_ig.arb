@@ -10,5 +10,7 @@
   "driverBrandingLine": "Nyere Along aka",
   "settleCta": "Kwụọ ụgwọ",
   "activeTripMessageRider": "Zitere {name} ozi",
-  "activeTripMessageRiderUnknown": "Zitere onye njem ozi"
+  "activeTripMessageRiderUnknown": "Zitere onye njem ozi",
+  "tripEtaCalculating": "Anyị na-agbakọ…",
+  "tripEtaPickup": "Ebe nbuli {label}"
 }

@@ -240,13 +240,15 @@ void main() {
   });
 
   test('rating tag labels', () {
-    expect(ratingTagLabel('clean_vehicle'), 'Clean car');
-    expect(ratingTagLabel('great_music'), 'Great music');
+    final en = lookupAppLocalizations(const Locale('en'));
+    expect(ratingTagLabel(en, 'clean_vehicle'), 'Clean car');
+    expect(ratingTagLabel(en, 'great_music'), 'Great music');
   });
 
   test('receipt view maps server lines and total', () {
     final trip = tripSummaryFromFixture(sampleAcceptedTripResponse());
     final view = receiptViewFor(
+      lookupAppLocalizations(const Locale('en')),
       trip,
       TripReceipt(
         fare: Money.parse('1200', currency: 'NGN'),

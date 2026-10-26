@@ -144,7 +144,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get modeMinibus => 'minibuses';
 
   @override
-  String get searchTitle => 'Where to?';
+  String get searchTitle => 'Níbo ni?';
 
   @override
   String get searchRecentsTitle => 'Recents';
@@ -164,15 +164,15 @@ class AppLocalizationsYo extends AppLocalizations {
   }
 
   @override
-  String get adjustPickupTitle => 'Adjust pickup';
+  String get adjustPickupTitle => 'Ṣàtúnṣe ibi ìgbé';
 
   @override
   String adjustPickupBoardingAt(String stageName) {
-    return 'Boarding at: $stageName';
+    return 'Wíwọ ọkọ̀ ní: $stageName';
   }
 
   @override
-  String get adjustPickupConfirm => 'Confirm location';
+  String get adjustPickupConfirm => 'Jẹ́rìí ibi náà';
 
   @override
   String get tripsStubBody => 'Your trips will appear here.';
@@ -224,7 +224,7 @@ class AppLocalizationsYo extends AppLocalizations {
   }
 
   @override
-  String get hailSearchTitle => 'Where are you going?';
+  String get hailSearchTitle => 'Níbo lò ń lọ?';
 
   @override
   String get requestUndoMessage => 'Requesting…';
@@ -263,17 +263,18 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String requestingCountdown(int seconds) {
-    return '${seconds}s remaining';
+    return 'Ìṣẹ́jú-àáyá $seconds ló kù';
   }
 
   @override
-  String get requestingFindingAnother => 'Finding another vehicle…';
+  String get requestingFindingAnother => 'À ń wá ọkọ̀ mìíràn…';
 
   @override
-  String get requestingCancel => 'Cancel';
+  String get requestingCancel => 'Fagilé';
 
   @override
-  String get requestingExpired => 'No driver responded — see other options';
+  String get requestingExpired =>
+      'Kò sí awakọ̀ tó dáhùn — wo àwọn àṣàyàn mìíràn';
 
   @override
   String get requestingAcceptedPlaceholder =>
@@ -361,7 +362,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get transferWalkLoading => 'Loading walking directions…';
 
   @override
-  String get wayfindingTitle => 'Walking directions';
+  String get wayfindingTitle => 'Ìtọ́sọ́nà ìrìn ẹsẹ̀';
 
   @override
   String get wayfindingModeText => 'Text';
@@ -390,37 +391,37 @@ class AppLocalizationsYo extends AppLocalizations {
   }
 
   @override
-  String get wayfindingNoSteps => 'No steps available';
+  String get wayfindingNoSteps => 'Kò sí ìgbésẹ̀ kankan';
 
   @override
   String meetVehicleArrivingIn(int minutes) {
-    return 'Arriving in ~$minutes min';
+    return 'Yóò dé ní ~ìṣẹ́jú $minutes';
   }
 
   @override
   String meetVehicleWalkTo(int minutes, String park) {
-    return 'Walk $minutes min to $park';
+    return 'Rìn ìṣẹ́jú $minutes lọ sí $park';
   }
 
   @override
   String meetVehicleNaMeHint(String label) {
-    return 'Show this to your driver — $label';
+    return 'Fi èyí han awakọ̀ rẹ — $label';
   }
 
   @override
-  String get meetVehicleDriverSignalLost => 'Driver signal lost';
+  String get meetVehicleDriverSignalLost => 'Àmì awakọ̀ ti sọnù';
 
   @override
-  String get meetVehicleLivePaused => 'Live updates paused';
+  String get meetVehicleLivePaused => 'Ìmúdójúìwọ̀n tààrà ti dúró';
 
   @override
-  String get meetVehicleShare => 'Share trip';
+  String get meetVehicleShare => 'Pín ìrìn-àjò';
 
   @override
-  String get meetVehicleCancel => 'Cancel';
+  String get meetVehicleCancel => 'Fagilé';
 
   @override
-  String get meetVehicleBoarded => 'I\'ve boarded';
+  String get meetVehicleBoarded => 'Mo ti wọlé';
 
   @override
   String activeTripStatus(int minutes, String fare) {
@@ -428,13 +429,13 @@ class AppLocalizationsYo extends AppLocalizations {
   }
 
   @override
-  String get activeTripExtend => 'Extend';
+  String get activeTripExtend => 'Fi kún un';
 
   @override
-  String get activeTripShare => 'Share';
+  String get activeTripShare => 'Pín';
 
   @override
-  String get activeTripReport => 'Report';
+  String get activeTripReport => 'Fi ẹ̀sùn sùn';
 
   @override
   String get sharePlaceholder => 'Share trip — coming in Phase 5';
@@ -449,32 +450,32 @@ class AppLocalizationsYo extends AppLocalizations {
   String get reportPlaceholder => 'Report incident — coming in Phase 5';
 
   @override
-  String get tripCompleteTitle => 'Trip complete';
+  String get tripCompleteTitle => 'Ìrìn-àjò ti parí';
 
   @override
   String tripCompletePaidQuestion(String amount) {
-    return 'Did you pay $amount?';
+    return 'Ṣé o san $amount?';
   }
 
   @override
   String tripCompletePayQuestion(String amount, String name) {
-    return 'Pay $amount to $name';
+    return 'San $amount fún $name';
   }
 
   @override
-  String get tripCompletePaidCash => 'Paid cash';
+  String get tripCompletePaidCash => 'Mo san owó lọ́wọ́';
 
   @override
-  String get tripCompleteTier3Question => 'What did you pay?';
+  String get tripCompleteTier3Question => 'Èló ni o san?';
 
   @override
-  String get tripCompleteYes => 'Yes';
+  String get tripCompleteYes => 'Bẹ́ẹ̀ ni';
 
   @override
-  String get tripCompleteDifferent => 'Different amount';
+  String get tripCompleteDifferent => 'Iye owó mìíràn';
 
   @override
-  String get tripCompleteDifferentPrompt => 'Pick the amount you paid';
+  String get tripCompleteDifferentPrompt => 'Yan iye tí o san';
 
   @override
   String get tripCompleteRateTitle => 'Rate your trip';
@@ -512,7 +513,7 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String payDriverCta(String amount) {
-    return 'Pay $amount';
+    return 'San $amount';
   }
 
   @override
@@ -635,7 +636,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get payMethodsTransferDefault => 'Pay with transfer by default';
 
   @override
-  String get activeTripScan => 'Scan';
+  String get activeTripScan => 'Ṣàyẹ̀wò';
 
   @override
   String get tripsEmpty => 'No completed trips yet.';
@@ -965,7 +966,7 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String freeSeatCount(int count) {
-    return '$count free';
+    return '$count ṣófo';
   }
 
   @override
@@ -999,13 +1000,13 @@ class AppLocalizationsYo extends AppLocalizations {
   String get seatBlocked => 'blocked';
 
   @override
-  String get seatDriver => 'driver';
+  String get seatDriver => 'awakọ̀';
 
   @override
   String get seatLuggage => 'luggage';
 
   @override
-  String get voiceBookingHint => 'Say it, for example Wuse to Berger';
+  String get voiceBookingHint => 'Sọ ọ́, fún àpẹẹrẹ Wuse sí Berger';
 
   @override
   String get textMapTitle => 'Vehicles nearby';
@@ -1014,13 +1015,13 @@ class AppLocalizationsYo extends AppLocalizations {
   String get textMapEmpty => 'No vehicles in this direction yet';
 
   @override
-  String get plateCheck => 'I see this plate';
+  String get plateCheck => 'Mo rí nọ́mbà yìí';
 
   @override
-  String get plateMatches => 'Plate matches';
+  String get plateMatches => 'Nọ́mbà bá a mu';
 
   @override
-  String get plateScan => 'Scan plate';
+  String get plateScan => 'Ṣàyẹ̀wò nọ́mbà';
 
   @override
   String get plateScanHint => 'Fit the plate in the frame';
@@ -1046,7 +1047,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get plateScanContinue => 'Continue';
 
   @override
-  String get guardianTitle => 'Guardian';
+  String get guardianTitle => 'Olùṣọ́';
 
   @override
   String get guardianEnabled => 'Check in on this trip';
@@ -1067,24 +1068,22 @@ class AppLocalizationsYo extends AppLocalizations {
   String get guardianSave => 'Save';
 
   @override
-  String get guardianOk => 'I\'m OK';
+  String get guardianOk => 'Mo wà dáadáa';
 
   @override
-  String get guardianOffRouteBody =>
-      'You are farther from the vehicle than you set.';
+  String get guardianOffRouteBody => 'O ti jìnnà sí ọkọ̀ ju bí o ti ṣètò lọ.';
 
   @override
-  String get guardianLongStopBody =>
-      'The vehicle has been still longer than you set.';
+  String get guardianLongStopBody => 'Ọkọ̀ náà ti dúró pẹ́ ju bí o ti ṣètò lọ.';
 
   @override
-  String get guardianCheckInBody => 'Time for the check-in you set.';
+  String get guardianCheckInBody => 'Àkókò àyẹ̀wò tí o ṣètò ti tó.';
 
   @override
-  String get guardianMissedBody => 'The check-in is still open.';
+  String get guardianMissedBody => 'Àyẹ̀wò náà ṣì ṣí sílẹ̀.';
 
   @override
-  String get guardianSafeWordHint => 'Say your word';
+  String get guardianSafeWordHint => 'Sọ ọ̀rọ̀ rẹ';
 
   @override
   String get tripMessagesTitle => 'Message the driver';
@@ -1291,4 +1290,270 @@ class AppLocalizationsYo extends AppLocalizations {
   String searchPopularTitle(String city) {
     return 'Gbajúmọ̀ ní $city';
   }
+
+  @override
+  String get tripEtaWorkingOut => 'À ń ṣírò ìgbà tí o máa dé';
+
+  @override
+  String tripEtaLastTo(String place) {
+    return 'Ìṣirò tó kẹ́yìn sí $place';
+  }
+
+  @override
+  String tripEtaArrivingAt(String place) {
+    return 'Ò ń dé $place';
+  }
+
+  @override
+  String get tripEtaPaused => 'Àkókò tààrà ti dúró';
+
+  @override
+  String get tripRetry => 'Tún gbìyànjú';
+
+  @override
+  String tripEtaTraffic(int minutes) {
+    return 'Súnkẹrẹ-fàkẹrẹ wà níwájú. Bíi ìṣẹ́jú $minutes lẹ́yìn.';
+  }
+
+  @override
+  String get tripMinUnit => 'ìṣẹ́jú';
+
+  @override
+  String tripAboutClock(String time) {
+    return 'Ní nǹkan bí $time';
+  }
+
+  @override
+  String tripClockRange(String first, String last) {
+    return '$first–$last';
+  }
+
+  @override
+  String tripMinutesLabel(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'ìṣẹ́jú $minutes',
+      one: 'ìṣẹ́jú 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMinutesRangeLabel(int low, int high) {
+    return 'Ìṣẹ́jú $low sí $high';
+  }
+
+  @override
+  String get tripEmergency => 'Pàjáwìrì';
+
+  @override
+  String get tripSos => 'SOS';
+
+  @override
+  String get tripCall => 'Pè é';
+
+  @override
+  String tripCallName(String name) {
+    return 'Pe $name';
+  }
+
+  @override
+  String get tripMessage => 'Ìfiránṣẹ́';
+
+  @override
+  String tripArrivesIn(String name) {
+    return '$name máa dé ní';
+  }
+
+  @override
+  String tripIsHere(String name) {
+    return '$name ti dé';
+  }
+
+  @override
+  String get tripDriverHere => 'Awakọ̀ ti dé';
+
+  @override
+  String get tripMeetAtPickup => 'Pàdé ní ibi ìgbé';
+
+  @override
+  String tripCountdownLabel(int minutes, int seconds) {
+    return 'Ìṣẹ́jú $minutes àti ìṣẹ́jú-àáyá $seconds';
+  }
+
+  @override
+  String get tripPinTitle => 'PIN ìrìn-àjò';
+
+  @override
+  String get tripPinSay => 'Sọ ọ́ ní ẹnu ọ̀nà';
+
+  @override
+  String get tripPinNew => 'Gba PIN tuntun';
+
+  @override
+  String get tripPinTooSoon => 'O ṣẹ̀ṣẹ̀ gba PIN tuntun. Tún gbìyànjú láìpẹ́.';
+
+  @override
+  String get tripPinFailed => 'A kò rí PIN tuntun gbà. Tún gbìyànjú.';
+
+  @override
+  String get tripMatchedTitle => 'A ti so yín pọ̀';
+
+  @override
+  String tripMatchedBody(String name) {
+    return 'Wọlé. $name máa bẹ̀rẹ̀ ìrìn-àjò náà.';
+  }
+
+  @override
+  String get receiptTitle => 'Ìwé-ẹ̀rí ìsanwó';
+
+  @override
+  String get receiptNotReady => 'Ìwé-ẹ̀rí kò tíì ṣetán';
+
+  @override
+  String get receiptNotReadyBody => 'Ó ṣì ń bọ̀. Yóò tún wà nínú Ìrìn-àjò.';
+
+  @override
+  String get receiptTryAgain => 'Tún gbìyànjú';
+
+  @override
+  String get receiptDone => 'Ó ti parí';
+
+  @override
+  String receiptHowWas(String name) {
+    return 'Báwo ni $name ṣe ṣe?';
+  }
+
+  @override
+  String get receiptFare => 'Owó ọkọ̀';
+
+  @override
+  String get receiptTotal => 'Àpapọ̀';
+
+  @override
+  String get receiptCashPaid => 'Owó tí a san';
+
+  @override
+  String get receiptChangeToWallet => 'Fi ṣẹ́ǹjì sí àpò owó';
+
+  @override
+  String receiptWalletNow(String amount) {
+    return 'Àpò owó báyìí $amount';
+  }
+
+  @override
+  String get receiptLoadSurcharge => 'Owó àfikún ẹrù';
+
+  @override
+  String get receiptAlongFee => 'Owó Along';
+
+  @override
+  String get receiptYourTrip => 'Ìrìn-àjò rẹ';
+
+  @override
+  String receiptRoute(String from, String to) {
+    return '$from sí $to';
+  }
+
+  @override
+  String receiptToday(String time) {
+    return 'Òní, $time';
+  }
+
+  @override
+  String get receiptYourDriver => 'awakọ̀ rẹ';
+
+  @override
+  String get ratingTagSafeDriving => 'Ìwakọ̀ aláàbò';
+
+  @override
+  String get ratingTagFairFare => 'Owó tó tọ́';
+
+  @override
+  String get ratingTagCleanVehicle => 'Ọkọ̀ tó mọ́';
+
+  @override
+  String get ratingTagPolite => 'Oníwà rere';
+
+  @override
+  String get ratingTagOnTime => 'Ní àkókò';
+
+  @override
+  String meetVehicleArrivingAt(String time) {
+    return 'Ó ń bọ̀ · $time';
+  }
+
+  @override
+  String get meetVehicleCalculating => 'À ń ṣírò ìgbà tí wọ́n máa dé';
+
+  @override
+  String meetVehicleDriverStats(String rating, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ìrìn-àjò $count',
+      one: 'ìrìn-àjò 1',
+    );
+    return '★ $rating · $_temp0';
+  }
+
+  @override
+  String meetVehicleMeetAt(String place) {
+    return 'Pàdé ní $place';
+  }
+
+  @override
+  String requestingFinding(String mode) {
+    return 'À ń wá $mode rẹ';
+  }
+
+  @override
+  String requestingSeenNear(String place) {
+    return 'Àwọn awakọ̀ nítòsí $place lè rí ìbéèrè rẹ';
+  }
+
+  @override
+  String get requestingFare => 'Owó ọkọ̀';
+
+  @override
+  String get adjustPickupPinLabel => 'Àmì tí o fi sílẹ̀';
+
+  @override
+  String get adjustPickupHint =>
+      'Tẹ màápù tàbí ibùdókọ̀ nísàlẹ̀ láti gbé àmì náà';
+
+  @override
+  String get adjustPickupNearby => 'Àwọn ibùdókọ̀ nítòsí';
+
+  @override
+  String get tripCompleteFareLabel => 'Owó ọkọ̀';
+
+  @override
+  String tripCompleteRoute(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get tripEtaCalculating => 'À ń ṣírò…';
+
+  @override
+  String get activeTripCall => 'Pè é';
+
+  @override
+  String get activeTripSos => 'Di mú fún SOS';
+
+  @override
+  String get activeTripNaMe => 'Fi Na Me hàn';
+
+  @override
+  String get tripCompleteSettleQuestion => 'Ṣé o ti san owó yìí?';
+
+  @override
+  String tripCompletePayHint(String driver) {
+    return 'San owó fún $driver nínú áàpù, tàbí sọ fún wa pé o san owó lọ́wọ́.';
+  }
+
+  @override
+  String get meetVehicleNaMeShow => 'Gbé e sókè kí awakọ̀ rẹ lè rí ọ';
 }

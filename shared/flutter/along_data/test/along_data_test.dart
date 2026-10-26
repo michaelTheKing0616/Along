@@ -114,52 +114,61 @@ void main() {
         timestamps: const {},
       );
 
-      final calculating = DomainMappers.tripFromDto(view, raw: {
-        'eta': {
-          'status': 'calculating',
-          'pickup': null,
-          'trip': null,
-          'stops': <dynamic>[],
-          'updated_at': '2026-10-24T06:30:00.000Z',
+      final calculating = DomainMappers.tripFromDto(
+        view,
+        raw: {
+          'eta': {
+            'status': 'calculating',
+            'pickup': null,
+            'trip': null,
+            'stops': <dynamic>[],
+            'updated_at': '2026-10-24T06:30:00.000Z',
+          },
         },
-      });
+      );
       expect(calculating.etaMinutes, isNull);
-      expect(calculating.eta?.headline, 'Calculating…');
+      expect(calculating.eta?.headline, isNull);
 
-      final ready = DomainMappers.tripFromDto(view, raw: {
-        'eta': {
-          'status': 'ready',
-          'pickup': {
-            'kind': 'single',
-            'low_s': 240,
-            'high_s': 240,
-            'label': '4 min',
-          },
-          'trip': {
-            'kind': 'range',
-            'low_s': 480,
-            'high_s': 720,
-            'label': '8–12 min',
-          },
-          'stops': [
-            {
-              'id': 'wuse',
-              'name': 'Wuse',
-              'state': 'passed',
-              'label': '7:12',
+      final ready = DomainMappers.tripFromDto(
+        view,
+        raw: {
+          'eta': {
+            'status': 'ready',
+            'pickup': {
+              'kind': 'single',
+              'low_s': 240,
+              'high_s': 240,
+              'label': '4 min',
             },
-            {
-              'id': 'garki',
-              'name': 'Garki',
-              'state': 'upcoming',
-              'label': '7:45',
+            'trip': {
+              'kind': 'range',
+              'low_s': 480,
+              'high_s': 720,
+              'label': '8–12 min',
             },
-          ],
-          'updated_at': '2026-10-24T06:30:00.000Z',
+            'stops': [
+              {
+                'id': 'wuse',
+                'name': 'Wuse',
+                'state': 'passed',
+                'label': '7:12',
+              },
+              {
+                'id': 'garki',
+                'name': 'Garki',
+                'state': 'upcoming',
+                'label': '7:45',
+              },
+            ],
+            'updated_at': '2026-10-24T06:30:00.000Z',
+          },
         },
-      });
+      );
       expect(ready.eta?.headline, '8–12 min');
-      expect(ready.eta?.driverLine, 'Pickup 4 min · 8–12 min');
+      expect(
+        ready.eta?.driverLine((l) => 'Pickup $l'),
+        'Pickup 4 min · 8–12 min',
+      );
       expect(ready.eta?.stops.last.label, '7:45');
     });
   });
@@ -292,7 +301,9 @@ void main() {
       );
 
       final repo = PlannerRepository(fake);
-      final outcome = await repo.planTrip(requestBody: {'origin': <String, dynamic>{}});
+      final outcome = await repo.planTrip(
+        requestBody: {'origin': <String, dynamic>{}},
+      );
 
       expect(outcome.result.candidates, hasLength(1));
       expect(outcome.result.candidates.first.kind, 'direct');
@@ -303,7 +314,9 @@ void main() {
 
   group('PresenceRepository', () {
     test('setPresence forwards RPC params', () async {
-      final fake = FakeAlongSupabase(rpcHandler: (_, __) => <String, dynamic>{});
+      final fake = FakeAlongSupabase(
+        rpcHandler: (_, __) => <String, dynamic>{},
+      );
       final repo = PresenceRepository(fake);
 
       await repo.setPresence(
@@ -318,7 +331,9 @@ void main() {
     });
 
     test('setPresence offline invokes set_presence RPC immediately', () async {
-      final fake = FakeAlongSupabase(rpcHandler: (_, __) => <String, dynamic>{});
+      final fake = FakeAlongSupabase(
+        rpcHandler: (_, __) => <String, dynamic>{},
+      );
       final repo = PresenceRepository(fake);
 
       await repo.setPresence(

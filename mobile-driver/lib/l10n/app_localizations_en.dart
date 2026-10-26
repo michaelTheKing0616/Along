@@ -1339,4 +1339,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activeTripMessageRiderUnknown => 'Message rider';
+
+  @override
+  String get tripEtaCalculating => 'Calculating…';
+
+  @override
+  String tripEtaPickup(String label) {
+    return 'Pickup $label';
+  }
 }

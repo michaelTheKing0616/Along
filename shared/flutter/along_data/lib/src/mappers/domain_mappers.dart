@@ -65,7 +65,10 @@ class DomainMappers {
       );
 
   static TripAlightStop alightFromDto(dto.StageLocation alight) =>
-      TripAlightStop(name: alight.name);
+      TripAlightStop(
+        name: alight.name,
+        location: GeoPoint(lat: alight.location.lat, lng: alight.location.lng),
+      );
 
   static TripLoadInfo loadFromDto(dto.LoadFlag load) => TripLoadInfo(
         flagged: load.flagged,

@@ -46,7 +46,10 @@ class TripEtaStop {
     final name = json['name'];
     final state = json['state'];
     final label = json['label'];
-    if (id is! String || name is! String || state is! String || label is! String) {
+    if (id is! String ||
+        name is! String ||
+        state is! String ||
+        label is! String) {
       return null;
     }
     return TripEtaStop(id: id, name: name, state: state, label: label);
@@ -70,20 +73,22 @@ class TripEta {
 
   bool get isReady => status == 'ready';
 
-  /// Trip label, then pickup, until the estimator has a number.
-  String get headline {
-    if (!isReady) return 'Calculating…';
-    return trip?.label ?? pickup?.label ?? 'Calculating…';
+  /// Trip label, then pickup. Null until the estimator has a number, so
+  /// callers show their own localised "calculating" copy.
+  String? get headline {
+    if (!isReady) return null;
+    return trip?.label ?? pickup?.label;
   }
 
   /// Driver sheet line. Pickup and the remaining trip share this payload.
-  String get driverLine {
-    if (!isReady) return 'Calculating…';
+  /// [pickupLine] localises the pickup part. Null while calculating.
+  String? driverLine(String Function(String label) pickupLine) {
+    if (!isReady) return null;
     final parts = <String>[
-      if (pickup != null) 'Pickup ${pickup!.label}',
+      if (pickup != null) pickupLine(pickup!.label),
       if (trip != null) trip!.label,
     ];
-    if (parts.isEmpty) return 'Calculating…';
+    if (parts.isEmpty) return null;
     return parts.join(' · ');
   }
 

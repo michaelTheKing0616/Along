@@ -10,5 +10,7 @@
   "driverBrandingLine": "Tuƙi tare da Along",
   "settleCta": "Biya",
   "activeTripMessageRider": "Aika wa {name} saƙo",
-  "activeTripMessageRiderUnknown": "Aika wa fasinja saƙo"
+  "activeTripMessageRiderUnknown": "Aika wa fasinja saƙo",
+  "tripEtaCalculating": "Ana lissafi…",
+  "tripEtaPickup": "Dauka {label}"
 }

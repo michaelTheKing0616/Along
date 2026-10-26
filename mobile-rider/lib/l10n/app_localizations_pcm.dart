@@ -144,7 +144,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get modeMinibus => 'minibuses';
 
   @override
-  String get searchTitle => 'Where to?';
+  String get searchTitle => 'Where you dey go?';
 
   @override
   String get searchRecentsTitle => 'Recents';
@@ -164,15 +164,15 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get adjustPickupTitle => 'Adjust pickup';
+  String get adjustPickupTitle => 'Change pickup';
 
   @override
   String adjustPickupBoardingAt(String stageName) {
-    return 'Boarding at: $stageName';
+    return 'You go board for: $stageName';
   }
 
   @override
-  String get adjustPickupConfirm => 'Confirm location';
+  String get adjustPickupConfirm => 'Confirm place';
 
   @override
   String get tripsStubBody => 'Your trips will appear here.';
@@ -224,7 +224,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get hailSearchTitle => 'Where are you going?';
+  String get hailSearchTitle => 'Where you dey go?';
 
   @override
   String get requestUndoMessage => 'Requesting…';
@@ -263,17 +263,17 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String requestingCountdown(int seconds) {
-    return '${seconds}s remaining';
+    return '${seconds}s remain';
   }
 
   @override
-  String get requestingFindingAnother => 'Finding another vehicle…';
+  String get requestingFindingAnother => 'We dey find another motor…';
 
   @override
   String get requestingCancel => 'Cancel';
 
   @override
-  String get requestingExpired => 'No driver responded — see other options';
+  String get requestingExpired => 'No driver answer — check other options';
 
   @override
   String get requestingAcceptedPlaceholder =>
@@ -361,7 +361,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get transferWalkLoading => 'Loading walking directions…';
 
   @override
-  String get wayfindingTitle => 'Walking directions';
+  String get wayfindingTitle => 'Waka direction';
 
   @override
   String get wayfindingModeText => 'Text';
@@ -390,28 +390,28 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get wayfindingNoSteps => 'No steps available';
+  String get wayfindingNoSteps => 'No steps dey';
 
   @override
   String meetVehicleArrivingIn(int minutes) {
-    return 'Arriving in ~$minutes min';
+    return 'E go reach in ~$minutes min';
   }
 
   @override
   String meetVehicleWalkTo(int minutes, String park) {
-    return 'Walk $minutes min to $park';
+    return 'Waka $minutes min reach $park';
   }
 
   @override
   String meetVehicleNaMeHint(String label) {
-    return 'Show this to your driver — $label';
+    return 'Show your driver dis one — $label';
   }
 
   @override
-  String get meetVehicleDriverSignalLost => 'Driver signal lost';
+  String get meetVehicleDriverSignalLost => 'Driver signal don lost';
 
   @override
-  String get meetVehicleLivePaused => 'Live updates paused';
+  String get meetVehicleLivePaused => 'Live update don pause';
 
   @override
   String get meetVehicleShare => 'Share trip';
@@ -420,7 +420,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get meetVehicleCancel => 'Cancel';
 
   @override
-  String get meetVehicleBoarded => 'I\'ve boarded';
+  String get meetVehicleBoarded => 'I don enter';
 
   @override
   String activeTripStatus(int minutes, String fare) {
@@ -449,11 +449,11 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get reportPlaceholder => 'Report incident — coming in Phase 5';
 
   @override
-  String get tripCompleteTitle => 'Trip complete';
+  String get tripCompleteTitle => 'Trip don finish';
 
   @override
   String tripCompletePaidQuestion(String amount) {
-    return 'Did you pay $amount?';
+    return 'You pay $amount?';
   }
 
   @override
@@ -462,10 +462,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get tripCompletePaidCash => 'Paid cash';
+  String get tripCompletePaidCash => 'I pay cash';
 
   @override
-  String get tripCompleteTier3Question => 'What did you pay?';
+  String get tripCompleteTier3Question => 'How much you pay?';
 
   @override
   String get tripCompleteYes => 'Yes';
@@ -474,7 +474,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get tripCompleteDifferent => 'Different amount';
 
   @override
-  String get tripCompleteDifferentPrompt => 'Pick the amount you paid';
+  String get tripCompleteDifferentPrompt => 'Pick the money wey you pay';
 
   @override
   String get tripCompleteRateTitle => 'Rate your trip';
@@ -1005,7 +1005,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get seatLuggage => 'luggage';
 
   @override
-  String get voiceBookingHint => 'Say it, for example Wuse to Berger';
+  String get voiceBookingHint => 'Talk am, like Wuse go Berger';
 
   @override
   String get textMapTitle => 'Vehicles nearby';
@@ -1014,10 +1014,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get textMapEmpty => 'No vehicles in this direction yet';
 
   @override
-  String get plateCheck => 'I see this plate';
+  String get plateCheck => 'I see dis plate';
 
   @override
-  String get plateMatches => 'Plate matches';
+  String get plateMatches => 'Plate correct';
 
   @override
   String get plateScan => 'Scan plate';
@@ -1067,24 +1067,25 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get guardianSave => 'Save';
 
   @override
-  String get guardianOk => 'I\'m OK';
+  String get guardianOk => 'I dey OK';
 
   @override
   String get guardianOffRouteBody =>
-      'You are farther from the vehicle than you set.';
+      'You don far from the motor pass wetin you set.';
 
   @override
   String get guardianLongStopBody =>
-      'The vehicle has been still longer than you set.';
+      'The motor don stand one place pass the time wey you set.';
 
   @override
-  String get guardianCheckInBody => 'Time for the check-in you set.';
+  String get guardianCheckInBody =>
+      'Time don reach for the check-in wey you set.';
 
   @override
-  String get guardianMissedBody => 'The check-in is still open.';
+  String get guardianMissedBody => 'The check-in still dey open.';
 
   @override
-  String get guardianSafeWordHint => 'Say your word';
+  String get guardianSafeWordHint => 'Talk your word';
 
   @override
   String get tripMessagesTitle => 'Message the driver';
@@ -1291,4 +1292,272 @@ class AppLocalizationsPcm extends AppLocalizations {
   String searchPopularTitle(String city) {
     return 'Wetin people dey go for $city';
   }
+
+  @override
+  String get tripEtaWorkingOut => 'We dey calculate when you go reach';
+
+  @override
+  String tripEtaLastTo(String place) {
+    return 'Last time wey we calculate reach $place';
+  }
+
+  @override
+  String tripEtaArrivingAt(String place) {
+    return 'You go reach $place';
+  }
+
+  @override
+  String get tripEtaPaused => 'Live time don pause';
+
+  @override
+  String get tripRetry => 'Try again';
+
+  @override
+  String tripEtaTraffic(int minutes) {
+    return 'Go-slow dey front. E fit pass $minutes min.';
+  }
+
+  @override
+  String get tripMinUnit => 'min';
+
+  @override
+  String tripAboutClock(String time) {
+    return 'Around $time';
+  }
+
+  @override
+  String tripClockRange(String first, String last) {
+    return '$first–$last';
+  }
+
+  @override
+  String tripMinutesLabel(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMinutesRangeLabel(int low, int high) {
+    return '$low reach $high minutes';
+  }
+
+  @override
+  String get tripEmergency => 'Emergency';
+
+  @override
+  String get tripSos => 'SOS';
+
+  @override
+  String get tripCall => 'Call';
+
+  @override
+  String tripCallName(String name) {
+    return 'Call $name';
+  }
+
+  @override
+  String get tripMessage => 'Message';
+
+  @override
+  String tripArrivesIn(String name) {
+    return '$name go reach in';
+  }
+
+  @override
+  String tripIsHere(String name) {
+    return '$name don reach';
+  }
+
+  @override
+  String get tripDriverHere => 'Driver don reach';
+
+  @override
+  String get tripMeetAtPickup => 'Meet am for pickup';
+
+  @override
+  String tripCountdownLabel(int minutes, int seconds) {
+    return '$minutes minutes $seconds seconds';
+  }
+
+  @override
+  String get tripPinTitle => 'Trip PIN';
+
+  @override
+  String get tripPinSay => 'Talk am for door';
+
+  @override
+  String get tripPinNew => 'Collect new PIN';
+
+  @override
+  String get tripPinTooSoon =>
+      'You just collect new PIN. Try again small time.';
+
+  @override
+  String get tripPinFailed => 'We no fit get new PIN. Try again.';
+
+  @override
+  String get tripMatchedTitle => 'Una don match';
+
+  @override
+  String tripMatchedBody(String name) {
+    return 'Enter. $name go start the trip.';
+  }
+
+  @override
+  String get receiptTitle => 'Receipt';
+
+  @override
+  String get receiptNotReady => 'Receipt never ready';
+
+  @override
+  String get receiptNotReadyBody =>
+      'E still dey come. E go also dey for Trips.';
+
+  @override
+  String get receiptTryAgain => 'Try again';
+
+  @override
+  String get receiptDone => 'Done';
+
+  @override
+  String receiptHowWas(String name) {
+    return 'How $name take do?';
+  }
+
+  @override
+  String get receiptFare => 'Fare';
+
+  @override
+  String get receiptTotal => 'Total';
+
+  @override
+  String get receiptCashPaid => 'Cash wey you pay';
+
+  @override
+  String get receiptChangeToWallet => 'Put change for wallet';
+
+  @override
+  String receiptWalletNow(String amount) {
+    return 'Wallet don be $amount';
+  }
+
+  @override
+  String get receiptLoadSurcharge => 'Load extra money';
+
+  @override
+  String get receiptAlongFee => 'Along fee';
+
+  @override
+  String get receiptYourTrip => 'Your trip';
+
+  @override
+  String receiptRoute(String from, String to) {
+    return '$from go $to';
+  }
+
+  @override
+  String receiptToday(String time) {
+    return 'Today, $time';
+  }
+
+  @override
+  String get receiptYourDriver => 'your driver';
+
+  @override
+  String get ratingTagSafeDriving => 'Correct driving';
+
+  @override
+  String get ratingTagFairFare => 'Fair price';
+
+  @override
+  String get ratingTagCleanVehicle => 'Clean motor';
+
+  @override
+  String get ratingTagPolite => 'Get respect';
+
+  @override
+  String get ratingTagOnTime => 'Reach on time';
+
+  @override
+  String meetVehicleArrivingAt(String time) {
+    return 'E dey come · $time';
+  }
+
+  @override
+  String get meetVehicleCalculating => 'We dey calculate when e go reach';
+
+  @override
+  String meetVehicleDriverStats(String rating, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trips',
+      one: '1 trip',
+    );
+    return '★ $rating · $_temp0';
+  }
+
+  @override
+  String meetVehicleMeetAt(String place) {
+    return 'Meet am for $place';
+  }
+
+  @override
+  String requestingFinding(String mode) {
+    return 'We dey find your $mode';
+  }
+
+  @override
+  String requestingSeenNear(String place) {
+    return 'Drivers wey dey near $place fit see your request';
+  }
+
+  @override
+  String get requestingFare => 'Fare';
+
+  @override
+  String get adjustPickupPinLabel => 'Pin wey you drop';
+
+  @override
+  String get adjustPickupHint =>
+      'Tap the map or one stop for down to move the pin';
+
+  @override
+  String get adjustPickupNearby => 'Stops wey dey near';
+
+  @override
+  String get tripCompleteFareLabel => 'Fare';
+
+  @override
+  String tripCompleteRoute(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get tripEtaCalculating => 'We dey calculate…';
+
+  @override
+  String get activeTripCall => 'Call';
+
+  @override
+  String get activeTripSos => 'Hold am for SOS';
+
+  @override
+  String get activeTripNaMe => 'Show Na Me';
+
+  @override
+  String get tripCompleteSettleQuestion => 'You don pay this fare?';
+
+  @override
+  String tripCompletePayHint(String driver) {
+    return 'Pay $driver for app, or tell us say you pay cash.';
+  }
+
+  @override
+  String get meetVehicleNaMeShow => 'Raise am make your driver fit see you';
 }

@@ -120,7 +120,6 @@ class ItineraryRepository {
     if (pickup is Map && pickup['label'] is String) {
       return pickup['label'] as String;
     }
-    if (eta['status'] == 'calculating') return 'Calculating…';
     return null;
   }
 

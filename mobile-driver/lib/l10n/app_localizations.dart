@@ -2473,6 +2473,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message rider'**
   String get activeTripMessageRiderUnknown;
+
+  /// No description provided for @tripEtaCalculating.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating…'**
+  String get tripEtaCalculating;
+
+  /// No description provided for @tripEtaPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup {label}'**
+  String tripEtaPickup(String label);
 }
 
 class _AppLocalizationsDelegate

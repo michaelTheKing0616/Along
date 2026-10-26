@@ -18,8 +18,9 @@ class DayPlannerScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(dayPlannerControllerProvider(itineraryId));
-    final controller =
-        ref.read(dayPlannerControllerProvider(itineraryId).notifier);
+    final controller = ref.read(
+      dayPlannerControllerProvider(itineraryId).notifier,
+    );
     final itinerary = state.itinerary;
 
     return Scaffold(
@@ -30,130 +31,131 @@ class DayPlannerScreen extends ConsumerWidget {
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : itinerary == null
-              ? Center(child: Text(l10n.dayPlannerEmpty))
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SwitchListTile(
-                      key: const Key('day_planner_load_toggle'),
-                      title: Text(l10n.dayPlannerLoadToggle),
-                      subtitle: itinerary.loadFlagged &&
-                              (itinerary.loadSize != null ||
-                                  itinerary.loadNote != null)
-                          ? Text(
-                              [
-                                if (itinerary.loadSize != null)
-                                  itinerary.loadSize!,
-                                if (itinerary.loadNote != null)
-                                  itinerary.loadNote!,
-                              ].join(' · '),
-                              style: AlongText.caption.copyWith(
-                                color: AlongColors.ink500,
-                              ),
-                            )
-                          : null,
-                      value: itinerary.loadFlagged,
-                      onChanged: null,
+          ? Center(child: Text(l10n.dayPlannerEmpty))
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SwitchListTile(
+                  key: const Key('day_planner_load_toggle'),
+                  title: Text(l10n.dayPlannerLoadToggle),
+                  subtitle:
+                      itinerary.loadFlagged &&
+                          (itinerary.loadSize != null ||
+                              itinerary.loadNote != null)
+                      ? Text(
+                          [
+                            if (itinerary.loadSize != null) itinerary.loadSize!,
+                            if (itinerary.loadNote != null) itinerary.loadNote!,
+                          ].join(' · '),
+                          style: AlongText.caption.copyWith(
+                            color: AlongColors.ink500,
+                          ),
+                        )
+                      : null,
+                  value: itinerary.loadFlagged,
+                  onChanged: null,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(AlongSpace.s16),
+                  child: Text(
+                    l10n.dayPlannerNotBookedHint,
+                    style: AlongText.caption.copyWith(
+                      color: AlongColors.ink500,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(AlongSpace.s16),
-                      child: Text(
-                        l10n.dayPlannerNotBookedHint,
-                        style: AlongText.caption.copyWith(
-                          color: AlongColors.ink500,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: _StopTimeline(
-                        itinerary: itinerary,
-                        onRemove: controller.removeStop,
-                        onReorder: (oldIndex, newIndex) {
-                          final pending = itinerary.stops
-                              .where((s) => s.status == ItineraryStopStatus.pending)
+                  ),
+                ),
+                Expanded(
+                  child: _StopTimeline(
+                    itinerary: itinerary,
+                    onRemove: controller.removeStop,
+                    onReorder: (oldIndex, newIndex) {
+                      final pending =
+                          itinerary.stops
+                              .where(
+                                (s) => s.status == ItineraryStopStatus.pending,
+                              )
                               .toList()
                             ..sort((a, b) => a.sequence.compareTo(b.sequence));
-                          if (oldIndex >= pending.length ||
-                              newIndex >= pending.length) {
-                            return;
-                          }
-                          final stop = pending[oldIndex];
-                          final target = pending[newIndex];
-                          controller.reorderStop(stop.stopId, target.sequence);
-                        },
-                      ),
-                    ),
-                    if (state.errorMessage != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AlongSpace.s16,
-                        ),
-                        child: Text(
-                          state.errorMessage!,
-                          style: AlongText.caption.copyWith(
-                            color: AlongColors.semanticDanger,
-                          ),
-                        ),
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(AlongSpace.s16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (_showMatchActions(itinerary)) ...[
-                            if (itinerary.hasPreparedPlan)
-                              AlongButton(
-                                key: const Key('day_planner_match_now'),
-                                label: l10n.dayPlannerMatchNow,
-                                variant: AlongButtonVariant.yellow,
-                                size: AlongButtonSize.secondary,
-                                visualState: state.isMatching
-                                    ? AlongButtonVisualState.loading
-                                    : AlongButtonVisualState.normal,
-                                onPressed: state.isMatching
-                                    ? null
-                                    : () async {
-                                        final trip =
-                                            await controller.matchNow();
-                                        if (trip != null && context.mounted) {
-                                          context.push(
-                                            AppRoutes.requesting,
-                                            extra: RequestingRouteArgs(
-                                              trip: trip,
-                                              roamingSource: false,
-                                            ),
-                                          );
-                                        }
-                                      },
-                              )
-                            else
-                              AlongButton(
-                                key: const Key('day_planner_prepare'),
-                                label: l10n.dayPlannerPrepare,
-                                variant: AlongButtonVariant.secondary,
-                                size: AlongButtonSize.secondary,
-                                visualState: state.isPreparing
-                                    ? AlongButtonVisualState.loading
-                                    : AlongButtonVisualState.normal,
-                                onPressed: state.isPreparing
-                                    ? null
-                                    : controller.prepareNext,
-                              ),
-                            const SizedBox(height: AlongSpace.s12),
-                          ],
-                          TextButton(
-                            key: const Key('day_planner_add_stop'),
-                            onPressed: () => context.push(
-                              AppRoutes.itineraryEntry,
-                              extra: itineraryId,
-                            ),
-                            child: Text(l10n.dayPlannerAddStop),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                      if (oldIndex >= pending.length ||
+                          newIndex >= pending.length) {
+                        return;
+                      }
+                      final stop = pending[oldIndex];
+                      final target = pending[newIndex];
+                      controller.reorderStop(stop.stopId, target.sequence);
+                    },
+                  ),
                 ),
+                if (state.errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AlongSpace.s16,
+                    ),
+                    child: Text(
+                      state.errorMessage!,
+                      style: AlongText.caption.copyWith(
+                        color: AlongColors.semanticDanger,
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(AlongSpace.s16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (_showMatchActions(itinerary)) ...[
+                        if (itinerary.hasPreparedPlan)
+                          AlongButton(
+                            key: const Key('day_planner_match_now'),
+                            label: l10n.dayPlannerMatchNow,
+                            variant: AlongButtonVariant.yellow,
+                            size: AlongButtonSize.secondary,
+                            visualState: state.isMatching
+                                ? AlongButtonVisualState.loading
+                                : AlongButtonVisualState.normal,
+                            onPressed: state.isMatching
+                                ? null
+                                : () async {
+                                    final trip = await controller.matchNow();
+                                    if (trip != null && context.mounted) {
+                                      context.push(
+                                        AppRoutes.requesting,
+                                        extra: RequestingRouteArgs(
+                                          trip: trip,
+                                          roamingSource: false,
+                                        ),
+                                      );
+                                    }
+                                  },
+                          )
+                        else
+                          AlongButton(
+                            key: const Key('day_planner_prepare'),
+                            label: l10n.dayPlannerPrepare,
+                            variant: AlongButtonVariant.secondary,
+                            size: AlongButtonSize.secondary,
+                            visualState: state.isPreparing
+                                ? AlongButtonVisualState.loading
+                                : AlongButtonVisualState.normal,
+                            onPressed: state.isPreparing
+                                ? null
+                                : controller.prepareNext,
+                          ),
+                        const SizedBox(height: AlongSpace.s12),
+                      ],
+                      TextButton(
+                        key: const Key('day_planner_add_stop'),
+                        onPressed: () => context.push(
+                          AppRoutes.itineraryEntry,
+                          extra: itineraryId,
+                        ),
+                        child: Text(l10n.dayPlannerAddStop),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
     );
   }
 
@@ -188,7 +190,8 @@ class _StopTimeline extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
       children: [
-        for (final stop in locked) _buildStopTile(context, l10n, stop, itinerary),
+        for (final stop in locked)
+          _buildStopTile(context, l10n, stop, itinerary),
         if (pending.isNotEmpty)
           ReorderableListView(
             shrinkWrap: true,
@@ -260,23 +263,25 @@ class _StopTimeline extends StatelessWidget {
   Widget _leadingIcon(ItineraryStopView stop, bool isNext) {
     return switch (stop.status) {
       ItineraryStopStatus.completed => Icon(
-          Icons.check_circle,
-          color: AlongColors.semanticSuccess,
-        ),
+        Icons.check_circle,
+        color: AlongColors.semanticSuccess,
+      ),
       ItineraryStopStatus.inProgress => Icon(
-          Icons.directions_car_filled_outlined,
-          color: AlongColors.brandYellow,
-        ),
-      ItineraryStopStatus.pending when isNext =>
-        Icon(Icons.radio_button_checked, color: AlongColors.brandYellow),
+        Icons.directions_car_filled_outlined,
+        color: AlongColors.brandYellow,
+      ),
+      ItineraryStopStatus.pending when isNext => Icon(
+        Icons.radio_button_checked,
+        color: AlongColors.brandYellow,
+      ),
       ItineraryStopStatus.pending => Icon(
-          Icons.radio_button_unchecked,
-          color: AlongColors.ink300,
-        ),
+        Icons.radio_button_unchecked,
+        color: AlongColors.ink300,
+      ),
       ItineraryStopStatus.skipped => Icon(
-          Icons.remove_circle_outline,
-          color: AlongColors.ink500,
-        ),
+        Icons.remove_circle_outline,
+        color: AlongColors.ink500,
+      ),
     };
   }
 
@@ -288,10 +293,11 @@ class _StopTimeline extends StatelessWidget {
   ) {
     return switch (stop.status) {
       ItineraryStopStatus.completed => l10n.dayPlannerStopDone,
-      ItineraryStopStatus.inProgress => stop.etaLabel ??
-          (stop.etaMinutes != null
-              ? l10n.dayPlannerStopInProgress(stop.etaMinutes!)
-              : 'Calculating…'),
+      ItineraryStopStatus.inProgress =>
+        stop.etaLabel ??
+            (stop.etaMinutes != null
+                ? l10n.dayPlannerStopInProgress(stop.etaMinutes!)
+                : l10n.tripEtaCalculating),
       ItineraryStopStatus.pending when isNext =>
         itinerary.hasPreparedPlan
             ? l10n.dayPlannerStopReady

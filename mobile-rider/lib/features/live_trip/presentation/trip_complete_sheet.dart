@@ -7,6 +7,7 @@ import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/payments_config.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
@@ -55,7 +56,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   _CompleteStep _step = _CompleteStep.fare;
   bool _busy = false;
 
-  int get _fareNaira => widget.trip.totalFare.minorUnits ~/ 100;
+  int get _fareNaira => majorUnits(widget.trip.totalFare);
 
   bool get _isTier3 =>
       widget.trip.fare.tier == FareTier.unconfirmed ||
@@ -114,119 +115,190 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     final digitalEnabled = ref
         .watch(digitalPaymentsEnabledProvider)
         .maybeWhen(data: (value) => value, orElse: () => false);
+    final fare = formatAppMoney(ref, widget.trip.totalFare);
+    final offerPay = digitalEnabled && !_alreadyPaidDigitally && !_isTier3;
+    final loading = _busy
+        ? AlongButtonVisualState.loading
+        : AlongButtonVisualState.normal;
+    void toDifferent() {
+      AlongHaptics.tick(context);
+      setState(() => _step = _CompleteStep.different);
+    }
+
+    final List<Widget> body;
+    if (_step == _CompleteStep.different || _isTier3) {
+      body = [
+        Text(
+          _isTier3
+              ? l10n.tripCompleteTier3Question
+              : l10n.tripCompleteDifferentPrompt,
+          style: AlongType.title(p),
+        ),
+        const SizedBox(height: AlongSpace.s16),
+        _AmountGrid(
+          amounts: fareConfirmChipAmounts(_fareNaira),
+          label: (amount) => formatAppMoneyMajor(ref, amount),
+          keyed: true,
+          onPick: _busy ? null : _confirmDifferent,
+        ),
+      ];
+    } else {
+      body = [
+        // One statement of the fare, then the question about it. The amount
+        // is not repeated in the question.
+        DecoratedBox(
+          decoration: AlongCraft.compactFill(p.recessed, 96, corner: 20),
+          child: Padding(
+            padding: const EdgeInsets.all(AlongSpace.s16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.tripCompleteFareLabel,
+                        style: AlongType.caption(p),
+                      ),
+                      Text(
+                        fare,
+                        key: const Key('trip_complete_fare'),
+                        style: AlongType.display(p),
+                      ),
+                    ],
+                  ),
+                ),
+                TripDriverAvatar(name: widget.trip.driver.displayName),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AlongSpace.s16),
+        Text(
+          offerPay
+              ? l10n.tripCompletePayHint(widget.trip.driver.displayName)
+              : l10n.tripCompleteSettleQuestion,
+          style: AlongType.label(p),
+        ),
+        const SizedBox(height: AlongSpace.s20),
+        if (offerPay) ...[
+          AlongButton(
+            key: const Key('trip_complete_pay'),
+            label: l10n.payDriverCta(fare),
+            variant: AlongButtonVariant.yellow,
+            visualState: loading,
+            onPressed: _busy ? null : _payDigitally,
+          ),
+          const SizedBox(height: AlongSpace.s8),
+          AlongButton(
+            key: const Key('trip_complete_paid_cash'),
+            label: l10n.tripCompletePaidCash,
+            variant: AlongButtonVariant.secondary,
+            onPressed: _busy ? null : _confirmAsShown,
+          ),
+        ] else
+          AlongButton(
+            key: const Key('trip_complete_yes'),
+            label: l10n.tripCompleteYes,
+            visualState: loading,
+            onPressed: _busy ? null : _confirmAsShown,
+          ),
+        const SizedBox(height: AlongSpace.s4),
+        AlongButton(
+          key: const Key('trip_complete_different'),
+          label: l10n.tripCompleteDifferent,
+          variant: AlongButtonVariant.tertiary,
+          onPressed: _busy ? null : toDifferent,
+        ),
+      ];
+    }
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: AlongBottomSheet(
-        size: AlongBottomSheetSize.full,
-        title: l10n.tripCompleteTitle,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_step == _CompleteStep.fare) ...[
-              if (digitalEnabled && !_alreadyPaidDigitally && !_isTier3) ...[
-                Text(
-                  l10n.tripCompletePayQuestion(
-                    formatAppMoney(ref, widget.trip.totalFare),
-                    widget.trip.driver.displayName,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: p.surface,
+          borderRadius: const BorderRadius.vertical(top: AlongRadius.dialog),
+        ),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              AlongSpace.s20,
+              AlongSpace.s12,
+              AlongSpace.s20,
+              AlongSpace.s16,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: AlongCraft.compactFill(p.line, 4, corner: 2),
                   ),
-                  style: AlongText.heading2,
                 ),
                 const SizedBox(height: AlongSpace.s16),
-                AlongButton(
-                  key: const Key('trip_complete_pay'),
-                  label: l10n.payDriverCta(
-                    formatAppMoney(ref, widget.trip.totalFare),
-                  ),
-                  variant: AlongButtonVariant.yellow,
-                  visualState: _busy
-                      ? AlongButtonVisualState.loading
-                      : AlongButtonVisualState.normal,
-                  onPressed: _busy ? null : _payDigitally,
-                ),
-                const SizedBox(height: AlongSpace.s8),
-                AlongButton(
-                  key: const Key('trip_complete_paid_cash'),
-                  label: l10n.tripCompletePaidCash,
-                  variant: AlongButtonVariant.tertiary,
-                  onPressed: _busy ? null : _confirmAsShown,
-                ),
-                const SizedBox(height: AlongSpace.s8),
-                AlongButton(
-                  key: const Key('trip_complete_different'),
-                  label: l10n.tripCompleteDifferent,
-                  variant: AlongButtonVariant.secondary,
-                  onPressed: _busy
-                      ? null
-                      : () => setState(() => _step = _CompleteStep.different),
-                ),
-              ] else ...[
-                Text(
-                  _isTier3
-                      ? l10n.tripCompleteTier3Question
-                      : l10n.tripCompletePaidQuestion(
-                          formatAppMoney(ref, widget.trip.totalFare),
-                        ),
-                  style: AlongText.heading2,
-                ),
-                const SizedBox(height: AlongSpace.s16),
-                if (!_isTier3)
-                  AlongButton(
-                    key: const Key('trip_complete_yes'),
-                    label: l10n.tripCompleteYes,
-                    visualState: _busy
-                        ? AlongButtonVisualState.loading
-                        : AlongButtonVisualState.normal,
-                    onPressed: _busy ? null : _confirmAsShown,
-                  )
-                else
-                  Wrap(
-                    spacing: AlongSpace.s8,
-                    runSpacing: AlongSpace.s8,
-                    children: fareConfirmChipAmounts(_fareNaira)
-                        .map(
-                          (amount) => _AmountChip(
-                            key: Key('trip_complete_chip_$amount'),
-                            label: formatAppMoneyMajor(ref, amount),
-                            onTap: _busy
-                                ? null
-                                : () => _confirmDifferent(amount),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                if (!_isTier3) ...[
-                  const SizedBox(height: AlongSpace.s8),
-                  AlongButton(
-                    key: const Key('trip_complete_different'),
-                    label: l10n.tripCompleteDifferent,
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: _busy
-                        ? null
-                        : () => setState(() => _step = _CompleteStep.different),
-                  ),
-                ],
-              ],
-            ] else if (_step == _CompleteStep.different) ...[
-              Text(l10n.tripCompleteDifferentPrompt, style: AlongText.heading2),
-              const SizedBox(height: AlongSpace.s16),
-              Wrap(
-                spacing: AlongSpace.s8,
-                runSpacing: AlongSpace.s8,
-                children: fareConfirmChipAmounts(_fareNaira)
-                    .map(
-                      (amount) => _AmountChip(
-                        label: formatAppMoneyMajor(ref, amount),
-                        onTap: _busy ? null : () => _confirmDifferent(amount),
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: AlongCraft.compactFill(
+                        p.success.withValues(alpha: 0.14),
+                        40,
                       ),
-                    )
-                    .toList(),
-              ),
-            ],
-          ],
+                      child: AlongIcon(
+                        AlongIcons.check,
+                        size: 20,
+                        color: p.success,
+                      ),
+                    ),
+                    const SizedBox(width: AlongSpace.s12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.tripCompleteTitle,
+                            style: AlongType.title(p),
+                          ),
+                          Text(
+                            l10n.tripCompleteRoute(
+                              widget.trip.board.name,
+                              widget.trip.alight.name,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AlongType.caption(p),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AlongSpace.s20),
+                AnimatedSwitcher(
+                  duration: AlongMoves.arrive.of(context),
+                  switchInCurve: AlongMoves.arrive.curve,
+                  layoutBuilder: (current, previous) =>
+                      current ?? const SizedBox.shrink(),
+                  child: Column(
+                    key: ValueKey(_step),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: body,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -235,32 +307,61 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
 
 enum _CompleteStep { fare, different }
 
-class _AmountChip extends StatelessWidget {
-  const _AmountChip({super.key, required this.label, required this.onTap});
+/// Likely amounts as a three-up grid of squircle tiles.
+class _AmountGrid extends StatelessWidget {
+  const _AmountGrid({
+    required this.amounts,
+    required this.label,
+    required this.keyed,
+    required this.onPick,
+  });
 
-  final String label;
-  final VoidCallback? onTap;
+  final List<int> amounts;
+  final String Function(int amount) label;
+  final bool keyed;
+  final ValueChanged<int>? onPick;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AlongColors.brandYellow,
-      shape: AlongCraft.border(AlongRadius.control.x),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: AlongCraft.border(AlongRadius.control.x),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AlongSpace.s12,
-            vertical: AlongSpace.s12,
-          ),
-          child: Text(
-            label,
-            style: AlongText.label.copyWith(color: AlongColors.brandYellowOn),
-          ),
-        ),
-      ),
+    final p = AlongPalette.of(context);
+    return LayoutBuilder(
+      builder: (context, box) {
+        const gap = AlongSpace.s8;
+        final width = (box.maxWidth - gap * 2) / 3;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final amount in amounts)
+              SizedBox(
+                width: width,
+                child: Material(
+                  key: keyed ? Key('trip_complete_chip_$amount') : null,
+                  color: Colors.transparent,
+                  shape: AlongCraft.border(16),
+                  clipBehavior: Clip.antiAlias,
+                  child: Ink(
+                    decoration: AlongCraft.compactFill(p.recessed, 52),
+                    child: InkWell(
+                      onTap: onPick == null
+                          ? null
+                          : () {
+                              AlongHaptics.tick(context);
+                              onPick!(amount);
+                            },
+                      child: SizedBox(
+                        height: 52,
+                        child: Center(
+                          child: Text(label(amount), style: AlongType.label(p)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

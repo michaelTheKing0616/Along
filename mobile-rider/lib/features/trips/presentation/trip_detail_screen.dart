@@ -7,6 +7,7 @@ import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/safety/presentation/trip_thread_screen.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 /// R-22 Trip detail — itemised fare + text receipt share.
@@ -46,12 +47,12 @@ class TripDetailScreen extends ConsumerWidget {
               if (receipt != null)
                 FareHero(
                   key: const Key('trip_detail_fare'),
-                  amountNaira: receipt.total.minorUnits ~/ 100,
+                  amountNaira: majorUnits(receipt.total),
                   lineItems: receipt.lines
                       .map(
                         (line) => FareHeroLineItem(
                           label: line.label,
-                          amountNaira: line.amount.minorUnits ~/ 100,
+                          amountNaira: majorUnits(line.amount),
                         ),
                       )
                       .toList(),

@@ -10,5 +10,7 @@
   "driverBrandingLine": "Wá Along pẹ̀lú",
   "settleCta": "Sanwó",
   "activeTripMessageRider": "Fi ọ̀rọ̀ ránṣẹ́ sí {name}",
-  "activeTripMessageRiderUnknown": "Fi ọ̀rọ̀ ránṣẹ́ sí èrò"
+  "activeTripMessageRiderUnknown": "Fi ọ̀rọ̀ ránṣẹ́ sí èrò",
+  "tripEtaCalculating": "À ń ṣírò…",
+  "tripEtaPickup": "Ìgbéra {label}"
 }

@@ -1294,4 +1294,270 @@ class AppLocalizationsEn extends AppLocalizations {
   String searchPopularTitle(String city) {
     return 'Popular in $city';
   }
+
+  @override
+  String get tripEtaWorkingOut => 'Working out your arrival';
+
+  @override
+  String tripEtaLastTo(String place) {
+    return 'Last estimate to $place';
+  }
+
+  @override
+  String tripEtaArrivingAt(String place) {
+    return 'Arriving at $place';
+  }
+
+  @override
+  String get tripEtaPaused => 'Live times paused';
+
+  @override
+  String get tripRetry => 'Retry';
+
+  @override
+  String tripEtaTraffic(int minutes) {
+    return 'Traffic ahead. About $minutes min later.';
+  }
+
+  @override
+  String get tripMinUnit => 'min';
+
+  @override
+  String tripAboutClock(String time) {
+    return 'About $time';
+  }
+
+  @override
+  String tripClockRange(String first, String last) {
+    return '$first–$last';
+  }
+
+  @override
+  String tripMinutesLabel(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMinutesRangeLabel(int low, int high) {
+    return '$low to $high minutes';
+  }
+
+  @override
+  String get tripEmergency => 'Emergency';
+
+  @override
+  String get tripSos => 'SOS';
+
+  @override
+  String get tripCall => 'Call';
+
+  @override
+  String tripCallName(String name) {
+    return 'Call $name';
+  }
+
+  @override
+  String get tripMessage => 'Message';
+
+  @override
+  String tripArrivesIn(String name) {
+    return '$name arrives in';
+  }
+
+  @override
+  String tripIsHere(String name) {
+    return '$name is here';
+  }
+
+  @override
+  String get tripDriverHere => 'Driver is here';
+
+  @override
+  String get tripMeetAtPickup => 'Meet at pickup';
+
+  @override
+  String tripCountdownLabel(int minutes, int seconds) {
+    return '$minutes minutes $seconds seconds';
+  }
+
+  @override
+  String get tripPinTitle => 'Trip PIN';
+
+  @override
+  String get tripPinSay => 'Say it at the door';
+
+  @override
+  String get tripPinNew => 'Get a new PIN';
+
+  @override
+  String get tripPinTooSoon => 'You just got a new PIN. Try again in a moment.';
+
+  @override
+  String get tripPinFailed => 'Couldn\'t get a new PIN. Try again.';
+
+  @override
+  String get tripMatchedTitle => 'You\'re matched';
+
+  @override
+  String tripMatchedBody(String name) {
+    return 'Get in. $name will start the trip.';
+  }
+
+  @override
+  String get receiptTitle => 'Receipt';
+
+  @override
+  String get receiptNotReady => 'Receipt not ready';
+
+  @override
+  String get receiptNotReadyBody =>
+      'It is still on its way. It will also be in Trips.';
+
+  @override
+  String get receiptTryAgain => 'Try again';
+
+  @override
+  String get receiptDone => 'Done';
+
+  @override
+  String receiptHowWas(String name) {
+    return 'How was $name?';
+  }
+
+  @override
+  String get receiptFare => 'Fare';
+
+  @override
+  String get receiptTotal => 'Total';
+
+  @override
+  String get receiptCashPaid => 'Cash paid';
+
+  @override
+  String get receiptChangeToWallet => 'Change to wallet';
+
+  @override
+  String receiptWalletNow(String amount) {
+    return 'Wallet now $amount';
+  }
+
+  @override
+  String get receiptLoadSurcharge => 'Load surcharge';
+
+  @override
+  String get receiptAlongFee => 'Along fee';
+
+  @override
+  String get receiptYourTrip => 'Your trip';
+
+  @override
+  String receiptRoute(String from, String to) {
+    return '$from to $to';
+  }
+
+  @override
+  String receiptToday(String time) {
+    return 'Today, $time';
+  }
+
+  @override
+  String get receiptYourDriver => 'your driver';
+
+  @override
+  String get ratingTagSafeDriving => 'Safe driving';
+
+  @override
+  String get ratingTagFairFare => 'Fair fare';
+
+  @override
+  String get ratingTagCleanVehicle => 'Clean car';
+
+  @override
+  String get ratingTagPolite => 'Polite';
+
+  @override
+  String get ratingTagOnTime => 'On time';
+
+  @override
+  String meetVehicleArrivingAt(String time) {
+    return 'Arriving · $time';
+  }
+
+  @override
+  String get meetVehicleCalculating => 'Working out when they arrive';
+
+  @override
+  String meetVehicleDriverStats(String rating, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trips',
+      one: '1 trip',
+    );
+    return '★ $rating · $_temp0';
+  }
+
+  @override
+  String meetVehicleMeetAt(String place) {
+    return 'Meet at $place';
+  }
+
+  @override
+  String requestingFinding(String mode) {
+    return 'Finding your $mode';
+  }
+
+  @override
+  String requestingSeenNear(String place) {
+    return 'Drivers near $place can see your request';
+  }
+
+  @override
+  String get requestingFare => 'Fare';
+
+  @override
+  String get adjustPickupPinLabel => 'Dropped pin';
+
+  @override
+  String get adjustPickupHint => 'Tap the map or a stop below to move the pin';
+
+  @override
+  String get adjustPickupNearby => 'Stops nearby';
+
+  @override
+  String get tripCompleteFareLabel => 'Fare';
+
+  @override
+  String tripCompleteRoute(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get tripEtaCalculating => 'Calculating…';
+
+  @override
+  String get activeTripCall => 'Call';
+
+  @override
+  String get activeTripSos => 'Hold for SOS';
+
+  @override
+  String get activeTripNaMe => 'Show Na Me';
+
+  @override
+  String get tripCompleteSettleQuestion => 'Did you pay this fare?';
+
+  @override
+  String tripCompletePayHint(String driver) {
+    return 'Pay $driver in the app, or tell us you paid cash.';
+  }
+
+  @override
+  String get meetVehicleNaMeShow => 'Hold it up so your driver can spot you';
 }

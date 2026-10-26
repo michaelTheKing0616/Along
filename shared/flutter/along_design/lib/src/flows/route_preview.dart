@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../craft.dart';
 import '../elevation.dart';
+import '../icons.dart';
 import '../palette.dart';
 import '../type.dart';
 
@@ -30,7 +31,22 @@ class AlongRoutePreview extends StatelessWidget {
     this.drop,
     this.topInset = 88,
     this.bottomInset = 0,
+    this.vehicleAt,
+    this.vehicleIcon,
+    this.vehicleKey,
+    this.pulse = false,
   });
+
+  /// Where the vehicle is along the route, 0 at pickup and 1 at the drop.
+  /// Null hides it. The part already driven fades back.
+  final double? vehicleAt;
+
+  /// Mode glyph inside the vehicle marker; a car when null.
+  final IconData? vehicleIcon;
+  final Key? vehicleKey;
+
+  /// Rings breathe out from the pickup while a request looks for drivers.
+  final bool pulse;
 
   /// Draws the route, pickup dot and drop pin. False leaves only streets.
   final bool route;
@@ -74,7 +90,9 @@ class AlongRoutePreview extends StatelessWidget {
             summarySize: summary == null
                 ? null
                 : _Tag.measure(summary!, style, scaler, legend: false),
+            vehicleAt: route ? vehicleAt : null,
           );
+          final car = layout.vehicle;
           return Stack(
             children: [
               Positioned.fill(
@@ -83,9 +101,26 @@ class AlongRoutePreview extends StatelessWidget {
                     palette,
                     AlongRoles.of(palette),
                     route ? layout : null,
+                    vehicleAt: route ? vehicleAt : null,
                   ),
                 ),
               ),
+              if (route && pulse)
+                Positioned.fromRect(
+                  rect: Rect.fromCircle(center: layout.a, radius: 56),
+                  child: IgnorePointer(
+                    child: _Pulse(color: AlongRoles.of(palette).pickup),
+                  ),
+                ),
+              if (car != null)
+                Positioned.fromRect(
+                  rect: Rect.fromCircle(center: car, radius: _carSize / 2),
+                  child: _Vehicle(
+                    key: vehicleKey,
+                    palette: palette,
+                    icon: vehicleIcon ?? AlongIcons.taxi,
+                  ),
+                ),
               if (route && layout.fromRect != null)
                 Positioned.fromRect(
                   rect: layout.fromRect!,
@@ -127,7 +162,18 @@ class RouteLayout {
     this.fromRect,
     this.toRect,
     this.summaryRect,
+    this.vehicle,
   });
+
+  /// Centre of the vehicle marker, when one is shown.
+  final Offset? vehicle;
+
+  /// Point [t] of the way along [path], 0..1.
+  static Offset along(List<Offset> path, double t) {
+    final f = t.clamp(0.0, 1.0) * (path.length - 1);
+    final i = f.floor().clamp(0, path.length - 2);
+    return Offset.lerp(path[i], path[i + 1], f - i)!;
+  }
 
   final Offset a;
   final Offset b;
@@ -157,6 +203,7 @@ class RouteLayout {
     Size? fromSize,
     Size? toSize,
     Size? summarySize,
+    double? vehicleAt,
   }) {
     final w = size.width, h = size.height;
     final visible = h - bottomInset;
@@ -200,7 +247,9 @@ class RouteLayout {
     final path = [for (var i = 0; i <= 24; i++) _cubic(a, c1, c2, b, i / 24)];
 
     final bounds = Rect.fromLTRB(_edge, topInset + 4, w - _edge, visible - 8);
+    final car = vehicleAt == null ? null : along(path, vehicleAt);
     final obstacles = <Rect>[
+      if (car != null) Rect.fromCircle(center: car, radius: _carSize / 2 + 4),
       for (var i = 0; i + 1 < path.length; i++)
         Rect.fromPoints(path[i], path[i + 1]).inflate(6),
       Rect.fromCircle(center: a, radius: _marker + 2),
@@ -255,8 +304,100 @@ class RouteLayout {
       fromRect: fromRect,
       toRect: toRect,
       summaryRect: summaryRect,
+      vehicle: car,
     );
   }
+}
+
+const double _carSize = 36;
+
+/// The live vehicle: a compact ink squircle with the mode glyph.
+class _Vehicle extends StatelessWidget {
+  const _Vehicle({super.key, required this.palette, required this.icon});
+
+  final AlongPalette palette;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = palette.brightness == Brightness.dark;
+    return DecoratedBox(
+      decoration: AlongCraft.compactFill(
+        palette.ink,
+        _carSize,
+        shadow: dark ? const <BoxShadow>[] : AlongElevation.rest(palette.ink),
+      ),
+      child: Center(child: Icon(icon, size: 20, color: palette.onInk)),
+    );
+  }
+}
+
+/// Rings breathing out from the pickup. Holds one still ring when motion
+/// is off, so goldens and reduced-motion riders see the same mark.
+class _Pulse extends StatefulWidget {
+  const _Pulse({required this.color});
+
+  final Color color;
+
+  @override
+  State<_Pulse> createState() => _PulseState();
+}
+
+class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1800),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _c
+        ..stop()
+        ..value = 0.55;
+    } else if (!_c.isAnimating) {
+      _c.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _c,
+    builder: (context, _) =>
+        CustomPaint(painter: _PulsePainter(widget.color, _c.value)),
+  );
+}
+
+class _PulsePainter extends CustomPainter {
+  const _PulsePainter(this.color, this.t);
+
+  final Color color;
+  final double t;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    final max = size.shortestSide / 2;
+    for (final phase in [0.0, 0.5]) {
+      final v = (t + phase) % 1;
+      final curved = Curves.easeOutCubic.transform(v);
+      canvas.drawCircle(
+        c,
+        10 + (max - 10) * curved,
+        Paint()..color = color.withValues(alpha: 0.28 * (1 - v)),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PulsePainter old) => old.t != t || old.color != color;
 }
 
 enum _Legend { pickup, drop }
@@ -360,7 +501,9 @@ class _Tag extends StatelessWidget {
 }
 
 class _StreetsPainter extends CustomPainter {
-  _StreetsPainter(this.p, this.r, this.layout);
+  _StreetsPainter(this.p, this.r, this.layout, {this.vehicleAt});
+
+  final double? vehicleAt;
 
   final AlongPalette p;
   final AlongRoles r;
@@ -463,6 +606,26 @@ class _StreetsPainter extends CustomPainter {
         ..strokeJoin = StrokeJoin.round
         ..strokeCap = StrokeCap.round,
     );
+    // Road already driven: faded back to its casing.
+    final at = vehicleAt;
+    if (at != null && at > 0) {
+      final done = Path()..moveTo(a.dx, a.dy);
+      final f = at.clamp(0.0, 1.0) * (route.path.length - 1);
+      for (var i = 1; i <= f.floor(); i++) {
+        done.lineTo(route.path[i].dx, route.path[i].dy);
+      }
+      final end = RouteLayout.along(route.path, at);
+      done.lineTo(end.dx, end.dy);
+      canvas.drawPath(
+        done,
+        Paint()
+          ..color = r.routeCasing
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 6
+          ..strokeJoin = StrokeJoin.round
+          ..strokeCap = StrokeCap.round,
+      );
+    }
     canvas.drawCircle(a, 9, Paint()..color = p.surface);
     canvas.drawCircle(a, 6, Paint()..color = r.pickup);
     // Drop: a squared marker, so it reads apart from the round pickup.
@@ -475,5 +638,6 @@ class _StreetsPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_StreetsPainter old) => old.p != p || old.layout != layout;
+  bool shouldRepaint(_StreetsPainter old) =>
+      old.p != p || old.layout != layout || old.vehicleAt != vehicleAt;
 }

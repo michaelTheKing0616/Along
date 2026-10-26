@@ -10,5 +10,7 @@
   "driverBrandingLine": "Drive with Along",
   "settleCta": "Settle",
   "activeTripMessageRider": "Send message give {name}",
-  "activeTripMessageRiderUnknown": "Send message give rider"
+  "activeTripMessageRiderUnknown": "Send message give rider",
+  "tripEtaCalculating": "We dey calculate…",
+  "tripEtaPickup": "Pickup {label}"
 }

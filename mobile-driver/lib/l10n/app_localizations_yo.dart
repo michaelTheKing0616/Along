@@ -1339,4 +1339,12 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get activeTripMessageRiderUnknown => 'Fi ọ̀rọ̀ ránṣẹ́ sí èrò';
+
+  @override
+  String get tripEtaCalculating => 'À ń ṣírò…';
+
+  @override
+  String tripEtaPickup(String label) {
+    return 'Ìgbéra $label';
+  }
 }

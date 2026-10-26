@@ -1340,4 +1340,12 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get activeTripMessageRiderUnknown => 'Aika wa fasinja saƙo';
+
+  @override
+  String get tripEtaCalculating => 'Ana lissafi…';
+
+  @override
+  String tripEtaPickup(String label) {
+    return 'Dauka $label';
+  }
 }

@@ -144,7 +144,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get modeMinibus => 'minibuses';
 
   @override
-  String get searchTitle => 'Where to?';
+  String get searchTitle => 'Ina za ka?';
 
   @override
   String get searchRecentsTitle => 'Recents';
@@ -164,15 +164,15 @@ class AppLocalizationsHa extends AppLocalizations {
   }
 
   @override
-  String get adjustPickupTitle => 'Adjust pickup';
+  String get adjustPickupTitle => 'Gyara wurin ɗauka';
 
   @override
   String adjustPickupBoardingAt(String stageName) {
-    return 'Boarding at: $stageName';
+    return 'Hawa a: $stageName';
   }
 
   @override
-  String get adjustPickupConfirm => 'Confirm location';
+  String get adjustPickupConfirm => 'Tabbatar da wuri';
 
   @override
   String get tripsStubBody => 'Your trips will appear here.';
@@ -224,7 +224,7 @@ class AppLocalizationsHa extends AppLocalizations {
   }
 
   @override
-  String get hailSearchTitle => 'Where are you going?';
+  String get hailSearchTitle => 'Ina za ka?';
 
   @override
   String get requestUndoMessage => 'Requesting…';
@@ -263,17 +263,18 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String requestingCountdown(int seconds) {
-    return '${seconds}s remaining';
+    return 'Saura daƙiƙa $seconds';
   }
 
   @override
-  String get requestingFindingAnother => 'Finding another vehicle…';
+  String get requestingFindingAnother => 'Muna neman wata mota…';
 
   @override
-  String get requestingCancel => 'Cancel';
+  String get requestingCancel => 'Soke';
 
   @override
-  String get requestingExpired => 'No driver responded — see other options';
+  String get requestingExpired =>
+      'Babu direban da ya amsa — duba wasu zaɓuɓɓuka';
 
   @override
   String get requestingAcceptedPlaceholder =>
@@ -361,7 +362,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get transferWalkLoading => 'Loading walking directions…';
 
   @override
-  String get wayfindingTitle => 'Walking directions';
+  String get wayfindingTitle => 'Kwatance tafiya da ƙafa';
 
   @override
   String get wayfindingModeText => 'Text';
@@ -390,37 +391,37 @@ class AppLocalizationsHa extends AppLocalizations {
   }
 
   @override
-  String get wayfindingNoSteps => 'No steps available';
+  String get wayfindingNoSteps => 'Babu matakai';
 
   @override
   String meetVehicleArrivingIn(int minutes) {
-    return 'Arriving in ~$minutes min';
+    return 'Zai iso cikin ~minti $minutes';
   }
 
   @override
   String meetVehicleWalkTo(int minutes, String park) {
-    return 'Walk $minutes min to $park';
+    return 'Yi tafiyar minti $minutes zuwa $park';
   }
 
   @override
   String meetVehicleNaMeHint(String label) {
-    return 'Show this to your driver — $label';
+    return 'Nuna wa direbanka wannan — $label';
   }
 
   @override
-  String get meetVehicleDriverSignalLost => 'Driver signal lost';
+  String get meetVehicleDriverSignalLost => 'Siginar direba ta ɓace';
 
   @override
-  String get meetVehicleLivePaused => 'Live updates paused';
+  String get meetVehicleLivePaused => 'An dakatar da sabuntawa kai tsaye';
 
   @override
-  String get meetVehicleShare => 'Share trip';
+  String get meetVehicleShare => 'Raba tafiya';
 
   @override
-  String get meetVehicleCancel => 'Cancel';
+  String get meetVehicleCancel => 'Soke';
 
   @override
-  String get meetVehicleBoarded => 'I\'ve boarded';
+  String get meetVehicleBoarded => 'Na shiga';
 
   @override
   String activeTripStatus(int minutes, String fare) {
@@ -428,13 +429,13 @@ class AppLocalizationsHa extends AppLocalizations {
   }
 
   @override
-  String get activeTripExtend => 'Extend';
+  String get activeTripExtend => 'Ƙara nisa';
 
   @override
-  String get activeTripShare => 'Share';
+  String get activeTripShare => 'Raba';
 
   @override
-  String get activeTripReport => 'Report';
+  String get activeTripReport => 'Kai rahoto';
 
   @override
   String get sharePlaceholder => 'Share trip — coming in Phase 5';
@@ -449,32 +450,32 @@ class AppLocalizationsHa extends AppLocalizations {
   String get reportPlaceholder => 'Report incident — coming in Phase 5';
 
   @override
-  String get tripCompleteTitle => 'Trip complete';
+  String get tripCompleteTitle => 'An kammala tafiya';
 
   @override
   String tripCompletePaidQuestion(String amount) {
-    return 'Did you pay $amount?';
+    return 'Ka biya $amount?';
   }
 
   @override
   String tripCompletePayQuestion(String amount, String name) {
-    return 'Pay $amount to $name';
+    return 'Biya $name $amount';
   }
 
   @override
-  String get tripCompletePaidCash => 'Paid cash';
+  String get tripCompletePaidCash => 'Na biya da kuɗin hannu';
 
   @override
-  String get tripCompleteTier3Question => 'What did you pay?';
+  String get tripCompleteTier3Question => 'Nawa ka biya?';
 
   @override
-  String get tripCompleteYes => 'Yes';
+  String get tripCompleteYes => 'Eh';
 
   @override
-  String get tripCompleteDifferent => 'Different amount';
+  String get tripCompleteDifferent => 'Wani adadi daban';
 
   @override
-  String get tripCompleteDifferentPrompt => 'Pick the amount you paid';
+  String get tripCompleteDifferentPrompt => 'Zaɓi adadin da ka biya';
 
   @override
   String get tripCompleteRateTitle => 'Rate your trip';
@@ -512,7 +513,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String payDriverCta(String amount) {
-    return 'Pay $amount';
+    return 'Biya $amount';
   }
 
   @override
@@ -635,7 +636,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get payMethodsTransferDefault => 'Pay with transfer by default';
 
   @override
-  String get activeTripScan => 'Scan';
+  String get activeTripScan => 'Duba';
 
   @override
   String get tripsEmpty => 'No completed trips yet.';
@@ -965,7 +966,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String freeSeatCount(int count) {
-    return '$count free';
+    return '$count babu kowa';
   }
 
   @override
@@ -999,13 +1000,13 @@ class AppLocalizationsHa extends AppLocalizations {
   String get seatBlocked => 'blocked';
 
   @override
-  String get seatDriver => 'driver';
+  String get seatDriver => 'direba';
 
   @override
   String get seatLuggage => 'luggage';
 
   @override
-  String get voiceBookingHint => 'Say it, for example Wuse to Berger';
+  String get voiceBookingHint => 'Faɗe shi, misali Wuse zuwa Berger';
 
   @override
   String get textMapTitle => 'Vehicles nearby';
@@ -1014,13 +1015,13 @@ class AppLocalizationsHa extends AppLocalizations {
   String get textMapEmpty => 'No vehicles in this direction yet';
 
   @override
-  String get plateCheck => 'I see this plate';
+  String get plateCheck => 'Na ga wannan lamba';
 
   @override
-  String get plateMatches => 'Plate matches';
+  String get plateMatches => 'Lambar ta dace';
 
   @override
-  String get plateScan => 'Scan plate';
+  String get plateScan => 'Duba lamba';
 
   @override
   String get plateScanHint => 'Fit the plate in the frame';
@@ -1046,7 +1047,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get plateScanContinue => 'Continue';
 
   @override
-  String get guardianTitle => 'Guardian';
+  String get guardianTitle => 'Mai tsaro';
 
   @override
   String get guardianEnabled => 'Check in on this trip';
@@ -1067,24 +1068,23 @@ class AppLocalizationsHa extends AppLocalizations {
   String get guardianSave => 'Save';
 
   @override
-  String get guardianOk => 'I\'m OK';
+  String get guardianOk => 'Ina lafiya';
 
   @override
   String get guardianOffRouteBody =>
-      'You are farther from the vehicle than you set.';
+      'Ka yi nisa da motar fiye da yadda ka saita.';
 
   @override
-  String get guardianLongStopBody =>
-      'The vehicle has been still longer than you set.';
+  String get guardianLongStopBody => 'Motar ta tsaya fiye da yadda ka saita.';
 
   @override
-  String get guardianCheckInBody => 'Time for the check-in you set.';
+  String get guardianCheckInBody => 'Lokacin dubawa da ka saita ya yi.';
 
   @override
-  String get guardianMissedBody => 'The check-in is still open.';
+  String get guardianMissedBody => 'Har yanzu dubawar a buɗe take.';
 
   @override
-  String get guardianSafeWordHint => 'Say your word';
+  String get guardianSafeWordHint => 'Faɗi kalmarka';
 
   @override
   String get tripMessagesTitle => 'Message the driver';
@@ -1291,4 +1291,272 @@ class AppLocalizationsHa extends AppLocalizations {
   String searchPopularTitle(String city) {
     return 'Shahararru a $city';
   }
+
+  @override
+  String get tripEtaWorkingOut => 'Muna lissafin lokacin isowarka';
+
+  @override
+  String tripEtaLastTo(String place) {
+    return 'Kiyasin karshe zuwa $place';
+  }
+
+  @override
+  String tripEtaArrivingAt(String place) {
+    return 'Za ka isa $place';
+  }
+
+  @override
+  String get tripEtaPaused => 'An dakatar da lokutan kai tsaye';
+
+  @override
+  String get tripRetry => 'Sake gwadawa';
+
+  @override
+  String tripEtaTraffic(int minutes) {
+    return 'Akwai cunkoso a gaba. Kusan minti $minutes a makara.';
+  }
+
+  @override
+  String get tripMinUnit => 'minti';
+
+  @override
+  String tripAboutClock(String time) {
+    return 'Kusan $time';
+  }
+
+  @override
+  String tripClockRange(String first, String last) {
+    return '$first–$last';
+  }
+
+  @override
+  String tripMinutesLabel(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'minti $minutes',
+      one: 'minti 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMinutesRangeLabel(int low, int high) {
+    return 'Minti $low zuwa $high';
+  }
+
+  @override
+  String get tripEmergency => 'Gaggawa';
+
+  @override
+  String get tripSos => 'SOS';
+
+  @override
+  String get tripCall => 'Kira';
+
+  @override
+  String tripCallName(String name) {
+    return 'Kira $name';
+  }
+
+  @override
+  String get tripMessage => 'Saƙo';
+
+  @override
+  String tripArrivesIn(String name) {
+    return '$name zai iso cikin';
+  }
+
+  @override
+  String tripIsHere(String name) {
+    return '$name ya iso';
+  }
+
+  @override
+  String get tripDriverHere => 'Direba ya iso';
+
+  @override
+  String get tripMeetAtPickup => 'Haɗu a wurin ɗauka';
+
+  @override
+  String tripCountdownLabel(int minutes, int seconds) {
+    return 'Minti $minutes da daƙiƙa $seconds';
+  }
+
+  @override
+  String get tripPinTitle => 'PIN ɗin tafiya';
+
+  @override
+  String get tripPinSay => 'Faɗe shi a ƙofa';
+
+  @override
+  String get tripPinNew => 'Sami sabon PIN';
+
+  @override
+  String get tripPinTooSoon =>
+      'Yanzu ka sami sabon PIN. Sake gwadawa nan da ɗan lokaci.';
+
+  @override
+  String get tripPinFailed => 'Ba a sami sabon PIN ba. Sake gwadawa.';
+
+  @override
+  String get tripMatchedTitle => 'An haɗa ku';
+
+  @override
+  String tripMatchedBody(String name) {
+    return 'Shiga. $name zai fara tafiyar.';
+  }
+
+  @override
+  String get receiptTitle => 'Rasiti';
+
+  @override
+  String get receiptNotReady => 'Rasiti bai shirya ba';
+
+  @override
+  String get receiptNotReadyBody =>
+      'Har yanzu yana zuwa. Zai kuma kasance a cikin Tafiye-tafiye.';
+
+  @override
+  String get receiptTryAgain => 'Sake gwadawa';
+
+  @override
+  String get receiptDone => 'An gama';
+
+  @override
+  String receiptHowWas(String name) {
+    return 'Yaya $name ya kasance?';
+  }
+
+  @override
+  String get receiptFare => 'Kuɗin mota';
+
+  @override
+  String get receiptTotal => 'Jimilla';
+
+  @override
+  String get receiptCashPaid => 'Kuɗin hannu da aka biya';
+
+  @override
+  String get receiptChangeToWallet => 'Saka canji a walat';
+
+  @override
+  String receiptWalletNow(String amount) {
+    return 'Walat yanzu $amount';
+  }
+
+  @override
+  String get receiptLoadSurcharge => 'Ƙarin kuɗin kaya';
+
+  @override
+  String get receiptAlongFee => 'Kuɗin Along';
+
+  @override
+  String get receiptYourTrip => 'Tafiyarka';
+
+  @override
+  String receiptRoute(String from, String to) {
+    return '$from zuwa $to';
+  }
+
+  @override
+  String receiptToday(String time) {
+    return 'Yau, $time';
+  }
+
+  @override
+  String get receiptYourDriver => 'diretanka';
+
+  @override
+  String get ratingTagSafeDriving => 'Tuƙi lafiya';
+
+  @override
+  String get ratingTagFairFare => 'Kuɗi mai adalci';
+
+  @override
+  String get ratingTagCleanVehicle => 'Mota mai tsabta';
+
+  @override
+  String get ratingTagPolite => 'Mai ladabi';
+
+  @override
+  String get ratingTagOnTime => 'A kan lokaci';
+
+  @override
+  String meetVehicleArrivingAt(String time) {
+    return 'Yana zuwa · $time';
+  }
+
+  @override
+  String get meetVehicleCalculating => 'Muna lissafin lokacin isowa';
+
+  @override
+  String meetVehicleDriverStats(String rating, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'tafiye-tafiye $count',
+      one: 'tafiya 1',
+    );
+    return '★ $rating · $_temp0';
+  }
+
+  @override
+  String meetVehicleMeetAt(String place) {
+    return 'Haɗu a $place';
+  }
+
+  @override
+  String requestingFinding(String mode) {
+    return 'Muna neman $mode ɗinka';
+  }
+
+  @override
+  String requestingSeenNear(String place) {
+    return 'Direbobin kusa da $place suna ganin buƙatarka';
+  }
+
+  @override
+  String get requestingFare => 'Kuɗin mota';
+
+  @override
+  String get adjustPickupPinLabel => 'Alamar da ka sanya';
+
+  @override
+  String get adjustPickupHint =>
+      'Taɓa taswira ko tasha a ƙasa don matsar da alamar';
+
+  @override
+  String get adjustPickupNearby => 'Tashoshi na kusa';
+
+  @override
+  String get tripCompleteFareLabel => 'Kuɗin mota';
+
+  @override
+  String tripCompleteRoute(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get tripEtaCalculating => 'Ana lissafi…';
+
+  @override
+  String get activeTripCall => 'Kira';
+
+  @override
+  String get activeTripSos => 'Riƙe don SOS';
+
+  @override
+  String get activeTripNaMe => 'Nuna Na Me';
+
+  @override
+  String get tripCompleteSettleQuestion => 'Ka biya wannan kuɗin?';
+
+  @override
+  String tripCompletePayHint(String driver) {
+    return 'Biya $driver a manhaja, ko ka faɗa mana ka biya da tsabar kuɗi.';
+  }
+
+  @override
+  String get meetVehicleNaMeShow => 'Ɗaga shi don direbanka ya gane ka';
 }
