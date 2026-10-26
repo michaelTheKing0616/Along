@@ -1228,4 +1228,54 @@ class AppLocalizationsIg extends AppLocalizations {
   String tripOptionsSummary(int minutes, String distance) {
     return 'nkeji $minutes · $distance';
   }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'ije ụkwụ nkeji $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~nchere nkeji $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'ozugbo';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'mgbanwe 1 na $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'mgbanwe $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Ụlọ';
+
+  @override
+  String get searchShortcutWork => 'Ọrụ';
+
+  @override
+  String get searchShortcutAdd => 'Tinye';
+
+  @override
+  String get searchShortcutPinDetail => 'Na maapụ';
 }

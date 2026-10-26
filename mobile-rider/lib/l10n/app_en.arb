@@ -1328,5 +1328,23 @@
         "type": "String"
       }
     }
-  }
+  },
+  "tripMetaWalk": "{minutes, plural, =1{1 min walk} other{{minutes} min walk}}",
+  "@tripMetaWalk": {"description": "tripMetaWalk", "placeholders": {"minutes": {"type": "int"}}},
+  "tripMetaWait": "{minutes, plural, =1{~1 min wait} other{~{minutes} min wait}}",
+  "@tripMetaWait": {"description": "tripMetaWait", "placeholders": {"minutes": {"type": "int"}}},
+  "tripMetaDirect": "direct",
+  "@tripMetaDirect": {"description": "tripMetaDirect"},
+  "tripMetaTransferAt": "1 transfer at {park}",
+  "@tripMetaTransferAt": {"description": "tripMetaTransferAt", "placeholders": {"park": {"type": "String"}}},
+  "tripMetaTransfers": "{count, plural, =1{1 transfer} other{{count} transfers}}",
+  "@tripMetaTransfers": {"description": "tripMetaTransfers", "placeholders": {"count": {"type": "int"}}},
+  "searchShortcutHome": "Home",
+  "@searchShortcutHome": {"description": "searchShortcutHome"},
+  "searchShortcutWork": "Work",
+  "@searchShortcutWork": {"description": "searchShortcutWork"},
+  "searchShortcutAdd": "Add",
+  "@searchShortcutAdd": {"description": "searchShortcutAdd"},
+  "searchShortcutPinDetail": "On the map",
+  "@searchShortcutPinDetail": {"description": "searchShortcutPinDetail"}
 }

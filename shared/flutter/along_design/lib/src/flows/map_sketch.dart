@@ -163,7 +163,10 @@ class AlongMapButton extends StatelessWidget {
         message: tooltip ?? '',
         child: DecoratedBox(
           decoration: ShapeDecoration(
-            shadows: AlongElevation.float(palette.ink),
+            // Dark mode lifts by tone; a light-ink shadow halos on the map.
+            shadows: palette.brightness == Brightness.dark
+                ? const <BoxShadow>[]
+                : AlongElevation.float(palette.ink),
             shape: AlongCraft.border(AlongRadius.control.x),
           ),
           child: AlongFrost(

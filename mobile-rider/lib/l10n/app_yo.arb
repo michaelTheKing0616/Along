@@ -29,5 +29,14 @@
   "distanceKm": "km {km}",
   "distanceM": "m {meters}",
   "searchResultDetail": "{area} · {distance} sí ibí",
-  "tripOptionsSummary": "ìṣẹ́jú {minutes} · {distance}"
+  "tripOptionsSummary": "ìṣẹ́jú {minutes} · {distance}",
+  "tripMetaWalk": "{minutes, plural, other{ìrìn ìṣẹ́jú {minutes}}}",
+  "tripMetaWait": "{minutes, plural, other{~ìdúró ìṣẹ́jú {minutes}}}",
+  "tripMetaDirect": "tààrà",
+  "tripMetaTransferAt": "ìyípadà 1 ní {park}",
+  "tripMetaTransfers": "{count, plural, other{ìyípadà {count}}}",
+  "searchShortcutHome": "Ilé",
+  "searchShortcutWork": "Iṣẹ́",
+  "searchShortcutAdd": "Fi kún",
+  "searchShortcutPinDetail": "Lórí máàpù"
 }

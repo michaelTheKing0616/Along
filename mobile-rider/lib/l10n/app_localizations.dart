@@ -2302,6 +2302,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{minutes} min · {distance}'**
   String tripOptionsSummary(int minutes, String distance);
+
+  /// tripMetaWalk
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 min walk} other{{minutes} min walk}}'**
+  String tripMetaWalk(int minutes);
+
+  /// tripMetaWait
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{~1 min wait} other{~{minutes} min wait}}'**
+  String tripMetaWait(int minutes);
+
+  /// tripMetaDirect
+  ///
+  /// In en, this message translates to:
+  /// **'direct'**
+  String get tripMetaDirect;
+
+  /// tripMetaTransferAt
+  ///
+  /// In en, this message translates to:
+  /// **'1 transfer at {park}'**
+  String tripMetaTransferAt(String park);
+
+  /// tripMetaTransfers
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 transfer} other{{count} transfers}}'**
+  String tripMetaTransfers(int count);
+
+  /// searchShortcutHome
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get searchShortcutHome;
+
+  /// searchShortcutWork
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get searchShortcutWork;
+
+  /// searchShortcutAdd
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get searchShortcutAdd;
+
+  /// searchShortcutPinDetail
+  ///
+  /// In en, this message translates to:
+  /// **'On the map'**
+  String get searchShortcutPinDetail;
 }
 
 class _AppLocalizationsDelegate

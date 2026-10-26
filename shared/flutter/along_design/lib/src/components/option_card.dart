@@ -38,6 +38,7 @@ class OptionCard extends StatelessWidget {
     this.onRequest,
     this.requestLabel,
     this.recommendedLabel = 'Recommended',
+    this.recommendedBand = true,
     this.requestLabelFor,
   });
 
@@ -61,6 +62,10 @@ class OptionCard extends StatelessWidget {
 
   /// Band text on the recommended card. Apps pass their translation.
   final String recommendedLabel;
+
+  /// False keeps the accent outline but drops the band, for when the list
+  /// is already sorted by Recommended and the band would repeat the chip.
+  final bool recommendedBand;
 
   /// Builds the request label from the formatted fare, for translations.
   final String Function(String fare)? requestLabelFor;
@@ -89,7 +94,7 @@ class OptionCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (recommended)
+                if (recommended && recommendedBand)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AlongSpace.s16,

@@ -1228,4 +1228,54 @@ class AppLocalizationsYo extends AppLocalizations {
   String tripOptionsSummary(int minutes, String distance) {
     return 'ìṣẹ́jú $minutes · $distance';
   }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'ìrìn ìṣẹ́jú $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~ìdúró ìṣẹ́jú $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'tààrà';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'ìyípadà 1 ní $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ìyípadà $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Ilé';
+
+  @override
+  String get searchShortcutWork => 'Iṣẹ́';
+
+  @override
+  String get searchShortcutAdd => 'Fi kún';
+
+  @override
+  String get searchShortcutPinDetail => 'Lórí máàpù';
 }

@@ -68,7 +68,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           // card sit above the fold even at 1.3x text. With one option the
           // map grows into the space a second card would use.
           final few = state.sortedCandidates.length <= 1;
-          final mapHeight = box.maxHeight * (few ? 0.42 : 0.34);
+          final mapHeight = box.maxHeight * (few ? 0.5 : 0.34);
           final session = state.session;
           final recommendedId = state
               .plan
@@ -102,6 +102,16 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                   from: lead?.legs.firstOrNull?.boardName,
                   to: session?.destinationLabel,
                   summary: summary,
+                  pickup: session == null
+                      ? null
+                      : Offset(session.origin.lng, session.origin.lat),
+                  drop: session == null
+                      ? null
+                      : Offset(
+                          session.destination.lng,
+                          session.destination.lat,
+                        ),
+                  topInset: MediaQuery.paddingOf(context).top + 64,
                   bottomInset: AlongRadius.dialog.x,
                 ),
               ),
@@ -311,6 +321,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                 l10n.tripOptionsHeading,
                 style: AlongType.heading(AlongPalette.of(context)),
               ),
+              // Sorting one option is noise; chips appear from two.
+              if ((state.plan?.candidates.length ?? 0) > 1) ...[
               const SizedBox(height: AlongSpace.s12),
               SortChips(
                 labels: {
@@ -323,6 +335,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                 onSelected: (option) =>
                     controller.setSort(_mapSortOption(option)),
               ),
+              ],
             ],
           ),
         ),
@@ -347,6 +360,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                     ? MultiLegOptionCard(
                         candidate: candidate,
                         recommended: candidate.candidateId == recommendedId,
+                        recommendedBand:
+                            state.sort != SortCriterion.recommended,
                         expanded:
                             state.expandedCandidateId == candidate.candidateId,
                         onToggleExpanded: () => ref
@@ -407,11 +422,12 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           key: Key('option_card_${candidate.candidateId}'),
           variant: OptionCardVariant.direct,
           recommended: recommended,
+          recommendedBand: state.sort != SortCriterion.recommended,
           mode: OptionCardMapper.mapMode(leg.mode),
           boardLabel: leg.boardName,
           alightLabel: leg.alightName,
-          meta: OptionCardMapper.metaForCandidate(candidate),
-          fareNaira: candidate.totalFareMinorUnits,
+          meta: OptionCardMapper.metaForCandidate(candidate, l10n),
+          fareNaira: candidate.totalFareMinorUnits ~/ 100,
           tier: OptionCardMapper.mapFareTier(
             leg.fare.tier,
             unconfirmed: leg.fare.unconfirmed,

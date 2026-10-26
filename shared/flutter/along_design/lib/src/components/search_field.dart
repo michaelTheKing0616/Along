@@ -18,6 +18,7 @@ class SearchField extends StatelessWidget {
     this.controller,
     this.onChanged,
     this.onRecentsTap,
+    this.autofocus = false,
   });
 
   final SearchFieldVariant variant;
@@ -25,6 +26,9 @@ class SearchField extends StatelessWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onRecentsTap;
+
+  /// Opens the keyboard on arrival, so search is one tap from home.
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +55,7 @@ class SearchField extends StatelessWidget {
             const SizedBox(width: AlongSpace.s8),
             Expanded(
               child: TextField(
+                autofocus: autofocus,
                 controller: controller,
                 onChanged: onChanged,
                 style: AlongText.body.copyWith(color: palette.ink),

@@ -29,5 +29,14 @@
   "distanceKm": "km {km}",
   "distanceM": "m {meters}",
   "searchResultDetail": "{area} · nisan {distance}",
-  "tripOptionsSummary": "minti {minutes} · {distance}"
+  "tripOptionsSummary": "minti {minutes} · {distance}",
+  "tripMetaWalk": "{minutes, plural, other{tafiya minti {minutes}}}",
+  "tripMetaWait": "{minutes, plural, other{~jira minti {minutes}}}",
+  "tripMetaDirect": "kai tsaye",
+  "tripMetaTransferAt": "canji 1 a {park}",
+  "tripMetaTransfers": "{count, plural, other{canji {count}}}",
+  "searchShortcutHome": "Gida",
+  "searchShortcutWork": "Aiki",
+  "searchShortcutAdd": "Ƙara",
+  "searchShortcutPinDetail": "A taswira"
 }

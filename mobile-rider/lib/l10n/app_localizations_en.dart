@@ -1228,4 +1228,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String tripOptionsSummary(int minutes, String distance) {
     return '$minutes min · $distance';
   }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min walk',
+      one: '1 min walk',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~$minutes min wait',
+      one: '~1 min wait',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'direct';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return '1 transfer at $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count transfers',
+      one: '1 transfer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Home';
+
+  @override
+  String get searchShortcutWork => 'Work';
+
+  @override
+  String get searchShortcutAdd => 'Add';
+
+  @override
+  String get searchShortcutPinDetail => 'On the map';
 }

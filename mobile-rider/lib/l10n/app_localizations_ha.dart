@@ -1228,4 +1228,54 @@ class AppLocalizationsHa extends AppLocalizations {
   String tripOptionsSummary(int minutes, String distance) {
     return 'minti $minutes · $distance';
   }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'tafiya minti $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~jira minti $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'kai tsaye';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'canji 1 a $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'canji $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Gida';
+
+  @override
+  String get searchShortcutWork => 'Aiki';
+
+  @override
+  String get searchShortcutAdd => 'Ƙara';
+
+  @override
+  String get searchShortcutPinDetail => 'A taswira';
 }

@@ -169,17 +169,44 @@ class _DestinationSearchPanelState
     final body = <Widget>[
       if (widget.onChooseOnMap != null && !searching) ...[
         const SizedBox(height: AlongSpace.s12),
-        card([
-          AlongPlaceRow(
-            place: AlongPlace(
-              key: const Key('search_choose_on_map'),
-              icon: AlongIcons.map,
-              title: l10n.homeChooseOnMap,
-              detail: l10n.searchChooseOnMapDetail,
-              onTap: widget.onChooseOnMap,
-            ),
+        // Three one-tap starts. Home and Work are set with a pin until the
+        // rider saves them, so every tile still leads somewhere.
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _ShortcutTile(
+                  key: const Key('search_shortcut_home'),
+                  icon: AlongIcons.home,
+                  title: l10n.searchShortcutHome,
+                  detail: l10n.searchShortcutAdd,
+                  onTap: widget.onChooseOnMap!,
+                ),
+              ),
+              const SizedBox(width: AlongSpace.s8),
+              Expanded(
+                child: _ShortcutTile(
+                  key: const Key('search_shortcut_work'),
+                  icon: AlongIcons.work,
+                  title: l10n.searchShortcutWork,
+                  detail: l10n.searchShortcutAdd,
+                  onTap: widget.onChooseOnMap!,
+                ),
+              ),
+              const SizedBox(width: AlongSpace.s8),
+              Expanded(
+                child: _ShortcutTile(
+                  key: const Key('search_choose_on_map'),
+                  icon: AlongIcons.mapPin,
+                  title: l10n.searchChooseOnMapDetail,
+                  detail: l10n.searchShortcutPinDetail,
+                  onTap: widget.onChooseOnMap!,
+                ),
+              ),
+            ],
           ),
-        ]),
+        ),
       ],
       if (widget.extra != null && !searching) ...[
         const SizedBox(height: AlongSpace.s8),
@@ -234,6 +261,7 @@ class _DestinationSearchPanelState
       variant: SearchFieldVariant.full,
       hint: widget.hint ?? l10n.homeSearchHint,
       controller: _controller,
+      autofocus: !widget.embedded,
       onChanged: ref.read(searchControllerProvider.notifier).onQueryChanged,
     );
 
@@ -250,11 +278,77 @@ class _DestinationSearchPanelState
         field,
         Expanded(
           child: ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             padding: const EdgeInsets.only(bottom: AlongSpace.s16),
             children: body,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ShortcutTile extends StatelessWidget {
+  const _ShortcutTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.detail,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String detail;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
+    return Semantics(
+      button: true,
+      label: '$title, $detail',
+      excludeSemantics: true,
+      child: AlongPressable(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            AlongHaptics.tick(context);
+            onTap();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(AlongSpace.s12),
+            decoration: AlongCraft.surface(palette, radius: AlongRadius.button.x),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: AlongCraft.compactFill(palette.recessed, 40),
+                  child: AlongIcon(icon, size: 20, color: palette.ink),
+                ),
+                const SizedBox(height: AlongSpace.s8),
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AlongType.label(
+                    palette,
+                  ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  detail,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AlongType.caption(palette),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

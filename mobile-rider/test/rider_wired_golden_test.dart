@@ -155,6 +155,22 @@ void main() {
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/rider_search_$name.png'),
       );
+      // Keyboard up (the field autofocuses): shortcuts stay above it and
+      // the list scrolls instead of overflowing.
+      expect(
+        tester.testTextInput.isVisible || tester.testTextInput.hasAnyClients,
+        isTrue,
+      );
+      tester.view.viewInsets = FakeViewPadding(
+        bottom: 300 * tester.view.devicePixelRatio,
+      );
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(tester.takeException(), isNull);
+      final pin = tester.getRect(find.byKey(const Key('search_choose_on_map')));
+      expect(pin.bottom, lessThan(800 - 300));
+      tester.view.resetViewInsets();
+      await tester.pump(const Duration(milliseconds: 300));
       // Typing swaps suggestions for typed results with place-type icons.
       await tester.enterText(find.byType(TextField).first, 'Wu');
       final first = find.byKey(const Key('result_Wuse Market'));
@@ -218,6 +234,54 @@ void main() {
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/rider_trip_options_$name.png'),
+      );
+    });
+
+    testWidgets('rider trip options three $name', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final fake = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        planTripResponse: sampleThreeOptionPlanTripResponse(),
+      );
+      final container = ProviderContainer(
+        overrides: buildProviderOverrides(
+          config: config(),
+          supabase: fake,
+          ambientChannel: FakeAmbientChannel(),
+          database: AlongDatabase.memory(),
+          recentPlacesStore: FakeRecentPlacesStore(),
+        ),
+      );
+      container
+          .read(tripPlanSessionProvider.notifier)
+          .setSession(
+            const TripPlanSession(
+              origin: GeoPoint(lat: 9.0765, lng: 7.3986),
+              destination: GeoPoint(lat: 9.08, lng: 7.45),
+              destinationLabel: 'Area 1 Park',
+            ),
+          );
+      addTearDown(() {
+        fake.dispose();
+        container.dispose();
+      });
+      await tester.pumpWidget(
+        app(container, const TripOptionsScreen(), brightness, scale),
+      );
+      await tester.pump();
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      final card = find.byKey(const Key('option_card_cand-keke'));
+      for (var i = 0; i < 40 && card.evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(card, findsOneWidget);
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/rider_trip_options_three_$name.png'),
       );
     });
   }

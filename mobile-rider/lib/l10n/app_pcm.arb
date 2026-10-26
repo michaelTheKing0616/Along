@@ -29,5 +29,14 @@
   "distanceKm": "{km} km",
   "distanceM": "{meters} m",
   "searchResultDetail": "{area} · {distance} from here",
-  "tripOptionsSummary": "{minutes} min · {distance}"
+  "tripOptionsSummary": "{minutes} min · {distance}",
+  "tripMetaWalk": "{minutes, plural, other{{minutes} min waka}}",
+  "tripMetaWait": "{minutes, plural, other{~{minutes} min to wait}}",
+  "tripMetaDirect": "straight",
+  "tripMetaTransferAt": "change motor for {park}",
+  "tripMetaTransfers": "{count, plural, other{{count} change}}",
+  "searchShortcutHome": "House",
+  "searchShortcutWork": "Work",
+  "searchShortcutAdd": "Add am",
+  "searchShortcutPinDetail": "For map"
 }

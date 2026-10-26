@@ -1228,4 +1228,54 @@ class AppLocalizationsPcm extends AppLocalizations {
   String tripOptionsSummary(int minutes, String distance) {
     return '$minutes min · $distance';
   }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min waka',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~$minutes min to wait',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'straight';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'change motor for $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count change',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'House';
+
+  @override
+  String get searchShortcutWork => 'Work';
+
+  @override
+  String get searchShortcutAdd => 'Add am';
+
+  @override
+  String get searchShortcutPinDetail => 'For map';
 }

@@ -11,6 +11,7 @@ class MultiLegOptionCard extends StatelessWidget {
     super.key,
     required this.candidate,
     required this.recommended,
+    this.recommendedBand = true,
     required this.expanded,
     required this.onToggleExpanded,
     required this.onRequestLeg,
@@ -21,6 +22,7 @@ class MultiLegOptionCard extends StatelessWidget {
 
   final PlanCandidate candidate;
   final bool recommended;
+  final bool recommendedBand;
   final bool expanded;
   final VoidCallback onToggleExpanded;
   final void Function(int legIndex) onRequestLeg;
@@ -40,14 +42,15 @@ class MultiLegOptionCard extends StatelessWidget {
           key: Key('option_card_${candidate.candidateId}'),
           variant: OptionCardVariant.multiLeg,
           recommended: recommended,
+          recommendedBand: recommendedBand,
           mode: OptionCardMapper.mapMode(firstLeg.mode),
           secondaryMode: candidate.legs.length > 1
               ? OptionCardMapper.mapMode(candidate.legs[1].mode)
               : null,
           boardLabel: firstLeg.boardName,
           alightLabel: candidate.legs.last.alightName,
-          meta: OptionCardMapper.metaForCandidate(candidate),
-          fareNaira: candidate.totalFareMinorUnits,
+          meta: OptionCardMapper.metaForCandidate(candidate, l10n),
+          fareNaira: candidate.totalFareMinorUnits ~/ 100,
           tier: OptionCardMapper.mapFareTier(
             firstLeg.fare.tier,
             unconfirmed: firstLeg.fare.unconfirmed,
