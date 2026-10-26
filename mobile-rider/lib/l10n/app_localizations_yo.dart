@@ -1521,6 +1521,65 @@ class AppLocalizationsYo extends AppLocalizations {
       'Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà';
 
   @override
+  String get scanToPayHint => 'Dojú kámẹ́rà kọ koodu Along awakọ̀';
+
+  @override
+  String get scanTorch => 'Iná tọ́ọ̀ṣì';
+
+  @override
+  String get payMethodsSubtitle => 'Yan bí o ṣe ń sanwó fún awakọ̀';
+
+  @override
+  String get payMethodsSectionDefault => 'Sanwó fún awakọ̀ pẹ̀lú';
+
+  @override
+  String get payMethodsTransferHint =>
+      'Sanwó láti inú app báńkì rẹ, kò sí kádì';
+
+  @override
+  String get payMethodsCards => 'Àwọn kádì tí a fipamọ́';
+
+  @override
+  String get payMethodsCardsEmpty => 'Kò sí kádì tí a fipamọ́ síbẹ̀';
+
+  @override
+  String get payMethodsSecure =>
+      'Orúkọ kádì àti nọ́mbà 4 tó kẹ́yìn nìkan la ń tọ́jú';
+
+  @override
+  String wayfindingTo(String place) {
+    return 'Sí $place';
+  }
+
+  @override
+  String wayfindingSummary(String distance, int minutes) {
+    return '$distance · ìrìn ìṣẹ́jú $minutes';
+  }
+
+  @override
+  String get wayfindingAudioPlaying => 'Ohùn ń ṣiṣẹ́';
+
+  @override
+  String get wayfindingNowPlaying => 'Ń ṣiṣẹ́ báyìí';
+
+  @override
+  String get wayfindingYouAreHere => 'O wà níbí';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Ìgbésẹ̀ $step nínú $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'Mo ti dé';
+
+  @override
+  String get scanFitHint => 'Fi koodu sí àárín àwọn igun';
+
+  @override
+  String get scanFound => 'A ti rí koodu';
+
+  @override
   String get requestingNextTitle => 'Ohun tó kàn';
 
   @override
@@ -1575,4 +1634,11 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get tripsEmptyCta => 'Ṣètò ìrìnàjò';
+
+  @override
+  String get scanCodeWhereTitle => 'Ibi tí o ti máa rí i';
+
+  @override
+  String get scanCodeWhereBody =>
+      'Kóòdù oní lẹ́tà 8 wà lábẹ́ QR lórí sítíkà awakọ̀, tàbí ní kí ó ṣí My QR.';
 }

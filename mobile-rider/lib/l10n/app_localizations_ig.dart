@@ -1520,6 +1520,66 @@ class AppLocalizationsIg extends AppLocalizations {
       'Onye ọkwọ ụgbọ gị ga-akwado tupu ihe ọ bụla agbanwee';
 
   @override
+  String get scanToPayHint =>
+      'Tụgharịa kamera gị n\'koodu Along nke onye ọkwọ ụgbọ';
+
+  @override
+  String get scanTorch => 'Ọkụ tọọchị';
+
+  @override
+  String get payMethodsSubtitle => 'Họrọ otú ị ga-esi kwụọ ndị ọkwọ ụgbọ ụgwọ';
+
+  @override
+  String get payMethodsSectionDefault => 'Kwụọ ndị ọkwọ ụgbọ ụgwọ site na';
+
+  @override
+  String get payMethodsTransferHint =>
+      'Kwụọ site na ngwa ụlọ akụ gị, achọghị kaadị';
+
+  @override
+  String get payMethodsCards => 'Kaadị echekwara';
+
+  @override
+  String get payMethodsCardsEmpty => 'Enweghị kaadị echekwara ugbu a';
+
+  @override
+  String get payMethodsSecure =>
+      'Anyị na-edebe naanị aha kaadị na ọnụọgụ 4 ikpeazụ';
+
+  @override
+  String wayfindingTo(String place) {
+    return 'Gaa $place';
+  }
+
+  @override
+  String wayfindingSummary(String distance, int minutes) {
+    return '$distance · ije nkeji $minutes';
+  }
+
+  @override
+  String get wayfindingAudioPlaying => 'Ụda na-akpọ';
+
+  @override
+  String get wayfindingNowPlaying => 'Na-akpọ ugbu a';
+
+  @override
+  String get wayfindingYouAreHere => 'Ị nọ ebe a';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Nzọụkwụ $step n\'ime $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'Abịarutela m';
+
+  @override
+  String get scanFitHint => 'Tinye koodu n\'ime akụkụ ndị a';
+
+  @override
+  String get scanFound => 'Achọtala koodu';
+
+  @override
   String get requestingNextTitle => 'Ihe ga-eme ọzọ';
 
   @override
@@ -1574,4 +1634,11 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get tripsEmptyCta => 'Hazie njem';
+
+  @override
+  String get scanCodeWhereTitle => 'Ebe ị ga-ahụ ya';
+
+  @override
+  String get scanCodeWhereBody =>
+      'E biri koodu mkpụrụedemede 8 n\'okpuru QR na stịka onye ọkwọ ụgbọ, ma ọ bụ gwa ya mepee My QR.';
 }

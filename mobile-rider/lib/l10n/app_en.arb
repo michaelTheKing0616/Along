@@ -1777,6 +1777,50 @@
   "extendTripNowFare": "Current fare",
   "extendTripNewTotal": "New total",
   "extendTripDriverConfirms": "Your driver confirms before anything changes",
+  "scanToPayHint": "Point your camera at the driver's Along code",
+  "scanTorch": "Torch",
+  "payMethodsSubtitle": "Choose how you pay drivers",
+  "payMethodsSectionDefault": "Pay drivers with",
+  "payMethodsTransferHint": "Pay from your bank app, no card needed",
+  "payMethodsCards": "Saved cards",
+  "payMethodsCardsEmpty": "No saved cards yet",
+  "payMethodsSecure": "We keep only the card brand and last 4 digits",
+  "wayfindingTo": "To {place}",
+  "@wayfindingTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "wayfindingSummary": "{distance} · {minutes} min walk",
+  "@wayfindingSummary": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "wayfindingAudioPlaying": "Audio playing",
+  "wayfindingNowPlaying": "Now playing",
+  "wayfindingYouAreHere": "You are here",
+  "wayfindingStepOf": "Step {step} of {total}",
+  "wayfindingIveArrived": "I've arrived",
+  "@wayfindingStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "scanFitHint": "Fit the code inside the corners",
+  "scanFound": "Code found",
   "requestingNextTitle": "What happens next",
   "requestingStepSent": "Request sent to drivers nearby",
   "requestingStepAccept": "A driver accepts and you see their plate",
@@ -1832,5 +1876,7 @@
     }
   },
   "tripsEmptyHint": "Trips you take with Along show up here, with receipts.",
-  "tripsEmptyCta": "Plan a trip"
+  "tripsEmptyCta": "Plan a trip",
+  "scanCodeWhereTitle": "Where to find it",
+  "scanCodeWhereBody": "The 8-character code is printed under the QR on the driver's sticker, or ask them to open My QR."
 }

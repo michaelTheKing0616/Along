@@ -2735,6 +2735,108 @@ abstract class AppLocalizations {
   /// **'Your driver confirms before anything changes'**
   String get extendTripDriverConfirms;
 
+  /// No description provided for @scanToPayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at the driver\'s Along code'**
+  String get scanToPayHint;
+
+  /// No description provided for @scanTorch.
+  ///
+  /// In en, this message translates to:
+  /// **'Torch'**
+  String get scanTorch;
+
+  /// No description provided for @payMethodsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you pay drivers'**
+  String get payMethodsSubtitle;
+
+  /// No description provided for @payMethodsSectionDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay drivers with'**
+  String get payMethodsSectionDefault;
+
+  /// No description provided for @payMethodsTransferHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from your bank app, no card needed'**
+  String get payMethodsTransferHint;
+
+  /// No description provided for @payMethodsCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved cards'**
+  String get payMethodsCards;
+
+  /// No description provided for @payMethodsCardsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved cards yet'**
+  String get payMethodsCardsEmpty;
+
+  /// No description provided for @payMethodsSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'We keep only the card brand and last 4 digits'**
+  String get payMethodsSecure;
+
+  /// No description provided for @wayfindingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To {place}'**
+  String wayfindingTo(String place);
+
+  /// No description provided for @wayfindingSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} · {minutes} min walk'**
+  String wayfindingSummary(String distance, int minutes);
+
+  /// No description provided for @wayfindingAudioPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio playing'**
+  String get wayfindingAudioPlaying;
+
+  /// No description provided for @wayfindingNowPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing'**
+  String get wayfindingNowPlaying;
+
+  /// No description provided for @wayfindingYouAreHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You are here'**
+  String get wayfindingYouAreHere;
+
+  /// No description provided for @wayfindingStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String wayfindingStepOf(int step, int total);
+
+  /// No description provided for @wayfindingIveArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve arrived'**
+  String get wayfindingIveArrived;
+
+  /// No description provided for @scanFitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit the code inside the corners'**
+  String get scanFitHint;
+
+  /// No description provided for @scanFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Code found'**
+  String get scanFound;
+
   /// No description provided for @requestingNextTitle.
   ///
   /// In en, this message translates to:
@@ -2818,6 +2920,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan a trip'**
   String get tripsEmptyCta;
+
+  /// No description provided for @scanCodeWhereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to find it'**
+  String get scanCodeWhereTitle;
+
+  /// No description provided for @scanCodeWhereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.'**
+  String get scanCodeWhereBody;
 }
 
 class _AppLocalizationsDelegate

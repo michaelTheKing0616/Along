@@ -3,6 +3,7 @@ library;
 
 export 'ambient_cluster.dart';
 export 'along_button.dart';
+export 'along_switch.dart';
 export 'along_toast.dart';
 export 'balance_card.dart';
 export 'bottom_sheet.dart';

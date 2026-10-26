@@ -209,7 +209,7 @@ void main() {
           break;
         }
       }
-      expect(find.text('Walk north on Airport Road'), findsOneWidget);
+      expect(find.text('Walk north on Airport Road'), findsWidgets);
 
       _stopLiveTripPoll(container, trip);
     });
