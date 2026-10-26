@@ -1524,6 +1524,64 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your driver confirms before anything changes';
 
   @override
+  String get scanToPayHint => 'Point your camera at the driver\'s Along code';
+
+  @override
+  String get scanTorch => 'Torch';
+
+  @override
+  String get payMethodsSubtitle => 'Choose how you pay drivers';
+
+  @override
+  String get payMethodsSectionDefault => 'Pay drivers with';
+
+  @override
+  String get payMethodsTransferHint => 'Pay from your bank app, no card needed';
+
+  @override
+  String get payMethodsCards => 'Saved cards';
+
+  @override
+  String get payMethodsCardsEmpty => 'No saved cards yet';
+
+  @override
+  String get payMethodsSecure =>
+      'We keep only the card brand and last 4 digits';
+
+  @override
+  String wayfindingTo(String place) {
+    return 'To $place';
+  }
+
+  @override
+  String wayfindingSummary(String distance, int minutes) {
+    return '$distance · $minutes min walk';
+  }
+
+  @override
+  String get wayfindingAudioPlaying => 'Audio playing';
+
+  @override
+  String get wayfindingNowPlaying => 'Now playing';
+
+  @override
+  String get wayfindingYouAreHere => 'You are here';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'I\'ve arrived';
+
+  @override
+  String get scanFitHint => 'Fit the code inside the corners';
+
+  @override
+  String get scanFound => 'Code found';
+
+  @override
   String get requestingNextTitle => 'What happens next';
 
   @override
@@ -1577,4 +1635,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tripsEmptyCta => 'Plan a trip';
+
+  @override
+  String get scanCodeWhereTitle => 'Where to find it';
+
+  @override
+  String get scanCodeWhereBody =>
+      'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.';
 }

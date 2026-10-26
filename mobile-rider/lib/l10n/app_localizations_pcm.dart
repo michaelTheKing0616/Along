@@ -1524,6 +1524,64 @@ class AppLocalizationsPcm extends AppLocalizations {
       'Your driver go confirm before anything change';
 
   @override
+  String get scanToPayHint => 'Point your camera for driver Along code';
+
+  @override
+  String get scanTorch => 'Torchlight';
+
+  @override
+  String get payMethodsSubtitle => 'Choose how you go dey pay drivers';
+
+  @override
+  String get payMethodsSectionDefault => 'Pay drivers with';
+
+  @override
+  String get payMethodsTransferHint =>
+      'Pay from your bank app, you no need card';
+
+  @override
+  String get payMethodsCards => 'Cards wey you save';
+
+  @override
+  String get payMethodsCardsEmpty => 'No card dey yet';
+
+  @override
+  String get payMethodsSecure => 'We only keep card brand and last 4 numbers';
+
+  @override
+  String wayfindingTo(String place) {
+    return 'Go $place';
+  }
+
+  @override
+  String wayfindingSummary(String distance, int minutes) {
+    return '$distance · $minutes min waka';
+  }
+
+  @override
+  String get wayfindingAudioPlaying => 'Audio dey play';
+
+  @override
+  String get wayfindingNowPlaying => 'E dey play now';
+
+  @override
+  String get wayfindingYouAreHere => 'You dey here';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'I don reach';
+
+  @override
+  String get scanFitHint => 'Put the code inside the corners';
+
+  @override
+  String get scanFound => 'We don see the code';
+
+  @override
   String get requestingNextTitle => 'Wetin go happen next';
 
   @override
@@ -1579,4 +1637,11 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get tripsEmptyCta => 'Plan trip';
+
+  @override
+  String get scanCodeWhereTitle => 'Where you go see am';
+
+  @override
+  String get scanCodeWhereBody =>
+      'The 8-character code dey under the QR for driver sticker, or tell am make e open My QR.';
 }

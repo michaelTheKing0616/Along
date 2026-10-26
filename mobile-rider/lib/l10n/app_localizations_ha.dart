@@ -1524,6 +1524,65 @@ class AppLocalizationsHa extends AppLocalizations {
       'Direbanka zai tabbatar kafin wani abu ya canza';
 
   @override
+  String get scanToPayHint => 'Nuna kyamararka ga lambar Along ta direba';
+
+  @override
+  String get scanTorch => 'Fitila';
+
+  @override
+  String get payMethodsSubtitle => 'Zaɓi yadda kake biyan direbobi';
+
+  @override
+  String get payMethodsSectionDefault => 'Biya direbobi da';
+
+  @override
+  String get payMethodsTransferHint =>
+      'Biya daga manhajar bankinka, babu buƙatar kati';
+
+  @override
+  String get payMethodsCards => 'Katunan da aka adana';
+
+  @override
+  String get payMethodsCardsEmpty => 'Babu katin da aka adana tukuna';
+
+  @override
+  String get payMethodsSecure =>
+      'Muna adana sunan kati da lambobi 4 na ƙarshe kawai';
+
+  @override
+  String wayfindingTo(String place) {
+    return 'Zuwa $place';
+  }
+
+  @override
+  String wayfindingSummary(String distance, int minutes) {
+    return '$distance · tafiyar minti $minutes';
+  }
+
+  @override
+  String get wayfindingAudioPlaying => 'Ana kunna sauti';
+
+  @override
+  String get wayfindingNowPlaying => 'Ana kunnawa yanzu';
+
+  @override
+  String get wayfindingYouAreHere => 'Kana nan';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Mataki $step cikin $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'Na iso';
+
+  @override
+  String get scanFitHint => 'Sa lambar a cikin kusurwoyin';
+
+  @override
+  String get scanFound => 'An sami lambar';
+
+  @override
   String get requestingNextTitle => 'Abin da zai biyo baya';
 
   @override
@@ -1577,4 +1636,11 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get tripsEmptyCta => 'Shirya tafiya';
+
+  @override
+  String get scanCodeWhereTitle => 'Inda za ka same shi';
+
+  @override
+  String get scanCodeWhereBody =>
+      'An buga lambar haruffa 8 a ƙarƙashin QR a kan sitikar direba, ko ka ce ya buɗe My QR.';
 }

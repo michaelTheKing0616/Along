@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
+import '../icons.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 
 /// Wayfinding presentation mode (doc 05 §9 `StepList`).
@@ -27,10 +29,18 @@ class StepList extends StatelessWidget {
     super.key,
     this.variant = StepListVariant.text,
     required this.steps,
+    this.playingLabel = 'Audio playing',
+    this.nowLabel = 'Now playing',
   });
 
   final StepListVariant variant;
   final List<WayfindingStep> steps;
+
+  /// Translated banner shown while audio plays.
+  final String playingLabel;
+
+  /// Translated tag on the step being read out.
+  final String nowLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -42,30 +52,34 @@ class StepList extends StatelessWidget {
         if (isAudio)
           Padding(
             padding: const EdgeInsets.only(bottom: AlongSpace.s12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AlongSpace.s12,
-                vertical: AlongSpace.s8,
-              ),
-              clipBehavior: Clip.antiAlias,
+            child: DecoratedBox(
               decoration: AlongCraft.fill(
                 AlongColors.brandYellowTint,
-                corner: AlongRadius.control.x,
-                side: const BorderSide(color: AlongColors.brandYellow),
+                corner: 16,
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.volume_up_rounded,
-                    color: AlongColors.brandYellowOn,
-                    size: 20,
-                  ),
-                  const SizedBox(width: AlongSpace.s8),
-                  Text(
-                    'Audio playing',
-                    style: AlongText.label.copyWith(color: AlongColors.brandYellowOn),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AlongSpace.s12,
+                  vertical: AlongSpace.s8,
+                ),
+                child: Row(
+                  children: [
+                    const AlongIcon(
+                      AlongIcons.speaker,
+                      color: AlongColors.brandYellowOn,
+                      size: 20,
+                    ),
+                    const SizedBox(width: AlongSpace.s8),
+                    Expanded(
+                      child: Text(
+                        playingLabel,
+                        style: AlongText.label.copyWith(
+                          color: AlongColors.brandYellowOn,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -74,6 +88,7 @@ class StepList extends StatelessWidget {
             step: steps[i],
             isAudio: isAudio,
             isLast: i == steps.length - 1,
+            nowLabel: nowLabel,
           ),
       ],
     );
@@ -85,123 +100,100 @@ class _StepRow extends StatelessWidget {
     required this.step,
     required this.isAudio,
     required this.isLast,
+    required this.nowLabel,
   });
 
   final WayfindingStep step;
   final bool isAudio;
   final bool isLast;
+  final String nowLabel;
 
   @override
   Widget build(BuildContext context) {
-    final isHighlighted = isAudio && step.isActive;
-    final isMuted = isAudio && !step.isActive;
+    final p = AlongPalette.of(context);
+    final highlighted = isAudio && step.isActive;
+    final muted = isAudio && !step.isActive;
+    final current = !isAudio && step.isActive;
+    final fg = highlighted ? AlongColors.ink900 : (muted ? p.muted : p.ink);
 
-    return Container(
-      margin: EdgeInsets.only(bottom: isLast ? 0 : AlongSpace.s8),
-      clipBehavior: Clip.antiAlias,
-      decoration: AlongCraft.fill(
-        isHighlighted
-            ? AlongColors.brandYellowTint
-            : isMuted
-                ? AlongColors.surface50
-                : AlongColors.surface0,
-        corner: AlongRadius.row.x,
-        side: BorderSide(
-          color: isHighlighted ? AlongColors.brandYellow : AlongColors.ink100,
-          width: isHighlighted ? 2 : 1,
+    return Padding(
+      padding: EdgeInsets.only(bottom: isLast ? 0 : AlongSpace.s8),
+      child: DecoratedBox(
+        decoration: AlongCraft.fill(
+          highlighted ? AlongColors.brandYellowTint : p.recessed,
+          corner: 18,
+          side: current
+              ? BorderSide(color: p.ink, width: 1.5)
+              : highlighted
+              ? const BorderSide(color: AlongColors.brandYellow, width: 2)
+              : BorderSide.none,
         ),
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (isHighlighted)
-              Container(
-                width: AlongSpace.s4,
+        child: Padding(
+          padding: const EdgeInsets.all(AlongSpace.s12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DecoratedBox(
                 decoration: AlongCraft.fill(
-                  AlongColors.brandYellow,
-                  corner: AlongRadius.row.x,
+                  highlighted
+                      ? AlongColors.brandYellow
+                      : current
+                      ? p.ink
+                      : p.surface,
+                  corner: 12,
+                ),
+                child: SizedBox(
+                  width: AlongSpace.sizeChip,
+                  height: AlongSpace.sizeChip,
+                  child: Center(
+                    child: AlongIcon(
+                      step.maneuverIcon,
+                      size: 20,
+                      color: highlighted
+                          ? AlongColors.brandYellowOn
+                          : current
+                          ? p.onInk
+                          : fg,
+                    ),
+                  ),
                 ),
               ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(AlongSpace.s12),
-                child: Row(
+              const SizedBox(width: AlongSpace.s12),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: AlongSpace.sizeChip,
-                      height: AlongSpace.sizeChip,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: AlongCraft.fill(
-                        isHighlighted
-                            ? AlongColors.brandYellow
-                            : AlongColors.surface100,
-                        corner: AlongRadius.control.x,
+                    if (highlighted)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AlongSpace.s4),
+                        child: Text(
+                          nowLabel,
+                          style: AlongText.caption.copyWith(
+                            color: AlongColors.brandYellowOn,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        step.maneuverIcon,
-                        size: 20,
-                        color: isHighlighted
-                            ? AlongColors.brandYellowOn
-                            : isMuted
-                                ? AlongColors.ink500
-                                : AlongColors.ink700,
+                    Text(
+                      step.instruction,
+                      style:
+                          (highlighted || current
+                                  ? AlongText.bodyStrong
+                                  : AlongText.body)
+                              .copyWith(color: fg),
+                    ),
+                    const SizedBox(height: AlongSpace.s4),
+                    Text(
+                      step.distance,
+                      style: AlongText.caption.copyWith(
+                        color: highlighted ? AlongColors.ink700 : p.muted,
                       ),
                     ),
-                    const SizedBox(width: AlongSpace.s12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (isHighlighted)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: AlongSpace.s4),
-                              child: Text(
-                                'NOW PLAYING',
-                                style: AlongText.overline.copyWith(
-                                  color: AlongColors.brandYellowOn,
-                                ),
-                              ),
-                            ),
-                          Text(
-                            step.instruction,
-                            style: (isHighlighted
-                                    ? AlongText.bodyStrong
-                                    : AlongText.body)
-                                .copyWith(
-                              color: isMuted
-                                  ? AlongColors.ink500
-                                  : isHighlighted
-                                      ? AlongColors.ink900
-                                      : AlongColors.ink700,
-                            ),
-                          ),
-                          const SizedBox(height: AlongSpace.s4),
-                          Text(
-                            step.distance,
-                            style: AlongText.caption.copyWith(
-                              color: isMuted
-                                  ? AlongColors.ink300
-                                  : AlongColors.ink500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (isHighlighted) ...[
-                      const SizedBox(width: AlongSpace.s8),
-                      Icon(
-                        Icons.graphic_eq_rounded,
-                        color: AlongColors.brandYellowOn,
-                        size: 24,
-                      ),
-                    ],
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

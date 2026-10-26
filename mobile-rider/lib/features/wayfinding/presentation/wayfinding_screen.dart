@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_panel.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
@@ -70,59 +71,123 @@ class _WayfindingScreenState extends ConsumerState<WayfindingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
+    final directions = _directions;
+    final label = widget.args.destinationLabel;
+    final subtitle = directions == null
+        ? label
+        : [
+            if (label != null) l10n.wayfindingTo(label),
+            l10n.wayfindingSummary(
+              _formatWalk(directions.distanceM),
+              (directions.durationS / 60).ceil(),
+            ),
+          ].join(' · ');
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.wayfindingTitle),
-        leading: BackButton(onPressed: () => context.pop()),
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-              ? Center(child: Text(_error!))
-              : _directions == null
-                  ? Center(child: Text(l10n.errorGeneric))
-                  : Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (_arrived)
-                            Text(
-                              l10n.wayfindingArrived,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    color: AlongColors.semanticSuccessFill,
-                                  ),
-                            ),
-                          Expanded(
-                            child: WayfindingPanel(
-                              directions: _directions!,
-                              mode: _mode,
-                              tts: ref.read(wayfindingTtsProvider),
-                              arrivedRadiusM: _arrivedRadiusM,
-                              destination: widget.args.to,
-                              userLocation: widget.args.userLocation,
-                              onModeChanged: (mode) async {
-                                setState(() => _mode = mode);
-                                await ref
-                                    .read(riderPrefsStoreProvider)
-                                    .setWayfindingMode(mode);
-                              },
-                              onArrived: () {
-                                if (!_arrived && mounted) {
-                                  setState(() => _arrived = true);
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+    return RiderTripStrings(
+      child: Scaffold(
+        backgroundColor: p.bg,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AlongSpace.s20,
+              AlongSpace.s8,
+              AlongSpace.s20,
+              AlongSpace.s12,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Transform.translate(
+                    offset: const Offset(-4, 0),
+                    child: AlongMapButton(
+                      key: const Key('wayfinding_back'),
+                      icon: AlongIcons.back,
+                      tooltip: MaterialLocalizations.of(context)
+                          .backButtonTooltip,
+                      onPressed: () => context.canPop()
+                          ? context.pop()
+                          : Navigator.of(context).maybePop(),
                     ),
+                  ),
+                ),
+                const SizedBox(height: AlongSpace.s16),
+                Text(l10n.wayfindingTitle, style: AlongType.display(p)),
+                if (subtitle != null && subtitle.isNotEmpty) ...[
+                  const SizedBox(height: AlongSpace.s4),
+                  Text(subtitle, style: AlongType.bodyMuted(p)),
+                ],
+                if (_arrived) ...[
+                  const SizedBox(height: AlongSpace.s12),
+                  TripNotice(
+                    key: const Key('wayfinding_arrived'),
+                    icon: AlongIcons.flag,
+                    text: l10n.wayfindingArrived,
+                  ),
+                ],
+                const SizedBox(height: AlongSpace.s16),
+                Expanded(child: _body(l10n, p)),
+                if (!_loading && _directions != null) ...[
+                  const SizedBox(height: AlongSpace.s12),
+                  AlongButton(
+                    key: const Key('wayfinding_arrived_cta'),
+                    label: l10n.wayfindingIveArrived,
+                    onPressed: () {
+                      setState(() => _arrived = true);
+                      if (context.canPop()) context.pop();
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
+
+  Widget _body(AppLocalizations l10n, AlongPalette p) {
+    if (_loading) {
+      return const Column(
+        children: [
+          AlongSkeleton(height: 52, width: double.infinity),
+          SizedBox(height: AlongSpace.s16),
+          AlongSkeleton(height: 220, width: double.infinity),
+        ],
+      );
+    }
+    final directions = _directions;
+    if (_error != null || directions == null) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: TripNotice(
+          icon: AlongIcons.info,
+          text: l10n.errorGeneric,
+          warn: true,
+        ),
+      );
+    }
+    return WayfindingPanel(
+      directions: directions,
+      mode: _mode,
+      tts: ref.read(wayfindingTtsProvider),
+      arrivedRadiusM: _arrivedRadiusM,
+      destination: widget.args.to,
+      userLocation: widget.args.userLocation,
+      onModeChanged: (mode) async {
+        setState(() => _mode = mode);
+        await ref.read(riderPrefsStoreProvider).setWayfindingMode(mode);
+      },
+      onArrived: () {
+        if (!_arrived && mounted) setState(() => _arrived = true);
+      },
+    );
+  }
+
+  String _formatWalk(int meters) =>
+      meters >= 1000 ? '${(meters / 1000).toStringAsFixed(1)} km' : '$meters m';
 }
 
 class WayfindingRouteArgs {
@@ -151,8 +216,7 @@ Future<int?> _readWayfindingArrivedRadius(
     return (await configRepo.configNum(
       'boarding.colocation_radius_m',
       cityId: cityId,
-    ))
-        .toInt();
+    )).toInt();
   } catch (_) {
     return null;
   }
