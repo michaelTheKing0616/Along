@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart'
     show DriverVoiceIntent, parseDriverVoice;
@@ -8,6 +6,7 @@ import 'package:along_design/along_design.dart' as design_fare show FareTier;
 import 'package:flutter/material.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 
 /// D-14 Incoming request full-screen sheet (doc 06).
 class IncomingRequestSheet extends StatelessWidget {
@@ -27,160 +26,60 @@ class IncomingRequestSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trip = state.trip;
-    final theme = Theme.of(context);
+    final p = AlongPalette.of(context);
     final progress = state.requestTtlS == 0
         ? 0.0
         : state.remainingSeconds / state.requestTtlS;
+    final fare = formatMoney(trip.totalFare);
 
     return Material(
-      color: AlongPalette.of(context).surface,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AlongSpace.s16),
+      type: MaterialType.transparency,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: DriveSheet(
+          key: const Key('incoming_request_card'),
+          maxHeightFactor: 0.9,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
+              Row(
+                children: [
+                  Expanded(child: _Countdown(progress: progress)),
+                  const SizedBox(width: AlongSpace.s12),
+                  Text(
+                    l10n.incomingRequestCountdown(state.remainingSeconds),
+                    key: const Key('incoming_request_seconds'),
+                    style: AlongType.label(p).copyWith(
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AlongSpace.s12),
+              Flexible(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              l10n.incomingRequestTitle,
-                              style: AlongText.heading2,
-                            ),
-                          ),
-                          if (state.trip.dispatchAttempt > 1) ...[
-                            const SizedBox(width: AlongSpace.s8),
-                            Container(
-                              key: const Key('incoming_request_cascade_badge'),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AlongSpace.s8,
-                                vertical: AlongSpace.s4,
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: AlongCraft.fill(
-                                AlongColors.semanticInfoTint,
-                                corner: AlongRadius.xs.x,
-                              ),
-                              child: Text(
-                                l10n.incomingRequestCascade(
-                                  state.trip.dispatchAttempt,
-                                  state.maxCascade,
-                                ),
-                                style: AlongText.caption.copyWith(
-                                  color: AlongColors.semanticInfo,
-                                ),
-                              ),
-                            ),
-                          ],
-                          const Spacer(),
-                          SizedBox(
-                            width: 48,
-                            height: 48,
-                            child: CustomPaint(
-                              painter: _CountdownRingPainter(
-                                progress: progress,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  l10n.incomingRequestCountdown(
-                                    state.remainingSeconds,
-                                  ),
-                                  style: AlongText.caption,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AlongSpace.s12),
                       Text(
-                        l10n.incomingRequestRiderLine(
-                          trip.rider.displayName,
-                          trip.rider.rating.toStringAsFixed(1),
-                          trip.rider.tripCount,
-                        ),
-                        style: AlongText.bodyStrong,
+                        l10n.incomingRequestTitle,
+                        style: AlongType.caption(p),
                       ),
-                      if (trip.womenOnly) ...[
-                        const SizedBox(height: AlongSpace.s8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AlongSpace.s8,
-                            vertical: AlongSpace.s4,
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: AlongCraft.fill(
-                            AlongColors.semanticInfoTint,
-                            corner: AlongRadius.xs.x,
-                          ),
-                          child: Text(
-                            l10n.incomingRequestWomenOnly,
-                            style: AlongText.caption.copyWith(
-                              color: AlongColors.semanticInfo,
-                            ),
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: AlongSpace.s16),
-                      _LocationRow(
-                        icon: Icons.trip_origin,
-                        label: state.trip.isRoamingHail
-                            ? l10n.incomingRequestRoamingPickup
-                            : l10n.incomingRequestPickup,
-                        value: trip.board.name,
-                        meta: trip.approachBand != null
-                            ? _approachBandLabel(l10n, trip.approachBand!)
-                            : state.trip.isRoamingHail
-                            ? l10n.incomingRequestRoamingPickupMeta
-                            : null,
-                        metaKey: trip.approachBand != null
-                            ? const Key('incoming_request_approach_band')
-                            : null,
-                      ),
-                      const SizedBox(height: AlongSpace.s8),
-                      _LocationRow(
-                        icon: Icons.place_outlined,
-                        label: l10n.incomingRequestDropoff,
-                        value: trip.alight.name,
-                      ),
-                      if (trip.load.flagged) ...[
-                        const SizedBox(height: AlongSpace.s12),
-                        Row(
-                          key: const Key('incoming_request_load_row'),
-                          children: [
-                            const Icon(
-                              Icons.inventory_2_outlined,
-                              color: AlongColors.semanticWarning,
-                              size: 20,
-                            ),
-                            const SizedBox(width: AlongSpace.s8),
-                            Expanded(
-                              child: Text(
-                                _loadLabel(l10n, trip.load),
-                                style: AlongText.bodyStrong.copyWith(
-                                  color: AlongColors.semanticWarning,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      const SizedBox(height: AlongSpace.s16),
+                      const SizedBox(height: AlongSpace.s4),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
                             child: Text(
-                              l10n.incomingRequestFareLine(
-                                formatMoney(trip.totalFare),
-                                _fareTierLabel(l10n, trip.fare.tier),
+                              fare,
+                              key: const Key('incoming_request_fare'),
+                              maxLines: 1,
+                              style: AlongType.display(p).copyWith(
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
                               ),
-                              style: AlongText.body,
                             ),
                           ),
                           if (trip.fare.unconfirmed)
@@ -190,30 +89,122 @@ class IncomingRequestSheet extends StatelessWidget {
                             ),
                         ],
                       ),
-                      const SizedBox(height: AlongSpace.s4),
+                      Text(
+                        l10n.incomingFareCaption(
+                          _fareTierLabel(l10n, trip.fare.tier),
+                        ),
+                        style: AlongType.caption(p),
+                      ),
+                      const SizedBox(height: AlongSpace.s16),
+                      DriveRoute(
+                        fromLabel: state.trip.isRoamingHail
+                            ? l10n.incomingRequestRoamingPickup
+                            : l10n.incomingRequestPickup,
+                        from: trip.board.name,
+                        fromMeta: trip.approachBand != null
+                            ? _approachBandLabel(l10n, trip.approachBand!)
+                            : state.trip.isRoamingHail
+                            ? l10n.incomingRequestRoamingPickupMeta
+                            : null,
+                        fromMetaKey: trip.approachBand != null
+                            ? const Key('incoming_request_approach_band')
+                            : null,
+                        toLabel: l10n.incomingRequestDropoff,
+                        to: trip.alight.name,
+                      ),
+                      const SizedBox(height: AlongSpace.s16),
+                      DrivePanel(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AlongSpace.s16,
+                          vertical: AlongSpace.s12,
+                        ),
+                        child: Row(
+                          children: [
+                            AlongIcon(AlongIcons.user, size: 20, color: p.ink),
+                            const SizedBox(width: AlongSpace.s12),
+                            Expanded(
+                              child: Text(
+                                l10n.incomingRequestRiderLine(
+                                  trip.rider.displayName,
+                                  trip.rider.rating.toStringAsFixed(1),
+                                  trip.rider.tripCount,
+                                ),
+                                style: AlongType.label(p),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (trip.dispatchAttempt > 1 ||
+                          trip.womenOnly ||
+                          trip.load.flagged) ...[
+                        const SizedBox(height: AlongSpace.s12),
+                        Wrap(
+                          spacing: AlongSpace.s8,
+                          runSpacing: AlongSpace.s8,
+                          children: [
+                            if (trip.dispatchAttempt > 1)
+                              DriveTag(
+                                key: const Key(
+                                  'incoming_request_cascade_badge',
+                                ),
+                                tone: DriveTagTone.info,
+                                label: l10n.incomingRequestCascade(
+                                  trip.dispatchAttempt,
+                                  state.maxCascade,
+                                ),
+                              ),
+                            if (trip.womenOnly)
+                              DriveTag(
+                                tone: DriveTagTone.info,
+                                icon: AlongIcons.female,
+                                label: l10n.incomingRequestWomenOnly,
+                              ),
+                            if (trip.load.flagged)
+                              DriveTag(
+                                key: const Key('incoming_request_load_row'),
+                                tone: DriveTagTone.warning,
+                                icon: AlongIcons.luggage,
+                                label: _loadLabel(l10n, trip.load),
+                              ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: AlongSpace.s12),
                       Text(
                         l10n.incomingRequestAlongFee(
                           formatMoney(state.alongFee),
                           formatCommissionPercent(state.commissionRate),
                         ),
-                        style: AlongText.caption.copyWith(
-                          color: AlongColors.ink500,
-                        ),
+                        style: AlongType.caption(p),
                       ),
                       if (state.errorMessage != null) ...[
                         const SizedBox(height: AlongSpace.s8),
                         Text(
                           l10n.errorGeneric,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: AlongColors.semanticDanger,
-                          ),
+                          style: AlongType.caption(p).copyWith(color: p.danger),
                         ),
                       ],
                       const SizedBox(height: AlongSpace.s12),
                       TextField(
                         key: const Key('incoming_voice_command'),
+                        style: AlongType.body(p),
                         decoration: InputDecoration(
                           hintText: l10n.voiceCommandHint,
+                          hintStyle: AlongType.bodyMuted(p),
+                          isDense: true,
+                          filled: true,
+                          fillColor: p.recessed,
+                          prefixIcon: AlongIcon(
+                            AlongIcons.microphone,
+                            size: 18,
+                            color: p.muted,
+                          ),
+                          border: AlongCraft.input(BorderSide.none),
+                          enabledBorder: AlongCraft.input(BorderSide.none),
+                          focusedBorder: AlongCraft.input(
+                            BorderSide(color: p.ink, width: 1.5),
+                          ),
                         ),
                         onSubmitted: (value) {
                           final command = parseDriverVoice(value);
@@ -229,32 +220,27 @@ class IncomingRequestSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AlongSpace.s12),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: AlongButton(
-                      key: const Key('incoming_request_decline'),
-                      label: l10n.incomingRequestDecline,
-                      variant: AlongButtonVariant.secondary,
-                      onPressed: state.isResponding ? null : onDecline,
-                    ),
-                  ),
-                  const SizedBox(width: AlongSpace.s12),
-                  Expanded(
-                    flex: 6,
-                    child: AlongButton(
-                      key: const Key('incoming_request_accept'),
-                      label: l10n.incomingRequestAccept,
-                      variant: AlongButtonVariant.yellow,
-                      visualState: state.isResponding
-                          ? AlongButtonVisualState.loading
-                          : AlongButtonVisualState.normal,
-                      onPressed: state.isResponding ? null : onAccept,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: AlongSpace.s16),
+              AlongButton(
+                key: const Key('incoming_request_accept'),
+                label: l10n.incomingAcceptFare(fare),
+                visualState: state.isResponding
+                    ? AlongButtonVisualState.loading
+                    : AlongButtonVisualState.normal,
+                onPressed: state.isResponding
+                    ? null
+                    : () {
+                        AlongHaptics.confirm(context);
+                        onAccept();
+                      },
+              ),
+              const SizedBox(height: AlongSpace.s8),
+              AlongButton(
+                key: const Key('incoming_request_decline'),
+                label: l10n.incomingRequestDecline,
+                variant: AlongButtonVariant.tertiary,
+                size: AlongButtonSize.secondary,
+                onPressed: state.isResponding ? null : onDecline,
               ),
             ],
           ),
@@ -295,81 +281,33 @@ class IncomingRequestSheet extends StatelessWidget {
       };
 }
 
-class _LocationRow extends StatelessWidget {
-  const _LocationRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.meta,
-    this.metaKey,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final String? meta;
-  final Key? metaKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 20, color: AlongColors.ink700),
-        const SizedBox(width: AlongSpace.s8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '$label: ',
-                style: AlongText.caption.copyWith(color: AlongColors.ink500),
-              ),
-              Text(value, style: AlongText.bodyStrong),
-              if (meta != null)
-                Text(
-                  meta!,
-                  key: metaKey,
-                  style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _CountdownRingPainter extends CustomPainter {
-  _CountdownRingPainter({required this.progress});
+/// Time left to accept, as a draining squircle track (accent on recessed).
+class _Countdown extends StatelessWidget {
+  const _Countdown({required this.progress});
 
   final double progress;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 2;
-    final track = Paint()
-      ..color = AlongColors.surface200
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-    final arc = Paint()
-      ..color = AlongColors.brandYellow
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius, track);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      2 * math.pi * progress.clamp(0, 1),
-      false,
-      arc,
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return AlongCraft.clip(
+      corner: AlongRadius.xs.x,
+      child: SizedBox(
+        height: 8,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ColoredBox(color: p.recessed),
+            AnimatedFractionallySizedBox(
+              duration: AlongMoves.roll.of(context),
+              curve: AlongMoves.roll.curve,
+              alignment: Alignment.centerLeft,
+              widthFactor: progress.clamp(0, 1).toDouble(),
+              child: ColoredBox(color: p.accent),
+            ),
+          ],
+        ),
+      ),
     );
   }
-
-  @override
-  bool shouldRepaint(covariant _CountdownRingPainter oldDelegate) =>
-      oldDelegate.progress != progress;
 }

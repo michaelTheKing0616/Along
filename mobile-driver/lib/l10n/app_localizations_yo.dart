@@ -1347,4 +1347,143 @@ class AppLocalizationsYo extends AppLocalizations {
   String tripEtaPickup(String label) {
     return 'Ìgbéra $label';
   }
+
+  @override
+  String get drivePhasePickup => 'Gbígbé';
+
+  @override
+  String get drivePhaseBoard => 'Wọlé';
+
+  @override
+  String get drivePhaseDrop => 'Sọ̀kalẹ̀';
+
+  @override
+  String activeTripPickUpTitle(String name) {
+    return 'Gbé $name';
+  }
+
+  @override
+  String activeTripOnBoardTitle(String name) {
+    return '$name ti wọlé';
+  }
+
+  @override
+  String activeTripDropTitle(String name) {
+    return 'Sọ $name kalẹ̀';
+  }
+
+  @override
+  String get activeTripRiderFallback => 'èrò rẹ';
+
+  @override
+  String get activeTripBoardNaMe => 'Wọlé pẹ̀lú Na Me';
+
+  @override
+  String get activeTripEnterPin => 'Tẹ PIN gbígbé';
+
+  @override
+  String get activeTripPinShort => 'PIN';
+
+  @override
+  String get activeTripMessageShort => 'Ifiranṣẹ';
+
+  @override
+  String get activeTripSeatsShort => 'Ìjókòó';
+
+  @override
+  String get activeTripExtendShort => 'Fà á gùn';
+
+  @override
+  String get activeTripReportShort => 'Jábọ̀';
+
+  @override
+  String get activeTripFareLabel => 'Èrò yóò san';
+
+  @override
+  String activeTripFeeCaption(String amount, String percent) {
+    return 'Owó Along $amount ($percent%)';
+  }
+
+  @override
+  String incomingAcceptFare(String amount) {
+    return 'Gbà · $amount';
+  }
+
+  @override
+  String incomingFareCaption(String tierLabel) {
+    return 'Èrò yóò san · $tierLabel';
+  }
+
+  @override
+  String get homeOfflineTitle => 'O kò sí lórí ayélujára';
+
+  @override
+  String get homeOnlineTitle => 'O wà lórí ayélujára';
+
+  @override
+  String get homeOfflineHint => 'Lọ sórí ayélujára láti gba ìbéèrè nítòsí rẹ.';
+
+  @override
+  String get homeOnlineHint => 'Ìbéèrè yóò hàn níbí. Gbà pẹ̀lú ìfọwọ́kàn kan.';
+
+  @override
+  String get homeGoOnline => 'Ẹ JẸ́ Á LỌ';
+
+  @override
+  String get homeGoOffline => 'Kúrò lórí ayélujára';
+
+  @override
+  String get homeModeAtPark => 'Ní gáréèjì';
+
+  @override
+  String get homeModeRoaming => 'Ń rìn kiri';
+
+  @override
+  String get homeModeFull => 'Ó ti kún';
+
+  @override
+  String homeTodayEarned(String amount) {
+    return 'Òní · $amount';
+  }
+
+  @override
+  String homeTodayTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ìrìn àjò $count',
+      one: 'Ìrìn àjò 1',
+      zero: 'Kò sí ìrìn àjò síbẹ̀',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShortcutsTitle => 'Ọjọ́ rẹ';
+
+  @override
+  String get homeDirectionShortOnRoute => 'Lójú ọ̀nà mi';
+
+  @override
+  String get homeDirectionShortNone => 'Ọ̀nà èyíkéyìí';
+
+  @override
+  String get homeTileDemand => 'Ìbéèrè';
+
+  @override
+  String get tripCompleteCashHero => 'Gba owó lọ́wọ́';
+
+  @override
+  String get tripCompleteRowFare => 'Owó ọkọ̀';
+
+  @override
+  String get tripCompleteRowFee => 'Owó Along (sí àkọọ́lẹ̀)';
+
+  @override
+  String get tripCompleteRowBalance => 'Àkọọ́lẹ̀ tuntun';
+
+  @override
+  String tripCompleteYesAmount(String amount) {
+    return 'Bẹ́ẹ̀ni, mo gba $amount';
+  }
 }

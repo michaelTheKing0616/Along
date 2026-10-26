@@ -868,5 +868,109 @@
         "type": "String"
       }
     }
+  },
+  "drivePhasePickup": "Pickup",
+  "drivePhaseBoard": "Board",
+  "drivePhaseDrop": "Drop",
+  "activeTripPickUpTitle": "Pick up {name}",
+  "@activeTripPickUpTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activeTripOnBoardTitle": "{name} is on board",
+  "@activeTripOnBoardTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activeTripDropTitle": "Drop {name}",
+  "@activeTripDropTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activeTripRiderFallback": "your rider",
+  "activeTripBoardNaMe": "Board with Na Me",
+  "activeTripEnterPin": "Enter pickup PIN",
+  "activeTripPinShort": "PIN",
+  "activeTripMessageShort": "Message",
+  "activeTripSeatsShort": "Seats",
+  "activeTripExtendShort": "Extend",
+  "activeTripReportShort": "Report",
+  "activeTripFareLabel": "Rider pays",
+  "activeTripFeeCaption": "Along fee {amount} ({percent}%)",
+  "@activeTripFeeCaption": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "incomingAcceptFare": "Accept · {amount}",
+  "@incomingAcceptFare": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "incomingFareCaption": "Rider pays · {tierLabel}",
+  "@incomingFareCaption": {
+    "placeholders": {
+      "tierLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeOfflineTitle": "You're offline",
+  "homeOnlineTitle": "You're online",
+  "homeOfflineHint": "Go online to get requests near you.",
+  "homeOnlineHint": "Requests pop up here. Accept in one tap.",
+  "homeGoOnline": "GO",
+  "homeGoOffline": "Go offline",
+  "homeModeAtPark": "At park",
+  "homeModeRoaming": "Roaming",
+  "homeModeFull": "Full",
+  "homeTodayEarned": "Today · {amount}",
+  "@homeTodayEarned": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "homeTodayTrips": "{count, plural, =0{No trips yet} =1{1 trip} other{{count} trips}}",
+  "@homeTodayTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeShortcutsTitle": "Your day",
+  "homeDirectionShortOnRoute": "On my route",
+  "homeDirectionShortNone": "Any direction",
+  "homeTileDemand": "Demand",
+  "tripCompleteCashHero": "Collect in cash",
+  "tripCompleteRowFare": "Fare",
+  "tripCompleteRowFee": "Along fee (to balance)",
+  "tripCompleteRowBalance": "New balance",
+  "tripCompleteYesAmount": "Yes, I got {amount}",
+  "@tripCompleteYesAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   }
 }

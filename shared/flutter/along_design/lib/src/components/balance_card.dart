@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 import '../utils/format_money.dart';
 import 'along_button.dart';
@@ -31,23 +32,40 @@ class BalanceCard extends StatelessWidget {
   final VoidCallback? onSettle;
   final VoidCallback? onTap;
 
-  Color get _balanceColor => switch (state) {
-        BalanceCardState.good => AlongColors.ink900,
-        BalanceCardState.warned => AlongColors.semanticWarning,
-        BalanceCardState.paused => AlongColors.semanticDanger,
-      };
+  Color _balanceColor(BuildContext context) => switch (state) {
+    BalanceCardState.good => _c(context).ink,
+    BalanceCardState.warned => AlongColors.semanticWarning,
+    BalanceCardState.paused => AlongColors.semanticDanger,
+  };
 
   Color get _standingColor => switch (state) {
-        BalanceCardState.good => AlongColors.semanticSuccess,
-        BalanceCardState.warned => AlongColors.semanticWarning,
-        BalanceCardState.paused => AlongColors.semanticDanger,
-      };
+    BalanceCardState.good => AlongColors.semanticSuccess,
+    BalanceCardState.warned => AlongColors.semanticWarning,
+    BalanceCardState.paused => AlongColors.semanticDanger,
+  };
 
   String get _statusLine => switch (state) {
-        BalanceCardState.good => 'Balance healthy',
-        BalanceCardState.warned => 'Approaching settlement threshold',
-        BalanceCardState.paused => 'Matching pauses below ${formatMoney(thresholdNaira)}',
-      };
+    BalanceCardState.good => 'Balance healthy',
+    BalanceCardState.warned => 'Approaching settlement threshold',
+    BalanceCardState.paused =>
+      'Matching pauses below ${formatMoney(thresholdNaira)}',
+  };
+
+  // Light keeps the original tokens exactly; dark reads the palette so the
+  // card never renders as a white slab on a dark screen.
+  static _Tones _c(BuildContext context) {
+    if (Theme.of(context).brightness != Brightness.dark) {
+      return const _Tones.light();
+    }
+    final p = AlongPalette.of(context);
+    return _Tones(
+      surface: p.surface,
+      ink: p.ink,
+      body: p.ink,
+      muted: p.muted,
+      line: p.line,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +77,7 @@ class BalanceCard extends StatelessWidget {
 
   Widget _buildCompact(BuildContext context) {
     return Material(
-      color: AlongColors.surface0,
+      color: _c(context).surface,
       shape: AlongCraft.border(AlongRadius.card.x),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -78,11 +96,15 @@ class BalanceCard extends StatelessWidget {
                   children: [
                     Text(
                       'Along balance',
-                      style: AlongText.caption.copyWith(color: AlongColors.ink500),
+                      style: AlongText.caption.copyWith(
+                        color: _c(context).muted,
+                      ),
                     ),
                     Text(
                       formatMoney(balanceNaira),
-                      style: AlongText.numericL.copyWith(color: _balanceColor),
+                      style: AlongText.numericL.copyWith(
+                        color: _balanceColor(context),
+                      ),
                       softWrap: false,
                     ),
                   ],
@@ -117,34 +139,37 @@ class BalanceCard extends StatelessWidget {
       padding: const EdgeInsets.all(AlongSpace.s16),
       clipBehavior: Clip.antiAlias,
       decoration: AlongCraft.fill(
-        AlongColors.surface0,
+        _c(context).surface,
         corner: AlongRadius.card.x,
         side: BorderSide(
           color: state == BalanceCardState.paused
               ? AlongColors.semanticDangerFill
-              : AlongColors.ink100,
+              : _c(context).line,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Along balance', style: AlongText.caption.copyWith(color: AlongColors.ink500)),
+          Text(
+            'Along balance',
+            style: AlongText.caption.copyWith(color: _c(context).muted),
+          ),
           const SizedBox(height: AlongSpace.s4),
           Text(
             formatMoney(balanceNaira),
-            style: AlongText.displayL.copyWith(color: _balanceColor),
+            style: AlongText.displayL.copyWith(color: _balanceColor(context)),
             softWrap: false,
             overflow: TextOverflow.visible,
           ),
           const SizedBox(height: AlongSpace.s8),
           Text(
             _statusLine,
-            style: AlongText.body.copyWith(color: AlongColors.ink700),
+            style: AlongText.body.copyWith(color: _c(context).body),
           ),
           const SizedBox(height: AlongSpace.s4),
           Text(
             'Matching pauses below ${formatMoney(thresholdNaira)}',
-            style: AlongText.caption.copyWith(color: AlongColors.ink500),
+            style: AlongText.caption.copyWith(color: _c(context).muted),
             softWrap: false,
             overflow: TextOverflow.visible,
           ),
@@ -160,4 +185,25 @@ class BalanceCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Tones {
+  const _Tones({
+    required this.surface,
+    required this.ink,
+    required this.body,
+    required this.muted,
+    required this.line,
+  });
+  const _Tones.light()
+    : surface = AlongColors.surface0,
+      ink = AlongColors.ink900,
+      body = AlongColors.ink700,
+      muted = AlongColors.ink500,
+      line = AlongColors.ink100;
+  final Color surface;
+  final Color ink;
+  final Color body;
+  final Color muted;
+  final Color line;
 }

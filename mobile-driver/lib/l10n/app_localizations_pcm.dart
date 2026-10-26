@@ -1347,4 +1347,143 @@ class AppLocalizationsPcm extends AppLocalizations {
   String tripEtaPickup(String label) {
     return 'Pickup $label';
   }
+
+  @override
+  String get drivePhasePickup => 'Pickup';
+
+  @override
+  String get drivePhaseBoard => 'Enter';
+
+  @override
+  String get drivePhaseDrop => 'Drop';
+
+  @override
+  String activeTripPickUpTitle(String name) {
+    return 'Carry $name';
+  }
+
+  @override
+  String activeTripOnBoardTitle(String name) {
+    return '$name don enter';
+  }
+
+  @override
+  String activeTripDropTitle(String name) {
+    return 'Drop $name';
+  }
+
+  @override
+  String get activeTripRiderFallback => 'your passenger';
+
+  @override
+  String get activeTripBoardNaMe => 'Enter with Na Me';
+
+  @override
+  String get activeTripEnterPin => 'Put pickup PIN';
+
+  @override
+  String get activeTripPinShort => 'PIN';
+
+  @override
+  String get activeTripMessageShort => 'Message';
+
+  @override
+  String get activeTripSeatsShort => 'Seats';
+
+  @override
+  String get activeTripExtendShort => 'Extend';
+
+  @override
+  String get activeTripReportShort => 'Report';
+
+  @override
+  String get activeTripFareLabel => 'Passenger go pay';
+
+  @override
+  String activeTripFeeCaption(String amount, String percent) {
+    return 'Along fee $amount ($percent%)';
+  }
+
+  @override
+  String incomingAcceptFare(String amount) {
+    return 'Accept · $amount';
+  }
+
+  @override
+  String incomingFareCaption(String tierLabel) {
+    return 'Passenger go pay · $tierLabel';
+  }
+
+  @override
+  String get homeOfflineTitle => 'You no dey online';
+
+  @override
+  String get homeOnlineTitle => 'You dey online';
+
+  @override
+  String get homeOfflineHint => 'Go online make request dey come near you.';
+
+  @override
+  String get homeOnlineHint => 'Request go show here. Accept with one tap.';
+
+  @override
+  String get homeGoOnline => 'GO';
+
+  @override
+  String get homeGoOffline => 'Comot online';
+
+  @override
+  String get homeModeAtPark => 'For park';
+
+  @override
+  String get homeModeRoaming => 'Dey waka';
+
+  @override
+  String get homeModeFull => 'Don full';
+
+  @override
+  String homeTodayEarned(String amount) {
+    return 'Today · $amount';
+  }
+
+  @override
+  String homeTodayTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trips',
+      one: '1 trip',
+      zero: 'No trip yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShortcutsTitle => 'Your day';
+
+  @override
+  String get homeDirectionShortOnRoute => 'For my route';
+
+  @override
+  String get homeDirectionShortNone => 'Any side';
+
+  @override
+  String get homeTileDemand => 'Demand';
+
+  @override
+  String get tripCompleteCashHero => 'Collect cash';
+
+  @override
+  String get tripCompleteRowFare => 'Fare';
+
+  @override
+  String get tripCompleteRowFee => 'Along fee (to balance)';
+
+  @override
+  String get tripCompleteRowBalance => 'New balance';
+
+  @override
+  String tripCompleteYesAmount(String amount) {
+    return 'Yes, I collect $amount';
+  }
 }
