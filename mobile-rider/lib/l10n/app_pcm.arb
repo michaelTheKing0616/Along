@@ -180,5 +180,10 @@
   "wayfindingTo": "Go {place}",
   "wayfindingSummary": "{distance} · {minutes} min waka",
   "wayfindingAudioPlaying": "Audio dey play",
-  "wayfindingNowPlaying": "E dey play now"
+  "wayfindingNowPlaying": "E dey play now",
+  "wayfindingYouAreHere": "You dey here",
+  "wayfindingStepOf": "Step {step} of {total}",
+  "wayfindingIveArrived": "I don reach",
+  "scanFitHint": "Put the code inside the corners",
+  "scanFound": "We don see the code"
 }

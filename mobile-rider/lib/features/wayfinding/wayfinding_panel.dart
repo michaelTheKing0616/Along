@@ -1,7 +1,10 @@
+import 'dart:io' show Platform;
+
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
@@ -17,6 +20,7 @@ class WayfindingPanel extends StatefulWidget {
     this.userLocation,
     this.destination,
     this.onArrived,
+    this.drawnMap,
   });
 
   final WalkingDirections directions;
@@ -27,6 +31,12 @@ class WayfindingPanel extends StatefulWidget {
   final GeoPoint? userLocation;
   final GeoPoint? destination;
   final VoidCallback? onArrived;
+
+  /// Paint a drawn street map instead of MapLibre. Null: drawn under
+  /// `flutter test`, live basemap in the app.
+  final bool? drawnMap;
+
+  bool get _drawn => drawnMap ?? Platform.environment['FLUTTER_TEST'] == 'true';
 
   @override
   State<WayfindingPanel> createState() => _WayfindingPanelState();
@@ -96,24 +106,77 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
     };
   }
 
-  Widget _buildTextMode(AppLocalizations l10n) {
-    return SingleChildScrollView(
-      child: StepList(
-        playingLabel: l10n.wayfindingAudioPlaying,
-        nowLabel: l10n.wayfindingNowPlaying,
-        variant: StepListVariant.text,
-        steps: [
-          for (var i = 0; i < widget.directions.steps.length; i++)
-            WayfindingStep(
-              maneuverIcon: _iconForManeuver(
-                widget.directions.steps[i].maneuver,
-              ),
-              instruction: widget.directions.steps[i].instruction,
-              distance: _formatDistance(widget.directions.steps[i].distanceM),
-              isActive: i == _activeStepIndex,
+  Widget _currentStepCard(AppLocalizations l10n) {
+    final p = AlongPalette.of(context);
+    final steps = widget.directions.steps;
+    if (steps.isEmpty) return const SizedBox.shrink();
+    final i = _activeStepIndex.clamp(0, steps.length - 1);
+    return DecoratedBox(
+      key: const Key('wayfinding_here'),
+      decoration: AlongCraft.compactFill(p.surface, 64, corner: 20),
+      child: Padding(
+        padding: const EdgeInsets.all(AlongSpace.s12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: p.accent,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: p.accentInk, width: 1.5),
+                  ),
+                  child: const SizedBox(width: 14, height: 14),
+                ),
+                const SizedBox(width: AlongSpace.s8),
+                Expanded(
+                  child: Text(
+                    l10n.wayfindingYouAreHere,
+                    style: AlongType.label(p),
+                  ),
+                ),
+                Text(
+                  l10n.wayfindingStepOf(i + 1, steps.length),
+                  style: AlongType.caption(p),
+                ),
+              ],
             ),
-        ],
+            const SizedBox(height: AlongSpace.s8),
+            TripProgressBar(
+              progress: (i + 0.5) / steps.length,
+              from: steps[i].instruction,
+              to: _formatDistance(widget.directions.distanceM),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildTextMode(AppLocalizations l10n) {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        _currentStepCard(l10n),
+        const SizedBox(height: AlongSpace.s12),
+        StepList(
+          playingLabel: l10n.wayfindingAudioPlaying,
+          nowLabel: l10n.wayfindingNowPlaying,
+          variant: StepListVariant.text,
+          steps: [
+            for (var i = 0; i < widget.directions.steps.length; i++)
+              WayfindingStep(
+                maneuverIcon: _iconForManeuver(
+                  widget.directions.steps[i].maneuver,
+                ),
+                instruction: widget.directions.steps[i].instruction,
+                distance: _formatDistance(widget.directions.steps[i].distanceM),
+                isActive: i == _activeStepIndex,
+              ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -125,22 +188,38 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
         KeyedSubtree(
           key: const Key('wayfinding_map'),
           child: AlongCraft.clip(
-            corner: AlongRadius.card.x,
-            child: AlongMap(
-              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
-              allowDemoStyleFallback: false,
-              initialCameraPosition: camera == null
-                  ? null
-                  : MapCamera.forCenter(
-                      lat: camera.lat,
-                      lng: camera.lng,
-                      zoom: 16,
+            corner: 20,
+            child: widget._drawn
+                ? CustomPaint(
+                    painter: _WalkSketchPainter(
+                      palette: AlongPalette.of(context),
+                      polyline: polyline,
+                      activeStep: _activeStepIndex,
+                      stepCount: widget.directions.steps.length,
                     ),
-              onLayerControllerReady: (controller) {
-                controller.setWalkRoute(polyline);
-              },
-            ),
+                    child: const SizedBox.expand(),
+                  )
+                : AlongMap(
+                    styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
+                    allowDemoStyleFallback: false,
+                    initialCameraPosition: camera == null
+                        ? null
+                        : MapCamera.forCenter(
+                            lat: camera.lat,
+                            lng: camera.lng,
+                            zoom: 16,
+                          ),
+                    onLayerControllerReady: (controller) {
+                      controller.setWalkRoute(polyline);
+                    },
+                  ),
           ),
+        ),
+        Positioned(
+          left: AlongSpace.s12,
+          right: AlongSpace.s12,
+          bottom: AlongSpace.s12,
+          child: _currentStepCard(l10n),
         ),
         if (widget.directions.degraded)
           Positioned(
@@ -197,25 +276,27 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: StepList(
-            playingLabel: l10n.wayfindingAudioPlaying,
-            nowLabel: l10n.wayfindingNowPlaying,
-            variant: _audioPlaying
-                ? StepListVariant.audioPlaying
-                : StepListVariant.text,
-            steps: [
-              for (var i = 0; i < widget.directions.steps.length; i++)
-                WayfindingStep(
-                  maneuverIcon: _iconForManeuver(
-                    widget.directions.steps[i].maneuver,
+          child: SingleChildScrollView(
+            child: StepList(
+              playingLabel: l10n.wayfindingAudioPlaying,
+              nowLabel: l10n.wayfindingNowPlaying,
+              variant: _audioPlaying
+                  ? StepListVariant.audioPlaying
+                  : StepListVariant.text,
+              steps: [
+                for (var i = 0; i < widget.directions.steps.length; i++)
+                  WayfindingStep(
+                    maneuverIcon: _iconForManeuver(
+                      widget.directions.steps[i].maneuver,
+                    ),
+                    instruction: widget.directions.steps[i].instruction,
+                    distance: _formatDistance(
+                      widget.directions.steps[i].distanceM,
+                    ),
+                    isActive: _audioPlaying && i == _activeStepIndex,
                   ),
-                  instruction: widget.directions.steps[i].instruction,
-                  distance: _formatDistance(
-                    widget.directions.steps[i].distanceM,
-                  ),
-                  isActive: _audioPlaying && i == _activeStepIndex,
-                ),
-            ],
+              ],
+            ),
           ),
         ),
         const SizedBox(height: AlongSpace.s12),
@@ -410,4 +491,118 @@ class _ModeSwitch extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Drawn walk map for tests and previews: streets, the walk route, a dot
+/// per step, the rider puck and a destination flag. Host-stable.
+class _WalkSketchPainter extends CustomPainter {
+  _WalkSketchPainter({
+    required this.palette,
+    required this.polyline,
+    required this.activeStep,
+    required this.stepCount,
+  });
+
+  final AlongPalette palette;
+  final List<GeoPoint> polyline;
+  final int activeStep;
+  final int stepCount;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..color = palette.mapLand);
+    canvas.drawOval(
+      Rect.fromLTWH(
+        size.width * 0.6,
+        size.height * 0.08,
+        size.width * 0.32,
+        size.height * 0.2,
+      ),
+      Paint()..color = palette.mapPark,
+    );
+    final street = Paint()
+      ..color = palette.mapRoad
+      ..strokeWidth = 9
+      ..strokeCap = StrokeCap.round;
+    for (var i = 1; i < 5; i++) {
+      final y = size.height * i / 5;
+      canvas.drawLine(Offset(0, y - 12), Offset(size.width, y + 12), street);
+      final x = size.width * i / 4;
+      canvas.drawLine(Offset(x + 10, 0), Offset(x - 10, size.height), street);
+    }
+    if (polyline.length < 2) return;
+    var minLat = polyline.first.lat, maxLat = minLat;
+    var minLng = polyline.first.lng, maxLng = minLng;
+    for (final g in polyline) {
+      if (g.lat < minLat) minLat = g.lat;
+      if (g.lat > maxLat) maxLat = g.lat;
+      if (g.lng < minLng) minLng = g.lng;
+      if (g.lng > maxLng) maxLng = g.lng;
+    }
+    final box = Rect.fromLTRB(40, 48, size.width - 40, size.height - 150);
+    final spanLat = (maxLat - minLat).abs() < 1e-9 ? 1e-9 : maxLat - minLat;
+    final spanLng = (maxLng - minLng).abs() < 1e-9 ? 1e-9 : maxLng - minLng;
+    Offset at(GeoPoint g) => Offset(
+      box.left + (g.lng - minLng) / spanLng * box.width,
+      box.bottom - (g.lat - minLat) / spanLat * box.height,
+    );
+    final pts = polyline.map(at).toList();
+    final path = Path()..moveTo(pts.first.dx, pts.first.dy);
+    for (final o in pts.skip(1)) {
+      path.lineTo(o.dx, o.dy);
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = palette.surface
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 9
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = palette.ink
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 5
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round,
+    );
+    for (var i = 1; i < pts.length - 1; i++) {
+      canvas.drawCircle(pts[i], 6, Paint()..color = palette.surface);
+      canvas.drawCircle(
+        pts[i],
+        6,
+        Paint()
+          ..color = palette.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
+    }
+    final end = pts.last;
+    canvas.drawCircle(end, 12, Paint()..color = palette.ink);
+    canvas.drawCircle(end, 5, Paint()..color = palette.onInk);
+    final here = pts[activeStep.clamp(0, pts.length - 1)];
+    canvas.drawCircle(
+      here,
+      20,
+      Paint()..color = palette.accent.withValues(alpha: 0.28),
+    );
+    canvas.drawCircle(here, 9, Paint()..color = palette.accent);
+    canvas.drawCircle(
+      here,
+      9,
+      Paint()
+        ..color = palette.accentInk
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _WalkSketchPainter old) =>
+      old.activeStep != activeStep ||
+      old.palette.brightness != palette.brightness ||
+      old.polyline != polyline;
 }

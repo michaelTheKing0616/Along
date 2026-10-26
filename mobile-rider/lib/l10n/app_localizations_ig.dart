@@ -1561,4 +1561,21 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get wayfindingNowPlaying => 'Na-akpọ ugbu a';
+
+  @override
+  String get wayfindingYouAreHere => 'Ị nọ ebe a';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Nzọụkwụ $step n\'ime $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'Abịarutela m';
+
+  @override
+  String get scanFitHint => 'Tinye koodu n\'ime akụkụ ndị a';
+
+  @override
+  String get scanFound => 'Achọtala koodu';
 }

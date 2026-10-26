@@ -127,8 +127,19 @@ class _WayfindingScreenState extends ConsumerState<WayfindingScreen> {
                     text: l10n.wayfindingArrived,
                   ),
                 ],
-                const SizedBox(height: AlongSpace.s20),
+                const SizedBox(height: AlongSpace.s16),
                 Expanded(child: _body(l10n, p)),
+                if (!_loading && _directions != null) ...[
+                  const SizedBox(height: AlongSpace.s12),
+                  AlongButton(
+                    key: const Key('wayfinding_arrived_cta'),
+                    label: l10n.wayfindingIveArrived,
+                    onPressed: () {
+                      setState(() => _arrived = true);
+                      if (context.canPop()) context.pop();
+                    },
+                  ),
+                ],
               ],
             ),
           ),

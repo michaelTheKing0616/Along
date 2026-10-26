@@ -2806,6 +2806,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Now playing'**
   String get wayfindingNowPlaying;
+
+  /// No description provided for @wayfindingYouAreHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You are here'**
+  String get wayfindingYouAreHere;
+
+  /// No description provided for @wayfindingStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String wayfindingStepOf(int step, int total);
+
+  /// No description provided for @wayfindingIveArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve arrived'**
+  String get wayfindingIveArrived;
+
+  /// No description provided for @scanFitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit the code inside the corners'**
+  String get scanFitHint;
+
+  /// No description provided for @scanFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Code found'**
+  String get scanFound;
 }
 
 class _AppLocalizationsDelegate

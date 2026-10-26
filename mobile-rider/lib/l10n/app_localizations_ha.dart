@@ -1564,4 +1564,21 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get wayfindingNowPlaying => 'Ana kunnawa yanzu';
+
+  @override
+  String get wayfindingYouAreHere => 'Kana nan';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Mataki $step cikin $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'Na iso';
+
+  @override
+  String get scanFitHint => 'Sa lambar a cikin kusurwoyin';
+
+  @override
+  String get scanFound => 'An sami lambar';
 }

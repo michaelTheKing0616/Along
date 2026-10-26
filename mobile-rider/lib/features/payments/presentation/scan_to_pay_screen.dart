@@ -13,7 +13,10 @@ import 'package:mobile_rider/l10n/app_localizations.dart';
 
 /// R-31 Scan to pay — camera placeholder, torch, typed code entry.
 class ScanToPayScreen extends ConsumerStatefulWidget {
-  const ScanToPayScreen({super.key});
+  const ScanToPayScreen({super.key, this.debugFound = false});
+
+  /// Golden hook: render the lock-on state without a real scan.
+  final bool debugFound;
 
   @override
   ConsumerState<ScanToPayScreen> createState() => _ScanToPayScreenState();
@@ -26,6 +29,7 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
   bool _showTypedEntry = false;
   final _codeController = TextEditingController();
   String? _rejectMessage;
+  late bool _found = widget.debugFound;
 
   @override
   void initState() {
@@ -47,7 +51,12 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
       );
       return;
     }
+    setState(() {
+      _rejectMessage = null;
+      _found = true;
+    });
     await _openPaySheet(code, payload);
+    if (mounted) setState(() => _found = false);
   }
 
   Future<void> _openPaySheet(String code, String rawPayload) async {
@@ -168,54 +177,46 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
               ),
               Expanded(
                 child: Stack(
-                  alignment: Alignment.center,
                   children: [
                     const Positioned.fill(
-                      child: ColoredBox(
+                      child: CustomPaint(
                         key: Key('scan_camera_view'),
-                        color: AlongColors.ink900,
+                        painter: _ScenePainter(),
                       ),
                     ),
-                    const SizedBox(
-                      key: Key('scan_frame'),
-                      width: 248,
-                      height: 248,
-                      child: CustomPaint(painter: _FramePainter()),
-                    ),
-                    if (_rejectMessage != null)
-                      Positioned(
-                        bottom: AlongSpace.s16,
-                        left: AlongSpace.s20,
-                        right: AlongSpace.s20,
-                        child: DecoratedBox(
-                          decoration: AlongCraft.fill(
-                            AlongColors.semanticWarningTint,
-                            corner: 16,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(AlongSpace.s12),
-                            child: Row(
-                              children: [
-                                const AlongIcon(
-                                  AlongIcons.info,
-                                  size: 20,
-                                  color: AlongColors.semanticWarning,
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AnimatedScale(
+                            scale: _found ? 0.92 : 1,
+                            duration: MediaQuery.disableAnimationsOf(context)
+                                ? Duration.zero
+                                : const Duration(milliseconds: 220),
+                            curve: Curves.easeOutBack,
+                            child: SizedBox(
+                              key: const Key('scan_frame'),
+                              width: 248,
+                              height: 248,
+                              child: CustomPaint(
+                                painter: _FramePainter(
+                                  color: _found
+                                      ? AlongColors.semanticSuccessFill
+                                      : AlongColors.brandYellow,
                                 ),
-                                const SizedBox(width: AlongSpace.s8),
-                                Expanded(
-                                  child: Text(
-                                    key: const Key('scan_reject_message'),
-                                    _rejectMessage!,
-                                    style: AlongText.bodyStrong.copyWith(
-                                      color: AlongColors.ink900,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: AlongSpace.s20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AlongSpace.s20,
+                            ),
+                            child: _plate(l10n),
+                          ),
+                        ],
                       ),
+                    ),
                   ],
                 ),
               ),
@@ -272,6 +273,57 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _plate(AppLocalizations l10n) {
+    final reject = _rejectMessage;
+    final (Color bg, Color fg, IconData icon, String text, Key? key) = _found
+        ? (
+            AlongColors.semanticSuccessFill,
+            AlongColors.surface0,
+            AlongIcons.check,
+            l10n.scanFound,
+            const Key('scan_found'),
+          )
+        : reject != null
+        ? (
+            AlongColors.semanticWarningTint,
+            AlongColors.ink900,
+            AlongIcons.info,
+            reject,
+            const Key('scan_reject_message'),
+          )
+        : (
+            AlongColors.surface0.withValues(alpha: 0.14),
+            AlongColors.surface0,
+            AlongIcons.qrCode,
+            l10n.scanFitHint,
+            null,
+          );
+    return DecoratedBox(
+      key: key,
+      decoration: AlongCraft.fill(bg, corner: 16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AlongSpace.s16,
+          vertical: AlongSpace.s12,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AlongIcon(icon, size: 20, color: fg),
+            const SizedBox(width: AlongSpace.s8),
+            Flexible(
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: AlongText.bodyStrong.copyWith(color: fg),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -337,12 +389,44 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
 
 /// Four yellow corner brackets: the viewfinder.
 class _FramePainter extends CustomPainter {
-  const _FramePainter();
+  const _FramePainter({required this.color});
+
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final c = (Offset.zero & size).center;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(24)),
+      Paint()..color = AlongColors.surface0.withValues(alpha: 0.04),
+    );
+    final sticker = Rect.fromCenter(center: c, width: 176, height: 176);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(sticker, const Radius.circular(20)),
+      Paint()..color = AlongColors.brandYellow.withValues(alpha: 0.16),
+    );
+    final cell = Paint()..color = AlongColors.surface0.withValues(alpha: 0.10);
+    const n = 9;
+    final unit = 136 / n;
+    final origin = sticker.topLeft + const Offset(20, 20);
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        final finder = (x < 3 && y < 3) || (x > 5 && y < 3) || (x < 3 && y > 5);
+        if (finder || (x * 7 + y * 3) % 5 < 2) {
+          canvas.drawRect(
+            Rect.fromLTWH(
+              origin.dx + x * unit,
+              origin.dy + y * unit,
+              unit - 2,
+              unit - 2,
+            ),
+            cell,
+          );
+        }
+      }
+    }
     final paint = Paint()
-      ..color = AlongColors.brandYellow
+      ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 5
       ..strokeCap = StrokeCap.round;
@@ -366,5 +450,35 @@ class _FramePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _FramePainter old) => old.color != color;
+}
+
+/// Dimmed camera look: a dusk vignette and an out-of-focus dashboard.
+class _ScenePainter extends CustomPainter {
+  const _ScenePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const RadialGradient(
+          center: Alignment(0, -0.1),
+          radius: 0.9,
+          colors: [Color(0xFF3A342B), Color(0xFF1C1915), AlongColors.ink900],
+          stops: [0, 0.45, 0.8],
+        ).createShader(rect),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(-20, size.height * 0.84, size.width + 40, size.height),
+        const Radius.circular(48),
+      ),
+      Paint()..color = const Color(0x33000000),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _ScenePainter oldDelegate) => false;
 }

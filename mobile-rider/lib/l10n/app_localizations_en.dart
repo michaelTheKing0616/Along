@@ -1563,4 +1563,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wayfindingNowPlaying => 'Now playing';
+
+  @override
+  String get wayfindingYouAreHere => 'You are here';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'I\'ve arrived';
+
+  @override
+  String get scanFitHint => 'Fit the code inside the corners';
+
+  @override
+  String get scanFound => 'Code found';
 }

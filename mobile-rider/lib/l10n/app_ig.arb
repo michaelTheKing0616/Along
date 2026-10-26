@@ -180,5 +180,10 @@
   "wayfindingTo": "Gaa {place}",
   "wayfindingSummary": "{distance} · ije nkeji {minutes}",
   "wayfindingAudioPlaying": "Ụda na-akpọ",
-  "wayfindingNowPlaying": "Na-akpọ ugbu a"
+  "wayfindingNowPlaying": "Na-akpọ ugbu a",
+  "wayfindingYouAreHere": "Ị nọ ebe a",
+  "wayfindingStepOf": "Nzọụkwụ {step} n'ime {total}",
+  "wayfindingIveArrived": "Abịarutela m",
+  "scanFitHint": "Tinye koodu n'ime akụkụ ndị a",
+  "scanFound": "Achọtala koodu"
 }

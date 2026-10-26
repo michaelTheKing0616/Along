@@ -128,6 +128,53 @@ void main() {
     destinationLabel: 'Area 1 Park',
   );
 
+  final walk = {
+    'distance_m': 640,
+    'duration_s': 480,
+    'steps': [
+      {
+        'instruction': 'Walk north on Airport Road',
+        'distance_m': 120,
+        'maneuver': 'continue',
+      },
+      {
+        'instruction': 'Turn right at the Total filling station',
+        'distance_m': 90,
+        'maneuver': 'turn-right',
+      },
+      {
+        'instruction': 'Continue past the keke stand',
+        'distance_m': 180,
+        'maneuver': 'continue',
+      },
+      {
+        'instruction': 'Turn left onto Ahmadu Bello Way',
+        'distance_m': 140,
+        'maneuver': 'turn-left',
+      },
+      {
+        'instruction': 'Cross at the pedestrian bridge',
+        'distance_m': 80,
+        'maneuver': 'continue',
+      },
+      {
+        'instruction': 'Arrive at Area 1 Park, gate B',
+        'distance_m': 30,
+        'maneuver': 'arrive',
+      },
+    ],
+    'polyline': [
+      {'lat': 9.0700, 'lng': 7.4000},
+      {'lat': 9.0730, 'lng': 7.4002},
+      {'lat': 9.0732, 'lng': 7.4030},
+      {'lat': 9.0760, 'lng': 7.4040},
+      {'lat': 9.0765, 'lng': 7.4010},
+      {'lat': 9.0790, 'lng': 7.4012},
+      {'lat': 9.0796, 'lng': 7.4022},
+    ],
+    'tts_script': ['Walk north on Airport Road for 120 metres'],
+  };
+
   final cards = [
     {'id': 'pm-1', 'brand': 'Visa', 'last4': '4242', 'is_default': true},
     {'id': 'pm-2', 'brand': 'Mastercard', 'last4': '1881', 'is_default': false},
@@ -166,7 +213,7 @@ void main() {
       await shoot(tester, 'rider_pay_methods_empty_$name');
     });
 
-    for (final state in ['camera', 'reject', 'typed']) {
+    for (final state in ['camera', 'found', 'reject', 'typed']) {
       testWidgets('scan to pay $state $name', (tester) async {
         await tester.binding.setSurfaceSize(const Size(390, 844));
         addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -180,7 +227,12 @@ void main() {
         );
         addTearDown(c.dispose);
         await tester.pumpWidget(
-          app(c, const ScanToPayScreen(), brightness, scale),
+          app(
+            c,
+            ScanToPayScreen(debugFound: state == 'found'),
+            brightness,
+            scale,
+          ),
         );
         await settle(tester);
         if (state == 'reject') {
@@ -200,12 +252,15 @@ void main() {
       });
     }
 
-    for (final mode in [WayfindingMode.text, WayfindingMode.audio]) {
+    for (final mode in WayfindingMode.values) {
       testWidgets('wayfinding ${mode.name} $name', (tester) async {
         await tester.binding.setSurfaceSize(const Size(390, 844));
         addTearDown(() => tester.binding.setSurfaceSize(null));
         final c = containerFor(
-          FakeAlongSupabase(configRows: defaultTestConfigRows()),
+          FakeAlongSupabase(
+            configRows: defaultTestConfigRows(),
+            walkingDirectionsResponse: {'data': walk},
+          ),
         );
         addTearDown(c.dispose);
         await textMode(c, mode);

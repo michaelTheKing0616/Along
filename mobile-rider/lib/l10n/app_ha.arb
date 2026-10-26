@@ -180,5 +180,10 @@
   "wayfindingTo": "Zuwa {place}",
   "wayfindingSummary": "{distance} · tafiyar minti {minutes}",
   "wayfindingAudioPlaying": "Ana kunna sauti",
-  "wayfindingNowPlaying": "Ana kunnawa yanzu"
+  "wayfindingNowPlaying": "Ana kunnawa yanzu",
+  "wayfindingYouAreHere": "Kana nan",
+  "wayfindingStepOf": "Mataki {step} cikin {total}",
+  "wayfindingIveArrived": "Na iso",
+  "scanFitHint": "Sa lambar a cikin kusurwoyin",
+  "scanFound": "An sami lambar"
 }

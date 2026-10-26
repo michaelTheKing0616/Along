@@ -1563,4 +1563,21 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get wayfindingNowPlaying => 'E dey play now';
+
+  @override
+  String get wayfindingYouAreHere => 'You dey here';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'I don reach';
+
+  @override
+  String get scanFitHint => 'Put the code inside the corners';
+
+  @override
+  String get scanFound => 'We don see the code';
 }

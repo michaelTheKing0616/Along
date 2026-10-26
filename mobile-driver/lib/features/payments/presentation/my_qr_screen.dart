@@ -120,6 +120,14 @@ class MyQrScreen extends ConsumerWidget {
                                     style: AlongType.bodyMuted(p),
                                   ),
                                 ],
+                                const SizedBox(height: AlongSpace.s16),
+                                AlongButton(
+                                  key: const Key('my_qr_share'),
+                                  label: l10n.myQrShare,
+                                  onPressed: busy
+                                      ? null
+                                      : controller.shareImage,
+                                ),
                               ],
                             ),
                           ),
@@ -185,8 +193,9 @@ class MyQrScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 // The switch reads "Pause": on means paused.
-                                Switch(
+                                AlongSwitch(
                                   key: const Key('my_qr_pause_toggle'),
+                                  semanticLabel: l10n.myQrPauseDigital,
                                   value: !profile.acceptsDigital,
                                   onChanged: busy || !state.digitalEnabled
                                       ? null
@@ -215,7 +224,7 @@ class MyQrScreen extends ConsumerWidget {
                       ],
                     ),
             ),
-            if (!state.isLoading && (state.showPayoutPrompt || hasCode))
+            if (!state.isLoading && state.showPayoutPrompt)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AlongSpace.s20,
@@ -223,21 +232,15 @@ class MyQrScreen extends ConsumerWidget {
                   AlongSpace.s20,
                   AlongSpace.s12,
                 ),
-                child: state.showPayoutPrompt
-                    ? AlongButton(
-                        key: const Key('my_qr_setup_payout'),
-                        label: l10n.myQrSetupPayout,
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(l10n.myQrPayoutComingSoon)),
-                          );
-                        },
-                      )
-                    : AlongButton(
-                        key: const Key('my_qr_share'),
-                        label: l10n.myQrShare,
-                        onPressed: busy ? null : controller.shareImage,
-                      ),
+                child: AlongButton(
+                  key: const Key('my_qr_setup_payout'),
+                  label: l10n.myQrSetupPayout,
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.myQrPayoutComingSoon)),
+                    );
+                  },
+                ),
               ),
           ],
         ),

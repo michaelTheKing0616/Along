@@ -1561,4 +1561,21 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get wayfindingNowPlaying => 'Ń ṣiṣẹ́ báyìí';
+
+  @override
+  String get wayfindingYouAreHere => 'O wà níbí';
+
+  @override
+  String wayfindingStepOf(int step, int total) {
+    return 'Ìgbésẹ̀ $step nínú $total';
+  }
+
+  @override
+  String get wayfindingIveArrived => 'Mo ti dé';
+
+  @override
+  String get scanFitHint => 'Fi koodu sí àárín àwọn igun';
+
+  @override
+  String get scanFound => 'A ti rí koodu';
 }

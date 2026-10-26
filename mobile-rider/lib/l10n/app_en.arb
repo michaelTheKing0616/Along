@@ -1805,5 +1805,20 @@
     }
   },
   "wayfindingAudioPlaying": "Audio playing",
-  "wayfindingNowPlaying": "Now playing"
+  "wayfindingNowPlaying": "Now playing",
+  "wayfindingYouAreHere": "You are here",
+  "wayfindingStepOf": "Step {step} of {total}",
+  "wayfindingIveArrived": "I've arrived",
+  "@wayfindingStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "scanFitHint": "Fit the code inside the corners",
+  "scanFound": "Code found"
 }

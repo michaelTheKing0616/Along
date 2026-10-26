@@ -180,5 +180,10 @@
   "wayfindingTo": "Sí {place}",
   "wayfindingSummary": "{distance} · ìrìn ìṣẹ́jú {minutes}",
   "wayfindingAudioPlaying": "Ohùn ń ṣiṣẹ́",
-  "wayfindingNowPlaying": "Ń ṣiṣẹ́ báyìí"
+  "wayfindingNowPlaying": "Ń ṣiṣẹ́ báyìí",
+  "wayfindingYouAreHere": "O wà níbí",
+  "wayfindingStepOf": "Ìgbésẹ̀ {step} nínú {total}",
+  "wayfindingIveArrived": "Mo ti dé",
+  "scanFitHint": "Fi koodu sí àárín àwọn igun",
+  "scanFound": "A ti rí koodu"
 }
