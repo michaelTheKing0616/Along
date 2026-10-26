@@ -191,9 +191,20 @@ class _AlongTripChatSheetState extends State<AlongTripChatSheet> {
                 ),
               )
             else ...[
+              if (widget.quickReplies.isNotEmpty) ...[
+                if (lines.isNotEmpty)
+                  Divider(height: 1, thickness: 1, color: p.line),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 6),
+                  child: Text(
+                    'Tap to send',
+                    style: AlongType.caption(p).copyWith(color: soft),
+                  ),
+                ),
+              ],
               Padding(
                 key: const Key('trip_chat_quick_replies'),
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -288,9 +299,13 @@ class _Bubble extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
       decoration: ShapeDecoration(
-        color: mine ? p.ink : p.surface,
+        color: mine && !failed ? p.ink : p.surface,
         shape: SmoothRectangleBorder(
-          side: mine ? BorderSide.none : BorderSide(color: p.line),
+          side: failed
+              ? BorderSide(color: p.danger, width: 1.5)
+              : mine
+              ? BorderSide.none
+              : BorderSide(color: p.line),
           borderRadius: SmoothBorderRadius.only(
             topLeft: _corner(20),
             topRight: _corner(20),
@@ -301,7 +316,8 @@ class _Bubble extends StatelessWidget {
       ),
       child: Text(
         line.body,
-        style: AlongType.body(p).copyWith(color: mine ? p.onInk : p.ink),
+        style: AlongType.body(p)
+            .copyWith(color: mine && !failed ? p.onInk : p.ink),
       ),
     );
     return Padding(
