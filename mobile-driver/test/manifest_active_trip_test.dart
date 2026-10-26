@@ -268,6 +268,33 @@ void main() {
       await tester.pump(const Duration(seconds: 6));
     });
 
+    testWidgets('Na Me tap-match boards in one tap, then one-tap Start', (
+      tester,
+    ) async {
+      fakeSupabase.tripStatuses['trip-name-1'] = 'accepted';
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-name-1'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.ensureVisible(find.byKey(const Key('active_trip_board')));
+      await tester.tap(find.byKey(const Key('active_trip_board')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Green Diamond'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1300));
+      expect(fakeSupabase.naMeProofs.single['method'], 'tap');
+      expect(fakeSupabase.tripStatuses['trip-name-1'], 'boarded');
+      expect(find.byKey(const Key('na_me_start')), findsOneWidget);
+      container.read(tripLocationPublisherProvider).stop().ignore();
+      await tester.pump(const Duration(seconds: 6));
+    });
+
     testWidgets('pickup PIN locks after the last try', (tester) async {
       fakeSupabase.tripStatuses['trip-pin-2'] = 'accepted';
       fakeSupabase.pinAttemptsLeft = 1;
