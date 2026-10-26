@@ -814,6 +814,46 @@ const _naMeOptions = [
 ];
 
 /// Stand-in for the camera feed: a dim street with a phone held up.
+class _Block extends StatelessWidget {
+  const _Block({
+    required this.x,
+    required this.w,
+    required this.h,
+    required this.windows,
+  });
+
+  final double x;
+  final double w;
+  final double h;
+  final List<Offset> windows;
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: Alignment(x, 0.16),
+    child: FractionallySizedBox(
+      widthFactor: w,
+      heightFactor: h,
+      alignment: Alignment.bottomCenter,
+      child: ColoredBox(
+        color: const Color(0xFF2C323C),
+        child: Stack(
+          children: [
+            for (final o in windows)
+              Align(
+                alignment: Alignment(o.dx * 2 - 1, o.dy * 2 - 1),
+                child: const SizedBox(
+                  width: 14,
+                  height: 18,
+                  child: ColoredBox(color: Color(0xFFE0B46A)),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _CameraScene extends StatelessWidget {
   const _CameraScene();
 
@@ -824,12 +864,61 @@ class _CameraScene extends StatelessWidget {
     fit: StackFit.expand,
     children: [
       ColoredBox(color: Color(0xFF39414E)),
+      // Buildings either side, a few lit windows.
+      _Block(
+        x: -1,
+        w: 0.34,
+        h: 0.62,
+        windows: [Offset(0.3, 0.2), Offset(0.65, 0.42), Offset(0.3, 0.64)],
+      ),
+      _Block(
+        x: 1,
+        w: 0.3,
+        h: 0.7,
+        windows: [Offset(0.4, 0.16), Offset(0.4, 0.5), Offset(0.7, 0.33)],
+      ),
       Align(
         alignment: Alignment.bottomCenter,
         child: FractionallySizedBox(
           heightFactor: 0.42,
           widthFactor: 1,
           child: ColoredBox(color: Color(0xFF262B33)),
+        ),
+      ),
+      // Kerb line and a parked keke's tail-lights in the distance.
+      Align(
+        alignment: Alignment(0, 0.17),
+        child: SizedBox(
+          height: 3,
+          width: double.infinity,
+          child: ColoredBox(color: Color(0xFF4A515C)),
+        ),
+      ),
+      Align(
+        alignment: Alignment(0.62, 0.12),
+        child: SizedBox(
+          width: 8,
+          height: 5,
+          child: ColoredBox(color: Color(0xFFB8432F)),
+        ),
+      ),
+      Align(
+        alignment: Alignment(0.74, 0.12),
+        child: SizedBox(
+          width: 8,
+          height: 5,
+          child: ColoredBox(color: Color(0xFFB8432F)),
+        ),
+      ),
+      // The hand holding the phone up.
+      Align(
+        alignment: Alignment(0, 0.16),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xFF6B4632),
+            borderRadius: BorderRadius.all(Radius.circular(28)),
+          ),
+          child: SizedBox(width: 96, height: 120),
         ),
       ),
       Align(
