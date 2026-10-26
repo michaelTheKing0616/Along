@@ -343,14 +343,20 @@ class AlongNaMeCameraView extends StatelessWidget {
                         style: AlongType.body(p).copyWith(color: p.muted),
                       ),
                       const SizedBox(height: 16),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: LinearProgressIndicator(
-                          key: const Key('na_me_fallback_bar'),
-                          value: 1 - fallbackProgress.clamp(0, 1),
-                          minHeight: 4,
-                          color: p.ink,
-                          backgroundColor: p.line,
+                      // Flat bar, not LinearProgressIndicator: host-stable.
+                      SizedBox(
+                        key: const Key('na_me_fallback_bar'),
+                        height: 4,
+                        child: ColoredBox(
+                          color: p.line,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: 1 - fallbackProgress.clamp(0, 1),
+                              heightFactor: 1,
+                              child: ColoredBox(color: p.ink),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
