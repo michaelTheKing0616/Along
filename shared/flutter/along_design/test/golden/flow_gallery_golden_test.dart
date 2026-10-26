@@ -810,14 +810,9 @@ class _CameraScene extends StatelessWidget {
   const _CameraScene();
 
   @override
-  Widget build(BuildContext context) => const DecoratedBox(
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Color(0xFF3A4150), Color(0xFF1C1F26)],
-      ),
-    ),
+  // Flat colour, not a gradient: gradients dither differently per host.
+  Widget build(BuildContext context) => const ColoredBox(
+    color: Color(0xFF2A303B),
     child: Align(
       alignment: Alignment(0, -0.3),
       child: DecoratedBox(
