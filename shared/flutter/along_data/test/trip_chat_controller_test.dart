@@ -57,6 +57,29 @@ void main() {
     );
   });
 
+  test('lost-and-found lines are flagged apart from the live chat', () async {
+    server.addAll([
+      {
+        'id': 'a',
+        'author_role': 'driver',
+        'body': 'Here',
+        'created_at': '2026-10-25T18:00:00Z',
+        'thread': 'chat',
+      },
+      {
+        'id': 'b',
+        'author_role': 'driver',
+        'body': 'Found a bag',
+        'created_at': '2026-10-25T20:00:00Z',
+        'thread': 'lost_found',
+      },
+    ]);
+    final c = make();
+    await c.start();
+    expect(c.lines.map((l) => l.lostFound), [false, true]);
+    c.dispose();
+  });
+
   test('send is optimistic, then sent; read receipt ticks it read', () async {
     final c = make();
     await c.start();

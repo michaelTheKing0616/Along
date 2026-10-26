@@ -17,6 +17,7 @@ class TripChatEntry {
     required this.at,
     required this.state,
     this.serverId,
+    this.lostFound = false,
   });
 
   /// client_ref for my lines, server id for theirs.
@@ -27,6 +28,9 @@ class TripChatEntry {
   final TripChatState state;
   final String? serverId;
 
+  /// Posted on the post-trip lost-and-found thread, not the live chat.
+  final bool lostFound;
+
   TripChatEntry copyWith({TripChatState? state, String? serverId}) =>
       TripChatEntry(
         key: key,
@@ -35,6 +39,7 @@ class TripChatEntry {
         at: at,
         state: state ?? this.state,
         serverId: serverId ?? this.serverId,
+        lostFound: lostFound,
       );
 }
 
@@ -291,6 +296,7 @@ class TripChatController extends ChangeNotifier {
           ? (row['read_at'] != null ? TripChatState.read : TripChatState.sent)
           : TripChatState.sent,
       serverId: id,
+      lostFound: row['thread'] == 'lost_found',
     );
   }
 
