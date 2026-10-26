@@ -36,6 +36,8 @@ class OptionCard extends StatelessWidget {
     this.loadWarning,
     this.onRequest,
     this.requestLabel,
+    this.recommendedLabel = 'Recommended',
+    this.requestLabelFor,
   });
 
   final OptionCardVariant variant;
@@ -52,6 +54,12 @@ class OptionCard extends StatelessWidget {
   final String? loadWarning;
   final VoidCallback? onRequest;
   final String? requestLabel;
+
+  /// Band text on the recommended card. Apps pass their translation.
+  final String recommendedLabel;
+
+  /// Builds the request label from the formatted fare, for translations.
+  final String Function(String fare)? requestLabelFor;
 
   bool get _isUnavailable => visualState == OptionCardVisualState.unavailable;
   bool get _hasLoadWarning => visualState == OptionCardVisualState.warning;
@@ -85,7 +93,7 @@ class OptionCard extends StatelessWidget {
                     ),
                     color: palette.accent.withValues(alpha: 0.22),
                     child: Text(
-                      'Recommended',
+                      recommendedLabel,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AlongType.label(palette).copyWith(
@@ -175,7 +183,9 @@ class OptionCard extends StatelessWidget {
                     ),
                     child: AlongButton(
                       label:
-                          requestLabel ?? 'Request ${formatMoney(fareNaira)}',
+                          requestLabel ??
+                          requestLabelFor?.call(formatMoney(fareNaira)) ??
+                          'Request ${formatMoney(fareNaira)}',
                       size: AlongButtonSize.secondary,
                       onPressed: onRequest ?? () {},
                     ),

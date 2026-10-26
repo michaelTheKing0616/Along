@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 import '../utils/fare_tier.dart';
 
@@ -15,6 +16,7 @@ class TierPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AlongSpace.s8,
@@ -22,7 +24,7 @@ class TierPill extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       decoration: AlongCraft.fill(
-        AlongColors.surface100,
+        palette.recessed,
         corner: AlongRadius.xs.x,
       ),
       child: Row(
@@ -40,7 +42,7 @@ class TierPill extends StatelessWidget {
           Flexible(
             child: Text(
               tier.label,
-              style: AlongText.caption.copyWith(color: AlongColors.ink700),
+              style: AlongText.caption.copyWith(color: palette.ink),
               overflow: TextOverflow.visible,
               softWrap: true,
             ),

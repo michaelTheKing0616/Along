@@ -17,6 +17,7 @@ export 'src/flows/demo_adapter.dart';
 export 'src/flows/driver_portrait.dart';
 export 'src/flows/flow_stages.dart';
 export 'src/flows/home_sheet.dart';
+export 'src/flows/route_preview.dart';
 export 'src/flows/journey_stages.dart';
 export 'src/flows/live_arrival.dart';
 export 'src/flows/ride_batch.dart';

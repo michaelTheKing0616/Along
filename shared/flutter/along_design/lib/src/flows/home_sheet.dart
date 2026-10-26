@@ -85,9 +85,12 @@ class AlongWhereToBar extends StatelessWidget {
 
 /// A 48pt place row with a recessed icon tile.
 class AlongPlaceRow extends StatelessWidget {
-  const AlongPlaceRow({super.key, required this.place});
+  const AlongPlaceRow({super.key, required this.place, this.stacked = false});
 
   final AlongPlace place;
+
+  /// Puts the detail under the title, for long names such as search results.
+  final bool stacked;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +125,7 @@ class AlongPlaceRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: AlongType.body(palette),
                   ),
-                  if (detail != null && place.action != null)
+                  if (detail != null && (place.action != null || stacked))
                     Text(
                       detail,
                       maxLines: 1,
@@ -157,7 +160,7 @@ class AlongPlaceRow extends StatelessWidget {
                   ),
                 ),
               )
-            else if (detail != null) ...[
+            else if (detail != null && !stacked) ...[
               const SizedBox(width: 12),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 140),

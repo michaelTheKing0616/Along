@@ -163,9 +163,20 @@ class AlongDayGradient extends StatelessWidget {
 }
 
 class AlongGreeting extends StatelessWidget {
-  const AlongGreeting({super.key, required this.phase});
+  const AlongGreeting({
+    super.key,
+    required this.phase,
+    this.title,
+    this.detail,
+  });
 
   final AlongDayPhase phase;
+
+  /// Translated greeting. Null uses the English demo copy for [phase].
+  final String? title;
+
+  /// Second line. Null with a [title] hides it; null without uses the demo.
+  final String? detail;
 
   @override
   Widget build(BuildContext context) {
@@ -182,8 +193,14 @@ class AlongGreeting extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(phase.greeting, maxLines: 1, softWrap: false, style: title),
-            Text(phase.weather, maxLines: 1, softWrap: false, style: meta),
+            Text(
+              this.title ?? phase.greeting,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: title,
+            ),
+            if ((this.title == null ? phase.weather : detail) case final d?)
+              Text(d, maxLines: 1, overflow: TextOverflow.ellipsis, style: meta),
           ],
         ),
       ),
