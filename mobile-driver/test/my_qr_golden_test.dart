@@ -80,7 +80,15 @@ void main() {
                 ),
                 child: child!,
               ),
-              home: const MyQrScreen(renderQrPixels: true),
+              // Pushed, as drivers reach it, so the back button shows.
+              home: Navigator(
+                onGenerateInitialRoutes: (_, __) => [
+                  MaterialPageRoute<void>(builder: (_) => const SizedBox()),
+                  MaterialPageRoute<void>(
+                    builder: (_) => const MyQrScreen(renderQrPixels: true),
+                  ),
+                ],
+              ),
             ),
           ),
         );

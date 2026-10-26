@@ -311,8 +311,20 @@ class _Notice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final dark = p.brightness == Brightness.dark;
     return DecoratedBox(
-      decoration: AlongCraft.fill(AlongColors.semanticWarningTint, corner: 16),
+      // Pale tint reads as a flashlight on the dark sheet; there the notice
+      // sits on the recessed fill and the warning icon carries the colour.
+      decoration: AlongCraft.fill(
+        dark
+            ? Color.alphaBlend(
+                AlongColors.semanticWarning.withValues(alpha: 0.14),
+                p.recessed,
+              )
+            : AlongColors.semanticWarningTint,
+        corner: 16,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AlongSpace.s12),
         child: Row(
@@ -327,7 +339,9 @@ class _Notice extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: AlongText.body.copyWith(color: AlongColors.ink900),
+                style: AlongText.body.copyWith(
+                  color: dark ? p.ink : AlongColors.ink900,
+                ),
               ),
             ),
           ],

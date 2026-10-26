@@ -382,9 +382,85 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
             warn: true,
           ),
         ],
+        const SizedBox(height: AlongSpace.s20),
+        TripPanel(
+          key: const Key('scan_code_where'),
+          child: Row(
+            children: [
+              DecoratedBox(
+                decoration: AlongCraft.compactFill(
+                  AlongColors.brandYellow,
+                  88,
+                  corner: 16,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AlongSpace.s8),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AlongColors.surface0,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const CustomPaint(painter: _MiniQrPainter()),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'ABC12345',
+                        style: AlongType.caption(
+                          p,
+                        ).copyWith(color: AlongColors.ink900, letterSpacing: 1),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: AlongSpace.s16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.scanCodeWhereTitle, style: AlongType.label(p)),
+                    const SizedBox(height: 2),
+                    Text(l10n.scanCodeWhereBody, style: AlongType.caption(p)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
+}
+
+/// A tiny QR glyph for the "where to find it" helper.
+class _MiniQrPainter extends CustomPainter {
+  const _MiniQrPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const n = 9;
+    final unit = size.width / n;
+    final paint = Paint()..color = AlongColors.ink900;
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        final finder = (x < 3 && y < 3) || (x > 5 && y < 3) || (x < 3 && y > 5);
+        if (finder || (x * 7 + y * 3) % 5 < 2) {
+          canvas.drawRect(
+            Rect.fromLTWH(x * unit, y * unit, unit - 0.6, unit - 0.6),
+            paint,
+          );
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _MiniQrPainter oldDelegate) => false;
 }
 
 /// Four yellow corner brackets: the viewfinder.

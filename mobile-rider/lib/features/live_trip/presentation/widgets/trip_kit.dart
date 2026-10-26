@@ -870,3 +870,111 @@ String tripReceiptShareText(
   }
   return b.toString();
 }
+
+/// One step in a [TripTimeline].
+class TripTimelineStep {
+  const TripTimelineStep({
+    required this.icon,
+    required this.title,
+    this.trailing,
+    this.done = false,
+    this.active = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? trailing;
+  final bool done;
+  final bool active;
+}
+
+/// A vertical list of steps joined by a hairline rail, in a recessed panel.
+class TripTimeline extends StatelessWidget {
+  const TripTimeline({super.key, this.title, required this.steps});
+
+  final String? title;
+  final List<TripTimelineStep> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return TripPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (title != null) ...[
+            Text(title!, style: AlongType.label(p)),
+            const SizedBox(height: AlongSpace.s12),
+          ],
+          for (var i = 0; i < steps.length; i++)
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 28,
+                    child: Column(
+                      children: [
+                        _dot(p, steps[i]),
+                        if (i < steps.length - 1)
+                          Expanded(
+                            child: Container(
+                              width: 1.5,
+                              color: steps[i].done ? p.ink : p.line,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AlongSpace.s12),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 4,
+                        bottom: i < steps.length - 1 ? AlongSpace.s16 : 0,
+                      ),
+                      child: Text(
+                        steps[i].title,
+                        style: steps[i].done || steps[i].active
+                            ? AlongType.label(p)
+                            : AlongType.bodyMuted(p),
+                      ),
+                    ),
+                  ),
+                  if (steps[i].trailing != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: AlongSpace.s8,
+                        top: 4,
+                      ),
+                      child: Text(
+                        steps[i].trailing!,
+                        style: AlongType.caption(p),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _dot(AlongPalette p, TripTimelineStep s) {
+    final filled = s.done || s.active;
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        color: filled ? p.ink : p.surface,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: AlongIcon(
+        s.done ? AlongIcons.check : s.icon,
+        size: 14,
+        color: filled ? p.bg : p.muted,
+      ),
+    );
+  }
+}

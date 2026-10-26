@@ -2836,6 +2836,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Code found'**
   String get scanFound;
+
+  /// No description provided for @requestingNextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens next'**
+  String get requestingNextTitle;
+
+  /// No description provided for @requestingStepSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent to drivers nearby'**
+  String get requestingStepSent;
+
+  /// No description provided for @requestingStepAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'A driver accepts and you see their plate'**
+  String get requestingStepAccept;
+
+  /// No description provided for @requestingStepMeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet them at {place}'**
+  String requestingStepMeet(String place);
+
+  /// No description provided for @tripGlanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip'**
+  String get tripGlanceTitle;
+
+  /// No description provided for @tripGlanceWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk to {place}'**
+  String tripGlanceWalk(String place);
+
+  /// No description provided for @tripGlanceWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for your ride'**
+  String get tripGlanceWait;
+
+  /// No description provided for @tripGlanceRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride to {place}'**
+  String tripGlanceRide(String place);
+
+  /// No description provided for @tripGlanceMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String tripGlanceMinutes(int minutes);
+
+  /// No description provided for @tripsSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent trips'**
+  String get tripsSummaryTitle;
+
+  /// No description provided for @tripsSummaryCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} trips'**
+  String tripsSummaryCount(int count);
+
+  /// No description provided for @tripsSummarySpent.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} paid'**
+  String tripsSummarySpent(String amount);
+
+  /// No description provided for @tripsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips you take with Along show up here, with receipts.'**
+  String get tripsEmptyHint;
+
+  /// No description provided for @tripsEmptyCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan a trip'**
+  String get tripsEmptyCta;
+
+  /// No description provided for @scanCodeWhereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to find it'**
+  String get scanCodeWhereTitle;
+
+  /// No description provided for @scanCodeWhereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.'**
+  String get scanCodeWhereBody;
 }
 
 class _AppLocalizationsDelegate

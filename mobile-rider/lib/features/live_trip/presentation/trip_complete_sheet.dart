@@ -56,7 +56,11 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   _CompleteStep _step = _CompleteStep.fare;
   bool _busy = false;
 
-  int get _fareNaira => majorUnits(widget.trip.totalFare);
+  /// What the rider owes: the server receipt total when known (fare plus
+  /// surcharges), otherwise the trip's quoted total.
+  Money get _payable => widget.receipt?.total ?? widget.trip.totalFare;
+
+  int get _fareNaira => majorUnits(_payable);
 
   bool get _isTier3 =>
       widget.trip.fare.tier == FareTier.unconfirmed ||
@@ -119,7 +123,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
     final digitalEnabled = ref
         .watch(digitalPaymentsEnabledProvider)
         .maybeWhen(data: (value) => value, orElse: () => false);
-    final fare = formatAppMoney(ref, widget.trip.totalFare);
+    final fare = formatAppMoney(ref, _payable);
+    final surcharge = widget.receipt?.surcharge;
+    final itemised = surcharge != null && surcharge.minorUnits > 0;
     final offerPay = digitalEnabled && !_alreadyPaidDigitally && !_isTier3;
     final loading = _busy
         ? AlongButtonVisualState.loading
@@ -161,7 +167,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.tripCompleteFareLabel,
+                        itemised
+                            ? l10n.receiptTotal
+                            : l10n.tripCompleteFareLabel,
                         style: AlongType.caption(p),
                       ),
                       Text(
@@ -169,6 +177,15 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                         key: const Key('trip_complete_fare'),
                         style: AlongType.display(p),
                       ),
+                      if (itemised)
+                        Text(
+                          '${l10n.receiptFare} '
+                          '${formatAppMoney(ref, widget.receipt!.fare)} · '
+                          '${l10n.receiptLoadSurcharge} '
+                          '${formatAppMoney(ref, surcharge)}',
+                          key: const Key('trip_complete_breakdown'),
+                          style: AlongType.caption(p),
+                        ),
                     ],
                   ),
                 ),

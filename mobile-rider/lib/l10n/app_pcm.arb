@@ -185,5 +185,21 @@
   "wayfindingStepOf": "Step {step} of {total}",
   "wayfindingIveArrived": "I don reach",
   "scanFitHint": "Put the code inside the corners",
-  "scanFound": "We don see the code"
+  "scanFound": "We don see the code",
+  "requestingNextTitle": "Wetin go happen next",
+  "requestingStepSent": "We don send your request to drivers wey dey near",
+  "requestingStepAccept": "Driver go accept, you go see im plate number",
+  "requestingStepMeet": "Meet am for {place}",
+  "tripGlanceTitle": "Your trip",
+  "tripGlanceWalk": "Waka go {place}",
+  "tripGlanceWait": "Wait for your ride",
+  "tripGlanceRide": "Enter go {place}",
+  "tripGlanceMinutes": "{minutes} min",
+  "tripsSummaryTitle": "Recent trips",
+  "tripsSummaryCount": "{count} trips",
+  "tripsSummarySpent": "You don pay {amount}",
+  "tripsEmptyHint": "Trips wey you take with Along go show here, with receipt.",
+  "tripsEmptyCta": "Plan trip",
+  "scanCodeWhereTitle": "Where you go see am",
+  "scanCodeWhereBody": "The 8-character code dey under the QR for driver sticker, or tell am make e open My QR."
 }

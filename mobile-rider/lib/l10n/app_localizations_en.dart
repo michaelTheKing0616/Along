@@ -1580,4 +1580,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanFound => 'Code found';
+
+  @override
+  String get requestingNextTitle => 'What happens next';
+
+  @override
+  String get requestingStepSent => 'Request sent to drivers nearby';
+
+  @override
+  String get requestingStepAccept => 'A driver accepts and you see their plate';
+
+  @override
+  String requestingStepMeet(String place) {
+    return 'Meet them at $place';
+  }
+
+  @override
+  String get tripGlanceTitle => 'Your trip';
+
+  @override
+  String tripGlanceWalk(String place) {
+    return 'Walk to $place';
+  }
+
+  @override
+  String get tripGlanceWait => 'Wait for your ride';
+
+  @override
+  String tripGlanceRide(String place) {
+    return 'Ride to $place';
+  }
+
+  @override
+  String tripGlanceMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get tripsSummaryTitle => 'Recent trips';
+
+  @override
+  String tripsSummaryCount(int count) {
+    return '$count trips';
+  }
+
+  @override
+  String tripsSummarySpent(String amount) {
+    return '$amount paid';
+  }
+
+  @override
+  String get tripsEmptyHint =>
+      'Trips you take with Along show up here, with receipts.';
+
+  @override
+  String get tripsEmptyCta => 'Plan a trip';
+
+  @override
+  String get scanCodeWhereTitle => 'Where to find it';
+
+  @override
+  String get scanCodeWhereBody =>
+      'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.';
 }

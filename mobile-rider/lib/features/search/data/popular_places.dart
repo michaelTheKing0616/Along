@@ -29,6 +29,24 @@ const Map<String, List<PopularPlace>> popularPlacesByCity = {
       'market',
       GeoPoint(lat: 9.0726, lng: 7.4218),
     ),
+    PopularPlace(
+      'Utako Motor Park',
+      'Utako',
+      'park',
+      GeoPoint(lat: 9.0667, lng: 7.4425),
+    ),
+    PopularPlace(
+      'Garki Market',
+      'Garki II',
+      'market',
+      GeoPoint(lat: 9.0285, lng: 7.4905),
+    ),
+    PopularPlace(
+      'Kubwa Village Market',
+      'Kubwa',
+      'market',
+      GeoPoint(lat: 9.1565, lng: 7.3271),
+    ),
   ],
 };
 

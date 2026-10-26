@@ -1820,5 +1820,63 @@
     }
   },
   "scanFitHint": "Fit the code inside the corners",
-  "scanFound": "Code found"
+  "scanFound": "Code found",
+  "requestingNextTitle": "What happens next",
+  "requestingStepSent": "Request sent to drivers nearby",
+  "requestingStepAccept": "A driver accepts and you see their plate",
+  "requestingStepMeet": "Meet them at {place}",
+  "@requestingStepMeet": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripGlanceTitle": "Your trip",
+  "tripGlanceWalk": "Walk to {place}",
+  "@tripGlanceWalk": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripGlanceWait": "Wait for your ride",
+  "tripGlanceRide": "Ride to {place}",
+  "@tripGlanceRide": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripGlanceMinutes": "{minutes} min",
+  "@tripGlanceMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripsSummaryTitle": "Recent trips",
+  "tripsSummaryCount": "{count} trips",
+  "@tripsSummaryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripsSummarySpent": "{amount} paid",
+  "@tripsSummarySpent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tripsEmptyHint": "Trips you take with Along show up here, with receipts.",
+  "tripsEmptyCta": "Plan a trip",
+  "scanCodeWhereTitle": "Where to find it",
+  "scanCodeWhereBody": "The 8-character code is printed under the QR on the driver's sticker, or ask them to open My QR."
 }

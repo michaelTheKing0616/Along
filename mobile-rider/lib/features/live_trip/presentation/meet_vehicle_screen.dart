@@ -172,32 +172,6 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
           style: AlongType.caption(palette),
         ),
         const SizedBox(height: AlongSpace.s16),
-        _VehicleCard(
-          trip: trip,
-          stats: l10n.meetVehicleDriverStats(
-            trip.driver.rating.toStringAsFixed(1),
-            trip.driver.tripCount,
-          ),
-          plateConfirmed: _plateConfirmed,
-          onScan: () async {
-            final confirmed = await context.push<bool>(
-              AppRoutes.plateScan,
-              extra: PlateScanArgs(
-                expectedPlate: trip.vehicle.plateNumber,
-                tripId: trip.tripId,
-                trip: trip,
-              ),
-            );
-            if (confirmed == true && mounted) {
-              setState(() => _plateConfirmed = true);
-            }
-          },
-          onMatch: () {
-            AlongHaptics.tick(context);
-            setState(() => _plateConfirmed = true);
-          },
-        ),
-        const SizedBox(height: AlongSpace.s16),
         DecoratedBox(
           decoration: AlongCraft.compactFill(palette.recessed, 72, corner: 20),
           child: Padding(
@@ -234,6 +208,32 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
               ],
             ),
           ),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        _VehicleCard(
+          trip: trip,
+          stats: l10n.meetVehicleDriverStats(
+            trip.driver.rating.toStringAsFixed(1),
+            trip.driver.tripCount,
+          ),
+          plateConfirmed: _plateConfirmed,
+          onScan: () async {
+            final confirmed = await context.push<bool>(
+              AppRoutes.plateScan,
+              extra: PlateScanArgs(
+                expectedPlate: trip.vehicle.plateNumber,
+                tripId: trip.tripId,
+                trip: trip,
+              ),
+            );
+            if (confirmed == true && mounted) {
+              setState(() => _plateConfirmed = true);
+            }
+          },
+          onMatch: () {
+            AlongHaptics.tick(context);
+            setState(() => _plateConfirmed = true);
+          },
         ),
         if (_card != null) ...[
           const SizedBox(height: AlongSpace.s16),

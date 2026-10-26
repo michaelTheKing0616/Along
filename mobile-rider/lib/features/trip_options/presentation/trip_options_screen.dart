@@ -19,6 +19,7 @@ import 'package:mobile_rider/features/pricing/domain/pricing_route_args.dart';
 import 'package:mobile_rider/features/offline/stale_badge.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -66,14 +67,12 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
         builder: (context, box) {
           // Map takes a third, so the fare and Request button of the first
           // card sit above the fold even at 1.3x text. With one option the
-          // map grows into the space a second card would use.
+          // map gives back room to the single option's walk/wait/ride steps.
           final few = state.sortedCandidates.length <= 1;
-          final mapHeight = box.maxHeight * (few ? 0.5 : 0.34);
+          final mapHeight = box.maxHeight * (few ? 0.3 : 0.34);
           final session = state.session;
-          final recommendedId = state
-              .plan
-              ?.sortOrders[SortCriterion.recommended]
-              ?.firstOrNull;
+          final recommendedId =
+              state.plan?.sortOrders[SortCriterion.recommended]?.firstOrNull;
           final lead =
               state.sortedCandidates
                   .where((c) => c.candidateId == recommendedId)
@@ -261,7 +260,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
             context.push(
               AppRoutes.wayfinding,
               extra: WayfindingRouteArgs(
-                from: state.session?.origin ??
+                from:
+                    state.session?.origin ??
                     const GeoPoint(lat: 9.0765, lng: 7.3986),
                 to: nearest.location,
                 cityId: state.plan?.cityId,
@@ -291,8 +291,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
     }
 
     final candidates = state.sortedCandidates;
-    final recommendedId = state.plan?.sortOrders[SortCriterion.recommended]
-        ?.firstOrNull;
+    final recommendedId =
+        state.plan?.sortOrders[SortCriterion.recommended]?.firstOrNull;
     final recommended = candidates
         .where((c) => c.candidateId == recommendedId)
         .firstOrNull;
@@ -301,8 +301,9 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
       sessionContext: state.session?.placementContext,
       recommendedAlightStageId: alightStageId,
     );
-    final placementsAsync =
-        ref.watch(tripOptionsPlacementProvider(placementContext));
+    final placementsAsync = ref.watch(
+      tripOptionsPlacementProvider(placementContext),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,18 +343,18 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
               ),
               // Sorting one option is noise; chips appear from two.
               if ((state.plan?.candidates.length ?? 0) > 1) ...[
-              const SizedBox(height: AlongSpace.s12),
-              SortChips(
-                labels: {
-                  SortOption.recommended: l10n.tripOptionsRecommended,
-                  SortOption.cheapest: l10n.tripSortCheapest,
-                  SortOption.fastest: l10n.tripSortFastest,
-                  SortOption.leastStrenuous: l10n.tripSortEasiest,
-                },
-                selected: _mapSort(state.sort),
-                onSelected: (option) =>
-                    controller.setSort(_mapSortOption(option)),
-              ),
+                const SizedBox(height: AlongSpace.s12),
+                SortChips(
+                  labels: {
+                    SortOption.recommended: l10n.tripOptionsRecommended,
+                    SortOption.cheapest: l10n.tripSortCheapest,
+                    SortOption.fastest: l10n.tripSortFastest,
+                    SortOption.leastStrenuous: l10n.tripSortEasiest,
+                  },
+                  selected: _mapSort(state.sort),
+                  onSelected: (option) =>
+                      controller.setSort(_mapSortOption(option)),
+                ),
               ],
             ],
           ),
@@ -370,8 +371,11 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           child: ListView.builder(
             key: const Key('trip_options_list'),
             padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
-            itemCount: candidates.length,
+            itemCount: candidates.length + (_glance(candidates) ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index == candidates.length) {
+                return _TripGlance(candidate: candidates.single, l10n: l10n);
+              }
               final candidate = candidates[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: AlongSpace.s12),
@@ -389,17 +393,19 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                         onRequestLeg: (legIndex) => ref
                             .read(tripOptionsControllerProvider.notifier)
                             .requestCandidate(candidate, legIndex: legIndex),
-                        onWhy: candidate.candidateId == recommendedId &&
+                        onWhy:
+                            candidate.candidateId == recommendedId &&
                                 candidate.metrics != null
                             ? () => showExplainPopover(
-                                  context,
-                                  explain: candidate.metrics!.explain,
-                                )
+                                context,
+                                explain: candidate.metrics!.explain,
+                              )
                             : null,
-                        loadWarning: OptionCardMapper.hasLoadCapacityWarning(
-                          candidate,
-                          state.load,
-                        )
+                        loadWarning:
+                            OptionCardMapper.hasLoadCapacityWarning(
+                              candidate,
+                              state.load,
+                            )
                             ? l10n.loadFlagCapacityWarning
                             : null,
                         l10n: l10n,
@@ -419,10 +425,13 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
     );
   }
 
+  /// One direct option leaves room for its walk / wait / ride breakdown.
+  bool _glance(List<PlanCandidate> candidates) =>
+      candidates.length == 1 && !candidates.single.isMultiLeg;
+
   Widget _buildOptionCard(
     BuildContext context,
-    PlanCandidate candidate,
-    {
+    PlanCandidate candidate, {
     required bool recommended,
     required TripOptionsState state,
     required AppLocalizations l10n,
@@ -469,11 +478,11 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3
               ? () => state.session?.isHail == true
-                  ? _openPricingForHail(candidate, state)
-                  : _openPricingForTier3(candidate, state)
+                    ? _openPricingForHail(candidate, state)
+                    : _openPricingForTier3(candidate, state)
               : () => ref
-                  .read(tripOptionsControllerProvider.notifier)
-                  .requestCandidate(candidate),
+                    .read(tripOptionsControllerProvider.notifier)
+                    .requestCandidate(candidate),
         ),
       ],
     );
@@ -488,7 +497,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
         context: 'park',
         from: session.origin,
         to: session.destination,
-        clientRef: 'park-${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
+        clientRef:
+            'park-${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
         destinationLabel: session.destinationLabel,
       ),
     );
@@ -604,27 +614,66 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
   }
 
   SortOption _mapSort(SortCriterion sort) => switch (sort) {
-        SortCriterion.recommended => SortOption.recommended,
-        SortCriterion.cheapest => SortOption.cheapest,
-        SortCriterion.fastest => SortOption.fastest,
-        SortCriterion.leastStrenuous => SortOption.leastStrenuous,
-      };
+    SortCriterion.recommended => SortOption.recommended,
+    SortCriterion.cheapest => SortOption.cheapest,
+    SortCriterion.fastest => SortOption.fastest,
+    SortCriterion.leastStrenuous => SortOption.leastStrenuous,
+  };
 
   SortCriterion _mapSortOption(SortOption option) => switch (option) {
-        SortOption.recommended => SortCriterion.recommended,
-        SortOption.cheapest => SortCriterion.cheapest,
-        SortOption.fastest => SortCriterion.fastest,
-        SortOption.leastStrenuous => SortCriterion.leastStrenuous,
-      };
+    SortOption.recommended => SortCriterion.recommended,
+    SortOption.cheapest => SortCriterion.cheapest,
+    SortOption.fastest => SortCriterion.fastest,
+    SortOption.leastStrenuous => SortCriterion.leastStrenuous,
+  };
 }
 
 /// Route extra for [AppRoutes.requesting].
 class RequestingRouteArgs {
-  const RequestingRouteArgs({
-    required this.trip,
-    required this.roamingSource,
-  });
+  const RequestingRouteArgs({required this.trip, required this.roamingSource});
 
   final TripSummary trip;
   final bool roamingSource;
+}
+
+class _TripGlance extends StatelessWidget {
+  const _TripGlance({required this.candidate, required this.l10n});
+
+  final PlanCandidate candidate;
+  final AppLocalizations l10n;
+
+  String _min(int seconds) =>
+      l10n.tripGlanceMinutes((seconds / 60).ceil().clamp(1, 999));
+
+  @override
+  Widget build(BuildContext context) {
+    final leg = candidate.legs.first;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AlongSpace.s16),
+      child: TripTimeline(
+        key: const Key('trip_options_glance'),
+        title: l10n.tripGlanceTitle,
+        steps: [
+          if (leg.walkSeconds > 0)
+            TripTimelineStep(
+              icon: AlongIcons.path,
+              title: l10n.tripGlanceWalk(leg.boardName),
+              trailing: _min(leg.walkSeconds),
+              active: true,
+            ),
+          if (leg.waitSeconds > 0)
+            TripTimelineStep(
+              icon: AlongIcons.schedule,
+              title: l10n.tripGlanceWait,
+              trailing: _min(leg.waitSeconds),
+            ),
+          TripTimelineStep(
+            icon: AlongIcons.signpost,
+            title: l10n.tripGlanceRide(leg.alightName),
+            trailing: _min(leg.inVehicleSeconds),
+          ),
+        ],
+      ),
+    );
+  }
 }

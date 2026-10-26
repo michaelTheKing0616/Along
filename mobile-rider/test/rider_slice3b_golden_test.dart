@@ -191,10 +191,11 @@ void main() {
       final c = containerFor(fake);
       addTearDown(c.dispose);
       await tester.pumpWidget(
-        app(c, const PaymentMethodsScreen(), brightness, scale),
+        app(c, const _Pushed(PaymentMethodsScreen()), brightness, scale),
       );
       await settle(tester);
       expect(find.text('Visa ···4242'), findsOneWidget);
+      expect(find.byKey(const Key('trip_page_back')), findsOneWidget);
       await shoot(tester, 'rider_pay_methods_$name');
     });
 
@@ -206,7 +207,7 @@ void main() {
       );
       addTearDown(c.dispose);
       await tester.pumpWidget(
-        app(c, const PaymentMethodsScreen(), brightness, scale),
+        app(c, const _Pushed(PaymentMethodsScreen()), brightness, scale),
       );
       await settle(tester);
       expect(find.text('No saved cards yet'), findsOneWidget);
@@ -323,4 +324,20 @@ void main() {
       WayfindingMode.audio,
     );
   });
+}
+
+/// Hosts [child] as the second route of a navigator so pages render the
+/// way users reach them: pushed, with a back affordance.
+class _Pushed extends StatelessWidget {
+  const _Pushed(this.child);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Navigator(
+    onGenerateInitialRoutes: (_, __) => [
+      MaterialPageRoute<void>(builder: (_) => const SizedBox()),
+      MaterialPageRoute<void>(builder: (_) => child),
+    ],
+  );
 }

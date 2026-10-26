@@ -609,7 +609,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
             Expanded(
               child: TripActionTile(
                 key: const Key('active_trip_extend'),
-                icon: AlongIcons.plus,
+                icon: AlongIcons.addTime,
                 label: l10n.activeTripExtend,
                 onPressed:
                     liveTrip.status == TripStatus.inTransit ||
