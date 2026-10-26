@@ -27,6 +27,7 @@ commit tap.
 | Pay | Rider | Pay driver sheet | 1 (Pay, amount pre-filled) then the provider's checkout | < 2 s to checkout | `mobile-rider/test/payments_test.dart` |
 | Rate | Rider | Receipt | 1 star + Done = 2 | < 2 s | `along_design/test/speed_budget_test.dart` |
 | Chat: quick reply | Both | Live trip | 1 (Message) + 1 (reply) = 2 | Sheet < 100 ms, line visible on tap | `speed_budget_test.dart`, `live_trip_wiring_test.dart`, `manifest_active_trip_test.dart` |
+| Chat in the car | Rider | Live trip (boarded / in transit) | 1 (Message {driver}) + 1 (reply) = 2 | same | `live_trip_wiring_test.dart` |
 | Chat: typed | Both | Chat sheet | type + 1 (send arrow or keyboard Send) | line visible on tap | `speed_budget_test.dart` |
 
 ## How the chat meets its budget
@@ -36,6 +37,8 @@ commit tap.
 - Sends show at once as "Sending", then tick to "Delivered" and "Read".
   Failed sends retry on a timer with the same `client_ref` (the server
   dedupes); after 3 tries the line says "Not sent. Tap to retry."
+- Chat is open for the live trip and 15 minutes after it ends; the 48 h
+  lost-and-found thread is a separate rule (`thread = 'lost_found'`).
 - Quick replies are config (`chat.quick_replies`, per role), so ops can tune
   them without an app release.
 

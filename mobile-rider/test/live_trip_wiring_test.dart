@@ -168,6 +168,13 @@ void main() {
     expect(find.byKey(const Key('active_trip_handoff')), findsNothing);
     expect(find.text('12–16'), findsOneWidget);
 
+    // In the car, Message is still one tap away.
+    final message = find.byKey(const Key('active_trip_message'));
+    await tester.ensureVisible(message);
+    await tester.tap(message);
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(find.byKey(const Key('trip_chat')), findsOneWidget);
+
     _stop(container, trip);
     await tester.pump();
     container.dispose();

@@ -463,6 +463,23 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                           ],
                         ),
                       ],
+                      if (chat != null && pickupSeconds == null) ...[
+                        const SizedBox(height: AlongSpace.s12),
+                        AlongUnreadBadge(
+                          count: chat.unread,
+                          child: AlongButton(
+                            key: const Key('active_trip_message'),
+                            label: 'Message ${liveTrip.driver.displayName}',
+                            variant: AlongButtonVariant.secondary,
+                            onPressed: () => openTripChat(
+                              context,
+                              ref,
+                              tripId: liveTrip.tripId,
+                              otherName: liveTrip.driver.displayName,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: AlongSpace.s12),
                       Row(
                         children: [
