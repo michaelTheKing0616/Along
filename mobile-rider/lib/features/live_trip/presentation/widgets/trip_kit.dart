@@ -50,6 +50,10 @@ AlongTripStrings riderTripStrings(AppLocalizations l10n) => AlongTripStrings(
   minutesRangeLabel: l10n.tripMinutesRangeLabel,
   emergency: l10n.tripEmergency,
   sos: l10n.tripSos,
+  holdForSos: l10n.tripHoldForSos,
+  naMe: l10n.tripNaMe,
+  call112: l10n.tripCall112,
+  fired: l10n.tripSignalSent,
   call: l10n.tripCall,
   callName: l10n.tripCallName,
   message: l10n.tripMessage,
@@ -282,6 +286,9 @@ class TripModeTile extends StatelessWidget {
 /// trip clocks read in city time whatever zone the phone is set to.
 const Duration cityUtcOffset = Duration(hours: 1);
 
+/// [t] as wall-clock time in the trip city.
+DateTime cityTime(DateTime t) => t.toUtc().add(cityUtcOffset);
+
 /// The driver's initial on a squircle tile, standing in for a photo.
 class TripDriverAvatar extends StatelessWidget {
   const TripDriverAvatar({super.key, required this.name, this.size = 44});
@@ -448,6 +455,526 @@ class TripProgressBar extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// A content-sized modal sheet in trip style: grabber, optional icon tile,
+/// title and subtitle, a scrolling body and an optional pinned footer.
+class TripModalSheet extends StatelessWidget {
+  const TripModalSheet({
+    super.key,
+    required this.title,
+    required this.children,
+    this.subtitle,
+    this.icon,
+    this.iconColor,
+    this.footer,
+    this.maxHeightFraction = 0.9,
+  });
+
+  final String title;
+  final String? subtitle;
+  final IconData? icon;
+  final Color? iconColor;
+  final List<Widget> children;
+  final Widget? footer;
+  final double maxHeightFraction;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final media = MediaQuery.of(context);
+    final tone = iconColor ?? p.ink;
+    return RiderTripStrings(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: media.size.height * maxHeightFraction,
+          ),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: p.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: AlongRadius.dialog,
+              ),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: AlongSpace.s12),
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: AlongCraft.compactFill(p.line, 4, corner: 2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AlongSpace.s20,
+                      AlongSpace.s16,
+                      AlongSpace.s20,
+                      AlongSpace.s12,
+                    ),
+                    child: Row(
+                      children: [
+                        if (icon != null) ...[
+                          Container(
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: AlongCraft.compactFill(
+                              tone.withValues(alpha: 0.12),
+                              40,
+                              corner: 14,
+                            ),
+                            child: AlongIcon(icon!, size: 20, color: tone),
+                          ),
+                          const SizedBox(width: AlongSpace.s12),
+                        ],
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(title, style: AlongType.title(p)),
+                              if (subtitle != null)
+                                Text(subtitle!, style: AlongType.caption(p)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(
+                        AlongSpace.s20,
+                        0,
+                        AlongSpace.s20,
+                        AlongSpace.s16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: children,
+                      ),
+                    ),
+                  ),
+                  if (footer != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AlongSpace.s20,
+                        0,
+                        AlongSpace.s20,
+                        AlongSpace.s12,
+                      ),
+                      child: footer,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Recessed squircle panel for grouped content inside sheets and pages.
+class TripPanel extends StatelessWidget {
+  const TripPanel({super.key, required this.child, this.padding});
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: AlongCraft.compactFill(p.recessed, 64, corner: 20),
+      child: Padding(
+        padding: padding ?? const EdgeInsets.all(AlongSpace.s16),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Filled squircle text input, palette-aware, focus ring in ink.
+InputDecoration tripInputDecoration(AlongPalette p, {String? hint}) =>
+    InputDecoration(
+      hintText: hint,
+      hintStyle: AlongType.bodyMuted(p),
+      filled: true,
+      fillColor: p.recessed,
+      contentPadding: const EdgeInsets.all(AlongSpace.s16),
+      border: AlongCraft.input(BorderSide.none),
+      enabledBorder: AlongCraft.input(BorderSide.none),
+      focusedBorder: AlongCraft.input(BorderSide(color: p.ink, width: 1.5)),
+      counterStyle: AlongType.caption(p),
+    );
+
+/// A full-screen page in trip style: back button, large title, optional
+/// subtitle, scrolling body and an optional pinned footer.
+class TripPage extends StatelessWidget {
+  const TripPage({
+    super.key,
+    required this.title,
+    required this.children,
+    this.subtitle,
+    this.footer,
+    this.trailing,
+    this.onBack,
+  });
+
+  final String title;
+  final String? subtitle;
+  final List<Widget> children;
+  final Widget? footer;
+  final Widget? trailing;
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final canPop = Navigator.of(context).canPop();
+    return RiderTripStrings(
+      child: Scaffold(
+        backgroundColor: p.bg,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AlongSpace.s16,
+                  AlongSpace.s8,
+                  AlongSpace.s16,
+                  0,
+                ),
+                child: Row(
+                  children: [
+                    if (canPop || onBack != null)
+                      AlongMapButton(
+                        key: const Key('trip_page_back'),
+                        icon: AlongIcons.back,
+                        tooltip: MaterialLocalizations.of(context)
+                            .backButtonTooltip,
+                        onPressed:
+                            onBack ?? () => Navigator.of(context).maybePop(),
+                      ),
+                    const Spacer(),
+                    if (trailing != null) trailing!,
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(
+                    AlongSpace.s20,
+                    AlongSpace.s16,
+                    AlongSpace.s20,
+                    AlongSpace.s24,
+                  ),
+                  children: [
+                    Text(title, style: AlongType.display(p)),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: AlongSpace.s4),
+                      Text(subtitle!, style: AlongType.bodyMuted(p)),
+                    ],
+                    const SizedBox(height: AlongSpace.s20),
+                    ...children,
+                  ],
+                ),
+              ),
+              if (footer != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AlongSpace.s20,
+                    AlongSpace.s8,
+                    AlongSpace.s20,
+                    AlongSpace.s12,
+                  ),
+                  child: footer,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A selectable squircle tile with an icon above a label.
+class TripChoiceTile extends StatelessWidget {
+  const TripChoiceTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final fg = selected ? p.onInk : p.ink;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: ExcludeSemantics(
+        child: Material(
+          color: selected ? p.ink : p.recessed,
+          shape: AlongCraft.border(18),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () {
+              AlongHaptics.tick(context);
+              onTap();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(AlongSpace.s12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AlongIcon(icon, size: 22, color: fg),
+                  const SizedBox(height: AlongSpace.s8),
+                  Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AlongType.label(p).copyWith(color: fg),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Itemised fare: Fare, load surcharge, any accepted extension, a rule,
+/// then Total. The Along fee sits inside the fare, so it is a caption,
+/// never a row that looks additive. [payable] is what is charged; when
+/// it exceeds the receipt, the gap is an accepted extension.
+class TripFareBreakdown extends StatelessWidget {
+  const TripFareBreakdown({
+    super.key,
+    required this.receipt,
+    required this.payable,
+    required this.money,
+    this.totalStyle,
+  });
+
+  final TripReceipt? receipt;
+  final Money payable;
+  final String Function(Money) money;
+  final TextStyle? totalStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final l10n = AppLocalizations.of(context);
+    final r = receipt;
+    Widget row(String label, Money m, {Key? key}) => Padding(
+      key: key,
+      padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: AlongType.body(p))),
+          Text(money(m), style: AlongType.body(p)),
+        ],
+      ),
+    );
+    final extra = r == null ? null : payable - r.total;
+    final commission = r?.commission;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (r != null) ...[
+          row(l10n.receiptFare, r.fare, key: const Key('fare_row_fare')),
+          if (r.surcharge != null && r.surcharge!.minorUnits > 0)
+            row(
+              l10n.receiptLoadSurcharge,
+              r.surcharge!,
+              key: const Key('fare_row_surcharge'),
+            ),
+          if (extra != null && extra.minorUnits > 0)
+            row(
+              l10n.receiptExtension,
+              extra,
+              key: const Key('fare_row_extension'),
+            ),
+          Divider(height: AlongSpace.s16, color: p.line),
+        ],
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.receiptTotal,
+                style: totalStyle ?? AlongType.title(p),
+              ),
+            ),
+            Text(
+              money(payable),
+              key: const Key('fare_row_total'),
+              style: totalStyle ?? AlongType.title(p),
+            ),
+          ],
+        ),
+        if (commission != null && commission.minorUnits > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: AlongSpace.s4),
+            child: Text(
+              l10n.receiptIncludesFee(money(commission)),
+              style: AlongType.caption(p),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Plain-text receipt in the rider's language.
+String tripReceiptShareText(
+  AppLocalizations l10n, {
+  required TripReceipt receipt,
+  required String routeLabel,
+  required String driverName,
+  required String plate,
+  required String Function(Money) money,
+}) {
+  final b = StringBuffer('${l10n.receiptShareHeader}\n')
+    ..writeln(routeLabel)
+    ..writeln(plate.isEmpty ? driverName : '$driverName · $plate')
+    ..writeln('${l10n.receiptFare}: ${money(receipt.fare)}');
+  if (receipt.surcharge != null && receipt.surcharge!.minorUnits > 0) {
+    b.writeln('${l10n.receiptLoadSurcharge}: ${money(receipt.surcharge!)}');
+  }
+  b.write('${l10n.receiptTotal}: ${money(receipt.total)}');
+  if (receipt.commission != null && receipt.commission!.minorUnits > 0) {
+    b.write('\n${l10n.receiptIncludesFee(money(receipt.commission!))}');
+  }
+  return b.toString();
+}
+
+/// One step in a [TripTimeline].
+class TripTimelineStep {
+  const TripTimelineStep({
+    required this.icon,
+    required this.title,
+    this.trailing,
+    this.done = false,
+    this.active = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? trailing;
+  final bool done;
+  final bool active;
+}
+
+/// A vertical list of steps joined by a hairline rail, in a recessed panel.
+class TripTimeline extends StatelessWidget {
+  const TripTimeline({super.key, this.title, required this.steps});
+
+  final String? title;
+  final List<TripTimelineStep> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return TripPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (title != null) ...[
+            Text(title!, style: AlongType.label(p)),
+            const SizedBox(height: AlongSpace.s12),
+          ],
+          for (var i = 0; i < steps.length; i++)
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 28,
+                    child: Column(
+                      children: [
+                        _dot(p, steps[i]),
+                        if (i < steps.length - 1)
+                          Expanded(
+                            child: Container(
+                              width: 1.5,
+                              color: steps[i].done ? p.ink : p.line,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AlongSpace.s12),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 4,
+                        bottom: i < steps.length - 1 ? AlongSpace.s16 : 0,
+                      ),
+                      child: Text(
+                        steps[i].title,
+                        style: steps[i].done || steps[i].active
+                            ? AlongType.label(p)
+                            : AlongType.bodyMuted(p),
+                      ),
+                    ),
+                  ),
+                  if (steps[i].trailing != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: AlongSpace.s8,
+                        top: 4,
+                      ),
+                      child: Text(
+                        steps[i].trailing!,
+                        style: AlongType.caption(p),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _dot(AlongPalette p, TripTimelineStep s) {
+    final filled = s.done || s.active;
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        color: filled ? p.ink : p.surface,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: AlongIcon(
+        s.done ? AlongIcons.check : s.icon,
+        size: 14,
+        color: filled ? p.bg : p.muted,
+      ),
     );
   }
 }

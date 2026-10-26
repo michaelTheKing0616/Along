@@ -62,7 +62,7 @@ class _RequestingScreenState extends ConsumerState<RequestingScreen> {
     final s = (state.remainingSeconds % 60).toString().padLeft(2, '0');
 
     return TripSheetScaffold(
-      mapFraction: 0.52,
+      mapFraction: 0.38,
       map: (top, bottom) => AlongRoutePreview(
         key: const Key('requesting_map'),
         pickup: lngLat(trip.board.location),
@@ -135,17 +135,54 @@ class _RequestingScreenState extends ConsumerState<RequestingScreen> {
           ),
         ],
         const SizedBox(height: AlongSpace.s16),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                l10n.requestingFare,
-                style: AlongType.bodyMuted(palette),
+        TripPanel(
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.requestingFare,
+                      style: AlongType.caption(palette),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${trip.board.name} → ${trip.alight.name}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.label(palette),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: AlongSpace.s12),
+              Text(
+                formatAppMoney(ref, trip.fare.total),
+                key: const Key('requesting_fare'),
+                style: AlongType.title(palette),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        TripTimeline(
+          key: const Key('requesting_next'),
+          title: l10n.requestingNextTitle,
+          steps: [
+            TripTimelineStep(
+              icon: AlongIcons.send,
+              title: l10n.requestingStepSent,
+              done: true,
             ),
-            Text(
-              formatAppMoney(ref, trip.fare.total),
-              style: AlongType.title(palette),
+            TripTimelineStep(
+              icon: AlongIcons.plate,
+              title: l10n.requestingStepAccept,
+              active: !state.expired,
+            ),
+            TripTimelineStep(
+              icon: AlongIcons.mapPin,
+              title: l10n.requestingStepMeet(trip.board.name),
             ),
           ],
         ),
