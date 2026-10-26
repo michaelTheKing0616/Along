@@ -98,5 +98,18 @@
   "restDriveShort": "Tuƙi (minti)",
   "restBreakShort": "Hutu (minti)",
   "mpTargetShort": "Buri",
-  "mpEarnedShort": "An samu"
+  "mpEarnedShort": "An samu",
+  "howItWorks": "Yadda yake aiki",
+  "conductorStep1": "Karɓi lambar",
+  "conductorStep1Body": "Direba yana raba ta daga taswirar kujeru",
+  "conductorStep2": "Shiga motar",
+  "conductorStep2Body": "Kana ganin kujeru ɗaya kai tsaye",
+  "conductorStep3": "Sabunta kujeru",
+  "conductorStep3Body": "Taɓa kujera idan fasinja ya hau ko ya sauka",
+  "seatEmptyStep1": "Zaɓi motarka",
+  "seatEmptyStep1Body": "Za mu zana kujerunta",
+  "seatEmptyStep2": "Zaɓi hanya",
+  "seatEmptyStep2Body": "Fasinjoji a kanta suna ganin kujerunka",
+  "seatEmptyStep3": "Cika kujeru yayin tafiya",
+  "seatEmptyStep3Body": "Taɓa kujera don alamta ta"
 }

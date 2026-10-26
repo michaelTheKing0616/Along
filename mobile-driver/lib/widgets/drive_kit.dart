@@ -687,3 +687,20 @@ InputDecoration driveInput(
     focusedBorder: AlongCraft.input(BorderSide(color: p.ink, width: 1.5)),
   );
 }
+
+class DriveSteps extends StatelessWidget {
+  const DriveSteps({super.key, required this.steps});
+
+  /// (icon, title, detail) per step, shown as a numbered read-only list.
+  final List<(IconData, String, String)> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    return DriveRows(
+      children: [
+        for (final (icon, title, detail) in steps)
+          DriveRow(icon: icon, title: title, detail: detail),
+      ],
+    );
+  }
+}

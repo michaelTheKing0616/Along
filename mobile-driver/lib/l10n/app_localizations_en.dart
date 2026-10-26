@@ -1634,4 +1634,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mpEarnedShort => 'Earned';
+
+  @override
+  String get howItWorks => 'How it works';
+
+  @override
+  String get conductorStep1 => 'Get the code';
+
+  @override
+  String get conductorStep1Body => 'The driver shares it from their seat map';
+
+  @override
+  String get conductorStep2 => 'Join the bus';
+
+  @override
+  String get conductorStep2Body => 'You see the same seats live';
+
+  @override
+  String get conductorStep3 => 'Update seats';
+
+  @override
+  String get conductorStep3Body => 'Tap a seat when riders board or leave';
+
+  @override
+  String get seatEmptyStep1 => 'Pick your vehicle';
+
+  @override
+  String get seatEmptyStep1Body => 'We draw its seats for you';
+
+  @override
+  String get seatEmptyStep2 => 'Choose a corridor';
+
+  @override
+  String get seatEmptyStep2Body => 'Riders on it can see your free seats';
+
+  @override
+  String get seatEmptyStep3 => 'Fill seats as you go';
+
+  @override
+  String get seatEmptyStep3Body => 'Tap a seat to mark it taken or free';
 }

@@ -149,6 +149,31 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
         children: [
           const SizedBox(height: AlongSpace.s16),
           if (_loading) const AlongSkeleton(variant: SkeletonVariant.line),
+          if (!_loading) ...[
+            Center(
+              child: Container(
+                width: 112,
+                height: 112,
+                decoration: BoxDecoration(
+                  color: p.recessed,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(AlongIcons.danfo, size: 52, color: p.ink),
+              ),
+            ),
+            DriveSection(l10n.howItWorks),
+            DriveSteps(
+              steps: [
+                (
+                  AlongIcons.danfo,
+                  l10n.seatEmptyStep1,
+                  l10n.seatEmptyStep1Body,
+                ),
+                (AlongIcons.path, l10n.seatEmptyStep2, l10n.seatEmptyStep2Body),
+                (AlongIcons.user, l10n.seatEmptyStep3, l10n.seatEmptyStep3Body),
+              ],
+            ),
+          ],
         ],
       );
     }

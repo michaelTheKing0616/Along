@@ -1633,4 +1633,43 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get mpEarnedShort => 'Enwetara';
+
+  @override
+  String get howItWorks => 'Otu o si arụ ọrụ';
+
+  @override
+  String get conductorStep1 => 'Nweta koodu';
+
+  @override
+  String get conductorStep1Body => 'Onye ọkwọ ụgbọ na-eker ya site na map oche';
+
+  @override
+  String get conductorStep2 => 'Banye n\'ụgbọ';
+
+  @override
+  String get conductorStep2Body => 'Ị na-ahụ otu oche ozugbo';
+
+  @override
+  String get conductorStep3 => 'Melite oche';
+
+  @override
+  String get conductorStep3Body => 'Pịa oche mgbe ndị njem banyere ma ọ bụ pụọ';
+
+  @override
+  String get seatEmptyStep1 => 'Họrọ ụgbọ gị';
+
+  @override
+  String get seatEmptyStep1Body => 'Anyị ga-ese oche ya';
+
+  @override
+  String get seatEmptyStep2 => 'Họrọ ụzọ';
+
+  @override
+  String get seatEmptyStep2Body => 'Ndị njem nọ na ya ga-ahụ oche gị';
+
+  @override
+  String get seatEmptyStep3 => 'Jupụta oche ka ị na-aga';
+
+  @override
+  String get seatEmptyStep3Body => 'Pịa oche iji kaa ya';
 }

@@ -2977,6 +2977,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Earned'**
   String get mpEarnedShort;
+
+  /// No description provided for @howItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get howItWorks;
+
+  /// No description provided for @conductorStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the code'**
+  String get conductorStep1;
+
+  /// No description provided for @conductorStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'The driver shares it from their seat map'**
+  String get conductorStep1Body;
+
+  /// No description provided for @conductorStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the bus'**
+  String get conductorStep2;
+
+  /// No description provided for @conductorStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'You see the same seats live'**
+  String get conductorStep2Body;
+
+  /// No description provided for @conductorStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Update seats'**
+  String get conductorStep3;
+
+  /// No description provided for @conductorStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a seat when riders board or leave'**
+  String get conductorStep3Body;
+
+  /// No description provided for @seatEmptyStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your vehicle'**
+  String get seatEmptyStep1;
+
+  /// No description provided for @seatEmptyStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'We draw its seats for you'**
+  String get seatEmptyStep1Body;
+
+  /// No description provided for @seatEmptyStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a corridor'**
+  String get seatEmptyStep2;
+
+  /// No description provided for @seatEmptyStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Riders on it can see your free seats'**
+  String get seatEmptyStep2Body;
+
+  /// No description provided for @seatEmptyStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill seats as you go'**
+  String get seatEmptyStep3;
+
+  /// No description provided for @seatEmptyStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a seat to mark it taken or free'**
+  String get seatEmptyStep3Body;
 }
 
 class _AppLocalizationsDelegate

@@ -329,13 +329,18 @@ class _Bar extends StatelessWidget {
       borderRadius: BorderRadius.circular(4),
       child: SizedBox(
         height: 8,
+        width: double.infinity,
         child: Stack(
           children: [
-            Positioned.fill(child: ColoredBox(color: p.recessed)),
+            Positioned.fill(
+              child: ColoredBox(color: p.ink.withValues(alpha: 0.12)),
+            ),
             FractionallySizedBox(
-              widthFactor: value,
+              widthFactor: value.clamp(0.0, 1.0),
               child: ColoredBox(color: p.accent),
             ),
+            // A stub at the start so an empty goal still reads as a bar.
+            Container(width: 8, color: p.accent),
           ],
         ),
       ),
