@@ -5685,6 +5685,7 @@ export type Database = {
           created_at: string
           id: string
           read_at: string | null
+          thread: string
           trip_id: string
         }
         Insert: {
@@ -5695,6 +5696,7 @@ export type Database = {
           created_at?: string
           id?: string
           read_at?: string | null
+          thread?: string
           trip_id: string
         }
         Update: {
@@ -5705,6 +5707,7 @@ export type Database = {
           created_at?: string
           id?: string
           read_at?: string | null
+          thread?: string
           trip_id?: string
         }
         Relationships: [
@@ -7049,6 +7052,10 @@ export type Database = {
         Args: { v_trip: Database["public"]["Tables"]["trips"]["Row"] }
         Returns: boolean
       }
+      _trip_lost_found_open: {
+        Args: { v_trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: boolean
+      }
       _trip_pin_cleared: { Args: { p_trip_id: string }; Returns: boolean }
       _trip_planned_in_vehicle_s: {
         Args: { p_trip_id: string }
@@ -8132,7 +8139,12 @@ export type Database = {
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
       post_trip_message: {
-        Args: { p_body: string; p_client_ref: string; p_trip_id: string }
+        Args: {
+          p_body: string
+          p_client_ref: string
+          p_thread?: string
+          p_trip_id: string
+        }
         Returns: Json
       }
       postgis_constraint_dims: {

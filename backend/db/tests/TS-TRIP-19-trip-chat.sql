@@ -1,8 +1,8 @@
--- pgTAP: TS-TRIP-19 — rider regenerates the pickup PIN (PR #17)
+-- pgTAP: TS-TRIP-19 — in-app trip chat and its windows (PR #17)
 create extension if not exists pgtap;
 
 begin;
-select plan(12);
+select plan(17);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 
@@ -148,6 +148,50 @@ select throws_ok(
 select throws_ok(
   format('select post_trip_message(%L::uuid, %L, %L)', current_setting('test.trip_id'), repeat('a', 281), 'rdr-long-001'),
   'P0001', 'VALIDATION', 'bodies over 280 chars are rejected'
+);
+
+-- Windows: chat = live + 15 min; lost and found = its own 48 h rule.
+reset role;
+select trip_transition(
+  current_setting('test.trip_id')::uuid, 'cancelled_by_rider'::trip_status, 'rider'::actor_type,
+  '1e100000-0000-4000-8000-000000000001'::uuid
+);
+update trips set
+  requested_at = now() - interval '3 days',
+  accepted_at = now() - interval '3 days',
+  created_at = now() - interval '3 days',
+  cancelled_at = now() - interval '10 minutes',
+  ended_at = now() - interval '10 minutes'
+where id = current_setting('test.trip_id')::uuid;
+select set_config('request.jwt.claim.sub', '1e200000-0000-4000-8000-000000000001', true);
+set local role authenticated;
+select is(
+  post_trip_message(current_setting('test.trip_id')::uuid, 'Thanks!', 'drv-00000010', 'chat')->>'thread',
+  'chat', 'chat stays open 10 min after the trip ends'
+);
+reset role;
+update trips set ended_at = now() - interval '16 minutes'
+where id = current_setting('test.trip_id')::uuid;
+set local role authenticated;
+select throws_ok(
+  format('select post_trip_message(%L::uuid, %L, %L, %L)', current_setting('test.trip_id'), 'late', 'drv-00000011', 'chat'),
+  'P0001', 'STATE_INVALID', 'chat closes 15 min after the trip ends'
+);
+select is(
+  post_trip_message(current_setting('test.trip_id')::uuid, 'Found a bag', 'drv-00000012', 'lost_found')->>'thread',
+  'lost_found', 'lost and found stays open after chat closes'
+);
+select is(
+  post_trip_message(current_setting('test.trip_id')::uuid, 'Still have it', 'drv-00000013')->>'thread',
+  'lost_found', 'callers without a thread fall back to lost and found'
+);
+reset role;
+update trips set ended_at = now() - interval '49 hours'
+where id = current_setting('test.trip_id')::uuid;
+set local role authenticated;
+select throws_ok(
+  format('select post_trip_message(%L::uuid, %L, %L, %L)', current_setting('test.trip_id'), 'hello?', 'drv-00000014', 'lost_found'),
+  'P0001', 'STATE_INVALID', 'lost and found closes after 48 h'
 );
 
 select * from finish();
