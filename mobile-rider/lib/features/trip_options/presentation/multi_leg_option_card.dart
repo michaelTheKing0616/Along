@@ -3,6 +3,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 
 /// R-07 multi-leg card with expandable [LegTimeline] and per-leg request CTAs.
 class MultiLegOptionCard extends StatelessWidget {
@@ -10,6 +11,7 @@ class MultiLegOptionCard extends StatelessWidget {
     super.key,
     required this.candidate,
     required this.recommended,
+    this.recommendedBand = true,
     required this.expanded,
     required this.onToggleExpanded,
     required this.onRequestLeg,
@@ -20,6 +22,7 @@ class MultiLegOptionCard extends StatelessWidget {
 
   final PlanCandidate candidate;
   final bool recommended;
+  final bool recommendedBand;
   final bool expanded;
   final VoidCallback onToggleExpanded;
   final void Function(int legIndex) onRequestLeg;
@@ -39,14 +42,15 @@ class MultiLegOptionCard extends StatelessWidget {
           key: Key('option_card_${candidate.candidateId}'),
           variant: OptionCardVariant.multiLeg,
           recommended: recommended,
+          recommendedBand: recommendedBand,
           mode: OptionCardMapper.mapMode(firstLeg.mode),
           secondaryMode: candidate.legs.length > 1
               ? OptionCardMapper.mapMode(candidate.legs[1].mode)
               : null,
           boardLabel: firstLeg.boardName,
           alightLabel: candidate.legs.last.alightName,
-          meta: OptionCardMapper.metaForCandidate(candidate),
-          fareNaira: candidate.totalFareMinorUnits,
+          meta: OptionCardMapper.metaForCandidate(candidate, l10n),
+          fareNaira: candidate.totalFareMinorUnits ~/ 100,
           tier: OptionCardMapper.mapFareTier(
             firstLeg.fare.tier,
             unconfirmed: firstLeg.fare.unconfirmed,
@@ -58,31 +62,35 @@ class MultiLegOptionCard extends StatelessWidget {
           unavailableReason: !candidate.viableDirect
               ? l10n.tripOptionsSlowerDirectCaption
               : null,
+          recommendedLabel: l10n.tripOptionsRecommended,
+          tierLabel: l10n.fareTier(
+            OptionCardMapper.mapFareTier(
+              firstLeg.fare.tier,
+              unconfirmed: firstLeg.fare.unconfirmed,
+            ),
+          ),
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
+          requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3 ? null : () => onRequestLeg(0),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
+          padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s4),
           child: Row(
             children: [
-              TextButton.icon(
+              AlongTextLink(
                 key: Key('multi_leg_toggle_${candidate.candidateId}'),
                 onPressed: onToggleExpanded,
-                icon: Icon(
-                  expanded ? Icons.expand_less : Icons.expand_more,
-                  color: AlongColors.ink700,
-                ),
-                label: Text(
-                  expanded ? l10n.tripOptionsHideLegs : l10n.tripOptionsShowLegs,
-                  style: AlongText.label.copyWith(color: AlongColors.ink700),
-                ),
+                icon: expanded ? AlongIcons.caretUp : AlongIcons.caretDown,
+                label: expanded
+                    ? l10n.tripOptionsHideLegs
+                    : l10n.tripOptionsShowLegs,
               ),
               if (recommended && onWhy != null) ...[
                 const Spacer(),
-                TextButton(
+                AlongTextLink(
                   key: Key('why_${candidate.candidateId}'),
-                  onPressed: onWhy,
-                  child: Text(l10n.tripOptionsWhy),
+                  onPressed: onWhy!,
+                  label: l10n.tripOptionsWhy,
                 ),
               ],
             ],

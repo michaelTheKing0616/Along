@@ -28,3 +28,4 @@ export 'step_list.dart';
 export 'guardian_check_card.dart';
 export 'text_map_board.dart';
 export 'tier_pill.dart';
+export 'text_link.dart';

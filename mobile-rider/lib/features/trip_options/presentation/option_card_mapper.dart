@@ -1,3 +1,4 @@
+import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:along_core/along_core.dart' as core;
 import 'package:along_design/along_design.dart' as design;
 import 'package:along_design/along_design.dart' show FareTier;
@@ -20,28 +21,31 @@ class OptionCardMapper {
       return FareTier.estimate;
     }
     return switch (tier) {
-      core.FareTier.driverProfile || core.FareTier.throughFare =>
-        FareTier.verified,
+      core.FareTier.driverProfile ||
+      core.FareTier.throughFare => FareTier.verified,
       core.FareTier.summedLegs => FareTier.crowd,
       core.FareTier.unconfirmed => FareTier.estimate,
     };
   }
 
-  static String metaForCandidate(core.PlanCandidate candidate) {
+  /// "4 min walk · ~6 min wait · direct", in the rider's language.
+  static String metaForCandidate(
+    core.PlanCandidate candidate,
+    AppLocalizations l10n,
+  ) {
     final leg = candidate.legs.first;
-    final walkMin = (leg.walkSeconds / 60).ceil();
-    final waitMin = (leg.waitSeconds / 60).ceil();
+    final walk = l10n.tripMetaWalk((leg.walkSeconds / 60).ceil());
+    final wait = l10n.tripMetaWait((leg.waitSeconds / 60).ceil());
     if (candidate.isDirect) {
-      return '$walkMin min walk · ~$waitMin min wait · direct';
+      return '$walk · $wait · ${l10n.tripMetaDirect}';
     }
     if (candidate.transferCount > 0) {
-      final transferLabel = candidate.transfers.isNotEmpty
-          ? '1 transfer at ${candidate.transfers.first.parkName}'
-          : '${candidate.transferCount} transfer'
-              '${candidate.transferCount == 1 ? '' : 's'}';
-      return '$walkMin min walk · $transferLabel';
+      final transfer = candidate.transfers.isNotEmpty
+          ? l10n.tripMetaTransferAt(candidate.transfers.first.parkName)
+          : l10n.tripMetaTransfers(candidate.transferCount);
+      return '$walk · $transfer';
     }
-    return '$walkMin min walk · ~$waitMin min wait';
+    return '$walk · $wait';
   }
 
   static bool hasLoadCapacityWarning(

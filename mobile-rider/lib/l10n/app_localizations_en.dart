@@ -1156,4 +1156,142 @@ class AppLocalizationsEn extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Message $name';
   }
+
+  @override
+  String get homeGreetingMorning => 'Good morning';
+
+  @override
+  String get homeGreetingAfternoon => 'Good afternoon';
+
+  @override
+  String get homeGreetingEvening => 'Good evening';
+
+  @override
+  String get homeGreetingNight => 'Good night';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~$minutes min';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Recommended';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Request $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Drop a pin';
+
+  @override
+  String get searchEmpty => 'Type a park, market or street';
+
+  @override
+  String get tripSortCheapest => 'Cheapest';
+
+  @override
+  String get tripSortFastest => 'Fastest';
+
+  @override
+  String get tripSortEasiest => 'Least walking';
+
+  @override
+  String get fareTierVerified => 'Standard fare';
+
+  @override
+  String get fareTierCrowd => 'Community fare';
+
+  @override
+  String get fareTierCandidate => 'Unconfirmed';
+
+  @override
+  String get fareTierEstimate => 'Estimate, agree price';
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return '$meters m';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance away';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return '$minutes min · $distance';
+  }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min walk',
+      one: '1 min walk',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~$minutes min wait',
+      one: '~1 min wait',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'direct';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return '1 transfer at $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count transfers',
+      one: '1 transfer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Home';
+
+  @override
+  String get searchShortcutWork => 'Work';
+
+  @override
+  String get searchShortcutAdd => 'Add';
+
+  @override
+  String get searchShortcutPinDetail => 'On the map';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance away';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Chain your stops into one trip';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Popular in $city';
+  }
 }

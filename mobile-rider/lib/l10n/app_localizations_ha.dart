@@ -1156,4 +1156,139 @@ class AppLocalizationsHa extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Aika wa $name saƙo';
   }
+
+  @override
+  String get homeGreetingMorning => 'Ina kwana';
+
+  @override
+  String get homeGreetingAfternoon => 'Barka da rana';
+
+  @override
+  String get homeGreetingEvening => 'Barka da yamma';
+
+  @override
+  String get homeGreetingNight => 'Sai da safe';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~minti $minutes';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Shawarar mu';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Nemi $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Saka alama';
+
+  @override
+  String get searchEmpty => 'Rubuta tasha, kasuwa ko titi';
+
+  @override
+  String get tripSortCheapest => 'Mafi arha';
+
+  @override
+  String get tripSortFastest => 'Mafi sauri';
+
+  @override
+  String get tripSortEasiest => 'Ƙarancin tafiya';
+
+  @override
+  String get fareTierVerified => 'Kuɗin da aka saba';
+
+  @override
+  String get fareTierCrowd => 'Kuɗin jama\'a';
+
+  @override
+  String get fareTierCandidate => 'Ba a tabbatar ba';
+
+  @override
+  String get fareTierEstimate => 'Ƙiyasi, ku daidaita';
+
+  @override
+  String distanceKm(String km) {
+    return 'km $km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return 'm $meters';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · nisan $distance';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return 'minti $minutes · $distance';
+  }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'tafiya minti $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~jira minti $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'kai tsaye';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'canji 1 a $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'canji $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Gida';
+
+  @override
+  String get searchShortcutWork => 'Aiki';
+
+  @override
+  String get searchShortcutAdd => 'Ƙara';
+
+  @override
+  String get searchShortcutPinDetail => 'A taswira';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance daga nan';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Haɗa tashoshinka a tafiya ɗaya';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Shahararru a $city';
+  }
 }

@@ -20,6 +20,7 @@ import 'package:mobile_rider/features/offline/stale_badge.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 /// Default undo window before committing a one-tap request (UI-only, not request TTL).
@@ -57,80 +58,174 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
       }
     });
 
+    final palette = AlongPalette.of(context);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.tripOptionsTitle),
-        leading: BackButton(onPressed: () => context.pop()),
-        actions: [
-          IconButton(
-            key: const Key('trip_options_load_flag'),
-            icon: Badge(
-              isLabelVisible: state.load.flagged,
-              child: const Icon(Icons.inventory_2_outlined),
-            ),
-            tooltip: l10n.loadFlagTitle,
-            onPressed: () => _openLoadSheet(state),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 4,
-            child: Stack(
-              children: [
-                Container(
+      backgroundColor: palette.surface,
+      body: LayoutBuilder(
+        builder: (context, box) {
+          // Map takes a third, so the fare and Request button of the first
+          // card sit above the fold even at 1.3x text. With one option the
+          // map grows into the space a second card would use.
+          final few = state.sortedCandidates.length <= 1;
+          final mapHeight = box.maxHeight * (few ? 0.5 : 0.34);
+          final session = state.session;
+          final recommendedId = state
+              .plan
+              ?.sortOrders[SortCriterion.recommended]
+              ?.firstOrNull;
+          final lead =
+              state.sortedCandidates
+                  .where((c) => c.candidateId == recommendedId)
+                  .firstOrNull ??
+              state.sortedCandidates.firstOrNull;
+          final summary = lead == null || session == null
+              ? null
+              : l10n.tripOptionsSummary(
+                  (lead.totalTimeSeconds / 60).ceil(),
+                  l10n.distance(
+                    haversineDistanceM(session.origin, session.destination),
+                  ),
+                );
+          return Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: mapHeight + AlongRadius.dialog.x,
+                child: AlongRoutePreview(
                   key: const Key('trip_options_map'),
-                  color: AlongColors.surface100,
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.route_outlined,
-                    size: 48,
-                    color: AlongColors.ink500,
-                  ),
-                ),
-                if (state.showSkeleton)
-                  const Positioned(
-                    top: AlongSpace.s16,
-                    left: AlongSpace.s16,
-                    child: AlongSkeleton(variant: SkeletonVariant.mapOverlay),
-                  ),
-              ],
-            ),
-          ),
-          if (state.plan?.degraded == true)
-            Container(
-              width: double.infinity,
-              color: AlongColors.semanticWarningTint,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AlongSpace.s16,
-                vertical: AlongSpace.s8,
-              ),
-              child: Text(
-                l10n.tripOptionsDegradedBanner,
-                style: AlongText.caption.copyWith(
-                  color: AlongColors.semanticWarning,
+                  semanticLabel: summary == null
+                      ? session?.destinationLabel
+                      : '${session?.destinationLabel}, $summary',
+                  from: lead?.legs.firstOrNull?.boardName,
+                  to: session?.destinationLabel,
+                  summary: summary,
+                  pickup: session == null
+                      ? null
+                      : Offset(session.origin.lng, session.origin.lat),
+                  drop: session == null
+                      ? null
+                      : Offset(
+                          session.destination.lng,
+                          session.destination.lat,
+                        ),
+                  topInset: MediaQuery.paddingOf(context).top + 64,
+                  bottomInset: AlongRadius.dialog.x,
                 ),
               ),
-            ),
-          if (state.isStalePlan)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AlongSpace.s16,
-                AlongSpace.s8,
-                AlongSpace.s16,
-                0,
+              if (state.showSkeleton)
+                Positioned(
+                  top: mapHeight - 56,
+                  left: AlongSpace.s16,
+                  child: const AlongSkeleton(
+                    variant: SkeletonVariant.mapOverlay,
+                  ),
+                ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AlongSpace.s16),
+                    child: Row(
+                      children: [
+                        AlongMapButton(
+                          key: const Key('trip_options_back'),
+                          icon: AlongIcons.back,
+                          tooltip: MaterialLocalizations.of(context)
+                              .backButtonTooltip,
+                          onPressed: () => context.pop(),
+                        ),
+                        const Spacer(),
+                        Badge(
+                          isLabelVisible: state.load.flagged,
+                          backgroundColor: palette.accent,
+                          smallSize: 10,
+                          child: AlongMapButton(
+                            key: const Key('trip_options_load_flag'),
+                            icon: AlongIcons.luggage,
+                            tooltip: l10n.loadFlagTitle,
+                            onPressed: () => _openLoadSheet(state),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: StaleBadge(label: l10n.cachedOptionsStaleBadge),
+              Positioned.fill(
+                top: mapHeight,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.surface,
+                    borderRadius: const BorderRadius.vertical(
+                      top: AlongRadius.dialog,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      if (state.plan?.degraded == true)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AlongSpace.s16,
+                            AlongSpace.s16,
+                            AlongSpace.s16,
+                            0,
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AlongColors.semanticWarningTint,
+                              borderRadius: const BorderRadius.all(
+                                AlongRadius.control,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AlongSpace.s12,
+                              vertical: AlongSpace.s8,
+                            ),
+                            child: Text(
+                              l10n.tripOptionsDegradedBanner,
+                              style: AlongText.caption.copyWith(
+                                color: AlongColors.semanticWarning,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (state.isStalePlan)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AlongSpace.s16,
+                            AlongSpace.s8,
+                            AlongSpace.s16,
+                            0,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: StaleBadge(
+                              label: l10n.cachedOptionsStaleBadge,
+                            ),
+                          ),
+                        ),
+                      Expanded(
+                        child: _buildSheetContent(
+                          context,
+                          state,
+                          controller,
+                          l10n,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          Expanded(
-            flex: 6,
-            child: _buildSheetContent(context, state, controller, l10n),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
@@ -222,13 +317,44 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.tripOptionsHeading, style: AlongText.heading2),
+              // "Why?" explains the order, so it sits with the heading
+              // instead of breaking the rhythm between cards.
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.tripOptionsHeading,
+                      style: AlongType.heading(AlongPalette.of(context)),
+                    ),
+                  ),
+                  if (recommended != null &&
+                      !recommended.isMultiLeg &&
+                      recommended.metrics != null)
+                    AlongTextLink(
+                      key: Key('why_${recommended.candidateId}'),
+                      label: l10n.tripOptionsWhy,
+                      onPressed: () => showExplainPopover(
+                        context,
+                        explain: recommended.metrics!.explain,
+                      ),
+                    ),
+                ],
+              ),
+              // Sorting one option is noise; chips appear from two.
+              if ((state.plan?.candidates.length ?? 0) > 1) ...[
               const SizedBox(height: AlongSpace.s12),
               SortChips(
+                labels: {
+                  SortOption.recommended: l10n.tripOptionsRecommended,
+                  SortOption.cheapest: l10n.tripSortCheapest,
+                  SortOption.fastest: l10n.tripSortFastest,
+                  SortOption.leastStrenuous: l10n.tripSortEasiest,
+                },
                 selected: _mapSort(state.sort),
                 onSelected: (option) =>
                     controller.setSort(_mapSortOption(option)),
               ),
+              ],
             ],
           ),
         ),
@@ -253,6 +379,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                     ? MultiLegOptionCard(
                         candidate: candidate,
                         recommended: candidate.candidateId == recommendedId,
+                        recommendedBand:
+                            state.sort != SortCriterion.recommended,
                         expanded:
                             state.expandedCandidateId == candidate.candidateId,
                         onToggleExpanded: () => ref
@@ -313,11 +441,12 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           key: Key('option_card_${candidate.candidateId}'),
           variant: OptionCardVariant.direct,
           recommended: recommended,
+          recommendedBand: state.sort != SortCriterion.recommended,
           mode: OptionCardMapper.mapMode(leg.mode),
           boardLabel: leg.boardName,
           alightLabel: leg.alightName,
-          meta: OptionCardMapper.metaForCandidate(candidate),
-          fareNaira: candidate.totalFareMinorUnits,
+          meta: OptionCardMapper.metaForCandidate(candidate, l10n),
+          fareNaira: candidate.totalFareMinorUnits ~/ 100,
           tier: OptionCardMapper.mapFareTier(
             leg.fare.tier,
             unconfirmed: leg.fare.unconfirmed,
@@ -329,7 +458,15 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           unavailableReason: !candidate.viableDirect
               ? l10n.tripOptionsSlowerDirectCaption
               : null,
+          recommendedLabel: l10n.tripOptionsRecommended,
+          tierLabel: l10n.fareTier(
+            OptionCardMapper.mapFareTier(
+              leg.fare.tier,
+              unconfirmed: leg.fare.unconfirmed,
+            ),
+          ),
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
+          requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3
               ? () => state.session?.isHail == true
                   ? _openPricingForHail(candidate, state)
@@ -338,24 +475,6 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                   .read(tripOptionsControllerProvider.notifier)
                   .requestCandidate(candidate),
         ),
-        if (recommended && candidate.metrics != null)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: AlongSpace.s16,
-              bottom: AlongSpace.s8,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                key: Key('why_${candidate.candidateId}'),
-                onPressed: () => showExplainPopover(
-                  context,
-                  explain: candidate.metrics!.explain,
-                ),
-                child: Text(l10n.tripOptionsWhy),
-              ),
-            ),
-          ),
       ],
     );
   }

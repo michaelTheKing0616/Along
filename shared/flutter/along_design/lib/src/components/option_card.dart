@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
+import '../icons.dart';
+import '../palette.dart';
+import '../type.dart';
 import '../tokens.g.dart';
 import '../utils/fare_tier.dart';
 import '../utils/format_money.dart';
@@ -29,10 +32,14 @@ class OptionCard extends StatelessWidget {
     this.meta = '4 min walk · ~6 min wait · direct',
     this.fareNaira = 450,
     this.tier = FareTier.verified,
+    this.tierLabel,
     this.unavailableReason,
     this.loadWarning,
     this.onRequest,
     this.requestLabel,
+    this.recommendedLabel = 'Recommended',
+    this.recommendedBand = true,
+    this.requestLabelFor,
   });
 
   final OptionCardVariant variant;
@@ -45,18 +52,33 @@ class OptionCard extends StatelessWidget {
   final String meta;
   final int fareNaira;
   final FareTier tier;
+
+  /// Translated tier name for the tag beside the fare.
+  final String? tierLabel;
   final String? unavailableReason;
   final String? loadWarning;
   final VoidCallback? onRequest;
   final String? requestLabel;
+
+  /// Band text on the recommended card. Apps pass their translation.
+  final String recommendedLabel;
+
+  /// False keeps the accent outline but drops the band, for when the list
+  /// is already sorted by Recommended and the band would repeat the chip.
+  final bool recommendedBand;
+
+  /// Builds the request label from the formatted fare, for translations.
+  final String Function(String fare)? requestLabelFor;
 
   bool get _isUnavailable => visualState == OptionCardVisualState.unavailable;
   bool get _hasLoadWarning => visualState == OptionCardVisualState.warning;
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = recommended ? AlongColors.brandYellow : AlongColors.ink100;
+    final palette = AlongPalette.of(context);
+    final borderColor = recommended ? palette.accent : palette.line;
     final borderWidth = recommended ? 2.0 : 1.0;
+    final caption = AlongType.caption(palette);
 
     return Opacity(
       opacity: _isUnavailable ? 0.5 : 1,
@@ -65,112 +87,98 @@ class OptionCard extends StatelessWidget {
           Container(
             clipBehavior: Clip.antiAlias,
             decoration: AlongCraft.fill(
-              AlongColors.surface0,
+              palette.surface,
               corner: AlongRadius.card.x,
               side: BorderSide(color: borderColor, width: borderWidth),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (recommended)
+                if (recommended && recommendedBand)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AlongSpace.s12,
+                      horizontal: AlongSpace.s16,
                       vertical: AlongSpace.s4,
                     ),
-                    decoration: AlongCraft.fill(
-                      AlongColors.brandYellowTint,
-                      corner: AlongRadius.card.x,
-                      top: true,
-                    ),
+                    color: palette.accent.withValues(alpha: 0.22),
                     child: Text(
-                      'Recommended',
-                      style: AlongText.overline.copyWith(
-                        color: AlongColors.brandYellowOn,
+                      recommendedLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.label(palette).copyWith(
+                        color: palette.ink,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 Padding(
                   padding: const EdgeInsets.all(AlongSpace.s16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Column(
+                      // Mode and fare share the top line so the place names
+                      // get the full width, even at 1.3x text.
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ModeChip(mode: mode, size: ModeChipSize.small),
                           if (variant == OptionCardVariant.multiLeg &&
                               secondaryMode != null) ...[
-                            const SizedBox(height: AlongSpace.s4),
+                            const SizedBox(width: AlongSpace.s4),
                             ModeChip(
                               mode: secondaryMode!,
                               size: ModeChipSize.small,
                             ),
                           ],
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                formatMoney(fareNaira),
+                                style: AlongText.numericL.copyWith(
+                                  color: palette.ink,
+                                ),
+                                softWrap: false,
+                              ),
+                              const SizedBox(height: AlongSpace.s4),
+                              TierPill(tier: tier, label: tierLabel),
+                            ],
+                          ),
                         ],
                       ),
-                      const SizedBox(width: AlongSpace.s12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: AlongSpace.s8),
+                      Text(
+                        'Board at $boardLabel → $alightLabel',
+                        style: AlongType.title(palette),
+                      ),
+                      const SizedBox(height: AlongSpace.s4),
+                      Text(meta, style: caption),
+                      if (_hasLoadWarning && loadWarning != null) ...[
+                        const SizedBox(height: AlongSpace.s8),
+                        Row(
                           children: [
-                            Text(
-                              'Board at $boardLabel → $alightLabel',
-                              style: AlongText.title,
+                            AlongIcon(
+                              AlongIcons.info,
+                              size: 16,
+                              color: AlongColors.semanticWarning,
                             ),
-                            const SizedBox(height: AlongSpace.s4),
-                            Text(
-                              meta,
-                              style: AlongText.caption.copyWith(
-                                color: AlongColors.ink500,
-                              ),
-                            ),
-                            if (_hasLoadWarning && loadWarning != null) ...[
-                              const SizedBox(height: AlongSpace.s8),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.warning_amber_rounded,
-                                    size: 16,
-                                    color: AlongColors.semanticWarning,
-                                  ),
-                                  const SizedBox(width: AlongSpace.s4),
-                                  Expanded(
-                                    child: Text(
-                                      loadWarning!,
-                                      style: AlongText.caption.copyWith(
-                                        color: AlongColors.semanticWarning,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                            if (_isUnavailable && unavailableReason != null) ...[
-                              const SizedBox(height: AlongSpace.s8),
-                              Text(
-                                unavailableReason!,
-                                style: AlongText.caption.copyWith(
-                                  color: AlongColors.ink500,
+                            const SizedBox(width: AlongSpace.s4),
+                            Expanded(
+                              child: Text(
+                                loadWarning!,
+                                style: caption.copyWith(
+                                  color: AlongColors.semanticWarning,
                                 ),
                               ),
-                            ],
+                            ),
                           ],
                         ),
-                      ),
-                      const SizedBox(width: AlongSpace.s8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            formatMoney(fareNaira),
-                            style: AlongText.numericL,
-                            softWrap: false,
-                            overflow: TextOverflow.visible,
-                          ),
-                          const SizedBox(height: AlongSpace.s4),
-                          TierPill(tier: tier),
-                        ],
-                      ),
+                      ],
+                      if (_isUnavailable && unavailableReason != null) ...[
+                        const SizedBox(height: AlongSpace.s8),
+                        Text(unavailableReason!, style: caption),
+                      ],
                     ],
                   ),
                 ),
@@ -183,7 +191,9 @@ class OptionCard extends StatelessWidget {
                       AlongSpace.s16,
                     ),
                     child: AlongButton(
-                      label: requestLabel ??
+                      label:
+                          requestLabel ??
+                          requestLabelFor?.call(formatMoney(fareNaira)) ??
                           'Request ${formatMoney(fareNaira)}',
                       size: AlongButtonSize.secondary,
                       onPressed: onRequest ?? () {},
@@ -197,7 +207,7 @@ class OptionCard extends StatelessWidget {
               child: IgnorePointer(
                 child: DecoratedBox(
                   decoration: AlongCraft.fill(
-                    AlongColors.ink900.withValues(alpha: 0.08),
+                    palette.ink.withValues(alpha: 0.08),
                     corner: AlongRadius.card.x,
                   ),
                 ),

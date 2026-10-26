@@ -1156,4 +1156,139 @@ class AppLocalizationsIg extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Zitere $name ozi';
   }
+
+  @override
+  String get homeGreetingMorning => 'Ụtụtụ ọma';
+
+  @override
+  String get homeGreetingAfternoon => 'Ehihie ọma';
+
+  @override
+  String get homeGreetingEvening => 'Mgbede ọma';
+
+  @override
+  String get homeGreetingNight => 'Ka chi fo';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~nkeji $minutes';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Anyị tụrụ aro';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Rịọ $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Tinye akara';
+
+  @override
+  String get searchEmpty => 'Dee ọdọ ụgbọ, ahịa ma ọ bụ okporo ụzọ';
+
+  @override
+  String get tripSortCheapest => 'Kacha ọnụ ala';
+
+  @override
+  String get tripSortFastest => 'Kacha ọsọ';
+
+  @override
+  String get tripSortEasiest => 'Ije ụkwụ dị nta';
+
+  @override
+  String get fareTierVerified => 'Ụgwọ nkịtị';
+
+  @override
+  String get fareTierCrowd => 'Ụgwọ ndị mmadụ';
+
+  @override
+  String get fareTierCandidate => 'Ejibeghị n\'aka';
+
+  @override
+  String get fareTierEstimate => 'Atụmatụ, kwekọrịta ọnụ';
+
+  @override
+  String distanceKm(String km) {
+    return 'km $km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return 'm $meters';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance site ebe a';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return 'nkeji $minutes · $distance';
+  }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'ije ụkwụ nkeji $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~nchere nkeji $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'ozugbo';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'mgbanwe 1 na $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'mgbanwe $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Ụlọ';
+
+  @override
+  String get searchShortcutWork => 'Ọrụ';
+
+  @override
+  String get searchShortcutAdd => 'Tinye';
+
+  @override
+  String get searchShortcutPinDetail => 'Na maapụ';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance site ebe a';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'Jikọta ebe ị na-aga n\'otu njem';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Ndị a ma ama na $city';
+  }
 }

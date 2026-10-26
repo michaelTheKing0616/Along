@@ -1156,4 +1156,139 @@ class AppLocalizationsYo extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Fi ọ̀rọ̀ ránṣẹ́ sí $name';
   }
+
+  @override
+  String get homeGreetingMorning => 'Ẹ káàárọ̀';
+
+  @override
+  String get homeGreetingAfternoon => 'Ẹ káàsán';
+
+  @override
+  String get homeGreetingEvening => 'Ẹ káalẹ́';
+
+  @override
+  String get homeGreetingNight => 'Ó dàárọ̀';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~ìṣẹ́jú $minutes';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'A dábàá';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Béèrè $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Fi àmì sí i';
+
+  @override
+  String get searchEmpty => 'Kọ ibùdókọ̀, ọjà tàbí òpópónà';
+
+  @override
+  String get tripSortCheapest => 'Èyí tó kéré jù';
+
+  @override
+  String get tripSortFastest => 'Èyí tó yára jù';
+
+  @override
+  String get tripSortEasiest => 'Ìrìn díẹ̀';
+
+  @override
+  String get fareTierVerified => 'Owó ọkọ̀ déédé';
+
+  @override
+  String get fareTierCrowd => 'Owó tí àwọn èèyàn ń san';
+
+  @override
+  String get fareTierCandidate => 'Kò tíì dájú';
+
+  @override
+  String get fareTierEstimate => 'Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan';
+
+  @override
+  String distanceKm(String km) {
+    return 'km $km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return 'm $meters';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance sí ibí';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return 'ìṣẹ́jú $minutes · $distance';
+  }
+
+  @override
+  String tripMetaWalk(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'ìrìn ìṣẹ́jú $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tripMetaWait(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '~ìdúró ìṣẹ́jú $minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tripMetaDirect => 'tààrà';
+
+  @override
+  String tripMetaTransferAt(String park) {
+    return 'ìyípadà 1 ní $park';
+  }
+
+  @override
+  String tripMetaTransfers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ìyípadà $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortcutHome => 'Ilé';
+
+  @override
+  String get searchShortcutWork => 'Iṣẹ́';
+
+  @override
+  String get searchShortcutAdd => 'Fi kún';
+
+  @override
+  String get searchShortcutPinDetail => 'Lórí máàpù';
+
+  @override
+  String placeAway(String distance) {
+    return '$distance sí ibí';
+  }
+
+  @override
+  String get homePlanYourDayDetail => 'So àwọn ibùdó rẹ pọ̀ sí ìrìn kan';
+
+  @override
+  String searchPopularTitle(String city) {
+    return 'Gbajúmọ̀ ní $city';
+  }
 }

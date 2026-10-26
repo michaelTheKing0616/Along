@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../craft.dart';
+import '../elevation.dart';
 import '../tokens.g.dart';
 import '../icons.dart';
 import '../motion.dart';
@@ -163,9 +164,20 @@ class AlongDayGradient extends StatelessWidget {
 }
 
 class AlongGreeting extends StatelessWidget {
-  const AlongGreeting({super.key, required this.phase});
+  const AlongGreeting({
+    super.key,
+    required this.phase,
+    this.title,
+    this.detail,
+  });
 
   final AlongDayPhase phase;
+
+  /// Translated greeting. Null uses the English demo copy for [phase].
+  final String? title;
+
+  /// Second line. Null with a [title] hides it; null without uses the demo.
+  final String? detail;
 
   @override
   Widget build(BuildContext context) {
@@ -174,16 +186,36 @@ class AlongGreeting extends StatelessWidget {
     final meta = AlongType.meta(palette).copyWith(height: 1.1);
     return Align(
       alignment: Alignment.centerLeft,
-      child: AlongFrost(
-        solid: true,
-        radius: AlongRadius.row.x,
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.fromLTRB(16, 10, 20, 10),
+        decoration: AlongCraft.compactFill(
+          palette.surface,
+          56,
+          corner: AlongRadius.row.x,
+          // Dark mode lifts by surface tone alone; a light-ink shadow halos.
+          shadow: palette.brightness == Brightness.dark
+              ? const <BoxShadow>[]
+              : AlongElevation.rest(palette.ink),
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(phase.greeting, maxLines: 1, softWrap: false, style: title),
-            Text(phase.weather, maxLines: 1, softWrap: false, style: meta),
+            Text(
+              this.title ?? phase.greeting,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: title,
+            ),
+            if ((this.title == null ? phase.weather : detail) case final d?)
+              Text(
+                d,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: meta,
+              ),
           ],
         ),
       ),
@@ -249,9 +281,15 @@ class AlongStagger extends StatelessWidget {
 }
 
 class AlongTabBar extends StatefulWidget {
-  const AlongTabBar({super.key, this.index = 0});
+  const AlongTabBar({super.key, this.index = 0, this.tabs, this.onSelect});
 
   final int index;
+
+  /// Icon and label per tab. Null keeps the demo Home/Rides/Wallet/Safety.
+  final List<(IconData, String)>? tabs;
+
+  /// Called after the pop with the tapped index.
+  final ValueChanged<int>? onSelect;
 
   @override
   State<AlongTabBar> createState() => AlongTabBarState();
@@ -281,6 +319,12 @@ class AlongTabBarState extends State<AlongTabBar>
   }
 
   @override
+  void didUpdateWidget(AlongTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.index != oldWidget.index) _index = widget.index;
+  }
+
+  @override
   void dispose() {
     _pop.dispose();
     super.dispose();
@@ -298,6 +342,7 @@ class AlongTabBarState extends State<AlongTabBar>
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final tabs = widget.tabs ?? _icons;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -308,16 +353,17 @@ class AlongTabBarState extends State<AlongTabBar>
         height: 48,
         child: Row(
           children: [
-            for (var i = 0; i < _icons.length; i++)
+            for (var i = 0; i < tabs.length; i++)
               Expanded(
                 child: Semantics(
                   button: true,
                   selected: i == _index,
-                  label: _icons[i].$2,
+                  label: tabs[i].$2,
                   child: GestureDetector(
                     onTap: () {
                       AlongHaptics.selection(context);
                       select(i);
+                      widget.onSelect?.call(i);
                     },
                     behavior: HitTestBehavior.opaque,
                     child: Center(
@@ -340,7 +386,7 @@ class AlongTabBarState extends State<AlongTabBar>
                             corner: AlongRadius.control.x,
                           ),
                           child: Icon(
-                            _icons[i].$1,
+                            tabs[i].$1,
                             size: 20,
                             color: i == _index
                                 ? palette.accentInk

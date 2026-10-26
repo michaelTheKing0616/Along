@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../craft.dart';
+import '../icons.dart';
 import '../palette.dart';
 import '../tokens.g.dart';
 
@@ -17,6 +18,7 @@ class SearchField extends StatelessWidget {
     this.controller,
     this.onChanged,
     this.onRecentsTap,
+    this.autofocus = false,
   });
 
   final SearchFieldVariant variant;
@@ -24,6 +26,9 @@ class SearchField extends StatelessWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onRecentsTap;
+
+  /// Opens the keyboard on arrival, so search is one tap from home.
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +51,11 @@ class SearchField extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s12),
         child: Row(
           children: [
-            Icon(Icons.search_rounded, color: palette.muted),
+            AlongIcon(AlongIcons.search, size: 20, color: palette.muted),
             const SizedBox(width: AlongSpace.s8),
             Expanded(
               child: TextField(
+                autofocus: autofocus,
                 controller: controller,
                 onChanged: onChanged,
                 style: AlongText.body.copyWith(color: palette.ink),
@@ -57,6 +63,9 @@ class SearchField extends StatelessWidget {
                   hintText: hint,
                   hintStyle: AlongText.body.copyWith(color: palette.muted),
                   border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  filled: false,
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
                 ),
@@ -65,7 +74,11 @@ class SearchField extends StatelessWidget {
             if (variant == SearchFieldVariant.home && onRecentsTap != null)
               IconButton(
                 onPressed: onRecentsTap,
-                icon: Icon(Icons.history_rounded, color: palette.ink),
+                icon: AlongIcon(
+                  AlongIcons.schedule,
+                  size: 20,
+                  color: palette.ink,
+                ),
                 tooltip: 'Recent searches',
               ),
           ],
@@ -134,6 +147,9 @@ class PhoneField extends StatelessWidget {
                     hintText: '801 234 5678',
                     hintStyle: AlongText.body.copyWith(color: palette.muted),
                     border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    filled: false,
                     isDense: true,
                   ),
                 ),

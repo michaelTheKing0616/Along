@@ -1,3 +1,4 @@
+import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,7 +6,33 @@ import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 
+IconData _modeIcon(String code) => switch (code) {
+  'keke' => AlongIcons.keke,
+  'okada' => AlongIcons.okada,
+  'danfo' => AlongIcons.danfo,
+  'bus' || 'brt' => AlongIcons.bus,
+  _ => AlongIcons.taxi,
+};
+
+List<AlongPlace> _nearbyPlaces(
+  AppLocalizations l10n,
+  Iterable<NearbyAmbientRow> rows,
+  ValueChanged<NearbyAmbientRow> onTap,
+) => [
+  for (final row in rows)
+    AlongPlace(
+      key: Key('nearby_row_${row.modeCode}'),
+      icon: _modeIcon(row.modeCode),
+      title: '${row.countBucket} ${row.modeLabel}',
+      detail: l10n.homeNearbyEta(row.etaMinutes),
+      onTap: () => onTap(row),
+    ),
+];
+
+/// Home sheet: Where to?, recents, plan your day, then up to three nearby
+/// rides. Every row is one tap. No expand toggle.
 class HomePeekSheet extends StatelessWidget {
   const HomePeekSheet({
     super.key,
@@ -23,56 +50,41 @@ class HomePeekSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-
-    return AlongBottomSheet(
-      size: AlongBottomSheetSize.collapsed,
-      child: SingleChildScrollView(
-        primary: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: AlongSpace.s8),
-            GestureDetector(
-              onTap: onSearchTap,
-              child: AbsorbPointer(
-                child: SearchField(
-                  variant: SearchFieldVariant.home,
-                  hint: l10n.homeSearchHint,
-                ),
-              ),
-            ),
-            const SizedBox(height: AlongSpace.s12),
-            TextButton(
-              key: const Key('home_plan_day'),
-              onPressed: () => context.push(AppRoutes.itineraryEntry),
-              child: Text(l10n.homePlanYourDay),
-            ),
-            const SizedBox(height: AlongSpace.s12),
-            if (state.recents.isNotEmpty)
-              SizedBox(
-                height: 36,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: state.recents.take(3).length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(width: AlongSpace.s8),
-                  itemBuilder: (context, index) {
-                    final recent = state.recents[index];
-                    return ActionChip(
-                      label: Text(recent.label),
-                      onPressed: () => onRecentTap(recent),
-                    );
-                  },
-                ),
-              ),
-          ],
+    return AlongHomeSheet(
+      key: const Key('home_sheet'),
+      whereTo: l10n.homeSearchHint,
+      whereToKey: const Key('home_where_to'),
+      onWhereTo: onSearchTap,
+      places: [
+        for (final recent in state.recents.take(3))
+          AlongPlace(
+            key: Key('home_recent_${recent.label}'),
+            icon: AlongIcons.schedule,
+            title: recent.label,
+            detail: state.userLocation == null
+                ? null
+                : l10n.placeAway(
+                    l10n.distance(
+                      haversineDistanceM(state.userLocation!, recent.location),
+                    ),
+                  ),
+            onTap: () => onRecentTap(recent),
+          ),
+        AlongPlace(
+          key: const Key('home_plan_day'),
+          icon: AlongIcons.path,
+          title: l10n.homePlanYourDay,
+          detail: l10n.homePlanYourDayDetail,
+          onTap: () => context.push(AppRoutes.itineraryEntry),
         ),
-      ),
+      ],
+      sectionTitle: l10n.homeNearbyTitle,
+      section: _nearbyPlaces(l10n, state.nearbyRows.take(3), onNearbyTap),
     );
   }
 }
 
+/// Full nearby list, same rows as the home sheet.
 class HomeNearbySheet extends StatelessWidget {
   const HomeNearbySheet({
     super.key,
@@ -86,29 +98,13 @@ class HomeNearbySheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-
-    return AlongBottomSheet(
-      size: AlongBottomSheetSize.half,
+    final places = _nearbyPlaces(l10n, rows, onRowTap);
+    return AlongSpringSheet(
+      fraction: 0.5,
       title: l10n.homeNearbyTitle,
-      child: ListView.separated(
-        itemCount: rows.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (context, index) {
-          final row = rows[index];
-          final modeLabel = row.modeLabel;
-          return ListTile(
-            key: Key('nearby_row_${row.modeCode}'),
-            title: Text(
-              l10n.homeNearbyRow(
-                row.countBucket,
-                modeLabel,
-                row.headingLabel,
-                row.etaMinutes,
-              ),
-            ),
-            onTap: () => onRowTap(row),
-          );
-        },
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [for (final p in places) AlongPlaceRow(place: p)],
       ),
     );
   }

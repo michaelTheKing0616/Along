@@ -351,3 +351,99 @@ TripSummary tripSummaryFromFixture(Map<String, dynamic> json) {
   final view = TripView.fromJson(json);
   return DomainMappers.tripFromDto(view, raw: json);
 }
+
+/// Three direct options for one trip: keke (recommended), danfo bus
+/// (cheapest) and a shared car (fastest), so sort chips and cards render.
+Map<String, dynamic> sampleThreeOptionPlanTripResponse() {
+  Map<String, dynamic> option({
+    required String id,
+    required String mode,
+    required String label,
+    required String board,
+    required int fareMinor,
+    required int walkS,
+    required int waitS,
+    required int rideS,
+    required int tier,
+    required double score,
+  }) {
+    final base = samplePlanTripResponse(candidateId: id);
+    final candidate =
+        ((base['data'] as Map)['candidates'] as List).first
+            as Map<String, dynamic>;
+    final leg = (candidate['legs'] as List).first as Map<String, dynamic>;
+    leg['mode'] = {
+      'code': mode,
+      'label': label,
+      'icon_key': mode,
+      'color_token': 'modeKeke',
+    };
+    (leg['board'] as Map)['name'] = board;
+    (leg['board'] as Map)['walk_s'] = walkS;
+    leg['wait_s'] = waitS;
+    leg['in_vehicle_s'] = rideS;
+    final fare = leg['fare'] as Map;
+    fare['total'] = {
+      'amount': (fareMinor / 100).toStringAsFixed(2),
+      'currency': 'NGN',
+    };
+    fare['tier'] = tier;
+    final metrics = candidate['metrics'] as Map;
+    metrics['total_fare_minor'] = fareMinor;
+    metrics['total_time_s'] = walkS + waitS + rideS;
+    metrics['recommended_score'] = score;
+    return candidate;
+  }
+
+  final keke = option(
+    id: 'cand-keke',
+    mode: 'keke',
+    label: 'Keke',
+    board: 'Lugbe Park',
+    fareMinor: 45000,
+    walkS: 240,
+    waitS: 360,
+    rideS: 900,
+    tier: 1,
+    score: 1.0,
+  );
+  final bus = option(
+    id: 'cand-bus',
+    mode: 'minibus',
+    label: 'Danfo',
+    board: 'Lugbe Junction',
+    fareMinor: 30000,
+    walkS: 480,
+    waitS: 600,
+    rideS: 1200,
+    tier: 2,
+    score: 0.8,
+  );
+  final shared = option(
+    id: 'cand-shared',
+    mode: 'car',
+    label: 'Shared car',
+    board: 'Lugbe Park',
+    fareMinor: 80000,
+    walkS: 240,
+    waitS: 120,
+    rideS: 720,
+    tier: 1,
+    score: 0.7,
+  );
+  return {
+    'data': {
+      'query_id': 'query-3',
+      'city_id': 'b1000000-0000-4000-8000-000000000001',
+      'degraded': false,
+      'candidates': [keke, bus, shared],
+      'sort_orders': {
+        'recommended': ['cand-keke', 'cand-bus', 'cand-shared'],
+        'cheapest': ['cand-bus', 'cand-keke', 'cand-shared'],
+        'fastest': ['cand-shared', 'cand-keke', 'cand-bus'],
+        'least_strenuous': ['cand-shared', 'cand-keke', 'cand-bus'],
+      },
+      'coverage_gap': null,
+    },
+  };
+}

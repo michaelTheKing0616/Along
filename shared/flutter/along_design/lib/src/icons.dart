@@ -241,8 +241,45 @@ abstract final class AlongIcons {
     fontPackage: _package,
   );
 
+  static const mapPin = IconData(
+    0xe317,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const map = IconData(
+    0xe31b,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const storefront = IconData(
+    0xe471,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const signpost = IconData(
+    0xe89d,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const microphone = IconData(
+    0xe327,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const history = IconData(
+    0xe1a1,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
   /// Fill layer that sits under the stroke in the duotone font.
   static const tone = <int, int>{
+    0xe317: 0xe316,
+    0xe31b: 0xe31a,
+    0xe471: 0xe470,
+    0xe89d: 0xe89c,
+    0xe327: 0xe326,
+    0xe1a1: 0xe1a0,
     0xe397: 0xe396,
     0xe53b: 0xe53a,
     0xe0af: 0xe0ae,

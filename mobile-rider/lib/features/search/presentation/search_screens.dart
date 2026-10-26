@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/routing/routes.dart';
 import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
 import 'package:mobile_rider/features/search/presentation/destination_search_panel.dart';
@@ -31,55 +32,125 @@ class _DestinationSearchScreenState
     final l10n = AppLocalizations.of(context);
     final hail = ref.watch(hailIntentProvider);
 
+    final palette = AlongPalette.of(context);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(hail != null ? l10n.hailSearchTitle : l10n.searchTitle),
-        leading: BackButton(onPressed: () => context.pop()),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              key: const Key('voice_booking_field'),
-              decoration: InputDecoration(hintText: l10n.voiceBookingHint),
-              textInputAction: TextInputAction.search,
-              onSubmitted: (value) {
-                final phrase = parseBookingPhrase(value);
-                setState(() {
-                  _voiceQuery = phrase?.destination;
-                  _voiceOrigin = phrase?.origin;
-                });
-              },
-            ),
-            if (_voiceOrigin != null)
-              Padding(
-                padding: const EdgeInsets.only(top: AlongSpace.s8),
-                child: Text(
-                  _voiceOrigin!,
-                  key: const Key('voice_booking_origin'),
-                  style: AlongText.caption,
+      backgroundColor: palette.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AlongSpace.s16,
+            AlongSpace.s8,
+            AlongSpace.s16,
+            AlongSpace.s8,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  AlongMapButton(
+                    key: const Key('search_back'),
+                    icon: AlongIcons.back,
+                    tooltip: MaterialLocalizations.of(context)
+                        .backButtonTooltip,
+                    onPressed: () => context.pop(),
+                  ),
+                  const SizedBox(width: AlongSpace.s12),
+                  Expanded(
+                    child: Text(
+                      hail != null ? l10n.hailSearchTitle : l10n.searchTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AlongType.heading(palette),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AlongSpace.s16),
+              Expanded(
+                child: DestinationSearchPanel(
+                  extra: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Say or type the whole trip: "from Wuse to Garki".
+                      DecoratedBox(
+                        decoration: AlongCraft.surface(
+                          palette,
+                          radius: AlongRadius.card.x,
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: AlongSpace.s12),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              alignment: Alignment.center,
+                              decoration: AlongCraft.compactFill(
+                                palette.recessed,
+                                40,
+                              ),
+                              child: AlongIcon(
+                                AlongIcons.microphone,
+                                size: 20,
+                                color: palette.ink,
+                              ),
+                            ),
+                            const SizedBox(width: AlongSpace.s12),
+                            Expanded(
+                              child: TextField(
+                                key: const Key('voice_booking_field'),
+                                style: AlongType.body(palette),
+                                decoration: InputDecoration(
+                                  hintText: l10n.voiceBookingHint,
+                                  hintMaxLines: 2,
+                                  hintStyle: AlongType.body(palette)
+                                      .copyWith(color: palette.muted),
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  filled: false,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: AlongSpace.s16,
+                                  ),
+                                ),
+                                textInputAction: TextInputAction.search,
+                                onSubmitted: (value) {
+                                  final phrase = parseBookingPhrase(value);
+                                  setState(() {
+                                    _voiceQuery = phrase?.destination;
+                                    _voiceOrigin = phrase?.origin;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_voiceOrigin != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AlongSpace.s8),
+                          child: Text(
+                            _voiceOrigin!,
+                            key: const Key('voice_booking_origin'),
+                            style: AlongType.caption(palette),
+                          ),
+                        ),
+                    ],
+                  ),
+                  hint: l10n.searchEmpty,
+                  initialQuery: _voiceQuery,
+                  onChooseOnMap: () => context.push(AppRoutes.adjustPickup),
+                  onDestinationSelected: (pick) {
+                    _startTripPlan(ref, pick);
+                    if (context.mounted) {
+                      _afterDestinationSelected(context, ref);
+                    }
+                  },
                 ),
               ),
-            const SizedBox(height: AlongSpace.s8),
-            Expanded(
-              child: DestinationSearchPanel(
-                initialQuery: _voiceQuery,
-                onDestinationSelected: (pick) {
-                  _startTripPlan(ref, pick);
-                  if (context.mounted) {
-                    _afterDestinationSelected(context, ref);
-                  }
-                },
-              ),
-            ),
-            TextButton(
-              key: const Key('search_choose_on_map'),
-              onPressed: () => context.push(AppRoutes.adjustPickup),
-              child: Text(l10n.homeChooseOnMap),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -150,9 +221,9 @@ class AdjustPickupScreen extends ConsumerWidget {
                   return ListTile(
                     title: Text(place.name),
                     subtitle: Text(
-                      l10n.searchResultSubtitle(
+                      l10n.searchResultDetail(
                         place.area,
-                        place.distanceM.round(),
+                        l10n.distance(place.distanceM),
                       ),
                     ),
                   );

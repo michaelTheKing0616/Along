@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
-import 'package:mobile_rider/features/home/presentation/widgets/home_bottom_sheet.dart';
+import 'package:mobile_rider/features/home/presentation/widgets/home_chrome.dart';
 import 'package:mobile_rider/features/home/presentation/widgets/location_denied_banner.dart';
 import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -16,7 +16,8 @@ import 'package:mobile_rider/features/pricing/domain/hail_intent_provider.dart';
 import 'package:mobile_rider/features/pricing/domain/pricing_helpers.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
-/// R-05 Home — ambient clusters, peek sheet, recents (doc 06).
+/// R-05 Home — ambient clusters, the Where-to sheet, recents, nearby rides
+/// (doc 06). One tap from any row to search or a quote.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -26,7 +27,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   MapLayerController? _layerController;
-  bool _expandedNearby = false;
 
   @override
   Widget build(BuildContext context) {
@@ -89,78 +89,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     },
                   ),
           ),
-          if (state.showLocationBanner)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: LocationDeniedBanner(
-                onChooseOnMap: () => context.push(AppRoutes.adjustPickup),
-              ),
-            ),
-          Positioned(
-            top: state.showLocationBanner ? 72 : AlongSpace.s16,
-            left: AlongSpace.s16,
-            child: AlongMapButton(
-              key: const Key('home_menu_button'),
-              tooltip: l10n.homeMenu,
-              onPressed: () => context.go(AppRoutes.account),
-              icon: AlongIcons.menu,
-            ),
-          ),
-          Positioned(
-            top: state.showLocationBanner ? 72 : AlongSpace.s16,
-            left: 72,
-            child: AlongMapButton(
-              key: const Key('home_vehicles_button'),
-              tooltip: l10n.homeVehicles,
-              onPressed: () => context.push(AppRoutes.vehicles),
-              icon: AlongIcons.seat,
-            ),
-          ),
-          Positioned(
-            top: state.showLocationBanner ? 72 : AlongSpace.s16,
-            right: AlongSpace.s16,
-            child: AlongMapButton(
-              key: const Key('home_recenter_button'),
-              tooltip: l10n.homeRecenter,
-              onPressed: state.userLocation == null
+          Positioned.fill(
+            child: HomeChrome(
+              state: state,
+              now: DateTime.now(),
+              banner: state.showLocationBanner
+                  ? LocationDeniedBanner(
+                      onChooseOnMap: () => context.push(AppRoutes.adjustPickup),
+                    )
+                  : null,
+              onMenu: () => context.go(AppRoutes.account),
+              onVehicles: () => context.push(AppRoutes.vehicles),
+              onRecenter: state.userLocation == null
                   ? null
                   : () => _recenter(state.userLocation!),
-              icon: AlongIcons.locate,
+              onSearch: () => context.push(AppRoutes.search),
+              onRecent: (_) => context.push(AppRoutes.tripOptions),
+              onNearby: _onNearbyRowTap,
             ),
           ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 72,
-            child: _expandedNearby && state.nearbyRows.isNotEmpty
-                ? HomeNearbySheet(
-                    rows: state.nearbyRows,
-                    onRowTap: (row) => _onNearbyRowTap(row),
-                  )
-                : HomePeekSheet(
-                    state: state,
-                    onSearchTap: () => context.push(AppRoutes.search),
-                    onRecentTap: (_) => context.push(AppRoutes.tripOptions),
-                    onNearbyTap: _onNearbyRowTap,
-                  ),
-          ),
-          if (state.nearbyRows.isNotEmpty)
-            Positioned(
-              right: AlongSpace.s16,
-              bottom: 180,
-              child: TextButton(
-                key: const Key('home_expand_nearby'),
-                onPressed: () =>
-                    setState(() => _expandedNearby = !_expandedNearby),
-                child: Text(
-                  _expandedNearby
-                      ? l10n.homeCollapseNearby
-                      : l10n.homeExpandNearby,
-                ),
-              ),
-            ),
         ],
       ),
     );

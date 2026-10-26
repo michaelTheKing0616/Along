@@ -1212,5 +1212,145 @@
         "type": "String"
       }
     }
-  }
+  },
+  "homeGreetingMorning": "Good morning",
+  "@homeGreetingMorning": {
+    "description": "homeGreetingMorning"
+  },
+  "homeGreetingAfternoon": "Good afternoon",
+  "@homeGreetingAfternoon": {
+    "description": "homeGreetingAfternoon"
+  },
+  "homeGreetingEvening": "Good evening",
+  "@homeGreetingEvening": {
+    "description": "homeGreetingEvening"
+  },
+  "homeGreetingNight": "Good night",
+  "@homeGreetingNight": {
+    "description": "homeGreetingNight"
+  },
+  "homeNearbyEta": "~{minutes} min",
+  "@homeNearbyEta": {
+    "description": "homeNearbyEta",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsRecommended": "Recommended",
+  "@tripOptionsRecommended": {
+    "description": "tripOptionsRecommended"
+  },
+  "tripOptionsRequest": "Request {fare}",
+  "@tripOptionsRequest": {
+    "description": "tripOptionsRequest",
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "searchChooseOnMapDetail": "Drop a pin",
+  "@searchChooseOnMapDetail": {
+    "description": "searchChooseOnMapDetail"
+  },
+  "searchEmpty": "Type a park, market or street",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "tripSortCheapest": "Cheapest",
+  "@tripSortCheapest": {
+    "description": "tripSortCheapest"
+  },
+  "tripSortFastest": "Fastest",
+  "@tripSortFastest": {
+    "description": "tripSortFastest"
+  },
+  "tripSortEasiest": "Least walking",
+  "@tripSortEasiest": {
+    "description": "tripSortEasiest"
+  },
+  "fareTierVerified": "Standard fare",
+  "@fareTierVerified": {
+    "description": "fareTierVerified"
+  },
+  "fareTierCrowd": "Community fare",
+  "@fareTierCrowd": {
+    "description": "fareTierCrowd"
+  },
+  "fareTierCandidate": "Unconfirmed",
+  "@fareTierCandidate": {
+    "description": "fareTierCandidate"
+  },
+  "fareTierEstimate": "Estimate, agree price",
+  "@fareTierEstimate": {
+    "description": "fareTierEstimate"
+  },
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "description": "distanceKm",
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{meters} m",
+  "@distanceM": {
+    "description": "distanceM",
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "searchResultDetail": "{area} · {distance} away",
+  "@searchResultDetail": {
+    "description": "searchResultDetail",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "tripOptionsSummary": "{minutes} min · {distance}",
+  "@tripOptionsSummary": {
+    "description": "tripOptionsSummary",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "tripMetaWalk": "{minutes, plural, =1{1 min walk} other{{minutes} min walk}}",
+  "@tripMetaWalk": {"description": "tripMetaWalk", "placeholders": {"minutes": {"type": "int"}}},
+  "tripMetaWait": "{minutes, plural, =1{~1 min wait} other{~{minutes} min wait}}",
+  "@tripMetaWait": {"description": "tripMetaWait", "placeholders": {"minutes": {"type": "int"}}},
+  "tripMetaDirect": "direct",
+  "@tripMetaDirect": {"description": "tripMetaDirect"},
+  "tripMetaTransferAt": "1 transfer at {park}",
+  "@tripMetaTransferAt": {"description": "tripMetaTransferAt", "placeholders": {"park": {"type": "String"}}},
+  "tripMetaTransfers": "{count, plural, =1{1 transfer} other{{count} transfers}}",
+  "@tripMetaTransfers": {"description": "tripMetaTransfers", "placeholders": {"count": {"type": "int"}}},
+  "searchShortcutHome": "Home",
+  "@searchShortcutHome": {"description": "searchShortcutHome"},
+  "searchShortcutWork": "Work",
+  "@searchShortcutWork": {"description": "searchShortcutWork"},
+  "searchShortcutAdd": "Add",
+  "@searchShortcutAdd": {"description": "searchShortcutAdd"},
+  "searchShortcutPinDetail": "On the map",
+  "@searchShortcutPinDetail": {"description": "searchShortcutPinDetail"},
+  "placeAway": "{distance} away",
+  "@placeAway": {"description": "placeAway", "placeholders": {"distance": {"type": "String"}}},
+  "homePlanYourDayDetail": "Chain your stops into one trip",
+  "@homePlanYourDayDetail": {"description": "homePlanYourDayDetail"},
+  "searchPopularTitle": "Popular in {city}",
+  "@searchPopularTitle": {"description": "searchPopularTitle", "placeholders": {"city": {"type": "String"}}}
 }

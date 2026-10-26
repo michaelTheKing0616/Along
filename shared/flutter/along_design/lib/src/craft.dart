@@ -66,6 +66,39 @@ abstract final class AlongCraft {
     );
   }
 
+  /// Squircle for short controls (chips, tags, tiles, small cards).
+  ///
+  /// Smoothing 0.6 stretches a 16 corner to about 26pt, so on a 44pt chip the
+  /// two curves meet and it reads as a pill. This caps the corner at 36% of
+  /// [height] and drops the smoothing when it would eat the flat side, so a
+  /// short control always keeps a straight edge.
+  static SmoothRectangleBorder compact(
+    double height, {
+    double corner = 16,
+    BorderSide side = BorderSide.none,
+  }) {
+    final r = corner < height * 0.36 ? corner : height * 0.36;
+    final s = r * (1 + smoothing) <= height * 0.4 ? smoothing : 0.0;
+    return SmoothRectangleBorder(
+      side: side,
+      borderRadius: SmoothBorderRadius(cornerRadius: r, cornerSmoothing: s),
+    );
+  }
+
+  static ShapeDecoration compactFill(
+    Color color,
+    double height, {
+    double corner = 16,
+    BorderSide side = BorderSide.none,
+    List<BoxShadow>? shadow,
+  }) {
+    return ShapeDecoration(
+      color: color,
+      shadows: shadow,
+      shape: compact(height, corner: corner, side: side),
+    );
+  }
+
   static ShapeDecoration fill(
     Color color, {
     double corner = 16,

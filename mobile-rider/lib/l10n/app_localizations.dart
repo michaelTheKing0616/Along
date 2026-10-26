@@ -2182,6 +2182,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message {name}'**
   String activeTripMessage(String name);
+
+  /// homeGreetingMorning
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get homeGreetingMorning;
+
+  /// homeGreetingAfternoon
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get homeGreetingAfternoon;
+
+  /// homeGreetingEvening
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get homeGreetingEvening;
+
+  /// homeGreetingNight
+  ///
+  /// In en, this message translates to:
+  /// **'Good night'**
+  String get homeGreetingNight;
+
+  /// homeNearbyEta
+  ///
+  /// In en, this message translates to:
+  /// **'~{minutes} min'**
+  String homeNearbyEta(int minutes);
+
+  /// tripOptionsRecommended
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get tripOptionsRecommended;
+
+  /// tripOptionsRequest
+  ///
+  /// In en, this message translates to:
+  /// **'Request {fare}'**
+  String tripOptionsRequest(String fare);
+
+  /// searchChooseOnMapDetail
+  ///
+  /// In en, this message translates to:
+  /// **'Drop a pin'**
+  String get searchChooseOnMapDetail;
+
+  /// searchEmpty
+  ///
+  /// In en, this message translates to:
+  /// **'Type a park, market or street'**
+  String get searchEmpty;
+
+  /// tripSortCheapest
+  ///
+  /// In en, this message translates to:
+  /// **'Cheapest'**
+  String get tripSortCheapest;
+
+  /// tripSortFastest
+  ///
+  /// In en, this message translates to:
+  /// **'Fastest'**
+  String get tripSortFastest;
+
+  /// tripSortEasiest
+  ///
+  /// In en, this message translates to:
+  /// **'Least walking'**
+  String get tripSortEasiest;
+
+  /// fareTierVerified
+  ///
+  /// In en, this message translates to:
+  /// **'Standard fare'**
+  String get fareTierVerified;
+
+  /// fareTierCrowd
+  ///
+  /// In en, this message translates to:
+  /// **'Community fare'**
+  String get fareTierCrowd;
+
+  /// fareTierCandidate
+  ///
+  /// In en, this message translates to:
+  /// **'Unconfirmed'**
+  String get fareTierCandidate;
+
+  /// fareTierEstimate
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate, agree price'**
+  String get fareTierEstimate;
+
+  /// distanceKm
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String distanceKm(String km);
+
+  /// distanceM
+  ///
+  /// In en, this message translates to:
+  /// **'{meters} m'**
+  String distanceM(int meters);
+
+  /// searchResultDetail
+  ///
+  /// In en, this message translates to:
+  /// **'{area} · {distance} away'**
+  String searchResultDetail(String area, String distance);
+
+  /// tripOptionsSummary
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min · {distance}'**
+  String tripOptionsSummary(int minutes, String distance);
+
+  /// tripMetaWalk
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 min walk} other{{minutes} min walk}}'**
+  String tripMetaWalk(int minutes);
+
+  /// tripMetaWait
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{~1 min wait} other{~{minutes} min wait}}'**
+  String tripMetaWait(int minutes);
+
+  /// tripMetaDirect
+  ///
+  /// In en, this message translates to:
+  /// **'direct'**
+  String get tripMetaDirect;
+
+  /// tripMetaTransferAt
+  ///
+  /// In en, this message translates to:
+  /// **'1 transfer at {park}'**
+  String tripMetaTransferAt(String park);
+
+  /// tripMetaTransfers
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 transfer} other{{count} transfers}}'**
+  String tripMetaTransfers(int count);
+
+  /// searchShortcutHome
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get searchShortcutHome;
+
+  /// searchShortcutWork
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get searchShortcutWork;
+
+  /// searchShortcutAdd
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get searchShortcutAdd;
+
+  /// searchShortcutPinDetail
+  ///
+  /// In en, this message translates to:
+  /// **'On the map'**
+  String get searchShortcutPinDetail;
+
+  /// placeAway
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} away'**
+  String placeAway(String distance);
+
+  /// homePlanYourDayDetail
+  ///
+  /// In en, this message translates to:
+  /// **'Chain your stops into one trip'**
+  String get homePlanYourDayDetail;
+
+  /// searchPopularTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Popular in {city}'**
+  String searchPopularTitle(String city);
 }
 
 class _AppLocalizationsDelegate
