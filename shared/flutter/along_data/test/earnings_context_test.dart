@@ -57,6 +57,38 @@ void main() {
     expect(TripContactAction.fromJson({'uri': 'https://x'}), isNull);
   });
 
+  test('Na Me tap options and match result parse', () {
+    final o = NaMeTapOptions.fromJson({
+      'options': [
+        {
+          'color_token': 'color.naMe.green',
+          'shape': 'circle',
+          'label': 'Green Circle',
+        },
+        {
+          'color_token': 'color.naMe.blue',
+          'shape': 'star',
+          'label': 'Blue Star',
+        },
+      ],
+      'tap_locked': true,
+      'attempts_left': 2,
+    });
+    expect(o.options.map((e) => e.label), ['Green Circle', 'Blue Star']);
+    expect(o.tapLocked, isTrue);
+    expect(o.attemptsLeft, 2);
+    final m = NaMeMatchResult.fromJson({
+      'matched': false,
+      'attempts_left': 1,
+      'tap_locked': true,
+      'rate_limited': true,
+    });
+    expect(m.matched, isFalse);
+    expect(m.tapLocked, isTrue);
+    expect(m.rateLimited, isTrue);
+    expect(NaMeMatchResult.fromJson(null).matched, isFalse);
+  });
+
   test('lagosDayStart is Lagos midnight in UTC', () {
     expect(
       lagosDayStart(DateTime.utc(2026, 10, 25, 9), daysBack: 6),

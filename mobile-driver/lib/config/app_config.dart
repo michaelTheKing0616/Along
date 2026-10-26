@@ -72,6 +72,14 @@ class AppConfig {
   /// Empty values and the retired along.ng tile domains are not reachable.
   bool get hasTiles => AlongStyleLoader.isReachableTilesBase(tilesBaseUrl);
 
+  /// Na Me optical sync: on in staging only unless NA_ME_OPTICAL overrides.
+  bool get naMeOpticalEnabled => switch (_naMeOptical) {
+    'true' => true,
+    'false' => false,
+    _ => flavor == 'staging',
+  };
+  static const _naMeOptical = String.fromEnvironment('NA_ME_OPTICAL');
+
   /// Retained for callers that still opt into MapLibre demotiles.
   /// Home and trip maps use OpenFreeMap instead of that world demo.
   bool get allowsDemoMapFallback => flavor != 'prod';

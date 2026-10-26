@@ -216,6 +216,16 @@ class ActiveTripController
     return AlongPinResult(AlongPinVerdict.wrong, attemptsLeft: r.attemptsLeft);
   }
 
+  /// Reloads the trip after the Na Me handshake boarded the rider.
+  Future<void> refreshAfterBoarding() async {
+    final summary = await ref
+        .read(tripsRepositoryProvider)
+        .tripSnapshot(arg.tripId);
+    state = state.copyWith(trip: summary, clearError: true);
+    unawaited(_syncLocationPublisher(summary.status));
+    unawaited(_syncPaymentListener(summary.status));
+  }
+
   Future<void> releaseMatch() async {
     state = state.copyWith(isSubmitting: true, clearError: true);
     try {

@@ -5544,6 +5544,47 @@ export type Database = {
           },
         ]
       }
+      trip_handshakes: {
+        Row: {
+          attempts: number
+          created_at: string
+          last_attempt_at: string | null
+          matched_at: string | null
+          matched_method: string | null
+          secret: string
+          tap_locked: boolean
+          trip_id: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          last_attempt_at?: string | null
+          matched_at?: string | null
+          matched_method?: string | null
+          secret?: string
+          tap_locked?: boolean
+          trip_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          last_attempt_at?: string | null
+          matched_at?: string | null
+          matched_method?: string | null
+          secret?: string
+          tap_locked?: boolean
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_handshakes_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trip_location_samples: {
         Row: {
           accuracy_m: number | null
@@ -6728,6 +6769,21 @@ export type Database = {
         Args: { p_color_token: string; p_locale?: string; p_shape: string }
         Returns: string
       }
+      _na_me_optical_code: {
+        Args: { p_secret: string; p_step: number }
+        Returns: number
+      }
+      _na_me_pairs_in_use: {
+        Args: { p_t: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: string[]
+      }
+      _na_me_scope_matches: {
+        Args: {
+          a: Database["public"]["Tables"]["trips"]["Row"]
+          b: Database["public"]["Tables"]["trips"]["Row"]
+        }
+        Returns: boolean
+      }
       _na_me_token_label: { Args: { p_token: string }; Returns: string }
       _negotiation_actor_role: {
         Args: { p_negotiation_id: string; p_user_id: string }
@@ -7620,6 +7676,10 @@ export type Database = {
         }
         Returns: string
       }
+      confirm_na_me_match: {
+        Args: { p_proof: Json; p_trip_id: string }
+        Returns: Json
+      }
       confirmer_trust_weight: {
         Args: { p_city_id?: string; p_profile_id: string; p_role: string }
         Returns: number
@@ -8002,6 +8062,7 @@ export type Database = {
       my_route_profiles: { Args: never; Returns: Json }
       my_standing_history: { Args: never; Returns: Json }
       my_verifications: { Args: never; Returns: Json }
+      na_me_tap_options: { Args: { p_trip_id: string }; Returns: Json }
       nearby_fuel: {
         Args: { p_lat: number; p_lng: number; p_radius_m: number }
         Returns: Json

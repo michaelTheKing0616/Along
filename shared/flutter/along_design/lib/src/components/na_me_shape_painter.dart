@@ -6,16 +6,25 @@ import '../utils/name_signal.dart';
 
 /// Shared Na Me shape glyph painter (doc 05 §6 — 24 dp chip / 240 dp screen).
 class NaMeShapePainter extends CustomPainter {
-  NaMeShapePainter({required this.shape, required this.color});
+  NaMeShapePainter({required this.shape, required this.color, this.stroke});
 
   final NaMeShape shape;
   final Color color;
 
+  /// Outline width; null fills the shape.
+  final double? stroke;
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = color;
+    if (stroke != null) {
+      paint
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke!
+        ..strokeJoin = StrokeJoin.round;
+    }
     final center = Offset(size.width / 2, size.height / 2);
-    final r = size.width / 2;
+    final r = size.width / 2 - (stroke ?? 0) / 2;
 
     switch (shape) {
       case NaMeShape.circle:
@@ -92,5 +101,7 @@ class NaMeShapePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant NaMeShapePainter oldDelegate) =>
-      oldDelegate.shape != shape || oldDelegate.color != color;
+      oldDelegate.shape != shape ||
+      oldDelegate.color != color ||
+      oldDelegate.stroke != stroke;
 }

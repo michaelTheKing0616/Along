@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:along_core/along_core.dart'
     show TripEta, TripEtaStop, TripStatus, TripSummary;
 import 'package:along_data/along_data.dart';
@@ -157,6 +159,33 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
       status == TripStatus.boarded ||
       status == TripStatus.inTransit;
 
+  /// The Na Me moment: plays only on a confirmed match (trip turned
+  /// boarded), closes itself in under 1.2 s, and needs no rider tap.
+  void _celebrateBoarding(TripSummary trip) {
+    final nav = Navigator.of(context, rootNavigator: true);
+    final closeNaMe = NaMeScreen.isOpen.value;
+    nav.push(
+      PageRouteBuilder<void>(
+        opaque: false,
+        pageBuilder: (context, _, _) => AlongNaMeCelebration(
+          pairing: AlongNaMeChoice(
+            colorToken: trip.naMe.colorToken,
+            shape: trip.naMe.shape,
+            label: trip.naMe.label,
+          ),
+          title: 'You\'re matched',
+          subtitle:
+              'Get in. ${trip.driver.displayName.split(' ').first} will start the trip.',
+          onChime: () => unawaited(playNaMeChime()),
+          onDone: () {
+            nav.pop();
+            if (closeNaMe && NaMeScreen.isOpen.value) nav.maybePop();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -170,6 +199,11 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
         .maybeWhen(data: (value) => value, orElse: () => false);
 
     ref.listen(liveTripControllerFamilyProvider(_args), (previous, next) {
+      if (previous?.trip.status == TripStatus.accepted &&
+          next.trip.status == TripStatus.boarded &&
+          mounted) {
+        _celebrateBoarding(next.trip);
+      }
       if (next.showCompleteSheet &&
           previous?.showCompleteSheet != next.showCompleteSheet &&
           mounted) {
@@ -426,7 +460,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                               type: HoldButtonType.naMe,
                               onFired: () => context.push(
                                 AppRoutes.naMe,
-                                extra: NaMeRouteArgs(tripId: liveTrip.tripId),
+                                extra: NaMeRouteArgs(
+                                  tripId: liveTrip.tripId,
+                                  driverName: liveTrip.driver.displayName,
+                                ),
                               ),
                             ),
                           ],

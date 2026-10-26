@@ -22,6 +22,7 @@ export 'src/flows/trip_machine.dart';
 export 'src/flows/trip_screens.dart';
 export 'src/flows/map_sketch.dart';
 export 'src/flows/pin_entry.dart';
+export 'src/flows/na_me_handshake.dart';
 export 'src/flows/trip_chat.dart';
 export 'src/flows/motion_reel.dart';
 export 'src/flows/spring_sheet.dart';

@@ -16,6 +16,7 @@ import 'package:mobile_driver/features/trip/domain/driver_trip_config.dart';
 import 'package:mobile_driver/features/payments/data/payments_providers.dart';
 import 'package:mobile_driver/features/payments/presentation/payment_request_controller.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
+import 'package:mobile_driver/features/trip/presentation/na_me_handshake_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/extend_trip_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_chat.dart';
@@ -303,10 +304,33 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                 ),
                                 const SizedBox(height: AlongSpace.s8),
                               ],
+                              if (status == TripStatus.accepted &&
+                                  naMe != null) ...[
+                                AlongButton(
+                                  key: const Key('active_trip_board'),
+                                  label: 'Board with Na Me',
+                                  onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute<void>(
+                                      fullscreenDialog: true,
+                                      builder: (_) => NaMeHandshakeScreen(
+                                        args: args,
+                                        riderName: riderName.isEmpty
+                                            ? 'your rider'
+                                            : riderName.split(' ').first,
+                                        pairing: naMe,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: AlongSpace.s8),
+                              ],
                               if (status == TripStatus.accepted)
                                 AlongButton(
                                   key: const Key('active_trip_enter_pin'),
                                   label: 'Enter pickup PIN',
+                                  variant: naMe != null
+                                      ? AlongButtonVariant.secondary
+                                      : AlongButtonVariant.primary,
                                   onPressed: () => Navigator.of(context).push(
                                     MaterialPageRoute<void>(
                                       fullscreenDialog: true,

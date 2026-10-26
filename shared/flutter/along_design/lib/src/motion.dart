@@ -31,6 +31,9 @@ abstract final class AlongDurations {
 
   /// Skeleton and map sheen. Gallery frames hold the rest position.
   static const shimmer = Duration(milliseconds: 1200);
+
+  /// Na Me match: flood, morph to check, settle. Under the 1.2 s budget.
+  static const match = Duration(milliseconds: 1000);
   static const hold = Duration(milliseconds: 1400);
   static const scan = Duration(milliseconds: 1800);
 
@@ -141,6 +144,19 @@ abstract final class AlongHaptics {
     await HapticFeedback.mediumImpact();
   }
 
+  /// The Na Me match pattern: heavy, medium, light, 120 ms apart. Both
+  /// phones play it from the same boarded event, so it lands together.
+  static Future<void> match(BuildContext context) async {
+    if (!enabled) return;
+    requested++;
+    if (_skip(context)) return;
+    await HapticFeedback.heavyImpact();
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+    await HapticFeedback.mediumImpact();
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+    await HapticFeedback.lightImpact();
+  }
+
   static Future<void> error(BuildContext context) async {
     if (!enabled) return;
     requested++;
@@ -205,6 +221,12 @@ abstract final class AlongMoves {
   /// A live number changes: ETA range, countdown, period total.
   static const roll = AlongMove(AlongDurations.fade, AlongCurves.settle);
 
+  /// Na Me camera: the reticle closes in once the code is seen.
+  static const lockOn = AlongMove(AlongDurations.fade, AlongCurves.settle);
+
+  /// Na Me camera: the reticle cross-fades white to yellow on lock-on.
+  static const lockTint = AlongMove(AlongDurations.press, AlongCurves.fade);
+
   /// A notice or state block arrives in the sheet.
   static const arrive = AlongMove(AlongDurations.sheet, AlongCurves.settle);
 
@@ -222,4 +244,11 @@ abstract final class AlongMoves {
 
   /// A wrong entry is refused: the PIN boxes shake side to side.
   static const shake = AlongMove(AlongDurations.expand, Curves.linear);
+
+  /// Na Me handshake confirmed: both phones flood with the shared colour and
+  /// the shape morphs into a check (docs/art-direction.md "The match").
+  static const match = AlongMove(AlongDurations.match, AlongCurves.settle);
+
+  /// Offset into [match] where the seal lands: haptic and chime fire here.
+  static const matchSeal = Duration(milliseconds: 450);
 }

@@ -36,22 +36,22 @@ class FakeAlongSupabase implements AlongSupabase {
     this.raiseSosResponse,
     Map<String, GeoPoint>? cityCentroids,
     String? driverCityId,
-  })  : cities = cities ?? defaultTestCities(),
-        modes = modes ?? defaultTestModes(),
-        countryConfig = countryConfig ?? defaultTestCountry(),
-        verificationSchema = verificationSchema ?? defaultVerificationSchema(),
-        verifications = verifications ?? [],
-        routeProfiles = routeProfiles ?? [],
-        placesSearchResults = placesSearchResults ?? [],
-        driverLedgerEntries = driverLedgerEntries ?? [],
-        tripExtensionRows = tripExtensionRows ?? [],
-        settlementRows = settlementRows ?? [],
-        nearbySettlementAgents = nearbySettlementAgents ??
-            defaultNearbySettlementAgents(),
-        qrStickerRequests = qrStickerRequests ?? [],
-        digitalPayments = digitalPayments ?? [],
-        cityCentroids = cityCentroids ?? defaultCityCentroids(),
-        driverCityId = driverCityId ?? 'b1000000-0000-4000-8000-000000000001' {
+  }) : cities = cities ?? defaultTestCities(),
+       modes = modes ?? defaultTestModes(),
+       countryConfig = countryConfig ?? defaultTestCountry(),
+       verificationSchema = verificationSchema ?? defaultVerificationSchema(),
+       verifications = verifications ?? [],
+       routeProfiles = routeProfiles ?? [],
+       placesSearchResults = placesSearchResults ?? [],
+       driverLedgerEntries = driverLedgerEntries ?? [],
+       tripExtensionRows = tripExtensionRows ?? [],
+       settlementRows = settlementRows ?? [],
+       nearbySettlementAgents =
+           nearbySettlementAgents ?? defaultNearbySettlementAgents(),
+       qrStickerRequests = qrStickerRequests ?? [],
+       digitalPayments = digitalPayments ?? [],
+       cityCentroids = cityCentroids ?? defaultCityCentroids(),
+       driverCityId = driverCityId ?? 'b1000000-0000-4000-8000-000000000001' {
     if (signedInUser != null) {
       _user = signedInUser;
     } else {
@@ -100,20 +100,20 @@ class FakeAlongSupabase implements AlongSupabase {
   void Function(String tripId)? onCancelTrip;
 
   static Map<String, dynamic> defaultDriverBalanceResponse() => {
-        'balance': {'amount': '0.00', 'currency': 'NGN'},
-        'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
-        'standing': 'good_standing',
-        'grace_deadline': null,
-        'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
-      };
+    'balance': {'amount': '0.00', 'currency': 'NGN'},
+    'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
+    'standing': 'good_standing',
+    'grace_deadline': null,
+    'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
+  };
 
   static Map<String, dynamic> ledgerBlockedDriverBalanceResponse() => {
-        'balance': {'amount': '-5200.00', 'currency': 'NGN'},
-        'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
-        'standing': 'matching_paused',
-        'grace_deadline': null,
-        'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
-      };
+    'balance': {'amount': '-5200.00', 'currency': 'NGN'},
+    'block_threshold': {'amount': '-5000.00', 'currency': 'NGN'},
+    'standing': 'matching_paused',
+    'grace_deadline': null,
+    'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
+  };
 
   int confirmFareInvokeCount = 0;
   final List<Map<String, dynamic>> postedTripMessages = [];
@@ -151,17 +151,13 @@ class FakeAlongSupabase implements AlongSupabase {
   final Map<String, Map<String, dynamic>> paymentRequestsByTrip = {};
 
   static List<Map<String, dynamic>> defaultNearbySettlementAgents() => [
-        {
-          'id': 'agent-zaria-near',
-          'business_name': 'Zaria POS',
-          'distance_m': 120,
-        },
-        {
-          'id': 'agent-zaria-far',
-          'business_name': 'Zaria Far POS',
-          'distance_m': 8500,
-        },
-      ];
+    {'id': 'agent-zaria-near', 'business_name': 'Zaria POS', 'distance_m': 120},
+    {
+      'id': 'agent-zaria-far',
+      'business_name': 'Zaria Far POS',
+      'distance_m': 8500,
+    },
+  ];
 
   User? _user;
   String? _storedVehicleId;
@@ -204,13 +200,42 @@ class FakeAlongSupabase implements AlongSupabase {
     _controller.add(const AuthState(AuthChangeEvent.signedOut, null));
   }
 
+  /// Na Me tap options; the first is the real pairing.
+  List<Map<String, dynamic>> naMeOptions = [
+    {'color_token': 'green', 'shape': 'diamond', 'label': 'Green Diamond'},
+    {'color_token': 'red', 'shape': 'square', 'label': 'Red Square'},
+    {'color_token': 'cyan', 'shape': 'triangle', 'label': 'Cyan Triangle'},
+    {'color_token': 'yellow', 'shape': 'circle', 'label': 'Yellow Circle'},
+  ];
+  bool naMeTapLocked = false;
+  final List<Map<String, dynamic>> naMeProofs = [];
+
   @override
-  Future<dynamic> rpc(
-    String fn, {
-    Map<String, dynamic>? params,
-  }) async {
+  Future<dynamic> rpc(String fn, {Map<String, dynamic>? params}) async {
     final p = params ?? {};
     rpcCalls.add((fn, Map<String, dynamic>.from(p)));
+    if (fn == 'na_me_tap_options') {
+      return {
+        'options': naMeOptions,
+        'tap_locked': naMeTapLocked,
+        'attempts_left': 3 - naMeProofs.length,
+      };
+    }
+    if (fn == 'confirm_na_me_match') {
+      final proof = Map<String, dynamic>.from(p['p_proof'] as Map? ?? {});
+      naMeProofs.add(proof);
+      final real = naMeOptions.first;
+      final ok =
+          proof['color_token'] == real['color_token'] &&
+          proof['shape'] == real['shape'];
+      if (ok) tripStatuses[p['p_trip_id'] as String] = 'boarded';
+      if (!ok) naMeTapLocked = true;
+      return {
+        'matched': ok,
+        'attempts_left': 3 - naMeProofs.length,
+        'tap_locked': naMeTapLocked,
+      };
+    }
     if (fn == 'set_driver_city') {
       final nextCityId = p['p_city_id'] as String?;
       if (nextCityId != null) {
@@ -257,10 +282,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (fn == 'set_presence') {
       onSetPresence?.call(params ?? {});
-      return {
-        'session_id': 'test-session',
-        'status': params?['p_status'],
-      };
+      return {'session_id': 'test-session', 'status': params?['p_status']};
     }
     if (fn == 'presence_ping') {
       onPresencePing?.call(params ?? {});
@@ -444,10 +466,7 @@ class FakeAlongSupabase implements AlongSupabase {
       ];
     }
     if (fn == 'create_agent_code') {
-      return {
-        'agent_code': 'ABC123',
-        'expires_at': '2026-09-06T11:00:00Z',
-      };
+      return {'agent_code': 'ABC123', 'expires_at': '2026-09-06T11:00:00Z'};
     }
     if (fn == 'nearby_settlement_agents') {
       return nearbySettlementAgents;
@@ -471,10 +490,7 @@ class FakeAlongSupabase implements AlongSupabase {
         await Future<void>.delayed(raiseSosDelay);
       }
       return raiseSosResponse ??
-          {
-            'sos_id': 'sos-test-001',
-            'emergency_number': '112',
-          };
+          {'sos_id': 'sos-test-001', 'emergency_number': '112'};
     }
     if (fn == 'update_sos') {
       updateSosInvokeCount++;
@@ -498,9 +514,7 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'respond_extension') {
       respondExtensionInvokeCount++;
       onRespondExtension?.call(params ?? {});
-      return {
-        'trip': sampleTripView(tripId: 'trip-1', status: 'in_transit'),
-      };
+      return {'trip': sampleTripView(tripId: 'trip-1', status: 'in_transit')};
     }
     if (fn == 'create_payment_request') {
       final tripId = params?['p_trip_id'] as String? ?? 'trip-1';
@@ -551,11 +565,7 @@ class FakeAlongSupabase implements AlongSupabase {
       'trip_id': tripId,
       'status': status,
       'journey_sequence': 1,
-      'rider': {
-        'display_name': 'Ada',
-        'rating': 4.8,
-        'trip_count': 12,
-      },
+      'rider': {'display_name': 'Ada', 'rating': 4.8, 'trip_count': 12},
       'board': {
         'stage_id': 's1',
         'name': 'Lugbe Park',
@@ -591,11 +601,7 @@ class FakeAlongSupabase implements AlongSupabase {
         'icon_key': 'car',
         'color_token': 'mode.car',
       },
-      'rider': {
-        'display_name': 'Ada',
-        'rating': 4.8,
-        'trip_count': 12,
-      },
+      'rider': {'display_name': 'Ada', 'rating': 4.8, 'trip_count': 12},
       'driver': <String, dynamic>{},
       'vehicle': <String, dynamic>{},
       'board': {
@@ -636,10 +642,10 @@ class FakeAlongSupabase implements AlongSupabase {
       'expires_at': '2026-09-05T14:00:00Z',
       'timestamps': <String, dynamic>{},
       'payment_method': paymentMethod,
-      if (isRequested)
-        'approach_band': approachBand ?? 'under_2',
+      if (isRequested) 'approach_band': approachBand ?? 'under_2',
       if (isAccepted)
-        'wait': wait ??
+        'wait':
+            wait ??
             {
               'walk_eta_s': 180,
               'approach': 'approaching',
@@ -678,7 +684,10 @@ class FakeAlongSupabase implements AlongSupabase {
     Map<String, String>? headers,
   }) async {
     if (slug == 'staging-otp') {
-      stagingOtpCalls.add((Map<String, dynamic>.from(body ?? {}), Map<String, String>.from(headers ?? {})));
+      stagingOtpCalls.add((
+        Map<String, dynamic>.from(body ?? {}),
+        Map<String, String>.from(headers ?? {}),
+      ));
       return {'otp': stagingOtpCode};
     }
     if (slug.startsWith('qr/resolve/')) {
@@ -708,9 +717,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (slug == 'places-search') {
       return {
-        'data': {
-          'results': placesSearchResults,
-        },
+        'data': {'results': placesSearchResults},
       };
     }
     if (slug == 'settlement/initiate') {
@@ -755,32 +762,17 @@ class FakeAlongSupabase implements AlongSupabase {
       final key = filters['key'];
       if (key == 'verification.expected_review_hours') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '48',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '48'},
         ];
       }
       if (key == 'presence.ping_interval_moving_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '4',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '4'},
         ];
       }
       if (key == 'presence.ping_interval_still_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '15',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '15'},
         ];
       }
       if (key == 'presence.fanout_radius_m') {
@@ -795,22 +787,12 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       if (key == 'presence.at_park_radius_m') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '150',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '150'},
         ];
       }
       if (key == 'graph.snap_radius_m') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '60',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '60'},
         ];
       }
       if (key == 'commission.rate') {
@@ -825,32 +807,17 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       if (key == 'dispatch.request_ttl_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '25',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '25'},
         ];
       }
       if (key == 'dispatch.max_cascade') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '3',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '3'},
         ];
       }
       if (key == 'driver.negotiation_poll_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '2',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '2'},
         ];
       }
       if (key == 'negotiation.chip_steps') {
@@ -865,52 +832,27 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       if (key == 'driver.manifest_poll_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '3',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '3'},
         ];
       }
       if (key == 'client.trip_location_sample_interval_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '5',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '5'},
         ];
       }
       if (key == 'motion.naMe.strobe_ms') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '250',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '250'},
         ];
       }
       if (key == 'motion.naMe.cycle_duration_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '8',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '8'},
         ];
       }
       if (key == 'sos.hold_duration_ms') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '600',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '600'},
         ];
       }
       if (key == 'rating.tags') {
@@ -919,8 +861,7 @@ class FakeAlongSupabase implements AlongSupabase {
             'key': key,
             'scope_type': 'global',
             'scope_id': '*',
-            'value':
-                '["polite","on_time","rude","unsafe","fair_fare","overcharged"]',
+            'value': '["polite","on_time","rude","unsafe","fair_fare","overcharged"]',
           },
         ];
       }
@@ -946,12 +887,7 @@ class FakeAlongSupabase implements AlongSupabase {
       }
       if (key == 'dispatch.no_show_after_s') {
         return [
-          {
-            'key': key,
-            'scope_type': 'global',
-            'scope_id': '*',
-            'value': '300',
-          },
+          {'key': key, 'scope_type': 'global', 'scope_id': '*', 'value': '300'},
         ];
       }
     }
@@ -964,8 +900,9 @@ class FakeAlongSupabase implements AlongSupabase {
           'standing': 'good_standing',
           'driver_code': driverCode,
           'accepts_digital': acceptsDigital,
-          'payout_subaccount_code':
-              hasPayoutSubaccount ? 'ACCT_test_subaccount' : null,
+          'payout_subaccount_code': hasPayoutSubaccount
+              ? 'ACCT_test_subaccount'
+              : null,
           'payout_bank_last4': hasPayoutSubaccount ? '1234' : null,
         },
       ];
@@ -990,10 +927,7 @@ class FakeAlongSupabase implements AlongSupabase {
     }
     if (table == 'vehicles') {
       return [
-        {
-          'id': 'test-vehicle-id',
-          'plate_number': driverPlate,
-        },
+        {'id': 'test-vehicle-id', 'plate_number': driverPlate},
       ];
     }
     if (table == 'payments') {
@@ -1109,69 +1043,67 @@ class FakeDriverOnboardingPreferences implements DriverOnboardingPreferences {
 }
 
 List<Map<String, dynamic>> defaultTestCities() => [
-      {
-        'id': 'b1000000-0000-4000-8000-000000000001',
-        'name': 'Abuja',
-        'slug': 'abuja',
-        'country_code': 'NG',
-        'status': 'live',
-      },
-      {
-        'id': '0a000000-0000-4000-8000-000000000001',
-        'name': 'Zaria-Test',
-        'slug': 'zaria-test',
-        'country_code': 'NG',
-        'status': 'live',
-      },
-    ];
+  {
+    'id': 'b1000000-0000-4000-8000-000000000001',
+    'name': 'Abuja',
+    'slug': 'abuja',
+    'country_code': 'NG',
+    'status': 'live',
+  },
+  {
+    'id': '0a000000-0000-4000-8000-000000000001',
+    'name': 'Zaria-Test',
+    'slug': 'zaria-test',
+    'country_code': 'NG',
+    'status': 'live',
+  },
+];
 
 Map<String, GeoPoint> defaultCityCentroids() => {
-      'b1000000-0000-4000-8000-000000000001':
-          const GeoPoint(lat: 9.057, lng: 7.495),
-      '0a000000-0000-4000-8000-000000000001':
-          const GeoPoint(lat: 11.066, lng: 7.702),
-    };
+  'b1000000-0000-4000-8000-000000000001': const GeoPoint(
+    lat: 9.057,
+    lng: 7.495,
+  ),
+  '0a000000-0000-4000-8000-000000000001': const GeoPoint(
+    lat: 11.066,
+    lng: 7.702,
+  ),
+};
 
 List<Map<String, dynamic>> defaultTestModes() => [
-      {
-        'code': 'keke',
-        'label': 'Keke',
-        'icon_key': 'mode.keke',
-        'color_token': 'mode.keke',
-        'default_seat_capacity': 3,
-        'sort_order': 20,
-      },
-      {
-        'code': 'car',
-        'label': 'Along taxi',
-        'icon_key': 'mode.car',
-        'color_token': 'mode.car',
-        'default_seat_capacity': 4,
-        'sort_order': 10,
-      },
-    ];
+  {
+    'code': 'keke',
+    'label': 'Keke',
+    'icon_key': 'mode.keke',
+    'color_token': 'mode.keke',
+    'default_seat_capacity': 3,
+    'sort_order': 20,
+  },
+  {
+    'code': 'car',
+    'label': 'Along taxi',
+    'icon_key': 'mode.car',
+    'color_token': 'mode.car',
+    'default_seat_capacity': 4,
+    'sort_order': 10,
+  },
+];
 
 Map<String, dynamic> defaultTestCountry() => {
-      'code': 'NG',
-      'phone_prefix': '+234',
-      'currency_code': 'NGN',
-      'currency_symbol': '₦',
-      'currency_minor_units': 2,
-      'verification_schema': defaultVerificationSchema(),
-      'regulatory_flags': {
-        'plate_pattern': r'^[A-Za-z]{3}[-\s]?\d{3}[A-Za-z]{2}$',
-      },
-    };
+  'code': 'NG',
+  'phone_prefix': '+234',
+  'currency_code': 'NGN',
+  'currency_symbol': '₦',
+  'currency_minor_units': 2,
+  'verification_schema': defaultVerificationSchema(),
+  'regulatory_flags': {'plate_pattern': r'^[A-Za-z]{3}[-\s]?\d{3}[A-Za-z]{2}$'},
+};
 
 List<Map<String, dynamic>> defaultVerificationSchema() => [
-      {
-        'type': 'nin',
-        'label': 'NIN',
-        'pattern': r'^\d{11}$',
-      },
-      {
-        'type': 'drivers_license',
-        'label': "Driver's License",
-        'pattern': r'^.{5,}$',
-      },
-    ];
+  {'type': 'nin', 'label': 'NIN', 'pattern': r'^\d{11}$'},
+  {
+    'type': 'drivers_license',
+    'label': "Driver's License",
+    'pattern': r'^.{5,}$',
+  },
+];

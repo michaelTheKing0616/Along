@@ -29,6 +29,7 @@ export 'src/models/itinerary.dart';
 export 'src/models/itinerary_state.dart';
 export 'src/models/journey.dart';
 export 'src/models/na_me_pairing.dart';
+export 'src/models/na_me_optical.dart';
 export 'src/models/na_me_visual.dart';
 export 'src/models/trip_live.dart';
 export 'src/models/plan_metrics.dart';

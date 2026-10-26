@@ -21,6 +21,7 @@ dependencies:
   along_realtime:
     path: ../shared/flutter/along_realtime
   app_links: 6.4.1
+  audioplayers: 6.8.1
   camera: 0.11.2
   connectivity_plus: 6.1.4
   flutter:
@@ -36,11 +37,13 @@ dependencies:
   maplibre_gl: 0.22.0
   path_provider: 2.1.5
   permission_handler: 11.4.0
+  screen_brightness: 2.1.11
   sentry_flutter: 8.14.2
   supabase_flutter: 2.8.4
   url_launcher: 6.3.1
 
   intl: any
+  wakelock_plus: 1.5.2
 dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:

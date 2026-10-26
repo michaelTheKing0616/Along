@@ -257,6 +257,95 @@ void main() {
       initialResult: const AlongPinResult(AlongPinVerdict.locked),
       onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.locked),
     ),
+    'na_me_show': () => AlongNaMeShowScreen(
+      pairing: _naMe,
+      driverName: 'Musa',
+      frames: NaMeOptical.frames(
+        '3f9a1c0d5e7b2a4c6e8f0a1b3c5d7e9f01234567',
+        177645000,
+      ),
+      frameIndex: 3,
+      onClose: () {},
+    ),
+    'na_me_show_tap': () =>
+        AlongNaMeShowScreen(pairing: _naMe, driverName: 'Musa', onClose: () {}),
+    'na_me_camera': () => AlongNaMeCameraView(
+      riderName: 'Ada',
+      preview: const _CameraScene(),
+      fallbackProgress: 0.35,
+      onPickInstead: () {},
+      onClose: () {},
+    ),
+    'na_me_camera_lock': () => AlongNaMeCameraView(
+      riderName: 'Ada',
+      preview: const _CameraScene(),
+      fallbackProgress: 0.55,
+      locked: true,
+      onPickInstead: () {},
+      onClose: () {},
+    ),
+    'na_me_tap': () => AlongNaMeTapMatch(
+      riderName: 'Ada',
+      options: _naMeOptions,
+      onPick: (_) {},
+      onUsePin: () {},
+      onClose: () {},
+    ),
+    'na_me_tap_checking': () => AlongNaMeTapMatch(
+      riderName: 'Ada',
+      options: _naMeOptions,
+      checking: _naMeOptions[2],
+      onPick: (_) {},
+      onUsePin: () {},
+      onClose: () {},
+    ),
+    'na_me_match_20': () => const AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'Ada is in',
+      subtitle: 'Matched. Start when you\'re ready.',
+      progress: 0.2,
+    ),
+    'na_me_match_55': () => const AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'Ada is in',
+      subtitle: 'Matched. Start when you\'re ready.',
+      progress: 0.55,
+    ),
+    'na_me_match_driver': () => AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'Ada is in',
+      subtitle: 'Matched. Start when you\'re ready.',
+      startLabel: 'Start trip',
+      onStart: () {},
+      progress: 1,
+    ),
+    'na_me_match_rider': () => const AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'You\'re matched',
+      subtitle: 'Get in. Musa will start the trip.',
+      progress: 1,
+    ),
+    'na_me_no_match': () => AlongNaMeNoMatch(
+      riderName: 'Ada',
+      result: const AlongNaMeResult(
+        AlongNaMeVerdict.wrong,
+        attemptsLeft: 2,
+        tapLocked: true,
+      ),
+      onUsePin: () {},
+    ),
+    'na_me_rate_limited': () => AlongNaMeNoMatch(
+      riderName: 'Ada',
+      result: const AlongNaMeResult(AlongNaMeVerdict.rateLimited),
+      onRetry: () {},
+      onUsePin: () {},
+    ),
+    'na_me_no_match_retry': () => AlongNaMeNoMatch(
+      riderName: 'Ada',
+      result: const AlongNaMeResult(AlongNaMeVerdict.failed),
+      onRetry: () {},
+      onUsePin: () {},
+    ),
     'trip_earnings_empty': () => const AlongDriverEarningsScreen(
       today: AlongEarningsPeriod.emptyToday,
       week: AlongEarningsPeriod.empty,
@@ -275,6 +364,12 @@ void main() {
     'trip_handoff_unread',
     'trip_chat',
     'trip_live_message',
+    'na_me_show',
+    'na_me_camera',
+    'na_me_tap',
+    'na_me_match_driver',
+    'na_me_match_rider',
+    'na_me_no_match',
   };
   for (final stage in tripStages.entries) {
     final frames = [
@@ -697,5 +792,267 @@ Widget _chatStage(List<AlongChatLine> lines) {
         ],
       );
     },
+  );
+}
+
+const _naMe = AlongNaMeChoice(
+  colorToken: 'color.naMe.green',
+  shape: 'circle',
+  label: 'Green Circle',
+);
+const _naMeOptions = [
+  AlongNaMeChoice(
+    colorToken: 'color.naMe.blue',
+    shape: 'triangle',
+    label: 'Blue Triangle',
+  ),
+  _naMe,
+  AlongNaMeChoice(
+    colorToken: 'color.naMe.orange',
+    shape: 'star',
+    label: 'Orange Star',
+  ),
+  AlongNaMeChoice(
+    colorToken: 'color.naMe.purple',
+    shape: 'hexagon',
+    label: 'Purple Hexagon',
+  ),
+];
+
+/// Stand-in for the camera feed: a dim street with a phone held up.
+class _Block extends StatelessWidget {
+  const _Block({
+    required this.x,
+    required this.w,
+    required this.h,
+    required this.windows,
+  });
+
+  final double x;
+  final double w;
+  final double h;
+  final List<Offset> windows;
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: Alignment(x, 0.16),
+    child: FractionallySizedBox(
+      widthFactor: w,
+      heightFactor: h,
+      alignment: Alignment.bottomCenter,
+      child: ColoredBox(
+        color: const Color(0xFF2C323C),
+        child: Stack(
+          children: [
+            for (final o in windows)
+              Align(
+                alignment: Alignment(o.dx * 2 - 1, o.dy * 2 - 1),
+                child: const SizedBox(
+                  width: 14,
+                  height: 18,
+                  child: ColoredBox(color: Color(0xFFE0B46A)),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _Hand extends CustomPainter {
+  const _Hand({required this.front});
+
+  final bool front;
+
+  static const _skin = Color(0xFF9A6A4A);
+  static const _shade = Color(0xFF7E5439);
+
+  static const _nail = Color(0xFFC49A7C);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final skin = Paint()..color = _skin;
+    final shade = Paint()..color = _shade;
+    if (!front) {
+      // Palm and wrist under the phone, far side in shade.
+      final palm = RRect.fromLTRBR(
+        34,
+        212,
+        134,
+        340,
+        const Radius.circular(36),
+      );
+      canvas.drawRRect(palm, skin);
+      canvas.save();
+      canvas.clipRRect(palm);
+      canvas.drawRect(const Rect.fromLTRB(112, 212, 134, 340), shade);
+      canvas.restore();
+      // Backs of the four fingers behind the right edge.
+      canvas.drawRRect(
+        RRect.fromLTRBR(128, 136, 152, 262, const Radius.circular(12)),
+        shade,
+      );
+      return;
+    }
+    // Thumb: base pad, then a tapered digit along the left edge with a nail.
+    canvas.drawCircle(const Offset(34, 262), 22, skin);
+    canvas.save();
+    canvas.translate(30, 250);
+    canvas.rotate(0.32);
+    canvas.drawRRect(
+      RRect.fromLTRBR(-12, -66, 12, 0, const Radius.circular(12)),
+      skin,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(-7, -62, 7, -46, const Radius.circular(7)),
+      Paint()..color = _nail,
+    );
+    // Crease where the thumb bends.
+    canvas.drawRect(
+      const Rect.fromLTRB(-12, -34, 12, -32),
+      Paint()..color = _shade,
+    );
+    canvas.restore();
+    // Four fingertips curl round the right edge, pinky smallest.
+    const tips = [
+      (142.0, 20.0, 20.0),
+      (168.0, 22.0, 22.0),
+      (194.0, 22.0, 21.0),
+      (220.0, 18.0, 17.0),
+    ];
+    for (final (y, h, w) in tips) {
+      final tip = RRect.fromLTRBR(
+        150 - w,
+        y,
+        150,
+        y + h,
+        Radius.circular(h / 2),
+      );
+      canvas.drawRRect(tip, skin);
+      // Round side in shade, nail edge catching the light.
+      canvas.save();
+      canvas.clipRRect(tip);
+      canvas.drawRect(Rect.fromLTRB(150 - w, y + h * 0.7, 150, y + h), shade);
+      canvas.restore();
+      canvas.drawRRect(
+        RRect.fromLTRBR(
+          151 - w,
+          y + 4,
+          157 - w,
+          y + h - 6,
+          const Radius.circular(3),
+        ),
+        Paint()..color = _nail,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_Hand old) => old.front != front;
+}
+
+class _CameraScene extends StatelessWidget {
+  const _CameraScene();
+
+  // A rider's phone held up in a street at dusk: flat shapes only, so the
+  // render is identical on every host.
+  @override
+  Widget build(BuildContext context) => const Stack(
+    fit: StackFit.expand,
+    children: [
+      ColoredBox(color: Color(0xFF39414E)),
+      // Buildings either side, a few lit windows.
+      _Block(
+        x: -1,
+        w: 0.34,
+        h: 0.62,
+        windows: [Offset(0.3, 0.2), Offset(0.65, 0.42), Offset(0.3, 0.64)],
+      ),
+      _Block(
+        x: 1,
+        w: 0.3,
+        h: 0.7,
+        windows: [Offset(0.4, 0.16), Offset(0.4, 0.5), Offset(0.7, 0.33)],
+      ),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: FractionallySizedBox(
+          heightFactor: 0.42,
+          widthFactor: 1,
+          child: ColoredBox(color: Color(0xFF262B33)),
+        ),
+      ),
+      // Kerb line and a parked keke's tail-lights in the distance.
+      Align(
+        alignment: Alignment(0, 0.17),
+        child: SizedBox(
+          height: 3,
+          width: double.infinity,
+          child: ColoredBox(color: Color(0xFF4A515C)),
+        ),
+      ),
+      Align(
+        alignment: Alignment(0.62, 0.12),
+        child: SizedBox(
+          width: 8,
+          height: 5,
+          child: ColoredBox(color: Color(0xFFB8432F)),
+        ),
+      ),
+      Align(
+        alignment: Alignment(0.74, 0.12),
+        child: SizedBox(
+          width: 8,
+          height: 5,
+          child: ColoredBox(color: Color(0xFFB8432F)),
+        ),
+      ),
+      // The hand holding the phone up: palm behind, thumb and fingers
+      // wrap the edges in front (drawn after the phone).
+      Align(
+        alignment: Alignment(0, -0.3),
+        child: CustomPaint(size: Size(160, 330), painter: _Hand(front: false)),
+      ),
+      Align(
+        alignment: Alignment(0, 0.16),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xFF6B4632),
+            borderRadius: BorderRadius.all(Radius.circular(28)),
+          ),
+          child: SizedBox(width: 96, height: 120),
+        ),
+      ),
+      Align(
+        alignment: Alignment(0, -0.3),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xFF0E0F12),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(6),
+            child: SizedBox(
+              width: 112,
+              height: 196,
+              child: ColoredBox(
+                color: Color(0xFFF2F1EC),
+                child: Center(
+                  child: SizedBox.square(
+                    dimension: 72,
+                    child: ColoredBox(color: Color(0xFF2F6BFF)),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      Align(
+        alignment: Alignment(0, -0.3),
+        child: CustomPaint(size: Size(160, 330), painter: _Hand(front: true)),
+      ),
+    ],
   );
 }
