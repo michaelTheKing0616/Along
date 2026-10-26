@@ -272,13 +272,36 @@ class AlongNaMeCameraView extends StatelessWidget {
           const ColoredBox(color: Color(0x66000000)),
           Align(
             alignment: const Alignment(0, -0.3),
-            child: Container(
+            // Corner brackets from straight bars: crisp at any scale.
+            child: SizedBox(
               width: 240,
               height: 240,
-              decoration: ShapeDecoration(
-                shape: AlongCraft.border(32).copyWith(
-                  side: const BorderSide(color: Colors.white, width: 3),
-                ),
+              child: Stack(
+                children: [
+                  for (final a in const [
+                    Alignment.topLeft,
+                    Alignment.topRight,
+                    Alignment.bottomLeft,
+                    Alignment.bottomRight,
+                  ]) ...[
+                    Align(
+                      alignment: a,
+                      child: const SizedBox(
+                        width: 36,
+                        height: 4,
+                        child: ColoredBox(color: Colors.white),
+                      ),
+                    ),
+                    Align(
+                      alignment: a,
+                      child: const SizedBox(
+                        width: 4,
+                        height: 36,
+                        child: ColoredBox(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ),
