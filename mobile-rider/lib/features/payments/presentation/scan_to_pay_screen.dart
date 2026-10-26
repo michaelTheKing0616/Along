@@ -34,6 +34,7 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
   @override
   void initState() {
     super.initState();
+    _codeController.addListener(_onCodeChanged);
     _startScanner();
   }
 
@@ -89,7 +90,19 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
     if (mounted) Navigator.of(context).pop();
   }
 
+  void _onCodeChanged() {
+    if (mounted) setState(() => _rejectMessage = null);
+  }
+
+  /// Continue is live only once the typed text is a valid driver code.
+  String? get _typedCode =>
+      QrPayloadParser.parse(_codeController.text) ??
+      QrPayloadParser.parse('along://p/${_codeController.text.trim()}');
+
+  bool get _typedValid => _typedCode != null;
+
   Future<void> _submitTypedCode() async {
+    if (!_typedValid) return;
     final normalised =
         QrPayloadParser.parse(_codeController.text) ??
         QrPayloadParser.parse('along://p/${_codeController.text}');
@@ -345,7 +358,7 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
           AlongButton(
             key: const Key('scan_code_submit'),
             label: l10n.scanCodeSubmit,
-            onPressed: _submitTypedCode,
+            onPressed: _typedValid ? _submitTypedCode : null,
           ),
           const SizedBox(height: AlongSpace.s4),
           AlongButton(

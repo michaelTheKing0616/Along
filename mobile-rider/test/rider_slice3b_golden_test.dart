@@ -244,10 +244,17 @@ void main() {
         if (state == 'typed') {
           await tester.tap(find.byKey(const Key('scan_enter_code')));
           await settle(tester);
-          await tester.enterText(find.byKey(const Key('scan_code_field')), 'X');
-          await tester.tap(find.byKey(const Key('scan_code_submit')));
+          final field = find.byKey(const Key('scan_code_field'));
+          AlongButton submit() => tester.widget<AlongButton>(
+            find.byKey(const Key('scan_code_submit')),
+          );
+          expect(submit().onPressed, isNull);
+          await tester.enterText(field, 'ABC12345');
           await settle(tester);
-          expect(find.byKey(const Key('scan_reject_message')), findsOneWidget);
+          expect(submit().onPressed, isNotNull);
+          await tester.enterText(field, 'ABC1');
+          await settle(tester);
+          expect(submit().onPressed, isNull);
         }
         await shoot(tester, 'rider_scan_${state}_$name');
       });
