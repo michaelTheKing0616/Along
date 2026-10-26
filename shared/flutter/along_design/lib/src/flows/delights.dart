@@ -249,9 +249,15 @@ class AlongStagger extends StatelessWidget {
 }
 
 class AlongTabBar extends StatefulWidget {
-  const AlongTabBar({super.key, this.index = 0});
+  const AlongTabBar({super.key, this.index = 0, this.tabs, this.onSelect});
 
   final int index;
+
+  /// Icon and label per tab. Null keeps the demo Home/Rides/Wallet/Safety.
+  final List<(IconData, String)>? tabs;
+
+  /// Called after the pop with the tapped index.
+  final ValueChanged<int>? onSelect;
 
   @override
   State<AlongTabBar> createState() => AlongTabBarState();
@@ -281,6 +287,12 @@ class AlongTabBarState extends State<AlongTabBar>
   }
 
   @override
+  void didUpdateWidget(AlongTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.index != oldWidget.index) _index = widget.index;
+  }
+
+  @override
   void dispose() {
     _pop.dispose();
     super.dispose();
@@ -298,6 +310,7 @@ class AlongTabBarState extends State<AlongTabBar>
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final tabs = widget.tabs ?? _icons;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -308,16 +321,17 @@ class AlongTabBarState extends State<AlongTabBar>
         height: 48,
         child: Row(
           children: [
-            for (var i = 0; i < _icons.length; i++)
+            for (var i = 0; i < tabs.length; i++)
               Expanded(
                 child: Semantics(
                   button: true,
                   selected: i == _index,
-                  label: _icons[i].$2,
+                  label: tabs[i].$2,
                   child: GestureDetector(
                     onTap: () {
                       AlongHaptics.selection(context);
                       select(i);
+                      widget.onSelect?.call(i);
                     },
                     behavior: HitTestBehavior.opaque,
                     child: Center(
@@ -340,7 +354,7 @@ class AlongTabBarState extends State<AlongTabBar>
                             corner: AlongRadius.control.x,
                           ),
                           child: Icon(
-                            _icons[i].$1,
+                            tabs[i].$1,
                             size: 20,
                             color: i == _index
                                 ? palette.accentInk

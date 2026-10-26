@@ -1,4 +1,5 @@
 import 'package:along_core/along_core.dart';
+import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/app.dart';
@@ -11,7 +12,11 @@ Future<void> main() async {
   final config = AppConfig.fromEnvironment();
 
   Future<void> runAlongApp() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Geist registers in parallel with bootstrap, so no extra startup wait.
+    final fonts = AlongFonts.ensureLoaded();
     final container = await bootstrapApp(configOverride: config);
+    await fonts;
     runApp(
       UncontrolledProviderScope(
         container: container,
@@ -21,14 +26,11 @@ Future<void> main() async {
   }
 
   if (config.hasSentry) {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = config.sentryDsn;
-        options.beforeSend = scrubPii;
-        options.tracesSampleRate = config.sentryTracesSampleRate;
-      },
-      appRunner: runAlongApp,
-    );
+    await SentryFlutter.init((options) {
+      options.dsn = config.sentryDsn;
+      options.beforeSend = scrubPii;
+      options.tracesSampleRate = config.sentryTracesSampleRate;
+    }, appRunner: runAlongApp);
   } else {
     await runAlongApp();
   }
