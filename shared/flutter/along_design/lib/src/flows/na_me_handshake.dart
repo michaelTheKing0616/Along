@@ -321,9 +321,13 @@ class AlongNaMeCameraView extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: DecoratedBox(
-              decoration: ShapeDecoration(
+              // Flush to the bottom edge like a sheet; circular top corners
+              // render the same on every host (superellipse AA does not).
+              decoration: BoxDecoration(
                 color: p.bg,
-                shape: AlongCraft.border(32),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
               ),
               child: SafeArea(
                 top: false,
