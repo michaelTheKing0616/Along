@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:along_core/along_core.dart';
 import 'package:flutter/foundation.dart';
@@ -65,11 +64,17 @@ Color _inkOn(Color c) =>
     c.computeLuminance() > 0.4 ? const Color(0xFF0B0B0C) : Colors.white;
 
 class _Shape extends StatelessWidget {
-  const _Shape({required this.choice, required this.size, this.color});
+  const _Shape({
+    required this.choice,
+    required this.size,
+    this.color,
+    this.stroke,
+  });
 
   final AlongNaMeChoice choice;
   final double size;
   final Color? color;
+  final double? stroke;
 
   @override
   Widget build(BuildContext context) => SizedBox.square(
@@ -78,6 +83,7 @@ class _Shape extends StatelessWidget {
       painter: NaMeShapePainter(
         shape: choice.shapeKind,
         color: color ?? choice.color,
+        stroke: stroke,
       ),
     ),
   );
@@ -194,6 +200,10 @@ class _AlongNaMeShowScreenState extends State<AlongNaMeShowScreen> {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8),
+                              // Photosensitivity (WCAG 2.3.1): the white sync
+                              // frame flashes ~0.5/s; the 6 Hz colour frames
+                              // stay under the small-area limit (152 dp is
+                              // well below 25% of a 10° field at arm's length).
                               child: SizedBox.square(
                                 key: const Key('na_me_signal'),
                                 dimension: 152,
@@ -212,7 +222,7 @@ class _AlongNaMeShowScreenState extends State<AlongNaMeShowScreen> {
                         const SizedBox(height: 8),
                         Text(
                           'Camera code',
-                          style: AlongType.caption(p).copyWith(color: p.muted),
+                          style: AlongType.label(p).copyWith(color: p.muted),
                         ),
                       ],
                     ],
@@ -441,7 +451,8 @@ class AlongNaMeTapMatch extends StatelessWidget {
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, c) {
-                    final tileH = math.min(196.0, (c.maxHeight - 12) / 2);
+                    // Tiles share the height so the grid meets the PIN button.
+                    final tileH = (c.maxHeight - 12) / 2;
                     return Wrap(
                       spacing: 12,
                       runSpacing: 12,
@@ -464,13 +475,15 @@ class AlongNaMeTapMatch extends StatelessWidget {
                   },
                 ),
               ),
-              if (onUsePin != null)
+              if (onUsePin != null) ...[
+                const SizedBox(height: 16),
                 AlongButton(
                   key: const Key('na_me_use_pin'),
                   label: 'Use the PIN instead',
                   variant: AlongButtonVariant.secondary,
                   onPressed: onUsePin,
                 ),
+              ],
             ],
           ),
         ),
@@ -580,16 +593,17 @@ class AlongNaMeNoMatch extends StatelessWidget {
               Center(
                 child: DecoratedBox(
                   decoration: ShapeDecoration(
-                    color: p.surface,
+                    color: p.ink,
                     shape: AlongCraft.border(24),
                   ),
                   child: SizedBox.square(
-                    dimension: 72,
+                    dimension: 88,
                     child: Center(
                       child: AlongIcon(
                         AlongIcons.notEquals,
-                        size: 32,
-                        color: p.ink,
+                        size: 44,
+                        color: p.onInk,
+                        tone: false,
                       ),
                     ),
                   ),
@@ -748,10 +762,13 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
                                 opacity: 1 - morph,
                                 child: Transform.scale(
                                   scale: 1 - 0.4 * morph,
+                                  // An outline, not a filled glyph: a solid
+                                  // ink shape mid-reveal read as a hole.
                                   child: _Shape(
                                     choice: widget.pairing,
                                     size: 140,
                                     color: ink,
+                                    stroke: 8,
                                   ),
                                 ),
                               ),
@@ -1111,40 +1128,44 @@ class _Reticle extends StatelessWidget {
     final inset = locked ? 12.0 : 0.0;
     final w = locked ? 5.0 : 4.0;
     final len = locked ? 28.0 : 36.0;
-    final c = locked ? AlongColors.brandYellow : Colors.white;
     return SizedBox.square(
       key: Key(locked ? 'na_me_reticle_locked' : 'na_me_reticle'),
       dimension: 240,
-      child: AnimatedPadding(
-        duration: d,
-        curve: AlongMoves.lockOn.curve,
-        padding: EdgeInsets.all(inset),
-        child: Stack(
-          children: [
-            for (final a in const [
-              Alignment.topLeft,
-              Alignment.topRight,
-              Alignment.bottomLeft,
-              Alignment.bottomRight,
-            ]) ...[
-              Align(
-                alignment: a,
-                child: SizedBox(
-                  width: len,
-                  height: w,
-                  child: ColoredBox(color: c),
+      child: TweenAnimationBuilder<Color?>(
+        tween: ColorTween(end: locked ? AlongColors.brandYellow : Colors.white),
+        duration: reduce ? Duration.zero : AlongMoves.lockTint.duration,
+        curve: AlongMoves.lockTint.curve,
+        builder: (context, c, _) => AnimatedPadding(
+          duration: d,
+          curve: AlongMoves.lockOn.curve,
+          padding: EdgeInsets.all(inset),
+          child: Stack(
+            children: [
+              for (final a in const [
+                Alignment.topLeft,
+                Alignment.topRight,
+                Alignment.bottomLeft,
+                Alignment.bottomRight,
+              ]) ...[
+                Align(
+                  alignment: a,
+                  child: SizedBox(
+                    width: len,
+                    height: w,
+                    child: ColoredBox(color: c ?? Colors.white),
+                  ),
                 ),
-              ),
-              Align(
-                alignment: a,
-                child: SizedBox(
-                  width: w,
-                  height: len,
-                  child: ColoredBox(color: c),
+                Align(
+                  alignment: a,
+                  child: SizedBox(
+                    width: w,
+                    height: len,
+                    child: ColoredBox(color: c ?? Colors.white),
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
