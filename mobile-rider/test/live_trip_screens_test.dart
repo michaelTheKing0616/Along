@@ -265,6 +265,61 @@ void main() {
     });
   });
 
+  group('R-12 Na Me optical (staging)', () {
+    late AlongDatabase database;
+    late ProviderContainer container;
+    late _FakeNaMeHost host;
+    late FakeAlongSupabase supabase;
+
+    setUp(() {
+      database = AlongDatabase.memory();
+      host = _FakeNaMeHost();
+      supabase = FakeAlongSupabase(configRows: defaultTestConfigRows())
+        ..naMeSecrets['trip-opt-1'] = 'ab' * 20;
+      container = ProviderContainer(
+        overrides: [
+          ...buildProviderOverrides(
+            config: const AppConfig(
+              flavor: 'staging',
+              supabaseUrl: 'https://test.supabase.co',
+              supabaseAnonKey: 'test-key',
+            ),
+            supabase: supabase,
+            ambientChannel: FakeAmbientChannel(),
+            database: database,
+            wayfindingTts: FakeWayfindingTts(),
+          ),
+          naMeScreenHostProvider.overrideWithValue(host),
+        ],
+      );
+    });
+
+    tearDown(() => container.dispose());
+
+    testWidgets('shows the camera code, max brightness, zero taps', (
+      tester,
+    ) async {
+      await _seedNaMePairing(database, 'trip-opt-1');
+
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const NaMeScreen(
+            args: NaMeRouteArgs(tripId: 'trip-opt-1', driverName: 'Musa'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(AlongNaMeShowScreen), findsOneWidget);
+      expect(find.text('Camera code'), findsOneWidget);
+      expect(host.entered, 1);
+      await tester.pumpWidget(const SizedBox());
+      expect(host.exited, 1);
+    });
+  });
+
   group('R-13 active trip', () {
     late ProviderContainer container;
     late TripSummary trip;
@@ -812,4 +867,15 @@ void main() {
       container.dispose();
     });
   });
+}
+
+class _FakeNaMeHost implements NaMeScreenHost {
+  int entered = 0;
+  int exited = 0;
+
+  @override
+  Future<void> enter() async => entered++;
+
+  @override
+  Future<void> exit() async => exited++;
 }
