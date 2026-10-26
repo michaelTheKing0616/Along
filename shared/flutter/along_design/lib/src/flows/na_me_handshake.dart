@@ -544,6 +544,7 @@ class AlongNaMeTapMatch extends StatelessWidget {
                                 key: Key('na_me_choice_$i'),
                                 choice: options[i],
                                 busy: checking == options[i],
+                                dim: checking != null && checking != options[i],
                                 onTap: checking == null
                                     ? () => onPick(options[i])
                                     : null,
@@ -577,46 +578,82 @@ class _ChoiceTile extends StatelessWidget {
     super.key,
     required this.choice,
     required this.busy,
+    this.dim = false,
     this.onTap,
   });
 
   final AlongNaMeChoice choice;
+
+  /// This tile is the pick being checked: ink ring, label says so.
   final bool busy;
+
+  /// Another tile is being checked: step back.
+  final bool dim;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
+    final reduced = AlongMotionPolicy.reduced(context);
+    final d = reduced ? Duration.zero : AlongMoves.lockTint.duration;
     return Semantics(
       button: true,
-      label: choice.label,
+      selected: busy,
+      label: busy ? '${choice.label}, checking' : choice.label,
       excludeSemantics: true,
-      child: AlongPressable(
-        child: Material(
-          color: p.surface,
-          shape: AlongCraft.border(24),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap == null
-                ? null
-                : () {
-                    AlongHaptics.tick(context);
-                    onTap!();
-                  },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Opacity(
-                  opacity: busy ? 0.32 : 1,
-                  child: _Shape(choice: choice, size: 72),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  busy ? 'Checking…' : choice.label,
-                  style: AlongType.label(p)
-                      .copyWith(fontWeight: FontWeight.w600),
-                ),
-              ],
+      child: AnimatedOpacity(
+        opacity: dim ? 0.4 : 1,
+        duration: d,
+        child: AlongPressable(
+          child: Material(
+            // A wash of the pairing colour: the tile reads as that colour
+            // before the eye reaches the shape.
+            color: Color.alphaBlend(
+              choice.color.withValues(alpha: 0.10),
+              p.surface,
+            ),
+            shape: AlongCraft.border(24).copyWith(
+              side: BorderSide(
+                color: busy ? p.ink : Colors.transparent,
+                width: 2,
+              ),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap == null
+                  ? null
+                  : () {
+                      AlongHaptics.tick(context);
+                      onTap!();
+                    },
+              child: LayoutBuilder(
+                builder: (context, c) {
+                  final shape = math.min(
+                    104.0,
+                    math.min(c.maxWidth, c.maxHeight) * 0.5,
+                  );
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _Shape(choice: choice, size: shape),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: AnimatedSwitcher(
+                          duration: d,
+                          child: Text(
+                            busy ? 'Checking…' : choice.label,
+                            key: ValueKey(busy),
+                            textAlign: TextAlign.center,
+                            style: AlongType.body(p)
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -912,7 +949,18 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
                                 style: AlongType.display(p)
                                     .copyWith(color: ink),
                               ),
-                              if (widget.subtitle != null) ...[
+                              if (widget.onStart == null) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  widget.pairing.label,
+                                  textAlign: TextAlign.center,
+                                  style: AlongType.body(p).copyWith(
+                                    color: ink.withValues(alpha: 0.86),
+                                  ),
+                                ),
+                              ],
+                              if (widget.subtitle != null &&
+                                  widget.onStart != null) ...[
                                 const SizedBox(height: 8),
                                 Text(
                                   widget.subtitle!,
@@ -927,6 +975,45 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
                         ),
                       ),
                       const Spacer(),
+                      if (widget.onStart == null && widget.subtitle != null)
+                        // Rider: the next step sits where the driver's
+                        // button does, so both phones share one layout.
+                        Opacity(
+                          opacity: text,
+                          child: DecoratedBox(
+                            decoration: ShapeDecoration(
+                              color: ink.withValues(alpha: 0.1),
+                              shape: AlongCraft.border(20),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              child: Row(
+                                children: [
+                                  AlongIcon(
+                                    AlongIcons.arrowRight,
+                                    size: 20,
+                                    color: ink,
+                                    tone: false,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      widget.subtitle!,
+                                      key: const Key('na_me_match_next'),
+                                      style: AlongType.body(p).copyWith(
+                                        color: ink,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       if (widget.onStart != null)
                         Opacity(
                           opacity: button,
