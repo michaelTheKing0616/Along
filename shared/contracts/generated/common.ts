@@ -329,14 +329,14 @@ export interface TripView {
    */
   handoff?: {
     pin: string | null;
-    driver_phone: string | null;
+    contact_available: boolean;
   } | null;
 }
 
 /** common.json → TripHandoff */
 export interface TripHandoff {
   pin: string | null;
-  driver_phone: string | null;
+  contact_available: boolean;
 }
 
 /** common.json → EtaValue */

@@ -84,16 +84,14 @@ void main() {
           'label': '3 min',
         },
       );
-      json['handoff'] = {'pin': '4827', 'driver_phone': '+2348031234567'};
+      json['handoff'] = {'pin': '4827', 'contact_available': true};
       final trip = tripSummaryFromFixture(json);
       final launched = <Uri>[];
-      final container = _container(
-        FakeAlongSupabase(
-          configRows: defaultTestConfigRows(),
-          requestTripResponse: json,
-        ),
-        launched: launched,
+      final supabase = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        requestTripResponse: json,
       );
+      final container = _container(supabase, launched: launched);
       await tester.pumpWidget(
         _harness(container, ActiveTripScreen(trip: trip)),
       );
@@ -109,11 +107,32 @@ void main() {
       }
       await tester.ensureVisible(find.byKey(const Key('handoff_call')));
       await tester.tap(find.byKey(const Key('handoff_call')));
+      await tester.pump();
+      // Call goes through the trip-contact relay, never a payload phone.
+      expect(supabase.tripContactCalls.map((c) => c['channel']), ['call']);
+      expect(launched, [Uri(scheme: 'tel', path: '+2348031234567')]);
+
+      // Message opens the free in-app chat; a quick reply is one tap.
       await tester.tap(find.byKey(const Key('handoff_message')));
-      expect(launched, [
-        Uri(scheme: 'tel', path: '+2348031234567'),
-        Uri(scheme: 'sms', path: '+2348031234567'),
-      ]);
+      await tester.pumpAndSettle(const Duration(milliseconds: 50));
+      expect(find.byKey(const Key('trip_chat')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('trip_chat_quick_0')));
+      await tester.pump();
+      await tester.pump();
+      expect(supabase.postedTripMessages.single['body'], "I'm at the pickup");
+      expect(find.byKey(const Key('trip_chat_status_sent')), findsOneWidget);
+      expect(launched.length, 1, reason: 'no SMS handoff');
+      await tester.tap(find.byKey(const Key('trip_chat_close')));
+      await tester.pumpAndSettle(const Duration(milliseconds: 50));
+
+      // Rider can mint a fresh PIN in one tap; the card shows it at once.
+      await tester.ensureVisible(find.byKey(const Key('handoff_new_pin')));
+      await tester.tap(find.byKey(const Key('handoff_new_pin')));
+      await tester.pump();
+      await tester.pump();
+      expect(supabase.regeneratePinCalls, 1);
+      expect(find.text('1'), findsWidgets);
+      expect(find.text('5'), findsWidgets);
 
       _stop(container, trip);
       await tester.pump();
@@ -148,6 +167,13 @@ void main() {
 
     expect(find.byKey(const Key('active_trip_handoff')), findsNothing);
     expect(find.text('12–16'), findsOneWidget);
+
+    // In the car, Message is still one tap away.
+    final message = find.byKey(const Key('active_trip_message'));
+    await tester.ensureVisible(message);
+    await tester.tap(message);
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(find.byKey(const Key('trip_chat')), findsOneWidget);
 
     _stop(container, trip);
     await tester.pump();
@@ -195,16 +221,27 @@ void main() {
     await tester.tap(find.byKey(const Key('receipt_star_3')));
     await tester.tap(find.byKey(const Key('receipt_star_4')));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('receipt_tag_safe_driving')));
+    await tester.tap(find.byKey(const Key('receipt_tag_on_time')));
+    await tester.tap(find.byKey(const Key('receipt_tag_safe_driving')));
+    await tester.tap(find.byKey(const Key('receipt_tag_polite')));
+    await tester.pump();
     expect(supabase.rateTripInvokeCount, 0);
     await tester.tap(find.byKey(const Key('receipt_done')));
     await tester.pumpAndSettle();
     expect(supabase.rateTripInvokeCount, 1);
     expect(supabase.lastRateTripParams?['p_score'], 4);
+    expect(supabase.lastRateTripParams?['p_tags'], ['on_time', 'polite']);
     expect(find.byKey(const Key('trip_receipt_page')), findsNothing);
 
     _stop(container, trip);
     await tester.pump();
     container.dispose();
+  });
+
+  test('rating tag labels', () {
+    expect(ratingTagLabel('clean_vehicle'), 'Clean car');
+    expect(ratingTagLabel('great_music'), 'Great music');
   });
 
   test('receipt view maps server lines and total', () {

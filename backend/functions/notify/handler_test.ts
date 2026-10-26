@@ -159,3 +159,25 @@ Deno.test('notify: non-service caller is rejected before any send', async () => 
   assertEquals(body.error.code, 'FORBIDDEN');
   assertEquals(sent, 0);
 });
+
+Deno.test('notify: kind=trip_message pushes a text-free wake-up to the recipient', async () => {
+  let fcmPayload: Record<string, string> | undefined;
+  const tripId = '0e700000-0000-4000-8000-000000000001';
+  const res = await handleNotify(
+    { kind: 'trip_message', trip_id: tripId, recipient_id: ADMIN_ID },
+    {
+      service: createMockService(),
+      realtime: { send: () => Promise.resolve() },
+      fcm: {
+        // deno-lint-ignore require-await -- test double satisfies an async interface
+        sendDataMessage: async (message) => {
+          fcmPayload = message.data;
+          return { messageId: 'stub' };
+        },
+      },
+      caller: { serviceRole: true },
+    },
+  );
+  assertEquals(res.status, 200);
+  assertEquals(fcmPayload, { type: 'trip_message', trip_id: tripId });
+});

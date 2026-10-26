@@ -209,8 +209,40 @@ abstract final class AlongIcons {
     fontPackage: _package,
   );
 
+  static const backspace = IconData(
+    0xe0af,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const lock = IconData(
+    0xe309,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const password = IconData(
+    0xe753,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  static const send = IconData(
+    0xe397,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+  static const checks = IconData(
+    0xe53b,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
   /// Fill layer that sits under the stroke in the duotone font.
   static const tone = <int, int>{
+    0xe397: 0xe396,
+    0xe53b: 0xe53a,
+    0xe0af: 0xe0ae,
+    0xe309: 0xe308,
+    0xe753: 0xe752,
     0xe2f1: 0xe2f0,
     0xe30d: 0xe30c,
     0xe1d7: 0xe1d6,

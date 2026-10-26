@@ -20,10 +20,7 @@ import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_driver/testing/fakes/fake_driver_channel.dart';
 
-Widget _harness({
-  required ProviderContainer container,
-  required Widget child,
-}) {
+Widget _harness({required ProviderContainer container, required Widget child}) {
   return UncontrolledProviderScope(
     container: container,
     child: MaterialApp(
@@ -40,7 +37,9 @@ Widget _harness({
 }
 
 Future<void> _seedNaMePairing(AlongDatabase db, String tripId) async {
-  await db.into(db.kvStore).insertOnConflictUpdate(
+  await db
+      .into(db.kvStore)
+      .insertOnConflictUpdate(
         KvStoreCompanion.insert(
           key: 'na_me:$tripId',
           value: jsonEncode({
@@ -91,7 +90,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.byKey(const Key('manifest_screen')), findsOneWidget);
-      expect(find.byKey(const Key('manifest_row_trip-accepted-1')), findsOneWidget);
+      expect(
+        find.byKey(const Key('manifest_row_trip-accepted-1')),
+        findsOneWidget,
+      );
       expect(find.text('Ada'), findsWidgets);
 
       container.read(manifestControllerProvider.notifier).stopPolling();
@@ -196,7 +198,9 @@ void main() {
       expect(completedTripId, 'trip-in-transit-1');
     });
 
-    testWidgets('Na Me fullscreen reads cached pairing offline', (tester) async {
+    testWidgets('Na Me fullscreen reads cached pairing offline', (
+      tester,
+    ) async {
       await _seedNaMePairing(database, 'trip-offline-1');
 
       await tester.pumpWidget(
@@ -219,8 +223,116 @@ void main() {
       expect(find.byKey(const Key('na_me_strobing')), findsOneWidget);
     });
 
-    testWidgets('Release button visible when accepted, hidden when boarded',
-        (tester) async {
+    testWidgets('pickup PIN: wrong shakes, right boards the trip', (
+      tester,
+    ) async {
+      fakeSupabase.tripStatuses['trip-pin-1'] = 'accepted';
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-pin-1'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byKey(const Key('active_trip_start')), findsNothing);
+
+      await tester.ensureVisible(
+        find.byKey(const Key('active_trip_enter_pin')),
+      );
+      await tester.tap(find.byKey(const Key('active_trip_enter_pin')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('pin_entry')), findsOneWidget);
+
+      Future<void> type(String pin) async {
+        for (final d in pin.split('')) {
+          await tester.tap(find.byKey(Key('pin_key_$d')));
+          await tester.pump();
+        }
+        await tester.pump(const Duration(milliseconds: 400));
+      }
+
+      await type('1111');
+      expect(find.text('Wrong PIN. 4 tries left.'), findsOneWidget);
+      expect(fakeSupabase.tripStatuses['trip-pin-1'], 'accepted');
+
+      await type('4827');
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(fakeSupabase.pinAttempts, ['1111', '4827']);
+      expect(find.byKey(const Key('pin_entry')), findsNothing);
+      expect(find.byKey(const Key('active_trip_start')), findsOneWidget);
+      container.read(tripLocationPublisherProvider).stop().ignore();
+      await tester.pump(const Duration(seconds: 6));
+    });
+
+    testWidgets('pickup PIN locks after the last try', (tester) async {
+      fakeSupabase.tripStatuses['trip-pin-2'] = 'accepted';
+      fakeSupabase.pinAttemptsLeft = 1;
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-pin-2'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.ensureVisible(
+        find.byKey(const Key('active_trip_enter_pin')),
+      );
+      await tester.tap(find.byKey(const Key('active_trip_enter_pin')));
+      await tester.pumpAndSettle();
+      for (final d in '0000'.split('')) {
+        await tester.tap(find.byKey(Key('pin_key_$d')));
+        await tester.pump();
+      }
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Too many tries'), findsOneWidget);
+      // No SUPPORT_URL in this build: no dead Get help action.
+      expect(find.byKey(const Key('pin_get_help')), findsNothing);
+      await tester.tap(find.byKey(const Key('pin_key_1')));
+      await tester.pump();
+      expect(fakeSupabase.pinAttempts, ['0000']);
+      container.read(tripLocationPublisherProvider).stop().ignore();
+      await tester.pump(const Duration(seconds: 6));
+    });
+
+    testWidgets('Message opens in-app chat; quick reply is one tap', (
+      tester,
+    ) async {
+      fakeSupabase.tripStatuses['trip-chat-1'] = 'accepted';
+      await tester.pumpWidget(
+        _harness(
+          container: container,
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-chat-1'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.ensureVisible(find.byKey(const Key('active_trip_message')));
+      await tester.tap(find.byKey(const Key('active_trip_message')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('trip_chat')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('trip_chat_quick_0')));
+      await tester.pump();
+      await tester.pump();
+      expect(fakeSupabase.postedTripMessages.single['body'], "I'm here");
+      expect(find.byKey(const Key('trip_chat_status_sent')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('trip_chat_close')));
+      await tester.pumpAndSettle();
+      container.read(tripLocationPublisherProvider).stop().ignore();
+      await tester.pump(const Duration(seconds: 6));
+    });
+
+    testWidgets('Release button visible when accepted, hidden when boarded', (
+      tester,
+    ) async {
       fakeSupabase.tripStatuses['trip-accepted-release'] = 'accepted';
 
       await tester.pumpWidget(
@@ -251,7 +363,9 @@ void main() {
       expect(find.byKey(const Key('active_trip_release')), findsNothing);
     });
 
-    testWidgets('stalled caption only when approach is stalled', (tester) async {
+    testWidgets('stalled caption only when approach is stalled', (
+      tester,
+    ) async {
       fakeSupabase.tripStatuses['trip-stalled'] = 'accepted';
       fakeSupabase.tripWaitById['trip-stalled'] = {
         'walk_eta_s': 300,
@@ -262,13 +376,18 @@ void main() {
       await tester.pumpWidget(
         _harness(
           container: container,
-          child: const ActiveTripScreen(args: ActiveTripArgs(tripId: 'trip-stalled')),
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-stalled'),
+          ),
         ),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.byKey(const Key('active_trip_stalled_caption')), findsOneWidget);
+      expect(
+        find.byKey(const Key('active_trip_stalled_caption')),
+        findsOneWidget,
+      );
       expect(find.text('not moving closer'), findsOneWidget);
 
       fakeSupabase.tripStatuses['trip-unknown'] = 'accepted';
@@ -281,13 +400,18 @@ void main() {
       await tester.pumpWidget(
         _harness(
           container: container,
-          child: const ActiveTripScreen(args: ActiveTripArgs(tripId: 'trip-unknown')),
+          child: const ActiveTripScreen(
+            args: ActiveTripArgs(tripId: 'trip-unknown'),
+          ),
         ),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.byKey(const Key('active_trip_stalled_caption')), findsNothing);
+      expect(
+        find.byKey(const Key('active_trip_stalled_caption')),
+        findsNothing,
+      );
 
       fakeSupabase.tripStatuses['trip-approaching'] = 'accepted';
       fakeSupabase.tripWaitById['trip-approaching'] = {
@@ -307,7 +431,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.byKey(const Key('active_trip_stalled_caption')), findsNothing);
+      expect(
+        find.byKey(const Key('active_trip_stalled_caption')),
+        findsNothing,
+      );
       expect(find.byKey(const Key('active_trip_walk_eta')), findsOneWidget);
     });
 
@@ -335,8 +462,7 @@ class _FakeLocationStream implements LocationStreamSource {
   Stream<LocationSample> samples({
     required double distanceFilterM,
     required double maxAccuracyM,
-  }) =>
-      const Stream.empty();
+  }) => const Stream.empty();
 
   @override
   Future<bool> ensurePermission() async => true;

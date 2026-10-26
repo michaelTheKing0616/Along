@@ -110,6 +110,8 @@ class FakeAlongSupabase implements AlongSupabase {
   int markBoardedInvokeCount = 0;
   int confirmFareInvokeCount = 0;
   int rateTripInvokeCount = 0;
+  int regeneratePinCalls = 0;
+  final List<Map<String, dynamic>> postedTripMessages = [];
   int proposeExtensionInvokeCount = 0;
   int respondExtensionInvokeCount = 0;
   int qrResolveInvokeCount = 0;
@@ -238,6 +240,26 @@ class FakeAlongSupabase implements AlongSupabase {
       lastConfirmFareParams = params;
       return {};
     }
+    if (fn == 'regenerate_trip_pin') {
+      regeneratePinCalls++;
+      return {'pin': '1593', 'regenerated': true};
+    }
+    if (fn == 'post_trip_message') {
+      final row = <String, dynamic>{
+        'id': 'msg-${postedTripMessages.length}',
+        'author_role': 'rider',
+        'body': params?['p_body'],
+        'client_ref': params?['p_client_ref'],
+        'created_at': '2026-10-25T18:00:00Z',
+        'read_at': null,
+      };
+      postedTripMessages.add(row);
+      return row;
+    }
+    if (fn == 'list_trip_messages') {
+      return List<Map<String, dynamic>>.of(postedTripMessages);
+    }
+    if (fn == 'mark_trip_messages_read') return 0;
     if (fn == 'rate_trip') {
       rateTripInvokeCount++;
       lastRateTripParams = params;
@@ -404,6 +426,9 @@ class FakeAlongSupabase implements AlongSupabase {
   final List<(Map<String, dynamic>, Map<String, String>)> stagingOtpCalls = [];
   String? stagingOtpCode;
 
+  final List<Map<String, dynamic>> tripContactCalls = [];
+  String tripContactTarget = '+2348031234567';
+
   @override
   Future<Map<String, dynamic>> invokeFunction(
     String slug, {
@@ -412,6 +437,17 @@ class FakeAlongSupabase implements AlongSupabase {
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
   }) async {
+    if (slug == 'trip-contact') {
+      tripContactCalls.add(Map<String, dynamic>.from(body ?? {}));
+      final channel = body?['channel'] == 'sms' ? 'sms' : 'tel';
+      return {
+        'data': {
+          'uri': '$channel:$tripContactTarget',
+          'masked': false,
+          'expires_at': '2026-10-25T20:02:00Z',
+        },
+      };
+    }
     if (slug == 'staging-otp') {
       stagingOtpCalls.add((Map<String, dynamic>.from(body ?? {}), Map<String, String>.from(headers ?? {})));
       return {'otp': stagingOtpCode};

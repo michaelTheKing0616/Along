@@ -2074,6 +2074,7 @@ export type Database = {
           home_park_id: string | null
           id: string
           payout_bank_last4: string | null
+          payout_bank_name: string | null
           payout_subaccount_code: string | null
           rating: number | null
           rating_count: number
@@ -2093,6 +2094,7 @@ export type Database = {
           home_park_id?: string | null
           id: string
           payout_bank_last4?: string | null
+          payout_bank_name?: string | null
           payout_subaccount_code?: string | null
           rating?: number | null
           rating_count?: number
@@ -2112,6 +2114,7 @@ export type Database = {
           home_park_id?: string | null
           id?: string
           payout_bank_last4?: string | null
+          payout_bank_name?: string | null
           payout_subaccount_code?: string | null
           rating?: number | null
           rating_count?: number
@@ -5681,6 +5684,8 @@ export type Database = {
           client_ref: string
           created_at: string
           id: string
+          read_at: string | null
+          thread: string
           trip_id: string
         }
         Insert: {
@@ -5690,6 +5695,8 @@ export type Database = {
           client_ref: string
           created_at?: string
           id?: string
+          read_at?: string | null
+          thread?: string
           trip_id: string
         }
         Update: {
@@ -5699,6 +5706,8 @@ export type Database = {
           client_ref?: string
           created_at?: string
           id?: string
+          read_at?: string | null
+          thread?: string
           trip_id?: string
         }
         Relationships: [
@@ -5720,19 +5729,37 @@ export type Database = {
       }
       trip_pins: {
         Row: {
+          attempts: number
           created_at: string
+          last_attempt_at: string | null
           pin: string
+          regenerated_at: string | null
+          regenerations: number
           trip_id: string
+          verified_at: string | null
+          verified_by: Database["public"]["Enums"]["actor_type"] | null
         }
         Insert: {
+          attempts?: number
           created_at?: string
+          last_attempt_at?: string | null
           pin: string
+          regenerated_at?: string | null
+          regenerations?: number
           trip_id: string
+          verified_at?: string | null
+          verified_by?: Database["public"]["Enums"]["actor_type"] | null
         }
         Update: {
+          attempts?: number
           created_at?: string
+          last_attempt_at?: string | null
           pin?: string
+          regenerated_at?: string | null
+          regenerations?: number
           trip_id?: string
+          verified_at?: string | null
+          verified_by?: Database["public"]["Enums"]["actor_type"] | null
         }
         Relationships: [
           {
@@ -6476,6 +6503,10 @@ export type Database = {
         Args: { p_city_id: string; p_women_only: boolean }
         Returns: undefined
       }
+      _auto_in_transit_check_core: {
+        Args: { p_trip_id: string }
+        Returns: boolean
+      }
       _build_itinerary_prepared_plan: {
         Args: {
           p_city_id: string
@@ -7017,6 +7048,15 @@ export type Database = {
         Args: { p_trip: Database["public"]["Tables"]["trips"]["Row"] }
         Returns: unknown
       }
+      _trip_chat_open: {
+        Args: { v_trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: boolean
+      }
+      _trip_lost_found_open: {
+        Args: { v_trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: boolean
+      }
+      _trip_pin_cleared: { Args: { p_trip_id: string }; Returns: boolean }
       _trip_planned_in_vehicle_s: {
         Args: { p_trip_id: string }
         Returns: number
@@ -7956,6 +7996,7 @@ export type Database = {
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_boarded: { Args: { p_trip_id: string }; Returns: Json }
       mark_no_show: { Args: { p_trip_id: string }; Returns: Json }
+      mark_trip_messages_read: { Args: { p_trip_id: string }; Returns: number }
       my_day_setup: { Args: never; Returns: Json }
       my_rest_status: { Args: never; Returns: Json }
       my_route_profiles: { Args: never; Returns: Json }
@@ -8024,7 +8065,11 @@ export type Database = {
       payment_token_hmac_key: { Args: never; Returns: string }
       peek_log_otp: { Args: { p_phone: string }; Returns: string }
       persist_driver_payout_bank: {
-        Args: { p_bank_last4: string; p_subaccount_code: string }
+        Args: {
+          p_bank_last4: string
+          p_bank_name?: string
+          p_subaccount_code: string
+        }
         Returns: Json
       }
       pg_version: { Args: never; Returns: string }
@@ -8094,7 +8139,12 @@ export type Database = {
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
       post_trip_message: {
-        Args: { p_body: string; p_client_ref: string; p_trip_id: string }
+        Args: {
+          p_body: string
+          p_client_ref: string
+          p_thread?: string
+          p_trip_id: string
+        }
         Returns: Json
       }
       postgis_constraint_dims: {
@@ -8211,6 +8261,10 @@ export type Database = {
         Args: { p_topic: string; p_user_id: string }
         Returns: boolean
       }
+      realtime_trip_chat_party: {
+        Args: { p_topic: string; p_uid: string }
+        Returns: boolean
+      }
       realtime_trip_party: {
         Args: { p_topic: string; p_user_id: string }
         Returns: boolean
@@ -8297,6 +8351,7 @@ export type Database = {
       }
       refresh_trip_eta: { Args: { p_trip_id: string }; Returns: Json }
       refresh_wait: { Args: { p_trip_id: string }; Returns: Json }
+      regenerate_trip_pin: { Args: { p_trip_id: string }; Returns: Json }
       register_device_token: {
         Args: { p_app: string; p_platform: string; p_token: string }
         Returns: undefined
@@ -9201,6 +9256,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      trip_contact_target: {
+        Args: { p_caller: string; p_trip_id: string }
+        Returns: Json
+      }
       trip_location_sample: {
         Args: { p_points: Json; p_trip_id: string }
         Returns: Json
@@ -9286,6 +9345,10 @@ export type Database = {
           driver_id: string
           trip_id: string
         }[]
+      }
+      verify_trip_pin: {
+        Args: { p_pin: string; p_trip_id: string }
+        Returns: Json
       }
       weighted_median_fare: {
         Args: { p_fares: number[]; p_weights: number[] }

@@ -8,5 +8,7 @@
   "accountCityLabel": "Ìlú iṣẹ́",
   "accountCityHint": "Maapu, pákì àti ìbéèrè n lo ìlú yìí",
   "driverBrandingLine": "Wá Along pẹ̀lú",
-  "settleCta": "Sanwó"
+  "settleCta": "Sanwó",
+  "activeTripMessageRider": "Fi ọ̀rọ̀ ránṣẹ́ sí {name}",
+  "activeTripMessageRiderUnknown": "Fi ọ̀rọ̀ ránṣẹ́ sí èrò"
 }

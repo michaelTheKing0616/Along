@@ -94,6 +94,37 @@
         "p_negotiation_id": { "$ref": "../common.json#/$defs/Uuid" }
       }
     },
+    "VerifyTripPinRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p_trip_id", "p_pin"],
+      "properties": {
+        "p_trip_id": { "type": "string", "format": "uuid" },
+        "p_pin": { "type": "string", "pattern": "^[0-9]{4}$" }
+      }
+    },
+    "VerifyTripPinResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verified", "attempts_left"],
+      "properties": {
+        "verified": { "type": "boolean" },
+        "attempts_left": { "type": "integer", "minimum": 0 },
+        "locked": { "type": "boolean" },
+        "rate_limited": { "type": "boolean" }
+      }
+    },
+    "RegenerateTripPinResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pin", "regenerated"],
+      "properties": {
+        "pin": { "type": "string", "pattern": "^[0-9]{4}$" },
+        "regenerated": { "type": "boolean" },
+        "rate_limited": { "type": "boolean" },
+        "limit_reached": { "type": "boolean" }
+      }
+    },
     "TripSnapshotRequest": {
       "type": "object",
       "required": ["p_trip_id"],

@@ -19,10 +19,7 @@ abstract class TripChannel {
 /// Contract for ambient discovery channel `ambient:{city_slug}:{geohash5}`.
 abstract class AmbientChannel {
   Stream<Map<String, dynamic>> get cellUpdates;
-  Future<void> subscribe({
-    required String citySlug,
-    required String geohash5,
-  });
+  Future<void> subscribe({required String citySlug, required String geohash5});
   Future<void> unsubscribe();
 }
 
@@ -55,4 +52,31 @@ class RealtimeHeartbeatMonitor {
   }
 
   void dispose() => _timer?.cancel();
+}
+
+/// Contract for the private trip chat channel `trip_chat:{trip_id}`.
+/// Events: `{type: message, message: {...}}` and `{type: read, reader_role}`.
+abstract class TripChatChannel {
+  Stream<Map<String, dynamic>> get events;
+  Future<void> subscribe(String tripId);
+  Future<void> unsubscribe();
+}
+
+/// No-network [TripChatChannel] for tests and offline previews.
+class InMemoryTripChatChannel implements TripChatChannel {
+  final _events = StreamController<Map<String, dynamic>>.broadcast();
+  String? subscribedTripId;
+
+  @override
+  Stream<Map<String, dynamic>> get events => _events.stream;
+
+  @override
+  Future<void> subscribe(String tripId) async => subscribedTripId = tripId;
+
+  @override
+  Future<void> unsubscribe() async => subscribedTripId = null;
+
+  void emit(Map<String, dynamic> event) {
+    if (!_events.isClosed) _events.add(event);
+  }
 }

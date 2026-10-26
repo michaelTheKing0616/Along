@@ -1332,4 +1332,12 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get marketplaceEventSave => 'Open the point';
+
+  @override
+  String activeTripMessageRider(String name) {
+    return 'Aika wa $name saƙo';
+  }
+
+  @override
+  String get activeTripMessageRiderUnknown => 'Aika wa fasinja saƙo';
 }

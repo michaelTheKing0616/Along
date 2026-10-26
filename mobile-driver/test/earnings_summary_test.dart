@@ -73,7 +73,8 @@ void main() {
           'currency': 'NGN',
           'created_at': '2026-10-24T08:00:00Z',
           'confirmed_at': '2026-10-24T08:05:00Z',
-          'account_label': 'Paystack ••4821',
+          'bank_name': 'GTBank',
+          'account_last4': '4821',
         },
       }),
     );
@@ -81,7 +82,7 @@ void main() {
     expect(data.week.online, '9h 10m');
     expect(data.payout?.state, AlongPayoutState.paid);
     expect(data.payout?.amount, 5000);
-    expect(data.payout?.account, 'Paystack ••4821');
+    expect(data.payout?.account, 'GTBank ••4821');
     expect(data.payout?.when, startsWith('Paid Sat'));
   });
 

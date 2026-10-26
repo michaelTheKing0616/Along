@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:along_core/along_core.dart';
+import 'package:along_design/along_design.dart'
+    show AlongPinResult, AlongPinVerdict;
 import 'package:along_data/along_data.dart';
 import 'package:along_location/along_location.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -192,6 +194,26 @@ class ActiveTripController
       state = state.copyWith(isSubmitting: false, errorMessage: e.toString());
       return null;
     }
+  }
+
+  /// Checks the rider's pickup PIN. A correct PIN boards the trip on the
+  /// server; the snapshot is then reloaded so Start appears.
+  Future<AlongPinResult> verifyPin(String pin) async {
+    final repo = ref.read(tripsRepositoryProvider);
+    final r = await repo.verifyTripPin(arg.tripId, pin);
+    if (r.verified) {
+      final summary = await repo.tripSnapshot(arg.tripId);
+      state = state.copyWith(trip: summary, clearError: true);
+      // The PIN screen closes on the verdict; publishers catch up behind it.
+      unawaited(_syncLocationPublisher(summary.status));
+      unawaited(_syncPaymentListener(summary.status));
+      return const AlongPinResult(AlongPinVerdict.verified);
+    }
+    if (r.locked) return const AlongPinResult(AlongPinVerdict.locked);
+    if (r.rateLimited) {
+      return const AlongPinResult(AlongPinVerdict.rateLimited);
+    }
+    return AlongPinResult(AlongPinVerdict.wrong, attemptsLeft: r.attemptsLeft);
   }
 
   Future<void> releaseMatch() async {

@@ -8,5 +8,7 @@
   "accountCityLabel": "Operating city",
   "accountCityHint": "Map, parks and demand go use dis city",
   "driverBrandingLine": "Drive with Along",
-  "settleCta": "Settle"
+  "settleCta": "Settle",
+  "activeTripMessageRider": "Send message give {name}",
+  "activeTripMessageRiderUnknown": "Send message give rider"
 }

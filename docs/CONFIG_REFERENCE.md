@@ -11,6 +11,15 @@ psql "$DATABASE_URL" -c "SELECT ac.key, COALESCE(k.description,''), ac.value::te
 | `env/staging.example.json` | Mobile `--dart-define-from-file` template for staging (Supabase URL, bundle IDs, Sentry placeholders) |
 | `admin-console/.env.example` | Next.js local/staging env (Supabase URL + anon/service keys, tiles, public origin) |
 
+### Edge Function secrets: rider/driver contact relay (`trip-contact`)
+| Secret | Purpose |
+|---|---|
+| `CONTACT_PROVIDER` | `tel` (default; dev/staging, NOT masked: hands out the real number on tap, logged by suffix), `termii` or `africastalking` (masked relay) |
+| `CONTACT_PROVIDER_API_KEY` | Masked-relay provider key. **Needed from ops before masking can go live.** |
+| `CONTACT_PROXY_NUMBER` | Provider proxy/virtual number callers dial. **Needed from ops.** |
+
+**Decision (Tope, 2026-10-25): no paid plans for now.** `CONTACT_PROVIDER` stays `tel`; nothing in any environment needs `CONTACT_PROVIDER_API_KEY` or `CONTACT_PROXY_NUMBER`, and leaving them unset is the supported state. The masked adapters are stubs until a provider account and its session API are confirmed; they fail closed (503 `CONTACT_UNAVAILABLE`) instead of falling back to the real number.
+
 Copy example files and fill placeholders from your Supabase project dashboard — do not commit real secrets.
 ## Critical switches
 | Key | Default (global) | Read-only | Notes |
@@ -43,6 +52,7 @@ Copy example files and fill placeholders from your Supabase project dashboard �
 | `cache.graph_bundle_ttl_s` | graph-bundle Edge cache TTL (seconds) | `3600` | `{global,city}` | no |
 | `cache.places_ttl_s` | places-search Edge KV TTL (seconds) | `86400` | `{global,city}` | no |
 | `cache.plan_trip_ttl_s` | plan-trip hot OD pair cache TTL (seconds) | `60` | `{global,city}` | no |
+| `chat.quick_replies` | Migration default (migration 98). One-tap trip chat replies per role. | `{"rider": [...], "driver": [...]}` | `{global,city,country,corridor}` | no |
 | `client.ambient_poll_interval_s` | LowDataMode: ambient RPC poll interval (seconds) when Broadcast is disabled | `30` | `{global,city}` | no |
 | `client.low_data_tile_max_zoom` | LowDataMode: cap MapLibre tile refresh at this zoom when 2G or OS data saver is on | `15` | `{global,city}` | no |
 | `client.trip_location_sample_interval_s` | Migration default (see blueprint doc 02 §2.3). | `5` | `{global,city,country,corridor}` | no |
@@ -200,3 +210,9 @@ These come from `backend/db/seed_core.sql` for pilot/Test City fixtures — not 
 - `backend/db/tests/app_config_keys.sql` — pgTAP presence check (TS-CFG-*)
 - ADR-0016 (`app_config` defaults owned by migrations)
 - Admin console A-09 — runtime config editor
+
+## Mobile: support route (driver app)
+
+| Dart define | Purpose |
+|---|---|
+| `SUPPORT_URL` | Free support link opened by **Get help** on the driver's locked-PIN screen: `https://wa.me/<number>`, `tel:<number>`, `mailto:<address>` or `sms:<number>`. Empty (the default in `env/*.json`) hides the action; other schemes are ignored. |

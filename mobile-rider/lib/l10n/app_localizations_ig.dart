@@ -1151,4 +1151,9 @@ class AppLocalizationsIg extends AppLocalizations {
   String fareHistoryRow(int hour, String amount) {
     return '$hour:00 · $amount';
   }
+
+  @override
+  String activeTripMessage(String name) {
+    return 'Zitere $name ozi';
+  }
 }

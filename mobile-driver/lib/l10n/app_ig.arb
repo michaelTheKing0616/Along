@@ -8,5 +8,7 @@
   "accountCityLabel": "Obodo ọrụ",
   "accountCityHint": "Maapụ, paks na arịrịọ na-eji obodo a",
   "driverBrandingLine": "Nyere Along aka",
-  "settleCta": "Kwụọ ụgwọ"
+  "settleCta": "Kwụọ ụgwọ",
+  "activeTripMessageRider": "Zitere {name} ozi",
+  "activeTripMessageRiderUnknown": "Zitere onye njem ozi"
 }

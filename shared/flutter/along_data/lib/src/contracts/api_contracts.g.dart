@@ -1850,6 +1850,36 @@ class RateTripRequest {
   };
 }
 
+class RegenerateTripPinResponse {
+  final String pin;
+  final bool regenerated;
+  final bool? rate_limited;
+  final bool? limit_reached;
+
+  const RegenerateTripPinResponse({
+    required this.pin,
+    required this.regenerated,
+    this.rate_limited,
+    this.limit_reached,
+  });
+
+  factory RegenerateTripPinResponse.fromJson(Map<String, dynamic> json) {
+    return RegenerateTripPinResponse(
+      pin: json["pin"] as String,
+      regenerated: json["regenerated"] as bool,
+      rate_limited: json["rate_limited"] as bool?,
+      limit_reached: json["limit_reached"] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "pin": pin,
+    "regenerated": regenerated,
+    "rate_limited": rate_limited,
+    "limit_reached": limit_reached,
+  };
+}
+
 class RegisterDeviceTokenRequest {
   final String platform;
   final String token;
@@ -2572,23 +2602,23 @@ class SuggestedStopPriceRequest {
 
 class TripHandoff {
   final Object? pin;
-  final Object? driver_phone;
+  final bool contact_available;
 
   const TripHandoff({
     required this.pin,
-    required this.driver_phone,
+    required this.contact_available,
   });
 
   factory TripHandoff.fromJson(Map<String, dynamic> json) {
     return TripHandoff(
       pin: json["pin"],
-      driver_phone: json["driver_phone"],
+      contact_available: json["contact_available"] as bool,
     );
   }
 
   Map<String, dynamic> toJson() => {
     "pin": pin,
-    "driver_phone": driver_phone,
+    "contact_available": contact_available,
   };
 }
 
@@ -2845,5 +2875,57 @@ class UpsertRouteProfileRequest {
 
   Map<String, dynamic> toJson() => {
     "p_profile": p_profile,
+  };
+}
+
+class VerifyTripPinRequest {
+  final String p_trip_id;
+  final String p_pin;
+
+  const VerifyTripPinRequest({
+    required this.p_trip_id,
+    required this.p_pin,
+  });
+
+  factory VerifyTripPinRequest.fromJson(Map<String, dynamic> json) {
+    return VerifyTripPinRequest(
+      p_trip_id: json["p_trip_id"] as String,
+      p_pin: json["p_pin"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "p_trip_id": p_trip_id,
+    "p_pin": p_pin,
+  };
+}
+
+class VerifyTripPinResponse {
+  final bool verified;
+  final int attempts_left;
+  final bool? locked;
+  final bool? rate_limited;
+
+  const VerifyTripPinResponse({
+    required this.verified,
+    required this.attempts_left,
+    this.locked,
+    this.rate_limited,
+  });
+
+  factory VerifyTripPinResponse.fromJson(Map<String, dynamic> json) {
+    return VerifyTripPinResponse(
+      verified: json["verified"] as bool,
+      attempts_left: (json["attempts_left"] as num).toInt(),
+      locked: json["locked"] as bool?,
+      rate_limited: json["rate_limited"] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "verified": verified,
+    "attempts_left": attempts_left,
+    "locked": locked,
+    "rate_limited": rate_limited,
   };
 }

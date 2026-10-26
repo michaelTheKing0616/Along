@@ -1331,4 +1331,12 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get marketplaceEventSave => 'Open the point';
+
+  @override
+  String activeTripMessageRider(String name) {
+    return 'Fi ọ̀rọ̀ ránṣẹ́ sí $name';
+  }
+
+  @override
+  String get activeTripMessageRiderUnknown => 'Fi ọ̀rọ̀ ránṣẹ́ sí èrò';
 }

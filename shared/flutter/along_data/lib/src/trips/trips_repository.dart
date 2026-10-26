@@ -48,8 +48,10 @@ class TripsRepository {
     try {
       await _gateway.rpc(
         'cancel_trip',
-        params: dto.CancelTripRequest(p_trip_id: tripId, p_reason: reason)
-            .toJson(),
+        params: dto.CancelTripRequest(
+          p_trip_id: tripId,
+          p_reason: reason,
+        ).toJson(),
       );
     } catch (e) {
       throw mapSupabaseError(e);
@@ -109,9 +111,9 @@ class TripsRepository {
   }
 
   Future<NaMePairing?> cachedNaMePairing(String tripId) async {
-    final rows = await (_db.select(_db.kvStore)
-          ..where((t) => t.key.equals('na_me:$tripId')))
-        .get();
+    final rows = await (_db.select(
+      _db.kvStore,
+    )..where((t) => t.key.equals('na_me:$tripId'))).get();
     if (rows.isEmpty) return null;
     return NaMePairing.fromJson(
       jsonDecode(rows.first.value) as Map<String, dynamic>,
@@ -144,14 +146,63 @@ class TripsRepository {
         if (row is! Map<String, dynamic>) continue;
         final entry = DomainMappers.manifestEntryFromJson(row);
         entries.add(entry);
-        await _db.into(_db.kvStore).insertOnConflictUpdate(
-          KvStoreCompanion.insert(
-            key: 'na_me:${entry.tripId}',
-            value: jsonEncode(entry.naMe.toJson()),
-          ),
-        );
+        await _db
+            .into(_db.kvStore)
+            .insertOnConflictUpdate(
+              KvStoreCompanion.insert(
+                key: 'na_me:${entry.tripId}',
+                value: jsonEncode(entry.naMe.toJson()),
+              ),
+            );
       }
       return entries;
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Driver enters the rider's 4-digit PIN. A correct PIN boards the rider
+  /// server-side; wrong tries are capped at 5 and limited to one a second.
+  Future<TripPinResult> verifyTripPin(String tripId, String pin) async {
+    try {
+      final raw = await _gateway.rpc(
+        'verify_trip_pin',
+        params: {'p_trip_id': tripId, 'p_pin': pin},
+      );
+      return TripPinResult.fromJson(raw);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Rider asks for a fresh pickup PIN (accepted, not yet boarded). Returns
+  /// the PIN now in force: the new one, or the old one when rate limited.
+  Future<TripPinRefresh> regenerateTripPin(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'regenerate_trip_pin',
+        params: {'p_trip_id': tripId},
+      );
+      final m = Map<String, dynamic>.from(raw as Map);
+      return TripPinRefresh(
+        pin: m['pin']?.toString() ?? '',
+        regenerated: m['regenerated'] == true,
+        limited: m['rate_limited'] == true || m['limit_reached'] == true,
+      );
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// A short-lived call/SMS action from the trip-contact relay. Null when the
+  /// relay is not available.
+  Future<TripContactAction?> tripContact(String tripId, String channel) async {
+    try {
+      final raw = await _gateway.invokeFunction(
+        'trip-contact',
+        body: {'trip_id': tripId, 'channel': channel},
+      );
+      return TripContactAction.fromJson(raw['data'] ?? raw);
     } catch (e) {
       throw mapSupabaseError(e);
     }
@@ -182,7 +233,9 @@ class TripsRepository {
       );
       final map = raw as Map<String, dynamic>;
       final result = DomainMappers.completeTripFromJson(map);
-      await _cacheTrip(dto.TripView.fromJson(map['trip'] as Map<String, dynamic>));
+      await _cacheTrip(
+        dto.TripView.fromJson(map['trip'] as Map<String, dynamic>),
+      );
       await _persistNaMePairing(result.trip);
       return result;
     } catch (e) {
@@ -201,8 +254,9 @@ class TripsRepository {
         params: dto.ConfirmFareRequest(
           p_trip_id: tripId,
           p_outcome: outcome,
-          p_paid_amount:
-              paidAmount != null ? DomainMappers.moneyToDto(paidAmount) : null,
+          p_paid_amount: paidAmount != null
+              ? DomainMappers.moneyToDto(paidAmount)
+              : null,
         ).toJson(),
       );
     } catch (e) {
@@ -238,10 +292,7 @@ class TripsRepository {
     try {
       final raw = await _gateway.rpc(
         'propose_extension',
-        params: {
-          'p_trip_id': tripId,
-          'p_new_alight': newAlight,
-        },
+        params: {'p_trip_id': tripId, 'p_new_alight': newAlight},
       );
       return DomainMappers.proposeExtensionFromJson(
         raw as Map<String, dynamic>,
@@ -258,10 +309,7 @@ class TripsRepository {
     try {
       final raw = await _gateway.rpc(
         'respond_extension',
-        params: {
-          'p_extension_id': extensionId,
-          'p_response': response,
-        },
+        params: {'p_extension_id': extensionId, 'p_response': response},
       );
       final map = raw as Map<String, dynamic>;
       final tripJson = map['trip'];
@@ -284,7 +332,9 @@ class TripsRepository {
     return pendingExtensionFromTable(summary.tripId);
   }
 
-  Future<TripExtensionProposal?> pendingExtensionFromTable(String tripId) async {
+  Future<TripExtensionProposal?> pendingExtensionFromTable(
+    String tripId,
+  ) async {
     try {
       final rows = await _gateway.selectRows(
         'trip_extensions',
@@ -316,11 +366,12 @@ class TripsRepository {
   Future<List<TripHistoryEntry>> completedTrips({int limit = 50}) async {
     try {
       final rows = await _gateway.selectRows('trips');
-      final entries = rows
-          .where((row) => row['status'] == 'completed')
-          .map(DomainMappers.historyEntryFromTripRow)
-          .toList()
-        ..sort((a, b) => b.completedAt.compareTo(a.completedAt));
+      final entries =
+          rows
+              .where((row) => row['status'] == 'completed')
+              .map(DomainMappers.historyEntryFromTripRow)
+              .toList()
+            ..sort((a, b) => b.completedAt.compareTo(a.completedAt));
       if (entries.length > limit) {
         return entries.sublist(0, limit);
       }
@@ -334,10 +385,7 @@ class TripsRepository {
 
   Future<TripHistoryEntry?> tripHistoryDetail(String tripId) async {
     try {
-      final rows = await _gateway.selectRows(
-        'trips',
-        filters: {'id': tripId},
-      );
+      final rows = await _gateway.selectRows('trips', filters: {'id': tripId});
       if (rows.isEmpty) {
         return _historyFromCache(tripId);
       }
@@ -347,7 +395,9 @@ class TripsRepository {
     }
   }
 
-  Future<List<TripHistoryEntry>> _completedTripsFromCache({int limit = 50}) async {
+  Future<List<TripHistoryEntry>> _completedTripsFromCache({
+    int limit = 50,
+  }) async {
     final rows = await _db.select(_db.tripCache).get();
     final entries = <TripHistoryEntry>[];
     for (final row in rows) {
@@ -412,7 +462,9 @@ class TripsRepository {
   }
 
   Future<void> _cacheTrip(dto.TripView view) async {
-    await _db.into(_db.tripCache).insertOnConflictUpdate(
+    await _db
+        .into(_db.tripCache)
+        .insertOnConflictUpdate(
           TripCacheCompanion.insert(
             tripId: view.trip_id,
             payloadJson: jsonEncode(view.toJson()),
@@ -422,11 +474,75 @@ class TripsRepository {
   }
 
   Future<void> _persistNaMePairing(TripSummary summary) async {
-    await _db.into(_db.kvStore).insertOnConflictUpdate(
+    await _db
+        .into(_db.kvStore)
+        .insertOnConflictUpdate(
           KvStoreCompanion.insert(
             key: 'na_me:${summary.tripId}',
             value: jsonEncode(summary.naMe.toJson()),
           ),
         );
+  }
+}
+
+class TripPinRefresh {
+  const TripPinRefresh({
+    required this.pin,
+    required this.regenerated,
+    required this.limited,
+  });
+
+  final String pin;
+  final bool regenerated;
+  final bool limited;
+}
+
+class TripPinResult {
+  const TripPinResult({
+    required this.verified,
+    required this.attemptsLeft,
+    this.locked = false,
+    this.rateLimited = false,
+  });
+
+  final bool verified;
+  final int attemptsLeft;
+  final bool locked;
+  final bool rateLimited;
+
+  factory TripPinResult.fromJson(Object? raw) {
+    final m = raw is Map ? raw : const <String, dynamic>{};
+    final left = m['attempts_left'];
+    return TripPinResult(
+      verified: m['verified'] == true,
+      attemptsLeft: left is num ? left.toInt() : 0,
+      locked: m['locked'] == true,
+      rateLimited: m['rate_limited'] == true,
+    );
+  }
+}
+
+class TripContactAction {
+  const TripContactAction({
+    required this.uri,
+    required this.masked,
+    required this.expiresAt,
+  });
+
+  final Uri uri;
+  final bool masked;
+  final DateTime expiresAt;
+
+  static TripContactAction? fromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final uri = Uri.tryParse('${raw['uri'] ?? ''}');
+    if (uri == null || (uri.scheme != 'tel' && uri.scheme != 'sms')) {
+      return null;
+    }
+    return TripContactAction(
+      uri: uri,
+      masked: raw['masked'] == true,
+      expiresAt: DateTime.tryParse('${raw['expires_at']}') ?? DateTime.now(),
+    );
   }
 }

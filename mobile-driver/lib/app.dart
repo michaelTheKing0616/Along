@@ -6,6 +6,7 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/features/trip/presentation/trip_chat.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/tenant/tenant_providers.dart';
@@ -59,6 +60,9 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
           Supabase.instance.client,
         ),
         pushService: StubPushService(),
+      ),
+      tripChatChannelFactoryProvider.overrideWithValue(
+        () => SupabaseTripChatChannel(Supabase.instance.client),
       ),
       driverForegroundNotifierProvider.overrideWithValue(
         FlutterForegroundDriverNotifier(),

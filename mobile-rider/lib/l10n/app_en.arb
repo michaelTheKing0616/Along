@@ -1203,5 +1203,14 @@
       "hour": {"type": "int"},
       "amount": {"type": "String"}
     }
+  },
+  "activeTripMessage": "Message {name}",
+  "@activeTripMessage": {
+    "description": "In-app trip chat button; {name} is the other party's name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

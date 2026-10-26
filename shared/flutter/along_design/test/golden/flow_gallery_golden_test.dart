@@ -97,6 +97,17 @@ void main() {
       vehicle: 'Yellow keke · ABJ 482 KE',
       destination: 'Nyanya',
     ),
+    'trip_live_message': () => AlongLiveTripScreen(
+      onCall: () {},
+      onSos: () {},
+      onMessage: () {},
+      unread: 2,
+      eta: _eta(lowS: 780, highS: 1020),
+      previous: _eta(lowS: 780, highS: 1020),
+      driverName: 'Musa Bello',
+      vehicle: 'Yellow keke · ABJ 482 KE',
+      destination: 'Nyanya',
+    ),
     'trip_live_slow': () => AlongLiveTripScreen(
       onCall: () {},
       onSos: () {},
@@ -130,6 +141,64 @@ void main() {
       pin: '4827',
       pickupPoint: 'Wuse Market, Gate 2',
     ),
+    'trip_handoff_new_pin': () => AlongPickupHandoffScreen(
+      onCall: () {},
+      onMessage: () {},
+      onNewPin: () {},
+      secondsAway: 0,
+      driverName: 'Musa',
+      plate: 'ABJ 482 KE',
+      car: 'Silver Toyota Corolla',
+      pin: '1593',
+      pickupPoint: 'Wuse Market, Gate 2',
+    ),
+    'trip_handoff_unread': () => AlongPickupHandoffScreen(
+      onCall: () {},
+      onMessage: () {},
+      unread: 2,
+      secondsAway: 95,
+      driverName: 'Musa',
+      plate: 'ABJ 482 KE',
+      car: 'Silver Toyota Corolla',
+      pin: '4827',
+      pickupPoint: 'Wuse Market, Gate 2',
+    ),
+    'trip_chat': () => _chatStage(_chatLines),
+    'trip_chat_empty': () => _chatStage(const []),
+    'trip_chat_lost_found': () => _chatStage([
+      ..._chatLines,
+      AlongChatLine(
+        id: 'lf1',
+        body: 'Did I leave a blue umbrella on the back seat?',
+        mine: true,
+        at: DateTime.utc(2026, 10, 25, 20, 10),
+        lostFound: true,
+      ),
+      AlongChatLine(
+        id: 'lf2',
+        body: 'Yes, I have it. At Wuse park tomorrow 8am',
+        mine: false,
+        at: DateTime.utc(2026, 10, 25, 20, 14),
+        lostFound: true,
+      ),
+      AlongChatLine(
+        id: 'lf3',
+        body: 'Okay, thanks',
+        mine: true,
+        at: DateTime.utc(2026, 10, 25, 20, 15),
+        lostFound: true,
+      ),
+    ]),
+    'trip_chat_failed': () => _chatStage([
+      ..._chatLines.take(2),
+      AlongChatLine(
+        id: 'f1',
+        body: 'Running 2 min late',
+        mine: true,
+        at: DateTime.utc(2026, 10, 25, 18, 4),
+        status: AlongChatStatus.failed,
+      ),
+    ]),
     'trip_handoff_here': () => AlongPickupHandoffScreen(
       onCall: () {},
       onMessage: () {},
@@ -143,6 +212,12 @@ void main() {
     'trip_receipt': () => const AlongTripReceiptScreen(
       receipt: AlongReceipt.sample,
       initialRating: 4,
+    ),
+    'trip_receipt_tags': () => const AlongTripReceiptScreen(
+      receipt: AlongReceipt.sample,
+      initialRating: 5,
+      ratingTags: _ratingTags,
+      initialTags: {'safe_driving', 'on_time'},
     ),
     'trip_receipt_missing': () =>
         AlongTripReceiptScreen(receipt: null, onRetry: () {}),
@@ -160,15 +235,47 @@ void main() {
         state: AlongPayoutState.failed,
         amount: 96200,
         when: 'sent Fri',
-        account: 'Paystack ••4821',
+        account: 'Standard Chartered ••4821',
       ),
+    ),
+    'trip_pin': () => AlongPinEntryScreen(
+      riderName: 'Ada',
+      initialDigits: '48',
+      onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.verified),
+    ),
+    'trip_pin_wrong': () => AlongPinEntryScreen(
+      riderName: 'Ada',
+      initialResult: const AlongPinResult(
+        AlongPinVerdict.wrong,
+        attemptsLeft: 3,
+      ),
+      onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.wrong),
+    ),
+    'trip_pin_locked': () => AlongPinEntryScreen(
+      riderName: 'Ada',
+      onGetHelp: () {},
+      initialResult: const AlongPinResult(AlongPinVerdict.locked),
+      onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.locked),
     ),
     'trip_earnings_empty': () => const AlongDriverEarningsScreen(
       today: AlongEarningsPeriod.emptyToday,
       week: AlongEarningsPeriod.empty,
     ),
   };
-  const scaled = {'trip_live', 'trip_handoff', 'trip_receipt', 'trip_earnings'};
+  const scaled = {
+    'trip_live',
+    'trip_handoff',
+    'trip_handoff_new_pin',
+    'trip_receipt',
+    'trip_receipt_tags',
+    'trip_earnings',
+    'trip_earnings_week_failed',
+    'trip_pin',
+    'trip_pin_locked',
+    'trip_handoff_unread',
+    'trip_chat',
+    'trip_live_message',
+  };
   for (final stage in tripStages.entries) {
     final frames = [
       (Brightness.light, 1.0, 'light'),
@@ -508,5 +615,87 @@ TripEta _eta({required int lowS, required int highS, String status = 'ready'}) {
       TripEtaStop(id: 'c', name: 'Nyanya', state: 'upcoming', label: '07:53'),
     ],
     updatedAt: DateTime(2026, 10, 25, 7, 36),
+  );
+}
+
+const _ratingTags = {
+  'safe_driving': 'Safe driving',
+  'fair_fare': 'Fair fare',
+  'clean_vehicle': 'Clean car',
+  'polite': 'Polite',
+  'on_time': 'On time',
+};
+
+final _chatLines = [
+  AlongChatLine(
+    id: 'a',
+    body: "I'm at the pickup",
+    mine: true,
+    at: DateTime.utc(2026, 10, 25, 18, 1),
+    status: AlongChatStatus.read,
+  ),
+  AlongChatLine(
+    id: 'b',
+    body: 'Arriving in 2 min',
+    mine: false,
+    at: DateTime.utc(2026, 10, 25, 18, 2),
+  ),
+  AlongChatLine(
+    id: 'c',
+    body: 'I have a blue bag, standing by the pharmacy',
+    mine: true,
+    at: DateTime.utc(2026, 10, 25, 18, 3),
+    status: AlongChatStatus.sent,
+  ),
+];
+
+/// The chat as it sits over the live trip: a 32-radius sheet on a scrim.
+Widget _chatStage(List<AlongChatLine> lines) {
+  return Builder(
+    builder: (context) {
+      final p = AlongPalette.of(context);
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          AlongPickupHandoffScreen(
+            onCall: () {},
+            onMessage: () {},
+            secondsAway: 95,
+            driverName: 'Musa',
+            plate: 'ABJ 482 KE',
+            car: 'Silver Toyota Corolla',
+            pin: '4827',
+            pickupPoint: 'Wuse Market, Gate 2',
+          ),
+          ColoredBox(
+            color: Colors.black.withValues(
+              alpha: Theme.of(context).brightness == Brightness.dark
+                  ? 0.6
+                  : 0.42,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Material(
+              color: p.bg,
+              shape: AlongCraft.borderVertical(top: 32),
+              clipBehavior: Clip.antiAlias,
+              child: AlongTripChatSheet(
+                otherName: 'Musa',
+                lines: lines,
+                quickReplies: const [
+                  "I'm at the pickup",
+                  'Running 2 min late',
+                  'Where are you?',
+                  'Okay, thanks',
+                ],
+                onSend: (_) {},
+                onRetry: (_) {},
+              ),
+            ),
+          ),
+        ],
+      );
+    },
   );
 }
