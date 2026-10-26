@@ -174,7 +174,6 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
         const SizedBox(height: AlongSpace.s16),
         _VehicleCard(
           trip: trip,
-          naMe: NaMeChip(colour: colour, shape: shape),
           stats: l10n.meetVehicleDriverStats(
             trip.driver.rating.toStringAsFixed(1),
             trip.driver.tripCount,
@@ -202,24 +201,27 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
         DecoratedBox(
           decoration: AlongCraft.compactFill(palette.recessed, 72, corner: 20),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AlongSpace.s16,
-              AlongSpace.s8,
-              AlongSpace.s8,
-              AlongSpace.s8,
-            ),
+            padding: const EdgeInsets.all(AlongSpace.s12),
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    l10n.meetVehicleNaMeHint(trip.naMe.label),
-                    style: AlongType.caption(palette),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      NaMeChip(colour: colour, shape: shape),
+                      const SizedBox(height: AlongSpace.s8),
+                      Text(
+                        l10n.meetVehicleNaMeShow,
+                        style: AlongType.caption(palette),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: AlongSpace.s12),
                 HoldButton(
                   key: const Key('meet_vehicle_na_me_button'),
                   type: HoldButtonType.naMe,
+                  label: l10n.activeTripNaMe,
                   onFired: () => context.push(
                     AppRoutes.naMe,
                     extra: NaMeRouteArgs(
@@ -345,7 +347,6 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
 class _VehicleCard extends StatelessWidget {
   const _VehicleCard({
     required this.trip,
-    required this.naMe,
     required this.stats,
     required this.plateConfirmed,
     required this.onScan,
@@ -353,7 +354,6 @@ class _VehicleCard extends StatelessWidget {
   });
 
   final TripSummary trip;
-  final Widget naMe;
   final String stats;
   final bool plateConfirmed;
   final VoidCallback onScan;
@@ -378,7 +378,7 @@ class _VehicleCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                naMe,
+                TripDriverAvatar(name: trip.driver.displayName),
                 const SizedBox(width: AlongSpace.s12),
                 Expanded(
                   child: Column(
@@ -417,30 +417,45 @@ class _VehicleCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AlongSpace.s12),
-            Row(
-              children: [
-                Expanded(
-                  child: AlongButton(
-                    key: const Key('meet_vehicle_plate_scan'),
-                    label: l10n.plateScan,
-                    size: AlongButtonSize.secondary,
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: onScan,
-                  ),
-                ),
-                const SizedBox(width: AlongSpace.s8),
-                Expanded(
-                  child: AlongButton(
-                    key: const Key('meet_vehicle_plate_match'),
-                    label: plateConfirmed ? l10n.plateMatches : l10n.plateCheck,
-                    size: AlongButtonSize.secondary,
-                    variant: plateConfirmed
-                        ? AlongButtonVariant.secondary
-                        : AlongButtonVariant.yellow,
-                    onPressed: onMatch,
-                  ),
-                ),
-              ],
+            Builder(
+              builder: (context) {
+                // Side by side normally; stacked when large text would
+                // wrap the labels onto two lines.
+                final big = MediaQuery.textScalerOf(context).scale(16) > 18;
+                final scan = AlongButton(
+                  key: const Key('meet_vehicle_plate_scan'),
+                  label: l10n.plateScan,
+                  size: AlongButtonSize.secondary,
+                  variant: AlongButtonVariant.secondary,
+                  onPressed: onScan,
+                );
+                final match = AlongButton(
+                  key: const Key('meet_vehicle_plate_match'),
+                  label: plateConfirmed ? l10n.plateMatches : l10n.plateCheck,
+                  size: AlongButtonSize.secondary,
+                  variant: plateConfirmed
+                      ? AlongButtonVariant.secondary
+                      : AlongButtonVariant.yellow,
+                  onPressed: onMatch,
+                );
+                if (big) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      match,
+                      const SizedBox(height: AlongSpace.s8),
+                      scan,
+                    ],
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(child: scan),
+                    const SizedBox(width: AlongSpace.s8),
+                    Expanded(child: match),
+                  ],
+                );
+              },
             ),
           ],
         ),

@@ -1339,4 +1339,12 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get activeTripMessageRiderUnknown => 'Zitere onye njem ozi';
+
+  @override
+  String get tripEtaCalculating => 'Anyị na-agbakọ…';
+
+  @override
+  String tripEtaPickup(String label) {
+    return 'Ebe nbuli $label';
+  }
 }

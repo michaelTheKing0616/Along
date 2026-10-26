@@ -1557,7 +1557,7 @@
       }
     }
   },
-  "tripClockRange": "{first} to {last}",
+  "tripClockRange": "{first}–{last}",
   "@tripClockRange": {
     "description": "Rider trip screens",
     "placeholders": {
@@ -1880,5 +1880,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "tripEtaCalculating": "Calculating…",
+  "activeTripCall": "Call",
+  "activeTripSos": "Hold for SOS",
+  "activeTripNaMe": "Show Na Me",
+  "tripCompleteSettleQuestion": "Did you pay this fare?",
+  "tripCompletePayHint": "Pay {driver} in the app, or tell us you paid cash.",
+  "@tripCompletePayHint": {
+    "placeholders": {
+      "driver": {
+        "type": "String"
+      }
+    }
+  },
+  "meetVehicleNaMeShow": "Hold it up so your driver can spot you"
 }

@@ -174,7 +174,7 @@ class AdjustPickupScreen extends ConsumerWidget {
     final pinLabel = stage?.name ?? nearest?.name ?? l10n.adjustPickupPinLabel;
 
     return TripSheetScaffold(
-      mapFraction: 0.5,
+      mapFraction: 0.44,
       leading: AlongMapButton(
         key: const Key('adjust_pickup_back'),
         icon: AlongIcons.back,
@@ -187,6 +187,11 @@ class AdjustPickupScreen extends ConsumerWidget {
             child: AlongMap(
               styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
               allowDemoStyleFallback: false,
+              placeholder: AlongRoutePreview(
+                route: false,
+                topInset: top,
+                bottomInset: bottom,
+              ),
               initialCameraPosition: state.center == null
                   ? null
                   : MapCamera.forCenter(
@@ -302,7 +307,7 @@ class _CentrePin extends StatelessWidget {
             p.surface,
             30,
             corner: 10,
-            shadow: dark ? null : AlongElevation.raised(p.ink),
+            side: BorderSide(color: p.line),
           ),
           child: Text(
             label,
@@ -317,14 +322,18 @@ class _CentrePin extends StatelessWidget {
           height: 36,
           alignment: Alignment.center,
           decoration: AlongCraft.compactFill(
-            p.ink,
+            dark ? p.accent : p.ink,
             36,
             corner: 12,
-            shadow: dark ? null : AlongElevation.raised(p.ink),
+            side: BorderSide(color: dark ? p.bg : p.surface, width: 2),
           ),
-          child: AlongIcon(AlongIcons.mapPin, size: 18, color: p.onInk),
+          child: AlongIcon(
+            AlongIcons.mapPin,
+            size: 18,
+            color: dark ? p.bg : p.onInk,
+          ),
         ),
-        Container(width: 2, height: 10, color: p.ink),
+        Container(width: 2, height: 10, color: dark ? p.accent : p.ink),
         // Keeps the stem tip, not the column centre, on the map centre.
         const SizedBox(height: 82),
       ],

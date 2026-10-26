@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,7 @@ AlongTripStrings riderTripStrings(AppLocalizations l10n) => AlongTripStrings(
   minUnit: l10n.tripMinUnit,
   aboutClock: l10n.tripAboutClock,
   clockRange: l10n.tripClockRange,
+  clockOffset: cityUtcOffset,
   minutesLabel: l10n.tripMinutesLabel,
   minutesRangeLabel: l10n.tripMinutesRangeLabel,
   emergency: l10n.tripEmergency,
@@ -163,16 +166,31 @@ class TripSheetScaffold extends StatelessWidget {
                     child: Column(
                       children: [
                         Expanded(
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.fromLTRB(
-                              AlongSpace.s16,
-                              AlongSpace.s20,
-                              AlongSpace.s16,
-                              AlongSpace.s16,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: children,
+                          child: ShaderMask(
+                            // Content fades out above the pinned footer
+                            // instead of being cut off under it.
+                            blendMode: BlendMode.dstIn,
+                            shaderCallback: (r) => LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: const [
+                                Color(0xFFFFFFFF),
+                                Color(0xFFFFFFFF),
+                                Color(0x00FFFFFF),
+                              ],
+                              stops: [0, 1 - (20 / r.height).clamp(0, 1), 1],
+                            ).createShader(r),
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.fromLTRB(
+                                AlongSpace.s16,
+                                AlongSpace.s20,
+                                AlongSpace.s16,
+                                AlongSpace.s16,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: children,
+                              ),
                             ),
                           ),
                         ),
@@ -256,6 +274,180 @@ class TripModeTile extends StatelessWidget {
           child: AlongIcon(tripModeIcon(modeCode), size: 22, color: p.ink),
         ),
       ),
+    );
+  }
+}
+
+/// Along runs in Nigerian cities, all on Africa/Lagos (UTC+1, no DST), so
+/// trip clocks read in city time whatever zone the phone is set to.
+const Duration cityUtcOffset = Duration(hours: 1);
+
+/// The driver's initial on a squircle tile, standing in for a photo.
+class TripDriverAvatar extends StatelessWidget {
+  const TripDriverAvatar({super.key, required this.name, this.size = 44});
+
+  final String name;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final initial = name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
+    return ExcludeSemantics(
+      child: Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: AlongCraft.compactFill(p.ink, size, corner: size * 0.34),
+        child: Text(
+          initial,
+          style: AlongType.title(p).copyWith(color: p.onInk, height: 1),
+        ),
+      ),
+    );
+  }
+}
+
+/// A compact squircle action: icon over a short label. Used in rows of
+/// equal-weight trip actions so none reads as bare text.
+class TripActionTile extends StatelessWidget {
+  const TripActionTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.badge = 0,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+  final int badge;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final enabled = onPressed != null;
+    final fg = enabled ? p.ink : p.muted;
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: label,
+      child: ExcludeSemantics(
+        child: Material(
+          color: Colors.transparent,
+          shape: AlongCraft.border(16),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onPressed == null
+                ? null
+                : () {
+                    AlongHaptics.tick(context);
+                    onPressed!();
+                  },
+            child: Ink(
+              decoration: AlongCraft.compactFill(p.recessed, 64, corner: 16),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AlongSpace.s4,
+                vertical: AlongSpace.s12,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Badge(
+                    isLabelVisible: badge > 0,
+                    label: Text('$badge'),
+                    backgroundColor: p.danger,
+                    child: AlongIcon(icon, size: 22, color: fg),
+                  ),
+                  const SizedBox(height: AlongSpace.s4),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AlongType.caption(p).copyWith(color: fg),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// How far along the ride is, board to alight, as a squircle track.
+class TripProgressBar extends StatelessWidget {
+  const TripProgressBar({
+    super.key,
+    required this.progress,
+    required this.from,
+    required this.to,
+  });
+
+  final double progress;
+  final String from;
+  final String to;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final v = progress.clamp(0.0, 1.0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: 8,
+          child: LayoutBuilder(
+            builder: (context, box) => Stack(
+              children: [
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: AlongCraft.compactFill(
+                      p.recessed,
+                      8,
+                      corner: 4,
+                    ),
+                  ),
+                ),
+                TweenAnimationBuilder<double>(
+                  tween: Tween(end: v),
+                  duration: AlongMoves.arrive.of(context),
+                  curve: AlongMoves.arrive.curve,
+                  builder: (context, t, _) => Container(
+                    width: math.max(8, box.maxWidth * t),
+                    decoration: AlongCraft.compactFill(p.ink, 8, corner: 4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AlongSpace.s4),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                from,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AlongType.caption(p),
+              ),
+            ),
+            const SizedBox(width: AlongSpace.s8),
+            Expanded(
+              child: Text(
+                to,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+                style: AlongType.caption(p),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

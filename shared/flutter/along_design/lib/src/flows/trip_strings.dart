@@ -16,6 +16,7 @@ class AlongTripStrings {
     this.minUnit = 'min',
     this.aboutClock = _aboutClock,
     this.clockRange = _clockRange,
+    this.clockOffset,
     this.minutesLabel = _minutesLabel,
     this.minutesRangeLabel = _minutesRangeLabel,
     this.emergency = 'Emergency',
@@ -55,6 +56,10 @@ class AlongTripStrings {
   final String minUnit;
   final String Function(String clock) aboutClock;
   final String Function(String first, String last) clockRange;
+
+  /// UTC offset of the trip's city, so arrival clocks read in city time on
+  /// any device. Null falls back to the device zone.
+  final Duration? clockOffset;
   final String Function(int minutes) minutesLabel;
   final String Function(int low, int high) minutesRangeLabel;
   final String emergency;
@@ -98,7 +103,7 @@ class AlongTripStrings {
   static String _arrivingAt(String d) => 'Arriving at $d';
   static String _trafficLater(int m) => 'Traffic ahead. About $m min later.';
   static String _aboutClock(String c) => 'About $c';
-  static String _clockRange(String a, String b) => '$a to $b';
+  static String _clockRange(String a, String b) => '$a–$b';
   static String _minutesLabel(int m) => '$m minutes';
   static String _minutesRangeLabel(int a, int b) => '$a to $b minutes';
   static String _callName(String n) => 'Call $n';

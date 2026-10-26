@@ -50,7 +50,7 @@
   "tripEtaTraffic": "Akwai cunkoso a gaba. Kusan minti {minutes} a makara.",
   "tripMinUnit": "minti",
   "tripAboutClock": "Kusan {time}",
-  "tripClockRange": "{first} zuwa {last}",
+  "tripClockRange": "{first}–{last}",
   "tripMinutesLabel": "{minutes, plural, =1{minti 1} other{minti {minutes}}}",
   "tripMinutesRangeLabel": "Minti {low} zuwa {high}",
   "tripEmergency": "Gaggawa",
@@ -148,5 +148,12 @@
   "tripCompleteYes": "Eh",
   "voiceBookingHint": "Faɗe shi, misali Wuse zuwa Berger",
   "wayfindingNoSteps": "Babu matakai",
-  "wayfindingTitle": "Kwatance tafiya da ƙafa"
+  "wayfindingTitle": "Kwatance tafiya da ƙafa",
+  "tripEtaCalculating": "Ana lissafi…",
+  "activeTripCall": "Kira",
+  "activeTripSos": "Riƙe don SOS",
+  "activeTripNaMe": "Nuna Na Me",
+  "tripCompleteSettleQuestion": "Ka biya wannan kuɗin?",
+  "tripCompletePayHint": "Biya {driver} a manhaja, ko ka faɗa mana ka biya da tsabar kuɗi.",
+  "meetVehicleNaMeShow": "Ɗaga shi don direbanka ya gane ka"
 }

@@ -1327,7 +1327,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String tripClockRange(String first, String last) {
-    return '$first reach $last';
+    return '$first–$last';
   }
 
   @override
@@ -1537,4 +1537,27 @@ class AppLocalizationsPcm extends AppLocalizations {
   String tripCompleteRoute(String from, String to) {
     return '$from → $to';
   }
+
+  @override
+  String get tripEtaCalculating => 'We dey calculate…';
+
+  @override
+  String get activeTripCall => 'Call';
+
+  @override
+  String get activeTripSos => 'Hold am for SOS';
+
+  @override
+  String get activeTripNaMe => 'Show Na Me';
+
+  @override
+  String get tripCompleteSettleQuestion => 'You don pay this fare?';
+
+  @override
+  String tripCompletePayHint(String driver) {
+    return 'Pay $driver for app, or tell us say you pay cash.';
+  }
+
+  @override
+  String get meetVehicleNaMeShow => 'Raise am make your driver fit see you';
 }

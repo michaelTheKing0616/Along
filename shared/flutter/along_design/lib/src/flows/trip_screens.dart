@@ -845,10 +845,13 @@ class _EtaHeadline extends StatelessWidget {
     if (w == null) {
       return const _EtaSkeleton();
     }
-    final updated = eta!.updatedAt.toLocal();
+    final t = AlongTripStrings.of(context);
+    final offset = t.clockOffset;
+    final updated = offset == null
+        ? eta!.updatedAt.toLocal()
+        : eta!.updatedAt.toUtc().add(offset);
     final first = updated.add(Duration(minutes: w.lowMin));
     final last = updated.add(Duration(minutes: w.highMin));
-    final t = AlongTripStrings.of(context);
     final clock = w.single
         ? t.aboutClock(_clock(first))
         : t.clockRange(_clock(first), _clock(last));
@@ -1673,15 +1676,13 @@ class _TagChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
-    final shape = AlongCraft.border(
-      _rControl,
-      side: selected ? BorderSide.none : _hair(p),
-    );
+    // Compact squircle, not a pill: a tight corner on a filled tile.
+    final shape = AlongCraft.border(10);
     return Semantics(
       button: true,
       selected: selected,
       child: Material(
-        color: selected ? p.ink : Colors.transparent,
+        color: selected ? p.ink : p.recessed,
         shape: shape,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -1689,7 +1690,7 @@ class _TagChip extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 40),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

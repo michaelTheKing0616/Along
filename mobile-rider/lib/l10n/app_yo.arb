@@ -50,7 +50,7 @@
   "tripEtaTraffic": "Súnkẹrẹ-fàkẹrẹ wà níwájú. Bíi ìṣẹ́jú {minutes} lẹ́yìn.",
   "tripMinUnit": "ìṣẹ́jú",
   "tripAboutClock": "Ní nǹkan bí {time}",
-  "tripClockRange": "{first} sí {last}",
+  "tripClockRange": "{first}–{last}",
   "tripMinutesLabel": "{minutes, plural, =1{ìṣẹ́jú 1} other{ìṣẹ́jú {minutes}}}",
   "tripMinutesRangeLabel": "Ìṣẹ́jú {low} sí {high}",
   "tripEmergency": "Pàjáwìrì",
@@ -148,5 +148,12 @@
   "tripCompleteYes": "Bẹ́ẹ̀ ni",
   "voiceBookingHint": "Sọ ọ́, fún àpẹẹrẹ Wuse sí Berger",
   "wayfindingNoSteps": "Kò sí ìgbésẹ̀ kankan",
-  "wayfindingTitle": "Ìtọ́sọ́nà ìrìn ẹsẹ̀"
+  "wayfindingTitle": "Ìtọ́sọ́nà ìrìn ẹsẹ̀",
+  "tripEtaCalculating": "À ń ṣírò…",
+  "activeTripCall": "Pè é",
+  "activeTripSos": "Di mú fún SOS",
+  "activeTripNaMe": "Fi Na Me hàn",
+  "tripCompleteSettleQuestion": "Ṣé o ti san owó yìí?",
+  "tripCompletePayHint": "San owó fún {driver} nínú áàpù, tàbí sọ fún wa pé o san owó lọ́wọ́.",
+  "meetVehicleNaMeShow": "Gbé e sókè kí awakọ̀ rẹ lè rí ọ"
 }

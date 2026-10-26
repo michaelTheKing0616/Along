@@ -20,7 +20,9 @@
   "otpTitle": "Enter the 6-digit code sent to {phone}",
   "@otpTitle": {
     "placeholders": {
-      "phone": {"type": "String"}
+      "phone": {
+        "type": "String"
+      }
     }
   },
   "wrongNumber": "Wrong number?",
@@ -28,7 +30,9 @@
   "resendCountdown": "Resend in {seconds}s",
   "@resendCountdown": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "errorInvalidPhone": "Enter a valid Nigerian number",
@@ -37,7 +41,9 @@
   "errorRateLimited": "Too many attempts. Try again in {seconds}s",
   "@errorRateLimited": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "errorGeneric": "Something went wrong. Please try again.",
@@ -76,7 +82,9 @@
   "captureTitle": "Capture {document}",
   "@captureTitle": {
     "placeholders": {
-      "document": {"type": "String"}
+      "document": {
+        "type": "String"
+      }
     }
   },
   "captureGuide": "Fit the document inside the frame",
@@ -88,7 +96,9 @@
   "ocrSuggestedValue": "Suggested: {value}",
   "@ocrSuggestedValue": {
     "placeholders": {
-      "value": {"type": "String"}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "ocrConfirmField": "Use this value",
@@ -100,7 +110,9 @@
   "pendingExpectedHours": "Expected within {hours} hours",
   "@pendingExpectedHours": {
     "placeholders": {
-      "hours": {"type": "int"}
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "pendingWhatNext": "We'll notify you when you're approved. You can set up your route while you wait.",
@@ -113,27 +125,37 @@
   "routeSuggestedCardBody": "We detected a usual {mode} path with {stopCount} stops.",
   "@routeSuggestedCardBody": {
     "placeholders": {
-      "mode": {"type": "String"},
-      "stopCount": {"type": "int"}
+      "mode": {
+        "type": "String"
+      },
+      "stopCount": {
+        "type": "int"
+      }
     }
   },
   "routeSuggestedCardCta": "Tap to review and publish",
   "routeUnnamedProfile": "{mode} route",
   "@routeUnnamedProfile": {
     "placeholders": {
-      "mode": {"type": "String"}
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "routeStopsCount": "{count} stops",
   "@routeStopsCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "routeLoadSurchargeLabel": "Load surcharge: {amount}",
   "@routeLoadSurchargeLabel": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "routeLoadSurchargeOptional": "Load surcharge (optional)",
@@ -143,7 +165,9 @@
   "routeFastSetupSubtitle": "{count} stops detected from your usual path",
   "@routeFastSetupSubtitle": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "routeYesPublish": "Yes, publish",
@@ -156,13 +180,17 @@
   "routePriceToEnd": "To end: {amount}",
   "@routePriceToEnd": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "routeSnapMatched": "Matched: {name} ✓",
   "@routeSnapMatched": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "routeSnapNewStopHint": "New stop — name?",
@@ -188,7 +216,9 @@
   "homeAtPark": "At: {parkName} ▾",
   "@homeAtPark": {
     "placeholders": {
-      "parkName": {"type": "String"}
+      "parkName": {
+        "type": "String"
+      }
     }
   },
   "homeDirectionOnRoute": "Direction: on my route ▾",
@@ -200,7 +230,9 @@
   "homeParkDistance": "{meters} m away",
   "@homeParkDistance": {
     "placeholders": {
-      "meters": {"type": "int"}
+      "meters": {
+        "type": "int"
+      }
     }
   },
   "homeParkSomewhereElse": "I'm somewhere else",
@@ -208,15 +240,23 @@
   "incomingRequestCountdown": "{seconds}s",
   "@incomingRequestCountdown": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "incomingRequestRiderLine": "{name} · {rating} · {trips} trips",
   "@incomingRequestRiderLine": {
     "placeholders": {
-      "name": {"type": "String"},
-      "rating": {"type": "String"},
-      "trips": {"type": "int"}
+      "name": {
+        "type": "String"
+      },
+      "rating": {
+        "type": "String"
+      },
+      "trips": {
+        "type": "int"
+      }
     }
   },
   "incomingRequestPickup": "Pickup",
@@ -225,38 +265,58 @@
   "incomingRequestCascade": "Retry {attempt} of {max}",
   "@incomingRequestCascade": {
     "placeholders": {
-      "attempt": {"type": "int"},
-      "max": {"type": "int"}
+      "attempt": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "incomingRequestDropoff": "Drop-off",
   "incomingRequestPickupMeta": "{distance} m · {eta} min",
   "@incomingRequestPickupMeta": {
     "placeholders": {
-      "distance": {"type": "int"},
-      "eta": {"type": "int"}
+      "distance": {
+        "type": "int"
+      },
+      "eta": {
+        "type": "int"
+      }
     }
   },
   "incomingRequestFareLine": "Rider pays {amount} · {tierLabel}",
   "@incomingRequestFareLine": {
     "placeholders": {
-      "amount": {"type": "String"},
-      "tierLabel": {"type": "String"}
+      "amount": {
+        "type": "String"
+      },
+      "tierLabel": {
+        "type": "String"
+      }
     }
   },
   "incomingRequestAlongFee": "Along fee {amount} ({percent}%) — added to your balance at completion",
   "@incomingRequestAlongFee": {
     "placeholders": {
-      "amount": {"type": "String"},
-      "percent": {"type": "String"}
+      "amount": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
     }
   },
   "incomingRequestLoadDefault": "Passenger flagged load",
   "incomingRequestLoadDetail": "{size} load — {note}",
   "@incomingRequestLoadDetail": {
     "placeholders": {
-      "size": {"type": "String"},
-      "note": {"type": "String"}
+      "size": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
     }
   },
   "incomingRequestWomenOnly": "Women-only match",
@@ -277,7 +337,9 @@
   "pricingRiderOffer": "Rider offered {amount}",
   "@pricingRiderOffer": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "pricingLapsed": "No agreement — rider may choose another vehicle",
@@ -289,20 +351,26 @@
   "manifestBoarding": "Boarding: {stage}",
   "@manifestBoarding": {
     "placeholders": {
-      "stage": {"type": "String"}
+      "stage": {
+        "type": "String"
+      }
     }
   },
   "manifestStatus": "Status: {status}",
   "@manifestStatus": {
     "placeholders": {
-      "status": {"type": "String"}
+      "status": {
+        "type": "String"
+      }
     }
   },
   "manifestMarkBoarded": "Boarded",
   "manifestOpen": "Active trips ({count})",
   "@manifestOpen": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "activeTripStart": "Start trip",
@@ -310,14 +378,20 @@
   "activeTripBoardAlight": "{board} → {alight}",
   "@activeTripBoardAlight": {
     "placeholders": {
-      "board": {"type": "String"},
-      "alight": {"type": "String"}
+      "board": {
+        "type": "String"
+      },
+      "alight": {
+        "type": "String"
+      }
     }
   },
   "activeTripWalkEta": "{minutes} min walk",
   "@activeTripWalkEta": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "activeTripStalledCaption": "not moving closer",
@@ -328,7 +402,9 @@
   "sosCallEmergency": "Call {number}",
   "@sosCallEmergency": {
     "placeholders": {
-      "number": {"type": "String"}
+      "number": {
+        "type": "String"
+      }
     }
   },
   "sosHoldToCancel": "Hold to cancel",
@@ -369,7 +445,11 @@
   "accountPayoutBank": "Payout bank",
   "accountPayoutConfigured": "Bank ending {last4}",
   "@accountPayoutConfigured": {
-    "placeholders": { "last4": {"type": "String"} }
+    "placeholders": {
+      "last4": {
+        "type": "String"
+      }
+    }
   },
   "accountPayoutNotConfigured": "Set up your payout bank",
   "accountPreferencesHeading": "PREFERENCES",
@@ -392,17 +472,29 @@
   "homeLedgerBlockedTitle": "Matching paused",
   "homeLedgerBlockedBalance": "Balance {amount}",
   "@homeLedgerBlockedBalance": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "homeLedgerBlockedThreshold": "Block limit {amount}",
   "@homeLedgerBlockedThreshold": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "settleCta": "Settle",
   "settleTitle": "Settle balance",
   "settleCurrentBalance": "Current balance: {amount}",
   "@settleCurrentBalance": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "settleAmountLabel": "Amount to pay",
   "settleChannelBank": "Bank transfer",
@@ -412,12 +504,20 @@
   "settleAgentCodeTitle": "Your agent code",
   "settleAgentExpires": "Expires {time}",
   "@settleAgentExpires": {
-    "placeholders": { "time": {"type": "String"} }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "settleNearbyAgentsTitle": "Nearby agents",
   "settleNearbyAgentDistance": "{distance} m away",
   "@settleNearbyAgentDistance": {
-    "placeholders": { "distance": {"type": "int"} }
+    "placeholders": {
+      "distance": {
+        "type": "int"
+      }
+    }
   },
   "settleDone": "Done",
   "earningsLedgerSection": "ALONG BALANCE",
@@ -428,23 +528,39 @@
   "earningsTripsTodaySummary": "{count} trips today · {amount} collected",
   "@earningsTripsTodaySummary": {
     "placeholders": {
-      "count": {"type": "int"},
-      "amount": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "standingLink": "Standing",
   "standingTitle": "Your standing",
   "standingBalanceAt": "Balance at transition: {amount}",
   "@standingBalanceAt": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "standingBlockThreshold": "Matching pauses below {amount}",
   "@standingBlockThreshold": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "standingGraceDeadline": "Grace deadline: {date}",
   "@standingGraceDeadline": {
-    "placeholders": { "date": {"type": "String"} }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "standingRestoreHint": "Settle above the warn threshold to restore good standing",
   "standingHistoryTitle": "HISTORY",
@@ -462,7 +578,11 @@
   "extendTripSearchHint": "Where to now?",
   "extendTripDestination": "Continuing to {destination}",
   "@extendTripDestination": {
-    "placeholders": { "destination": {"type": "String"} }
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      }
+    }
   },
   "extendTripPropose": "Propose to rider",
   "incomingExtensionTitle": "Extension request",
@@ -471,22 +591,38 @@
   "incomingRiderExtensionBody": "Rider proposes continuing to {destination} for +{delta}",
   "@incomingRiderExtensionBody": {
     "placeholders": {
-      "destination": {"type": "String"},
-      "delta": {"type": "String"}
+      "destination": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
     }
   },
   "tripCompleteTitle": "Trip complete",
   "tripCompleteFareLine": "Fare {amount} — rider pays you in cash",
   "@tripCompleteFareLine": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "tripCompleteAlongFeeLine": "Along fee {amount} — posted to your balance",
   "@tripCompleteAlongFeeLine": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "tripCompleteNewBalance": "New balance {amount}",
   "@tripCompleteNewBalance": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "tripCompleteCashQuestion": "Confirm cash received?",
   "tripCompleteYes": "Yes",
@@ -497,11 +633,19 @@
   "requestPayment": "Request payment",
   "tripCompleteDigitalLine": "Paid digitally · {amount} sent to your bank",
   "@tripCompleteDigitalLine": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "tripCompleteDigitalFeeLine": "Along fee {amount} already deducted",
   "@tripCompleteDigitalFeeLine": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "myQrTitle": "My QR code",
   "myQrAccountSubtitle": "Share your code for digital payments",
@@ -514,7 +658,11 @@
   "myQrOrderSticker": "Order printed sticker",
   "myQrStickerStatus": "Sticker request: {status}",
   "@myQrStickerStatus": {
-    "placeholders": { "status": {"type": "String"} }
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
   },
   "myQrVerifySticker": "Verify my sticker",
   "myQrVerifyMatch": "Sticker matches your code and plate",
@@ -532,20 +680,36 @@
   "paymentRequestTitle": "Payment request",
   "paymentRequestForRider": "For {riderName}",
   "@paymentRequestForRider": {
-    "placeholders": { "riderName": {"type": "String"} }
+    "placeholders": {
+      "riderName": {
+        "type": "String"
+      }
+    }
   },
   "paymentRequestCountdown": "Expires in {seconds}s",
   "@paymentRequestCountdown": {
-    "placeholders": { "seconds": {"type": "int"} }
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
   },
   "paymentRequestWaiting": "Waiting for payment…",
   "paymentRequestPaidLine": "Paid {amount} ✓",
   "@paymentRequestPaidLine": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "paymentRequestBankLine": "{amount} to your bank",
   "@paymentRequestBankLine": {
-    "placeholders": { "amount": {"type": "String"} }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "paymentRequestDone": "Done",
   "paymentRequestExpired": "This QR has expired — create a new one",
@@ -556,7 +720,11 @@
   "earningsDigitalEmpty": "No digital payments yet",
   "earningsDigitalRow": "Digital · {source}",
   "@earningsDigitalRow": {
-    "placeholders": { "source": {"type": "String"} }
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
   },
   "sosQueued": "Saved on this phone. Call 112 when you are back online.",
   "sosLiveLink": "Copy live location link",
@@ -565,13 +733,17 @@
   "sosContactWhatsapp": "WhatsApp {name}",
   "@sosContactWhatsapp": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "sosContactSms": "Text {name}",
   "@sosContactSms": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "emergencyContactsHeading": "EMERGENCY CONTACTS",
@@ -583,7 +755,9 @@
   "emergencyContactRemove": "Remove {name}",
   "@emergencyContactRemove": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "emergencyContactInvalidPhone": "Use a phone number like +2348012345678",
@@ -630,7 +804,9 @@
   "freeSeatCount": "{count} free",
   "@freeSeatCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "restTitle": "Rest",
@@ -647,7 +823,9 @@
   "marketplaceSeats": "{count} seats to go",
   "@marketplaceSeats": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "marketplaceGoalMet": "Target reached",
@@ -658,7 +836,9 @@
   "marketplaceTip": "Queue toward {corridor}",
   "@marketplaceTip": {
     "placeholders": {
-      "corridor": {"type": "String"}
+      "corridor": {
+        "type": "String"
+      }
     }
   },
   "marketplaceFuel": "Price per litre",
@@ -679,5 +859,14 @@
   "activeTripMessageRiderUnknown": "Message rider",
   "@activeTripMessageRiderUnknown": {
     "description": "Trip chat button when the rider's name is unknown"
+  },
+  "tripEtaCalculating": "Calculating…",
+  "tripEtaPickup": "Pickup {label}",
+  "@tripEtaPickup": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
   }
 }

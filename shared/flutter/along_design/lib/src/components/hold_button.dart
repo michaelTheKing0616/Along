@@ -1,8 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../motion.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 
 /// Hold-to-fire button types (doc 05 §9 `HoldButton`).
@@ -101,22 +100,28 @@ class _HoldButtonState extends State<HoldButton>
 
   @override
   Widget build(BuildContext context) {
-    final isHolding = widget.visualState == HoldButtonVisualState.holding ||
-        (_displayProgress > 0 && widget.visualState == HoldButtonVisualState.idle);
+    final p = AlongPalette.of(context);
+    final dark = p.brightness == Brightness.dark;
+    final isHolding =
+        widget.visualState == HoldButtonVisualState.holding ||
+        (_displayProgress > 0 &&
+            widget.visualState == HoldButtonVisualState.idle);
     final isFired = widget.visualState == HoldButtonVisualState.fired;
+    final danger = dark ? const Color(0xFFF87171) : AlongColors.semanticDanger;
+    final dangerTint = dark
+        ? const Color(0xFF3A1818)
+        : AlongColors.semanticDangerTint;
 
-    final bg = _isSos ? AlongColors.semanticDangerFill : AlongColors.ink900;
-    final fg = AlongColors.surface0;
-    final trackColor = _isSos
-        ? (isHolding || isFired
-            ? AlongColors.semanticDangerTint
-            : bg.withValues(alpha: 0.25))
-        : bg.withValues(alpha: 0.25);
-    final progressColor = _isSos ? AlongColors.semanticDanger : bg;
+    // SOS is a quiet squircle with a red word until it is held: reachable,
+    // never shouting over the trip. Na Me is an ink tile with a torch.
+    final Color bg = _isSos
+        ? (isFired ? AlongColors.semanticDangerFill : dangerTint)
+        : p.ink;
+    final Color fg = _isSos ? (isFired ? Colors.white : danger) : p.onInk;
     final label = widget.label ?? (_isSos ? 'Hold for SOS' : 'Na Me');
     final firedLabel = _isSos ? 'Call 112' : 'Fired';
-    final firedLabelColor =
-        _isSos ? AlongColors.semanticDanger : AlongColors.ink700;
+    const tile = AlongSpace.s48;
+    const frame = tile + 8;
 
     return Semantics(
       button: true,
@@ -134,57 +139,62 @@ class _HoldButtonState extends State<HoldButton>
         onLongPressEnd: widget.visualState == HoldButtonVisualState.idle
             ? _onLongPressEnd
             : null,
-        child: SizedBox(
-          width: AlongSpace.sizeCtaPrimary,
-          height: AlongSpace.sizeCtaPrimary + AlongSpace.s24,
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              if (_isSos && (isHolding || isFired))
-                Container(
-                  width: AlongSpace.sizeCtaPrimary + AlongSpace.s8,
-                  height: AlongSpace.sizeCtaPrimary + AlongSpace.s8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AlongColors.semanticDangerTint,
-                  ),
-                ),
-              CustomPaint(
-                size: const Size.square(AlongSpace.sizeCtaPrimary),
-                painter: _HoldProgressPainter(
-                  progress: _displayProgress,
-                  trackColor: trackColor,
-                  progressColor: progressColor,
-                ),
-              ),
-              Container(
-                width: AlongSpace.s48,
-                height: AlongSpace.s48,
-                decoration: BoxDecoration(
-                  color: isFired && _isSos
-                      ? AlongColors.semanticDanger
-                      : bg,
-                  shape: BoxShape.circle,
-                  border: isFired && _isSos
-                      ? Border.all(color: AlongColors.semanticDangerFill, width: 2)
-                      : null,
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox.square(
+              dimension: frame,
+              child: Stack(
                 alignment: Alignment.center,
-                child: Icon(
-                  _isSos ? Icons.sos_rounded : Icons.flashlight_on_rounded,
-                  color: fg,
+                children: [
+                  if (_isSos && (isHolding || isFired))
+                    CustomPaint(
+                      size: const Size.square(frame),
+                      painter: _HoldProgressPainter(
+                        progress: _displayProgress,
+                        trackColor: danger.withValues(alpha: 0.2),
+                        progressColor: danger,
+                      ),
+                    ),
+                  Container(
+                    width: tile,
+                    height: tile,
+                    alignment: Alignment.center,
+                    decoration: ShapeDecoration(
+                      color: bg,
+                      shape: RoundedSuperellipseBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: _isSos && !isFired
+                            ? BorderSide(color: danger.withValues(alpha: 0.35))
+                            : BorderSide.none,
+                      ),
+                    ),
+                    child: _isSos
+                        ? Text(
+                            'SOS',
+                            style: AlongText.caption.copyWith(
+                              color: fg,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.6,
+                            ),
+                          )
+                        : Icon(
+                            Icons.flashlight_on_rounded,
+                            color: fg,
+                            size: 22,
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            if (isFired)
+              Text(
+                firedLabel,
+                style: AlongText.caption.copyWith(
+                  color: _isSos ? danger : p.muted,
                 ),
               ),
-              if (isFired)
-                Positioned(
-                  bottom: 0,
-                  child: Text(
-                    firedLabel,
-                    style: AlongText.caption.copyWith(color: firedLabelColor),
-                  ),
-                ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -204,8 +214,9 @@ class _HoldProgressPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 2;
+    final rect = (Offset.zero & size).deflate(2);
+    final path = Path()
+      ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(19)));
     final track = Paint()
       ..color = trackColor
       ..style = PaintingStyle.stroke
@@ -216,12 +227,10 @@ class _HoldProgressPainter extends CustomPainter {
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
 
-    canvas.drawCircle(center, radius, track);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      2 * math.pi * progress.clamp(0, 1),
-      false,
+    canvas.drawPath(path, track);
+    final metric = path.computeMetrics().first;
+    canvas.drawPath(
+      metric.extractPath(0, metric.length * progress.clamp(0, 1)),
       arc,
     );
   }

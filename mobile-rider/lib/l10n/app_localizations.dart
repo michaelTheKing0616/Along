@@ -2426,7 +2426,7 @@ abstract class AppLocalizations {
   /// Rider trip screens
   ///
   /// In en, this message translates to:
-  /// **'{first} to {last}'**
+  /// **'{first}–{last}'**
   String tripClockRange(String first, String last);
 
   /// Rider trip screens
@@ -2746,6 +2746,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{from} → {to}'**
   String tripCompleteRoute(String from, String to);
+
+  /// No description provided for @tripEtaCalculating.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating…'**
+  String get tripEtaCalculating;
+
+  /// No description provided for @activeTripCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get activeTripCall;
+
+  /// No description provided for @activeTripSos.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold for SOS'**
+  String get activeTripSos;
+
+  /// No description provided for @activeTripNaMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Na Me'**
+  String get activeTripNaMe;
+
+  /// No description provided for @tripCompleteSettleQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you pay this fare?'**
+  String get tripCompleteSettleQuestion;
+
+  /// No description provided for @tripCompletePayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {driver} in the app, or tell us you paid cash.'**
+  String tripCompletePayHint(String driver);
+
+  /// No description provided for @meetVehicleNaMeShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold it up so your driver can spot you'**
+  String get meetVehicleNaMeShow;
 }
 
 class _AppLocalizationsDelegate

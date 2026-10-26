@@ -1324,7 +1324,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String tripClockRange(String first, String last) {
-    return '$first ruo $last';
+    return '$first–$last';
   }
 
   @override
@@ -1533,4 +1533,27 @@ class AppLocalizationsIg extends AppLocalizations {
   String tripCompleteRoute(String from, String to) {
     return '$from → $to';
   }
+
+  @override
+  String get tripEtaCalculating => 'Anyị na-agbakọ…';
+
+  @override
+  String get activeTripCall => 'Kpọọ';
+
+  @override
+  String get activeTripSos => 'Jide maka SOS';
+
+  @override
+  String get activeTripNaMe => 'Gosi Na Me';
+
+  @override
+  String get tripCompleteSettleQuestion => 'Ị kwụọla ụgwọ a?';
+
+  @override
+  String tripCompletePayHint(String driver) {
+    return 'Kwụọ $driver n\'ime ngwa, ma ọ bụ gwa anyị na ị kwụrụ ego aka.';
+  }
+
+  @override
+  String get meetVehicleNaMeShow => 'Welie ya ka onye ọkwọ ụgbọ gị hụ gị';
 }

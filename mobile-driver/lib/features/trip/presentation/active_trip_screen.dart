@@ -167,7 +167,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                               ),
                               const SizedBox(height: AlongSpace.s8),
                               Text(
-                                trip?.eta?.driverLine ?? 'Calculating…',
+                                trip?.eta?.driverLine(l10n.tripEtaPickup) ??
+                                    l10n.tripEtaCalculating,
                                 key: const Key('active_trip_eta'),
                                 style: AlongText.body,
                               ),

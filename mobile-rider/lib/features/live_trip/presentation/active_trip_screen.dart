@@ -291,16 +291,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
 
     return TripSheetScaffold(
       mapFraction: 0.38,
-      leading: AlongMapButton(
-        key: const Key('active_trip_share'),
-        icon: AlongIcons.share,
-        tooltip: l10n.activeTripShare,
-        onPressed: () =>
-            ShareTripSheet.show(context, journeyId: liveTrip.journeyId),
-      ),
       trailing: HoldButton(
         key: const Key('active_trip_sos'),
         type: HoldButtonType.sos,
+        label: l10n.activeTripSos,
         holdDuration: holdDuration,
         onFired: () => context.push(
           AppRoutes.sosActive,
@@ -398,53 +392,73 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
               ),
               if (pickupSeconds == null)
                 for (final stop in liveTrip.eta?.stops ?? const <TripEtaStop>[])
-                  Padding(
-                    padding: const EdgeInsets.only(top: AlongSpace.s4),
-                    child: Text(
-                      '${stop.name} · ${stop.label}',
-                      key: Key('active_trip_stop_${stop.id}'),
-                      style: AlongType.caption(AlongPalette.of(context)),
+                  // The header already names the alighting stop and time.
+                  if (stop.name != liveTrip.alight.name)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AlongSpace.s4),
+                      child: Text(
+                        '${stop.name} · ${stop.label}',
+                        key: Key('active_trip_stop_${stop.id}'),
+                        style: AlongType.caption(AlongPalette.of(context)),
+                      ),
                     ),
-                  ),
             ],
           ),
         ),
-        const SizedBox(height: AlongSpace.s16),
-        Row(
-          key: const Key('active_trip_leg_timeline'),
-          children: [
-            TripModeTile(modeCode: liveTrip.modeCode, size: 40),
-            const SizedBox(width: AlongSpace.s12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.tripCompleteRoute(
-                      liveTrip.board.name,
-                      liveTrip.alight.name,
-                    ),
-                    style: AlongType.label(palette),
-                  ),
-                  Text(liveTrip.modeLabel, style: AlongType.caption(palette)),
-                ],
-              ),
-            ),
-            const SizedBox(width: AlongSpace.s8),
-            Text(formatAppMoney(ref, fare), style: AlongType.label(palette)),
-          ],
-        ),
-        if (pickupSeconds == null || showNaMe) ...[
+        if (pickupSeconds == null) ...[
           const SizedBox(height: AlongSpace.s16),
           Row(
+            key: const Key('active_trip_leg_timeline'),
             children: [
-              if (showNaMe) ...[
-                NaMeChip(colour: colour, shape: shape),
-                const SizedBox(width: AlongSpace.s12),
-              ],
+              TripModeTile(modeCode: liveTrip.modeCode, size: 36),
+              const SizedBox(width: AlongSpace.s12),
               Expanded(
-                child: pickupSeconds == null
-                    ? Column(
+                child: Text(
+                  liveTrip.modeLabel,
+                  style: AlongType.label(palette),
+                ),
+              ),
+              const SizedBox(width: AlongSpace.s8),
+              Text(formatAppMoney(ref, fare), style: AlongType.label(palette)),
+            ],
+          ),
+          const SizedBox(height: AlongSpace.s12),
+          TripProgressBar(
+            key: const Key('active_trip_progress'),
+            progress:
+                progressBetween(
+                  liveTrip.board.location,
+                  liveTrip.alight.location,
+                  driverPoint,
+                ) ??
+                0,
+            from: liveTrip.board.name,
+            to: liveTrip.alight.name,
+          ),
+        ],
+        const SizedBox(height: AlongSpace.s16),
+        DecoratedBox(
+          decoration: AlongCraft.compactFill(
+            palette.brightness == Brightness.dark
+                ? palette.recessed
+                : palette.surface,
+            120,
+            corner: 20,
+            side: palette.brightness == Brightness.dark
+                ? BorderSide.none
+                : BorderSide(color: palette.line),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AlongSpace.s12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    TripDriverAvatar(name: liveTrip.driver.displayName),
+                    const SizedBox(width: AlongSpace.s12),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -452,31 +466,69 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                             style: AlongType.label(palette),
                           ),
                           Text(
-                            [
-                              liveTrip.vehicle.plateNumber,
-                              car,
-                            ].where((s) => s.isNotEmpty).join(' · '),
+                            l10n.meetVehicleDriverStats(
+                              liveTrip.driver.rating.toStringAsFixed(1),
+                              liveTrip.driver.tripCount,
+                            ),
                             style: AlongType.caption(palette),
                           ),
                         ],
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              if (showNaMe)
-                HoldButton(
-                  key: const Key('active_trip_na_me'),
-                  type: HoldButtonType.naMe,
-                  onFired: () => context.push(
-                    AppRoutes.naMe,
-                    extra: NaMeRouteArgs(
-                      tripId: liveTrip.tripId,
-                      driverName: liveTrip.driver.displayName,
+                      ),
                     ),
-                  ),
+                    if (showNaMe)
+                      HoldButton(
+                        key: const Key('active_trip_na_me'),
+                        type: HoldButtonType.naMe,
+                        label: l10n.activeTripNaMe,
+                        onFired: () => context.push(
+                          AppRoutes.naMe,
+                          extra: NaMeRouteArgs(
+                            tripId: liveTrip.tripId,
+                            driverName: liveTrip.driver.displayName,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-            ],
+                if (pickupSeconds == null) ...[
+                  const SizedBox(height: AlongSpace.s12),
+                  Wrap(
+                    spacing: AlongSpace.s12,
+                    runSpacing: AlongSpace.s8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: AlongCraft.compactFill(
+                          palette.ink,
+                          30,
+                          corner: 10,
+                        ),
+                        child: Text(
+                          liveTrip.vehicle.plateNumber,
+                          style: AlongType.numeric(palette)
+                              .copyWith(color: palette.onInk, fontSize: 14),
+                        ),
+                      ),
+                      if (car.isNotEmpty)
+                        Text(car, style: AlongType.caption(palette)),
+                    ],
+                  ),
+                ],
+                if (showNaMe) ...[
+                  const SizedBox(height: AlongSpace.s12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: NaMeChip(colour: colour, shape: shape),
+                  ),
+                ],
+              ],
+            ),
           ),
-        ],
+        ),
         if (digitalEnabled) ...[
           const SizedBox(height: AlongSpace.s16),
           Row(
@@ -524,14 +576,41 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
             ),
           ),
         ],
-        const SizedBox(height: AlongSpace.s8),
+        const SizedBox(height: AlongSpace.s12),
         Row(
           children: [
+            if (pickupSeconds == null &&
+                liveTrip.handoff?.contactAvailable == true) ...[
+              Expanded(
+                child: TripActionTile(
+                  key: const Key('active_trip_call'),
+                  icon: AlongIcons.call,
+                  label: l10n.activeTripCall,
+                  onPressed: () => contactDriver(
+                    context,
+                    ref,
+                    tripId: liveTrip.tripId,
+                    sms: false,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AlongSpace.s8),
+            ],
             Expanded(
-              child: AlongButton(
+              child: TripActionTile(
+                key: const Key('active_trip_share'),
+                icon: AlongIcons.share,
+                label: l10n.activeTripShare,
+                onPressed: () =>
+                    ShareTripSheet.show(context, journeyId: liveTrip.journeyId),
+              ),
+            ),
+            const SizedBox(width: AlongSpace.s8),
+            Expanded(
+              child: TripActionTile(
                 key: const Key('active_trip_extend'),
+                icon: AlongIcons.plus,
                 label: l10n.activeTripExtend,
-                variant: AlongButtonVariant.tertiary,
                 onPressed:
                     liveTrip.status == TripStatus.inTransit ||
                         liveTrip.status == TripStatus.boarded
@@ -539,11 +618,12 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                     : null,
               ),
             ),
+            const SizedBox(width: AlongSpace.s8),
             Expanded(
-              child: AlongButton(
+              child: TripActionTile(
                 key: const Key('active_trip_report'),
+                icon: AlongIcons.shield,
                 label: l10n.activeTripReport,
-                variant: AlongButtonVariant.tertiary,
                 onPressed: () => context.push(
                   AppRoutes.reportIncident,
                   extra: liveTrip.tripId,

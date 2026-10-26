@@ -50,7 +50,7 @@
   "tripEtaTraffic": "Ọgba ụgbọala dị n'ihu. Ihe dị ka nkeji {minutes} ka e ga-egbu.",
   "tripMinUnit": "nkeji",
   "tripAboutClock": "Ihe dị ka {time}",
-  "tripClockRange": "{first} ruo {last}",
+  "tripClockRange": "{first}–{last}",
   "tripMinutesLabel": "{minutes, plural, =1{nkeji 1} other{nkeji {minutes}}}",
   "tripMinutesRangeLabel": "Nkeji {low} ruo {high}",
   "tripEmergency": "Ihe mberede",
@@ -148,5 +148,12 @@
   "tripCompleteYes": "Ee",
   "voiceBookingHint": "Kwuo ya, dịka Wuse ruo Berger",
   "wayfindingNoSteps": "Enweghị nzọụkwụ dị",
-  "wayfindingTitle": "Ntụziaka ije ụkwụ"
+  "wayfindingTitle": "Ntụziaka ije ụkwụ",
+  "tripEtaCalculating": "Anyị na-agbakọ…",
+  "activeTripCall": "Kpọọ",
+  "activeTripSos": "Jide maka SOS",
+  "activeTripNaMe": "Gosi Na Me",
+  "tripCompleteSettleQuestion": "Ị kwụọla ụgwọ a?",
+  "tripCompletePayHint": "Kwụọ {driver} n'ime ngwa, ma ọ bụ gwa anyị na ị kwụrụ ego aka.",
+  "meetVehicleNaMeShow": "Welie ya ka onye ọkwọ ụgbọ gị hụ gị"
 }

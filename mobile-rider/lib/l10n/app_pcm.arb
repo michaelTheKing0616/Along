@@ -50,7 +50,7 @@
   "tripEtaTraffic": "Go-slow dey front. E fit pass {minutes} min.",
   "tripMinUnit": "min",
   "tripAboutClock": "Around {time}",
-  "tripClockRange": "{first} reach {last}",
+  "tripClockRange": "{first}–{last}",
   "tripMinutesLabel": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
   "tripMinutesRangeLabel": "{low} reach {high} minutes",
   "tripEmergency": "Emergency",
@@ -148,5 +148,12 @@
   "tripCompleteYes": "Yes",
   "voiceBookingHint": "Talk am, like Wuse go Berger",
   "wayfindingNoSteps": "No steps dey",
-  "wayfindingTitle": "Waka direction"
+  "wayfindingTitle": "Waka direction",
+  "tripEtaCalculating": "We dey calculate…",
+  "activeTripCall": "Call",
+  "activeTripSos": "Hold am for SOS",
+  "activeTripNaMe": "Show Na Me",
+  "tripCompleteSettleQuestion": "You don pay this fare?",
+  "tripCompletePayHint": "Pay {driver} for app, or tell us say you pay cash.",
+  "meetVehicleNaMeShow": "Raise am make your driver fit see you"
 }

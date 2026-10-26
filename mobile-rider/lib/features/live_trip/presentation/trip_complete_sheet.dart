@@ -148,22 +148,41 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
       ];
     } else {
       body = [
-        Text(l10n.tripCompleteFareLabel, style: AlongType.caption(p)),
-        const SizedBox(height: 2),
-        Text(
-          fare,
-          key: const Key('trip_complete_fare'),
-          style: AlongType.display(p),
+        // One statement of the fare, then the question about it. The amount
+        // is not repeated in the question.
+        DecoratedBox(
+          decoration: AlongCraft.compactFill(p.recessed, 96, corner: 20),
+          child: Padding(
+            padding: const EdgeInsets.all(AlongSpace.s16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.tripCompleteFareLabel,
+                        style: AlongType.caption(p),
+                      ),
+                      Text(
+                        fare,
+                        key: const Key('trip_complete_fare'),
+                        style: AlongType.display(p),
+                      ),
+                    ],
+                  ),
+                ),
+                TripDriverAvatar(name: widget.trip.driver.displayName),
+              ],
+            ),
+          ),
         ),
-        const SizedBox(height: AlongSpace.s8),
+        const SizedBox(height: AlongSpace.s16),
         Text(
           offerPay
-              ? l10n.tripCompletePayQuestion(
-                  fare,
-                  widget.trip.driver.displayName,
-                )
-              : l10n.tripCompletePaidQuestion(fare),
-          style: AlongType.bodyMuted(p),
+              ? l10n.tripCompletePayHint(widget.trip.driver.displayName)
+              : l10n.tripCompleteSettleQuestion,
+          style: AlongType.label(p),
         ),
         const SizedBox(height: AlongSpace.s20),
         if (offerPay) ...[

@@ -26,6 +26,7 @@ class AlongMap extends StatefulWidget {
     this.onStyleLoaded,
     this.onLayerControllerReady,
     this.onMapClick,
+    this.placeholder,
     this.gestureRecognizers,
     this.myLocationEnabled = false,
     this.maxZoom,
@@ -44,6 +45,10 @@ class AlongMap extends StatefulWidget {
   final VoidCallback? onStyleLoaded;
   final void Function(MapLayerController controller)? onLayerControllerReady;
   final OnMapClickCallback? onMapClick;
+
+  /// Painted while no map can draw yet (style loading, or widget tests).
+  /// Defaults to plain land colour.
+  final Widget? placeholder;
   final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
   final bool myLocationEnabled;
   final double? maxZoom;
@@ -152,12 +157,8 @@ class _AlongMapState extends State<AlongMap> {
 
   @override
   Widget build(BuildContext context) {
-    if (inFlutterTest) {
-      return const ColoredBox(color: AlongMapColors.land);
-    }
-
-    if (_wantsBrandStyle && _bundledStyle == null) {
-      return const ColoredBox(color: AlongMapColors.land);
+    if (inFlutterTest || (_wantsBrandStyle && _bundledStyle == null)) {
+      return widget.placeholder ?? const ColoredBox(color: AlongMapColors.land);
     }
 
     final styleString = _resolveStyleString();
