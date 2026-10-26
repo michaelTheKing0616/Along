@@ -7,6 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// In-memory Supabase gateway for driver widget/integration tests.
 class FakeAlongSupabase implements AlongSupabase {
+  /// Time source for generated timestamps; goldens pin it.
+  DateTime Function() clock = DateTime.now;
+
   FakeAlongSupabase({
     this.otpCode = '123456',
     List<Map<String, dynamic>>? cities,
@@ -60,7 +63,7 @@ class FakeAlongSupabase implements AlongSupabase {
         appMetadata: const {},
         userMetadata: const {},
         aud: 'authenticated',
-        createdAt: DateTime.now().toIso8601String(),
+        createdAt: clock().toIso8601String(),
       );
     }
   }
@@ -188,7 +191,7 @@ class FakeAlongSupabase implements AlongSupabase {
       appMetadata: const {},
       userMetadata: const {},
       aud: 'authenticated',
-      createdAt: DateTime.now().toIso8601String(),
+      createdAt: clock().toIso8601String(),
     );
     _controller.add(const AuthState(AuthChangeEvent.signedIn, null));
     return AuthResponse(user: _user, session: null);
@@ -273,7 +276,7 @@ class FakeAlongSupabase implements AlongSupabase {
         'document_type': request.document_type,
         'status': 'pending',
         'rejection_reason': null,
-        'submitted_at': DateTime.now().toUtc().toIso8601String(),
+        'submitted_at': clock().toUtc().toIso8601String(),
       });
       return {'verification_id': 'test-verification-id'};
     }
@@ -968,7 +971,7 @@ class FakeAlongSupabase implements AlongSupabase {
           'status': 'completed',
           'payment_method': 'cash',
           'fare_shown': 450,
-          'ended_at': DateTime.now().toUtc().toIso8601String(),
+          'ended_at': clock().toUtc().toIso8601String(),
           'destination_label': 'Area 1 Park',
         },
       ];

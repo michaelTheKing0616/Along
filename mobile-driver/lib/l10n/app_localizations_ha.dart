@@ -447,7 +447,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Kuɗin Along $amount · $percent%';
   }
 
   @override
@@ -792,7 +792,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Ayyukan ma\'auni';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1066,7 +1066,7 @@ class AppLocalizationsHa extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Biyan dijital';
 
   @override
   String get earningsDigitalCaption =>
@@ -1488,4 +1488,64 @@ class AppLocalizationsHa extends AppLocalizations {
   String tripCompleteYesAmount(String amount) {
     return 'Eh, na karɓi $amount';
   }
+
+  @override
+  String get settleSubtitle => 'Asusun ka na Along';
+
+  @override
+  String get settleOwedLabel => 'Bashin Along a kanka';
+
+  @override
+  String get settleCreditLabel => 'Ma\'aunin ka';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Daidaitawa na tsayawa idan bashin ya wuce $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Biya da';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Biya $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Tura zuwa asusun Along';
+
+  @override
+  String get settleChannelUssdDetail => 'Danna lamba, ba data';
+
+  @override
+  String get settleChannelCardDetail => 'Katin banki';
+
+  @override
+  String get settleChannelAgentDetail => 'Biya kuɗi a wurin wakilin Along';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Ma\'auni $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Tuki lafiya';
+
+  @override
+  String get ratingTagFairFare => 'Kuɗi daidai';
+
+  @override
+  String get ratingTagCleanVehicle => 'Mota mai tsabta';
+
+  @override
+  String get ratingTagPolite => 'Mai ladabi';
+
+  @override
+  String get ratingTagOnTime => 'A kan lokaci';
+
+  @override
+  String get ratingTagReady => 'A shirye a wurin ɗauka';
+
+  @override
+  String get ratingTagPaidPromptly => 'Ya biya da wuri';
 }

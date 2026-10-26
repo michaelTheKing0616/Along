@@ -447,7 +447,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Ụgwọ Along $amount · $percent%';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsIg extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Mmegharị ego';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1065,7 +1065,7 @@ class AppLocalizationsIg extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Ịkwụ ụgwọ dijitalụ';
 
   @override
   String get earningsDigitalCaption =>
@@ -1486,4 +1486,64 @@ class AppLocalizationsIg extends AppLocalizations {
   String tripCompleteYesAmount(String amount) {
     return 'Ee, anatara m $amount';
   }
+
+  @override
+  String get settleSubtitle => 'Akaụntụ Along gị';
+
+  @override
+  String get settleOwedLabel => 'Ị ji Along ụgwọ';
+
+  @override
+  String get settleCreditLabel => 'Ego fọdụrụ gị';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Nhazi na-akwụsị ma ụgwọ gafere $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Kwụọ site na';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Kwụọ $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Zigara akaụntụ Along gị';
+
+  @override
+  String get settleChannelUssdDetail => 'Kpọọ koodu, enweghị data';
+
+  @override
+  String get settleChannelCardDetail => 'Kaadị ụlọ akụ';
+
+  @override
+  String get settleChannelAgentDetail => 'Kwụọ ego n\'aka onye nnọchi Along';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Ego fọdụrụ $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Ịnya nke ọma';
+
+  @override
+  String get ratingTagFairFare => 'Ụgwọ ziri ezi';
+
+  @override
+  String get ratingTagCleanVehicle => 'Ụgbọ dị ọcha';
+
+  @override
+  String get ratingTagPolite => 'Nwere nsọpụrụ';
+
+  @override
+  String get ratingTagOnTime => 'N\'oge';
+
+  @override
+  String get ratingTagReady => 'Dị njikere';
+
+  @override
+  String get ratingTagPaidPromptly => 'Kwụrụ ngwa ngwa';
 }

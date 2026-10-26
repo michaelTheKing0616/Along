@@ -447,7 +447,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Along fee $amount · $percent%, e go add for drop';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Balance activity';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1065,7 +1065,7 @@ class AppLocalizationsPcm extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Digital payments';
 
   @override
   String get earningsDigitalCaption =>
@@ -1486,4 +1486,64 @@ class AppLocalizationsPcm extends AppLocalizations {
   String tripCompleteYesAmount(String amount) {
     return 'Yes, I collect $amount';
   }
+
+  @override
+  String get settleSubtitle => 'Your Along account';
+
+  @override
+  String get settleOwedLabel => 'You dey owe Along';
+
+  @override
+  String get settleCreditLabel => 'Your balance';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Matching go pause if you owe pass $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Pay with';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Settle $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Transfer go your Along account';
+
+  @override
+  String get settleChannelUssdDetail => 'Dial code, no need data';
+
+  @override
+  String get settleChannelCardDetail => 'ATM card';
+
+  @override
+  String get settleChannelAgentDetail => 'Pay cash for Along agent';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Safe driving';
+
+  @override
+  String get ratingTagFairFare => 'Fair fare';
+
+  @override
+  String get ratingTagCleanVehicle => 'Clean motor';
+
+  @override
+  String get ratingTagPolite => 'Get respect';
+
+  @override
+  String get ratingTagOnTime => 'On time';
+
+  @override
+  String get ratingTagReady => 'Ready for pickup';
+
+  @override
+  String get ratingTagPaidPromptly => 'Pay sharp sharp';
 }

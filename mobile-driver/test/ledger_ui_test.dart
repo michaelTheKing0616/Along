@@ -268,6 +268,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('settle_agent')));
       await tester.pump();
+      await tester.tap(find.byKey(const Key('settle_submit')));
+      await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.byKey(const Key('settle_agent_code')), findsOneWidget);

@@ -881,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @incomingRequestAlongFee.
   ///
   /// In en, this message translates to:
-  /// **'Along fee {amount} ({percent}%) — added to your balance at completion'**
+  /// **'Along fee {amount} · {percent}%, added at drop-off'**
   String incomingRequestAlongFee(String amount, String percent);
 
   /// No description provided for @incomingRequestLoadDefault.
@@ -1505,7 +1505,7 @@ abstract class AppLocalizations {
   /// No description provided for @earningsLedgerSection.
   ///
   /// In en, this message translates to:
-  /// **'ALONG BALANCE'**
+  /// **'Balance activity'**
   String get earningsLedgerSection;
 
   /// No description provided for @earningsTripsSection.
@@ -1967,7 +1967,7 @@ abstract class AppLocalizations {
   /// No description provided for @earningsDigitalSection.
   ///
   /// In en, this message translates to:
-  /// **'DIGITAL PAYMENTS RECEIVED'**
+  /// **'Digital payments'**
   String get earningsDigitalSection;
 
   /// No description provided for @earningsDigitalCaption.
@@ -2713,6 +2713,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yes, I got {amount}'**
   String tripCompleteYesAmount(String amount);
+
+  /// No description provided for @settleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Along account'**
+  String get settleSubtitle;
+
+  /// No description provided for @settleOwedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe Along'**
+  String get settleOwedLabel;
+
+  /// No description provided for @settleCreditLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance'**
+  String get settleCreditLabel;
+
+  /// No description provided for @settleThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching pauses if you owe more than {amount}'**
+  String settleThreshold(String amount);
+
+  /// No description provided for @settleMethodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with'**
+  String get settleMethodTitle;
+
+  /// No description provided for @settleSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle {amount}'**
+  String settleSubmit(String amount);
+
+  /// No description provided for @settleChannelBankDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer to your Along account'**
+  String get settleChannelBankDetail;
+
+  /// No description provided for @settleChannelUssdDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Dial a code, no data needed'**
+  String get settleChannelUssdDetail;
+
+  /// No description provided for @settleChannelCardDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Debit card'**
+  String get settleChannelCardDetail;
+
+  /// No description provided for @settleChannelAgentDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay cash at an Along agent'**
+  String get settleChannelAgentDetail;
+
+  /// No description provided for @earningsBalanceAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {amount}'**
+  String earningsBalanceAfter(String amount);
+
+  /// No description provided for @ratingTagSafeDriving.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe driving'**
+  String get ratingTagSafeDriving;
+
+  /// No description provided for @ratingTagFairFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair fare'**
+  String get ratingTagFairFare;
+
+  /// No description provided for @ratingTagCleanVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean vehicle'**
+  String get ratingTagCleanVehicle;
+
+  /// No description provided for @ratingTagPolite.
+  ///
+  /// In en, this message translates to:
+  /// **'Polite'**
+  String get ratingTagPolite;
+
+  /// No description provided for @ratingTagOnTime.
+  ///
+  /// In en, this message translates to:
+  /// **'On time'**
+  String get ratingTagOnTime;
+
+  /// No description provided for @ratingTagReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready at pickup'**
+  String get ratingTagReady;
+
+  /// No description provided for @ratingTagPaidPromptly.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid promptly'**
+  String get ratingTagPaidPromptly;
 }
 
 class _AppLocalizationsDelegate

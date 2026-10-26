@@ -17,6 +17,7 @@ import 'package:mobile_driver/features/incoming_request/presentation/incoming_re
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
 import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/settle_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_screen.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_complete_sheet.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
@@ -63,7 +64,10 @@ Widget _overMap(Widget overlay, {bool scrim = false}) => Builder(
     body: Stack(
       children: [
         const Positioned.fill(
-          child: AlongCityMap(mode: AlongCityMapMode.online),
+          child: AlongCityMap(
+            mode: AlongCityMapMode.online,
+            assetPackage: 'along_design',
+          ),
         ),
         if (scrim)
           Positioned.fill(
@@ -109,16 +113,23 @@ class _NoLocation implements LocationStreamSource {
   Future<bool> ensurePermission() async => true;
 }
 
-ProviderContainer _container(FakeAlongSupabase supabase, AlongDatabase db) =>
-    ProviderContainer(
-      overrides: buildProviderOverrides(
+ProviderContainer _container(FakeAlongSupabase supabase, AlongDatabase db) {
+  supabase.clock = () => DateTime.utc(2026, 9, 6, 19);
+  return ProviderContainer(
+    overrides: [
+      ...buildProviderOverrides(
         config: _config,
         supabase: supabase,
         database: db,
         driverChannel: FakeDriverChannel(),
         locationStreamSource: _NoLocation(),
       ),
-    );
+      earningsClockProvider.overrideWithValue(
+        () => DateTime.utc(2026, 9, 6, 19, 30),
+      ),
+    ],
+  );
+}
 
 CompleteTripResult _cashResult() {
   final json = FakeAlongSupabase.sampleTripView(
@@ -221,8 +232,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(find.text("You're online"), findsOneWidget);
-      expect(find.text('Today · ₦18,400'), findsOneWidget);
-      expect(find.text('11 trips'), findsOneWidget);
+      expect(find.text('Today · ₦18,400 · 11 trips'), findsOneWidget);
       expect(find.byKey(const Key('home_mode_roamingAvailable')), findsOne);
       await _shoot(tester, 'home_online_$name');
     });
@@ -375,9 +385,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.takeException(), isNull);
-      // No golden: EarningsScreen reads DateTime.now(), so the chart and
-      // trip times move with the wall clock.
       expect(find.byKey(const Key('earnings_summary')), findsOneWidget);
+      await _shoot(tester, 'earnings_$name');
       await tester.pumpWidget(const SizedBox());
       container.dispose();
       await tester.pump(const Duration(seconds: 1));
@@ -389,6 +398,11 @@ void main() {
       final supabase = FakeAlongSupabase();
       addTearDown(supabase.dispose);
       final container = _container(supabase, AlongDatabase.memory());
+      supabase.driverBalanceResponse = {
+        ...FakeAlongSupabase.defaultDriverBalanceResponse(),
+        'balance': {'amount': '-1840.00', 'currency': 'NGN'},
+      };
+      await container.read(driverLedgerControllerProvider.notifier).refresh();
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,

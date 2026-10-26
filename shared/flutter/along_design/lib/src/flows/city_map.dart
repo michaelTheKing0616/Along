@@ -66,6 +66,7 @@ class AlongCityMap extends StatelessWidget {
     this.pickupPin = false,
     this.place = false,
     this.phase,
+    this.assetPackage,
   });
 
   final AlongCityMapMode mode;
@@ -123,6 +124,9 @@ class AlongCityMap extends StatelessWidget {
 
   /// Dawn, day, dusk, or night. Null leaves the bake untouched.
   final AlongDayPhase? phase;
+
+  /// Set to `'along_design'` when shown from an app; null inside this package.
+  final String? assetPackage;
 
   /// Lane zoom, inside 17–18. z16 tiles overzoom. Negative rotation puts
   /// east at the top: a positive bearing rotates the map clockwise, which
@@ -311,7 +315,7 @@ class AlongCityMap extends StatelessWidget {
           children: [
             TileLayer(
               urlTemplate:
-                  'assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
+                  '${assetPackage == null ? '' : 'packages/$assetPackage/'}assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
               tileProvider: AssetTileProvider(),
               userAgentPackageName: 'app.along.design',
               tileDisplay: const TileDisplay.instantaneous(),
@@ -757,15 +761,18 @@ class AlongCityMap extends StatelessWidget {
                         color: color,
                       ),
                       const SizedBox(width: 2),
-                      Text(
-                        label,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AlongType.caption(palette).copyWith(
-                          fontSize: 13,
-                          height: 1.1,
-                          fontWeight: FontWeight.w600,
-                          color: palette.ink,
+                      Flexible(
+                        child: Text(
+                          label,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: AlongType.caption(palette).copyWith(
+                            fontSize: 13,
+                            height: 1.1,
+                            fontWeight: FontWeight.w600,
+                            color: palette.ink,
+                          ),
                         ),
                       ),
                     ],

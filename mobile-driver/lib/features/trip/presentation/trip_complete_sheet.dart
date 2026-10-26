@@ -293,7 +293,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                       children: tags
                           .map(
                             (tag) => _TagChip(
-                              label: tag.replaceAll('_', ' '),
+                              label: _tagLabel(l10n, tag),
                               selected: _tags.contains(tag),
                               onTap: () => setState(() {
                                 if (_tags.contains(tag)) {
@@ -451,3 +451,17 @@ class _Line extends StatelessWidget {
     );
   }
 }
+
+String _tagLabel(AppLocalizations l10n, String tag) => switch (tag) {
+  'safe_driving' => l10n.ratingTagSafeDriving,
+  'fair_fare' => l10n.ratingTagFairFare,
+  'clean_vehicle' => l10n.ratingTagCleanVehicle,
+  'polite' || 'respectful' => l10n.ratingTagPolite,
+  'on_time' => l10n.ratingTagOnTime,
+  'ready_at_pickup' => l10n.ratingTagReady,
+  'paid_promptly' => l10n.ratingTagPaidPromptly,
+  _ =>
+    tag.isEmpty
+        ? tag
+        : tag[0].toUpperCase() + tag.substring(1).replaceAll('_', ' '),
+};

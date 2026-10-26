@@ -447,7 +447,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Along fee $amount · $percent%, added at drop-off';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Balance activity';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1065,7 +1065,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Digital payments';
 
   @override
   String get earningsDigitalCaption =>
@@ -1486,4 +1486,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String tripCompleteYesAmount(String amount) {
     return 'Yes, I got $amount';
   }
+
+  @override
+  String get settleSubtitle => 'Your Along account';
+
+  @override
+  String get settleOwedLabel => 'You owe Along';
+
+  @override
+  String get settleCreditLabel => 'Your balance';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Matching pauses if you owe more than $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Pay with';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Settle $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Transfer to your Along account';
+
+  @override
+  String get settleChannelUssdDetail => 'Dial a code, no data needed';
+
+  @override
+  String get settleChannelCardDetail => 'Debit card';
+
+  @override
+  String get settleChannelAgentDetail => 'Pay cash at an Along agent';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Safe driving';
+
+  @override
+  String get ratingTagFairFare => 'Fair fare';
+
+  @override
+  String get ratingTagCleanVehicle => 'Clean vehicle';
+
+  @override
+  String get ratingTagPolite => 'Polite';
+
+  @override
+  String get ratingTagOnTime => 'On time';
+
+  @override
+  String get ratingTagReady => 'Ready at pickup';
+
+  @override
+  String get ratingTagPaidPromptly => 'Paid promptly';
 }

@@ -87,6 +87,14 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                 citySlug: state.citySlug,
               ),
               allowDemoStyleFallback: false,
+              // Drawn, host-stable city map: what tests and a missing
+              // brand style show instead of a blank land fill.
+              placeholder: const AlongCityMap(
+                mode: AlongCityMapMode.online,
+                sheetInset: 0.4,
+                demoLabel: false,
+                assetPackage: 'along_design',
+              ),
               initialCameraPosition: state.mapCenter == null
                   ? null
                   : MapCamera.forCenter(

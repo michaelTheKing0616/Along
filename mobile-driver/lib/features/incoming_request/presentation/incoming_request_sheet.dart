@@ -38,7 +38,7 @@ class IncomingRequestSheet extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: DriveSheet(
           key: const Key('incoming_request_card'),
-          maxHeightFactor: 0.9,
+          maxHeightFactor: 0.95,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,6 +59,7 @@ class IncomingRequestSheet extends StatelessWidget {
               const SizedBox(height: AlongSpace.s12),
               Flexible(
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: AlongSpace.s12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

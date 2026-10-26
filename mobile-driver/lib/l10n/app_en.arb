@@ -296,7 +296,7 @@
       }
     }
   },
-  "incomingRequestAlongFee": "Along fee {amount} ({percent}%) — added to your balance at completion",
+  "incomingRequestAlongFee": "Along fee {amount} · {percent}%, added at drop-off",
   "@incomingRequestAlongFee": {
     "placeholders": {
       "amount": {
@@ -520,7 +520,7 @@
     }
   },
   "settleDone": "Done",
-  "earningsLedgerSection": "ALONG BALANCE",
+  "earningsLedgerSection": "Balance activity",
   "earningsTripsSection": "TRIPS",
   "earningsLedgerEmpty": "No ledger entries yet",
   "earningsTripsCaption": "Cash you collected directly — not part of your Along balance",
@@ -715,7 +715,7 @@
   "paymentRequestExpired": "This QR has expired — create a new one",
   "paymentRequestDigitalDisabled": "Digital payments are not enabled yet",
   "paymentRequestTokenError": "Could not verify payment QR — try again",
-  "earningsDigitalSection": "DIGITAL PAYMENTS RECEIVED",
+  "earningsDigitalSection": "Digital payments",
   "earningsDigitalCaption": "Paid straight to your bank — not part of your Along balance",
   "earningsDigitalEmpty": "No digital payments yet",
   "earningsDigitalRow": "Digital · {source}",
@@ -972,5 +972,44 @@
         "type": "String"
       }
     }
-  }
+  },
+  "settleSubtitle": "Your Along account",
+  "settleOwedLabel": "You owe Along",
+  "settleCreditLabel": "Your balance",
+  "settleThreshold": "Matching pauses if you owe more than {amount}",
+  "@settleThreshold": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "settleMethodTitle": "Pay with",
+  "settleSubmit": "Settle {amount}",
+  "@settleSubmit": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "settleChannelBankDetail": "Transfer to your Along account",
+  "settleChannelUssdDetail": "Dial a code, no data needed",
+  "settleChannelCardDetail": "Debit card",
+  "settleChannelAgentDetail": "Pay cash at an Along agent",
+  "earningsBalanceAfter": "Balance {amount}",
+  "@earningsBalanceAfter": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingTagSafeDriving": "Safe driving",
+  "ratingTagFairFare": "Fair fare",
+  "ratingTagCleanVehicle": "Clean vehicle",
+  "ratingTagPolite": "Polite",
+  "ratingTagOnTime": "On time",
+  "ratingTagReady": "Ready at pickup",
+  "ratingTagPaidPromptly": "Paid promptly"
 }

@@ -334,3 +334,332 @@ class DriveRoute extends StatelessWidget {
     );
   }
 }
+
+/// A full driver page: display title, muted subtitle, scrolling body and an
+/// optional pinned footer. The body always keeps room above the footer so the
+/// last row never hides behind it at large text sizes.
+class DrivePage extends StatelessWidget {
+  const DrivePage({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.children,
+    this.footer,
+    this.trailing,
+    this.back = true,
+  });
+
+  final String title;
+  final String? subtitle;
+  final List<Widget> children;
+  final Widget? footer;
+  final Widget? trailing;
+  final bool back;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final canPop = back && Navigator.of(context).canPop();
+    return Scaffold(
+      backgroundColor: p.bg,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (canPop || trailing != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 4, 8, 0),
+                child: Row(
+                  children: [
+                    if (canPop)
+                      IconButton(
+                        key: const Key('drive_page_back'),
+                        tooltip: MaterialLocalizations.of(context)
+                            .backButtonTooltip,
+                        onPressed: () => Navigator.of(context).maybePop(),
+                        icon: Icon(Icons.arrow_back_rounded, color: p.ink),
+                      ),
+                    const Spacer(),
+                    if (trailing != null) trailing!,
+                  ],
+                ),
+              ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(
+                  AlongSpace.s16,
+                  AlongSpace.s8,
+                  AlongSpace.s16,
+                  AlongSpace.s24,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(title, style: AlongType.display(p)),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Text(subtitle!, style: AlongType.bodyMuted(p)),
+                    ],
+                    const SizedBox(height: AlongSpace.s16),
+                    ...children,
+                  ],
+                ),
+              ),
+            ),
+            if (footer != null)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: p.bg,
+                  border: Border(top: BorderSide(color: p.line, width: 0.5)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AlongSpace.s16,
+                    AlongSpace.s12,
+                    AlongSpace.s16,
+                    AlongSpace.s16,
+                  ),
+                  child: footer,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// White squircle card with a hairline, the design's money surface.
+class DriveCard extends StatelessWidget {
+  const DriveCard({super.key, required this.child, this.padding});
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: AlongCraft.fill(
+        p.surface,
+        corner: AlongRadius.card.x,
+        side: BorderSide(color: p.ink.withValues(alpha: 0.12)),
+      ),
+      child: Padding(
+        padding: padding ?? const EdgeInsets.all(AlongSpace.s16),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Section title above a group.
+class DriveSection extends StatelessWidget {
+  const DriveSection(this.label, {super.key});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AlongSpace.s24,
+        bottom: AlongSpace.s8,
+      ),
+      child: Text(label, style: AlongType.title(p)),
+    );
+  }
+}
+
+/// A list row: optional icon, title, detail, trailing text or check.
+/// 56 px minimum so it is an easy target while parked.
+class DriveRow extends StatelessWidget {
+  const DriveRow({
+    super.key,
+    required this.title,
+    this.detail,
+    this.icon,
+    this.trailing,
+    this.trailingStyle,
+    this.selected,
+    this.onTap,
+    this.chevron = false,
+  });
+
+  final String title;
+  final String? detail;
+  final IconData? icon;
+  final String? trailing;
+  final TextStyle? trailingStyle;
+
+  /// Non-null renders a radio mark.
+  final bool? selected;
+  final VoidCallback? onTap;
+  final bool chevron;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final row = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AlongSpace.s8),
+        child: Row(
+          children: [
+            if (icon != null) ...[
+              Container(
+                width: 36,
+                height: 36,
+                decoration: AlongCraft.fill(p.recessed, corner: 10),
+                child: Icon(icon, size: 20, color: p.ink),
+              ),
+              const SizedBox(width: AlongSpace.s12),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: AlongType.body(p)
+                        .copyWith(fontWeight: FontWeight.w600, height: 1.2),
+                  ),
+                  if (detail != null)
+                    Text(detail!, style: AlongType.caption(p)),
+                ],
+              ),
+            ),
+            if (trailing != null) ...[
+              const SizedBox(width: AlongSpace.s12),
+              Text(
+                trailing!,
+                style:
+                    trailingStyle ??
+                    AlongType.body(p).copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontFeatures: AlongType.figures,
+                    ),
+              ),
+            ],
+            if (selected != null) ...[
+              const SizedBox(width: AlongSpace.s12),
+              AnimatedContainer(
+                duration: AlongMoves.select.of(context),
+                curve: AlongMoves.select.curve,
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: selected! ? p.ink : Colors.transparent,
+                  border: Border.all(
+                    color: selected! ? p.ink : p.muted,
+                    width: 1.5,
+                  ),
+                ),
+                child: selected!
+                    ? Icon(Icons.check_rounded, size: 14, color: p.onInk)
+                    : null,
+              ),
+            ],
+            if (chevron) ...[
+              const SizedBox(width: AlongSpace.s8),
+              Icon(AlongIcons.caretRight, size: 18, color: p.muted),
+            ],
+          ],
+        ),
+      ),
+    );
+    if (onTap == null) return row;
+    return InkWell(
+      onTap: () {
+        AlongHaptics.selection(context);
+        onTap!();
+      },
+      customBorder: AlongCraft.border(12),
+      child: row,
+    );
+  }
+}
+
+/// Rows separated by hairlines inside a card.
+class DriveRows extends StatelessWidget {
+  const DriveRows({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return DriveCard(
+      padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) Divider(height: 1, thickness: 0.5, color: p.line),
+            children[i],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Two-up money card (Pending / Paid style).
+class DriveMoneyCard extends StatelessWidget {
+  const DriveMoneyCard({
+    super.key,
+    required this.label,
+    required this.amount,
+    this.strong = false,
+  });
+
+  final String label;
+  final String amount;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return DriveCard(
+      padding: const EdgeInsets.all(AlongSpace.s12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: strong ? p.ink : p.ink.withValues(alpha: 0.36),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AlongType.caption(p),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              amount,
+              style: AlongType.title(p)
+                  .copyWith(fontFeatures: AlongType.figures),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

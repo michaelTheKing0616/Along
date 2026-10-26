@@ -107,6 +107,14 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                 citySlug: home.citySlug,
               ),
               allowDemoStyleFallback: false,
+              // Drawn, host-stable city map: what tests and a missing
+              // brand style show instead of a blank land fill.
+              placeholder: const AlongCityMap(
+                mode: AlongCityMapMode.trip,
+                sheetInset: 0.5,
+                demoLabel: false,
+                assetPackage: 'along_design',
+              ),
               initialCameraPosition: home.mapCenter == null
                   ? null
                   : MapCamera.forCenter(
@@ -139,6 +147,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
             alignment: Alignment.bottomCenter,
             child: DriveSheet(
               key: const Key('active_trip_sheet'),
+              // Content-sized at 1x; at large text the whole panel still fits.
+              maxHeightFactor: 0.95,
               child: state.isLoading
                   ? const Padding(
                       padding: EdgeInsets.all(AlongSpace.s24),
@@ -351,7 +361,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
         ),
       DriveActionTile(
         key: const Key('active_trip_seat_map'),
-        icon: AlongIcons.seat,
+        icon: Icons.event_seat_rounded,
         label: l10n.activeTripSeatsShort,
         onPressed: () => context.push(AppRoutes.seatBoard),
       ),
@@ -543,6 +553,8 @@ class _PinnedPanel extends StatelessWidget {
       children: [
         Flexible(
           child: SingleChildScrollView(
+            // Room under the last row so it scrolls fully clear of the CTA.
+            padding: const EdgeInsets.only(bottom: AlongSpace.s12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -51,12 +51,15 @@ class DriverHomePanel extends StatelessWidget {
 
     return DriveSheet(
       key: const Key('driver_home_panel'),
+      maxHeightFactor: 0.9,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(
             child: SingleChildScrollView(
+              // Room under the last row so it scrolls fully clear of GO.
+              padding: const EdgeInsets.only(bottom: AlongSpace.s12),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -82,54 +85,30 @@ class DriverHomePanel extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AlongSpace.s4),
-                  if (online && demand != null)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: DriveTag(
-                        key: const Key('home_demand'),
-                        icon: AlongIcons.online,
-                        label: demand,
-                      ),
-                    )
-                  else
-                    Text(
-                      online ? l10n.homeOnlineHint : l10n.homeOfflineHint,
-                      style: AlongType.bodyMuted(p),
-                    ),
-                  const SizedBox(height: AlongSpace.s12),
-                  DrivePanel(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AlongSpace.s16,
-                      vertical: AlongSpace.s12,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.homeTodayEarned(todayEarned ?? '—'),
-                                key: const Key('home_today_earned'),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AlongType.label(p).copyWith(
-                                  fontFeatures: const [
-                                    FontFeature.tabularFigures(),
-                                  ],
-                                ),
-                              ),
-                              if (todayTrips != null)
-                                Text(
-                                  l10n.homeTodayTrips(todayTrips!),
-                                  style: AlongType.caption(p),
-                                ),
-                            ],
-                          ),
+                  const SizedBox(height: AlongSpace.s8),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: AlongSpace.s12,
+                    runSpacing: 2,
+                    children: [
+                      Text(
+                        [
+                          l10n.homeTodayEarned(todayEarned ?? '—'),
+                          if (todayTrips != null)
+                            l10n.homeTodayTrips(todayTrips!),
+                        ].join(' · '),
+                        key: const Key('home_today_earned'),
+                        style: AlongType.label(p).copyWith(
+                          fontFeatures: const [FontFeature.tabularFigures()],
                         ),
-                      ],
-                    ),
+                      ),
+                      if (online && demand != null)
+                        Text(
+                          demand,
+                          key: const Key('home_demand'),
+                          style: AlongType.caption(p),
+                        ),
+                    ],
                   ),
                   if (online) ...[
                     const SizedBox(height: AlongSpace.s12),
@@ -162,7 +141,7 @@ class DriverHomePanel extends StatelessWidget {
                           Expanded(
                             child: _RowButton(
                               key: const Key('driver_seat_map_chip'),
-                              icon: AlongIcons.seat,
+                              icon: Icons.event_seat_rounded,
                               label:
                                   '${l10n.activeTripSeatsShort} · ${state.seatsAvailable}',
                               onTap: onSeats,
@@ -186,8 +165,6 @@ class DriverHomePanel extends StatelessWidget {
                     ],
                   ],
                   const SizedBox(height: AlongSpace.s12),
-                  Text(l10n.homeShortcutsTitle, style: AlongType.caption(p)),
-                  const SizedBox(height: AlongSpace.s8),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     clipBehavior: Clip.none,
@@ -242,7 +219,7 @@ class DriverHomePanel extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: AlongSpace.s16),
+          const SizedBox(height: AlongSpace.s4),
           if (!online)
             AlongButton(
               key: const Key('home_go'),

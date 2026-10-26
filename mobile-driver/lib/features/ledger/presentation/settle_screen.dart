@@ -10,6 +10,7 @@ import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 
 /// D-20 Settle — prefilled amount, channels, agent code (doc 06).
 class SettleScreen extends ConsumerStatefulWidget {
@@ -45,8 +46,9 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
     final cityId = ref.read(driverHomeControllerProvider).cityId;
     if (cityId == null) return;
     try {
-      final meta =
-          await ref.read(catalogRepositoryProvider).currencyMetaForCity(cityId);
+      final meta = await ref
+          .read(catalogRepositoryProvider)
+          .currencyMetaForCity(cityId);
       if (mounted) setState(() => _currencySymbol = meta.currencySymbol);
     } catch (_) {
       // Balance currency code still applies; symbol falls back in formatMoney.
@@ -62,7 +64,7 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
 
   void _prefillAmount() {
     final ledger = ref.read(driverLedgerControllerProvider);
-    if (ledger.balance.amount <= Decimal.zero) {
+    if (ledger.balance.amount >= Decimal.zero) {
       _amountController.text = '100';
       return;
     }
@@ -91,11 +93,15 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
       _nearbyAgents = const [];
     });
     try {
-      final currency = ref.read(driverLedgerControllerProvider).balance.currency;
+      final currency = ref
+          .read(driverLedgerControllerProvider)
+          .balance
+          .currency;
       final amount = _parseAmount(currency);
       if (amount.amount <= Decimal.zero) {
         setState(
-          () => _statusMessage = 'Enter at least ${_formatMinimumAmount(currency)}',
+          () => _statusMessage =
+              'Enter at least ${_formatMinimumAmount(currency)}',
         );
         return;
       }
@@ -128,7 +134,10 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
         _statusMessage = 'Complete payment to settle your balance';
       });
     } catch (_) {
-      setState(() => _statusMessage = 'Could not start settlement — try another channel');
+      setState(
+        () =>
+            _statusMessage = 'Could not start settlement — try another channel',
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -137,8 +146,9 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
   void _startPolling(String settlementId) {
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) async {
-      final snapshot =
-          await ref.read(ledgerRepositoryProvider).settlementStatus(settlementId);
+      final snapshot = await ref
+          .read(ledgerRepositoryProvider)
+          .settlementStatus(settlementId);
       if (!mounted || snapshot == null) return;
       if (snapshot.status == 'confirmed') {
         _pollTimer?.cancel();
@@ -155,122 +165,197 @@ class _SettleScreenState extends ConsumerState<SettleScreen> {
     });
   }
 
+  String _channel = 'paystack_transfer';
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     final ledger = ref.watch(driverLedgerControllerProvider);
-
-    return Scaffold(
-      key: const Key('settle_screen'),
-      appBar: AppBar(
-        title: Text(l10n.settleTitle),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
+    final owes = ledger.balance.amount < Decimal.zero;
+    String money(Money m) => formatMoney(m, currencySymbol: _currencySymbol);
+    final abs = owes
+        ? Money.parse(
+            (-ledger.balance.amount).toString(),
+            currency: ledger.balance.currency,
+          )
+        : ledger.balance;
+    final entered = _parseAmount(ledger.balance.currency);
+    final channels = <(String, Key, String, String, IconData)>[
+      (
+        'paystack_transfer',
+        const Key('settle_bank'),
+        l10n.settleChannelBank,
+        l10n.settleChannelBankDetail,
+        AlongIcons.storefront,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        children: [
-          Text(
-            l10n.settleCurrentBalance(
-              formatMoney(
-                ledger.balance,
-                currencySymbol: _currencySymbol,
+      (
+        'paystack_ussd',
+        const Key('settle_ussd'),
+        l10n.settleChannelUssd,
+        l10n.settleChannelUssdDetail,
+        AlongIcons.password,
+      ),
+      (
+        'paystack_card',
+        const Key('settle_card'),
+        l10n.settleChannelCard,
+        l10n.settleChannelCardDetail,
+        AlongIcons.schedule,
+      ),
+      (
+        'agent',
+        const Key('settle_agent'),
+        l10n.settleChannelAgent,
+        l10n.settleChannelAgentDetail,
+        AlongIcons.user,
+      ),
+    ];
+
+    return KeyedSubtree(
+      key: const Key('settle_screen'),
+      child: DrivePage(
+        title: l10n.settleTitle,
+        subtitle: l10n.settleSubtitle,
+        footer: _agentCode != null || _activeSettlementId != null
+            ? AlongButton(
+                key: const Key('settle_done'),
+                label: l10n.settleDone,
+                onPressed: () => context.pop(),
+              )
+            : AlongButton(
+                key: const Key('settle_submit'),
+                label: l10n.settleSubmit(money(entered)),
+                visualState: _busy
+                    ? AlongButtonVisualState.loading
+                    : AlongButtonVisualState.normal,
+                onPressed: _busy ? null : () => _initiateChannel(_channel),
               ),
-            ),
+        children: [
+          DriveCard(
             key: const Key('settle_balance_hero'),
-            style: AlongText.heading2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  owes ? l10n.settleOwedLabel : l10n.settleCreditLabel,
+                  style: AlongType.caption(p),
+                ),
+                const SizedBox(height: 4),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    money(abs),
+                    style: AlongType.display(
+                      p,
+                    ).copyWith(fontSize: 40, fontFeatures: AlongType.figures),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.settleThreshold(
+                    money(
+                      Money.parse(
+                        ledger.blockThreshold.amount.abs().toString(),
+                        currency: ledger.blockThreshold.currency,
+                      ),
+                    ),
+                  ),
+                  style: AlongType.bodyMuted(p),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: AlongSpace.s16),
+          DriveSection(l10n.settleAmountLabel),
           TextField(
             key: const Key('settle_amount_field'),
             controller: _amountController,
             keyboardType: TextInputType.number,
+            onChanged: (_) => setState(() {}),
+            style: AlongType.title(p).copyWith(fontFeatures: AlongType.figures),
             decoration: InputDecoration(
-              labelText: l10n.settleAmountLabel,
-              border: AlongCraft.input(const BorderSide()),
+              filled: true,
+              fillColor: p.recessed,
+              prefixText: '${_currencySymbol ?? '₦'} ',
+              prefixStyle: AlongType.title(p),
+              border: AlongCraft.input(BorderSide.none),
+              enabledBorder: AlongCraft.input(BorderSide.none),
+              focusedBorder: AlongCraft.input(BorderSide(color: p.ink)),
             ),
           ),
-          const SizedBox(height: AlongSpace.s16),
-          AlongButton(
-            key: const Key('settle_bank'),
-            label: l10n.settleChannelBank,
-            variant: AlongButtonVariant.secondary,
-            visualState:
-                _busy ? AlongButtonVisualState.loading : AlongButtonVisualState.normal,
-            onPressed: _busy ? null : () => _initiateChannel('paystack_transfer'),
-          ),
-          const SizedBox(height: AlongSpace.s8),
-          AlongButton(
-            key: const Key('settle_ussd'),
-            label: l10n.settleChannelUssd,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _busy ? null : () => _initiateChannel('paystack_ussd'),
-          ),
-          const SizedBox(height: AlongSpace.s8),
-          AlongButton(
-            key: const Key('settle_card'),
-            label: l10n.settleChannelCard,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _busy ? null : () => _initiateChannel('paystack_card'),
-          ),
-          const SizedBox(height: AlongSpace.s8),
-          AlongButton(
-            key: const Key('settle_agent'),
-            label: l10n.settleChannelAgent,
-            variant: AlongButtonVariant.secondary,
-            onPressed: _busy ? null : () => _initiateChannel('agent'),
+          DriveSection(l10n.settleMethodTitle),
+          DriveRows(
+            children: [
+              for (final c in channels)
+                DriveRow(
+                  key: c.$2,
+                  icon: c.$5,
+                  title: c.$3,
+                  detail: c.$4,
+                  selected: _channel == c.$1,
+                  onTap: _busy ? null : () => setState(() => _channel = c.$1),
+                ),
+            ],
           ),
           if (_agentCode != null) ...[
-            const SizedBox(height: AlongSpace.s24),
-            Text(l10n.settleAgentCodeTitle, style: AlongText.heading2),
-            Text(
-              _agentCode!,
-              key: const Key('settle_agent_code'),
-              style: AlongText.displayL,
-            ),
-            if (_agentExpiresAt != null)
-              Text(
-                l10n.settleAgentExpires(_agentExpiresAt!),
-                style: AlongText.caption.copyWith(color: AlongPalette.of(context).muted),
-              ),
-            if (_nearbyAgents.isNotEmpty) ...[
-              const SizedBox(height: AlongSpace.s16),
-              Text(l10n.settleNearbyAgentsTitle, style: AlongText.bodyStrong),
-              const SizedBox(height: AlongSpace.s8),
-              ..._nearbyAgents.map(
-                (agent) => ListTile(
-                  key: Key('settle_nearby_agent_${agent.id}'),
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(agent.businessName, style: AlongText.bodyStrong),
-                  trailing: Text(
-                    l10n.settleNearbyAgentDistance(agent.distanceM),
-                    style: AlongText.caption.copyWith(color: AlongPalette.of(context).muted),
+            DriveSection(l10n.settleAgentCodeTitle),
+            DriveCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _agentCode!,
+                    key: const Key('settle_agent_code'),
+                    style: AlongType.display(p).copyWith(
+                      fontSize: 40,
+                      letterSpacing: 4,
+                      fontFeatures: AlongType.figures,
+                    ),
                   ),
-                ),
+                  if (_agentExpiresAt != null)
+                    Text(
+                      l10n.settleAgentExpires(_agentExpiresAt!),
+                      style: AlongType.caption(p),
+                    ),
+                ],
+              ),
+            ),
+            if (_nearbyAgents.isNotEmpty) ...[
+              DriveSection(l10n.settleNearbyAgentsTitle),
+              DriveRows(
+                children: [
+                  for (final agent in _nearbyAgents)
+                    DriveRow(
+                      key: Key('settle_nearby_agent_${agent.id}'),
+                      icon: AlongIcons.mapPin,
+                      title: agent.businessName,
+                      trailing: l10n.settleNearbyAgentDistance(agent.distanceM),
+                      trailingStyle: AlongType.caption(p),
+                    ),
+                ],
               ),
             ],
           ],
           if (_channelDetail != null) ...[
             const SizedBox(height: AlongSpace.s16),
-            Text(_channelDetail!, style: AlongText.body),
+            DrivePanel(
+              child: SelectableText(_channelDetail!, style: AlongType.body(p)),
+            ),
           ],
           if (_statusMessage != null) ...[
             const SizedBox(height: AlongSpace.s16),
             Text(
               _statusMessage!,
               key: const Key('settle_status_message'),
-              style: AlongText.bodyStrong.copyWith(
+              style: AlongType.body(p).copyWith(
+                fontWeight: FontWeight.w600,
                 color: _activeSettlementId != null
                     ? AlongColors.semanticSuccess
-                    : AlongPalette.of(context).ink,
+                    : p.ink,
               ),
             ),
           ],
-          const SizedBox(height: AlongSpace.s16),
-          AlongButton(
-            label: l10n.settleDone,
-            onPressed: () => context.pop(),
-          ),
         ],
       ),
     );

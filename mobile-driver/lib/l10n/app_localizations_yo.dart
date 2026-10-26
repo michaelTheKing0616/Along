@@ -447,7 +447,7 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Owó Along $amount · $percent%';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Ìṣe ìyókù owó';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1065,7 +1065,7 @@ class AppLocalizationsYo extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Ìsanwó oní-nọ́ńbà';
 
   @override
   String get earningsDigitalCaption =>
@@ -1486,4 +1486,64 @@ class AppLocalizationsYo extends AppLocalizations {
   String tripCompleteYesAmount(String amount) {
     return 'Bẹ́ẹ̀ni, mo gba $amount';
   }
+
+  @override
+  String get settleSubtitle => 'Àkọọ́lẹ̀ Along rẹ';
+
+  @override
+  String get settleOwedLabel => 'O jẹ Along ní gbèsè';
+
+  @override
+  String get settleCreditLabel => 'Ìyókù owó rẹ';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Ìbámu dúró tí gbèsè bá ju $amount lọ';
+  }
+
+  @override
+  String get settleMethodTitle => 'Sanwó pẹ̀lú';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'San $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Fi ránṣẹ́ sí àkọọ́lẹ̀ Along';
+
+  @override
+  String get settleChannelUssdDetail => 'Tẹ kóòdù, kò nílò dátà';
+
+  @override
+  String get settleChannelCardDetail => 'Káàdì ìsanwó';
+
+  @override
+  String get settleChannelAgentDetail => 'San owó níbi aṣojú Along';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Ìyókù $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Wíwakọ̀ láìléwu';
+
+  @override
+  String get ratingTagFairFare => 'Owó tó tọ́';
+
+  @override
+  String get ratingTagCleanVehicle => 'Ọkọ̀ tó mọ́';
+
+  @override
+  String get ratingTagPolite => 'Oníwà rere';
+
+  @override
+  String get ratingTagOnTime => 'Ní àkókò';
+
+  @override
+  String get ratingTagReady => 'Ṣetán níbi ìgbéra';
+
+  @override
+  String get ratingTagPaidPromptly => 'Sanwó kíákíá';
 }
