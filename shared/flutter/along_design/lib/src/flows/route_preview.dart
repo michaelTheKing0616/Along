@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
+import '../elevation.dart';
 import '../palette.dart';
+import '../type.dart';
 
 /// A drawn street grid with an optional pickup-to-drop route.
 ///
@@ -8,11 +11,33 @@ import '../palette.dart';
 /// and in goldens. Use it where a live map is not worth the cost, such as
 /// the trip options header, or as a stand-in while the map loads.
 class AlongRoutePreview extends StatelessWidget {
-  const AlongRoutePreview({super.key, this.route = true, this.semanticLabel});
+  const AlongRoutePreview({
+    super.key,
+    this.route = true,
+    this.semanticLabel,
+    this.from,
+    this.to,
+    this.summary,
+    this.bottomInset = 0,
+  });
 
   /// Draws the route, pickup dot and drop pin. False leaves only streets.
   final bool route;
   final String? semanticLabel;
+
+  /// Name tags beside the pickup and drop markers.
+  final String? from;
+  final String? to;
+
+  /// Time and distance, shown as a tag in the lower right.
+  final String? summary;
+
+  /// Height hidden under an overlapping sheet, kept clear of tags.
+  final double bottomInset;
+
+  /// Marker positions as fractions of the size, shared with the painter.
+  static const pickupAt = Offset(.22, .78);
+  static const dropAt = Offset(.78, .42);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +45,76 @@ class AlongRoutePreview extends StatelessWidget {
     return Semantics(
       label: semanticLabel,
       image: semanticLabel != null,
-      child: CustomPaint(
-        painter: _StreetsPainter(palette, AlongRoles.of(palette), route),
-        child: const SizedBox.expand(),
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final w = box.maxWidth, h = box.maxHeight;
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _StreetsPainter(
+                    palette,
+                    AlongRoles.of(palette),
+                    route,
+                  ),
+                ),
+              ),
+              if (route && from != null)
+                Positioned(
+                  left: w * pickupAt.dx + 16,
+                  top: h * pickupAt.dy - 16,
+                  child: _Tag(text: from!, palette: palette),
+                ),
+              if (route && to != null)
+                Positioned(
+                  right: w * (1 - dropAt.dx) + 16,
+                  top: h * dropAt.dy - 16,
+                  child: _Tag(text: to!, palette: palette),
+                ),
+              if (summary != null)
+                Positioned(
+                  right: 16,
+                  bottom: bottomInset + 12,
+                  child: _Tag(text: summary!, palette: palette, strong: true),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _Tag extends StatelessWidget {
+  const _Tag({required this.text, required this.palette, this.strong = false});
+
+  final String text;
+  final AlongPalette palette;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 150, minHeight: 32),
+      child: DecoratedBox(
+        decoration: AlongCraft.compactFill(
+          strong ? palette.ink : palette.surface,
+          32,
+          shadow: AlongElevation.rest(palette.ink),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AlongType.caption(palette).copyWith(
+              color: strong ? palette.onInk : palette.ink,
+              fontWeight: FontWeight.w600,
+              height: 1.2,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -86,8 +178,14 @@ class _StreetsPainter extends CustomPainter {
 
     if (!route) return;
     // Kept in the lower band, clear of the buttons that sit on top.
-    final a = Offset(w * .22, h * .78);
-    final b = Offset(w * .78, h * .42);
+    final a = Offset(
+      w * AlongRoutePreview.pickupAt.dx,
+      h * AlongRoutePreview.pickupAt.dy,
+    );
+    final b = Offset(
+      w * AlongRoutePreview.dropAt.dx,
+      h * AlongRoutePreview.dropAt.dy,
+    );
     final path = Path()
       ..moveTo(a.dx, a.dy)
       ..lineTo(w * .22, h * .64)

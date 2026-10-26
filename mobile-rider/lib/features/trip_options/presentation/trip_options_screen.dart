@@ -20,6 +20,7 @@ import 'package:mobile_rider/features/offline/stale_badge.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/routing/routes.dart';
 
 /// Default undo window before committing a one-tap request (UI-only, not request TTL).
@@ -64,8 +65,28 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
       body: LayoutBuilder(
         builder: (context, box) {
           // Map takes a third, so the fare and Request button of the first
-          // card sit above the fold even at 1.3x text.
-          final mapHeight = box.maxHeight * 0.34;
+          // card sit above the fold even at 1.3x text. With one option the
+          // map grows into the space a second card would use.
+          final few = state.sortedCandidates.length <= 1;
+          final mapHeight = box.maxHeight * (few ? 0.42 : 0.34);
+          final session = state.session;
+          final recommendedId = state
+              .plan
+              ?.sortOrders[SortCriterion.recommended]
+              ?.firstOrNull;
+          final lead =
+              state.sortedCandidates
+                  .where((c) => c.candidateId == recommendedId)
+                  .firstOrNull ??
+              state.sortedCandidates.firstOrNull;
+          final summary = lead == null || session == null
+              ? null
+              : l10n.tripOptionsSummary(
+                  (lead.totalTimeSeconds / 60).ceil(),
+                  l10n.distance(
+                    haversineDistanceM(session.origin, session.destination),
+                  ),
+                );
           return Stack(
             children: [
               Positioned(
@@ -75,7 +96,13 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                 height: mapHeight + AlongRadius.dialog.x,
                 child: AlongRoutePreview(
                   key: const Key('trip_options_map'),
-                  semanticLabel: state.session?.destinationLabel,
+                  semanticLabel: summary == null
+                      ? session?.destinationLabel
+                      : '${session?.destinationLabel}, $summary',
+                  from: lead?.legs.firstOrNull?.boardName,
+                  to: session?.destinationLabel,
+                  summary: summary,
+                  bottomInset: AlongRadius.dialog.x,
                 ),
               ),
               if (state.showSkeleton)
@@ -397,6 +424,12 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
               ? l10n.tripOptionsSlowerDirectCaption
               : null,
           recommendedLabel: l10n.tripOptionsRecommended,
+          tierLabel: l10n.fareTier(
+            OptionCardMapper.mapFareTier(
+              leg.fare.tier,
+              unconfirmed: leg.fare.unconfirmed,
+            ),
+          ),
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
           requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3
@@ -409,7 +442,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
         ),
         if (recommended && candidate.metrics != null)
           Padding(
-            padding: const EdgeInsets.only(left: AlongSpace.s4),
+            padding: const EdgeInsets.only(top: AlongSpace.s8),
             child: Align(
               alignment: Alignment.centerLeft,
               child: AlongTextLink(

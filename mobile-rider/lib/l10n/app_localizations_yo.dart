@@ -1196,4 +1196,36 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get tripSortEasiest => 'Ìrìn díẹ̀';
+
+  @override
+  String get fareTierVerified => 'Owó ọkọ̀ déédé';
+
+  @override
+  String get fareTierCrowd => 'Owó tí àwọn èèyàn ń san';
+
+  @override
+  String get fareTierCandidate => 'Kò tíì dájú';
+
+  @override
+  String get fareTierEstimate => 'Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan';
+
+  @override
+  String distanceKm(String km) {
+    return 'km $km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return 'm $meters';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance sí ibí';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return 'ìṣẹ́jú $minutes · $distance';
+  }
 }

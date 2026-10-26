@@ -21,5 +21,13 @@
   "searchEmpty": "Type park, market or street",
   "tripSortCheapest": "Cheapest",
   "tripSortFastest": "Fastest",
-  "tripSortEasiest": "Less waka"
+  "tripSortEasiest": "Less waka",
+  "fareTierVerified": "Normal price",
+  "fareTierCrowd": "Wetin people dey pay",
+  "fareTierCandidate": "No sure yet",
+  "fareTierEstimate": "Estimate, price am",
+  "distanceKm": "{km} km",
+  "distanceM": "{meters} m",
+  "searchResultDetail": "{area} · {distance} from here",
+  "tripOptionsSummary": "{minutes} min · {distance}"
 }

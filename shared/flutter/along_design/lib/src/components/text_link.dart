@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../craft.dart';
 import '../icons.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../type.dart';
 
-/// A quiet inline action: icon plus label, no box. 44pt tall to tap.
+/// A secondary inline action: icon plus label on a recessed squircle.
 class AlongTextLink extends StatelessWidget {
   const AlongTextLink({
     super.key,
@@ -32,22 +33,21 @@ class AlongTextLink extends StatelessWidget {
           onPressed();
         },
         child: AlongPressable(
-          child: ConstrainedBox(
+          child: Container(
             constraints: const BoxConstraints(minHeight: 44),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: AlongCraft.compactFill(palette.recessed, 44),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AlongIcon(icon, size: 16, color: palette.ink),
-                const SizedBox(width: 6),
+                AlongIcon(icon, size: 20, color: palette.ink),
+                const SizedBox(width: 8),
                 Flexible(
                   child: Text(
                     label,
-                    style: AlongType.meta(palette).copyWith(
-                      color: palette.ink,
-                      fontWeight: FontWeight.w600,
-                      decoration: TextDecoration.underline,
-                      decorationColor: palette.line,
-                    ),
+                    style: AlongType.label(
+                      palette,
+                    ).copyWith(color: palette.ink, fontWeight: FontWeight.w600),
                   ),
                 ),
               ],

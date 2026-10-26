@@ -1196,4 +1196,36 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get tripSortEasiest => 'Less waka';
+
+  @override
+  String get fareTierVerified => 'Normal price';
+
+  @override
+  String get fareTierCrowd => 'Wetin people dey pay';
+
+  @override
+  String get fareTierCandidate => 'No sure yet';
+
+  @override
+  String get fareTierEstimate => 'Estimate, price am';
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return '$meters m';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance from here';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return '$minutes min · $distance';
+  }
 }

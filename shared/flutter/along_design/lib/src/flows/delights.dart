@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../craft.dart';
+import '../elevation.dart';
 import '../tokens.g.dart';
 import '../icons.dart';
 import '../motion.dart';
@@ -185,11 +186,20 @@ class AlongGreeting extends StatelessWidget {
     final meta = AlongType.meta(palette).copyWith(height: 1.1);
     return Align(
       alignment: Alignment.centerLeft,
-      child: AlongFrost(
-        solid: true,
-        radius: AlongRadius.row.x,
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.fromLTRB(16, 10, 20, 10),
+        decoration: AlongCraft.compactFill(
+          palette.surface,
+          56,
+          corner: AlongRadius.row.x,
+          // Dark mode lifts by surface tone alone; a light-ink shadow halos.
+          shadow: palette.brightness == Brightness.dark
+              ? const <BoxShadow>[]
+              : AlongElevation.rest(palette.ink),
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -200,7 +210,12 @@ class AlongGreeting extends StatelessWidget {
               style: title,
             ),
             if ((this.title == null ? phase.weather : detail) case final d?)
-              Text(d, maxLines: 1, overflow: TextOverflow.ellipsis, style: meta),
+              Text(
+                d,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: meta,
+              ),
           ],
         ),
       ),

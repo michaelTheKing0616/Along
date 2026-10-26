@@ -21,5 +21,13 @@
   "searchEmpty": "Kọ ibùdókọ̀, ọjà tàbí òpópónà",
   "tripSortCheapest": "Èyí tó kéré jù",
   "tripSortFastest": "Èyí tó yára jù",
-  "tripSortEasiest": "Ìrìn díẹ̀"
+  "tripSortEasiest": "Ìrìn díẹ̀",
+  "fareTierVerified": "Owó ọkọ̀ déédé",
+  "fareTierCrowd": "Owó tí àwọn èèyàn ń san",
+  "fareTierCandidate": "Kò tíì dájú",
+  "fareTierEstimate": "Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan",
+  "distanceKm": "km {km}",
+  "distanceM": "m {meters}",
+  "searchResultDetail": "{area} · {distance} sí ibí",
+  "tripOptionsSummary": "ìṣẹ́jú {minutes} · {distance}"
 }

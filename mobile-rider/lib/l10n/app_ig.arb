@@ -21,5 +21,13 @@
   "searchEmpty": "Dee ọdọ ụgbọ, ahịa ma ọ bụ okporo ụzọ",
   "tripSortCheapest": "Kacha ọnụ ala",
   "tripSortFastest": "Kacha ọsọ",
-  "tripSortEasiest": "Ije ụkwụ dị nta"
+  "tripSortEasiest": "Ije ụkwụ dị nta",
+  "fareTierVerified": "Ụgwọ nkịtị",
+  "fareTierCrowd": "Ụgwọ ndị mmadụ",
+  "fareTierCandidate": "Ejibeghị n'aka",
+  "fareTierEstimate": "Atụmatụ, kwekọrịta ọnụ",
+  "distanceKm": "km {km}",
+  "distanceM": "m {meters}",
+  "searchResultDetail": "{area} · {distance} site ebe a",
+  "tripOptionsSummary": "nkeji {minutes} · {distance}"
 }

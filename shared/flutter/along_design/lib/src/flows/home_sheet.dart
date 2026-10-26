@@ -55,11 +55,10 @@ class AlongWhereToBar extends StatelessWidget {
           child: Container(
             constraints: const BoxConstraints(minHeight: 56),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: ShapeDecoration(
-              color: palette.ink,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(AlongRadius.button),
-              ),
+            decoration: AlongCraft.compactFill(
+              palette.ink,
+              56,
+              corner: AlongRadius.button.x,
             ),
             child: Row(
               children: [
@@ -103,14 +102,11 @@ class AlongPlaceRow extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               alignment: Alignment.center,
               clipBehavior: Clip.antiAlias,
-              decoration: AlongCraft.fill(
-                palette.recessed,
-                corner: AlongRadius.control.x,
-              ),
+              decoration: AlongCraft.compactFill(palette.recessed, 40),
               child: AlongIcon(place.icon, size: 20, color: palette.ink),
             ),
             const SizedBox(width: 12),
@@ -220,30 +216,44 @@ class AlongHomeSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    // Hairline indented past the 40pt icon tile, so rows read as one list.
+    final divider = Padding(
+      padding: const EdgeInsets.only(left: 52),
+      child: Container(height: 1, color: palette.line.withValues(alpha: 0.5)),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (lead != null) ...[lead!, const SizedBox(height: 12)],
         AlongWhereToBar(key: whereToKey, label: whereTo, onTap: onWhereTo),
-        if (places.isNotEmpty) const SizedBox(height: 8),
-        for (final place in places) AlongPlaceRow(place: place),
+        if (places.isNotEmpty) const SizedBox(height: 16),
+        ..._rows(places, divider),
         if (section.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: places.isEmpty ? 24 : 20),
           if (sectionTitle != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 sectionTitle!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AlongType.label(palette),
+                style: AlongType.label(
+                  palette,
+                ).copyWith(color: palette.muted, fontWeight: FontWeight.w600),
               ),
             ),
-          for (final place in section) AlongPlaceRow(place: place),
+          ..._rows(section, divider),
         ],
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
       ],
     );
   }
+
+  static List<Widget> _rows(List<AlongPlace> rows, Widget divider) => [
+    for (var i = 0; i < rows.length; i++) ...[
+      if (i > 0) divider,
+      AlongPlaceRow(place: rows[i]),
+    ],
+  ];
 }

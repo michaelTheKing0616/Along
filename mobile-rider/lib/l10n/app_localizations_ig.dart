@@ -1196,4 +1196,36 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get tripSortEasiest => 'Ije ụkwụ dị nta';
+
+  @override
+  String get fareTierVerified => 'Ụgwọ nkịtị';
+
+  @override
+  String get fareTierCrowd => 'Ụgwọ ndị mmadụ';
+
+  @override
+  String get fareTierCandidate => 'Ejibeghị n\'aka';
+
+  @override
+  String get fareTierEstimate => 'Atụmatụ, kwekọrịta ọnụ';
+
+  @override
+  String distanceKm(String km) {
+    return 'km $km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return 'm $meters';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance site ebe a';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return 'nkeji $minutes · $distance';
+  }
 }

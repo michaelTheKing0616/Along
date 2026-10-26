@@ -1270,5 +1270,63 @@
   "tripSortEasiest": "Least walking",
   "@tripSortEasiest": {
     "description": "tripSortEasiest"
+  },
+  "fareTierVerified": "Standard fare",
+  "@fareTierVerified": {
+    "description": "fareTierVerified"
+  },
+  "fareTierCrowd": "Community fare",
+  "@fareTierCrowd": {
+    "description": "fareTierCrowd"
+  },
+  "fareTierCandidate": "Unconfirmed",
+  "@fareTierCandidate": {
+    "description": "fareTierCandidate"
+  },
+  "fareTierEstimate": "Estimate, agree price",
+  "@fareTierEstimate": {
+    "description": "fareTierEstimate"
+  },
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "description": "distanceKm",
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{meters} m",
+  "@distanceM": {
+    "description": "distanceM",
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "searchResultDetail": "{area} · {distance} away",
+  "@searchResultDetail": {
+    "description": "searchResultDetail",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "tripOptionsSummary": "{minutes} min · {distance}",
+  "@tripOptionsSummary": {
+    "description": "tripOptionsSummary",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
   }
 }

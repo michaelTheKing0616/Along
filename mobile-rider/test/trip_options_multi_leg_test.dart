@@ -75,6 +75,11 @@ void main() {
 
       expect(find.byType(LegTimeline), findsOneWidget);
 
+      // The expanded timeline can run below the fold; riders scroll to it.
+      await tester.ensureVisible(
+        find.byKey(const Key('leg_request_cand-multi-1_1')),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('leg_request_cand-multi-1_1')));
       await tester.pump();
 
@@ -107,6 +112,11 @@ void main() {
       await tester.tap(find.byKey(const Key('multi_leg_toggle_cand-multi-1')));
       await tester.pumpAndSettle();
 
+      // The expanded timeline can run below the fold; riders scroll to it.
+      await tester.ensureVisible(
+        find.byKey(const Key('leg_request_cand-multi-1_1')),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('leg_request_cand-multi-1_1')));
       await tester.pump();
       container.read(tripOptionsControllerProvider.notifier).cancelPendingRequest();

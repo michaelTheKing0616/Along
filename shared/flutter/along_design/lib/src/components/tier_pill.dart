@@ -7,12 +7,12 @@ import '../utils/fare_tier.dart';
 
 /// Small pill showing fare verification tier next to every fare (FM8).
 class TierPill extends StatelessWidget {
-  const TierPill({
-    super.key,
-    required this.tier,
-  });
+  const TierPill({super.key, required this.tier, this.label});
 
   final FareTier tier;
+
+  /// Translated tier name. Null uses the English label.
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +20,11 @@ class TierPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AlongSpace.s8,
-        vertical: AlongSpace.s4,
+        vertical: 6,
       ),
       clipBehavior: Clip.antiAlias,
-      decoration: AlongCraft.fill(
-        palette.recessed,
-        corner: AlongRadius.xs.x,
-      ),
+      constraints: const BoxConstraints(minHeight: 28),
+      decoration: AlongCraft.compactFill(palette.recessed, 28),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -41,7 +39,7 @@ class TierPill extends StatelessWidget {
           const SizedBox(width: AlongSpace.s4),
           Flexible(
             child: Text(
-              tier.label,
+              label ?? tier.label,
               style: AlongText.caption.copyWith(color: palette.ink),
               overflow: TextOverflow.visible,
               softWrap: true,

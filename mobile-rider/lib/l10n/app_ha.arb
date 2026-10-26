@@ -21,5 +21,13 @@
   "searchEmpty": "Rubuta tasha, kasuwa ko titi",
   "tripSortCheapest": "Mafi arha",
   "tripSortFastest": "Mafi sauri",
-  "tripSortEasiest": "Ƙarancin tafiya"
+  "tripSortEasiest": "Ƙarancin tafiya",
+  "fareTierVerified": "Kuɗin da aka saba",
+  "fareTierCrowd": "Kuɗin jama'a",
+  "fareTierCandidate": "Ba a tabbatar ba",
+  "fareTierEstimate": "Ƙiyasi, ku daidaita",
+  "distanceKm": "km {km}",
+  "distanceM": "m {meters}",
+  "searchResultDetail": "{area} · nisan {distance}",
+  "tripOptionsSummary": "minti {minutes} · {distance}"
 }

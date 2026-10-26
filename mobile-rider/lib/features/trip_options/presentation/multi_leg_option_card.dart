@@ -3,6 +3,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_rider/features/trip_options/presentation/option_card_mapper.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 
 /// R-07 multi-leg card with expandable [LegTimeline] and per-leg request CTAs.
 class MultiLegOptionCard extends StatelessWidget {
@@ -59,6 +60,12 @@ class MultiLegOptionCard extends StatelessWidget {
               ? l10n.tripOptionsSlowerDirectCaption
               : null,
           recommendedLabel: l10n.tripOptionsRecommended,
+          tierLabel: l10n.fareTier(
+            OptionCardMapper.mapFareTier(
+              firstLeg.fare.tier,
+              unconfirmed: firstLeg.fare.unconfirmed,
+            ),
+          ),
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
           requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3 ? null : () => onRequestLeg(0),

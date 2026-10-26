@@ -32,6 +32,7 @@ class OptionCard extends StatelessWidget {
     this.meta = '4 min walk · ~6 min wait · direct',
     this.fareNaira = 450,
     this.tier = FareTier.verified,
+    this.tierLabel,
     this.unavailableReason,
     this.loadWarning,
     this.onRequest,
@@ -50,6 +51,9 @@ class OptionCard extends StatelessWidget {
   final String meta;
   final int fareNaira;
   final FareTier tier;
+
+  /// Translated tier name for the tag beside the fare.
+  final String? tierLabel;
   final String? unavailableReason;
   final String? loadWarning;
   final VoidCallback? onRequest;
@@ -133,7 +137,7 @@ class OptionCard extends StatelessWidget {
                                 softWrap: false,
                               ),
                               const SizedBox(height: AlongSpace.s4),
-                              TierPill(tier: tier),
+                              TierPill(tier: tier, label: tierLabel),
                             ],
                           ),
                         ],

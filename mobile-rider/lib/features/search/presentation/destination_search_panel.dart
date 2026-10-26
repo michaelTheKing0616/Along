@@ -7,6 +7,7 @@ import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/offline/stale_badge.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 
 /// Selected destination from R-06 search (places-search or recents).
 class DestinationPick {
@@ -65,7 +66,11 @@ class DestinationSearchPanel extends ConsumerStatefulWidget {
     this.embedded = false,
     this.initialQuery,
     this.onChooseOnMap,
+    this.extra,
   });
+
+  /// Shown under Choose on map while nothing is typed (the voice field).
+  final Widget? extra;
 
   /// Shows a Choose on map row under the field when set.
   final VoidCallback? onChooseOnMap;
@@ -151,10 +156,7 @@ class _DestinationSearchPanelState
     );
     // Rows sit on one raised card, so the list reads as a group.
     Widget card(List<Widget> rows) => DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: const BorderRadius.all(AlongRadius.card),
-      ),
+      decoration: AlongCraft.surface(palette, radius: AlongRadius.card.x),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AlongSpace.s12,
@@ -178,6 +180,10 @@ class _DestinationSearchPanelState
             ),
           ),
         ]),
+      ],
+      if (widget.extra != null && !searching) ...[
+        const SizedBox(height: AlongSpace.s8),
+        widget.extra!,
       ],
       if (state.isOffline)
         Padding(
@@ -215,10 +221,7 @@ class _DestinationSearchPanelState
                 key: Key('result_${result.name}'),
                 icon: kindIcon(result.kind),
                 title: result.name,
-                detail: l10n.searchResultSubtitle(
-                  result.area,
-                  result.distanceM.round(),
-                ),
+                detail: l10n.searchResultDetail(result.area, l10n.distance(result.distanceM)),
                 onTap: () => _selectPlace(result),
               ),
             ),

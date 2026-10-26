@@ -1196,4 +1196,36 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get tripSortEasiest => 'Ƙarancin tafiya';
+
+  @override
+  String get fareTierVerified => 'Kuɗin da aka saba';
+
+  @override
+  String get fareTierCrowd => 'Kuɗin jama\'a';
+
+  @override
+  String get fareTierCandidate => 'Ba a tabbatar ba';
+
+  @override
+  String get fareTierEstimate => 'Ƙiyasi, ku daidaita';
+
+  @override
+  String distanceKm(String km) {
+    return 'km $km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return 'm $meters';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · nisan $distance';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return 'minti $minutes · $distance';
+  }
 }

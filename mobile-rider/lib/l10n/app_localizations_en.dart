@@ -1196,4 +1196,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tripSortEasiest => 'Least walking';
+
+  @override
+  String get fareTierVerified => 'Standard fare';
+
+  @override
+  String get fareTierCrowd => 'Community fare';
+
+  @override
+  String get fareTierCandidate => 'Unconfirmed';
+
+  @override
+  String get fareTierEstimate => 'Estimate, agree price';
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String distanceM(int meters) {
+    return '$meters m';
+  }
+
+  @override
+  String searchResultDetail(String area, String distance) {
+    return '$area · $distance away';
+  }
+
+  @override
+  String tripOptionsSummary(int minutes, String distance) {
+    return '$minutes min · $distance';
+  }
 }

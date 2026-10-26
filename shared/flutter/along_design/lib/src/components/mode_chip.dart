@@ -44,13 +44,13 @@ class ModeChip extends StatelessWidget {
       label: mode.label,
       child: Material(
         color: bg,
-        shape: AlongCraft.border(AlongRadius.control.x),
+        shape: AlongCraft.compact(height),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
           splashFactory: NoSplash.splashFactory,
           highlightColor: palette.ink.withValues(alpha: 0.08),
-          customBorder: AlongCraft.border(AlongRadius.control.x),
+          customBorder: AlongCraft.compact(height),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s8),
             child: SizedBox(

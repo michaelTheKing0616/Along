@@ -2254,6 +2254,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Least walking'**
   String get tripSortEasiest;
+
+  /// fareTierVerified
+  ///
+  /// In en, this message translates to:
+  /// **'Standard fare'**
+  String get fareTierVerified;
+
+  /// fareTierCrowd
+  ///
+  /// In en, this message translates to:
+  /// **'Community fare'**
+  String get fareTierCrowd;
+
+  /// fareTierCandidate
+  ///
+  /// In en, this message translates to:
+  /// **'Unconfirmed'**
+  String get fareTierCandidate;
+
+  /// fareTierEstimate
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate, agree price'**
+  String get fareTierEstimate;
+
+  /// distanceKm
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String distanceKm(String km);
+
+  /// distanceM
+  ///
+  /// In en, this message translates to:
+  /// **'{meters} m'**
+  String distanceM(int meters);
+
+  /// searchResultDetail
+  ///
+  /// In en, this message translates to:
+  /// **'{area} · {distance} away'**
+  String searchResultDetail(String area, String distance);
+
+  /// tripOptionsSummary
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min · {distance}'**
+  String tripOptionsSummary(int minutes, String distance);
 }
 
 class _AppLocalizationsDelegate
