@@ -1061,5 +1061,32 @@
   "restDriveShort": "Drive (min)",
   "restBreakShort": "Break (min)",
   "mpTargetShort": "Target",
-  "mpEarnedShort": "Earned"
+  "mpEarnedShort": "Earned",
+  "daySubtitle": "Pick where you'll work, set your seats and the rules riders see.",
+  "daySeatsCount": "{count} seats",
+  "@daySeatsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayRouteOptional": "Route (optional)",
+  "dayHoursSection": "Your hours",
+  "daySeatsSection": "Seats",
+  "dayRemove": "Remove",
+  "dayAddRule": "Add a rule",
+  "dayRuleRow": "Applies to",
+  "dayRowN": "Row {n}",
+  "@dayRowN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dayRuleDetails": "Rule details",
+  "dayRuleDetailsBody": "Hold time, walk extra, seat cap, wording",
+  "dayCustomRule": "Write your own rule",
+  "dayCustomRuleBody": "Shown to riders before they book"
 }

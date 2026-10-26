@@ -4,8 +4,10 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
+import 'package:mobile_driver/features/day/presentation/build_my_day_sections.dart';
 import 'package:mobile_driver/features/day/presentation/seat_layout_editor.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 
 /// Pick a vehicle, corridor, a named seat layout, and the rules riders will see.
 class BuildMyDayScreen extends ConsumerStatefulWidget {
@@ -263,213 +265,233 @@ class _BuildMyDayScreenState extends ConsumerState<BuildMyDayScreen> {
     }
   }
 
+  /// Which optional rule panel is open: 'details' or 'custom'.
+  String? _rulePanel;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     final setup = _setup;
     final layout = _layout;
     final vehicle = _vehicle;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.buildMyDayTitle),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
+    if (_loading) {
+      return DrivePage(
+        title: l10n.buildMyDayTitle,
+        children: const [
+          SizedBox(height: AlongSpace.s16),
+          AlongSkeleton(variant: SkeletonVariant.line),
+        ],
+      );
+    }
+    final rules = setup?.rules.where((rule) => rule.enabled).toList() ?? [];
+    return DrivePage(
+      title: l10n.buildMyDayTitle,
+      subtitle: l10n.daySubtitle,
+      footer: AlongButton(
+        key: const Key('start_day_button'),
+        label: l10n.buildMyDayStart,
+        visualState: _saving
+            ? AlongButtonVisualState.loading
+            : AlongButtonVisualState.normal,
+        onPressed: _saving ? null : _start,
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: ListView(
-                padding: const EdgeInsets.all(AlongSpace.s16),
-                children: [
-                  if (setup != null) ...[
-                    Text(l10n.vehicleTitle, style: AlongText.label),
-                    Wrap(
-                      spacing: AlongSpace.s8,
-                      children: [
-                        for (final item in setup.vehicles)
-                          ChoiceChip(
-                            key: Key('day_vehicle_${item.id}'),
-                            label: Text(item.plateNumber),
-                            selected: item.id == _vehicleId,
-                            onSelected: (_) => setState(() {
-                              _vehicleId = item.id;
-                              _applyVehicle(setup, item);
-                            }),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: AlongSpace.s12),
-                    Text(l10n.buildMyDayCorridor, style: AlongText.label),
-                    Wrap(
-                      spacing: AlongSpace.s8,
-                      children: [
-                        for (final corridor in setup.corridors)
-                          ChoiceChip(
-                            label: Text(corridor.name),
-                            selected: corridor.id == _corridorId,
-                            onSelected: (_) => setState(() {
-                              _corridorId = corridor.id;
-                              _routeId = null;
-                            }),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: AlongSpace.s12),
-                    Wrap(
-                      spacing: AlongSpace.s8,
-                      children: [
-                        for (final route in setup.routes)
-                          if (route.corridorId == _corridorId)
-                            ChoiceChip(
-                              label: Text(route.name ?? route.modeCode),
-                              selected: route.id == _routeId,
-                              onSelected: (_) =>
-                                  setState(() => _routeId = route.id),
-                            ),
-                      ],
-                    ),
-                  ],
-                  const SizedBox(height: AlongSpace.s12),
-                  const AlongDepartureBoard(),
-                  const SizedBox(height: AlongSpace.s12),
-                  TextField(
-                    key: const Key('layout_name_field'),
-                    decoration: InputDecoration(labelText: l10n.layoutName),
-                    controller: _nameController,
-                  ),
-                  const SizedBox(height: AlongSpace.s12),
-                  if (layout != null)
-                    SeatLayoutEditor(
-                      layout: layout,
-                      reviewSeatMax:
-                          vehicle?.reviewSeatMax ?? layout.passengerCount,
-                      onChanged: (next) => setState(() => _layout = next),
-                      addRowLabel: l10n.addRow,
-                      addSeatLabel: l10n.addSeat,
-                      removeRowLabel: l10n.removeRow,
-                      overCapacityLabel: l10n.overCapacityNote,
-                      luggageLabel: l10n.seatLuggage,
-                    ),
-                  const SizedBox(height: AlongSpace.s12),
-                  AlongButton(
-                    key: const Key('save_layout_button'),
-                    label: l10n.saveLayout,
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: _saving ? null : _saveLayout,
-                  ),
-                  const SizedBox(height: AlongSpace.s24),
-                  Text(l10n.rideRulesHeading, style: AlongText.bodyStrong),
-                  if (setup != null)
-                    for (final rule in setup.rules.where(
-                      (rule) => rule.enabled,
-                    ))
-                      ListTile(
-                        title: Text(rule.title),
-                        subtitle: Text(rule.body ?? rule.effect),
-                        trailing: IconButton(
-                          tooltip: l10n.deleteRule,
-                          onPressed: () => _deleteRule(rule.id),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ),
-                  if (layout != null)
-                    Wrap(
-                      spacing: AlongSpace.s8,
-                      children: [
-                        for (final row in layout.rows)
-                          ChoiceChip(
-                            label: Text(row.id),
-                            selected: _targetRow == row.id,
-                            onSelected: (_) =>
-                                setState(() => _targetRow = row.id),
-                          ),
-                      ],
-                    ),
-                  TextField(
-                    key: const Key('day_shift_start'),
-                    decoration: InputDecoration(labelText: l10n.shiftStart),
-                    controller: _shiftStart,
-                  ),
-                  TextField(
-                    key: const Key('day_shift_end'),
-                    decoration: InputDecoration(labelText: l10n.shiftEnd),
-                    controller: _shiftEnd,
-                  ),
-                  TextField(
-                    key: const Key('day_home_label'),
-                    decoration: InputDecoration(labelText: l10n.homeLabel),
-                    controller: _home,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(labelText: l10n.holdMinutes),
-                    keyboardType: TextInputType.number,
-                    controller: _minutes,
-                  ),
-                  TextField(
-                    key: const Key('day_walk_minutes'),
-                    decoration: InputDecoration(labelText: l10n.walkExtension),
-                    keyboardType: TextInputType.number,
-                    controller: _walk,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(labelText: l10n.capMax),
-                    keyboardType: TextInputType.number,
-                    controller: _max,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(labelText: l10n.customRuleHint),
-                    controller: _title,
-                  ),
-                  TextField(
-                    controller: _body,
-                    decoration: const InputDecoration(labelText: ''),
-                  ),
-                  if (setup != null)
-                    for (final preset in setup.presets)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: AlongSpace.s8),
-                        child: AlongButton(
-                          key: Key('add_preset_${preset.id}'),
-                          label: preset.title,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: _saving ? null : () => _addPreset(preset),
-                        ),
-                      ),
-                  TextField(
-                    key: const Key('custom_rule_title'),
-                    decoration: InputDecoration(labelText: l10n.customRuleHint),
-                    controller: _customTitle,
-                  ),
-                  TextField(
-                    key: const Key('custom_rule_body'),
-                    decoration: InputDecoration(labelText: l10n.customRuleBody),
-                    controller: _customBody,
-                    maxLength: 280,
-                  ),
-                  AlongButton(
-                    key: const Key('save_custom_rule'),
-                    label: l10n.customRuleSave,
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: _saving ? null : _addCustom,
-                  ),
-                  if (_error != null) ...[
-                    const SizedBox(height: AlongSpace.s12),
-                    Text(
-                      _error!,
-                      style: AlongText.caption.copyWith(
-                        color: AlongColors.semanticDanger,
+      children: [
+        if (setup != null) ...[
+          DriveSection(l10n.vehicleTitle),
+          DayVehiclePicker(
+            vehicles: setup.vehicles,
+            selectedId: _vehicleId,
+            seatsLabel: l10n.daySeatsCount,
+            onSelect: (item) => setState(() {
+              _vehicleId = item.id;
+              _applyVehicle(setup, item);
+            }),
+          ),
+          DriveSection(l10n.buildMyDayCorridor),
+          DriveChips(
+            items: [
+              for (final corridor in setup.corridors)
+                (
+                  Key('day_corridor_${corridor.id}'),
+                  corridor.name,
+                  corridor.id == _corridorId,
+                  () => setState(() {
+                    _corridorId = corridor.id;
+                    _routeId = null;
+                  }),
+                ),
+            ],
+          ),
+          if (setup.routes.any((r) => r.corridorId == _corridorId)) ...[
+            const SizedBox(height: AlongSpace.s12),
+            Text(l10n.dayRouteOptional, style: AlongType.bodyMuted(p)),
+            const SizedBox(height: AlongSpace.s8),
+            DriveChips(
+              items: [
+                for (final route in setup.routes)
+                  if (route.corridorId == _corridorId)
+                    (
+                      Key('day_route_${route.id}'),
+                      route.name ?? route.modeCode,
+                      route.id == _routeId,
+                      () => setState(
+                        () => _routeId = _routeId == route.id ? null : route.id,
                       ),
                     ),
-                  ],
-                  const SizedBox(height: AlongSpace.s16),
-                  AlongButton(
-                    key: const Key('start_day_button'),
-                    label: l10n.buildMyDayStart,
-                    onPressed: _saving ? null : _start,
+              ],
+            ),
+          ],
+        ],
+        const SizedBox(height: AlongSpace.s24),
+        const AlongDepartureBoard(),
+        DriveSection(l10n.dayHoursSection),
+        DayHoursFields(
+          start: _shiftStart,
+          end: _shiftEnd,
+          home: _home,
+          startLabel: l10n.shiftStart,
+          endLabel: l10n.shiftEnd,
+          homeLabel: l10n.homeLabel,
+        ),
+        DriveSection(l10n.daySeatsSection),
+        TextField(
+          key: const Key('layout_name_field'),
+          decoration: driveInput(context, l10n.layoutName),
+          controller: _nameController,
+        ),
+        const SizedBox(height: AlongSpace.s12),
+        if (layout != null)
+          SeatLayoutEditor(
+            layout: layout,
+            reviewSeatMax: vehicle?.reviewSeatMax ?? layout.passengerCount,
+            onChanged: (next) => setState(() => _layout = next),
+            addRowLabel: l10n.addRow,
+            addSeatLabel: l10n.addSeat,
+            removeRowLabel: l10n.removeRow,
+            overCapacityLabel: l10n.overCapacityNote,
+            luggageLabel: l10n.seatLuggage,
+          ),
+        const SizedBox(height: AlongSpace.s12),
+        AlongButton(
+          key: const Key('save_layout_button'),
+          label: l10n.saveLayout,
+          variant: AlongButtonVariant.secondary,
+          onPressed: _saving ? null : _saveLayout,
+        ),
+        DriveSection(l10n.rideRulesHeading),
+        if (rules.isNotEmpty) ...[
+          DriveRows(
+            children: [
+              for (final rule in rules)
+                DriveRow(
+                  key: Key('day_rule_${rule.id}'),
+                  icon: AlongIcons.info,
+                  title: rule.title,
+                  detail: rule.body ?? rule.effect,
+                  trailing: l10n.dayRemove,
+                  trailingStyle: AlongType.caption(p).copyWith(color: p.danger),
+                  onTap: () => _deleteRule(rule.id),
+                ),
+            ],
+          ),
+          const SizedBox(height: AlongSpace.s12),
+        ],
+        if (setup != null && setup.presets.isNotEmpty) ...[
+          Text(l10n.dayAddRule, style: AlongType.bodyMuted(p)),
+          const SizedBox(height: AlongSpace.s8),
+          DriveChips(
+            items: [
+              for (final preset in setup.presets)
+                (
+                  Key('add_preset_${preset.id}'),
+                  '+ ${preset.title}',
+                  false,
+                  _saving ? null : () => _addPreset(preset),
+                ),
+            ],
+          ),
+          if (layout != null && layout.rows.length > 1) ...[
+            const SizedBox(height: AlongSpace.s12),
+            Text(l10n.dayRuleRow, style: AlongType.bodyMuted(p)),
+            const SizedBox(height: AlongSpace.s8),
+            DriveChips(
+              items: [
+                for (final (n, row) in layout.rows.indexed)
+                  (
+                    Key('day_row_${row.id}'),
+                    l10n.dayRowN(n + 1),
+                    _targetRow == row.id,
+                    () => setState(() => _targetRow = row.id),
                   ),
-                ],
+              ],
+            ),
+          ],
+          const SizedBox(height: AlongSpace.s12),
+        ],
+        DriveRows(
+          children: [
+            DriveRow(
+              key: const Key('day_rule_details_toggle'),
+              icon: AlongIcons.schedule,
+              title: l10n.dayRuleDetails,
+              detail: l10n.dayRuleDetailsBody,
+              chevron: _rulePanel != 'details',
+              onTap: () => setState(
+                () => _rulePanel = _rulePanel == 'details' ? null : 'details',
               ),
             ),
+            DriveRow(
+              key: const Key('day_custom_rule_toggle'),
+              icon: AlongIcons.plus,
+              title: l10n.dayCustomRule,
+              detail: l10n.dayCustomRuleBody,
+              chevron: _rulePanel != 'custom',
+              onTap: () => setState(
+                () => _rulePanel = _rulePanel == 'custom' ? null : 'custom',
+              ),
+            ),
+          ],
+        ),
+        if (_rulePanel == 'details')
+          DayRuleDetailsFields(
+            minutes: _minutes,
+            walk: _walk,
+            max: _max,
+            title: _title,
+            body: _body,
+            minutesLabel: l10n.holdMinutes,
+            walkLabel: l10n.walkExtension,
+            maxLabel: l10n.capMax,
+            titleLabel: l10n.customRuleHint,
+            bodyLabel: l10n.customRuleBody,
+          ),
+        if (_rulePanel == 'custom') ...[
+          const SizedBox(height: AlongSpace.s12),
+          TextField(
+            key: const Key('custom_rule_title'),
+            decoration: driveInput(context, l10n.customRuleHint),
+            controller: _customTitle,
+          ),
+          const SizedBox(height: AlongSpace.s8),
+          TextField(
+            key: const Key('custom_rule_body'),
+            decoration: driveInput(context, l10n.customRuleBody),
+            controller: _customBody,
+            maxLength: 280,
+          ),
+          AlongButton(
+            key: const Key('save_custom_rule'),
+            label: l10n.customRuleSave,
+            variant: AlongButtonVariant.secondary,
+            onPressed: _saving ? null : _addCustom,
+          ),
+        ],
+        if (_error != null) ...[
+          const SizedBox(height: AlongSpace.s12),
+          Text(_error!, style: AlongType.caption(p).copyWith(color: p.danger)),
+        ],
+      ],
     );
   }
 }

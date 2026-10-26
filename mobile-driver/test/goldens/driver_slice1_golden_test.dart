@@ -1,3 +1,5 @@
+import 'package:mobile_driver/features/day/presentation/build_my_day_screen.dart';
+
 import 'dart:convert';
 
 import 'package:along_core/along_core.dart';
@@ -461,6 +463,7 @@ void main() {
       ('conductor', const ConductorScreen()),
       ('rest', const RestScreen()),
       ('marketplace', const MarketplaceScreen()),
+      ('build_my_day', const BuildMyDayScreen()),
     ]) {
       testWidgets('$screen $name', (tester) async {
         await tester.binding.setSurfaceSize(const Size(360, 800));
@@ -469,6 +472,9 @@ void main() {
         addTearDown(supabase.dispose);
         if (screen == 'seat_board') {
           supabase.seatBoardResponse = FakeAlongSupabase.sampleSeatBoard();
+        }
+        if (screen == 'build_my_day') {
+          supabase.myDaySetupResponse = FakeAlongSupabase.sampleDaySetup();
         }
         final container = _container(supabase, AlongDatabase.memory());
         await tester.pumpWidget(

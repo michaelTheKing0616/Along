@@ -1633,4 +1633,48 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get mpEarnedShort => 'Don make';
+
+  @override
+  String get daySubtitle =>
+      'Pick where you go work, set your seats and the rules passengers go see.';
+
+  @override
+  String daySeatsCount(int count) {
+    return '$count seats';
+  }
+
+  @override
+  String get dayRouteOptional => 'Route (if you want)';
+
+  @override
+  String get dayHoursSection => 'Your hours';
+
+  @override
+  String get daySeatsSection => 'Seats';
+
+  @override
+  String get dayRemove => 'Remove';
+
+  @override
+  String get dayAddRule => 'Add rule';
+
+  @override
+  String get dayRuleRow => 'E concern';
+
+  @override
+  String dayRowN(int n) {
+    return 'Row $n';
+  }
+
+  @override
+  String get dayRuleDetails => 'Rule details';
+
+  @override
+  String get dayRuleDetailsBody => 'Hold time, extra waka, seat limit, wording';
+
+  @override
+  String get dayCustomRule => 'Write your own rule';
+
+  @override
+  String get dayCustomRuleBody => 'Passengers go see am before dem book';
 }

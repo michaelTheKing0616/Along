@@ -1634,4 +1634,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mpEarnedShort => 'Earned';
+
+  @override
+  String get daySubtitle =>
+      'Pick where you\'ll work, set your seats and the rules riders see.';
+
+  @override
+  String daySeatsCount(int count) {
+    return '$count seats';
+  }
+
+  @override
+  String get dayRouteOptional => 'Route (optional)';
+
+  @override
+  String get dayHoursSection => 'Your hours';
+
+  @override
+  String get daySeatsSection => 'Seats';
+
+  @override
+  String get dayRemove => 'Remove';
+
+  @override
+  String get dayAddRule => 'Add a rule';
+
+  @override
+  String get dayRuleRow => 'Applies to';
+
+  @override
+  String dayRowN(int n) {
+    return 'Row $n';
+  }
+
+  @override
+  String get dayRuleDetails => 'Rule details';
+
+  @override
+  String get dayRuleDetailsBody => 'Hold time, walk extra, seat cap, wording';
+
+  @override
+  String get dayCustomRule => 'Write your own rule';
+
+  @override
+  String get dayCustomRuleBody => 'Shown to riders before they book';
 }

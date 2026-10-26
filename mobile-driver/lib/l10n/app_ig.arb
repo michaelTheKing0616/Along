@@ -98,5 +98,18 @@
   "restDriveShort": "Ịnya (nkeji)",
   "restBreakShort": "Ezumike (nkeji)",
   "mpTargetShort": "Ebumnuche",
-  "mpEarnedShort": "Enwetara"
+  "mpEarnedShort": "Enwetara",
+  "daySubtitle": "Họrọ ebe ị ga-arụ ọrụ, hazie oche na iwu ndị njem ga-ahụ.",
+  "daySeatsCount": "Oche {count}",
+  "dayRouteOptional": "Ụzọ (nhọrọ)",
+  "dayHoursSection": "Oge gị",
+  "daySeatsSection": "Oche",
+  "dayRemove": "Wepu",
+  "dayAddRule": "Tinye iwu",
+  "dayRuleRow": "Metụtara",
+  "dayRowN": "Ahịrị {n}",
+  "dayRuleDetails": "Nkọwa iwu",
+  "dayRuleDetailsBody": "Oge njide, ije ọzọ, oke oche, okwu",
+  "dayCustomRule": "Dee iwu nke gị",
+  "dayCustomRuleBody": "A na-egosi ndị njem tupu ha edebe"
 }

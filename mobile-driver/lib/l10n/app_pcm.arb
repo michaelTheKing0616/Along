@@ -98,5 +98,18 @@
   "restDriveShort": "Drive (min)",
   "restBreakShort": "Rest (min)",
   "mpTargetShort": "Target",
-  "mpEarnedShort": "Don make"
+  "mpEarnedShort": "Don make",
+  "daySubtitle": "Pick where you go work, set your seats and the rules passengers go see.",
+  "daySeatsCount": "{count} seats",
+  "dayRouteOptional": "Route (if you want)",
+  "dayHoursSection": "Your hours",
+  "daySeatsSection": "Seats",
+  "dayRemove": "Remove",
+  "dayAddRule": "Add rule",
+  "dayRuleRow": "E concern",
+  "dayRowN": "Row {n}",
+  "dayRuleDetails": "Rule details",
+  "dayRuleDetailsBody": "Hold time, extra waka, seat limit, wording",
+  "dayCustomRule": "Write your own rule",
+  "dayCustomRuleBody": "Passengers go see am before dem book"
 }

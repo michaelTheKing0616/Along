@@ -118,16 +118,19 @@ class _DepartureRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          SizedBox(
-            width: 52,
-            child: Text(
-              item.time,
-              maxLines: 1,
-              softWrap: false,
-              style: AlongType.body(palette).copyWith(
-                fontWeight: FontWeight.w600,
-                height: 1.1,
-                fontFeatures: const [FontFeature.tabularFigures()],
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 52),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Text(
+                item.time,
+                maxLines: 1,
+                softWrap: false,
+                style: AlongType.body(palette).copyWith(
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
             ),
           ),
