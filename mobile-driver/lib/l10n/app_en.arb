@@ -1088,5 +1088,18 @@
   "dayRuleDetails": "Rule details",
   "dayRuleDetailsBody": "Hold time, walk extra, seat cap, wording",
   "dayCustomRule": "Write your own rule",
-  "dayCustomRuleBody": "Shown to riders before they book"
+  "dayCustomRuleBody": "Shown to riders before they book",
+  "howItWorks": "How it works",
+  "conductorStep1": "Get the code",
+  "conductorStep1Body": "The driver shares it from their seat map",
+  "conductorStep2": "Join the bus",
+  "conductorStep2Body": "You see the same seats live",
+  "conductorStep3": "Update seats",
+  "conductorStep3Body": "Tap a seat when riders board or leave",
+  "seatEmptyStep1": "Pick your vehicle",
+  "seatEmptyStep1Body": "We draw its seats for you",
+  "seatEmptyStep2": "Choose a corridor",
+  "seatEmptyStep2Body": "Riders on it can see your free seats",
+  "seatEmptyStep3": "Fill seats as you go",
+  "seatEmptyStep3Body": "Tap a seat to mark it taken or free"
 }

@@ -1679,4 +1679,43 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get dayCustomRuleBody => 'A ń fi hàn èrò kí wọ́n tó gbà';
+
+  @override
+  String get howItWorks => 'Bí ó ṣe ń ṣiṣẹ́';
+
+  @override
+  String get conductorStep1 => 'Gba kóòdù';
+
+  @override
+  String get conductorStep1Body => 'Awakọ̀ á pín in láti máàpù ìjókòó';
+
+  @override
+  String get conductorStep2 => 'Darapọ̀ mọ́ ọkọ̀';
+
+  @override
+  String get conductorStep2Body => 'O máa rí ìjókòó kan náà lẹ́sẹ̀kẹsẹ̀';
+
+  @override
+  String get conductorStep3 => 'Ṣàtúnṣe ìjókòó';
+
+  @override
+  String get conductorStep3Body => 'Tẹ ìjókòó nígbà tí èrò bá wọlé tàbí jáde';
+
+  @override
+  String get seatEmptyStep1 => 'Yan ọkọ̀ rẹ';
+
+  @override
+  String get seatEmptyStep1Body => 'A ó ya ìjókòó rẹ̀';
+
+  @override
+  String get seatEmptyStep2 => 'Yan ọ̀nà';
+
+  @override
+  String get seatEmptyStep2Body => 'Èrò lórí rẹ̀ á rí ìjókòó rẹ';
+
+  @override
+  String get seatEmptyStep3 => 'Kún ìjókòó bí o ṣe ń lọ';
+
+  @override
+  String get seatEmptyStep3Body => 'Tẹ ìjókòó láti sàmì sí i';
 }

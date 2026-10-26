@@ -1677,4 +1677,44 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get dayCustomRuleBody => 'Passengers go see am before dem book';
+
+  @override
+  String get howItWorks => 'How e dey work';
+
+  @override
+  String get conductorStep1 => 'Collect the code';
+
+  @override
+  String get conductorStep1Body => 'Driver go share am from im seat map';
+
+  @override
+  String get conductorStep2 => 'Join the bus';
+
+  @override
+  String get conductorStep2Body => 'You go see the same seats live';
+
+  @override
+  String get conductorStep3 => 'Update seats';
+
+  @override
+  String get conductorStep3Body => 'Tap seat when passenger enter or comot';
+
+  @override
+  String get seatEmptyStep1 => 'Pick your motor';
+
+  @override
+  String get seatEmptyStep1Body => 'We go draw im seats';
+
+  @override
+  String get seatEmptyStep2 => 'Choose corridor';
+
+  @override
+  String get seatEmptyStep2Body =>
+      'Passengers for there go see your free seats';
+
+  @override
+  String get seatEmptyStep3 => 'Fill seats as you dey go';
+
+  @override
+  String get seatEmptyStep3Body => 'Tap seat to mark am taken or free';
 }

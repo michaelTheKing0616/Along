@@ -1681,4 +1681,44 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get dayCustomRuleBody => 'Ana nuna wa fasinjoji kafin su yi rajista';
+
+  @override
+  String get howItWorks => 'Yadda yake aiki';
+
+  @override
+  String get conductorStep1 => 'Karɓi lambar';
+
+  @override
+  String get conductorStep1Body => 'Direba yana raba ta daga taswirar kujeru';
+
+  @override
+  String get conductorStep2 => 'Shiga motar';
+
+  @override
+  String get conductorStep2Body => 'Kana ganin kujeru ɗaya kai tsaye';
+
+  @override
+  String get conductorStep3 => 'Sabunta kujeru';
+
+  @override
+  String get conductorStep3Body =>
+      'Taɓa kujera idan fasinja ya hau ko ya sauka';
+
+  @override
+  String get seatEmptyStep1 => 'Zaɓi motarka';
+
+  @override
+  String get seatEmptyStep1Body => 'Za mu zana kujerunta';
+
+  @override
+  String get seatEmptyStep2 => 'Zaɓi hanya';
+
+  @override
+  String get seatEmptyStep2Body => 'Fasinjoji a kanta suna ganin kujerunka';
+
+  @override
+  String get seatEmptyStep3 => 'Cika kujeru yayin tafiya';
+
+  @override
+  String get seatEmptyStep3Body => 'Taɓa kujera don alamta ta';
 }

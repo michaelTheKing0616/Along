@@ -109,6 +109,16 @@ class _ConductorScreenState extends ConsumerState<ConductorScreen> {
           const SizedBox(height: AlongSpace.s12),
           Text(_error!, style: AlongType.caption(p).copyWith(color: p.danger)),
         ],
+        if (board == null) ...[
+          DriveSection(l10n.howItWorks),
+          DriveSteps(
+            steps: [
+              (AlongIcons.qrCode, l10n.conductorStep1, l10n.conductorStep1Body),
+              (AlongIcons.danfo, l10n.conductorStep2, l10n.conductorStep2Body),
+              (AlongIcons.shield, l10n.conductorStep3, l10n.conductorStep3Body),
+            ],
+          ),
+        ],
         if (board != null)
           SeatMap(
             body: board.layout.body,

@@ -111,5 +111,18 @@
   "dayRuleDetails": "Nkọwa iwu",
   "dayRuleDetailsBody": "Oge njide, ije ọzọ, oke oche, okwu",
   "dayCustomRule": "Dee iwu nke gị",
-  "dayCustomRuleBody": "A na-egosi ndị njem tupu ha edebe"
+  "dayCustomRuleBody": "A na-egosi ndị njem tupu ha edebe",
+  "howItWorks": "Otu o si arụ ọrụ",
+  "conductorStep1": "Nweta koodu",
+  "conductorStep1Body": "Onye ọkwọ ụgbọ na-eker ya site na map oche",
+  "conductorStep2": "Banye n'ụgbọ",
+  "conductorStep2Body": "Ị na-ahụ otu oche ozugbo",
+  "conductorStep3": "Melite oche",
+  "conductorStep3Body": "Pịa oche mgbe ndị njem banyere ma ọ bụ pụọ",
+  "seatEmptyStep1": "Họrọ ụgbọ gị",
+  "seatEmptyStep1Body": "Anyị ga-ese oche ya",
+  "seatEmptyStep2": "Họrọ ụzọ",
+  "seatEmptyStep2Body": "Ndị njem nọ na ya ga-ahụ oche gị",
+  "seatEmptyStep3": "Jupụta oche ka ị na-aga",
+  "seatEmptyStep3Body": "Pịa oche iji kaa ya"
 }

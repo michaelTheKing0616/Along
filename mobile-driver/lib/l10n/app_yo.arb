@@ -111,5 +111,18 @@
   "dayRuleDetails": "Àlàyé òfin",
   "dayRuleDetailsBody": "Àkókò ìdádúró, ìrìn àfikún, ààlà ìjókòó, ọ̀rọ̀",
   "dayCustomRule": "Kọ òfin tìrẹ",
-  "dayCustomRuleBody": "A ń fi hàn èrò kí wọ́n tó gbà"
+  "dayCustomRuleBody": "A ń fi hàn èrò kí wọ́n tó gbà",
+  "howItWorks": "Bí ó ṣe ń ṣiṣẹ́",
+  "conductorStep1": "Gba kóòdù",
+  "conductorStep1Body": "Awakọ̀ á pín in láti máàpù ìjókòó",
+  "conductorStep2": "Darapọ̀ mọ́ ọkọ̀",
+  "conductorStep2Body": "O máa rí ìjókòó kan náà lẹ́sẹ̀kẹsẹ̀",
+  "conductorStep3": "Ṣàtúnṣe ìjókòó",
+  "conductorStep3Body": "Tẹ ìjókòó nígbà tí èrò bá wọlé tàbí jáde",
+  "seatEmptyStep1": "Yan ọkọ̀ rẹ",
+  "seatEmptyStep1Body": "A ó ya ìjókòó rẹ̀",
+  "seatEmptyStep2": "Yan ọ̀nà",
+  "seatEmptyStep2Body": "Èrò lórí rẹ̀ á rí ìjókòó rẹ",
+  "seatEmptyStep3": "Kún ìjókòó bí o ṣe ń lọ",
+  "seatEmptyStep3Body": "Tẹ ìjókòó láti sàmì sí i"
 }
