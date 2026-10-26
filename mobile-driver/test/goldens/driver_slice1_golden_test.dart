@@ -374,7 +374,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.takeException(), isNull);
-      await _shoot(tester, 'earnings_$name');
+      // No golden: EarningsScreen reads DateTime.now(), so the chart and
+      // trip times move with the wall clock.
+      expect(find.byKey(const Key('earnings_summary')), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       container.dispose();
       await tester.pump(const Duration(seconds: 1));
