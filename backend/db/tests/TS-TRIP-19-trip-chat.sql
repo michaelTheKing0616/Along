@@ -2,7 +2,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(17);
+select plan(18);
 
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 
@@ -184,6 +184,11 @@ select is(
 select is(
   post_trip_message(current_setting('test.trip_id')::uuid, 'Still have it', 'drv-00000013')->>'thread',
   'lost_found', 'callers without a thread fall back to lost and found'
+);
+select is(
+  (select count(*)::int from jsonb_array_elements(list_trip_messages(current_setting('test.trip_id')::uuid)) m
+   where m->>'thread' = 'lost_found'),
+  2, 'list labels lost-and-found lines by thread'
 );
 reset role;
 update trips set ended_at = now() - interval '49 hours'
