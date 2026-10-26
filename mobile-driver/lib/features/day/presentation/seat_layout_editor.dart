@@ -168,13 +168,18 @@ class _SeatTile extends StatelessWidget {
     final p = AlongPalette.of(context);
     final driver = !seat.isPassenger && !seat.isCargo;
     final fg = driver ? p.onInk : p.ink;
+    // The stack is padded so the 44px luggage hit area stays inside its
+    // bounds (Flutter does not hit-test outside a widget's box).
     return SizedBox(
-      width: 64,
-      height: 64,
+      width: 74,
+      height: 74,
       child: Stack(
-        clipBehavior: Clip.none,
         children: [
-          Positioned.fill(
+          Positioned(
+            left: 0,
+            bottom: 0,
+            width: 64,
+            height: 64,
             child: Material(
               key: Key('layout_seat_${seat.id}'),
               color: driver ? p.ink : p.recessed,
@@ -210,23 +215,34 @@ class _SeatTile extends StatelessWidget {
           ),
           if (onLuggage != null)
             Positioned(
-              top: -6,
-              right: -6,
+              top: 0,
+              right: 0,
               child: Tooltip(
                 message: luggageLabel,
-                child: Material(
-                  key: Key('layout_luggage_${seat.id}'),
-                  color: seat.isCargo ? p.accent : p.surface,
-                  shape: CircleBorder(
-                    side: BorderSide(color: p.ink.withValues(alpha: 0.12)),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
+                child: Semantics(
+                  button: true,
+                  label: luggageLabel,
+                  child: GestureDetector(
+                    key: Key('layout_luggage_${seat.id}'),
+                    behavior: HitTestBehavior.opaque,
                     onTap: onLuggage,
                     child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Icon(Icons.luggage, size: 13, color: p.ink),
+                      width: 44,
+                      height: 44,
+                      child: Center(
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: seat.isCargo ? p.accent : p.surface,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: p.ink.withValues(alpha: 0.12),
+                            ),
+                          ),
+                          child: Icon(Icons.luggage, size: 13, color: p.ink),
+                        ),
+                      ),
                     ),
                   ),
                 ),
