@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:along_core/along_core.dart';
 import 'package:flutter/foundation.dart';
@@ -64,27 +65,16 @@ Color _inkOn(Color c) =>
     c.computeLuminance() > 0.4 ? const Color(0xFF0B0B0C) : Colors.white;
 
 class _Shape extends StatelessWidget {
-  const _Shape({
-    required this.choice,
-    required this.size,
-    this.color,
-    this.stroke,
-  });
+  const _Shape({required this.choice, required this.size});
 
   final AlongNaMeChoice choice;
   final double size;
-  final Color? color;
-  final double? stroke;
 
   @override
   Widget build(BuildContext context) => SizedBox.square(
     dimension: size,
     child: CustomPaint(
-      painter: NaMeShapePainter(
-        shape: choice.shapeKind,
-        color: color ?? choice.color,
-        stroke: stroke,
-      ),
+      painter: NaMeShapePainter(shape: choice.shapeKind, color: choice.color),
     ),
   );
 }
@@ -178,55 +168,23 @@ class _AlongNaMeShowScreenState extends State<AlongNaMeShowScreen> {
                     color: p.surface,
                     shape: AlongCraft.border(28),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _Shape(choice: widget.pairing, size: 120),
-                      const SizedBox(height: 16),
-                      Text(
-                        widget.pairing.label,
-                        key: const Key('na_me_show_label'),
-                        style: AlongType.title(p),
-                      ),
-                      if (optical) ...[
-                        const SizedBox(height: 24),
-                        Semantics(
-                          label: 'Colour code for the driver\'s camera',
-                          child: DecoratedBox(
-                            decoration: ShapeDecoration(
-                              shape: AlongCraft.border(28).copyWith(
-                                side: BorderSide(color: p.line, width: 2),
-                              ),
+                  child: optical
+                      ? _OpticalFace(
+                          pairing: widget.pairing,
+                          frame: widget.frames[_frame],
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _Shape(choice: widget.pairing, size: 120),
+                            const SizedBox(height: 16),
+                            Text(
+                              widget.pairing.label,
+                              key: const Key('na_me_show_label'),
+                              style: AlongType.title(p),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              // Photosensitivity (WCAG 2.3.1): the white sync
-                              // frame flashes ~0.5/s; the 6 Hz colour frames
-                              // stay under the small-area limit (152 dp is
-                              // well below 25% of a 10° field at arm's length).
-                              child: SizedBox.square(
-                                key: const Key('na_me_signal'),
-                                dimension: 152,
-                                child: DecoratedBox(
-                                  decoration: ShapeDecoration(
-                                    color: Color(
-                                      0xFF000000 | widget.frames[_frame],
-                                    ),
-                                    shape: AlongCraft.border(20),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Camera code',
-                          style: AlongType.label(p).copyWith(color: p.muted),
-                        ),
-                      ],
-                    ],
-                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -245,6 +203,89 @@ class _AlongNaMeShowScreenState extends State<AlongNaMeShowScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The optical face of the show card. The camera code is the 0-tap path,
+/// so it leads; the pairing sits under it as the 1-tap fallback the driver
+/// taps if the camera can't read the code.
+class _OpticalFace extends StatelessWidget {
+  const _OpticalFace({required this.pairing, required this.frame});
+
+  final AlongNaMeChoice pairing;
+  final int frame;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Semantics(
+                label: 'Colour code for the driver\'s camera',
+                // Photosensitivity (WCAG 2.3.1): the white sync frame
+                // flashes ~0.5/s; the 6 Hz colour frames stay under the
+                // small-area limit (152 dp is well below 25% of a 10°
+                // field at arm's length).
+                child: DecoratedBox(
+                  decoration: ShapeDecoration(
+                    color: p.recessed,
+                    shape: AlongCraft.border(28),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: SizedBox.square(
+                      key: const Key('na_me_signal'),
+                      dimension: 152,
+                      child: DecoratedBox(
+                        decoration: ShapeDecoration(
+                          color: Color(0xFF000000 | frame),
+                          shape: AlongCraft.border(20),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Camera code',
+            style: AlongType.label(p).copyWith(color: p.muted),
+          ),
+          const SizedBox(height: 16),
+          Container(height: 1, color: p.line),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              _Shape(choice: pairing, size: 48),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pairing.label,
+                      key: const Key('na_me_show_label'),
+                      style: AlongType.title(p),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'If the camera misses, they tap this',
+                      style: AlongType.label(p).copyWith(color: p.muted),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -305,16 +346,42 @@ class AlongNaMeCameraView extends StatelessWidget {
                 _Reticle(locked: locked),
                 const SizedBox(height: 20),
                 AnimatedSwitcher(
-                  duration: AlongMoves.lockOn.duration,
-                  child: Text(
-                    locked
-                        ? 'Got it. Hold still.'
-                        : 'Fit their screen inside the corners',
+                  duration: AlongMotionPolicy.reduced(context)
+                      ? Duration.zero
+                      : AlongMoves.lockOn.duration,
+                  child: DecoratedBox(
                     key: ValueKey(locked),
-                    textAlign: TextAlign.center,
-                    style: AlongType.label(p).copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                    // Circular radius, not superellipse: host-stable over
+                    // the camera feed.
+                    decoration: BoxDecoration(
+                      color: const Color(0xA6000000),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 10, 16, 10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AlongIcon(
+                            locked ? AlongIcons.check : AlongIcons.locate,
+                            size: 20,
+                            color: locked
+                                ? AlongColors.brandYellow
+                                : Colors.white,
+                            tone: false,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            locked
+                                ? 'Got it. Hold still.'
+                                : 'Fit their screen inside the corners',
+                            style: AlongType.label(p).copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -452,25 +519,32 @@ class AlongNaMeTapMatch extends StatelessWidget {
                 child: LayoutBuilder(
                   builder: (context, c) {
                     // Tiles share the height so the grid meets the PIN button.
-                    final tileH = (c.maxHeight - 12) / 2;
-                    return Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        for (var i = 0; i < options.length; i++)
-                          SizedBox(
-                            width: (c.maxWidth - 12) / 2,
-                            height: tileH,
-                            child: _ChoiceTile(
-                              key: Key('na_me_choice_$i'),
-                              choice: options[i],
-                              busy: checking == options[i],
-                              onTap: checking == null
-                                  ? () => onPick(options[i])
-                                  : null,
+                    // Short screens and large text: keep tiles tappable and
+                    // let the grid scroll rather than squash.
+                    final tileH = math.max(112.0, (c.maxHeight - 12) / 2);
+                    return SingleChildScrollView(
+                      physics: tileH * 2 + 12 > c.maxHeight
+                          ? null
+                          : const NeverScrollableScrollPhysics(),
+                      child: Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          for (var i = 0; i < options.length; i++)
+                            SizedBox(
+                              width: (c.maxWidth - 12) / 2,
+                              height: tileH,
+                              child: _ChoiceTile(
+                                key: Key('na_me_choice_$i'),
+                                choice: options[i],
+                                busy: checking == options[i],
+                                onTap: checking == null
+                                    ? () => onPick(options[i])
+                                    : null,
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -593,16 +667,16 @@ class AlongNaMeNoMatch extends StatelessWidget {
               Center(
                 child: DecoratedBox(
                   decoration: ShapeDecoration(
-                    color: p.ink,
+                    color: p.recessed,
                     shape: AlongCraft.border(24),
                   ),
                   child: SizedBox.square(
-                    dimension: 88,
+                    dimension: 80,
                     child: Center(
                       child: AlongIcon(
                         AlongIcons.notEquals,
-                        size: 44,
-                        color: p.onInk,
+                        size: 40,
+                        color: p.ink,
                         tone: false,
                       ),
                     ),
@@ -651,8 +725,9 @@ class AlongNaMeNoMatch extends StatelessWidget {
 /// The match ([AlongMoves.match], docs/art-direction.md "The match"). Shown
 /// on both phones only once the server (or the driver's local check of the
 /// optical code) confirms. The pairing colour floods out from the centre,
-/// the shape morphs into a check, and the haptic pattern plays. Done in
-/// 1 s. The driver then sees one Start button; the rider's screen closes
+/// Two phones link around the pairing, the pairing colour blooms out in
+/// one smooth ramp, an ink seal lands and a check draws on, with the haptic
+/// and chime on the seal. Done in 1 s; Start is live from the first frame. The driver then sees one Start button; the rider's screen closes
 /// itself. Reduced motion shows the rest pose at once.
 class AlongNaMeCelebration extends StatefulWidget {
   const AlongNaMeCelebration({
@@ -695,19 +770,25 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
     duration: AlongMoves.match.duration,
   );
   Timer? _done;
+  Timer? _beat;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || widget.progress != null) return;
-      AlongHaptics.match(context);
-      widget.onChime?.call();
-      if (AlongMotionPolicy.reduced(context)) {
+      final reduced = AlongMotionPolicy.reduced(context);
+      if (reduced) {
         _c.value = 1;
       } else {
         _c.forward(from: 0);
       }
+      // Haptic and chime land with the seal (t ≈ 0.45), not the tap.
+      _beat = Timer(reduced ? Duration.zero : AlongMoves.matchSeal, () {
+        if (!mounted) return;
+        AlongHaptics.match(context);
+        widget.onChime?.call();
+      });
       _done = Timer(const Duration(milliseconds: 1100), () {
         if (mounted) widget.onDone?.call();
       });
@@ -717,6 +798,7 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
   @override
   void dispose() {
     _done?.cancel();
+    _beat?.cancel();
     _c.dispose();
     super.dispose();
   }
@@ -733,16 +815,27 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
         animation: _c,
         builder: (context, _) {
           final t = widget.progress ?? _c.value;
-          final reveal = Curves.easeOutCubic.transform((t / 0.35).clamp(0, 1));
-          final morph = AlongCurves.settle.transform(
-            ((t - 0.3) / 0.45).clamp(0, 1),
-          );
-          final text = ((t - 0.6) / 0.4).clamp(0.0, 1.0);
+          double phase(double from, double to, [Curve c = Curves.linear]) =>
+              c.transform(((t - from) / (to - from)).clamp(0.0, 1.0));
+          // Linking: the two phones slide in and meet at the pairing.
+          final link = phase(0, 0.3, AlongCurves.settle);
+          // Bloom: one smooth ramp of the pairing colour. Not a flash.
+          final bloom = phase(0.15, 0.62, Curves.easeInOutCubic);
+          // Seal: an ink disc lands on the shape, then the check draws.
+          final seal = phase(0.38, 0.68, Curves.easeOutBack);
+          final check = phase(0.5, 0.82, Curves.easeOutCubic);
+          final text = phase(0.55, 0.9, Curves.easeOutCubic);
+          // The button is live from frame one: the moment never blocks.
+          final button = phase(0, 0.2);
           return Stack(
             fit: StackFit.expand,
             children: [
               ClipPath(
-                clipper: _CircleReveal(reveal),
+                // Starts at the seal: higher when the Start button is below.
+                clipper: _CircleReveal(
+                  bloom,
+                  Alignment(0, widget.onStart != null ? -0.17 : -0.05),
+                ),
                 child: ColoredBox(color: flood),
               ),
               SafeArea(
@@ -753,66 +846,90 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
                     children: [
                       const Spacer(),
                       Center(
-                        child: SizedBox.square(
-                          dimension: 160,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Opacity(
-                                opacity: 1 - morph,
-                                child: Transform.scale(
-                                  scale: 1 - 0.4 * morph,
-                                  // An outline, not a filled glyph: a solid
-                                  // ink shape mid-reveal read as a hole.
-                                  child: _Shape(
-                                    choice: widget.pairing,
-                                    size: 140,
-                                    color: ink,
-                                    stroke: 8,
+                        child: SizedBox(
+                          width: 280,
+                          height: 176,
+                          child: CustomPaint(
+                            painter: _LinkPainter(
+                              link: link,
+                              bloom: bloom,
+                              flood: flood,
+                              line: Color.lerp(p.ink, ink, bloom)!,
+                              seal: seal.clamp(0.0, 1.0),
+                              ink: ink,
+                            ),
+                            child: Center(
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Opacity(
+                                    opacity: 1 - seal.clamp(0.0, 1.0),
+                                    child: Transform.scale(
+                                      scale: 0.7 + 0.3 * link,
+                                      child: _Shape(
+                                        choice: widget.pairing,
+                                        size: 96,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Transform.scale(
+                                    scale: seal,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: ink,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: SizedBox.square(
+                                        dimension: 120,
+                                        child: CustomPaint(
+                                          painter: _CheckPainter(check, flood),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              CustomPaint(
-                                size: const Size.square(120),
-                                painter: _CheckPainter(morph, ink),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(height: 24),
                       Opacity(
                         opacity: text,
-                        child: Column(
-                          children: [
-                            Text(
-                              widget.title,
-                              key: const Key('na_me_match_title'),
-                              textAlign: TextAlign.center,
-                              style: AlongType.display(p).copyWith(color: ink),
-                            ),
-                            if (widget.subtitle != null) ...[
-                              const SizedBox(height: 8),
+                        child: Transform.translate(
+                          offset: Offset(0, 8 * (1 - text)),
+                          child: Column(
+                            children: [
                               Text(
-                                widget.subtitle!,
+                                widget.title,
+                                key: const Key('na_me_match_title'),
                                 textAlign: TextAlign.center,
-                                style: AlongType.body(
-                                  p,
-                                ).copyWith(color: ink.withValues(alpha: 0.86)),
+                                style: AlongType.display(p)
+                                    .copyWith(color: ink),
                               ),
+                              if (widget.subtitle != null) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  widget.subtitle!,
+                                  textAlign: TextAlign.center,
+                                  style: AlongType.body(p).copyWith(
+                                    color: ink.withValues(alpha: 0.86),
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
                       const Spacer(),
                       if (widget.onStart != null)
                         Opacity(
-                          opacity: text,
+                          opacity: button,
                           child: _FloodButton(
                             label: widget.startLabel ?? 'Start trip',
-                            ink: ink,
-                            flood: flood,
-                            onTap: text > 0 ? widget.onStart! : null,
+                            ink: Color.lerp(p.ink, ink, bloom)!,
+                            flood: Color.lerp(p.onInk, flood, bloom)!,
+                            onTap: widget.onStart!,
                           ),
                         ),
                     ],
@@ -825,6 +942,85 @@ class _AlongNaMeCelebrationState extends State<AlongNaMeCelebration>
       ),
     );
   }
+}
+
+/// Two phones slide in from the sides and meet at the pairing; three soft
+/// rings ripple out as they link, then everything hands over to the bloom.
+class _LinkPainter extends CustomPainter {
+  _LinkPainter({
+    required this.link,
+    required this.bloom,
+    required this.flood,
+    required this.line,
+    required this.seal,
+    required this.ink,
+  });
+
+  final double seal;
+  final Color ink;
+  final double link;
+  final double bloom;
+  final Color flood;
+  final Color line;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    // Rest pose: two tone-on-tone halos hold the seal.
+    for (final r in [80.0, 100.0]) {
+      canvas.drawCircle(
+        c,
+        r * (0.9 + 0.1 * seal),
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = ink.withValues(alpha: 0.12 * seal),
+      );
+    }
+    final fade = (1 - bloom * 1.6).clamp(0.0, 1.0);
+    if (fade <= 0) return;
+    // Ripples: alpha only, no luminance jump.
+    for (var i = 0; i < 3; i++) {
+      final r = (link - i * 0.18).clamp(0.0, 1.0);
+      if (r <= 0) continue;
+      canvas.drawCircle(
+        c,
+        56 + 64 * r,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3
+          ..color = flood.withValues(alpha: (1 - r) * 0.7 * fade),
+      );
+    }
+    // Phones: travel from the edges to just outside the shape.
+    final travel = (1 - link) * 40;
+    for (final side in [-1.0, 1.0]) {
+      final x = c.dx + side * (104 + travel);
+      final rect = RRect.fromRectAndRadius(
+        Rect.fromCenter(center: Offset(x, c.dy), width: 36, height: 64),
+        const Radius.circular(10),
+      );
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..color = line.withValues(alpha: fade);
+      canvas.drawRRect(rect, paint);
+      canvas.drawLine(
+        Offset(x - 6, c.dy + 24),
+        Offset(x + 6, c.dy + 24),
+        paint..strokeCap = StrokeCap.round,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_LinkPainter old) =>
+      old.link != link ||
+      old.seal != seal ||
+      old.ink != ink ||
+      old.bloom != bloom ||
+      old.flood != flood ||
+      old.line != line;
 }
 
 class _FloodButton extends StatelessWidget {
@@ -870,18 +1066,19 @@ class _FloodButton extends StatelessWidget {
 }
 
 class _CircleReveal extends CustomClipper<Path> {
-  _CircleReveal(this.t);
+  _CircleReveal(this.t, this.origin);
   final double t;
+  final Alignment origin;
 
   @override
   Path getClip(Size size) {
-    final r = size.longestSide * 0.75 * t;
+    final r = size.longestSide * 1.1 * t;
     return Path()
-      ..addOval(Rect.fromCircle(center: size.center(Offset.zero), radius: r));
+      ..addOval(Rect.fromCircle(center: origin.alongSize(size), radius: r));
   }
 
   @override
-  bool shouldReclip(_CircleReveal old) => old.t != t;
+  bool shouldReclip(_CircleReveal old) => old.t != t || old.origin != origin;
 }
 
 class _CheckPainter extends CustomPainter {
