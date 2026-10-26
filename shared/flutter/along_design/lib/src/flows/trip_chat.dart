@@ -1,3 +1,4 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
@@ -124,7 +125,20 @@ class _AlongTripChatSheetState extends State<AlongTripChatSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 12, 4),
+              padding: const EdgeInsets.only(top: 8),
+              child: Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: ShapeDecoration(
+                    color: p.ink.withValues(alpha: 0.18),
+                    shape: AlongCraft.border(2),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 12, 4),
               child: Row(
                 children: [
                   Expanded(
@@ -146,17 +160,7 @@ class _AlongTripChatSheetState extends State<AlongTripChatSheet> {
             ),
             Flexible(
               child: lines.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-                      child: Text(
-                        widget.closed
-                            ? 'This trip has ended. Chat is closed.'
-                            : 'Tap a reply to send it, or type below. '
-                                  'Your number stays private.',
-                        key: const Key('trip_chat_empty'),
-                        style: AlongType.body(p).copyWith(color: soft),
-                      ),
-                    )
+                  ? _Empty(closed: widget.closed)
                   : ListView.builder(
                       key: const Key('trip_chat_list'),
                       reverse: true,
@@ -187,18 +191,21 @@ class _AlongTripChatSheetState extends State<AlongTripChatSheet> {
                 ),
               )
             else ...[
-              SizedBox(
-                height: 56,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
-                  itemCount: widget.quickReplies.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, i) => _QuickReply(
-                    key: Key('trip_chat_quick_$i'),
-                    label: widget.quickReplies[i],
-                    onTap: () => _send(widget.quickReplies[i]),
-                  ),
+              Padding(
+                key: const Key('trip_chat_quick_replies'),
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var i = 0; i < widget.quickReplies.length; i++)
+                      _QuickReply(
+                        key: Key('trip_chat_quick_$i'),
+                        label: widget.quickReplies[i],
+                        primary: lines.isEmpty && i < 2,
+                        onTap: () => _send(widget.quickReplies[i]),
+                      ),
+                  ],
                 ),
               ),
               Padding(
@@ -276,13 +283,21 @@ class _Bubble extends StatelessWidget {
     final failed = line.status == AlongChatStatus.failed;
     final bubble = Container(
       constraints: BoxConstraints(
+        minHeight: 44,
         maxWidth: MediaQuery.sizeOf(context).width * 0.74,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: AlongCraft.fill(
-        mine ? p.ink : p.surface,
-        corner: 20,
-        side: mine ? BorderSide.none : BorderSide(color: p.line),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+      decoration: ShapeDecoration(
+        color: mine ? p.ink : p.surface,
+        shape: SmoothRectangleBorder(
+          side: mine ? BorderSide.none : BorderSide(color: p.line),
+          borderRadius: SmoothBorderRadius.only(
+            topLeft: _corner(20),
+            topRight: _corner(20),
+            bottomLeft: _corner(mine ? 20 : 6),
+            bottomRight: _corner(mine ? 6 : 20),
+          ),
+        ),
       ),
       child: Text(
         line.body,
@@ -314,6 +329,9 @@ class _Bubble extends StatelessWidget {
   }
 }
 
+SmoothRadius _corner(double r) =>
+    SmoothRadius(cornerRadius: r, cornerSmoothing: AlongCraft.smoothing);
+
 class _Status extends StatelessWidget {
   const _Status({required this.line});
 
@@ -322,7 +340,7 @@ class _Status extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
-    final soft = p.ink.withValues(alpha: 0.72);
+    final soft = p.ink.withValues(alpha: 0.86);
     final (IconData icon, String label, Color color) = switch (line.status) {
       AlongChatStatus.sending => (AlongIcons.schedule, 'Sending', soft),
       AlongChatStatus.sent => (AlongIcons.check, 'Delivered', soft),
@@ -339,12 +357,13 @@ class _Status extends StatelessWidget {
         key: Key('trip_chat_status_${line.status.name}'),
         mainAxisSize: MainAxisSize.min,
         children: [
-          AlongIcon(icon, size: 14, color: color, tone: false),
+          AlongIcon(icon, size: 16, color: color, tone: false),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
               label,
-              style: AlongType.caption(p).copyWith(color: color),
+              style: AlongType.caption(p)
+                  .copyWith(color: color, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -354,31 +373,100 @@ class _Status extends StatelessWidget {
 }
 
 class _QuickReply extends StatelessWidget {
-  const _QuickReply({super.key, required this.label, required this.onTap});
+  const _QuickReply({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.primary = false,
+  });
 
   final String label;
   final VoidCallback onTap;
+
+  /// First replies in an empty thread: filled so the first tap is obvious.
+  final bool primary;
 
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
     return Material(
-      color: p.surface,
-      shape: AlongCraft.border(16, side: BorderSide(color: p.line)),
+      color: primary ? p.ink : p.surface,
+      shape: AlongCraft.border(
+        16,
+        side: primary ? BorderSide.none : BorderSide(color: p.line),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Center(
-            widthFactor: 1,
-            child: Text(
-              label,
-              maxLines: 1,
-              style: AlongType.label(p).copyWith(fontWeight: FontWeight.w600),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Center(
+              widthFactor: 1,
+              heightFactor: 1,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: AlongType.label(p).copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: primary ? p.onInk : p.ink,
+                ),
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Empty extends StatelessWidget {
+  const _Empty({required this.closed});
+
+  final bool closed;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Padding(
+      key: const Key('trip_chat_empty'),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            alignment: Alignment.center,
+            decoration: AlongCraft.fill(
+              p.surface,
+              corner: 16,
+              side: BorderSide(color: p.line),
+            ),
+            child: AlongIcon(AlongIcons.chat, size: 28, color: p.ink),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  closed ? 'Chat is closed' : 'Say hi, one tap below',
+                  style: AlongType.title(p),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  closed
+                      ? 'This trip has ended.'
+                      : 'Your number stays private.',
+                  style: AlongType.body(p)
+                      .copyWith(color: p.ink.withValues(alpha: 0.72)),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -618,26 +618,47 @@ Widget _chatStage(List<AlongChatLine> lines) {
   return Builder(
     builder: (context) {
       final p = AlongPalette.of(context);
-      return Scaffold(
-        backgroundColor: Color.alphaBlend(p.ink.withValues(alpha: 0.32), p.bg),
-        body: Align(
-          alignment: Alignment.bottomCenter,
-          child: DecoratedBox(
-            decoration: AlongCraft.fill(p.bg, corner: 32, top: true),
-            child: AlongTripChatSheet(
-              otherName: 'Musa',
-              lines: lines,
-              quickReplies: const [
-                "I'm at the pickup",
-                'Running 2 min late',
-                'Where are you?',
-                'Okay, thanks',
-              ],
-              onSend: (_) {},
-              onRetry: (_) {},
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          AlongPickupHandoffScreen(
+            onCall: () {},
+            onMessage: () {},
+            secondsAway: 95,
+            driverName: 'Musa',
+            plate: 'ABJ 482 KE',
+            car: 'Silver Toyota Corolla',
+            pin: '4827',
+            pickupPoint: 'Wuse Market, Gate 2',
+          ),
+          ColoredBox(
+            color: Colors.black.withValues(
+              alpha: Theme.of(context).brightness == Brightness.dark
+                  ? 0.6
+                  : 0.42,
             ),
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Material(
+              color: p.bg,
+              shape: AlongCraft.borderVertical(top: 32),
+              clipBehavior: Clip.antiAlias,
+              child: AlongTripChatSheet(
+                otherName: 'Musa',
+                lines: lines,
+                quickReplies: const [
+                  "I'm at the pickup",
+                  'Running 2 min late',
+                  'Where are you?',
+                  'Okay, thanks',
+                ],
+                onSend: (_) {},
+                onRetry: (_) {},
+              ),
+            ),
+          ),
+        ],
       );
     },
   );

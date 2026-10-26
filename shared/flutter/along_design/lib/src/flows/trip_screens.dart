@@ -2422,7 +2422,8 @@ class _TripRow extends StatelessWidget {
   }
 }
 
-/// Unread count on a button's top-right corner; pops in on [AlongMoves.pop].
+/// Unread count inside a button's right edge, so it never collides with a
+/// neighbour or the screen edge at large text. Pops in on [AlongMoves.pop].
 /// Hidden at zero.
 class AlongUnreadBadge extends StatelessWidget {
   const AlongUnreadBadge({super.key, required this.count, required this.child});
@@ -2438,27 +2439,31 @@ class AlongUnreadBadge extends StatelessWidget {
       children: [
         child,
         Positioned(
-          top: -6,
-          right: -2,
-          child: AnimatedScale(
-            scale: count > 0 ? 1 : 0,
-            duration: AlongMoves.pop.of(context),
-            curve: AlongMoves.pop.curve,
-            child: Container(
-              key: const Key('handoff_message_unread'),
-              constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              alignment: Alignment.center,
-              decoration: AlongCraft.fill(
-                p.danger,
-                corner: 8,
-                side: BorderSide(color: p.bg, width: 2),
-              ),
-              child: Text(
-                count > 9 ? '9+' : '$count',
-                textScaler: TextScaler.noScaling,
-                style: AlongType.caption(p)
-                    .copyWith(color: p.dangerOn, fontWeight: FontWeight.w700),
+          top: 0,
+          bottom: 0,
+          right: 12,
+          child: Center(
+            child: AnimatedScale(
+              scale: count > 0 ? 1 : 0,
+              duration: AlongMoves.pop.of(context),
+              curve: AlongMoves.pop.curve,
+              child: Container(
+                key: const Key('handoff_message_unread'),
+                constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 7),
+
+                decoration: AlongCraft.fill(p.danger, corner: 8),
+                child: Center(
+                  widthFactor: 1,
+                  heightFactor: 1,
+                  child: Text(
+                    count > 9 ? '9+' : '$count',
+                    textScaler: TextScaler.noScaling,
+                    style: AlongType.caption(
+                      p,
+                    ).copyWith(color: p.dangerOn, fontWeight: FontWeight.w700),
+                  ),
+                ),
               ),
             ),
           ),
