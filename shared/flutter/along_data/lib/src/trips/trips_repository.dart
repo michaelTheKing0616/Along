@@ -175,6 +175,90 @@ class TripsRepository {
     }
   }
 
+  /// The trip's Na Me handshake secret (RLS: only the rider and the accepted
+  /// driver can read it). Cached so the optical code works offline.
+  Future<String?> naMeSecret(String tripId) async {
+    final key = 'na_me_secret:$tripId';
+    try {
+      final rows = await _gateway.selectRows(
+        'trip_handshakes',
+        filters: {'trip_id': tripId},
+      );
+      final secret = rows.isEmpty ? null : rows.first['secret'] as String?;
+      if (secret != null) {
+        await _db
+            .into(_db.kvStore)
+            .insertOnConflictUpdate(
+              KvStoreCompanion.insert(key: key, value: secret),
+            );
+      }
+      return secret;
+    } catch (_) {
+      final rows = await (_db.select(
+        _db.kvStore,
+      )..where((t) => t.key.equals(key))).get();
+      return rows.isEmpty ? null : rows.first.value;
+    }
+  }
+
+  /// The driver's four tap-match choices: the real pairing plus three decoys.
+  Future<NaMeTapOptions> naMeTapOptions(String tripId) async {
+    try {
+      final raw = await _gateway.rpc(
+        'na_me_tap_options',
+        params: {'p_trip_id': tripId},
+      );
+      return NaMeTapOptions.fromJson(raw);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Driver proves the match ({method: tap|optical, ...}). A match boards the
+  /// rider through the same gate as [verifyTripPin].
+  Future<NaMeMatchResult> confirmNaMeMatch(
+    String tripId,
+    Map<String, dynamic> proof,
+  ) async {
+    try {
+      final raw = await _gateway.rpc(
+        'confirm_na_me_match',
+        params: {'p_trip_id': tripId, 'p_proof': proof},
+      );
+      await _clearPendingNaMeProof(tripId);
+      return NaMeMatchResult.fromJson(raw);
+    } catch (e) {
+      throw mapSupabaseError(e);
+    }
+  }
+
+  /// Keeps an optical proof the driver's phone already verified locally, for
+  /// when the network is back. The server accepts proofs up to 10 min old.
+  Future<void> queueNaMeProof(String tripId, Map<String, dynamic> proof) => _db
+      .into(_db.kvStore)
+      .insertOnConflictUpdate(
+        KvStoreCompanion.insert(
+          key: 'na_me_proof:$tripId',
+          value: jsonEncode(proof),
+        ),
+      );
+
+  /// Sends a queued proof, if any. Returns null when nothing was queued.
+  Future<NaMeMatchResult?> flushNaMeProof(String tripId) async {
+    final rows = await (_db.select(
+      _db.kvStore,
+    )..where((t) => t.key.equals('na_me_proof:$tripId'))).get();
+    if (rows.isEmpty) return null;
+    final proof = jsonDecode(rows.first.value) as Map<String, dynamic>;
+    return confirmNaMeMatch(tripId, proof);
+  }
+
+  Future<void> _clearPendingNaMeProof(String tripId) async {
+    await (_db.delete(
+      _db.kvStore,
+    )..where((t) => t.key.equals('na_me_proof:$tripId'))).go();
+  }
+
   /// Rider asks for a fresh pickup PIN (accepted, not yet boarded). Returns
   /// the PIN now in force: the new one, or the old one when rate limited.
   Future<TripPinRefresh> regenerateTripPin(String tripId) async {
@@ -495,6 +579,60 @@ class TripPinRefresh {
   final String pin;
   final bool regenerated;
   final bool limited;
+}
+
+class NaMeTapOptions {
+  const NaMeTapOptions({
+    required this.options,
+    this.tapLocked = false,
+    this.attemptsLeft = 0,
+  });
+
+  final List<NaMePairing> options;
+  final bool tapLocked;
+  final int attemptsLeft;
+
+  factory NaMeTapOptions.fromJson(Object? raw) {
+    final m = raw is Map ? raw : const <String, dynamic>{};
+    final opts = m['options'] is List ? m['options'] as List : const <Object?>[];
+    final left = m['attempts_left'];
+    return NaMeTapOptions(
+      options: [
+        for (final o in opts)
+          if (o is Map) NaMePairing.fromJson(Map<String, dynamic>.from(o)),
+      ],
+      tapLocked: m['tap_locked'] == true,
+      attemptsLeft: left is num ? left.toInt() : 0,
+    );
+  }
+}
+
+class NaMeMatchResult {
+  const NaMeMatchResult({
+    required this.matched,
+    required this.attemptsLeft,
+    this.locked = false,
+    this.tapLocked = false,
+    this.rateLimited = false,
+  });
+
+  final bool matched;
+  final int attemptsLeft;
+  final bool locked;
+  final bool tapLocked;
+  final bool rateLimited;
+
+  factory NaMeMatchResult.fromJson(Object? raw) {
+    final m = raw is Map ? raw : const <String, dynamic>{};
+    final left = m['attempts_left'];
+    return NaMeMatchResult(
+      matched: m['matched'] == true,
+      attemptsLeft: left is num ? left.toInt() : 0,
+      locked: m['locked'] == true,
+      tapLocked: m['tap_locked'] == true,
+      rateLimited: m['rate_limited'] == true,
+    );
+  }
 }
 
 class TripPinResult {
