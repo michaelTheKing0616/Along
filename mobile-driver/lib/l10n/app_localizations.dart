@@ -2461,6 +2461,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open the point'**
   String get marketplaceEventSave;
+
+  /// In-app trip chat button; {name} is the other party's name
+  ///
+  /// In en, this message translates to:
+  /// **'Message {name}'**
+  String activeTripMessageRider(String name);
+
+  /// Trip chat button when the rider's name is unknown
+  ///
+  /// In en, this message translates to:
+  /// **'Message rider'**
+  String get activeTripMessageRiderUnknown;
 }
 
 class _AppLocalizationsDelegate

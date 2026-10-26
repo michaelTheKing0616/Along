@@ -1331,4 +1331,12 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get marketplaceEventSave => 'Open the point';
+
+  @override
+  String activeTripMessageRider(String name) {
+    return 'Zitere $name ozi';
+  }
+
+  @override
+  String get activeTripMessageRiderUnknown => 'Zitere onye njem ozi';
 }

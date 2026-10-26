@@ -8,5 +8,7 @@
   "accountCityLabel": "Birnin aiki",
   "accountCityHint": "Taswira, wuraren pack da buƙatu suna amfani da wannan birni",
   "driverBrandingLine": "Tuƙi tare da Along",
-  "settleCta": "Biya"
+  "settleCta": "Biya",
+  "activeTripMessageRider": "Aika wa {name} saƙo",
+  "activeTripMessageRiderUnknown": "Aika wa fasinja saƙo"
 }

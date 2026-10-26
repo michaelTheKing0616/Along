@@ -8,5 +8,6 @@
   "skip": "Skip am",
   "accountCityLabel": "Home city",
   "accountCityHint": "Map and search go use dis city if location no dey",
-  "homeSearchHint": "Where you dey go?"
+  "homeSearchHint": "Where you dey go?",
+  "activeTripMessage": "Send message give {name}"
 }

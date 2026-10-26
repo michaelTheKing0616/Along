@@ -8,5 +8,6 @@
   "skip": "Hapụ",
   "accountCityLabel": "Obodo ụlọ",
   "accountCityHint": "Maapụ na ọchụchọ na-eji obodo a mgbe enweghị ebe",
-  "homeSearchHint": "Ebee ka anyị ga?"
+  "homeSearchHint": "Ebee ka anyị ga?",
+  "activeTripMessage": "Zitere {name} ozi"
 }

@@ -2176,6 +2176,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{hour}:00 · {amount}'**
   String fareHistoryRow(int hour, String amount);
+
+  /// In-app trip chat button; {name} is the other party's name
+  ///
+  /// In en, this message translates to:
+  /// **'Message {name}'**
+  String activeTripMessage(String name);
 }
 
 class _AppLocalizationsDelegate

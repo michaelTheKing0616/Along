@@ -1151,4 +1151,9 @@ class AppLocalizationsYo extends AppLocalizations {
   String fareHistoryRow(int hour, String amount) {
     return '$hour:00 · $amount';
   }
+
+  @override
+  String activeTripMessage(String name) {
+    return 'Fi ọ̀rọ̀ ránṣẹ́ sí $name';
+  }
 }

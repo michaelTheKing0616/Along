@@ -8,5 +8,6 @@
   "skip": "Fò",
   "accountCityLabel": "Ìlú ilé",
   "accountCityHint": "Maapu àti wíwá n lo ìlú yìí nígbà tí a kò leè rí ibùdó",
-  "homeSearchHint": "Níbo ni a ó lọ?"
+  "homeSearchHint": "Níbo ni a ó lọ?",
+  "activeTripMessage": "Fi ọ̀rọ̀ ránṣẹ́ sí {name}"
 }

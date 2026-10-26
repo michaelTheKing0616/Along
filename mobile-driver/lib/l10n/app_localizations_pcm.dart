@@ -1331,4 +1331,12 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get marketplaceEventSave => 'Open the point';
+
+  @override
+  String activeTripMessageRider(String name) {
+    return 'Send message give $name';
+  }
+
+  @override
+  String get activeTripMessageRiderUnknown => 'Send message give rider';
 }
