@@ -257,6 +257,85 @@ void main() {
       initialResult: const AlongPinResult(AlongPinVerdict.locked),
       onSubmit: (_) async => const AlongPinResult(AlongPinVerdict.locked),
     ),
+    'na_me_show': () => AlongNaMeShowScreen(
+      pairing: _naMe,
+      driverName: 'Musa',
+      frames: NaMeOptical.frames(
+        '3f9a1c0d5e7b2a4c6e8f0a1b3c5d7e9f01234567',
+        177645000,
+      ),
+      frameIndex: 3,
+      onClose: () {},
+    ),
+    'na_me_show_tap': () =>
+        AlongNaMeShowScreen(pairing: _naMe, driverName: 'Musa', onClose: () {}),
+    'na_me_camera': () => AlongNaMeCameraView(
+      riderName: 'Ada',
+      preview: const _CameraScene(),
+      fallbackProgress: 0.35,
+      onPickInstead: () {},
+      onClose: () {},
+    ),
+    'na_me_tap': () => AlongNaMeTapMatch(
+      riderName: 'Ada',
+      options: _naMeOptions,
+      onPick: (_) {},
+      onUsePin: () {},
+      onClose: () {},
+    ),
+    'na_me_tap_checking': () => AlongNaMeTapMatch(
+      riderName: 'Ada',
+      options: _naMeOptions,
+      checking: _naMeOptions[2],
+      onPick: (_) {},
+      onUsePin: () {},
+      onClose: () {},
+    ),
+    'na_me_match_20': () => const AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'Ada is in',
+      subtitle: 'Matched. Start when you\'re ready.',
+      progress: 0.2,
+    ),
+    'na_me_match_55': () => const AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'Ada is in',
+      subtitle: 'Matched. Start when you\'re ready.',
+      progress: 0.55,
+    ),
+    'na_me_match_driver': () => AlongNaMeCelebration(
+      pairing: _naMe,
+      title: 'Ada is in',
+      subtitle: 'Matched. Start when you\'re ready.',
+      startLabel: 'Start trip',
+      onStart: () {},
+      progress: 1,
+    ),
+    'na_me_match_rider': () => const AlongNaMeCelebration(
+      pairing: AlongNaMeChoice(
+        colorToken: 'color.naMe.yellow',
+        shape: 'star',
+        label: 'Yellow Star',
+      ),
+      title: 'You\'re matched',
+      subtitle: 'Get in. Musa will start the trip.',
+      progress: 1,
+    ),
+    'na_me_no_match': () => AlongNaMeNoMatch(
+      riderName: 'Ada',
+      result: const AlongNaMeResult(
+        AlongNaMeVerdict.wrong,
+        attemptsLeft: 2,
+        tapLocked: true,
+      ),
+      onUsePin: () {},
+    ),
+    'na_me_no_match_retry': () => AlongNaMeNoMatch(
+      riderName: 'Ada',
+      result: const AlongNaMeResult(AlongNaMeVerdict.failed),
+      onRetry: () {},
+      onUsePin: () {},
+    ),
     'trip_earnings_empty': () => const AlongDriverEarningsScreen(
       today: AlongEarningsPeriod.emptyToday,
       week: AlongEarningsPeriod.empty,
@@ -275,6 +354,12 @@ void main() {
     'trip_handoff_unread',
     'trip_chat',
     'trip_live_message',
+    'na_me_show',
+    'na_me_camera',
+    'na_me_tap',
+    'na_me_match_driver',
+    'na_me_match_rider',
+    'na_me_no_match',
   };
   for (final stage in tripStages.entries) {
     final frames = [
@@ -697,5 +782,62 @@ Widget _chatStage(List<AlongChatLine> lines) {
         ],
       );
     },
+  );
+}
+
+const _naMe = AlongNaMeChoice(
+  colorToken: 'color.naMe.green',
+  shape: 'circle',
+  label: 'Green Circle',
+);
+const _naMeOptions = [
+  AlongNaMeChoice(
+    colorToken: 'color.naMe.blue',
+    shape: 'triangle',
+    label: 'Blue Triangle',
+  ),
+  _naMe,
+  AlongNaMeChoice(
+    colorToken: 'color.naMe.orange',
+    shape: 'star',
+    label: 'Orange Star',
+  ),
+  AlongNaMeChoice(
+    colorToken: 'color.naMe.purple',
+    shape: 'hexagon',
+    label: 'Purple Hexagon',
+  ),
+];
+
+/// Stand-in for the camera feed: a dim street with a phone held up.
+class _CameraScene extends StatelessWidget {
+  const _CameraScene();
+
+  @override
+  Widget build(BuildContext context) => const DecoratedBox(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFF3A4150), Color(0xFF1C1F26)],
+      ),
+    ),
+    child: Align(
+      alignment: Alignment(0, -0.3),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Color(0xFF0E0F12),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(8, 24, 8, 24),
+          child: SizedBox(
+            width: 96,
+            height: 96,
+            child: ColoredBox(color: Color(0xFF2F6BFF)),
+          ),
+        ),
+      ),
+    ),
   );
 }

@@ -30,6 +30,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logos/
+    - assets/sounds/
     - assets/icons/android/mipmap-mdpi/
     - assets/icons/android/mipmap-hdpi/
     - assets/icons/android/mipmap-xhdpi/

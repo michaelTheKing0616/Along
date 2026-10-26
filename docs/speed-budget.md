@@ -21,7 +21,10 @@ commit tap.
 | --- | --- | --- | --- | --- | --- |
 | Book | Rider | Trip options | 1 (Request on the option card) | < 1 s to "Finding" | `mobile-rider/test/trip_options_one_tap_test.dart` |
 | Join a shared ride | Rider | Trip options, passing or parked vehicle | 1 (same Request action) | < 1 s | same test |
-| Board / PIN | Driver | Active trip | 1 (Enter PIN) + 4 digits; the 4th digit submits | < 3 s | `along_design/test/speed_budget_test.dart` |
+| Board / Na Me optical | Driver | Na Me camera | 0 (the camera reads the rider's screen) | < 2 s from aiming | `along_design/test/speed_budget_test.dart` |
+| Board / Na Me tap-match | Driver | Na Me tap-match (after 6 s with no decode) | 1 (the rider's colour and shape) | < 1 s | same |
+| Board / PIN | Driver | Na Me tap-match or no-match | 1 (Use the PIN) + 4 digits; the 4th digit submits | < 3 s | same |
+| Board (rider side) | Rider | Na Me show screen (opens itself) | 0 | n/a | same |
 | Board (rider confirms) | Rider | Meet vehicle | 1 (Boarded) | < 1 s | `live_trip_screens_test.dart` |
 | New PIN | Rider | Handoff card | 1 (Get a new PIN) | < 1 s | `live_trip_wiring_test.dart` |
 | Pay | Rider | Pay driver sheet | 1 (Pay, amount pre-filled) then the provider's checkout | < 2 s to checkout | `mobile-rider/test/payments_test.dart` |

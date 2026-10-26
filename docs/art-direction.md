@@ -134,6 +134,16 @@ Motion is named, not tuned per widget. `AlongMoves` in `motion.dart`:
 - **swap**: stagger and settle when a list is replaced (period switch).
 - **breathe**: slow opacity pulse on skeletons while the ETA is worked out.
 - **pop**: elastic scale-in on the star that was just rated.
+- **shake**: the PIN boxes refuse a wrong code.
+- **match** ("The match"): the Na Me handshake is confirmed. On both phones
+  the pairing colour floods out from the centre (0 to 35%), the shape shrinks
+  and fades as a check draws in its place (30 to 75%), then the title fades
+  in. 1 s in total, under the 1.2 s budget. It pairs with the `match` haptic
+  (heavy, medium, light, 120 ms apart) and the chime asset
+  (`assets/sounds/na_me_chime.wav`, synthesised in-repo, no licence
+  needed). It plays only on a confirmed match; a wrong match is a neutral
+  grey screen that never shows a colour. With reduced motion the rest pose
+  shows at once and the haptic is skipped.
 
 `AlongMove.of(context)` returns zero duration when reduced motion is on or in
 tests. Haptics pair with moves: tick on a rating star, selection on a period
