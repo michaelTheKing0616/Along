@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: along_core,along_realtime
+dependency_overrides:
+  along_core:
+    path: ../along_core
+  along_realtime:
+    path: ../along_realtime

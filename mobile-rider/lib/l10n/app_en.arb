@@ -485,8 +485,14 @@
   "@tripOptionsRequestLeg": {
     "description": "R-07 per-leg request CTA",
     "placeholders": {
-      "leg": { "type": "int", "example": "2" },
-      "fare": { "type": "String", "example": "₦80" }
+      "leg": {
+        "type": "int",
+        "example": "2"
+      },
+      "fare": {
+        "type": "String",
+        "example": "₦80"
+      }
     }
   },
   "transferTitle": "Next leg",
@@ -501,7 +507,10 @@
   "@transferSupply": {
     "description": "R-14 live supply line",
     "placeholders": {
-      "bucket": { "type": "String", "example": "2–3 buses" }
+      "bucket": {
+        "type": "String",
+        "example": "2–3 buses"
+      }
     }
   },
   "transferRequestNextLeg": "Request next leg",
@@ -552,7 +561,10 @@
   "@wayfindingMapHint": {
     "description": "R-19 map mode placeholder",
     "placeholders": {
-      "count": { "type": "int", "example": "12" }
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
     }
   },
   "wayfindingNoSteps": "No steps available",
@@ -563,22 +575,34 @@
   "@meetVehicleArrivingIn": {
     "description": "R-11 driver ETA line",
     "placeholders": {
-      "minutes": { "type": "int", "example": "2" }
+      "minutes": {
+        "type": "int",
+        "example": "2"
+      }
     }
   },
   "meetVehicleWalkTo": "Walk {minutes} min to {park}",
   "@meetVehicleWalkTo": {
     "description": "R-11 walk-to-boarding line",
     "placeholders": {
-      "minutes": { "type": "int", "example": "3" },
-      "park": { "type": "String", "example": "Lugbe Park" }
+      "minutes": {
+        "type": "int",
+        "example": "3"
+      },
+      "park": {
+        "type": "String",
+        "example": "Lugbe Park"
+      }
     }
   },
   "meetVehicleNaMeHint": "Show this to your driver — {label}",
   "@meetVehicleNaMeHint": {
     "description": "R-11 Na Me chip caption",
     "placeholders": {
-      "label": { "type": "String", "example": "GREEN DIAMOND" }
+      "label": {
+        "type": "String",
+        "example": "GREEN DIAMOND"
+      }
     }
   },
   "meetVehicleDriverSignalLost": "Driver signal lost",
@@ -605,8 +629,14 @@
   "@activeTripStatus": {
     "description": "R-13 sheet peek line",
     "placeholders": {
-      "minutes": { "type": "int", "example": "14" },
-      "fare": { "type": "String", "example": "₦450" }
+      "minutes": {
+        "type": "int",
+        "example": "14"
+      },
+      "fare": {
+        "type": "String",
+        "example": "₦450"
+      }
     }
   },
   "activeTripExtend": "Extend",
@@ -645,15 +675,24 @@
   "@tripCompletePaidQuestion": {
     "description": "R-17 cash fare confirm when digital is off",
     "placeholders": {
-      "amount": { "type": "String", "example": "₦450" }
+      "amount": {
+        "type": "String",
+        "example": "₦450"
+      }
     }
   },
   "tripCompletePayQuestion": "Pay {amount} to {name}",
   "@tripCompletePayQuestion": {
     "description": "R-17 digital-first close-out heading",
     "placeholders": {
-      "amount": { "type": "String", "example": "₦450" },
-      "name": { "type": "String", "example": "Musa" }
+      "amount": {
+        "type": "String",
+        "example": "₦450"
+      },
+      "name": {
+        "type": "String",
+        "example": "Musa"
+      }
     }
   },
   "tripCompletePaidCash": "Paid cash",
@@ -692,7 +731,10 @@
   "@extendTripDestination": {
     "description": "R-15 selected destination label",
     "placeholders": {
-      "destination": { "type": "String", "example": "Wuse" }
+      "destination": {
+        "type": "String",
+        "example": "Wuse"
+      }
     }
   },
   "extendTripSend": "Send to driver",
@@ -707,8 +749,14 @@
   "@incomingExtensionBody": {
     "description": "R-15 driver proposal copy",
     "placeholders": {
-      "destination": { "type": "String", "example": "Wuse" },
-      "delta": { "type": "String", "example": "₦150" }
+      "destination": {
+        "type": "String",
+        "example": "Wuse"
+      },
+      "delta": {
+        "type": "String",
+        "example": "₦150"
+      }
     }
   },
   "incomingExtensionAccept": "Accept",
@@ -727,7 +775,10 @@
   "@payDriverCta": {
     "description": "R-27 primary pay button",
     "placeholders": {
-      "amount": { "type": "String", "example": "₦450" }
+      "amount": {
+        "type": "String",
+        "example": "₦450"
+      }
     }
   },
   "payDriverAmountLocked": "Amount locked to this trip",
@@ -742,7 +793,10 @@
   "@payDriverPending": {
     "description": "R-27 pending transfer heading",
     "placeholders": {
-      "amount": { "type": "String", "example": "₦450" }
+      "amount": {
+        "type": "String",
+        "example": "₦450"
+      }
     }
   },
   "payDriverCopyAccount": "Copy number",
@@ -769,7 +823,10 @@
   "@payDriverExpires": {
     "description": "R-27 transfer account countdown",
     "placeholders": {
-      "seconds": { "type": "int", "example": "540" }
+      "seconds": {
+        "type": "int",
+        "example": "540"
+      }
     }
   },
   "payDriverOpenCheckout": "Open bank page",
@@ -792,7 +849,10 @@
   "@payDriverCashOnly": {
     "description": "R-27 cash-only driver state",
     "placeholders": {
-      "name": { "type": "String", "example": "Musa" }
+      "name": {
+        "type": "String",
+        "example": "Musa"
+      }
     }
   },
   "payDriverInactive": "This code is no longer active",
@@ -823,9 +883,18 @@
   "@payDriverSuccessItemised": {
     "description": "R-27 itemised success (FM3)",
     "placeholders": {
-      "driverAmount": { "type": "String", "example": "₦416" },
-      "name": { "type": "String", "example": "Musa" },
-      "feeAmount": { "type": "String", "example": "₦34" }
+      "driverAmount": {
+        "type": "String",
+        "example": "₦416"
+      },
+      "name": {
+        "type": "String",
+        "example": "Musa"
+      },
+      "feeAmount": {
+        "type": "String",
+        "example": "₦34"
+      }
     }
   },
   "payDriverHistoryOptIn": "Add this trip to your history?",
@@ -920,7 +989,10 @@
   "@sosCallEmergency": {
     "description": "R-23 emergency tel button",
     "placeholders": {
-      "number": { "type": "String", "example": "112" }
+      "number": {
+        "type": "String",
+        "example": "112"
+      }
     }
   },
   "sosShareWithContact": "Share with a contact",
@@ -1025,14 +1097,20 @@
   "@shareTripExpires": {
     "description": "R-25 share expiry label",
     "placeholders": {
-      "date": { "type": "String", "example": "Sep 7" }
+      "date": {
+        "type": "String",
+        "example": "Sep 7"
+      }
     }
   },
   "shareTripSmsBody": "Track my Along trip: {url}",
   "@shareTripSmsBody": {
     "description": "R-25 SMS body",
     "placeholders": {
-      "url": { "type": "String", "example": "https://along.ng/s/abc" }
+      "url": {
+        "type": "String",
+        "example": "https://along.ng/s/abc"
+      }
     }
   },
   "accountProfileHeading": "PROFILE",
@@ -1070,7 +1148,9 @@
   "dayPlannerStopInProgress": "In progress · ETA {minutes} min",
   "@dayPlannerStopInProgress": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "dayPlannerStopReady": "Ready — tap Match now below",
@@ -1098,13 +1178,17 @@
   "sosContactWhatsapp": "WhatsApp {name}",
   "@sosContactWhatsapp": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "sosContactSms": "Text {name}",
   "@sosContactSms": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "emergencyContactsHeading": "EMERGENCY CONTACTS",
@@ -1116,7 +1200,9 @@
   "emergencyContactRemove": "Remove {name}",
   "@emergencyContactRemove": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "emergencyContactInvalidPhone": "Use a phone number like +2348012345678",
@@ -1126,7 +1212,9 @@
   "freeSeatCount": "{count} free",
   "@freeSeatCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seatStale": "Seat map is more than a minute old",
@@ -1180,8 +1268,12 @@
   "stageRadarSeats": "{free} of {total} free",
   "@stageRadarSeats": {
     "placeholders": {
-      "free": {"type": "int"},
-      "total": {"type": "int"}
+      "free": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "stageRadarEmpty": "No car is loading here yet",
@@ -1193,15 +1285,21 @@
   "fareShieldAnchored": "One offer, open for {seconds} seconds",
   "@fareShieldAnchored": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "fareHistoryTitle": "By hour",
   "fareHistoryRow": "{hour}:00 · {amount}",
   "@fareHistoryRow": {
     "placeholders": {
-      "hour": {"type": "int"},
-      "amount": {"type": "String"}
+      "hour": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "activeTripMessage": "Message {name}",
@@ -1330,27 +1428,457 @@
     }
   },
   "tripMetaWalk": "{minutes, plural, =1{1 min walk} other{{minutes} min walk}}",
-  "@tripMetaWalk": {"description": "tripMetaWalk", "placeholders": {"minutes": {"type": "int"}}},
+  "@tripMetaWalk": {
+    "description": "tripMetaWalk",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "tripMetaWait": "{minutes, plural, =1{~1 min wait} other{~{minutes} min wait}}",
-  "@tripMetaWait": {"description": "tripMetaWait", "placeholders": {"minutes": {"type": "int"}}},
+  "@tripMetaWait": {
+    "description": "tripMetaWait",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "tripMetaDirect": "direct",
-  "@tripMetaDirect": {"description": "tripMetaDirect"},
+  "@tripMetaDirect": {
+    "description": "tripMetaDirect"
+  },
   "tripMetaTransferAt": "1 transfer at {park}",
-  "@tripMetaTransferAt": {"description": "tripMetaTransferAt", "placeholders": {"park": {"type": "String"}}},
+  "@tripMetaTransferAt": {
+    "description": "tripMetaTransferAt",
+    "placeholders": {
+      "park": {
+        "type": "String"
+      }
+    }
+  },
   "tripMetaTransfers": "{count, plural, =1{1 transfer} other{{count} transfers}}",
-  "@tripMetaTransfers": {"description": "tripMetaTransfers", "placeholders": {"count": {"type": "int"}}},
+  "@tripMetaTransfers": {
+    "description": "tripMetaTransfers",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "searchShortcutHome": "Home",
-  "@searchShortcutHome": {"description": "searchShortcutHome"},
+  "@searchShortcutHome": {
+    "description": "searchShortcutHome"
+  },
   "searchShortcutWork": "Work",
-  "@searchShortcutWork": {"description": "searchShortcutWork"},
+  "@searchShortcutWork": {
+    "description": "searchShortcutWork"
+  },
   "searchShortcutAdd": "Add",
-  "@searchShortcutAdd": {"description": "searchShortcutAdd"},
+  "@searchShortcutAdd": {
+    "description": "searchShortcutAdd"
+  },
   "searchShortcutPinDetail": "On the map",
-  "@searchShortcutPinDetail": {"description": "searchShortcutPinDetail"},
+  "@searchShortcutPinDetail": {
+    "description": "searchShortcutPinDetail"
+  },
   "placeAway": "{distance} away",
-  "@placeAway": {"description": "placeAway", "placeholders": {"distance": {"type": "String"}}},
+  "@placeAway": {
+    "description": "placeAway",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
   "homePlanYourDayDetail": "Chain your stops into one trip",
-  "@homePlanYourDayDetail": {"description": "homePlanYourDayDetail"},
+  "@homePlanYourDayDetail": {
+    "description": "homePlanYourDayDetail"
+  },
   "searchPopularTitle": "Popular in {city}",
-  "@searchPopularTitle": {"description": "searchPopularTitle", "placeholders": {"city": {"type": "String"}}}
+  "@searchPopularTitle": {
+    "description": "searchPopularTitle",
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEtaWorkingOut": "Working out your arrival",
+  "@tripEtaWorkingOut": {
+    "description": "Rider trip screens"
+  },
+  "tripEtaLastTo": "Last estimate to {place}",
+  "@tripEtaLastTo": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEtaArrivingAt": "Arriving at {place}",
+  "@tripEtaArrivingAt": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEtaPaused": "Live times paused",
+  "@tripEtaPaused": {
+    "description": "Rider trip screens"
+  },
+  "tripRetry": "Retry",
+  "@tripRetry": {
+    "description": "Rider trip screens"
+  },
+  "tripEtaTraffic": "Traffic ahead. About {minutes} min later.",
+  "@tripEtaTraffic": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripMinUnit": "min",
+  "@tripMinUnit": {
+    "description": "Rider trip screens"
+  },
+  "tripAboutClock": "About {time}",
+  "@tripAboutClock": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripClockRange": "{first} to {last}",
+  "@tripClockRange": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "tripMinutesLabel": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@tripMinutesLabel": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripMinutesRangeLabel": "{low} to {high} minutes",
+  "@tripMinutesRangeLabel": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "low": {
+        "type": "int"
+      },
+      "high": {
+        "type": "int"
+      }
+    }
+  },
+  "tripEmergency": "Emergency",
+  "@tripEmergency": {
+    "description": "Rider trip screens"
+  },
+  "tripSos": "SOS",
+  "@tripSos": {
+    "description": "Rider trip screens"
+  },
+  "tripCall": "Call",
+  "@tripCall": {
+    "description": "Rider trip screens"
+  },
+  "tripCallName": "Call {name}",
+  "@tripCallName": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripMessage": "Message",
+  "@tripMessage": {
+    "description": "Rider trip screens"
+  },
+  "tripArrivesIn": "{name} arrives in",
+  "@tripArrivesIn": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripIsHere": "{name} is here",
+  "@tripIsHere": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDriverHere": "Driver is here",
+  "@tripDriverHere": {
+    "description": "Rider trip screens"
+  },
+  "tripMeetAtPickup": "Meet at pickup",
+  "@tripMeetAtPickup": {
+    "description": "Rider trip screens"
+  },
+  "tripCountdownLabel": "{minutes} minutes {seconds} seconds",
+  "@tripCountdownLabel": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "tripPinTitle": "Trip PIN",
+  "@tripPinTitle": {
+    "description": "Rider trip screens"
+  },
+  "tripPinSay": "Say it at the door",
+  "@tripPinSay": {
+    "description": "Rider trip screens"
+  },
+  "tripPinNew": "Get a new PIN",
+  "@tripPinNew": {
+    "description": "Rider trip screens"
+  },
+  "tripPinTooSoon": "You just got a new PIN. Try again in a moment.",
+  "@tripPinTooSoon": {
+    "description": "Rider trip screens"
+  },
+  "tripPinFailed": "Couldn't get a new PIN. Try again.",
+  "@tripPinFailed": {
+    "description": "Rider trip screens"
+  },
+  "tripMatchedTitle": "You're matched",
+  "@tripMatchedTitle": {
+    "description": "Rider trip screens"
+  },
+  "tripMatchedBody": "Get in. {name} will start the trip.",
+  "@tripMatchedBody": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptTitle": "Receipt",
+  "@receiptTitle": {
+    "description": "Rider trip screens"
+  },
+  "receiptNotReady": "Receipt not ready",
+  "@receiptNotReady": {
+    "description": "Rider trip screens"
+  },
+  "receiptNotReadyBody": "It is still on its way. It will also be in Trips.",
+  "@receiptNotReadyBody": {
+    "description": "Rider trip screens"
+  },
+  "receiptTryAgain": "Try again",
+  "@receiptTryAgain": {
+    "description": "Rider trip screens"
+  },
+  "receiptDone": "Done",
+  "@receiptDone": {
+    "description": "Rider trip screens"
+  },
+  "receiptHowWas": "How was {name}?",
+  "@receiptHowWas": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptFare": "Fare",
+  "@receiptFare": {
+    "description": "Rider trip screens"
+  },
+  "receiptTotal": "Total",
+  "@receiptTotal": {
+    "description": "Rider trip screens"
+  },
+  "receiptCashPaid": "Cash paid",
+  "@receiptCashPaid": {
+    "description": "Rider trip screens"
+  },
+  "receiptChangeToWallet": "Change to wallet",
+  "@receiptChangeToWallet": {
+    "description": "Rider trip screens"
+  },
+  "receiptWalletNow": "Wallet now {amount}",
+  "@receiptWalletNow": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptLoadSurcharge": "Load surcharge",
+  "@receiptLoadSurcharge": {
+    "description": "Rider trip screens"
+  },
+  "receiptAlongFee": "Along fee",
+  "@receiptAlongFee": {
+    "description": "Rider trip screens"
+  },
+  "receiptYourTrip": "Your trip",
+  "@receiptYourTrip": {
+    "description": "Rider trip screens"
+  },
+  "receiptRoute": "{from} to {to}",
+  "@receiptRoute": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptToday": "Today, {time}",
+  "@receiptToday": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptYourDriver": "your driver",
+  "@receiptYourDriver": {
+    "description": "Rider trip screens"
+  },
+  "ratingTagSafeDriving": "Safe driving",
+  "@ratingTagSafeDriving": {
+    "description": "Rider trip screens"
+  },
+  "ratingTagFairFare": "Fair fare",
+  "@ratingTagFairFare": {
+    "description": "Rider trip screens"
+  },
+  "ratingTagCleanVehicle": "Clean car",
+  "@ratingTagCleanVehicle": {
+    "description": "Rider trip screens"
+  },
+  "ratingTagPolite": "Polite",
+  "@ratingTagPolite": {
+    "description": "Rider trip screens"
+  },
+  "ratingTagOnTime": "On time",
+  "@ratingTagOnTime": {
+    "description": "Rider trip screens"
+  },
+  "meetVehicleArrivingAt": "Arriving · {time}",
+  "@meetVehicleArrivingAt": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "meetVehicleCalculating": "Working out when they arrive",
+  "@meetVehicleCalculating": {
+    "description": "Rider trip screens"
+  },
+  "meetVehicleDriverStats": "★ {rating} · {count, plural, =1{1 trip} other{{count} trips}}",
+  "@meetVehicleDriverStats": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meetVehicleMeetAt": "Meet at {place}",
+  "@meetVehicleMeetAt": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "requestingFinding": "Finding your {mode}",
+  "@requestingFinding": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "requestingSeenNear": "Drivers near {place} can see your request",
+  "@requestingSeenNear": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "requestingFare": "Fare",
+  "@requestingFare": {
+    "description": "Rider trip screens"
+  },
+  "adjustPickupPinLabel": "Dropped pin",
+  "@adjustPickupPinLabel": {
+    "description": "Rider trip screens"
+  },
+  "adjustPickupHint": "Tap the map or a stop below to move the pin",
+  "@adjustPickupHint": {
+    "description": "Rider trip screens"
+  },
+  "adjustPickupNearby": "Stops nearby",
+  "@adjustPickupNearby": {
+    "description": "Rider trip screens"
+  },
+  "tripCompleteFareLabel": "Fare",
+  "@tripCompleteFareLabel": {
+    "description": "Rider trip screens"
+  },
+  "tripCompleteRoute": "{from} → {to}",
+  "@tripCompleteRoute": {
+    "description": "Rider trip screens",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -17,7 +17,8 @@ class TripBoardStop {
 
 /// Alighting stop on a trip (doc 03 §5 TripView.alight).
 class TripAlightStop {
-  const TripAlightStop({required this.name});
+  const TripAlightStop({required this.name, this.location});
 
   final String name;
+  final GeoPoint? location;
 }

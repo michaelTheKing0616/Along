@@ -14,6 +14,7 @@ import '../type.dart';
 import 'city_map.dart';
 import 'delights.dart';
 import 'driver_portrait.dart';
+import 'trip_strings.dart';
 
 // Live trip, pickup handoff, receipt, and driver earnings.
 // Radii: 16 controls, 20 rows and buttons, 24 cards, 28 dialogs, 32 sheets.
@@ -646,7 +647,7 @@ class AlongLiveTripScreen extends StatelessWidget {
               _IconAction(
                 key: const Key('live_call'),
                 icon: AlongIcons.call,
-                label: 'Call $driverName',
+                label: AlongTripStrings.of(context).callName(driverName),
                 onTap: onCall,
               ),
             ],
@@ -657,7 +658,9 @@ class AlongLiveTripScreen extends StatelessWidget {
               count: unread,
               child: AlongButton(
                 key: const Key('live_message'),
-                label: messageLabel ?? 'Message $driverName',
+                label:
+                    messageLabel ??
+                    AlongTripStrings.of(context).messageName(driverName),
                 variant: AlongButtonVariant.secondary,
                 onPressed: onMessage,
               ),
@@ -694,13 +697,14 @@ class AlongLiveEtaPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
+    final t = AlongTripStrings.of(context);
     final window = AlongEtaWindow.fromEta(eta);
     final slow = failed ? null : alongEtaSlowdownMinutes(previous, eta);
     final line = window == null
-        ? 'Working out your arrival'
+        ? t.workingOut
         : failed
-        ? 'Last estimate to $destination'
-        : 'Arriving at $destination';
+        ? t.lastEstimateTo(destination)
+        : t.arrivingAt(destination);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -734,14 +738,14 @@ class AlongLiveEtaPanel extends StatelessWidget {
                       ? _Notice(
                           key: const Key('live_eta_paused'),
                           icon: AlongIcons.info,
-                          text: 'Live times paused',
-                          action: onRetry == null ? null : 'Retry',
+                          text: t.livePaused,
+                          action: onRetry == null ? null : t.retry,
                           onAction: onRetry,
                         )
                       : _Notice(
                           key: const Key('live_eta_slowdown'),
                           icon: AlongIcons.schedule,
-                          text: 'Traffic ahead. About $slow min later.',
+                          text: t.trafficLater(slow!),
                           warn: true,
                         ),
                 ),
@@ -844,16 +848,17 @@ class _EtaHeadline extends StatelessWidget {
     final updated = eta!.updatedAt.toLocal();
     final first = updated.add(Duration(minutes: w.lowMin));
     final last = updated.add(Duration(minutes: w.highMin));
+    final t = AlongTripStrings.of(context);
     final clock = w.single
-        ? 'About ${_clock(first)}'
-        : '${_clock(first)} to ${_clock(last)}';
+        ? t.aboutClock(_clock(first))
+        : t.clockRange(_clock(first), _clock(last));
     final number = AlongType.numeric(p)
         .copyWith(color: failed ? _soft(p) : p.ink);
     return Semantics(
       liveRegion: true,
       label: w.single
-          ? '${w.lowMin} minutes'
-          : '${w.lowMin} to ${w.highMin} minutes',
+          ? t.minutesLabel(w.lowMin)
+          : t.minutesRangeLabel(w.lowMin, w.highMin),
       child: ExcludeSemantics(
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.end,
@@ -870,7 +875,7 @@ class _EtaHeadline extends StatelessWidget {
                 children: [
                   Text(w.figure, style: number),
                   Text(
-                    ' min',
+                    ' ${t.minUnit}',
                     style: AlongType.title(p).copyWith(color: number.color),
                   ),
                 ],
@@ -997,7 +1002,7 @@ class _SosButton extends StatelessWidget {
     final p = AlongPalette.of(context);
     return Semantics(
       button: true,
-      label: 'Emergency',
+      label: AlongTripStrings.of(context).emergency,
       child: AlongPressable(
         child: Material(
           color: p.surface,
@@ -1020,7 +1025,7 @@ class _SosButton extends StatelessWidget {
                   AlongIcon(AlongIcons.sos, size: 20, color: p.danger),
                   const SizedBox(width: 8),
                   Text(
-                    'SOS',
+                    AlongTripStrings.of(context).sos,
                     style: AlongType.label(p)
                         .copyWith(color: p.danger, fontWeight: FontWeight.w600),
                   ),
@@ -1185,11 +1190,12 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
     final mm = (_left ~/ 60).toString();
     final ss = (_left % 60).toString().padLeft(2, '0');
     final roomy = _roomy(context);
+    final t = AlongTripStrings.of(context);
     final actions = [
       if (widget.onCall != null)
         AlongButton(
           key: const Key('handoff_call'),
-          label: 'Call',
+          label: t.call,
           variant: AlongButtonVariant.secondary,
           onPressed: widget.onCall,
         ),
@@ -1198,7 +1204,7 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
           count: widget.unread,
           child: AlongButton(
             key: const Key('handoff_message'),
-            label: 'Message',
+            label: t.message,
             variant: AlongButtonVariant.secondary,
             onPressed: widget.onMessage,
           ),
@@ -1210,9 +1216,7 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          here
-              ? '${widget.driverName} is here'
-              : '${widget.driverName} arrives in',
+          here ? t.isHere(widget.driverName) : t.arrivesIn(widget.driverName),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: AlongType.label(p).copyWith(color: _soft(p)),
@@ -1222,10 +1226,12 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
           value: here ? 'here' : _left,
           child: Semantics(
             liveRegion: true,
-            label: here ? 'Driver is here' : '$mm minutes $ss seconds',
+            label: here
+                ? t.driverHere
+                : t.countdownLabel(_left ~/ 60, _left % 60),
             child: ExcludeSemantics(
               child: Text(
-                here ? 'Meet at pickup' : '$mm:$ss',
+                here ? t.meetAtPickup : '$mm:$ss',
                 key: const Key('handoff_countdown'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -1289,10 +1295,10 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Trip PIN', style: AlongType.label(p)),
+                    Text(t.tripPin, style: AlongType.label(p)),
                     const SizedBox(height: 2),
                     Text(
-                      'Say it at the door',
+                      t.sayAtDoor,
                       style: AlongType.caption(p).copyWith(color: _soft(p)),
                     ),
                   ],
@@ -1308,7 +1314,7 @@ class _AlongHandoffPanelState extends State<AlongHandoffPanel> {
               alignment: Alignment.centerLeft,
               child: _InlineAction(
                 key: const Key('handoff_new_pin'),
-                label: 'Get a new PIN',
+                label: t.newPin,
                 onTap: widget.onNewPin!,
               ),
             ),
@@ -1387,7 +1393,8 @@ class _PinDigits extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
     return Semantics(
-      label: 'Trip PIN ${pin.split('').join(' ')}',
+      label:
+          '${AlongTripStrings.of(context).tripPin} ${pin.split('').join(' ')}',
       child: ExcludeSemantics(
         child: Row(
           key: const Key('handoff_pin'),
@@ -1520,18 +1527,19 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
+    final t = AlongTripStrings.of(context);
     final r = widget.receipt;
     if (r == null) {
       return _Page(
-        title: 'Receipt',
-        fill: const _FullState(
+        title: t.receiptTitle,
+        fill: _FullState(
           icon: AlongIcons.receipt,
-          title: 'Receipt not ready',
-          body: 'It is still on its way. It will also be in Trips.',
+          title: t.receiptNotReady,
+          body: t.receiptNotReadyBody,
         ),
         footer: AlongButton(
           key: const Key('receipt_retry'),
-          label: 'Try again',
+          label: t.tryAgain,
           onPressed: widget.onRetry,
         ),
         children: const [],
@@ -1543,7 +1551,7 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
       meta: r.when,
       footer: AlongButton(
         key: const Key('receipt_done'),
-        label: 'Done',
+        label: t.done,
         onPressed: () {
           AlongHaptics.success(context);
           widget.onDone?.call();
@@ -1555,7 +1563,7 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('How was ${r.driverName}?', style: AlongType.title(p)),
+              Text(t.howWas(r.driverName), style: AlongType.title(p)),
               const SizedBox(height: 8),
               _Stars(value: _stars, onChanged: _rate),
               _Reveal(
@@ -1583,7 +1591,7 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
           ),
         ),
         const SizedBox(height: 24),
-        Text('Fare', style: AlongType.label(p).copyWith(color: _soft(p))),
+        Text(t.fare, style: AlongType.label(p).copyWith(color: _soft(p))),
         const SizedBox(height: 8),
         _Surface(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -1597,7 +1605,7 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
                 ),
               Divider(height: 17, thickness: 1, color: _hair(p).color),
               _MoneyLine(
-                label: 'Total',
+                label: t.total,
                 amount: alongNaira(r.total),
                 strong: true,
               ),
@@ -1610,14 +1618,14 @@ class _AlongTripReceiptScreenState extends State<AlongTripReceiptScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(
               children: [
-                _MoneyLine(label: 'Cash paid', amount: alongNaira(r.paidCash!)),
+                _MoneyLine(label: t.cashPaid, amount: alongNaira(r.paidCash!)),
                 if (r.change > 0)
                   _MoneyLine(
                     key: const Key('receipt_change'),
-                    label: 'Change to wallet',
+                    label: t.changeToWallet,
                     detail: r.walletBalance == null
                         ? null
-                        : 'Wallet now ${alongNaira(r.walletBalance!)}',
+                        : t.walletNow(alongNaira(r.walletBalance!)),
                     amount: '+${alongNaira(r.change)}',
                     color: p.success,
                   ),

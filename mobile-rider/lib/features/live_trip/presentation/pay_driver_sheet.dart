@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart' hide Money;
-import 'package:along_design/along_design.dart' as design show FareTier, formatMoney;
+import 'package:along_design/along_design.dart'
+    as design
+    show FareTier, formatMoney;
 import 'package:along_design/along_design.dart' hide FareTier, formatMoney;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +14,8 @@ import 'package:mobile_rider/features/payments/data/payments_providers.dart';
 import 'package:mobile_rider/features/payments/domain/informal_pay_amount.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_methods_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
+import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// R-27 Pay driver — transfer-first digital payment entry.
@@ -91,21 +95,22 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
       widget.dynamicToken != null;
 
   InformalPayAmountMode get _amountMode => informalPayAmountMode(
-        amountLocked: _amountLocked,
-        suggestedAmounts: _resolve?.suggestedAmounts ?? const [],
-      );
+    amountLocked: _amountLocked,
+    suggestedAmounts: _resolve?.suggestedAmounts ?? const [],
+  );
 
   Money get _amount {
     if (_resolve?.context != null) return _resolve!.context!.amount;
     if (widget.trip != null) return widget.trip!.totalFare;
     if (_selectedAmount != null) return _selectedAmount!;
-    final unique = uniqueSuggestedAmount(_resolve?.suggestedAmounts ?? const []);
+    final unique = uniqueSuggestedAmount(
+      _resolve?.suggestedAmounts ?? const [],
+    );
     if (unique != null) return unique;
     return Money.zero(currency: _resolve?.currency ?? 'NGN');
   }
 
-  int get _minMinor =>
-      _resolve?.minAmount?.minorUnits ?? 10000;
+  int get _minMinor => _resolve?.minAmount?.minorUnits ?? 10000;
 
   bool get _amountReady => _amount.minorUnits >= _minMinor;
 
@@ -133,9 +138,9 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
         _methodPref = pref;
         if (pref == PaymentMethodPref.savedCard) {
           _selectedMethod = methods.cast<PaymentMethodSummary?>().firstWhere(
-                (m) => m?.isDefault == true,
-                orElse: () => methods.isNotEmpty ? methods.first : null,
-              );
+            (m) => m?.isDefault == true,
+            orElse: () => methods.isNotEmpty ? methods.first : null,
+          );
         }
       });
 
@@ -147,10 +152,9 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
 
       final code = widget.driverCode;
       if (code != null) {
-        final resolved = await ref.read(paymentsRepositoryProvider).resolveQr(
-              driverCode: code,
-              token: widget.dynamicToken,
-            );
+        final resolved = await ref
+            .read(paymentsRepositoryProvider)
+            .resolveQr(driverCode: code, token: widget.dynamicToken);
         if (!mounted) return;
         _applyResolve(resolved);
         await _maybeAutoInitiate();
@@ -288,8 +292,9 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
 
   Future<void> _checkReceipt(String paymentId) async {
     try {
-      final receipt =
-          await ref.read(paymentsRepositoryProvider).fetchReceipt(paymentId);
+      final receipt = await ref
+          .read(paymentsRepositoryProvider)
+          .fetchReceipt(paymentId);
       if (!mounted || !receipt.isSucceeded) return;
       _receiptPoll?.cancel();
       setState(() {
@@ -316,9 +321,9 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
       _methodPref = pref;
       if (pref == PaymentMethodPref.savedCard) {
         _selectedMethod = methods.cast<PaymentMethodSummary?>().firstWhere(
-              (m) => m?.isDefault == true,
-              orElse: () => methods.isNotEmpty ? methods.first : null,
-            );
+          (m) => m?.isDefault == true,
+          orElse: () => methods.isNotEmpty ? methods.first : null,
+        );
       } else {
         _selectedMethod = null;
       }
@@ -332,7 +337,7 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
     final l10n = AppLocalizations.of(context);
     final attachedTrip = widget.trip;
     final driver = _resolve?.driver;
-    final amountNaira = _amount.minorUnits ~/ 100;
+    final amountNaira = majorUnits(_amount);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -341,86 +346,89 @@ class _PayDriverSheetState extends ConsumerState<PayDriverSheet> {
         title: l10n.payDriverTitle,
         child: switch (_phase) {
           _PayPhase.loading => const Center(
-              key: Key('pay_driver_loading'),
-              child: Padding(
-                padding: EdgeInsets.all(AlongSpace.s24),
-                child: CircularProgressIndicator(color: AlongColors.brandYellow),
-              ),
+            key: Key('pay_driver_loading'),
+            child: Padding(
+              padding: EdgeInsets.all(AlongSpace.s24),
+              child: CircularProgressIndicator(color: AlongColors.brandYellow),
             ),
+          ),
           _PayPhase.cashOnly => Text(
-              key: const Key('pay_driver_cash_only'),
-              l10n.payDriverCashOnly(driver?.firstName ?? ''),
-              style: AlongText.heading2,
-            ),
+            key: const Key('pay_driver_cash_only'),
+            l10n.payDriverCashOnly(driver?.firstName ?? ''),
+            style: AlongText.heading2,
+          ),
           _PayPhase.inactive => Text(
-              key: const Key('pay_driver_inactive'),
-              l10n.payDriverInactive,
-              style: AlongText.heading2,
-            ),
+            key: const Key('pay_driver_inactive'),
+            l10n.payDriverInactive,
+            style: AlongText.heading2,
+          ),
           _PayPhase.pending => _PendingView(
-              result: _initiateResult!,
-              amountLabel: design.formatMoney(amountNaira),
-              onRetry: () {
-                _receiptPoll?.cancel();
-                setState(() => _phase = _PayPhase.ready);
-              },
-            ),
+            result: _initiateResult!,
+            amountLabel: design.formatMoney(amountNaira),
+            onRetry: () {
+              _receiptPoll?.cancel();
+              setState(() => _phase = _PayPhase.ready);
+            },
+          ),
           _PayPhase.success => _SuccessView(
-              receipt: _paymentReceipt!,
-              initiate: _initiateResult!,
-              showHistoryOptIn: _showHistoryOptIn,
-              historyOptIn: _historyOptIn,
-              onHistoryChanged: (v) => setState(() => _historyOptIn = v),
-              onDone: _popPaid,
-            ),
+            receipt: _paymentReceipt!,
+            initiate: _initiateResult!,
+            showHistoryOptIn: _showHistoryOptIn,
+            historyOptIn: _historyOptIn,
+            onHistoryChanged: (v) => setState(() => _historyOptIn = v),
+            onDone: _popPaid,
+          ),
           _PayPhase.failed => Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  _errorMessage ?? l10n.payDriverFailed,
-                  style: AlongText.body.copyWith(color: AlongColors.semanticDanger),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                _errorMessage ?? l10n.payDriverFailed,
+                style: AlongText.body.copyWith(
+                  color: AlongColors.semanticDanger,
                 ),
-                const SizedBox(height: AlongSpace.s16),
-                AlongButton(
-                  key: const Key('pay_driver_retry'),
-                  label: l10n.payDriverRetry,
-                  variant: AlongButtonVariant.yellow,
-                  onPressed: () => setState(() => _phase = _PayPhase.ready),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: AlongSpace.s16),
+              AlongButton(
+                key: const Key('pay_driver_retry'),
+                label: l10n.payDriverRetry,
+                variant: AlongButtonVariant.yellow,
+                onPressed: () => setState(() => _phase = _PayPhase.ready),
+              ),
+            ],
+          ),
           _PayPhase.ready => _ReadyView(
-              attachedTrip: attachedTrip,
-              driver: driver,
-              receipt: widget.receipt,
-              amountNaira: amountNaira,
-              hideAmountPicker: _amountMode == InformalPayAmountMode.uniqueFare,
-              showLockedCaption: _amountLocked,
-              amountMode: _amountMode,
-              suggested: _resolve?.suggestedAmounts ?? const [],
-              selectedAmount: _selectedAmount,
-              showOtherKeypad: _showOtherKeypad ||
-                  _amountMode == InformalPayAmountMode.keypadOnly,
-              methodLabel: _methodLabel(l10n),
-              busy: _busy,
-              payBlocked: _payBlocked || !_amountReady,
-              isDifferentDriver: _resolve?.isDifferentDriver == true,
-              onConfirmOther: () =>
-                  setState(() => _differentDriverConfirmed = true),
-              onSelectAmount: (money) => setState(() {
-                _selectedAmount = money;
-                _showOtherKeypad = false;
-              }),
-              onShowOther: () => setState(() => _showOtherKeypad = true),
-              onOtherChanged: (naira) => setState(() {
-                _selectedAmount = Money.fromMinorUnits(
-                  naira * 100,
-                  currency: _resolve?.currency ?? 'NGN',
-                );
-              }),
-              onChangeMethod: _openMethods,
-              onPay: _submitPay,
-            ),
+            attachedTrip: attachedTrip,
+            driver: driver,
+            receipt: widget.receipt,
+            amountNaira: amountNaira,
+            hideAmountPicker: _amountMode == InformalPayAmountMode.uniqueFare,
+            showLockedCaption: _amountLocked,
+            amountMode: _amountMode,
+            suggested: _resolve?.suggestedAmounts ?? const [],
+            selectedAmount: _selectedAmount,
+            showOtherKeypad:
+                _showOtherKeypad ||
+                _amountMode == InformalPayAmountMode.keypadOnly,
+            methodLabel: _methodLabel(l10n),
+            busy: _busy,
+            payBlocked: _payBlocked || !_amountReady,
+            isDifferentDriver: _resolve?.isDifferentDriver == true,
+            onConfirmOther: () =>
+                setState(() => _differentDriverConfirmed = true),
+            onSelectAmount: (money) => setState(() {
+              _selectedAmount = money;
+              _showOtherKeypad = false;
+            }),
+            onShowOther: () => setState(() => _showOtherKeypad = true),
+            onOtherChanged: (naira) => setState(() {
+              _selectedAmount = Money.fromMinorUnits(
+                naira * 100,
+                currency: _resolve?.currency ?? 'NGN',
+              );
+            }),
+            onChangeMethod: _openMethods,
+            onPay: _submitPay,
+          ),
         },
       ),
     );
@@ -519,10 +527,7 @@ class _ReadyView extends StatelessWidget {
           if (attachedTrip != null)
             ModeChip(mode: designMode(attachedTrip!.modeCode))
           else if (driver != null)
-            Text(
-              driver!.plate,
-              style: AlongText.numericL,
-            ),
+            Text(driver!.plate, style: AlongText.numericL),
           const SizedBox(height: AlongSpace.s16),
         ],
         FareHero(
@@ -534,11 +539,12 @@ class _ReadyView extends StatelessWidget {
                   unconfirmed: attachedTrip!.fare.unconfirmed,
                 )
               : design.FareTier.verified,
-          lineItems: receipt?.lines
+          lineItems:
+              receipt?.lines
                   .map(
                     (line) => FareHeroLineItem(
                       label: line.label,
-                      amountNaira: line.amount.minorUnits ~/ 100,
+                      amountNaira: majorUnits(line.amount),
                     ),
                   )
                   .toList() ??
@@ -562,7 +568,8 @@ class _ReadyView extends StatelessWidget {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
               hintText: l10n.payDriverOtherHint,
-              prefixText: '₦ ',
+              prefixText:
+                  '${ProviderScope.containerOf(context).read(appMoneyFormatterProvider).currencySymbol} ',
             ),
             onChanged: (value) {
               final naira = int.tryParse(value);
@@ -586,8 +593,12 @@ class _ReadyView extends StatelessWidget {
               children: [
                 ...suggested.map(
                   (money) => ActionChip(
-                    key: Key('pay_amount_chip_${money.minorUnits ~/ 100}'),
-                    label: Text(design.formatMoney(money.minorUnits ~/ 100)),
+                    key: Key('pay_amount_chip_${majorUnits(money)}'),
+                    label: Text(
+                      ProviderScope.containerOf(context)
+                          .read(appMoneyFormatterProvider)
+                          .format(money),
+                    ),
                     onPressed: () => onSelectAmount(money),
                   ),
                 ),
@@ -607,7 +618,8 @@ class _ReadyView extends StatelessWidget {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 hintText: l10n.payDriverOtherHint,
-                prefixText: '₦ ',
+                prefixText:
+                    '${ProviderScope.containerOf(context).read(appMoneyFormatterProvider).currencySymbol} ',
               ),
               onChanged: (value) {
                 final naira = int.tryParse(value);
@@ -619,9 +631,7 @@ class _ReadyView extends StatelessWidget {
         const SizedBox(height: AlongSpace.s16),
         Row(
           children: [
-            Expanded(
-              child: Text(methodLabel, style: AlongText.body),
-            ),
+            Expanded(child: Text(methodLabel, style: AlongText.body)),
             TextButton(
               key: const Key('pay_driver_change_method'),
               onPressed: onChangeMethod,
@@ -663,10 +673,7 @@ class _PendingView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.payDriverPending(amountLabel),
-          style: AlongText.heading2,
-        ),
+        Text(l10n.payDriverPending(amountLabel), style: AlongText.heading2),
         if (transfer != null && transfer.accountNumber.isNotEmpty) ...[
           const SizedBox(height: AlongSpace.s16),
           if (transfer.bankName.isNotEmpty)
@@ -770,8 +777,8 @@ class _SuccessView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final driverNaira = receipt.driverAmount.minorUnits ~/ 100;
-    final feeNaira = receipt.commissionAmount.minorUnits ~/ 100;
+    final driverNaira = majorUnits(receipt.driverAmount);
+    final feeNaira = majorUnits(receipt.commissionAmount);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

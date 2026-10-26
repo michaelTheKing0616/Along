@@ -2374,6 +2374,378 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Popular in {city}'**
   String searchPopularTitle(String city);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Working out your arrival'**
+  String get tripEtaWorkingOut;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Last estimate to {place}'**
+  String tripEtaLastTo(String place);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Arriving at {place}'**
+  String tripEtaArrivingAt(String place);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Live times paused'**
+  String get tripEtaPaused;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get tripRetry;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic ahead. About {minutes} min later.'**
+  String tripEtaTraffic(int minutes);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get tripMinUnit;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'About {time}'**
+  String tripAboutClock(String time);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{first} to {last}'**
+  String tripClockRange(String first, String last);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 minute} other{{minutes} minutes}}'**
+  String tripMinutesLabel(int minutes);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{low} to {high} minutes'**
+  String tripMinutesRangeLabel(int low, int high);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get tripEmergency;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'SOS'**
+  String get tripSos;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get tripCall;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Call {name}'**
+  String tripCallName(String name);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get tripMessage;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{name} arrives in'**
+  String tripArrivesIn(String name);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is here'**
+  String tripIsHere(String name);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Driver is here'**
+  String get tripDriverHere;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Meet at pickup'**
+  String get tripMeetAtPickup;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes {seconds} seconds'**
+  String tripCountdownLabel(int minutes, int seconds);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Trip PIN'**
+  String get tripPinTitle;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Say it at the door'**
+  String get tripPinSay;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Get a new PIN'**
+  String get tripPinNew;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'You just got a new PIN. Try again in a moment.'**
+  String get tripPinTooSoon;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t get a new PIN. Try again.'**
+  String get tripPinFailed;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re matched'**
+  String get tripMatchedTitle;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Get in. {name} will start the trip.'**
+  String tripMatchedBody(String name);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get receiptTitle;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt not ready'**
+  String get receiptNotReady;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'It is still on its way. It will also be in Trips.'**
+  String get receiptNotReadyBody;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get receiptTryAgain;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get receiptDone;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'How was {name}?'**
+  String receiptHowWas(String name);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get receiptFare;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get receiptTotal;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Cash paid'**
+  String get receiptCashPaid;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Change to wallet'**
+  String get receiptChangeToWallet;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet now {amount}'**
+  String receiptWalletNow(String amount);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Load surcharge'**
+  String get receiptLoadSurcharge;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Along fee'**
+  String get receiptAlongFee;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip'**
+  String get receiptYourTrip;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{from} to {to}'**
+  String receiptRoute(String from, String to);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Today, {time}'**
+  String receiptToday(String time);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'your driver'**
+  String get receiptYourDriver;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Safe driving'**
+  String get ratingTagSafeDriving;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Fair fare'**
+  String get ratingTagFairFare;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Clean car'**
+  String get ratingTagCleanVehicle;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Polite'**
+  String get ratingTagPolite;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'On time'**
+  String get ratingTagOnTime;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Arriving · {time}'**
+  String meetVehicleArrivingAt(String time);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Working out when they arrive'**
+  String get meetVehicleCalculating;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'★ {rating} · {count, plural, =1{1 trip} other{{count} trips}}'**
+  String meetVehicleDriverStats(String rating, int count);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Meet at {place}'**
+  String meetVehicleMeetAt(String place);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Finding your {mode}'**
+  String requestingFinding(String mode);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers near {place} can see your request'**
+  String requestingSeenNear(String place);
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get requestingFare;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Dropped pin'**
+  String get adjustPickupPinLabel;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the map or a stop below to move the pin'**
+  String get adjustPickupHint;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Stops nearby'**
+  String get adjustPickupNearby;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get tripCompleteFareLabel;
+
+  /// Rider trip screens
+  ///
+  /// In en, this message translates to:
+  /// **'{from} → {to}'**
+  String tripCompleteRoute(String from, String to);
 }
 
 class _AppLocalizationsDelegate

@@ -11,6 +11,7 @@ import 'package:mobile_rider/features/live_trip/presentation/live_trip_controlle
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/plate_scan_screen.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
 import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
@@ -109,228 +110,187 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
       }
     });
 
-    final heading = trip.live?.driver?.headingDegrees;
+    final palette = AlongPalette.of(context);
     final colour = naMeColourFromToken(trip.naMe.colorToken);
     final shape = naMeShapeFromToken(trip.naMe.shape);
     final etaLine = switch (trip.eta?.status) {
-      'ready' when trip.eta!.pickup != null =>
-        'Arriving · ${trip.eta!.pickup!.label}',
-      'calculating' => 'Calculating…',
-      _ => trip.etaMinutes != null
-          ? l10n.meetVehicleArrivingIn(trip.etaMinutes!)
-          : l10n.meetVehicleWalkTo(trip.board.walkS ~/ 60, trip.board.name),
+      'ready' when trip.eta!.pickup != null => l10n.meetVehicleArrivingAt(
+        trip.eta!.pickup!.label,
+      ),
+      'calculating' => l10n.meetVehicleCalculating,
+      _ =>
+        trip.etaMinutes != null
+            ? l10n.meetVehicleArrivingIn(trip.etaMinutes!)
+            : l10n.meetVehicleWalkTo(trip.board.walkS ~/ 60, trip.board.name),
     };
+    final driverPoint = trip.live?.driver?.point;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            flex: 4,
-            child: VehicleMarkerPanel(
-              headingDegrees: heading,
-              showWalkingLine: trip.board.walkM > 0,
-              lat: trip.live?.driver?.lat ?? trip.live?.rider?.lat,
-              lng: trip.live?.driver?.lng ?? trip.live?.rider?.lng,
+    return TripSheetScaffold(
+      mapFraction: 0.4,
+      trailing: AlongMapButton(
+        key: const Key('meet_vehicle_share'),
+        icon: AlongIcons.share,
+        tooltip: l10n.meetVehicleShare,
+        onPressed: () =>
+            ShareTripSheet.show(context, journeyId: trip.journeyId),
+      ),
+      map: (top, bottom) => VehicleMarkerPanel(
+        from: driverPoint ?? trip.live?.rider?.point,
+        to: trip.board.location,
+        vehicle: driverPoint,
+        fromLabel: trip.driver.displayName,
+        toLabel: trip.board.name,
+        modeCode: trip.modeCode,
+        semanticLabel: etaLine,
+        topInset: top,
+        bottomInset: bottom,
+      ),
+      footer: AlongButton(
+        key: const Key('meet_vehicle_boarded'),
+        label: l10n.meetVehicleBoarded,
+        onPressed: () async {
+          AlongHaptics.confirm(context);
+          await controller.markBoarded();
+        },
+      ),
+      children: [
+        if (state.driverSignalLost) ...[
+          TripNotice(
+            icon: AlongIcons.info,
+            text: l10n.meetVehicleDriverSignalLost,
+            warn: true,
+          ),
+          const SizedBox(height: AlongSpace.s12),
+        ] else if (state.livePaused) ...[
+          TripNotice(icon: AlongIcons.info, text: l10n.meetVehicleLivePaused),
+          const SizedBox(height: AlongSpace.s12),
+        ],
+        Text(etaLine, style: AlongType.title(palette)),
+        const SizedBox(height: 2),
+        Text(
+          l10n.meetVehicleMeetAt(trip.board.name),
+          style: AlongType.caption(palette),
+        ),
+        const SizedBox(height: AlongSpace.s16),
+        _VehicleCard(
+          trip: trip,
+          naMe: NaMeChip(colour: colour, shape: shape),
+          stats: l10n.meetVehicleDriverStats(
+            trip.driver.rating.toStringAsFixed(1),
+            trip.driver.tripCount,
+          ),
+          plateConfirmed: _plateConfirmed,
+          onScan: () async {
+            final confirmed = await context.push<bool>(
+              AppRoutes.plateScan,
+              extra: PlateScanArgs(
+                expectedPlate: trip.vehicle.plateNumber,
+                tripId: trip.tripId,
+                trip: trip,
+              ),
+            );
+            if (confirmed == true && mounted) {
+              setState(() => _plateConfirmed = true);
+            }
+          },
+          onMatch: () {
+            AlongHaptics.tick(context);
+            setState(() => _plateConfirmed = true);
+          },
+        ),
+        const SizedBox(height: AlongSpace.s16),
+        DecoratedBox(
+          decoration: AlongCraft.compactFill(palette.recessed, 72, corner: 20),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AlongSpace.s16,
+              AlongSpace.s8,
+              AlongSpace.s8,
+              AlongSpace.s8,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.meetVehicleNaMeHint(trip.naMe.label),
+                    style: AlongType.caption(palette),
+                  ),
+                ),
+                const SizedBox(width: AlongSpace.s12),
+                HoldButton(
+                  key: const Key('meet_vehicle_na_me_button'),
+                  type: HoldButtonType.naMe,
+                  onFired: () => context.push(
+                    AppRoutes.naMe,
+                    extra: NaMeRouteArgs(
+                      tripId: trip.tripId,
+                      counterpartLocation: trip.live?.driver?.point,
+                      plateNumber: trip.vehicle.plateNumber,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Flexible(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AlongSpace.s16),
-              clipBehavior: Clip.antiAlias,
-              decoration: AlongCraft.fill(
-                AlongColors.surface0,
-                corner: AlongRadius.sheet.x,
-                top: true,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (state.driverSignalLost)
-                      Text(
-                        l10n.meetVehicleDriverSignalLost,
-                        style: AlongText.bodyStrong.copyWith(
-                          color: AlongColors.semanticWarning,
-                        ),
+        ),
+        if (_card != null) ...[
+          const SizedBox(height: AlongSpace.s16),
+          Text(
+            l10n.freeSeatCount(_card!.freeCount),
+            style: AlongType.label(palette),
+          ),
+          for (final rule in _card!.rules)
+            Text(
+              rule.body == null ? rule.title : '${rule.title}. ${rule.body}',
+              style: AlongType.caption(palette),
+            ),
+          const SizedBox(height: AlongSpace.s8),
+          SeatMap(
+            body: _card!.layout.body,
+            rows: [
+              for (final row in _card!.layout.rows)
+                SeatMapRowView(
+                  id: row.id,
+                  ruleTitle: _rowRule(_card!.rules, row.id),
+                  seats: [
+                    for (final seat in row.seats)
+                      SeatMapSeat(
+                        id: seat.id,
+                        label: seat.label,
+                        role: seat.role,
+                        status: _seatStatus(_card!, seat.id),
+                        statusWord: seat.isPassenger
+                            ? _seatStatus(_card!, seat.id)
+                            : l10n.seatDriver,
                       ),
-                    if (state.livePaused)
-                      Text(
-                        l10n.meetVehicleLivePaused,
-                        style: AlongText.caption.copyWith(
-                          color: AlongColors.ink500,
-                        ),
-                      ),
-                    Row(
-                      children: [
-                        NaMeChip(colour: colour, shape: shape),
-                        const SizedBox(width: AlongSpace.s8),
-                        Expanded(
-                          child: Text(
-                            l10n.meetVehicleNaMeHint(trip.naMe.label),
-                            style: AlongText.caption,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AlongSpace.s12),
-                    Center(
-                      child: HoldButton(
-                        key: const Key('meet_vehicle_na_me_button'),
-                        type: HoldButtonType.naMe,
-                        onFired: () => context.push(
-                          AppRoutes.naMe,
-                          extra: NaMeRouteArgs(
-                            tripId: trip.tripId,
-                            counterpartLocation: trip.live?.driver?.point,
-                            plateNumber: trip.vehicle.plateNumber,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AlongSpace.s16),
-                    Text(
-                      '${trip.driver.displayName} · ${trip.driver.rating.toStringAsFixed(1)} · ${trip.driver.tripCount} trips',
-                      style: AlongText.body,
-                    ),
-                    const SizedBox(height: AlongSpace.s4),
-                    Text(
-                      trip.vehicle.plateNumber,
-                      key: const Key('meet_vehicle_plate'),
-                      style: AlongText.numericL,
-                    ),
-                    Text(
-                      '${trip.vehicle.color} · ${trip.vehicle.makeModel}',
-                      style: AlongText.caption.copyWith(
-                        color: AlongColors.ink500,
-                      ),
-                    ),
-                    const SizedBox(height: AlongSpace.s8),
-                    AlongButton(
-                      key: const Key('meet_vehicle_plate_scan'),
-                      label: l10n.plateScan,
-                      variant: AlongButtonVariant.secondary,
-                      onPressed: () async {
-                        final confirmed = await context.push<bool>(
-                          AppRoutes.plateScan,
-                          extra: PlateScanArgs(
-                            expectedPlate: trip.vehicle.plateNumber,
-                            tripId: trip.tripId,
-                            trip: trip,
-                          ),
-                        );
-                        if (confirmed == true && mounted) {
-                          setState(() => _plateConfirmed = true);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: AlongSpace.s8),
-                    AlongButton(
-                      key: const Key('meet_vehicle_plate_match'),
-                      label: _plateConfirmed
-                          ? l10n.plateMatches
-                          : l10n.plateCheck,
-                      variant: _plateConfirmed
-                          ? AlongButtonVariant.secondary
-                          : AlongButtonVariant.yellow,
-                      onPressed: () => setState(() => _plateConfirmed = true),
-                    ),
-                    const SizedBox(height: AlongSpace.s8),
-                    Text(etaLine, style: AlongText.bodyStrong),
-                    if (_card != null) ...[
-                      const SizedBox(height: AlongSpace.s12),
-                      Text(
-                        l10n.freeSeatCount(_card!.freeCount),
-                        style: AlongText.bodyStrong,
-                      ),
-                      for (final rule in _card!.rules)
-                        Text(
-                          rule.body == null
-                              ? rule.title
-                              : '${rule.title}. ${rule.body}',
-                        ),
-                      const SizedBox(height: AlongSpace.s8),
-                      SeatMap(
-                        body: _card!.layout.body,
-                        rows: [
-                          for (final row in _card!.layout.rows)
-                            SeatMapRowView(
-                              id: row.id,
-                              ruleTitle: _rowRule(_card!.rules, row.id),
-                              seats: [
-                                for (final seat in row.seats)
-                                  SeatMapSeat(
-                                    id: seat.id,
-                                    label: seat.label,
-                                    role: seat.role,
-                                    status: _seatStatus(_card!, seat.id),
-                                    statusWord: seat.isPassenger
-                                        ? _seatStatus(_card!, seat.id)
-                                        : l10n.seatDriver,
-                                  ),
-                              ],
-                            ),
-                        ],
-                        onSeatTap: _claim,
-                      ),
-                    ],
-                    if (trip.board.walkM > 0) ...[
-                      const SizedBox(height: AlongSpace.s12),
-                      AlongButton(
-                        key: const Key('meet_vehicle_wayfinding'),
-                        label: l10n.wayfindingTitle,
-                        variant: AlongButtonVariant.secondary,
-                        onPressed: () => _openWayfinding(context, trip, l10n),
-                      ),
-                    ],
-                    const SizedBox(height: AlongSpace.s16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AlongButton(
-                            key: const Key('meet_vehicle_share'),
-                            label: l10n.meetVehicleShare,
-                            variant: AlongButtonVariant.secondary,
-                            onPressed: () => ShareTripSheet.show(
-                              context,
-                              journeyId: trip.journeyId,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AlongSpace.s8),
-                        Expanded(
-                          child: AlongButton(
-                            key: const Key('meet_vehicle_cancel'),
-                            label: l10n.meetVehicleCancel,
-                            variant: AlongButtonVariant.secondary,
-                            onPressed: state.driverSignalLost
-                                ? () async {
-                                    await controller.cancelTrip();
-                                    if (context.mounted) {
-                                      context.go(AppRoutes.home);
-                                    }
-                                  }
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AlongSpace.s8),
-                    AlongButton(
-                      key: const Key('meet_vehicle_boarded'),
-                      label: l10n.meetVehicleBoarded,
-                      variant: AlongButtonVariant.tertiary,
-                      onPressed: () async {
-                        await controller.markBoarded();
-                      },
-                    ),
                   ],
                 ),
-              ),
-            ),
+            ],
+            onSeatTap: _claim,
           ),
         ],
-      ),
+        const SizedBox(height: AlongSpace.s16),
+        if (trip.board.walkM > 0) ...[
+          AlongButton(
+            key: const Key('meet_vehicle_wayfinding'),
+            label: l10n.wayfindingTitle,
+            variant: AlongButtonVariant.secondary,
+            onPressed: () => _openWayfinding(context, trip, l10n),
+          ),
+          const SizedBox(height: AlongSpace.s8),
+        ],
+        AlongButton(
+          key: const Key('meet_vehicle_cancel'),
+          label: l10n.meetVehicleCancel,
+          variant: AlongButtonVariant.tertiary,
+          onPressed: state.driverSignalLost
+              ? () async {
+                  await controller.cancelTrip();
+                  if (context.mounted) context.go(AppRoutes.home);
+                }
+              : null,
+        ),
+      ],
     );
   }
 
@@ -375,6 +335,115 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
         userLocation: userLocation,
         cacheTripId: trip.tripId,
         destinationLabel: trip.board.name,
+      ),
+    );
+  }
+}
+
+/// Who and what to look for: Na Me shape, driver, plate, and the two
+/// plate checks side by side.
+class _VehicleCard extends StatelessWidget {
+  const _VehicleCard({
+    required this.trip,
+    required this.naMe,
+    required this.stats,
+    required this.plateConfirmed,
+    required this.onScan,
+    required this.onMatch,
+  });
+
+  final TripSummary trip;
+  final Widget naMe;
+  final String stats;
+  final bool plateConfirmed;
+  final VoidCallback onScan;
+  final VoidCallback onMatch;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
+    final dark = p.brightness == Brightness.dark;
+    return DecoratedBox(
+      decoration: AlongCraft.compactFill(
+        dark ? p.recessed : p.surface,
+        160,
+        corner: 20,
+        side: dark ? BorderSide.none : BorderSide(color: p.line),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AlongSpace.s12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                naMe,
+                const SizedBox(width: AlongSpace.s12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(trip.driver.displayName, style: AlongType.label(p)),
+                      Text(stats, style: AlongType.caption(p)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AlongSpace.s12),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: AlongCraft.compactFill(p.ink, 32, corner: 10),
+                  child: Text(
+                    trip.vehicle.plateNumber,
+                    key: const Key('meet_vehicle_plate'),
+                    style: AlongType.numeric(p)
+                        .copyWith(color: p.onInk, fontSize: 15),
+                  ),
+                ),
+                const SizedBox(width: AlongSpace.s12),
+                Expanded(
+                  child: Text(
+                    '${trip.vehicle.color} · ${trip.vehicle.makeModel}',
+                    style: AlongType.caption(p),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AlongSpace.s12),
+            Row(
+              children: [
+                Expanded(
+                  child: AlongButton(
+                    key: const Key('meet_vehicle_plate_scan'),
+                    label: l10n.plateScan,
+                    size: AlongButtonSize.secondary,
+                    variant: AlongButtonVariant.secondary,
+                    onPressed: onScan,
+                  ),
+                ),
+                const SizedBox(width: AlongSpace.s8),
+                Expanded(
+                  child: AlongButton(
+                    key: const Key('meet_vehicle_plate_match'),
+                    label: plateConfirmed ? l10n.plateMatches : l10n.plateCheck,
+                    size: AlongButtonSize.secondary,
+                    variant: plateConfirmed
+                        ? AlongButtonVariant.secondary
+                        : AlongButtonVariant.yellow,
+                    onPressed: onMatch,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -6,15 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/trip_ui_helpers.dart';
 import 'package:mobile_rider/features/search/presentation/destination_search_panel.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
 /// R-15 Extend trip — rider-initiated R-06 search + driver proposal accept.
 class ExtendTripSheet extends ConsumerStatefulWidget {
-  const ExtendTripSheet({
-    super.key,
-    required this.trip,
-    this.onSent,
-  });
+  const ExtendTripSheet({super.key, required this.trip, this.onSent});
 
   final TripSummary trip;
   final VoidCallback? onSent;
@@ -50,10 +47,9 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
       _preview = null;
     });
     try {
-      final result = await ref.read(tripsRepositoryProvider).proposeExtension(
-            tripId: widget.trip.tripId,
-            newAlight: _newAlight!,
-          );
+      final result = await ref
+          .read(tripsRepositoryProvider)
+          .proposeExtension(tripId: widget.trip.tripId, newAlight: _newAlight!);
       if (mounted) setState(() => _preview = result);
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -91,8 +87,8 @@ class _ExtendTripSheetState extends ConsumerState<ExtendTripSheet> {
               const SizedBox(height: AlongSpace.s8),
               FareHero(
                 key: const Key('extend_fare_hero'),
-                amountNaira: _preview!.newTotal.minorUnits ~/ 100,
-                deltaNaira: _preview!.fareDelta.minorUnits ~/ 100,
+                amountNaira: majorUnits(_preview!.newTotal),
+                deltaNaira: majorUnits(_preview!.fareDelta),
                 tier: designFareTier(
                   _preview!.tier,
                   unconfirmed: _preview!.unconfirmed,
@@ -149,7 +145,7 @@ class IncomingExtensionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final deltaNaira = proposal.fareDelta.minorUnits ~/ 100;
+    final deltaNaira = majorUnits(proposal.fareDelta);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -175,7 +171,9 @@ class IncomingExtensionSheet extends ConsumerWidget {
                     label: l10n.incomingExtensionDecline,
                     variant: AlongButtonVariant.secondary,
                     onPressed: () async {
-                      await ref.read(tripsRepositoryProvider).respondExtension(
+                      await ref
+                          .read(tripsRepositoryProvider)
+                          .respondExtension(
                             extensionId: proposal.extensionId,
                             response: 'decline',
                           );
