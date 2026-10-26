@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   collection: 1.19.1
+  crypto: 3.0.7
   decimal: 3.2.1
   intl: 0.20.3
 
