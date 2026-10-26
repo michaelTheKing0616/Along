@@ -5,6 +5,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
+import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/payments/data/payments_providers.dart';
 import 'package:mobile_rider/features/payments/domain/qr_payload_parser.dart';
 import 'package:mobile_rider/features/payments/domain/qr_scanner_port.dart';
@@ -41,7 +42,9 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
   Future<void> _onScan(String payload) async {
     final code = QrPayloadParser.parse(payload);
     if (code == null) {
-      setState(() => _rejectMessage = AppLocalizations.of(context).scanNotAlong);
+      setState(
+        () => _rejectMessage = AppLocalizations.of(context).scanNotAlong,
+      );
       return;
     }
     await _openPaySheet(code, payload);
@@ -56,13 +59,14 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
     final token = uri?.queryParameters['t'];
     QrResolveResult? resolved;
     try {
-      resolved = await ref.read(paymentsRepositoryProvider).resolveQr(
-            driverCode: code,
-            token: token,
-          );
+      resolved = await ref
+          .read(paymentsRepositoryProvider)
+          .resolveQr(driverCode: code, token: token);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _rejectMessage = AppLocalizations.of(context).scanNotAlong);
+      setState(
+        () => _rejectMessage = AppLocalizations.of(context).scanNotAlong,
+      );
       return;
     }
 
@@ -77,10 +81,13 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
   }
 
   Future<void> _submitTypedCode() async {
-    final normalised = QrPayloadParser.parse(_codeController.text) ??
+    final normalised =
+        QrPayloadParser.parse(_codeController.text) ??
         QrPayloadParser.parse('along://p/${_codeController.text}');
     if (normalised == null) {
-      setState(() => _rejectMessage = AppLocalizations.of(context).scanNotAlong);
+      setState(
+        () => _rejectMessage = AppLocalizations.of(context).scanNotAlong,
+      );
       return;
     }
     await _openPaySheet(normalised, 'along://p/$normalised');
@@ -103,122 +110,261 @@ class _ScanToPayScreenState extends ConsumerState<ScanToPayScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-
-    return Scaffold(
-      backgroundColor: AlongColors.ink900,
-      appBar: AppBar(
-        title: Text(l10n.scanToPayTitle),
-        backgroundColor: AlongColors.ink900,
-        foregroundColor: AlongColors.surface0,
-      ),
-      body: _showTypedEntry ? _typedEntry(l10n) : _cameraView(l10n),
-    );
+    return _showTypedEntry ? _typedEntry(l10n) : _cameraView(l10n);
   }
 
   Widget _cameraView(AppLocalizations l10n) {
-    return Column(
-      children: [
-        Expanded(
-          child: Stack(
-            alignment: Alignment.center,
+    const fg = AlongColors.surface0;
+    return RiderTripStrings(
+      child: Scaffold(
+        backgroundColor: AlongColors.ink900,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                key: const Key('scan_camera_view'),
-                color: AlongColors.ink900,
-                width: double.infinity,
-              ),
-              Container(
-                width: 240,
-                height: 240,
-                decoration: AlongCraft.fill(
-                  const Color(0x00000000),
-                  corner: AlongRadius.card.x,
-                  side: const BorderSide(
-                    color: AlongColors.brandYellow,
-                    width: 2,
-                  ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AlongSpace.s16,
+                  AlongSpace.s8,
+                  AlongSpace.s16,
+                  0,
+                ),
+                child: Row(
+                  children: [
+                    if (Navigator.of(context).canPop())
+                      AlongMapButton(
+                        key: const Key('scan_back'),
+                        icon: AlongIcons.back,
+                        tooltip: MaterialLocalizations.of(context)
+                            .backButtonTooltip,
+                        onPressed: () => Navigator.of(context).maybePop(),
+                      ),
+                  ],
                 ),
               ),
-              if (_rejectMessage != null)
-                Positioned(
-                  bottom: AlongSpace.s24,
-                  left: AlongSpace.s16,
-                  right: AlongSpace.s16,
-                  child: Text(
-                    key: const Key('scan_reject_message'),
-                    _rejectMessage!,
-                    textAlign: TextAlign.center,
-                    style: AlongText.body.copyWith(color: AlongColors.brandYellow),
-                  ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AlongSpace.s20,
+                  AlongSpace.s16,
+                  AlongSpace.s20,
+                  0,
                 ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(AlongSpace.s16),
-          child: Row(
-            children: [
-              IconButton(
-                key: const Key('scan_torch_toggle'),
-                onPressed: _toggleTorch,
-                icon: Icon(
-                  _torchOn ? Icons.flash_on : Icons.flash_off,
-                  color: AlongColors.brandYellow,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.scanToPayTitle,
+                      style: AlongText.displayL.copyWith(color: fg),
+                    ),
+                    const SizedBox(height: AlongSpace.s4),
+                    Text(
+                      l10n.scanToPayHint,
+                      style: AlongText.body.copyWith(
+                        color: fg.withValues(alpha: 0.72),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
-                child: AlongButton(
-                  key: const Key('scan_enter_code'),
-                  label: l10n.scanEnterCode,
-                  variant: AlongButtonVariant.secondary,
-                  onPressed: () => setState(() => _showTypedEntry = true),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Positioned.fill(
+                      child: ColoredBox(
+                        key: Key('scan_camera_view'),
+                        color: AlongColors.ink900,
+                      ),
+                    ),
+                    const SizedBox(
+                      key: Key('scan_frame'),
+                      width: 248,
+                      height: 248,
+                      child: CustomPaint(painter: _FramePainter()),
+                    ),
+                    if (_rejectMessage != null)
+                      Positioned(
+                        bottom: AlongSpace.s16,
+                        left: AlongSpace.s20,
+                        right: AlongSpace.s20,
+                        child: DecoratedBox(
+                          decoration: AlongCraft.fill(
+                            AlongColors.semanticWarningTint,
+                            corner: 16,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(AlongSpace.s12),
+                            child: Row(
+                              children: [
+                                const AlongIcon(
+                                  AlongIcons.info,
+                                  size: 20,
+                                  color: AlongColors.semanticWarning,
+                                ),
+                                const SizedBox(width: AlongSpace.s8),
+                                Expanded(
+                                  child: Text(
+                                    key: const Key('scan_reject_message'),
+                                    _rejectMessage!,
+                                    style: AlongText.bodyStrong.copyWith(
+                                      color: AlongColors.ink900,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AlongSpace.s20,
+                  AlongSpace.s8,
+                  AlongSpace.s20,
+                  AlongSpace.s12,
+                ),
+                child: Row(
+                  children: [
+                    Semantics(
+                      button: true,
+                      toggled: _torchOn,
+                      label: l10n.scanTorch,
+                      child: Material(
+                        color: _torchOn
+                            ? AlongColors.brandYellow
+                            : fg.withValues(alpha: 0.12),
+                        shape: AlongCraft.border(18),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          key: const Key('scan_torch_toggle'),
+                          onTap: _toggleTorch,
+                          child: SizedBox(
+                            width: 56,
+                            height: 56,
+                            child: Center(
+                              child: AlongIcon(
+                                AlongIcons.torch,
+                                size: 24,
+                                color: _torchOn ? AlongColors.ink900 : fg,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AlongSpace.s12),
+                    Expanded(
+                      child: AlongButton(
+                        key: const Key('scan_enter_code'),
+                        label: l10n.scanEnterCode,
+                        variant: AlongButtonVariant.yellow,
+                        onPressed: () => setState(() {
+                          _rejectMessage = null;
+                          _showTypedEntry = true;
+                        }),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
   Widget _typedEntry(AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.all(AlongSpace.s16),
-      child: Column(
+    final p = AlongPalette.of(context);
+    return TripPage(
+      title: l10n.scanEnterCodePrompt,
+      subtitle: l10n.scanCodeHint,
+      onBack: () => setState(() {
+        _rejectMessage = null;
+        _showTypedEntry = false;
+      }),
+      footer: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.scanEnterCodePrompt, style: AlongText.heading2),
-          const SizedBox(height: AlongSpace.s16),
-          TextField(
-            key: const Key('scan_code_field'),
-            controller: _codeController,
-            maxLength: 8,
-            textCapitalization: TextCapitalization.characters,
-            decoration: InputDecoration(
-              counterText: '',
-              hintText: l10n.scanCodeHint,
-            ),
-          ),
-          if (_rejectMessage != null) ...[
-            const SizedBox(height: AlongSpace.s8),
-            Text(
-              _rejectMessage!,
-              style: AlongText.caption.copyWith(color: AlongColors.semanticDanger),
-            ),
-          ],
-          const SizedBox(height: AlongSpace.s16),
           AlongButton(
             key: const Key('scan_code_submit'),
             label: l10n.scanCodeSubmit,
-            variant: AlongButtonVariant.yellow,
             onPressed: _submitTypedCode,
           ),
-          TextButton(
-            onPressed: () => setState(() => _showTypedEntry = false),
-            child: Text(l10n.scanBackToCamera),
+          const SizedBox(height: AlongSpace.s4),
+          AlongButton(
+            key: const Key('scan_back_to_camera'),
+            label: l10n.scanBackToCamera,
+            variant: AlongButtonVariant.tertiary,
+            onPressed: () => setState(() {
+              _rejectMessage = null;
+              _showTypedEntry = false;
+            }),
           ),
         ],
       ),
+      children: [
+        TextField(
+          key: const Key('scan_code_field'),
+          controller: _codeController,
+          maxLength: 8,
+          autofocus: true,
+          textCapitalization: TextCapitalization.characters,
+          style: AlongType.numeric(p).copyWith(letterSpacing: 4),
+          decoration: tripInputDecoration(
+            p,
+            hint: 'ABC12345',
+          ).copyWith(counterText: ''),
+          onSubmitted: (_) => _submitTypedCode(),
+        ),
+        if (_rejectMessage != null) ...[
+          const SizedBox(height: AlongSpace.s12),
+          TripNotice(
+            key: const Key('scan_reject_message'),
+            icon: AlongIcons.info,
+            text: _rejectMessage!,
+            warn: true,
+          ),
+        ],
+      ],
     );
   }
+}
+
+/// Four yellow corner brackets: the viewfinder.
+class _FramePainter extends CustomPainter {
+  const _FramePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AlongColors.brandYellow
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5
+      ..strokeCap = StrokeCap.round;
+    const arm = 44.0;
+    const r = 20.0;
+    final w = size.width;
+    final h = size.height;
+    void corner(Offset o, double sx, double sy) {
+      final path = Path()
+        ..moveTo(o.dx, o.dy + sy * arm)
+        ..lineTo(o.dx, o.dy + sy * r)
+        ..quadraticBezierTo(o.dx, o.dy, o.dx + sx * r, o.dy)
+        ..lineTo(o.dx + sx * arm, o.dy);
+      canvas.drawPath(path, paint);
+    }
+
+    corner(Offset.zero, 1, 1);
+    corner(Offset(w, 0), -1, 1);
+    corner(Offset(0, h), 1, -1);
+    corner(Offset(w, h), -1, -1);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

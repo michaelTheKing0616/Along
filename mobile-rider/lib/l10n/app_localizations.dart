@@ -307,41 +307,11 @@ abstract class AppLocalizations {
     int minutes,
   );
 
-  /// Expand home sheet to half
-  ///
-  /// In en, this message translates to:
-  /// **'Show nearby'**
-  String get homeExpandNearby;
-
-  /// Collapse home sheet to peek
-  ///
-  /// In en, this message translates to:
-  /// **'Hide nearby'**
-  String get homeCollapseNearby;
-
-  /// Ambient row mode label — car/along
-  ///
-  /// In en, this message translates to:
-  /// **'cars'**
-  String get modeCar;
-
   /// Ambient row mode label — keke
   ///
   /// In en, this message translates to:
   /// **'kekes'**
   String get modeKeke;
-
-  /// Ambient row mode label — okada
-  ///
-  /// In en, this message translates to:
-  /// **'okadas'**
-  String get modeOkada;
-
-  /// Ambient row mode label — minibus
-  ///
-  /// In en, this message translates to:
-  /// **'minibuses'**
-  String get modeMinibus;
 
   /// R-06 screen title
   ///
@@ -373,12 +343,6 @@ abstract class AppLocalizations {
   /// **'Cached · may be outdated'**
   String get cachedOptionsStaleBadge;
 
-  /// R-06 result subtitle
-  ///
-  /// In en, this message translates to:
-  /// **'{area} · {distanceM} m away'**
-  String searchResultSubtitle(String area, int distanceM);
-
   /// R-06b title
   ///
   /// In en, this message translates to:
@@ -396,36 +360,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm location'**
   String get adjustPickupConfirm;
-
-  /// Trips tab stub until later phase
-  ///
-  /// In en, this message translates to:
-  /// **'Your trips will appear here.'**
-  String get tripsStubBody;
-
-  /// Account tab stub until later phase
-  ///
-  /// In en, this message translates to:
-  /// **'Account settings arrive in a later task.'**
-  String get accountStubBody;
-
-  /// R-07 stub title until P1-B-03
-  ///
-  /// In en, this message translates to:
-  /// **'Trip options'**
-  String get tripOptionsStubTitle;
-
-  /// R-07 stub body until P1-B-03
-  ///
-  /// In en, this message translates to:
-  /// **'Route and fare options arrive in the next task.'**
-  String get tripOptionsStubBody;
-
-  /// R-07 screen title
-  ///
-  /// In en, this message translates to:
-  /// **'Trip options'**
-  String get tripOptionsTitle;
 
   /// R-07 sheet heading
   ///
@@ -450,12 +384,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Agree price'**
   String get tripOptionsAgreePrice;
-
-  /// R-07 Tier 3 toast — negotiation is P2
-  ///
-  /// In en, this message translates to:
-  /// **'Along Pricing arrives in a later phase'**
-  String get tripOptionsAgreePricePlaceholder;
 
   /// R-16 screen title
   ///
@@ -553,12 +481,6 @@ abstract class AppLocalizations {
   /// **'Done'**
   String get loadFlagDone;
 
-  /// R-10 sheet title
-  ///
-  /// In en, this message translates to:
-  /// **'Requesting a {mode}…'**
-  String requestingTitle(String mode);
-
   /// R-10 countdown from server expires_at
   ///
   /// In en, this message translates to:
@@ -582,12 +504,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No driver responded — see other options'**
   String get requestingExpired;
-
-  /// R-10 accepted placeholder until R-11
-  ///
-  /// In en, this message translates to:
-  /// **'Driver accepted — meet your vehicle arrives next'**
-  String get requestingAcceptedPlaceholder;
 
   /// R-18 heading
   ///
@@ -775,12 +691,6 @@ abstract class AppLocalizations {
   /// **'Directions may be approximate'**
   String get wayfindingDegraded;
 
-  /// R-19 map mode placeholder
-  ///
-  /// In en, this message translates to:
-  /// **'Route with {count} points'**
-  String wayfindingMapHint(int count);
-
   /// R-19 empty steps fallback
   ///
   /// In en, this message translates to:
@@ -798,12 +708,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Walk {minutes} min to {park}'**
   String meetVehicleWalkTo(int minutes, String park);
-
-  /// R-11 Na Me chip caption
-  ///
-  /// In en, this message translates to:
-  /// **'Show this to your driver — {label}'**
-  String meetVehicleNaMeHint(String label);
 
   /// R-11 driver offline > threshold
   ///
@@ -835,12 +739,6 @@ abstract class AppLocalizations {
   /// **'I\'ve boarded'**
   String get meetVehicleBoarded;
 
-  /// R-13 sheet peek line
-  ///
-  /// In en, this message translates to:
-  /// **'In transit · ETA {minutes} min · {fare} Standard fare'**
-  String activeTripStatus(int minutes, String fare);
-
   /// R-13 extend placeholder
   ///
   /// In en, this message translates to:
@@ -859,47 +757,11 @@ abstract class AppLocalizations {
   /// **'Report'**
   String get activeTripReport;
 
-  /// R-25 placeholder snackbar
-  ///
-  /// In en, this message translates to:
-  /// **'Share trip — coming in Phase 5'**
-  String get sharePlaceholder;
-
-  /// R-23 placeholder snackbar
-  ///
-  /// In en, this message translates to:
-  /// **'SOS — coming in Phase 5'**
-  String get sosPlaceholder;
-
-  /// R-15 placeholder snackbar
-  ///
-  /// In en, this message translates to:
-  /// **'Extend trip — coming in Phase 5'**
-  String get extendPlaceholder;
-
-  /// R-24 placeholder snackbar
-  ///
-  /// In en, this message translates to:
-  /// **'Report incident — coming in Phase 5'**
-  String get reportPlaceholder;
-
   /// R-17 sheet title
   ///
   /// In en, this message translates to:
   /// **'Trip complete'**
   String get tripCompleteTitle;
-
-  /// R-17 cash fare confirm when digital is off
-  ///
-  /// In en, this message translates to:
-  /// **'Did you pay {amount}?'**
-  String tripCompletePaidQuestion(String amount);
-
-  /// R-17 digital-first close-out heading
-  ///
-  /// In en, this message translates to:
-  /// **'Pay {amount} to {name}'**
-  String tripCompletePayQuestion(String amount, String name);
 
   /// R-17 overflow when the rider paid in cash
   ///
@@ -930,12 +792,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pick the amount you paid'**
   String get tripCompleteDifferentPrompt;
-
-  /// R-17 rating step heading
-  ///
-  /// In en, this message translates to:
-  /// **'Rate your trip'**
-  String get tripCompleteRateTitle;
 
   /// R-15 sheet title
   ///
@@ -1835,12 +1691,6 @@ abstract class AppLocalizations {
   /// **'Seat map is more than a minute old'**
   String get seatStale;
 
-  /// No description provided for @seatMapTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Seat map'**
-  String get seatMapTitle;
-
   /// No description provided for @filterRulesHint.
   ///
   /// In en, this message translates to:
@@ -2254,30 +2104,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Least walking'**
   String get tripSortEasiest;
-
-  /// fareTierVerified
-  ///
-  /// In en, this message translates to:
-  /// **'Standard fare'**
-  String get fareTierVerified;
-
-  /// fareTierCrowd
-  ///
-  /// In en, this message translates to:
-  /// **'Community fare'**
-  String get fareTierCrowd;
-
-  /// fareTierCandidate
-  ///
-  /// In en, this message translates to:
-  /// **'Unconfirmed'**
-  String get fareTierCandidate;
-
-  /// fareTierEstimate
-  ///
-  /// In en, this message translates to:
-  /// **'Estimate, agree price'**
-  String get fareTierEstimate;
 
   /// distanceKm
   ///
@@ -2788,6 +2614,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hold it up so your driver can spot you'**
   String get meetVehicleNaMeShow;
+
+  /// No description provided for @reportIncidentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what happened. Our safety team reads every report.'**
+  String get reportIncidentSubtitle;
+
+  /// No description provided for @shareTripRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get shareTripRevoke;
+
+  /// No description provided for @tripsRowDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{first} · {second}'**
+  String tripsRowDetail(String first, String second);
+
+  /// No description provided for @tripDriverFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Your driver'**
+  String get tripDriverFallback;
+
+  /// No description provided for @tripsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your trips. Pull to try again.'**
+  String get tripsLoadFailed;
+
+  /// No description provided for @tripHoldForSos.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold for SOS'**
+  String get tripHoldForSos;
+
+  /// No description provided for @tripNaMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Na Me'**
+  String get tripNaMe;
+
+  /// No description provided for @tripCall112.
+  ///
+  /// In en, this message translates to:
+  /// **'Call 112'**
+  String get tripCall112;
+
+  /// No description provided for @tripSignalSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get tripSignalSent;
+
+  /// fareTierVerified
+  ///
+  /// In en, this message translates to:
+  /// **'Standard fare'**
+  String get fareTierVerified;
+
+  /// fareTierCrowd
+  ///
+  /// In en, this message translates to:
+  /// **'Community fare'**
+  String get fareTierCrowd;
+
+  /// fareTierCandidate
+  ///
+  /// In en, this message translates to:
+  /// **'Unconfirmed'**
+  String get fareTierCandidate;
+
+  /// fareTierEstimate
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate, agree price'**
+  String get fareTierEstimate;
+
+  /// No description provided for @receiptExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip extension'**
+  String get receiptExtension;
+
+  /// No description provided for @receiptIncludesFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes {amount} Along fee'**
+  String receiptIncludesFee(String amount);
+
+  /// No description provided for @receiptShareHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Along trip receipt'**
+  String get receiptShareHeader;
+
+  /// No description provided for @tripStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get tripStatusCompleted;
+
+  /// No description provided for @extendTripNowFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Current fare'**
+  String get extendTripNowFare;
+
+  /// No description provided for @extendTripNewTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'New total'**
+  String get extendTripNewTotal;
+
+  /// No description provided for @extendTripDriverConfirms.
+  ///
+  /// In en, this message translates to:
+  /// **'Your driver confirms before anything changes'**
+  String get extendTripDriverConfirms;
+
+  /// No description provided for @scanToPayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at the driver\'s Along code'**
+  String get scanToPayHint;
+
+  /// No description provided for @scanTorch.
+  ///
+  /// In en, this message translates to:
+  /// **'Torch'**
+  String get scanTorch;
+
+  /// No description provided for @payMethodsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you pay drivers'**
+  String get payMethodsSubtitle;
+
+  /// No description provided for @payMethodsSectionDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay drivers with'**
+  String get payMethodsSectionDefault;
+
+  /// No description provided for @payMethodsTransferHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from your bank app, no card needed'**
+  String get payMethodsTransferHint;
+
+  /// No description provided for @payMethodsCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved cards'**
+  String get payMethodsCards;
+
+  /// No description provided for @payMethodsCardsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved cards yet'**
+  String get payMethodsCardsEmpty;
+
+  /// No description provided for @payMethodsSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'We keep only the card brand and last 4 digits'**
+  String get payMethodsSecure;
+
+  /// No description provided for @wayfindingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To {place}'**
+  String wayfindingTo(String place);
+
+  /// No description provided for @wayfindingSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} · {minutes} min walk'**
+  String wayfindingSummary(String distance, int minutes);
+
+  /// No description provided for @wayfindingAudioPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio playing'**
+  String get wayfindingAudioPlaying;
+
+  /// No description provided for @wayfindingNowPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing'**
+  String get wayfindingNowPlaying;
 }
 
 class _AppLocalizationsDelegate

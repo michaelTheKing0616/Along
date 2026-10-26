@@ -66,28 +66,20 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SegmentedButton<WayfindingMode>(
-          segments: [
-            ButtonSegment(
-              value: WayfindingMode.text,
-              label: Text(l10n.wayfindingModeText),
-            ),
-            ButtonSegment(
-              value: WayfindingMode.map,
-              label: Text(l10n.wayfindingModeMap),
-            ),
-            ButtonSegment(
-              value: WayfindingMode.audio,
-              label: Text(l10n.wayfindingModeAudio),
-            ),
-          ],
-          selected: {widget.mode},
-          onSelectionChanged: (selection) {
+        _ModeSwitch(
+          mode: widget.mode,
+          labels: {
+            WayfindingMode.text: l10n.wayfindingModeText,
+            WayfindingMode.map: l10n.wayfindingModeMap,
+            WayfindingMode.audio: l10n.wayfindingModeAudio,
+          },
+          onChanged: (mode) {
+            if (mode == widget.mode) return;
             if (_audioPlaying) {
               widget.tts.stop();
               setState(() => _audioPlaying = false);
             }
-            widget.onModeChanged(selection.first);
+            widget.onModeChanged(mode);
           },
         ),
         const SizedBox(height: AlongSpace.s16),
@@ -107,6 +99,8 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
   Widget _buildTextMode(AppLocalizations l10n) {
     return SingleChildScrollView(
       child: StepList(
+        playingLabel: l10n.wayfindingAudioPlaying,
+        nowLabel: l10n.wayfindingNowPlaying,
         variant: StepListVariant.text,
         steps: [
           for (var i = 0; i < widget.directions.steps.length; i++)
@@ -131,21 +125,21 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
         KeyedSubtree(
           key: const Key('wayfinding_map'),
           child: AlongCraft.clip(
-          corner: AlongRadius.card.x,
-          child: AlongMap(
-            styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
-            allowDemoStyleFallback: false,
-            initialCameraPosition: camera == null
-                ? null
-                : MapCamera.forCenter(
-                    lat: camera.lat,
-                    lng: camera.lng,
-                    zoom: 16,
-                  ),
-            onLayerControllerReady: (controller) {
-              controller.setWalkRoute(polyline);
-            },
-          ),
+            corner: AlongRadius.card.x,
+            child: AlongMap(
+              styleUrl: AlongStyleLoader.resolveBasemapStyleUrl(),
+              allowDemoStyleFallback: false,
+              initialCameraPosition: camera == null
+                  ? null
+                  : MapCamera.forCenter(
+                      lat: camera.lat,
+                      lng: camera.lng,
+                      zoom: 16,
+                    ),
+              onLayerControllerReady: (controller) {
+                controller.setWalkRoute(polyline);
+              },
+            ),
           ),
         ),
         if (widget.directions.degraded)
@@ -153,17 +147,30 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
             top: AlongSpace.s8,
             left: AlongSpace.s8,
             right: AlongSpace.s8,
-            child: Container(
-              padding: const EdgeInsets.all(AlongSpace.s12),
-              clipBehavior: Clip.antiAlias,
+            child: DecoratedBox(
               decoration: AlongCraft.fill(
                 AlongColors.semanticWarningTint,
-                corner: AlongRadius.control.x,
+                corner: 16,
               ),
-              child: Text(
-                l10n.wayfindingDegraded,
-                style: AlongText.caption.copyWith(
-                  color: AlongColors.semanticWarning,
+              child: Padding(
+                padding: const EdgeInsets.all(AlongSpace.s12),
+                child: Row(
+                  children: [
+                    const AlongIcon(
+                      AlongIcons.info,
+                      size: 20,
+                      color: AlongColors.semanticWarning,
+                    ),
+                    const SizedBox(width: AlongSpace.s8),
+                    Expanded(
+                      child: Text(
+                        l10n.wayfindingDegraded,
+                        style: AlongText.caption.copyWith(
+                          color: AlongColors.ink900,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -191,6 +198,8 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
       children: [
         Expanded(
           child: StepList(
+            playingLabel: l10n.wayfindingAudioPlaying,
+            nowLabel: l10n.wayfindingNowPlaying,
             variant: _audioPlaying
                 ? StepListVariant.audioPlaying
                 : StepListVariant.text,
@@ -210,17 +219,69 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
           ),
         ),
         const SizedBox(height: AlongSpace.s12),
-        Text(
-          currentText,
-          style: AlongText.bodyStrong,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: AlongSpace.s12),
-        AlongButton(
-          key: const Key('wayfinding_audio_play'),
-          label: _audioPlaying ? l10n.wayfindingPause : l10n.wayfindingPlay,
-          variant: AlongButtonVariant.yellow,
-          onPressed: _toggleAudio,
+        Builder(
+          builder: (context) {
+            final p = AlongPalette.of(context);
+            return DecoratedBox(
+              decoration: AlongCraft.compactFill(p.recessed, 64, corner: 20),
+              child: Padding(
+                padding: const EdgeInsets.all(AlongSpace.s12),
+                child: Row(
+                  children: [
+                    Semantics(
+                      button: true,
+                      label: _audioPlaying
+                          ? l10n.wayfindingPause
+                          : l10n.wayfindingPlay,
+                      child: Material(
+                        color: p.ink,
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          key: const Key('wayfinding_audio_play'),
+                          onTap: _toggleAudio,
+                          child: SizedBox(
+                            width: 52,
+                            height: 52,
+                            child: Center(
+                              child: Icon(
+                                _audioPlaying
+                                    ? AlongIcons.pause
+                                    : AlongIcons.play,
+                                size: 24,
+                                color: p.onInk,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AlongSpace.s12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _audioPlaying
+                                ? l10n.wayfindingPause
+                                : l10n.wayfindingPlay,
+                            style: AlongType.caption(p),
+                          ),
+                          Text(
+                            currentText,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AlongType.label(p),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -257,10 +318,10 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
   }
 
   IconData _iconForManeuver(String? maneuver) => switch (maneuver) {
-    'turn-left' || 'left' => Icons.turn_left_rounded,
-    'turn-right' || 'right' => Icons.turn_right_rounded,
-    'arrive' => Icons.flag_rounded,
-    _ => Icons.straight_rounded,
+    'turn-left' || 'left' => AlongIcons.turnLeft,
+    'turn-right' || 'right' => AlongIcons.turnRight,
+    'arrive' => AlongIcons.flag,
+    _ => AlongIcons.straight,
   };
 
   String _formatDistance(int meters) {
@@ -268,5 +329,85 @@ class _WayfindingPanelState extends State<WayfindingPanel> {
       return '${(meters / 1000).toStringAsFixed(1)} km';
     }
     return '$meters m';
+  }
+}
+
+/// Three-way pill switch: Text, Map, Audio.
+class _ModeSwitch extends StatelessWidget {
+  const _ModeSwitch({
+    required this.mode,
+    required this.labels,
+    required this.onChanged,
+  });
+
+  final WayfindingMode mode;
+  final Map<WayfindingMode, String> labels;
+  final ValueChanged<WayfindingMode> onChanged;
+
+  static const _icons = {
+    WayfindingMode.text: AlongIcons.signpost,
+    WayfindingMode.map: AlongIcons.map,
+    WayfindingMode.audio: AlongIcons.speaker,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return DecoratedBox(
+      decoration: AlongCraft.compactFill(p.recessed, 64, corner: 18),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          children: [
+            for (final m in WayfindingMode.values)
+              Expanded(
+                child: Semantics(
+                  button: true,
+                  selected: m == mode,
+                  child: Material(
+                    color: m == mode ? p.ink : const Color(0x00000000),
+                    shape: AlongCraft.border(14),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      key: Key('wayfinding_mode_${m.name}'),
+                      onTap: () => onChanged(m),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 44),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AlongSpace.s4,
+                            vertical: AlongSpace.s8,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AlongIcon(
+                                _icons[m]!,
+                                size: 20,
+                                color: m == mode ? p.onInk : p.ink,
+                              ),
+                              const SizedBox(width: AlongSpace.s4),
+                              Flexible(
+                                child: Text(
+                                  labels[m]!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AlongType.label(p).copyWith(
+                                    color: m == mode ? p.onInk : p.ink,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -272,14 +272,126 @@ abstract final class AlongIcons {
     fontPackage: _package,
   );
 
+  /// Camera: attach a photo.
+  static const camera = IconData(
+    0xe10f,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Clock with a forward arrow: add time, extend.
+  static const addTime = IconData(
+    0xe19f,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// QR code: scan to pay, my code.
+  static const qrCode = IconData(
+    0xe3e7,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Torch: camera light.
+  static const torch = IconData(
+    0xe247,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Bank: transfer payments.
+  static const bank = IconData(
+    0xe0b5,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Card: saved payment card.
+  static const card = IconData(
+    0xe1d3,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Turn left.
+  static const turnLeft = IconData(
+    0xe025,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Turn right.
+  static const turnRight = IconData(
+    0xe027,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Flag: arrive.
+  static const flag = IconData(
+    0xe245,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Go straight.
+  static const straight = IconData(
+    0xe08f,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Remove.
+  static const trash = IconData(
+    0xe4a7,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Speaker: audio directions.
+  static const speaker = IconData(
+    0xe44b,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Play.
+  static const play = IconData(
+    0xe3d1,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
+  /// Pause.
+  static const pause = IconData(
+    0xe39f,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
   /// Fill layer that sits under the stroke in the duotone font.
   static const tone = <int, int>{
+    0xe3e7: 0xe3e6,
+    0xe247: 0xe246,
+    0xe0b5: 0xe0b4,
+    0xe1d3: 0xe1d2,
+    0xe025: 0xe024,
+    0xe027: 0xe026,
+    0xe245: 0xe244,
+    0xe08f: 0xe08e,
+    0xe4a7: 0xe4a6,
+    0xe44b: 0xe44a,
+    0xe3d1: 0xe3d0,
+    0xe39f: 0xe39e,
     0xe317: 0xe316,
     0xe31b: 0xe31a,
     0xe471: 0xe470,
     0xe89d: 0xe89c,
     0xe327: 0xe326,
     0xe1a1: 0xe1a0,
+    0xe19f: 0xe19e,
+    0xe10f: 0xe10e,
     0xe397: 0xe396,
     0xe53b: 0xe53a,
     0xe0af: 0xe0ae,

@@ -126,22 +126,7 @@ class AppLocalizationsYo extends AppLocalizations {
   }
 
   @override
-  String get homeExpandNearby => 'Show nearby';
-
-  @override
-  String get homeCollapseNearby => 'Hide nearby';
-
-  @override
-  String get modeCar => 'cars';
-
-  @override
   String get modeKeke => 'kekes';
-
-  @override
-  String get modeOkada => 'okadas';
-
-  @override
-  String get modeMinibus => 'minibuses';
 
   @override
   String get searchTitle => 'Níbo ni?';
@@ -159,11 +144,6 @@ class AppLocalizationsYo extends AppLocalizations {
   String get cachedOptionsStaleBadge => 'Cached · may be outdated';
 
   @override
-  String searchResultSubtitle(String area, int distanceM) {
-    return '$area · $distanceM m away';
-  }
-
-  @override
   String get adjustPickupTitle => 'Ṣàtúnṣe ibi ìgbé';
 
   @override
@@ -173,22 +153,6 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get adjustPickupConfirm => 'Jẹ́rìí ibi náà';
-
-  @override
-  String get tripsStubBody => 'Your trips will appear here.';
-
-  @override
-  String get accountStubBody => 'Account settings arrive in a later task.';
-
-  @override
-  String get tripOptionsStubTitle => 'Trip options';
-
-  @override
-  String get tripOptionsStubBody =>
-      'Route and fare options arrive in the next task.';
-
-  @override
-  String get tripOptionsTitle => 'Trip options';
 
   @override
   String get tripOptionsHeading => 'Choose how to go';
@@ -201,10 +165,6 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get tripOptionsAgreePrice => 'Agree price';
-
-  @override
-  String get tripOptionsAgreePricePlaceholder =>
-      'Along Pricing arrives in a later phase';
 
   @override
   String get pricingTitle => 'Along Pricing';
@@ -257,11 +217,6 @@ class AppLocalizationsYo extends AppLocalizations {
   String get loadFlagDone => 'Done';
 
   @override
-  String requestingTitle(String mode) {
-    return 'Requesting a $mode…';
-  }
-
-  @override
   String requestingCountdown(int seconds) {
     return 'Ìṣẹ́jú-àáyá $seconds ló kù';
   }
@@ -275,10 +230,6 @@ class AppLocalizationsYo extends AppLocalizations {
   @override
   String get requestingExpired =>
       'Kò sí awakọ̀ tó dáhùn — wo àwọn àṣàyàn mìíràn';
-
-  @override
-  String get requestingAcceptedPlaceholder =>
-      'Driver accepted — meet your vehicle arrives next';
 
   @override
   String get coverageGapTitle => 'No mapped routes here yet';
@@ -386,11 +337,6 @@ class AppLocalizationsYo extends AppLocalizations {
   String get wayfindingDegraded => 'Directions may be approximate';
 
   @override
-  String wayfindingMapHint(int count) {
-    return 'Route with $count points';
-  }
-
-  @override
   String get wayfindingNoSteps => 'Kò sí ìgbésẹ̀ kankan';
 
   @override
@@ -401,11 +347,6 @@ class AppLocalizationsYo extends AppLocalizations {
   @override
   String meetVehicleWalkTo(int minutes, String park) {
     return 'Rìn ìṣẹ́jú $minutes lọ sí $park';
-  }
-
-  @override
-  String meetVehicleNaMeHint(String label) {
-    return 'Fi èyí han awakọ̀ rẹ — $label';
   }
 
   @override
@@ -424,11 +365,6 @@ class AppLocalizationsYo extends AppLocalizations {
   String get meetVehicleBoarded => 'Mo ti wọlé';
 
   @override
-  String activeTripStatus(int minutes, String fare) {
-    return 'In transit · ETA $minutes min · $fare Standard fare';
-  }
-
-  @override
   String get activeTripExtend => 'Fi kún un';
 
   @override
@@ -438,29 +374,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get activeTripReport => 'Fi ẹ̀sùn sùn';
 
   @override
-  String get sharePlaceholder => 'Share trip — coming in Phase 5';
-
-  @override
-  String get sosPlaceholder => 'SOS — coming in Phase 5';
-
-  @override
-  String get extendPlaceholder => 'Extend trip — coming in Phase 5';
-
-  @override
-  String get reportPlaceholder => 'Report incident — coming in Phase 5';
-
-  @override
   String get tripCompleteTitle => 'Ìrìn-àjò ti parí';
-
-  @override
-  String tripCompletePaidQuestion(String amount) {
-    return 'Ṣé o san $amount?';
-  }
-
-  @override
-  String tripCompletePayQuestion(String amount, String name) {
-    return 'San $amount fún $name';
-  }
 
   @override
   String get tripCompletePaidCash => 'Mo san owó lọ́wọ́';
@@ -476,9 +390,6 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get tripCompleteDifferentPrompt => 'Yan iye tí o san';
-
-  @override
-  String get tripCompleteRateTitle => 'Rate your trip';
 
   @override
   String get extendTripTitle => 'Extend trip';
@@ -973,9 +884,6 @@ class AppLocalizationsYo extends AppLocalizations {
   String get seatStale => 'Seat map is more than a minute old';
 
   @override
-  String get seatMapTitle => 'Seat map';
-
-  @override
   String get filterRulesHint => 'Search a driver\'s rules';
 
   @override
@@ -1195,18 +1103,6 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get tripSortEasiest => 'Ìrìn díẹ̀';
-
-  @override
-  String get fareTierVerified => 'Owó ọkọ̀ déédé';
-
-  @override
-  String get fareTierCrowd => 'Owó tí àwọn èèyàn ń san';
-
-  @override
-  String get fareTierCandidate => 'Kò tíì dájú';
-
-  @override
-  String get fareTierEstimate => 'Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan';
 
   @override
   String distanceKm(String km) {
@@ -1556,4 +1452,113 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get meetVehicleNaMeShow => 'Gbé e sókè kí awakọ̀ rẹ lè rí ọ';
+
+  @override
+  String get reportIncidentSubtitle =>
+      'Sọ ohun tó ṣẹlẹ̀ fún wa. Ẹgbẹ́ ààbò wa ń ka gbogbo ìròyìn.';
+
+  @override
+  String get shareTripRevoke => 'Dá pínpín dúró';
+
+  @override
+  String tripsRowDetail(String first, String second) {
+    return '$first · $second';
+  }
+
+  @override
+  String get tripDriverFallback => 'Awakọ̀ rẹ';
+
+  @override
+  String get tripsLoadFailed =>
+      'A kò lè gbé àwọn ìrìn rẹ wá. Gbìyànjú lẹ́ẹ̀kan sí i.';
+
+  @override
+  String get tripHoldForSos => 'Dì í mú fún SOS';
+
+  @override
+  String get tripNaMe => 'Èmi Nìyí';
+
+  @override
+  String get tripCall112 => 'Pe 112';
+
+  @override
+  String get tripSignalSent => 'Ti fi ránṣẹ́';
+
+  @override
+  String get fareTierVerified => 'Owó ọkọ̀ déédé';
+
+  @override
+  String get fareTierCrowd => 'Owó tí àwọn èèyàn ń san';
+
+  @override
+  String get fareTierCandidate => 'Kò tíì dájú';
+
+  @override
+  String get fareTierEstimate => 'Ìfojúdíwọ̀n, ẹ fohùn ṣọ̀kan';
+
+  @override
+  String get receiptExtension => 'Ìfàgùn ìrìn';
+
+  @override
+  String receiptIncludesFee(String amount) {
+    return 'Ó ní owó Along $amount nínú';
+  }
+
+  @override
+  String get receiptShareHeader => 'Ìwé owó ìrìn Along';
+
+  @override
+  String get tripStatusCompleted => 'Ti parí';
+
+  @override
+  String get extendTripNowFare => 'Owó ọkọ̀ lọ́wọ́lọ́wọ́';
+
+  @override
+  String get extendTripNewTotal => 'Àpapọ̀ tuntun';
+
+  @override
+  String get extendTripDriverConfirms =>
+      'Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà';
+
+  @override
+  String get scanToPayHint => 'Dojú kámẹ́rà kọ koodu Along awakọ̀';
+
+  @override
+  String get scanTorch => 'Iná tọ́ọ̀ṣì';
+
+  @override
+  String get payMethodsSubtitle => 'Yan bí o ṣe ń sanwó fún awakọ̀';
+
+  @override
+  String get payMethodsSectionDefault => 'Sanwó fún awakọ̀ pẹ̀lú';
+
+  @override
+  String get payMethodsTransferHint =>
+      'Sanwó láti inú app báńkì rẹ, kò sí kádì';
+
+  @override
+  String get payMethodsCards => 'Àwọn kádì tí a fipamọ́';
+
+  @override
+  String get payMethodsCardsEmpty => 'Kò sí kádì tí a fipamọ́ síbẹ̀';
+
+  @override
+  String get payMethodsSecure =>
+      'Orúkọ kádì àti nọ́mbà 4 tó kẹ́yìn nìkan la ń tọ́jú';
+
+  @override
+  String wayfindingTo(String place) {
+    return 'Sí $place';
+  }
+
+  @override
+  String wayfindingSummary(String distance, int minutes) {
+    return '$distance · ìrìn ìṣẹ́jú $minutes';
+  }
+
+  @override
+  String get wayfindingAudioPlaying => 'Ohùn ń ṣiṣẹ́';
+
+  @override
+  String get wayfindingNowPlaying => 'Ń ṣiṣẹ́ báyìí';
 }
