@@ -173,8 +173,9 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
             shape: trip.naMe.shape,
             label: trip.naMe.label,
           ),
-          title: 'You\'re in',
-          subtitle: '${trip.driver.displayName} · ${trip.vehicle.plateNumber}',
+          title: 'You\'re matched',
+          subtitle:
+              'Get in. ${trip.driver.displayName.split(' ').first} will start the trip.',
           onChime: () => unawaited(playNaMeChime()),
           onDone: () {
             nav.pop();

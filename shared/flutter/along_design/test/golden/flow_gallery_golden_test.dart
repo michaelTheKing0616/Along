@@ -312,11 +312,7 @@ void main() {
       progress: 1,
     ),
     'na_me_match_rider': () => const AlongNaMeCelebration(
-      pairing: AlongNaMeChoice(
-        colorToken: 'color.naMe.yellow',
-        shape: 'star',
-        label: 'Yellow Star',
-      ),
+      pairing: _naMe,
       title: 'You\'re matched',
       subtitle: 'Get in. Musa will start the trip.',
       progress: 1,
