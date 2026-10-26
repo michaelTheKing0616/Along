@@ -171,6 +171,7 @@ class TripChatController extends ChangeNotifier {
           'p_trip_id': tripId,
           'p_body': _lines[i].body,
           'p_client_ref': ref,
+          'p_thread': 'chat',
         },
       );
       final j = _lines.indexWhere((l) => l.key == ref);
