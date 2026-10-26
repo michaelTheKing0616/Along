@@ -264,8 +264,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                                   child: AlongButton(
                                     key: const Key('active_trip_message'),
                                     label: riderName.isEmpty
-                                        ? 'Message rider'
-                                        : 'Message $riderName',
+                                        ? l10n.activeTripMessageRiderUnknown
+                                        : l10n.activeTripMessageRider(
+                                            riderName,
+                                          ),
                                     variant: AlongButtonVariant.secondary,
                                     onPressed: () => openTripChat(
                                       context,

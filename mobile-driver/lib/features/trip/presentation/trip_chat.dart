@@ -44,6 +44,7 @@ AlongChatLine _line(TripChatEntry e) => AlongChatLine(
   body: e.body,
   mine: e.mine,
   at: e.at,
+  lostFound: e.lostFound,
   status: switch (e.state) {
     TripChatState.sending => AlongChatStatus.sending,
     TripChatState.sent => AlongChatStatus.sent,

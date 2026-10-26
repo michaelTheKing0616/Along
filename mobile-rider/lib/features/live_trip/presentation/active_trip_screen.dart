@@ -469,7 +469,9 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                           count: chat.unread,
                           child: AlongButton(
                             key: const Key('active_trip_message'),
-                            label: 'Message ${liveTrip.driver.displayName}',
+                            label: l10n.activeTripMessage(
+                              liveTrip.driver.displayName,
+                            ),
                             variant: AlongButtonVariant.secondary,
                             onPressed: () => openTripChat(
                               context,
