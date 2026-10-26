@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../craft.dart';
+import '../palette.dart';
 import '../tokens.g.dart';
 
 /// Trip option sort criteria (doc 05 §9 `SortChips`).
@@ -8,11 +9,11 @@ enum SortOption { recommended, cheapest, fastest, leastStrenuous }
 
 extension SortOptionLabels on SortOption {
   String get label => switch (this) {
-        SortOption.recommended => 'Recommended',
-        SortOption.cheapest => 'Cheapest',
-        SortOption.fastest => 'Fastest',
-        SortOption.leastStrenuous => 'Least strenuous',
-      };
+    SortOption.recommended => 'Recommended',
+    SortOption.cheapest => 'Cheapest',
+    SortOption.fastest => 'Fastest',
+    SortOption.leastStrenuous => 'Least strenuous',
+  };
 }
 
 /// Single-select sort chip row — persists via caller's [selected] / [onSelected].
@@ -28,6 +29,7 @@ class SortChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
     return Wrap(
       spacing: AlongSpace.s8,
       runSpacing: AlongSpace.s8,
@@ -38,13 +40,13 @@ class SortChips extends StatelessWidget {
           selected: isSelected,
           label: option.label,
           child: Material(
-            color: isSelected ? AlongColors.brandYellow : AlongColors.surface100,
+            color: isSelected ? palette.accent : palette.recessed,
             shape: AlongCraft.border(AlongRadius.control.x),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: () => onSelected(option),
               splashFactory: NoSplash.splashFactory,
-              highlightColor: AlongColors.ink900.withValues(alpha: 0.08),
+              highlightColor: palette.ink.withValues(alpha: 0.08),
               customBorder: AlongCraft.border(AlongRadius.control.x),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -54,9 +56,7 @@ class SortChips extends StatelessWidget {
                 child: Text(
                   option.label,
                   style: AlongText.label.copyWith(
-                    color: isSelected
-                        ? AlongColors.brandYellowOn
-                        : AlongColors.ink700,
+                    color: isSelected ? palette.accentInk : palette.ink,
                   ),
                 ),
               ),
