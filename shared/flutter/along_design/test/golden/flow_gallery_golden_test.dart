@@ -854,6 +854,68 @@ class _Block extends StatelessWidget {
   );
 }
 
+class _Hand extends CustomPainter {
+  const _Hand({required this.front});
+
+  final bool front;
+
+  static const _skin = Color(0xFF9A6A4A);
+  static const _shade = Color(0xFF7E5439);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final skin = Paint()..color = _skin;
+    final shade = Paint()..color = _shade;
+    if (!front) {
+      // Palm and wrist below the phone, shaded on the far side.
+      final palm = RRect.fromLTRBR(
+        36,
+        196,
+        128,
+        340,
+        const Radius.circular(34),
+      );
+      canvas.drawRRect(palm, skin);
+      canvas.save();
+      canvas.clipRRect(palm);
+      canvas.drawRect(const Rect.fromLTRB(108, 196, 128, 340), shade);
+      canvas.restore();
+      return;
+    }
+    // Thumb: rests on the lower left edge, pointing up and in.
+    canvas.save();
+    canvas.translate(26, 236);
+    canvas.rotate(-0.4);
+    canvas.drawRRect(
+      RRect.fromLTRBR(-13, -44, 13, 10, const Radius.circular(13)),
+      skin,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(-13, -44, 13, -28, const Radius.circular(12)),
+      shade..color = _shade.withValues(alpha: 0.6),
+    );
+    canvas.restore();
+    // Fingertips curl round the right edge.
+    for (final y in [176.0, 200.0, 224.0]) {
+      final tip = RRect.fromLTRBR(
+        132,
+        y,
+        154,
+        y + 20,
+        const Radius.circular(10),
+      );
+      canvas.drawRRect(tip, skin);
+      canvas.drawRect(
+        Rect.fromLTRB(132, y + 17, 154, y + 20),
+        Paint()..color = _shade,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_Hand old) => old.front != front;
+}
+
 class _CameraScene extends StatelessWidget {
   const _CameraScene();
 
@@ -910,7 +972,12 @@ class _CameraScene extends StatelessWidget {
           child: ColoredBox(color: Color(0xFFB8432F)),
         ),
       ),
-      // The hand holding the phone up.
+      // The hand holding the phone up: palm behind, thumb and fingers
+      // wrap the edges in front (drawn after the phone).
+      Align(
+        alignment: Alignment(0, -0.3),
+        child: CustomPaint(size: Size(160, 330), painter: _Hand(front: false)),
+      ),
       Align(
         alignment: Alignment(0, 0.16),
         child: DecoratedBox(
@@ -945,6 +1012,10 @@ class _CameraScene extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      Align(
+        alignment: Alignment(0, -0.3),
+        child: CustomPaint(size: Size(160, 330), painter: _Hand(front: true)),
       ),
     ],
   );
