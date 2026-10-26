@@ -1,6 +1,6 @@
 # P11-A-01 Authorization Matrix
 
-**Generated:** 2026-10-26T07:03:16Z (UTC) from live `pg_policies` on `postgresql://postgres:postgres@…`
+**Generated:** 2026-10-26T07:12:49Z (UTC) from live `pg_policies` on `postgresql://postgres:postgres@…`
 **Source of truth for expectations:** doc 02 §16 + per-table `-- RLS:` comments
 
 ## Legend
@@ -14,7 +14,7 @@
 ## Summary
 
 | DOC-STALE | 14 |
-| MATCH | 97 |
+| MATCH | 98 |
 
 ## Per-table matrix
 
@@ -123,6 +123,7 @@
 | public | trip_dispatch_context | yes | 2 | (not in §16 matrix) | MATCH |  |
 | public | trip_events | yes | 3 | trip_events | MATCH |  |
 | public | trip_extensions | yes | 3 | trip_extensions | MATCH |  |
+| public | trip_handshakes | yes | 1 | (not in §16 matrix) | MATCH |  |
 | public | trip_messages | yes | 1 | (not in §16 matrix) | MATCH |  |
 | public | trip_pins | yes | 2 | (not in §16 matrix) | MATCH |  |
 | public | trip_reconciliation_flags | yes | 2 | trip_reconciliation_flags | MATCH |  |
