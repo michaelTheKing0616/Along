@@ -97,6 +97,17 @@ void main() {
       vehicle: 'Yellow keke · ABJ 482 KE',
       destination: 'Nyanya',
     ),
+    'trip_live_message': () => AlongLiveTripScreen(
+      onCall: () {},
+      onSos: () {},
+      onMessage: () {},
+      unread: 2,
+      eta: _eta(lowS: 780, highS: 1020),
+      previous: _eta(lowS: 780, highS: 1020),
+      driverName: 'Musa Bello',
+      vehicle: 'Yellow keke · ABJ 482 KE',
+      destination: 'Nyanya',
+    ),
     'trip_live_slow': () => AlongLiveTripScreen(
       onCall: () {},
       onSos: () {},
@@ -154,6 +165,30 @@ void main() {
     ),
     'trip_chat': () => _chatStage(_chatLines),
     'trip_chat_empty': () => _chatStage(const []),
+    'trip_chat_lost_found': () => _chatStage([
+      ..._chatLines,
+      AlongChatLine(
+        id: 'lf1',
+        body: 'Did I leave a blue umbrella on the back seat?',
+        mine: true,
+        at: DateTime.utc(2026, 10, 25, 20, 10),
+        lostFound: true,
+      ),
+      AlongChatLine(
+        id: 'lf2',
+        body: 'Yes, I have it. At Wuse park tomorrow 8am',
+        mine: false,
+        at: DateTime.utc(2026, 10, 25, 20, 14),
+        lostFound: true,
+      ),
+      AlongChatLine(
+        id: 'lf3',
+        body: 'Okay, thanks',
+        mine: true,
+        at: DateTime.utc(2026, 10, 25, 20, 15),
+        lostFound: true,
+      ),
+    ]),
     'trip_chat_failed': () => _chatStage([
       ..._chatLines.take(2),
       AlongChatLine(
@@ -239,6 +274,7 @@ void main() {
     'trip_pin_locked',
     'trip_handoff_unread',
     'trip_chat',
+    'trip_live_message',
   };
   for (final stage in tripStages.entries) {
     final frames = [

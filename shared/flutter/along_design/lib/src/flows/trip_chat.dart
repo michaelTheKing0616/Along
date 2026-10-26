@@ -17,6 +17,7 @@ class AlongChatLine {
     required this.mine,
     required this.at,
     this.status = AlongChatStatus.sent,
+    this.lostFound = false,
   });
 
   final String id;
@@ -24,6 +25,9 @@ class AlongChatLine {
   final bool mine;
   final DateTime at;
   final AlongChatStatus status;
+
+  /// Post-trip lost-and-found line: shown under its own labelled section.
+  final bool lostFound;
 }
 
 /// Opens [AlongTripChatSheet] on a 32-radius sheet. The route animates on
@@ -173,11 +177,23 @@ class _AlongTripChatSheetState extends State<AlongTripChatSheet> {
                             line.mine &&
                             lines.lastIndexWhere((l) => l.mine) ==
                                 lines.length - 1 - i;
-                        return _Bubble(
+                        final index = lines.length - 1 - i;
+                        final bubble = _Bubble(
                           line: line,
                           showStatus:
                               lastMine || line.status == AlongChatStatus.failed,
                           onRetry: widget.onRetry,
+                        );
+                        final opensSection =
+                            line.lostFound &&
+                            (index == 0 || !lines[index - 1].lostFound);
+                        if (!opensSection) return bubble;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _LostFoundHeader(first: index == 0),
+                            bubble,
+                          ],
                         );
                       },
                     ),
@@ -193,7 +209,11 @@ class _AlongTripChatSheetState extends State<AlongTripChatSheet> {
             else ...[
               if (widget.quickReplies.isNotEmpty) ...[
                 if (lines.isNotEmpty)
-                  Divider(height: 1, thickness: 1, color: p.line),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: p.line.withValues(alpha: 0.5),
+                  ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 6),
                   child: Text(
@@ -294,10 +314,11 @@ class _Bubble extends StatelessWidget {
     final failed = line.status == AlongChatStatus.failed;
     final bubble = Container(
       constraints: BoxConstraints(
-        minHeight: 44,
+        minHeight: 48,
+        minWidth: 64,
         maxWidth: MediaQuery.sizeOf(context).width * 0.74,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: ShapeDecoration(
         color: mine && !failed ? p.ink : p.surface,
         shape: SmoothRectangleBorder(
@@ -432,6 +453,33 @@ class _QuickReply extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _LostFoundHeader extends StatelessWidget {
+  const _LostFoundHeader({required this.first});
+
+  final bool first;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Padding(
+      key: const Key('trip_chat_lost_found'),
+      padding: EdgeInsets.fromLTRB(4, first ? 4 : 16, 4, 8),
+      child: Row(
+        children: [
+          AlongIcon(AlongIcons.info, size: 16, color: p.ink),
+          const SizedBox(width: 8),
+          Text(
+            'Lost and found · after the trip',
+            style: AlongType.label(p).copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Divider(height: 1, color: p.line)),
+        ],
       ),
     );
   }

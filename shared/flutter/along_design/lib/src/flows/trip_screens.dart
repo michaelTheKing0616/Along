@@ -555,6 +555,9 @@ class AlongLiveTripScreen extends StatelessWidget {
     this.onRetry,
     this.onCall,
     this.onSos,
+    this.onMessage,
+    this.messageLabel,
+    this.unread = 0,
   });
 
   final TripEta? eta;
@@ -573,6 +576,13 @@ class AlongLiveTripScreen extends StatelessWidget {
   final VoidCallback? onRetry;
   final VoidCallback? onCall;
   final VoidCallback? onSos;
+
+  /// In-car chat entry; hidden when null.
+  final VoidCallback? onMessage;
+
+  /// Localised "Message {driver}"; defaults to English.
+  final String? messageLabel;
+  final int unread;
 
   @override
   Widget build(BuildContext context) {
@@ -641,6 +651,18 @@ class AlongLiveTripScreen extends StatelessWidget {
               ),
             ],
           ),
+          if (onMessage != null) ...[
+            const SizedBox(height: 16),
+            AlongUnreadBadge(
+              count: unread,
+              child: AlongButton(
+                key: const Key('live_message'),
+                label: messageLabel ?? 'Message $driverName',
+                variant: AlongButtonVariant.secondary,
+                onPressed: onMessage,
+              ),
+            ),
+          ],
           if (stops.isNotEmpty) ...[
             const SizedBox(height: 16),
             for (final stop in stops) _StopLine(stop: stop),
@@ -2422,8 +2444,8 @@ class _TripRow extends StatelessWidget {
   }
 }
 
-/// Unread count inside a button's right edge, so it never collides with a
-/// neighbour or the screen edge at large text. Pops in on [AlongMoves.pop].
+/// Unread count on a button's top-right corner, overlapping the edge by
+/// 6 px so it stays clear of the centred label. Pops in on [AlongMoves.pop].
 /// Hidden at zero.
 class AlongUnreadBadge extends StatelessWidget {
   const AlongUnreadBadge({super.key, required this.count, required this.child});
@@ -2439,9 +2461,8 @@ class AlongUnreadBadge extends StatelessWidget {
       children: [
         child,
         Positioned(
-          top: 0,
-          bottom: 0,
-          right: 12,
+          top: -6,
+          right: -6,
           child: Center(
             child: AnimatedScale(
               scale: count > 0 ? 1 : 0,
