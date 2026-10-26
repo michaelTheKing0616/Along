@@ -1522,4 +1522,61 @@ class AppLocalizationsPcm extends AppLocalizations {
   @override
   String get extendTripDriverConfirms =>
       'Your driver go confirm before anything change';
+
+  @override
+  String get requestingNextTitle => 'Wetin go happen next';
+
+  @override
+  String get requestingStepSent =>
+      'We don send your request to drivers wey dey near';
+
+  @override
+  String get requestingStepAccept =>
+      'Driver go accept, you go see im plate number';
+
+  @override
+  String requestingStepMeet(String place) {
+    return 'Meet am for $place';
+  }
+
+  @override
+  String get tripGlanceTitle => 'Your trip';
+
+  @override
+  String tripGlanceWalk(String place) {
+    return 'Waka go $place';
+  }
+
+  @override
+  String get tripGlanceWait => 'Wait for your ride';
+
+  @override
+  String tripGlanceRide(String place) {
+    return 'Enter go $place';
+  }
+
+  @override
+  String tripGlanceMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get tripsSummaryTitle => 'Recent trips';
+
+  @override
+  String tripsSummaryCount(int count) {
+    return '$count trips';
+  }
+
+  @override
+  String tripsSummarySpent(String amount) {
+    return 'You don pay $amount';
+  }
+
+  @override
+  String get tripsEmptyHint =>
+      'Trips wey you take with Along go show here, with receipt.';
+
+  @override
+  String get tripsEmptyCta => 'Plan trip';
 }

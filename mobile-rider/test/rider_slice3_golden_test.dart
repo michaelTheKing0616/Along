@@ -155,6 +155,66 @@ void main() {
       'driver_name': 'Chinedu Okafor',
       'plate_number': 'KUJ-552-AB',
     },
+    {
+      'id': 'trip-hist-3',
+      'status': 'completed',
+      'ended_at': '2026-09-05T07:40:00Z',
+      'boarding_name': 'Area 1 Park',
+      'alighting_name': 'Lugbe Park',
+      'mode_code': 'keke',
+      'mode_label': 'Keke',
+      'fare_shown': '450.00',
+      'load_surcharge_amount': 0,
+      'commission_amount': '20.00',
+      'fare_currency': 'NGN',
+      'driver_name': 'Musa Abubakar',
+      'plate_number': 'ABC-123-XY',
+    },
+    {
+      'id': 'trip-hist-4',
+      'status': 'completed',
+      'ended_at': '2026-09-04T17:15:00Z',
+      'boarding_name': 'Berger Junction',
+      'alighting_name': 'Jabi Lake Mall',
+      'mode_code': 'danfo',
+      'mode_label': 'Danfo',
+      'fare_shown': '300.00',
+      'load_surcharge_amount': 0,
+      'commission_amount': '20.00',
+      'fare_currency': 'NGN',
+      'driver_name': 'Ibrahim Sani',
+      'plate_number': 'ABJ-771-KD',
+    },
+    {
+      'id': 'trip-hist-5',
+      'status': 'completed',
+      'ended_at': '2026-09-02T12:05:00Z',
+      'boarding_name': 'Utako Motor Park',
+      'alighting_name': 'Garki Market',
+      'mode_code': 'taxi',
+      'mode_label': 'Taxi',
+      'fare_shown': '1500.00',
+      'load_surcharge_amount': '100.00',
+      'commission_amount': '20.00',
+      'fare_currency': 'NGN',
+      'driver_name': 'Tunde Bello',
+      'plate_number': 'RBC-904-AA',
+    },
+    {
+      'id': 'trip-hist-6',
+      'status': 'completed',
+      'ended_at': '2026-09-02T06:50:00Z',
+      'boarding_name': 'Kubwa Village Market',
+      'alighting_name': 'Berger Junction',
+      'mode_code': 'bus',
+      'mode_label': 'Bus',
+      'fare_shown': '400.00',
+      'load_surcharge_amount': 0,
+      'commission_amount': '20.00',
+      'fare_currency': 'NGN',
+      'driver_name': 'Emeka Obi',
+      'plate_number': 'KWL-220-BC',
+    },
   ];
 
   for (final (name, brightness, scale) in variants) {
@@ -187,13 +247,39 @@ void main() {
       await shoot(tester, 'rider_trips_history_$name');
     });
 
+    testWidgets('rider trips history empty $name', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final fake = FakeAlongSupabase(configRows: defaultTestConfigRows());
+      final c = containerFor(fake);
+      addTearDown(() {
+        fake.dispose();
+        c.dispose();
+      });
+      await tester.pumpWidget(
+        app(c, const TripsHistoryScreen(), brightness, scale),
+      );
+      await settle(tester);
+      expect(find.byKey(const Key('trips_empty_cta')), findsOneWidget);
+      await shoot(tester, 'rider_trips_history_empty_$name');
+    });
+
     testWidgets('rider trip detail $name', (tester) async {
-      await pumpScreen(tester, const TripDetailScreen(tripId: 'trip-hist-1'));
+      // Presented as a pushed page, so the back affordance shows.
+      await pumpScreen(
+        tester,
+        const _Pushed(TripDetailScreen(tripId: 'trip-hist-1')),
+      );
+      expect(find.byKey(const Key('trip_page_back')), findsOneWidget);
       await shoot(tester, 'rider_trip_detail_$name');
     });
 
     testWidgets('rider report incident $name', (tester) async {
-      await pumpScreen(tester, const ReportIncidentScreen(tripId: 'trip-1'));
+      await pumpScreen(
+        tester,
+        const _Pushed(ReportIncidentScreen(tripId: 'trip-1')),
+      );
+      expect(find.byKey(const Key('trip_page_back')), findsOneWidget);
       await tester.tap(find.byKey(const Key('incident_category_safety')));
       await settle(tester);
       await shoot(tester, 'rider_report_incident_$name');
@@ -349,4 +435,20 @@ Map<String, dynamic> liveTripJson() {
     },
   };
   return json;
+}
+
+/// Hosts [child] as the second route of a navigator so pages render the
+/// way users reach them: pushed, with a back affordance.
+class _Pushed extends StatelessWidget {
+  const _Pushed(this.child);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Navigator(
+    onGenerateInitialRoutes: (_, __) => [
+      MaterialPageRoute<void>(builder: (_) => const SizedBox()),
+      MaterialPageRoute<void>(builder: (_) => child),
+    ],
+  );
 }

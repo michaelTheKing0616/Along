@@ -104,6 +104,9 @@ void main() {
           place('stage', 'Wuse II stage', 'Wuse II', 2400),
           place('park', 'Wuye Motor Park', 'Wuye', 3100),
           place('place', 'Wuse Zone 4', 'Wuse', 2900),
+          place('stage', 'Wuse Zone 6 junction', 'Wuse', 3300),
+          place('market', 'Wuse Shopping Plaza', 'Wuse', 3600),
+          place('place', 'Wuye District Hospital', 'Wuye', 4200),
         ],
       );
       final container = ProviderContainer(

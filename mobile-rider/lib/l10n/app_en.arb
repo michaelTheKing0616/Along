@@ -1776,5 +1776,61 @@
   "tripStatusCompleted": "Completed",
   "extendTripNowFare": "Current fare",
   "extendTripNewTotal": "New total",
-  "extendTripDriverConfirms": "Your driver confirms before anything changes"
+  "extendTripDriverConfirms": "Your driver confirms before anything changes",
+  "requestingNextTitle": "What happens next",
+  "requestingStepSent": "Request sent to drivers nearby",
+  "requestingStepAccept": "A driver accepts and you see their plate",
+  "requestingStepMeet": "Meet them at {place}",
+  "@requestingStepMeet": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripGlanceTitle": "Your trip",
+  "tripGlanceWalk": "Walk to {place}",
+  "@tripGlanceWalk": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripGlanceWait": "Wait for your ride",
+  "tripGlanceRide": "Ride to {place}",
+  "@tripGlanceRide": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tripGlanceMinutes": "{minutes} min",
+  "@tripGlanceMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripsSummaryTitle": "Recent trips",
+  "tripsSummaryCount": "{count} trips",
+  "@tripsSummaryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripsSummarySpent": "{amount} paid",
+  "@tripsSummarySpent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tripsEmptyHint": "Trips you take with Along show up here, with receipts.",
+  "tripsEmptyCta": "Plan a trip"
 }

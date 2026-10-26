@@ -168,5 +168,19 @@
   "tripStatusCompleted": "An gama",
   "extendTripNowFare": "Kuɗin yanzu",
   "extendTripNewTotal": "Sabon jimilla",
-  "extendTripDriverConfirms": "Direbanka zai tabbatar kafin wani abu ya canza"
+  "extendTripDriverConfirms": "Direbanka zai tabbatar kafin wani abu ya canza",
+  "requestingNextTitle": "Abin da zai biyo baya",
+  "requestingStepSent": "An aika buƙata ga direbobi na kusa",
+  "requestingStepAccept": "Direba ya karɓa, za ka ga lambar motarsa",
+  "requestingStepMeet": "Ku haɗu a {place}",
+  "tripGlanceTitle": "Tafiyarka",
+  "tripGlanceWalk": "Tafi da ƙafa zuwa {place}",
+  "tripGlanceWait": "Jira abin hawanka",
+  "tripGlanceRide": "Hau zuwa {place}",
+  "tripGlanceMinutes": "minti {minutes}",
+  "tripsSummaryTitle": "Tafiye-tafiye na kwanan nan",
+  "tripsSummaryCount": "Tafiya {count}",
+  "tripsSummarySpent": "An biya {amount}",
+  "tripsEmptyHint": "Tafiye-tafiyen da ka yi da Along za su bayyana a nan, tare da rasit.",
+  "tripsEmptyCta": "Shirya tafiya"
 }

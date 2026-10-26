@@ -168,5 +168,19 @@
   "tripStatusCompleted": "Don finish",
   "extendTripNowFare": "Fare wey you dey pay",
   "extendTripNewTotal": "New total",
-  "extendTripDriverConfirms": "Your driver go confirm before anything change"
+  "extendTripDriverConfirms": "Your driver go confirm before anything change",
+  "requestingNextTitle": "Wetin go happen next",
+  "requestingStepSent": "We don send your request to drivers wey dey near",
+  "requestingStepAccept": "Driver go accept, you go see im plate number",
+  "requestingStepMeet": "Meet am for {place}",
+  "tripGlanceTitle": "Your trip",
+  "tripGlanceWalk": "Waka go {place}",
+  "tripGlanceWait": "Wait for your ride",
+  "tripGlanceRide": "Enter go {place}",
+  "tripGlanceMinutes": "{minutes} min",
+  "tripsSummaryTitle": "Recent trips",
+  "tripsSummaryCount": "{count} trips",
+  "tripsSummarySpent": "You don pay {amount}",
+  "tripsEmptyHint": "Trips wey you take with Along go show here, with receipt.",
+  "tripsEmptyCta": "Plan trip"
 }

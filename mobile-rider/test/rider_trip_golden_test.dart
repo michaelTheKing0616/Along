@@ -352,8 +352,16 @@ void main() {
       TripCompleteSheet.show(
         tester.element(find.byType(ActiveTripScreen)),
         trip: trip,
+        receipt: TripReceipt(
+          fare: Money.parse('450', currency: 'NGN'),
+          surcharge: Money.parse('50', currency: 'NGN'),
+          total: Money.parse('500', currency: 'NGN'),
+        ),
       );
       await settle(tester);
+      // Same total the pay-driver sheet and receipt show, itemised.
+      expect(find.text('₦500'), findsOneWidget);
+      expect(find.byKey(const Key('trip_complete_breakdown')), findsOneWidget);
       await shoot(tester, 'rider_trip_complete_$name');
       await tester.pumpWidget(const SizedBox());
     });

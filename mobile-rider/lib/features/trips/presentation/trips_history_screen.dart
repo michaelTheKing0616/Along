@@ -50,12 +50,60 @@ class TripsHistoryScreen extends ConsumerWidget {
               Text(
                 l10n.tripsEmpty,
                 textAlign: TextAlign.center,
+                style: AlongType.title(p),
+              ),
+              const SizedBox(height: AlongSpace.s4),
+              Text(
+                l10n.tripsEmptyHint,
+                textAlign: TextAlign.center,
                 style: AlongType.bodyMuted(p),
+              ),
+              const SizedBox(height: AlongSpace.s20),
+              Center(
+                child: AlongButton(
+                  key: const Key('trips_empty_cta'),
+                  label: l10n.tripsEmptyCta,
+                  fullWidth: false,
+                  onPressed: () => context.push(AppRoutes.search),
+                ),
               ),
             ];
           }
           final grouped = _groupByDay(entries, locale);
+          final spent = Money.fromMinorUnits(
+            entries.fold<int>(0, (sum, e) => sum + e.totalFare.minorUnits),
+            currency: entries.first.totalFare.currency,
+          );
           return [
+            TripPanel(
+              key: const Key('trips_summary'),
+              child: Row(
+                children: [
+                  TripModeTile(modeCode: entries.first.modeCode, size: 40),
+                  const SizedBox(width: AlongSpace.s12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.tripsSummaryTitle,
+                          style: AlongType.caption(p),
+                        ),
+                        Text(
+                          l10n.tripsSummaryCount(entries.length),
+                          style: AlongType.title(p),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    l10n.tripsSummarySpent(formatAppMoney(ref, spent)),
+                    style: AlongType.label(p),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AlongSpace.s12),
             placementsAsync.maybeWhen(
               data: (placements) => Padding(
                 padding: const EdgeInsets.only(bottom: AlongSpace.s16),
@@ -97,7 +145,8 @@ class TripsHistoryScreen extends ConsumerWidget {
   ) {
     final map = <String, List<TripHistoryEntry>>{};
     for (final entry in entries) {
-      final key = DateFormat.yMMMMd(locale).format(cityTime(entry.completedAt));
+      final key = DateFormat.MMMMEEEEd(locale)
+          .format(cityTime(entry.completedAt));
       map.putIfAbsent(key, () => []).add(entry);
     }
     return map;

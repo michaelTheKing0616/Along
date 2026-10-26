@@ -168,5 +168,19 @@
   "tripStatusCompleted": "Emechara",
   "extendTripNowFare": "Ụgwọ ugbu a",
   "extendTripNewTotal": "Mkpokọta ọhụrụ",
-  "extendTripDriverConfirms": "Onye ọkwọ ụgbọ gị ga-akwado tupu ihe ọ bụla agbanwee"
+  "extendTripDriverConfirms": "Onye ọkwọ ụgbọ gị ga-akwado tupu ihe ọ bụla agbanwee",
+  "requestingNextTitle": "Ihe ga-eme ọzọ",
+  "requestingStepSent": "Ezigara ndị ọkwọ ụgbọ nọ nso arịrịọ",
+  "requestingStepAccept": "Onye ọkwọ ụgbọ nabata, ị ga-ahụ nọmba ụgbọ ya",
+  "requestingStepMeet": "Zute ha na {place}",
+  "tripGlanceTitle": "Njem gị",
+  "tripGlanceWalk": "Jee ije gaa {place}",
+  "tripGlanceWait": "Chere ụgbọ gị",
+  "tripGlanceRide": "Nọdụ ụgbọ gaa {place}",
+  "tripGlanceMinutes": "nkeji {minutes}",
+  "tripsSummaryTitle": "Njem ndị na-adịbeghị anya",
+  "tripsSummaryCount": "Njem {count}",
+  "tripsSummarySpent": "Akwụọla {amount}",
+  "tripsEmptyHint": "Njem ị ji Along mee ga-apụta ebe a, ya na nnata.",
+  "tripsEmptyCta": "Hazie njem"
 }

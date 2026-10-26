@@ -1518,4 +1518,60 @@ class AppLocalizationsIg extends AppLocalizations {
   @override
   String get extendTripDriverConfirms =>
       'Onye ọkwọ ụgbọ gị ga-akwado tupu ihe ọ bụla agbanwee';
+
+  @override
+  String get requestingNextTitle => 'Ihe ga-eme ọzọ';
+
+  @override
+  String get requestingStepSent => 'Ezigara ndị ọkwọ ụgbọ nọ nso arịrịọ';
+
+  @override
+  String get requestingStepAccept =>
+      'Onye ọkwọ ụgbọ nabata, ị ga-ahụ nọmba ụgbọ ya';
+
+  @override
+  String requestingStepMeet(String place) {
+    return 'Zute ha na $place';
+  }
+
+  @override
+  String get tripGlanceTitle => 'Njem gị';
+
+  @override
+  String tripGlanceWalk(String place) {
+    return 'Jee ije gaa $place';
+  }
+
+  @override
+  String get tripGlanceWait => 'Chere ụgbọ gị';
+
+  @override
+  String tripGlanceRide(String place) {
+    return 'Nọdụ ụgbọ gaa $place';
+  }
+
+  @override
+  String tripGlanceMinutes(int minutes) {
+    return 'nkeji $minutes';
+  }
+
+  @override
+  String get tripsSummaryTitle => 'Njem ndị na-adịbeghị anya';
+
+  @override
+  String tripsSummaryCount(int count) {
+    return 'Njem $count';
+  }
+
+  @override
+  String tripsSummarySpent(String amount) {
+    return 'Akwụọla $amount';
+  }
+
+  @override
+  String get tripsEmptyHint =>
+      'Njem ị ji Along mee ga-apụta ebe a, ya na nnata.';
+
+  @override
+  String get tripsEmptyCta => 'Hazie njem';
 }

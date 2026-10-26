@@ -1522,4 +1522,59 @@ class AppLocalizationsHa extends AppLocalizations {
   @override
   String get extendTripDriverConfirms =>
       'Direbanka zai tabbatar kafin wani abu ya canza';
+
+  @override
+  String get requestingNextTitle => 'Abin da zai biyo baya';
+
+  @override
+  String get requestingStepSent => 'An aika buƙata ga direbobi na kusa';
+
+  @override
+  String get requestingStepAccept => 'Direba ya karɓa, za ka ga lambar motarsa';
+
+  @override
+  String requestingStepMeet(String place) {
+    return 'Ku haɗu a $place';
+  }
+
+  @override
+  String get tripGlanceTitle => 'Tafiyarka';
+
+  @override
+  String tripGlanceWalk(String place) {
+    return 'Tafi da ƙafa zuwa $place';
+  }
+
+  @override
+  String get tripGlanceWait => 'Jira abin hawanka';
+
+  @override
+  String tripGlanceRide(String place) {
+    return 'Hau zuwa $place';
+  }
+
+  @override
+  String tripGlanceMinutes(int minutes) {
+    return 'minti $minutes';
+  }
+
+  @override
+  String get tripsSummaryTitle => 'Tafiye-tafiye na kwanan nan';
+
+  @override
+  String tripsSummaryCount(int count) {
+    return 'Tafiya $count';
+  }
+
+  @override
+  String tripsSummarySpent(String amount) {
+    return 'An biya $amount';
+  }
+
+  @override
+  String get tripsEmptyHint =>
+      'Tafiye-tafiyen da ka yi da Along za su bayyana a nan, tare da rasit.';
+
+  @override
+  String get tripsEmptyCta => 'Shirya tafiya';
 }

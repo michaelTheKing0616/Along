@@ -168,5 +168,19 @@
   "tripStatusCompleted": "Ti parí",
   "extendTripNowFare": "Owó ọkọ̀ lọ́wọ́lọ́wọ́",
   "extendTripNewTotal": "Àpapọ̀ tuntun",
-  "extendTripDriverConfirms": "Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà"
+  "extendTripDriverConfirms": "Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà",
+  "requestingNextTitle": "Ohun tó kàn",
+  "requestingStepSent": "A ti fi ìbéèrè ránṣẹ́ sí awakọ̀ tó wà nítòsí",
+  "requestingStepAccept": "Awakọ̀ gbà á, o máa rí nọ́ńbà ọkọ̀ rẹ̀",
+  "requestingStepMeet": "Pàdé wọn ní {place}",
+  "tripGlanceTitle": "Ìrìnàjò rẹ",
+  "tripGlanceWalk": "Rìn lọ sí {place}",
+  "tripGlanceWait": "Dúró de ọkọ̀ rẹ",
+  "tripGlanceRide": "Wọ ọkọ̀ lọ sí {place}",
+  "tripGlanceMinutes": "ìṣẹ́jú {minutes}",
+  "tripsSummaryTitle": "Ìrìnàjò àìpẹ́",
+  "tripsSummaryCount": "Ìrìnàjò {count}",
+  "tripsSummarySpent": "O ti san {amount}",
+  "tripsEmptyHint": "Ìrìnàjò tí o bá ṣe pẹ̀lú Along máa hàn níbí, pẹ̀lú ìwé ẹ̀rí.",
+  "tripsEmptyCta": "Ṣètò ìrìnàjò"
 }

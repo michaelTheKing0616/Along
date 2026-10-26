@@ -1519,4 +1519,60 @@ class AppLocalizationsYo extends AppLocalizations {
   @override
   String get extendTripDriverConfirms =>
       'Awakọ̀ rẹ yóò fọwọ́ sí i kí ohunkóhun tó yí padà';
+
+  @override
+  String get requestingNextTitle => 'Ohun tó kàn';
+
+  @override
+  String get requestingStepSent =>
+      'A ti fi ìbéèrè ránṣẹ́ sí awakọ̀ tó wà nítòsí';
+
+  @override
+  String get requestingStepAccept => 'Awakọ̀ gbà á, o máa rí nọ́ńbà ọkọ̀ rẹ̀';
+
+  @override
+  String requestingStepMeet(String place) {
+    return 'Pàdé wọn ní $place';
+  }
+
+  @override
+  String get tripGlanceTitle => 'Ìrìnàjò rẹ';
+
+  @override
+  String tripGlanceWalk(String place) {
+    return 'Rìn lọ sí $place';
+  }
+
+  @override
+  String get tripGlanceWait => 'Dúró de ọkọ̀ rẹ';
+
+  @override
+  String tripGlanceRide(String place) {
+    return 'Wọ ọkọ̀ lọ sí $place';
+  }
+
+  @override
+  String tripGlanceMinutes(int minutes) {
+    return 'ìṣẹ́jú $minutes';
+  }
+
+  @override
+  String get tripsSummaryTitle => 'Ìrìnàjò àìpẹ́';
+
+  @override
+  String tripsSummaryCount(int count) {
+    return 'Ìrìnàjò $count';
+  }
+
+  @override
+  String tripsSummarySpent(String amount) {
+    return 'O ti san $amount';
+  }
+
+  @override
+  String get tripsEmptyHint =>
+      'Ìrìnàjò tí o bá ṣe pẹ̀lú Along máa hàn níbí, pẹ̀lú ìwé ẹ̀rí.';
+
+  @override
+  String get tripsEmptyCta => 'Ṣètò ìrìnàjò';
 }
