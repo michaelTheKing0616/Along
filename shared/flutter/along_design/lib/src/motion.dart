@@ -221,6 +221,9 @@ abstract final class AlongMoves {
   /// A live number changes: ETA range, countdown, period total.
   static const roll = AlongMove(AlongDurations.fade, AlongCurves.settle);
 
+  /// Na Me camera: the reticle closes in once the code is seen.
+  static const lockOn = AlongMove(AlongDurations.fade, AlongCurves.settle);
+
   /// A notice or state block arrives in the sheet.
   static const arrive = AlongMove(AlongDurations.sheet, AlongCurves.settle);
 
