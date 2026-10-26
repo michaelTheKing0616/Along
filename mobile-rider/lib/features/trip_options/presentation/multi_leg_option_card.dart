@@ -58,31 +58,29 @@ class MultiLegOptionCard extends StatelessWidget {
           unavailableReason: !candidate.viableDirect
               ? l10n.tripOptionsSlowerDirectCaption
               : null,
+          recommendedLabel: l10n.tripOptionsRecommended,
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
+          requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3 ? null : () => onRequestLeg(0),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s16),
+          padding: const EdgeInsets.symmetric(horizontal: AlongSpace.s4),
           child: Row(
             children: [
-              TextButton.icon(
+              AlongTextLink(
                 key: Key('multi_leg_toggle_${candidate.candidateId}'),
                 onPressed: onToggleExpanded,
-                icon: Icon(
-                  expanded ? Icons.expand_less : Icons.expand_more,
-                  color: AlongColors.ink700,
-                ),
-                label: Text(
-                  expanded ? l10n.tripOptionsHideLegs : l10n.tripOptionsShowLegs,
-                  style: AlongText.label.copyWith(color: AlongColors.ink700),
-                ),
+                icon: expanded ? AlongIcons.caretUp : AlongIcons.caretDown,
+                label: expanded
+                    ? l10n.tripOptionsHideLegs
+                    : l10n.tripOptionsShowLegs,
               ),
               if (recommended && onWhy != null) ...[
                 const Spacer(),
-                TextButton(
+                AlongTextLink(
                   key: Key('why_${candidate.candidateId}'),
-                  onPressed: onWhy,
-                  child: Text(l10n.tripOptionsWhy),
+                  onPressed: onWhy!,
+                  label: l10n.tripOptionsWhy,
                 ),
               ],
             ],

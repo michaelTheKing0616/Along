@@ -2182,6 +2182,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message {name}'**
   String activeTripMessage(String name);
+
+  /// homeGreetingMorning
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get homeGreetingMorning;
+
+  /// homeGreetingAfternoon
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get homeGreetingAfternoon;
+
+  /// homeGreetingEvening
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get homeGreetingEvening;
+
+  /// homeGreetingNight
+  ///
+  /// In en, this message translates to:
+  /// **'Good night'**
+  String get homeGreetingNight;
+
+  /// homeNearbyEta
+  ///
+  /// In en, this message translates to:
+  /// **'~{minutes} min'**
+  String homeNearbyEta(int minutes);
+
+  /// tripOptionsRecommended
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get tripOptionsRecommended;
+
+  /// tripOptionsRequest
+  ///
+  /// In en, this message translates to:
+  /// **'Request {fare}'**
+  String tripOptionsRequest(String fare);
+
+  /// searchChooseOnMapDetail
+  ///
+  /// In en, this message translates to:
+  /// **'Drop a pin'**
+  String get searchChooseOnMapDetail;
+
+  /// searchEmpty
+  ///
+  /// In en, this message translates to:
+  /// **'Type a park, market or street'**
+  String get searchEmpty;
+
+  /// tripSortCheapest
+  ///
+  /// In en, this message translates to:
+  /// **'Cheapest'**
+  String get tripSortCheapest;
+
+  /// tripSortFastest
+  ///
+  /// In en, this message translates to:
+  /// **'Fastest'**
+  String get tripSortFastest;
+
+  /// tripSortEasiest
+  ///
+  /// In en, this message translates to:
+  /// **'Least walking'**
+  String get tripSortEasiest;
 }
 
 class _AppLocalizationsDelegate

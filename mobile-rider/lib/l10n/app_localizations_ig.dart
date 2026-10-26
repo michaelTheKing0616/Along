@@ -1156,4 +1156,44 @@ class AppLocalizationsIg extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Zitere $name ozi';
   }
+
+  @override
+  String get homeGreetingMorning => 'Ụtụtụ ọma';
+
+  @override
+  String get homeGreetingAfternoon => 'Ehihie ọma';
+
+  @override
+  String get homeGreetingEvening => 'Mgbede ọma';
+
+  @override
+  String get homeGreetingNight => 'Ka chi fo';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~nkeji $minutes';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Anyị tụrụ aro';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Rịọ $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Tinye akara';
+
+  @override
+  String get searchEmpty => 'Dee ọdọ ụgbọ, ahịa ma ọ bụ okporo ụzọ';
+
+  @override
+  String get tripSortCheapest => 'Kacha ọnụ ala';
+
+  @override
+  String get tripSortFastest => 'Kacha ọsọ';
+
+  @override
+  String get tripSortEasiest => 'Ije ụkwụ dị nta';
 }

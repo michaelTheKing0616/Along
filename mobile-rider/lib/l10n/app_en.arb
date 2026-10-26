@@ -1212,5 +1212,63 @@
         "type": "String"
       }
     }
+  },
+  "homeGreetingMorning": "Good morning",
+  "@homeGreetingMorning": {
+    "description": "homeGreetingMorning"
+  },
+  "homeGreetingAfternoon": "Good afternoon",
+  "@homeGreetingAfternoon": {
+    "description": "homeGreetingAfternoon"
+  },
+  "homeGreetingEvening": "Good evening",
+  "@homeGreetingEvening": {
+    "description": "homeGreetingEvening"
+  },
+  "homeGreetingNight": "Good night",
+  "@homeGreetingNight": {
+    "description": "homeGreetingNight"
+  },
+  "homeNearbyEta": "~{minutes} min",
+  "@homeNearbyEta": {
+    "description": "homeNearbyEta",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsRecommended": "Recommended",
+  "@tripOptionsRecommended": {
+    "description": "tripOptionsRecommended"
+  },
+  "tripOptionsRequest": "Request {fare}",
+  "@tripOptionsRequest": {
+    "description": "tripOptionsRequest",
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "searchChooseOnMapDetail": "Drop a pin",
+  "@searchChooseOnMapDetail": {
+    "description": "searchChooseOnMapDetail"
+  },
+  "searchEmpty": "Type a park, market or street",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "tripSortCheapest": "Cheapest",
+  "@tripSortCheapest": {
+    "description": "tripSortCheapest"
+  },
+  "tripSortFastest": "Fastest",
+  "@tripSortFastest": {
+    "description": "tripSortFastest"
+  },
+  "tripSortEasiest": "Least walking",
+  "@tripSortEasiest": {
+    "description": "tripSortEasiest"
   }
 }

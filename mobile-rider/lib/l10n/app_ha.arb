@@ -9,5 +9,17 @@
   "accountCityLabel": "Birnin gida",
   "accountCityHint": "Taswira da bincike suna amfani da wannan birni idan wuri bai samu ba",
   "homeSearchHint": "Ina za a je?",
-  "activeTripMessage": "Aika wa {name} saƙo"
+  "activeTripMessage": "Aika wa {name} saƙo",
+  "homeGreetingMorning": "Ina kwana",
+  "homeGreetingAfternoon": "Barka da rana",
+  "homeGreetingEvening": "Barka da yamma",
+  "homeGreetingNight": "Sai da safe",
+  "homeNearbyEta": "~minti {minutes}",
+  "tripOptionsRecommended": "Shawarar mu",
+  "tripOptionsRequest": "Nemi {fare}",
+  "searchChooseOnMapDetail": "Saka alama",
+  "searchEmpty": "Rubuta tasha, kasuwa ko titi",
+  "tripSortCheapest": "Mafi arha",
+  "tripSortFastest": "Mafi sauri",
+  "tripSortEasiest": "Ƙarancin tafiya"
 }

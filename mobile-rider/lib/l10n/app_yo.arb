@@ -9,5 +9,17 @@
   "accountCityLabel": "Ìlú ilé",
   "accountCityHint": "Maapu àti wíwá n lo ìlú yìí nígbà tí a kò leè rí ibùdó",
   "homeSearchHint": "Níbo ni a ó lọ?",
-  "activeTripMessage": "Fi ọ̀rọ̀ ránṣẹ́ sí {name}"
+  "activeTripMessage": "Fi ọ̀rọ̀ ránṣẹ́ sí {name}",
+  "homeGreetingMorning": "Ẹ káàárọ̀",
+  "homeGreetingAfternoon": "Ẹ káàsán",
+  "homeGreetingEvening": "Ẹ káalẹ́",
+  "homeGreetingNight": "Ó dàárọ̀",
+  "homeNearbyEta": "~ìṣẹ́jú {minutes}",
+  "tripOptionsRecommended": "A dábàá",
+  "tripOptionsRequest": "Béèrè {fare}",
+  "searchChooseOnMapDetail": "Fi àmì sí i",
+  "searchEmpty": "Kọ ibùdókọ̀, ọjà tàbí òpópónà",
+  "tripSortCheapest": "Èyí tó kéré jù",
+  "tripSortFastest": "Èyí tó yára jù",
+  "tripSortEasiest": "Ìrìn díẹ̀"
 }

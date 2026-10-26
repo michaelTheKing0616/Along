@@ -9,5 +9,17 @@
   "accountCityLabel": "Home city",
   "accountCityHint": "Map and search go use dis city if location no dey",
   "homeSearchHint": "Where you dey go?",
-  "activeTripMessage": "Send message give {name}"
+  "activeTripMessage": "Send message give {name}",
+  "homeGreetingMorning": "Good morning",
+  "homeGreetingAfternoon": "Good afternoon",
+  "homeGreetingEvening": "Good evening",
+  "homeGreetingNight": "Good night",
+  "homeNearbyEta": "~{minutes} min",
+  "tripOptionsRecommended": "Best one",
+  "tripOptionsRequest": "Request {fare}",
+  "searchChooseOnMapDetail": "Put pin for map",
+  "searchEmpty": "Type park, market or street",
+  "tripSortCheapest": "Cheapest",
+  "tripSortFastest": "Fastest",
+  "tripSortEasiest": "Less waka"
 }

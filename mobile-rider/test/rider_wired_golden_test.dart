@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
+import 'package:along_location/along_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
+import 'package:mobile_rider/features/home/presentation/home_controller.dart';
 import 'package:mobile_rider/features/search/presentation/search_screens.dart';
 import 'package:mobile_rider/features/trip_options/domain/trip_plan_session.dart';
 import 'package:mobile_rider/features/trip_options/presentation/trip_options_controller.dart';
@@ -61,6 +63,9 @@ void main() {
           data: MediaQuery.of(context).copyWith(
             textScaler: TextScaler.linear(scale),
             disableAnimations: true,
+            // A phone's status bar and home indicator, to prove safe areas.
+            padding: const EdgeInsets.only(top: 24, bottom: 16),
+            viewPadding: const EdgeInsets.only(top: 24, bottom: 16),
           ),
           child: child!,
         ),
@@ -79,13 +84,44 @@ void main() {
     testWidgets('rider search $name', (tester) async {
       await tester.binding.setSurfaceSize(const Size(360, 800));
       addTearDown(() => tester.binding.setSurfaceSize(null));
-      final fake = FakeAlongSupabase(configRows: defaultTestConfigRows());
+      Map<String, dynamic> place(
+        String kind,
+        String name,
+        String area,
+        int m,
+      ) => {
+        'kind': kind,
+        'id': name,
+        'name': name,
+        'area': area,
+        'location': {'lat': 9.07, 'lng': 7.48},
+        'distance_m': m,
+      };
+      final fake = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+        placeResults: [
+          place('market', 'Wuse Market', 'Wuse', 1800),
+          place('stage', 'Wuse II stage', 'Wuse II', 2400),
+          place('park', 'Wuye Motor Park', 'Wuye', 3100),
+          place('place', 'Wuse Zone 4', 'Wuse', 2900),
+        ],
+      );
       final container = ProviderContainer(
         overrides: buildProviderOverrides(
           config: config(),
           supabase: fake,
           ambientChannel: FakeAmbientChannel(),
           database: AlongDatabase.memory(),
+          locationStreamSource: FakeLocationStreamSource(
+            fixedSamples: [
+              LocationSample(
+                point: const GeoPoint(lat: 9.0765, lng: 7.3986),
+                accuracyM: 10,
+                recordedAt: DateTime.utc(2026, 1, 1),
+              ),
+            ],
+          ),
+          clock: Clock.fixed(DateTime.utc(2026, 1, 1, 0, 1, 0)),
           recentPlacesStore: FakeRecentPlacesStore(
             places: [
               const RecentPlace(
@@ -104,6 +140,7 @@ void main() {
         fake.dispose();
         container.dispose();
       });
+      container.read(homeControllerProvider);
       await tester.pumpWidget(
         app(container, const DestinationSearchScreen(), brightness, scale),
       );
@@ -117,6 +154,22 @@ void main() {
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/rider_search_$name.png'),
+      );
+      // Typing swaps suggestions for typed results with place-type icons.
+      await tester.enterText(find.byType(TextField).first, 'Wu');
+      final first = find.byKey(const Key('result_Wuse Market'));
+      for (var i = 0; i < 30 && first.evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+        );
+      }
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(first, findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/rider_search_results_$name.png'),
       );
     });
 

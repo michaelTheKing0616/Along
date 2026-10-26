@@ -1156,4 +1156,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Message $name';
   }
+
+  @override
+  String get homeGreetingMorning => 'Good morning';
+
+  @override
+  String get homeGreetingAfternoon => 'Good afternoon';
+
+  @override
+  String get homeGreetingEvening => 'Good evening';
+
+  @override
+  String get homeGreetingNight => 'Good night';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~$minutes min';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Recommended';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Request $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Drop a pin';
+
+  @override
+  String get searchEmpty => 'Type a park, market or street';
+
+  @override
+  String get tripSortCheapest => 'Cheapest';
+
+  @override
+  String get tripSortFastest => 'Fastest';
+
+  @override
+  String get tripSortEasiest => 'Least walking';
 }

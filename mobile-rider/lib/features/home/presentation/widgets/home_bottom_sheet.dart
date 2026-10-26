@@ -24,7 +24,7 @@ List<AlongPlace> _nearbyPlaces(
       key: Key('nearby_row_${row.modeCode}'),
       icon: _modeIcon(row.modeCode),
       title: '${row.countBucket} ${row.modeLabel}',
-      detail: '~${row.etaMinutes} min',
+      detail: l10n.homeNearbyEta(row.etaMinutes),
       onTap: () => onTap(row),
     ),
 ];

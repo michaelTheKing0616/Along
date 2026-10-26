@@ -1156,4 +1156,44 @@ class AppLocalizationsYo extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Fi ọ̀rọ̀ ránṣẹ́ sí $name';
   }
+
+  @override
+  String get homeGreetingMorning => 'Ẹ káàárọ̀';
+
+  @override
+  String get homeGreetingAfternoon => 'Ẹ káàsán';
+
+  @override
+  String get homeGreetingEvening => 'Ẹ káalẹ́';
+
+  @override
+  String get homeGreetingNight => 'Ó dàárọ̀';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~ìṣẹ́jú $minutes';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'A dábàá';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Béèrè $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Fi àmì sí i';
+
+  @override
+  String get searchEmpty => 'Kọ ibùdókọ̀, ọjà tàbí òpópónà';
+
+  @override
+  String get tripSortCheapest => 'Èyí tó kéré jù';
+
+  @override
+  String get tripSortFastest => 'Èyí tó yára jù';
+
+  @override
+  String get tripSortEasiest => 'Ìrìn díẹ̀';
 }

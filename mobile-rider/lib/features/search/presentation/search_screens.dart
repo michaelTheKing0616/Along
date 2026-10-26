@@ -69,7 +69,9 @@ class _DestinationSearchScreenState
               const SizedBox(height: AlongSpace.s16),
               Expanded(
                 child: DestinationSearchPanel(
+                  hint: l10n.searchEmpty,
                   initialQuery: _voiceQuery,
+                  onChooseOnMap: () => context.push(AppRoutes.adjustPickup),
                   onDestinationSelected: (pick) {
                     _startTripPlan(ref, pick);
                     if (context.mounted) {
@@ -79,17 +81,50 @@ class _DestinationSearchScreenState
                 ),
               ),
               const SizedBox(height: AlongSpace.s8),
-              TextField(
-                key: const Key('voice_booking_field'),
-                decoration: InputDecoration(hintText: l10n.voiceBookingHint),
-                textInputAction: TextInputAction.search,
-                onSubmitted: (value) {
-                  final phrase = parseBookingPhrase(value);
-                  setState(() {
-                    _voiceQuery = phrase?.destination;
-                    _voiceOrigin = phrase?.origin;
-                  });
-                },
+              // Say or type the whole trip: "from Wuse to Garki".
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: palette.surface,
+                  borderRadius: const BorderRadius.all(AlongRadius.button),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: AlongSpace.s16),
+                    AlongIcon(
+                      AlongIcons.microphone,
+                      size: 20,
+                      color: palette.ink,
+                    ),
+                    const SizedBox(width: AlongSpace.s12),
+                    Expanded(
+                      child: TextField(
+                        key: const Key('voice_booking_field'),
+                        style: AlongType.body(palette),
+                        decoration: InputDecoration(
+                          hintText: l10n.voiceBookingHint,
+                          hintStyle: AlongType.body(
+                            palette,
+                          ).copyWith(color: palette.muted),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          filled: false,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: AlongSpace.s16,
+                          ),
+                        ),
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (value) {
+                          final phrase = parseBookingPhrase(value);
+                          setState(() {
+                            _voiceQuery = phrase?.destination;
+                            _voiceOrigin = phrase?.origin;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
               if (_voiceOrigin != null)
                 Padding(
@@ -100,13 +135,6 @@ class _DestinationSearchScreenState
                     style: AlongType.caption(palette),
                   ),
                 ),
-              const SizedBox(height: AlongSpace.s8),
-              AlongButton(
-                key: const Key('search_choose_on_map'),
-                label: l10n.homeChooseOnMap,
-                variant: AlongButtonVariant.secondary,
-                onPressed: () => context.push(AppRoutes.adjustPickup),
-              ),
             ],
           ),
         ),

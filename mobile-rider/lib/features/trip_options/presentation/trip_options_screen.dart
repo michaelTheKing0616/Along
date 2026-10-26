@@ -61,29 +61,36 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
 
     return Scaffold(
       backgroundColor: palette.surface,
-      body: Column(
-        children: [
-          Expanded(
-            flex: 4,
-            child: Stack(
-              children: [
-                Container(
+      body: LayoutBuilder(
+        builder: (context, box) {
+          // Map takes a third, so the fare and Request button of the first
+          // card sit above the fold even at 1.3x text.
+          final mapHeight = box.maxHeight * 0.34;
+          return Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: mapHeight + AlongRadius.dialog.x,
+                child: AlongRoutePreview(
                   key: const Key('trip_options_map'),
-                  color: palette.mapLand,
-                  alignment: Alignment.center,
-                  child: AlongIcon(
-                    AlongIcons.path,
-                    size: 48,
-                    color: palette.muted,
+                  semanticLabel: state.session?.destinationLabel,
+                ),
+              ),
+              if (state.showSkeleton)
+                Positioned(
+                  top: mapHeight - 56,
+                  left: AlongSpace.s16,
+                  child: const AlongSkeleton(
+                    variant: SkeletonVariant.mapOverlay,
                   ),
                 ),
-                if (state.showSkeleton)
-                  const Positioned(
-                    bottom: AlongSpace.s16,
-                    left: AlongSpace.s16,
-                    child: AlongSkeleton(variant: SkeletonVariant.mapOverlay),
-                  ),
-                SafeArea(
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: SafeArea(
                   bottom: false,
                   child: Padding(
                     padding: const EdgeInsets.all(AlongSpace.s16),
@@ -96,15 +103,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                               .backButtonTooltip,
                           onPressed: () => context.pop(),
                         ),
-                        const SizedBox(width: AlongSpace.s12),
-                        Expanded(
-                          child: Text(
-                            l10n.tripOptionsTitle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AlongType.title(palette),
-                          ),
-                        ),
+                        const Spacer(),
                         Badge(
                           isLabelVisible: state.load.flagged,
                           backgroundColor: palette.accent,
@@ -120,42 +119,76 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          if (state.plan?.degraded == true)
-            Container(
-              width: double.infinity,
-              color: AlongColors.semanticWarningTint,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AlongSpace.s16,
-                vertical: AlongSpace.s8,
               ),
-              child: Text(
-                l10n.tripOptionsDegradedBanner,
-                style: AlongText.caption.copyWith(
-                  color: AlongColors.semanticWarning,
+              Positioned.fill(
+                top: mapHeight,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.surface,
+                    borderRadius: const BorderRadius.vertical(
+                      top: AlongRadius.dialog,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      if (state.plan?.degraded == true)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AlongSpace.s16,
+                            AlongSpace.s16,
+                            AlongSpace.s16,
+                            0,
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AlongColors.semanticWarningTint,
+                              borderRadius: const BorderRadius.all(
+                                AlongRadius.control,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AlongSpace.s12,
+                              vertical: AlongSpace.s8,
+                            ),
+                            child: Text(
+                              l10n.tripOptionsDegradedBanner,
+                              style: AlongText.caption.copyWith(
+                                color: AlongColors.semanticWarning,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (state.isStalePlan)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AlongSpace.s16,
+                            AlongSpace.s8,
+                            AlongSpace.s16,
+                            0,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: StaleBadge(
+                              label: l10n.cachedOptionsStaleBadge,
+                            ),
+                          ),
+                        ),
+                      Expanded(
+                        child: _buildSheetContent(
+                          context,
+                          state,
+                          controller,
+                          l10n,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          if (state.isStalePlan)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AlongSpace.s16,
-                AlongSpace.s8,
-                AlongSpace.s16,
-                0,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: StaleBadge(label: l10n.cachedOptionsStaleBadge),
-              ),
-            ),
-          Expanded(
-            flex: 6,
-            child: _buildSheetContent(context, state, controller, l10n),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
@@ -191,8 +224,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
             context.push(
               AppRoutes.wayfinding,
               extra: WayfindingRouteArgs(
-                from:
-                    state.session?.origin ??
+                from: state.session?.origin ??
                     const GeoPoint(lat: 9.0765, lng: 7.3986),
                 to: nearest.location,
                 cityId: state.plan?.cityId,
@@ -222,8 +254,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
     }
 
     final candidates = state.sortedCandidates;
-    final recommendedId =
-        state.plan?.sortOrders[SortCriterion.recommended]?.firstOrNull;
+    final recommendedId = state.plan?.sortOrders[SortCriterion.recommended]
+        ?.firstOrNull;
     final recommended = candidates
         .where((c) => c.candidateId == recommendedId)
         .firstOrNull;
@@ -232,9 +264,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
       sessionContext: state.session?.placementContext,
       recommendedAlightStageId: alightStageId,
     );
-    final placementsAsync = ref.watch(
-      tripOptionsPlacementProvider(placementContext),
-    );
+    final placementsAsync =
+        ref.watch(tripOptionsPlacementProvider(placementContext));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,6 +286,12 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
               ),
               const SizedBox(height: AlongSpace.s12),
               SortChips(
+                labels: {
+                  SortOption.recommended: l10n.tripOptionsRecommended,
+                  SortOption.cheapest: l10n.tripSortCheapest,
+                  SortOption.fastest: l10n.tripSortFastest,
+                  SortOption.leastStrenuous: l10n.tripSortEasiest,
+                },
                 selected: _mapSort(state.sort),
                 onSelected: (option) =>
                     controller.setSort(_mapSortOption(option)),
@@ -291,19 +328,17 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
                         onRequestLeg: (legIndex) => ref
                             .read(tripOptionsControllerProvider.notifier)
                             .requestCandidate(candidate, legIndex: legIndex),
-                        onWhy:
-                            candidate.candidateId == recommendedId &&
+                        onWhy: candidate.candidateId == recommendedId &&
                                 candidate.metrics != null
                             ? () => showExplainPopover(
-                                context,
-                                explain: candidate.metrics!.explain,
-                              )
+                                  context,
+                                  explain: candidate.metrics!.explain,
+                                )
                             : null,
-                        loadWarning:
-                            OptionCardMapper.hasLoadCapacityWarning(
-                              candidate,
-                              state.load,
-                            )
+                        loadWarning: OptionCardMapper.hasLoadCapacityWarning(
+                          candidate,
+                          state.load,
+                        )
                             ? l10n.loadFlagCapacityWarning
                             : null,
                         l10n: l10n,
@@ -325,7 +360,8 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
 
   Widget _buildOptionCard(
     BuildContext context,
-    PlanCandidate candidate, {
+    PlanCandidate candidate,
+    {
     required bool recommended,
     required TripOptionsState state,
     required AppLocalizations l10n,
@@ -360,30 +396,29 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           unavailableReason: !candidate.viableDirect
               ? l10n.tripOptionsSlowerDirectCaption
               : null,
+          recommendedLabel: l10n.tripOptionsRecommended,
           requestLabel: isTier3 ? l10n.tripOptionsAgreePrice : null,
+          requestLabelFor: l10n.tripOptionsRequest,
           onRequest: isTier3
               ? () => state.session?.isHail == true
-                    ? _openPricingForHail(candidate, state)
-                    : _openPricingForTier3(candidate, state)
+                  ? _openPricingForHail(candidate, state)
+                  : _openPricingForTier3(candidate, state)
               : () => ref
-                    .read(tripOptionsControllerProvider.notifier)
-                    .requestCandidate(candidate),
+                  .read(tripOptionsControllerProvider.notifier)
+                  .requestCandidate(candidate),
         ),
         if (recommended && candidate.metrics != null)
           Padding(
-            padding: const EdgeInsets.only(
-              left: AlongSpace.s16,
-              bottom: AlongSpace.s8,
-            ),
+            padding: const EdgeInsets.only(left: AlongSpace.s4),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: TextButton(
+              child: AlongTextLink(
                 key: Key('why_${candidate.candidateId}'),
+                label: l10n.tripOptionsWhy,
                 onPressed: () => showExplainPopover(
                   context,
                   explain: candidate.metrics!.explain,
                 ),
-                child: Text(l10n.tripOptionsWhy),
               ),
             ),
           ),
@@ -400,8 +435,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
         context: 'park',
         from: session.origin,
         to: session.destination,
-        clientRef:
-            'park-${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
+        clientRef: 'park-${candidate.candidateId}-${DateTime.now().microsecondsSinceEpoch}',
         destinationLabel: session.destinationLabel,
       ),
     );
@@ -517,23 +551,26 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
   }
 
   SortOption _mapSort(SortCriterion sort) => switch (sort) {
-    SortCriterion.recommended => SortOption.recommended,
-    SortCriterion.cheapest => SortOption.cheapest,
-    SortCriterion.fastest => SortOption.fastest,
-    SortCriterion.leastStrenuous => SortOption.leastStrenuous,
-  };
+        SortCriterion.recommended => SortOption.recommended,
+        SortCriterion.cheapest => SortOption.cheapest,
+        SortCriterion.fastest => SortOption.fastest,
+        SortCriterion.leastStrenuous => SortOption.leastStrenuous,
+      };
 
   SortCriterion _mapSortOption(SortOption option) => switch (option) {
-    SortOption.recommended => SortCriterion.recommended,
-    SortOption.cheapest => SortCriterion.cheapest,
-    SortOption.fastest => SortCriterion.fastest,
-    SortOption.leastStrenuous => SortCriterion.leastStrenuous,
-  };
+        SortOption.recommended => SortCriterion.recommended,
+        SortOption.cheapest => SortCriterion.cheapest,
+        SortOption.fastest => SortCriterion.fastest,
+        SortOption.leastStrenuous => SortCriterion.leastStrenuous,
+      };
 }
 
 /// Route extra for [AppRoutes.requesting].
 class RequestingRouteArgs {
-  const RequestingRouteArgs({required this.trip, required this.roamingSource});
+  const RequestingRouteArgs({
+    required this.trip,
+    required this.roamingSource,
+  });
 
   final TripSummary trip;
   final bool roamingSource;

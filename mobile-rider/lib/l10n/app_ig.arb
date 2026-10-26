@@ -9,5 +9,17 @@
   "accountCityLabel": "Obodo ụlọ",
   "accountCityHint": "Maapụ na ọchụchọ na-eji obodo a mgbe enweghị ebe",
   "homeSearchHint": "Ebee ka anyị ga?",
-  "activeTripMessage": "Zitere {name} ozi"
+  "activeTripMessage": "Zitere {name} ozi",
+  "homeGreetingMorning": "Ụtụtụ ọma",
+  "homeGreetingAfternoon": "Ehihie ọma",
+  "homeGreetingEvening": "Mgbede ọma",
+  "homeGreetingNight": "Ka chi fo",
+  "homeNearbyEta": "~nkeji {minutes}",
+  "tripOptionsRecommended": "Anyị tụrụ aro",
+  "tripOptionsRequest": "Rịọ {fare}",
+  "searchChooseOnMapDetail": "Tinye akara",
+  "searchEmpty": "Dee ọdọ ụgbọ, ahịa ma ọ bụ okporo ụzọ",
+  "tripSortCheapest": "Kacha ọnụ ala",
+  "tripSortFastest": "Kacha ọsọ",
+  "tripSortEasiest": "Ije ụkwụ dị nta"
 }

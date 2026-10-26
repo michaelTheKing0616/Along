@@ -1156,4 +1156,44 @@ class AppLocalizationsPcm extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Send message give $name';
   }
+
+  @override
+  String get homeGreetingMorning => 'Good morning';
+
+  @override
+  String get homeGreetingAfternoon => 'Good afternoon';
+
+  @override
+  String get homeGreetingEvening => 'Good evening';
+
+  @override
+  String get homeGreetingNight => 'Good night';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~$minutes min';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Best one';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Request $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Put pin for map';
+
+  @override
+  String get searchEmpty => 'Type park, market or street';
+
+  @override
+  String get tripSortCheapest => 'Cheapest';
+
+  @override
+  String get tripSortFastest => 'Fastest';
+
+  @override
+  String get tripSortEasiest => 'Less waka';
 }

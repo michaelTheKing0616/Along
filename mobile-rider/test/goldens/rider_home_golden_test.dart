@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
-import 'package:mobile_rider/features/home/presentation/widgets/home_bottom_sheet.dart';
+import 'package:mobile_rider/features/home/presentation/widgets/home_chrome.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
 /// Real rider home sheet + tab bar over the map land colour, the way
@@ -30,6 +30,7 @@ void main() {
   });
 
   const state = HomeState(
+    cityName: 'Abuja',
     recents: [
       RecentPlace(
         label: 'Wuse Market',
@@ -67,6 +68,9 @@ void main() {
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
           textScaler: TextScaler.linear(scale),
+          // A phone's status bar and home indicator, to prove safe areas.
+          padding: const EdgeInsets.only(top: 24, bottom: 16),
+          viewPadding: const EdgeInsets.only(top: 24, bottom: 16),
           disableAnimations: true,
         ),
         child: child!,
@@ -89,37 +93,18 @@ void main() {
             ),
             body: Stack(
               children: [
-                const Positioned(
-                  top: 16,
-                  left: 16,
-                  child: AlongMapButton(icon: AlongIcons.menu, tooltip: 'Menu'),
-                ),
-                const Positioned(
-                  top: 16,
-                  left: 72,
-                  child: AlongMapButton(
-                    icon: AlongIcons.seat,
-                    tooltip: 'Vehicles',
-                  ),
-                ),
-                const Positioned(
-                  top: 16,
-                  right: 16,
-                  child: AlongMapButton(
-                    icon: AlongIcons.locate,
-                    tooltip: 'Recenter',
-                  ),
-                ),
+                // Stand-in for the native map, which goldens cannot draw.
+                const Positioned.fill(child: AlongRoutePreview(route: false)),
                 Positioned.fill(
-                  top: null,
-                  child: AlongSpringSheet(
-                    shrinkWrap: true,
-                    child: HomePeekSheet(
-                      state: state,
-                      onSearchTap: () {},
-                      onRecentTap: (_) {},
-                      onNearbyTap: (_) {},
-                    ),
+                  child: HomeChrome(
+                    state: state,
+                    now: DateTime(2026, 10, 26, 15),
+                    onMenu: () {},
+                    onVehicles: () {},
+                    onRecenter: () {},
+                    onSearch: () {},
+                    onRecent: (_) {},
+                    onNearby: (_) {},
                   ),
                 ),
               ],
@@ -143,6 +128,8 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.byKey(const Key('home_where_to')), findsOneWidget);
       expect(find.byKey(const Key('nearby_row_keke')), findsOneWidget);
+      expect(find.text('Good afternoon'), findsOneWidget);
+      expect(find.text('~3 min'), findsOneWidget);
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('rider_home_$name.png'),

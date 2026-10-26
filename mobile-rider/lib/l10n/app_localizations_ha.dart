@@ -1156,4 +1156,44 @@ class AppLocalizationsHa extends AppLocalizations {
   String activeTripMessage(String name) {
     return 'Aika wa $name saƙo';
   }
+
+  @override
+  String get homeGreetingMorning => 'Ina kwana';
+
+  @override
+  String get homeGreetingAfternoon => 'Barka da rana';
+
+  @override
+  String get homeGreetingEvening => 'Barka da yamma';
+
+  @override
+  String get homeGreetingNight => 'Sai da safe';
+
+  @override
+  String homeNearbyEta(int minutes) {
+    return '~minti $minutes';
+  }
+
+  @override
+  String get tripOptionsRecommended => 'Shawarar mu';
+
+  @override
+  String tripOptionsRequest(String fare) {
+    return 'Nemi $fare';
+  }
+
+  @override
+  String get searchChooseOnMapDetail => 'Saka alama';
+
+  @override
+  String get searchEmpty => 'Rubuta tasha, kasuwa ko titi';
+
+  @override
+  String get tripSortCheapest => 'Mafi arha';
+
+  @override
+  String get tripSortFastest => 'Mafi sauri';
+
+  @override
+  String get tripSortEasiest => 'Ƙarancin tafiya';
 }
