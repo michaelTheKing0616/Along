@@ -479,7 +479,11 @@ class SearchController extends Notifier<SearchState> {
   Future<void> _bootstrap() async {
     final recents = await ref.read(recentPlacesStoreProvider).load();
     final probe = ref.read(networkConditionsProbeProvider);
-    final offline = (await probe.snapshot()).offline;
+    // Either signal is enough: the banner can know before the probe does.
+    final banner =
+        ref.read(connectionControllerProvider).current.phase ==
+        ConnectionPhase.offline;
+    final offline = banner || (await probe.snapshot()).offline;
     state = state.copyWith(recents: recents, isOffline: offline);
   }
 

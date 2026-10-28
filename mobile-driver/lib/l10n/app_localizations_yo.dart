@@ -1745,4 +1745,14 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get connRetry => 'Tún gbìyànjú';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count láti tún ṣe lórí ayélujára';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Kò sí íntánẹ́ẹ̀tì · $queued láti fi ránṣẹ́ · $needs láti tún ṣe';
+  }
 }

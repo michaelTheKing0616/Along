@@ -1743,4 +1743,14 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get connRetry => 'Nwaa ọzọ';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count ka emeghachi n\'ịntanetị';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Enweghị ịntanetị · $queued iziga · $needs imeghachi';
+  }
 }

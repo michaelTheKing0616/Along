@@ -1744,4 +1744,14 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get connRetry => 'Try again';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count to do again when network dey';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'No network · $queued go send · $needs to do again';
+  }
 }

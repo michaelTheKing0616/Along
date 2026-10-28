@@ -3004,6 +3004,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re offline, so only saved places show. Drop a pin instead.'**
   String get searchEmptyOfflineBody;
+
+  /// No description provided for @connNeedsConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} to redo online'**
+  String connNeedsConnection(int count);
+
+  /// No description provided for @connOfflineMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {queued} to send · {needs} to redo'**
+  String connOfflineMixed(int queued, int needs);
 }
 
 class _AppLocalizationsDelegate

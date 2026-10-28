@@ -7,12 +7,14 @@ import 'package:along_data/src/connectivity/connection_controller.dart';
 ConnectionController connectionControllerIn(
   ConnectionPhase phase, {
   int queued = 2,
+  int needsConnection = 0,
 }) {
   final source = FakeConnectionSource(online: phase == ConnectionPhase.online);
   var left = queued;
   final controller = ConnectionController(
     source: source,
     queuedCount: () async => left,
+    needsConnectionCount: () async => needsConnection,
     replay: () {
       if (phase == ConnectionPhase.reconnecting) {
         return Completer<int>().future;

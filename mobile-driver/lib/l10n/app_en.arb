@@ -1129,5 +1129,24 @@
       }
     }
   },
-  "connRetry": "Retry"
+  "connRetry": "Retry",
+  "connNeedsConnection": "{count} to redo online",
+  "@connNeedsConnection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connOfflineMixed": "Offline · {queued} to send · {needs} to redo",
+  "@connOfflineMixed": {
+    "placeholders": {
+      "queued": {
+        "type": "int"
+      },
+      "needs": {
+        "type": "int"
+      }
+    }
+  }
 }

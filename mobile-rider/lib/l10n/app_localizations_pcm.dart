@@ -1689,4 +1689,14 @@ class AppLocalizationsPcm extends AppLocalizations {
   @override
   String get searchEmptyOfflineBody =>
       'You no get network, na only saved places dey show. Drop pin instead.';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count to do again when network dey';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'No network · $queued go send · $needs to do again';
+  }
 }

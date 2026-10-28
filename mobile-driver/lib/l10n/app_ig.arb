@@ -131,5 +131,7 @@
   "connSending": "Na-ejikọ ọzọ · na-eziga {count}",
   "connRestored": "Ịlaghachila n'ịntanetị",
   "connRestoredSent": "Ịlaghachila · ezigala {count}",
-  "connRetry": "Nwaa ọzọ"
+  "connRetry": "Nwaa ọzọ",
+  "connNeedsConnection": "{count} ka emeghachi n'ịntanetị",
+  "connOfflineMixed": "Enweghị ịntanetị · {queued} iziga · {needs} imeghachi"
 }

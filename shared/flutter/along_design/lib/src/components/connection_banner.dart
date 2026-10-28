@@ -78,7 +78,7 @@ class AlongConnectionBanner extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: roomy ? 10 : 0),
                     child: Text(
                       label,
-                      maxLines: roomy ? 2 : 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: style,
                     ),

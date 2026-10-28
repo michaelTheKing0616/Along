@@ -1686,4 +1686,14 @@ class AppLocalizationsIg extends AppLocalizations {
   @override
   String get searchEmptyOfflineBody =>
       'Ị nọghị n\'ịntanetị, ya mere naanị ebe echekwara na-egosi. Tinye pin kama.';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count ka emeghachi n\'ịntanetị';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Enweghị ịntanetị · $queued iziga · $needs imeghachi';
+  }
 }

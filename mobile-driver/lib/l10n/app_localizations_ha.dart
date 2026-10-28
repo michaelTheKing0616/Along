@@ -1748,4 +1748,14 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get connRetry => 'Sake gwadawa';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count a sake yi da intanet';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Babu intanet · $queued za a aika · $needs a sake';
+  }
 }

@@ -131,5 +131,7 @@
   "connSending": "Ń tún so pọ̀ · ń fi {count} ránṣẹ́",
   "connRestored": "Ti padà sórí íntánẹ́ẹ̀tì",
   "connRestoredSent": "Ti padà · a ti fi {count} ránṣẹ́",
-  "connRetry": "Tún gbìyànjú"
+  "connRetry": "Tún gbìyànjú",
+  "connNeedsConnection": "{count} láti tún ṣe lórí ayélujára",
+  "connOfflineMixed": "Kò sí íntánẹ́ẹ̀tì · {queued} láti fi ránṣẹ́ · {needs} láti tún ṣe"
 }

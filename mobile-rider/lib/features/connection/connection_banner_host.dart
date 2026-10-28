@@ -11,24 +11,17 @@ final connectionSourceProvider = Provider<ConnectionSource>(
 );
 
 final connectionControllerProvider = Provider<ConnectionController>((ref) {
-  final queue = PendingActionQueue(ref.watch(alongDatabaseProvider));
-  Future<int> count() async => (await queue.pendingFifo()).length;
+  final replayer = QueuedActionReplayer(
+    queue: PendingActionQueue(ref.watch(alongDatabaseProvider)),
+    gateway: ref.watch(alongSupabaseProvider),
+    safety: ref.watch(safetyRepositoryProvider),
+  );
   final controller = ConnectionController(
     source: ref.watch(connectionSourceProvider),
-    queuedCount: count,
-    replay: () async {
-      final pending = await queue.pendingFifo();
-      // Only the SOS outbox replays from here; other features flush their
-      // own actions, so never touch a queue that holds anything else.
-      if (pending.isEmpty ||
-          pending.any((a) => a.type != SosOutbox.actionType)) {
-        return 0;
-      }
-      await ref
-          .read(sosOutboxProvider)
-          .flush(ref.read(safetyRepositoryProvider));
-      return pending.length - await count();
-    },
+    queuedCount: () async => (await replayer.summary()).sendsWhenOnline,
+    needsConnectionCount: () async =>
+        (await replayer.summary()).needsConnection,
+    replay: replayer.replay,
   );
   controller.start();
   ref.onDispose(controller.dispose);
@@ -57,9 +50,7 @@ class ConnectionBannerHost extends ConsumerWidget {
       ConnectionPhase.offline => AlongConnectionBanner(
         key: const Key('connection_banner_offline'),
         tone: AlongConnectionTone.offline,
-        label: snap.queued > 0
-            ? l10n.connOfflineQueued(snap.queued)
-            : l10n.connOffline,
+        label: _offlineLabel(l10n, snap),
         actionLabel: l10n.connRetry,
         onAction: controller.retry,
       ),
@@ -79,5 +70,16 @@ class ConnectionBannerHost extends ConsumerWidget {
       ),
     };
     return AlongConnectionHost(banner: banner, child: child);
+  }
+
+  static String _offlineLabel(AppLocalizations l10n, ConnectionSnapshot snap) {
+    if (snap.queued > 0 && snap.needsConnection > 0) {
+      return l10n.connOfflineMixed(snap.queued, snap.needsConnection);
+    }
+    if (snap.queued > 0) return l10n.connOfflineQueued(snap.queued);
+    if (snap.needsConnection > 0) {
+      return l10n.connNeedsConnection(snap.needsConnection);
+    }
+    return l10n.connOffline;
   }
 }

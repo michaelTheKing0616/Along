@@ -1688,4 +1688,14 @@ class AppLocalizationsHa extends AppLocalizations {
   @override
   String get searchEmptyOfflineBody =>
       'Ba ka kan layi, wuraren da aka ajiye kawai ke nunawa. Sa alama a taswira.';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count a sake yi da intanet';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Babu intanet · $queued za a aika · $needs a sake';
+  }
 }

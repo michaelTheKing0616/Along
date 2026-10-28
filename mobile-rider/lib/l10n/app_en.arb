@@ -1911,5 +1911,24 @@
   "searchPausedBody": "The network dropped. Saved places and the map still work.",
   "searchEmptyTitle": "No places found",
   "searchEmptyBody": "Try a nearby landmark, market or bus stop.",
-  "searchEmptyOfflineBody": "You're offline, so only saved places show. Drop a pin instead."
+  "searchEmptyOfflineBody": "You're offline, so only saved places show. Drop a pin instead.",
+  "connNeedsConnection": "{count} to redo online",
+  "@connNeedsConnection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connOfflineMixed": "Offline · {queued} to send · {needs} to redo",
+  "@connOfflineMixed": {
+    "placeholders": {
+      "queued": {
+        "type": "int"
+      },
+      "needs": {
+        "type": "int"
+      }
+    }
+  }
 }

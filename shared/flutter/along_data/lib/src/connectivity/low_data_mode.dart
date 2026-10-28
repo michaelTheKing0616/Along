@@ -9,7 +9,7 @@ abstract class NetworkConditionsProbe {
 
 class ConnectivityNetworkProbe extends NetworkConditionsProbe {
   ConnectivityNetworkProbe({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity();
+    : _connectivity = connectivity ?? Connectivity();
 
   final Connectivity _connectivity;
 

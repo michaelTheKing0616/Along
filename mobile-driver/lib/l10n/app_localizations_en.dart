@@ -1744,4 +1744,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connRetry => 'Retry';
+
+  @override
+  String connNeedsConnection(int count) {
+    return '$count to redo online';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Offline · $queued to send · $needs to redo';
+  }
 }

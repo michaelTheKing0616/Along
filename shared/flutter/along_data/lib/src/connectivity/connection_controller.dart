@@ -23,6 +23,7 @@ class ConnectionSnapshot {
     this.phase = ConnectionPhase.online,
     this.queued = 0,
     this.sent = 0,
+    this.needsConnection = 0,
     this.offlineSince,
   });
 
@@ -33,6 +34,9 @@ class ConnectionSnapshot {
 
   /// Actions sent during the last reconnect.
   final int sent;
+
+  /// Queued actions with no safe automatic resend; redo them online.
+  final int needsConnection;
   final DateTime? offlineSince;
 
   bool get showBanner => phase != ConnectionPhase.online;
@@ -41,11 +45,13 @@ class ConnectionSnapshot {
     ConnectionPhase? phase,
     int? queued,
     int? sent,
+    int? needsConnection,
     DateTime? offlineSince,
   }) => ConnectionSnapshot(
     phase: phase ?? this.phase,
     queued: queued ?? this.queued,
     sent: sent ?? this.sent,
+    needsConnection: needsConnection ?? this.needsConnection,
     offlineSince: offlineSince ?? this.offlineSince,
   );
 }
@@ -98,15 +104,18 @@ class ConnectionController {
   ConnectionController({
     required this.source,
     Future<int> Function()? queuedCount,
+    Future<int> Function()? needsConnectionCount,
     Future<int> Function()? replay,
     DateTime Function()? now,
     this.restoredHold = const Duration(milliseconds: 2500),
   }) : _queuedCount = queuedCount ?? (() async => 0),
+       _needsCount = needsConnectionCount ?? (() async => 0),
        _replay = replay ?? (() async => 0),
        _now = now ?? DateTime.now;
 
   final ConnectionSource source;
   final Future<int> Function() _queuedCount;
+  final Future<int> Function() _needsCount;
   final Future<int> Function() _replay;
   final DateTime Function() _now;
   final Duration restoredHold;
@@ -131,7 +140,12 @@ class ConnectionController {
 
   /// Call after enqueueing an action so the count stays honest.
   Future<void> refreshQueued() async {
-    _emit(_current.copyWith(queued: await _safeCount()));
+    _emit(
+      _current.copyWith(
+        queued: await _safeCount(),
+        needsConnection: await _safeNeeds(),
+      ),
+    );
   }
 
   /// User tapped Retry: check now instead of waiting for the OS signal.
@@ -162,6 +176,7 @@ class ConnectionController {
       ConnectionSnapshot(
         phase: ConnectionPhase.offline,
         queued: await _safeCount(),
+        needsConnection: await _safeNeeds(),
         offlineSince: since,
       ),
     );
@@ -186,13 +201,19 @@ class ConnectionController {
       ConnectionSnapshot(
         phase: ConnectionPhase.restored,
         queued: await _safeCount(),
+        needsConnection: await _safeNeeds(),
         sent: sent,
       ),
     );
     _settle?.cancel();
     _settle = Timer(restoredHold, () {
       if (_current.phase == ConnectionPhase.restored) {
-        _emit(ConnectionSnapshot(queued: _current.queued));
+        _emit(
+          ConnectionSnapshot(
+            queued: _current.queued,
+            needsConnection: _current.needsConnection,
+          ),
+        );
       }
     });
   }
@@ -210,6 +231,14 @@ class ConnectionController {
       return await _queuedCount();
     } catch (_) {
       return _current.queued;
+    }
+  }
+
+  Future<int> _safeNeeds() async {
+    try {
+      return await _needsCount();
+    } catch (_) {
+      return _current.needsConnection;
     }
   }
 
