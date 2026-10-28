@@ -201,5 +201,19 @@
   "tripsEmptyHint": "Trips wey you take with Along go show here, with receipt.",
   "tripsEmptyCta": "Plan trip",
   "scanCodeWhereTitle": "Where you go see am",
-  "scanCodeWhereBody": "The 8-character code dey under the QR for driver sticker, or tell am make e open My QR."
+  "scanCodeWhereBody": "The 8-character code dey under the QR for driver sticker, or tell am make e open My QR.",
+  "connOffline": "No network · you fit still continue",
+  "connOfflineQueued": "No network · {count} dey wait to send",
+  "connReconnecting": "Dey connect again",
+  "connSending": "Dey connect again · dey send {count}",
+  "connRestored": "Network don come back",
+  "connRestoredSent": "Network don come back · {count} don send",
+  "connRetry": "Try again",
+  "searchPausedTitle": "Search don pause",
+  "searchPausedBody": "Network cut. Saved places and map still dey work.",
+  "searchEmptyTitle": "We no see any place",
+  "searchEmptyBody": "Try landmark, market or bus stop wey dey near.",
+  "searchEmptyOfflineBody": "You no get network, na only saved places dey show. Drop pin instead.",
+  "connNeedsConnection": "No network · {count} to do again when network dey",
+  "connOfflineMixed": "No network · {queued} go send · {needs} to do again"
 }

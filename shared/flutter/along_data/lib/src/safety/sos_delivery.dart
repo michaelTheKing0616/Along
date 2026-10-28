@@ -192,10 +192,9 @@ class SosOutbox {
 
   Future<SosRaiseResult?> flush(SafetyRepository repository) async {
     SosRaiseResult? last;
-    await _queue.replay((action) async {
-      if (action.type != actionType) {
-        throw StateError('Leaving non-SOS action ${action.type} queued');
-      }
+    await _queue.replay(where: (action) => action.type == actionType, (
+      action,
+    ) async {
       final request = SosRaiseRequest.fromJson(action.payload);
       last = await repository.raiseSos(
         tripId: request.tripId,

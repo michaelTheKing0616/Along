@@ -49,9 +49,15 @@ class PendingActionQueue {
         .toList();
   }
 
-  Future<int> replay(Future<void> Function(QueuedAction action) handler) async {
+  /// Replays queued actions FIFO. [where] limits replay to the types the
+  /// caller can send; anything else stays queued with its attempts intact.
+  Future<int> replay(
+    Future<void> Function(QueuedAction action) handler, {
+    bool Function(QueuedAction action)? where,
+  }) async {
     var processed = 0;
     for (final action in await pendingFifo()) {
+      if (where != null && !where(action)) continue;
       if (action.attempts >= maxAttempts) {
         await remove(action.id);
         continue;

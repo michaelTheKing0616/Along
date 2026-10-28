@@ -201,5 +201,19 @@
   "tripsEmptyHint": "Tafiye-tafiyen da ka yi da Along za su bayyana a nan, tare da rasit.",
   "tripsEmptyCta": "Shirya tafiya",
   "scanCodeWhereTitle": "Inda za ka same shi",
-  "scanCodeWhereBody": "An buga lambar haruffa 8 a ƙarƙashin QR a kan sitikar direba, ko ka ce ya buɗe My QR."
+  "scanCodeWhereBody": "An buga lambar haruffa 8 a ƙarƙashin QR a kan sitikar direba, ko ka ce ya buɗe My QR.",
+  "connOffline": "Babu intanet · za ka iya ci gaba",
+  "connOfflineQueued": "Babu intanet · {count} an ajiye don aikawa",
+  "connReconnecting": "Ana sake haɗawa",
+  "connSending": "Ana sake haɗawa · ana aika {count}",
+  "connRestored": "An dawo kan layi",
+  "connRestoredSent": "An dawo kan layi · an aika {count}",
+  "connRetry": "Sake gwadawa",
+  "searchPausedTitle": "An dakatar da bincike",
+  "searchPausedBody": "Intanet ta katse. Wuraren da aka ajiye da taswira suna aiki.",
+  "searchEmptyTitle": "Ba a sami wurare ba",
+  "searchEmptyBody": "Gwada wani sanannen wuri, kasuwa ko tashar mota kusa.",
+  "searchEmptyOfflineBody": "Ba ka kan layi, wuraren da aka ajiye kawai ke nunawa. Sa alama a taswira.",
+  "connNeedsConnection": "Babu intanet · {count} a sake yi da intanet",
+  "connOfflineMixed": "Babu intanet · {queued} za a aika · {needs} a sake"
 }

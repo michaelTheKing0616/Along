@@ -7,6 +7,7 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/offline/low_data_providers.dart';
+import 'package:mobile_rider/features/connection/connection_banner_host.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:along_map/along_map.dart' as map_geo;
 import 'package:mobile_rider/features/home/domain/ambient_cell_mapper.dart';
@@ -101,8 +102,9 @@ class NearbyAmbientRow {
   final int? etaBandSeconds;
 }
 
-final homeControllerProvider =
-    NotifierProvider<HomeController, HomeState>(HomeController.new);
+final homeControllerProvider = NotifierProvider<HomeController, HomeState>(
+  HomeController.new,
+);
 
 class HomeController extends Notifier<HomeState> {
   StreamSubscription<LocationSample>? _locationSub;
@@ -135,8 +137,9 @@ class HomeController extends Notifier<HomeState> {
   }
 
   Future<void> _loadHomeCity() async {
-    final profile =
-        await ref.read(riderProfileRepositoryProvider).fetchCurrentProfile();
+    final profile = await ref
+        .read(riderProfileRepositoryProvider)
+        .fetchCurrentProfile();
     final cityId = profile?.homeCityId;
     if (cityId == null) return;
 
@@ -182,7 +185,9 @@ class HomeController extends Notifier<HomeState> {
           : state.activeLayers,
     );
 
-    unawaited(ref.read(graphCacheStoreProvider).refreshIfNeeded(cityId: cityId));
+    unawaited(
+      ref.read(graphCacheStoreProvider).refreshIfNeeded(cityId: cityId),
+    );
 
     final location = state.userLocation ?? centroid;
     if (location != null) {
@@ -193,10 +198,10 @@ class HomeController extends Notifier<HomeState> {
 
   Future<void> _loadConfig() async {
     final config = ref.read(configRepositoryProvider);
-    final staleAfterS =
-        (await config.configNum('presence.stale_after_s')).round();
-    final fanoutRadiusM =
-        (await config.configNum('presence.fanout_radius_m')).round();
+    final staleAfterS = (await config.configNum('presence.stale_after_s'))
+        .round();
+    final fanoutRadiusM = (await config.configNum('presence.fanout_radius_m'))
+        .round();
     state = state.copyWith(
       staleAfterS: staleAfterS,
       fanoutRadiusM: fanoutRadiusM,
@@ -221,8 +226,9 @@ class HomeController extends Notifier<HomeState> {
       activeLayers: {HomeMapOverlayLayer.puck},
     );
 
-    _ambientBroadcastSub ??=
-        _ambientChannel.cellUpdates.listen(_onAmbientBroadcast);
+    _ambientBroadcastSub ??= _ambientChannel.cellUpdates.listen(
+      _onAmbientBroadcast,
+    );
 
     if (!_lowDataMode.useAmbientBroadcast) {
       await _startAmbientPolling();
@@ -269,13 +275,15 @@ class HomeController extends Notifier<HomeState> {
       final topic = ambientChannelTopic(citySlug: citySlug, location: location);
       if (_ambientTopic != topic) {
         await _ambientChannel.subscribe(
-              citySlug: citySlug,
-              geohash5: geohashEncode(location, precision: 5),
-            );
+          citySlug: citySlug,
+          geohash5: geohashEncode(location, precision: 5),
+        );
         _ambientTopic = topic;
         if (state.cityId == null || state.mapCenter == null) {
           final centroid = await places.cityCentroidForId(cityId);
-          final cities = await ref.read(catalogRepositoryProvider).activeCities();
+          final cities = await ref
+              .read(catalogRepositoryProvider)
+              .activeCities();
           final cityName = cities
               .where((city) => city.id == cityId)
               .map((city) => city.name)
@@ -414,6 +422,7 @@ class SearchState {
     this.isOffline = false,
     this.isSearching = false,
     this.isStaleResults = false,
+    this.searchFailed = false,
   });
 
   final String query;
@@ -423,6 +432,9 @@ class SearchState {
   final bool isSearching;
   final bool isStaleResults;
 
+  /// The last online search failed (usually the network dropped).
+  final bool searchFailed;
+
   SearchState copyWith({
     String? query,
     List<PlaceResult>? results,
@@ -430,6 +442,7 @@ class SearchState {
     bool? isOffline,
     bool? isSearching,
     bool? isStaleResults,
+    bool? searchFailed,
   }) {
     return SearchState(
       query: query ?? this.query,
@@ -438,6 +451,7 @@ class SearchState {
       isOffline: isOffline ?? this.isOffline,
       isSearching: isSearching ?? this.isSearching,
       isStaleResults: isStaleResults ?? this.isStaleResults,
+      searchFailed: searchFailed ?? this.searchFailed,
     );
   }
 }
@@ -448,6 +462,16 @@ class SearchController extends Notifier<SearchState> {
   @override
   SearchState build() {
     ref.onDispose(() => _debounce?.cancel());
+    // Follow the connection banner: search the cache while offline and
+    // re-run the query online the moment the network is back.
+    ref.listen(connectionSnapshotProvider, (_, next) {
+      final phase = next.valueOrNull?.phase;
+      if (phase == null || phase == ConnectionPhase.reconnecting) return;
+      final offline = phase == ConnectionPhase.offline;
+      if (offline == state.isOffline) return;
+      state = state.copyWith(isOffline: offline, searchFailed: false);
+      if (state.query.trim().length >= 2) onQueryChanged(state.query);
+    });
     Future.microtask(_bootstrap);
     return const SearchState();
   }
@@ -455,12 +479,20 @@ class SearchController extends Notifier<SearchState> {
   Future<void> _bootstrap() async {
     final recents = await ref.read(recentPlacesStoreProvider).load();
     final probe = ref.read(networkConditionsProbeProvider);
-    final offline = (await probe.snapshot()).offline;
+    // Either signal is enough: the banner can know before the probe does.
+    final banner =
+        ref.read(connectionControllerProvider).current.phase ==
+        ConnectionPhase.offline;
+    final offline = banner || (await probe.snapshot()).offline;
     state = state.copyWith(recents: recents, isOffline: offline);
   }
 
   void onQueryChanged(String query) {
-    state = state.copyWith(query: query, isStaleResults: false);
+    state = state.copyWith(
+      query: query,
+      isStaleResults: false,
+      searchFailed: false,
+    );
     _debounce?.cancel();
     if (query.trim().length < 2) {
       state = state.copyWith(results: const [], isSearching: false);
@@ -479,18 +511,16 @@ class SearchController extends Notifier<SearchState> {
     final home = ref.read(homeControllerProvider);
     final location = home.userLocation ?? home.mapCenter;
     if (location == null) return;
-    final cityId = home.cityId ??
+    final cityId =
+        home.cityId ??
         await ref.read(placesRepositoryProvider).cityForLocation(location);
     if (cityId == null) return;
 
     state = state.copyWith(isSearching: true);
     try {
-      final results = await ref.read(placesRepositoryProvider).searchPlaces(
-            query: query,
-            near: location,
-            cityId: cityId,
-            limit: 8,
-          );
+      final results = await ref
+          .read(placesRepositoryProvider)
+          .searchPlaces(query: query, near: location, cityId: cityId, limit: 8);
       state = state.copyWith(results: results, isSearching: false);
       if (cityId.isNotEmpty) {
         unawaited(
@@ -498,9 +528,16 @@ class SearchController extends Notifier<SearchState> {
         );
       }
     } catch (_) {
-      state = state.copyWith(results: const [], isSearching: false);
+      state = state.copyWith(
+        results: const [],
+        isSearching: false,
+        searchFailed: true,
+      );
     }
   }
+
+  /// Try the current query again (after a failure or a reconnect).
+  void retrySearch() => onQueryChanged(state.query);
 
   Future<void> _searchOffline(String query) async {
     state = state.copyWith(isSearching: true);
@@ -530,7 +567,9 @@ class SearchController extends Notifier<SearchState> {
   }
 
   Future<void> selectPlace(PlaceResult place) async {
-    await ref.read(recentPlacesStoreProvider).add(
+    await ref
+        .read(recentPlacesStoreProvider)
+        .add(
           RecentPlace(
             label: place.name,
             location: place.location,
@@ -543,8 +582,8 @@ class SearchController extends Notifier<SearchState> {
 
 final adjustPickupControllerProvider =
     NotifierProvider<AdjustPickupController, AdjustPickupState>(
-  AdjustPickupController.new,
-);
+      AdjustPickupController.new,
+    );
 
 class AdjustPickupState {
   const AdjustPickupState({
@@ -592,8 +631,7 @@ class AdjustPickupController extends Notifier<AdjustPickupState> {
 
   Future<void> _bootstrap(GeoPoint center) async {
     final config = ref.read(configRepositoryProvider);
-    final snapRadiusM =
-        (await config.configNum('graph.snap_radius_m')).round();
+    final snapRadiusM = (await config.configNum('graph.snap_radius_m')).round();
     state = state.copyWith(snapRadiusM: snapRadiusM);
     await refresh(center);
   }

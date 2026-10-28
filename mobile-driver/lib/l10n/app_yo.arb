@@ -124,5 +124,15 @@
   "seatEmptyStep2": "Yan ọ̀nà",
   "seatEmptyStep2Body": "Èrò lórí rẹ̀ á rí ìjókòó rẹ",
   "seatEmptyStep3": "Kún ìjókòó bí o ṣe ń lọ",
-  "seatEmptyStep3Body": "Tẹ ìjókòó láti sàmì sí i"
+  "seatEmptyStep3Body": "Tẹ ìjókòó láti sàmì sí i",
+  "connOffline": "Kò sí íntánẹ́ẹ̀tì · o lè máa bá a lọ",
+  "connOfflineQueued": "Kò sí íntánẹ́ẹ̀tì · {count} ti fipamọ́ láti fi ránṣẹ́",
+  "connReconnecting": "Ń tún so pọ̀",
+  "connSending": "Ń tún so pọ̀ · ń fi {count} ránṣẹ́",
+  "connRestored": "Ti padà sórí íntánẹ́ẹ̀tì",
+  "connRestoredSent": "Ti padà · a ti fi {count} ránṣẹ́",
+  "connRetry": "Tún gbìyànjú",
+  "connNeedsConnection": "Kò sí íntánẹ́ẹ̀tì · {count} láti tún ṣe lórí ayélujára",
+  "connOfflineMixed": "Kò sí íntánẹ́ẹ̀tì · {queued} láti fi ránṣẹ́ · {needs} láti tún ṣe",
+  "homeOnlineNoSignal": "Wà lórí ayélujára · kò sí àmì"
 }

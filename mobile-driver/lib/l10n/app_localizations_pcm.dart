@@ -1717,4 +1717,44 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get seatEmptyStep3Body => 'Tap seat to mark am taken or free';
+
+  @override
+  String get connOffline => 'No network · you fit still continue';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'No network · $count dey wait to send';
+  }
+
+  @override
+  String get connReconnecting => 'Dey connect again';
+
+  @override
+  String connSending(int count) {
+    return 'Dey connect again · dey send $count';
+  }
+
+  @override
+  String get connRestored => 'Network don come back';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Network don come back · $count don send';
+  }
+
+  @override
+  String get connRetry => 'Try again';
+
+  @override
+  String connNeedsConnection(int count) {
+    return 'No network · $count to do again when network dey';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'No network · $queued go send · $needs to do again';
+  }
+
+  @override
+  String get homeOnlineNoSignal => 'Online · no network';
 }

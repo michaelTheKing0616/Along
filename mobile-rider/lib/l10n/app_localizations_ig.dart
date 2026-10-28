@@ -138,7 +138,7 @@ class AppLocalizationsIg extends AppLocalizations {
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline — search uses cached places';
+  String get searchOfflineHint => 'Offline · searching saved places';
 
   @override
   String get cachedOptionsStaleBadge => 'Cached · may be outdated';
@@ -1641,4 +1641,59 @@ class AppLocalizationsIg extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'E biri koodu mkpụrụedemede 8 n\'okpuru QR na stịka onye ọkwọ ụgbọ, ma ọ bụ gwa ya mepee My QR.';
+
+  @override
+  String get connOffline => 'Enweghị ịntanetị · ị nwere ike ịga n\'ihu';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Enweghị ịntanetị · $count echekwara iziga';
+  }
+
+  @override
+  String get connReconnecting => 'Na-ejikọ ọzọ';
+
+  @override
+  String connSending(int count) {
+    return 'Na-ejikọ ọzọ · na-eziga $count';
+  }
+
+  @override
+  String get connRestored => 'Ịlaghachila n\'ịntanetị';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Ịlaghachila · ezigala $count';
+  }
+
+  @override
+  String get connRetry => 'Nwaa ọzọ';
+
+  @override
+  String get searchPausedTitle => 'Akwụsịla ọchịchọ';
+
+  @override
+  String get searchPausedBody =>
+      'Ịntanetị kwụsịrị. Ebe echekwara na map ka na-arụ ọrụ.';
+
+  @override
+  String get searchEmptyTitle => 'Ahụghị ebe ọ bụla';
+
+  @override
+  String get searchEmptyBody =>
+      'Nwaa ebe a ma ama, ahịa ma ọ bụ ebe nkwụsị ụgbọ dị nso.';
+
+  @override
+  String get searchEmptyOfflineBody =>
+      'Ị nọghị n\'ịntanetị, ya mere naanị ebe echekwara na-egosi. Tinye pin kama.';
+
+  @override
+  String connNeedsConnection(int count) {
+    return 'Enweghị ịntanetị · $count ka emeghachi n\'ịntanetị';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Enweghị ịntanetị · $queued iziga · $needs imeghachi';
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:along_core/along_core.dart' show Money, formatMoney;
-import 'package:along_data/along_data.dart' show TripCashSummary;
+import 'package:along_data/along_data.dart'
+    show ConnectionPhase, TripCashSummary;
 import 'package:along_design/along_design.dart' hide formatMoney;
 import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ import 'package:mobile_driver/features/payments/presentation/widgets/payment_toa
 import 'package:mobile_driver/features/trip/presentation/manifest_controller.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
+import 'package:mobile_driver/features/connection/connection_banner_host.dart';
 
 /// D-08 Home — presence control + demand awareness (doc 06).
 class DriverHomeScreen extends ConsumerStatefulWidget {
@@ -198,6 +200,9 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
             bottom: 0,
             child: DriverHomePanel(
               state: state,
+              noSignal:
+                  ref.watch(connectionSnapshotProvider).valueOrNull?.phase ==
+                  ConnectionPhase.offline,
               todayEarned: today?.$1,
               todayTrips: today?.$2,
               errorText: state.errorMessage == null

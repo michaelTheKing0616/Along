@@ -24,12 +24,17 @@ class DriverHomePanel extends StatelessWidget {
     this.todayEarned,
     this.todayTrips,
     this.errorText,
+    this.noSignal = false,
   });
 
   final DriverHomeState state;
   final String? todayEarned;
   final int? todayTrips;
   final String? errorText;
+
+  /// The phone has no network. Dispatch keeps the driver online, but no new
+  /// requests can arrive, so the status says so instead of a plain online.
+  final bool noSignal;
   final VoidCallback onGo;
   final VoidCallback onGoOffline;
   final ValueChanged<DriverStatus> onMode;
@@ -72,13 +77,21 @@ class DriverHomePanel extends StatelessWidget {
                         height: 12,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: online ? p.success : p.muted,
+                          color: !online
+                              ? p.muted
+                              : noSignal
+                              ? p.accent
+                              : p.success,
                         ),
                       ),
                       const SizedBox(width: AlongSpace.s8),
                       Expanded(
                         child: Text(
-                          online ? l10n.homeOnlineTitle : l10n.homeOfflineTitle,
+                          !online
+                              ? l10n.homeOfflineTitle
+                              : noSignal
+                              ? l10n.homeOnlineNoSignal
+                              : l10n.homeOnlineTitle,
                           key: const Key('home_status_title'),
                           style: AlongType.title(p),
                         ),
@@ -102,7 +115,7 @@ class DriverHomePanel extends StatelessWidget {
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
                       ),
-                      if (online && demand != null)
+                      if (online && !noSignal && demand != null)
                         Text(
                           demand,
                           key: const Key('home_demand'),

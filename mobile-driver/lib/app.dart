@@ -6,6 +6,7 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/features/connection/connection_banner_host.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_chat.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
@@ -36,6 +37,8 @@ class AlongDriverApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) =>
+          ConnectionBannerHost(child: child ?? const SizedBox.shrink()),
     );
   }
 }

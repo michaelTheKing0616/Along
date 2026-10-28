@@ -124,5 +124,15 @@
   "seatEmptyStep2": "Choose corridor",
   "seatEmptyStep2Body": "Passengers for there go see your free seats",
   "seatEmptyStep3": "Fill seats as you dey go",
-  "seatEmptyStep3Body": "Tap seat to mark am taken or free"
+  "seatEmptyStep3Body": "Tap seat to mark am taken or free",
+  "connOffline": "No network · you fit still continue",
+  "connOfflineQueued": "No network · {count} dey wait to send",
+  "connReconnecting": "Dey connect again",
+  "connSending": "Dey connect again · dey send {count}",
+  "connRestored": "Network don come back",
+  "connRestoredSent": "Network don come back · {count} don send",
+  "connRetry": "Try again",
+  "connNeedsConnection": "No network · {count} to do again when network dey",
+  "connOfflineMixed": "No network · {queued} go send · {needs} to do again",
+  "homeOnlineNoSignal": "Online · no network"
 }

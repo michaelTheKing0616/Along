@@ -1,3 +1,5 @@
+import 'package:mobile_rider/features/connection/connection_banner_host.dart';
+
 import 'dart:io';
 
 import 'package:along_core/along_core.dart';
@@ -208,8 +210,12 @@ List<Override> buildProviderOverrides({
   RecentPlacesReader? recentPlacesStore,
   Clock? clock,
   WayfindingTts? wayfindingTts,
+  ConnectionSource? connectionSource,
 }) {
   return [
+    connectionSourceProvider.overrideWithValue(
+      connectionSource ?? FakeConnectionSource(),
+    ),
     appConfigProvider.overrideWithValue(config),
     alongSupabaseProvider.overrideWithValue(supabase),
     ambientChannelProvider.overrideWithValue(ambientChannel),
