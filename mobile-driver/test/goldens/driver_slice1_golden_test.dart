@@ -1,3 +1,5 @@
+import 'package:mobile_driver/features/day/presentation/build_my_day_screen.dart';
+
 import 'dart:convert';
 
 import 'package:along_core/along_core.dart';
@@ -461,6 +463,9 @@ void main() {
       ('conductor', const ConductorScreen()),
       ('rest', const RestScreen()),
       ('marketplace', const MarketplaceScreen()),
+      ('build_my_day', const BuildMyDayScreen()),
+      ('build_my_day_scrolled', const BuildMyDayScreen()),
+      ('build_my_day_end', const BuildMyDayScreen()),
     ]) {
       testWidgets('$screen $name', (tester) async {
         await tester.binding.setSurfaceSize(const Size(360, 800));
@@ -469,6 +474,9 @@ void main() {
         addTearDown(supabase.dispose);
         if (screen == 'seat_board') {
           supabase.seatBoardResponse = FakeAlongSupabase.sampleSeatBoard();
+        }
+        if (screen.startsWith('build_my_day')) {
+          supabase.myDaySetupResponse = FakeAlongSupabase.sampleDaySetup();
         }
         final container = _container(supabase, AlongDatabase.memory());
         await tester.pumpWidget(
@@ -479,6 +487,11 @@ void main() {
         );
         await tester.pump(const Duration(milliseconds: 300));
         await tester.pump(const Duration(milliseconds: 300));
+        if (screen != 'build_my_day' && screen.startsWith('build_my_day')) {
+          final dy = screen.endsWith('_end') ? -6000.0 : -520.0;
+          await tester.drag(find.byType(Scrollable).first, Offset(0, dy));
+          await tester.pump(const Duration(seconds: 1));
+        }
         expect(tester.takeException(), isNull);
         await _shoot(tester, '${screen}_$name');
         await tester.pumpWidget(const SizedBox());

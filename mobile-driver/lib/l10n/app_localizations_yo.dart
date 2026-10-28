@@ -1636,6 +1636,51 @@ class AppLocalizationsYo extends AppLocalizations {
   String get mpEarnedShort => 'Tí o rí';
 
   @override
+  String get daySubtitle =>
+      'Yan ibi tí o ó ti ṣiṣẹ́, ṣètò ìjókòó àti òfin tí èrò máa rí.';
+
+  @override
+  String daySeatsCount(int count) {
+    return 'Ìjókòó $count';
+  }
+
+  @override
+  String get dayRouteOptional => 'Ọ̀nà (àṣàyàn)';
+
+  @override
+  String get dayHoursSection => 'Wákàtí rẹ';
+
+  @override
+  String get daySeatsSection => 'Ìjókòó';
+
+  @override
+  String get dayRemove => 'Yọ kúrò';
+
+  @override
+  String get dayAddRule => 'Fi òfin kún';
+
+  @override
+  String get dayRuleRow => 'Kàn';
+
+  @override
+  String dayRowN(int n) {
+    return 'Ìlà $n';
+  }
+
+  @override
+  String get dayRuleDetails => 'Àlàyé òfin';
+
+  @override
+  String get dayRuleDetailsBody =>
+      'Àkókò ìdádúró, ìrìn àfikún, ààlà ìjókòó, ọ̀rọ̀';
+
+  @override
+  String get dayCustomRule => 'Kọ òfin tìrẹ';
+
+  @override
+  String get dayCustomRuleBody => 'A ń fi hàn èrò kí wọ́n tó gbà';
+
+  @override
   String get howItWorks => 'Bí ó ṣe ń ṣiṣẹ́';
 
   @override

@@ -1635,6 +1635,50 @@ class AppLocalizationsIg extends AppLocalizations {
   String get mpEarnedShort => 'Enwetara';
 
   @override
+  String get daySubtitle =>
+      'Họrọ ebe ị ga-arụ ọrụ, hazie oche na iwu ndị njem ga-ahụ.';
+
+  @override
+  String daySeatsCount(int count) {
+    return 'Oche $count';
+  }
+
+  @override
+  String get dayRouteOptional => 'Ụzọ (nhọrọ)';
+
+  @override
+  String get dayHoursSection => 'Oge gị';
+
+  @override
+  String get daySeatsSection => 'Oche';
+
+  @override
+  String get dayRemove => 'Wepu';
+
+  @override
+  String get dayAddRule => 'Tinye iwu';
+
+  @override
+  String get dayRuleRow => 'Metụtara';
+
+  @override
+  String dayRowN(int n) {
+    return 'Ahịrị $n';
+  }
+
+  @override
+  String get dayRuleDetails => 'Nkọwa iwu';
+
+  @override
+  String get dayRuleDetailsBody => 'Oge njide, ije ọzọ, oke oche, okwu';
+
+  @override
+  String get dayCustomRule => 'Dee iwu nke gị';
+
+  @override
+  String get dayCustomRuleBody => 'A na-egosi ndị njem tupu ha edebe';
+
+  @override
   String get howItWorks => 'Otu o si arụ ọrụ';
 
   @override

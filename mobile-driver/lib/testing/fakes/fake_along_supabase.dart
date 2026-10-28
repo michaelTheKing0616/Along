@@ -118,9 +118,48 @@ class FakeAlongSupabase implements AlongSupabase {
     'deposit_held': {'amount': '0.00', 'currency': 'NGN'},
   };
 
-
-
   /// A sedan cabin: driver + front right, three in the back.
+  /// One danfo, two corridors, a saved layout, one rule and two presets.
+  static Map<String, dynamic> sampleDaySetup() => {
+    'vehicles': [
+      {
+        'id': 'veh-1',
+        'mode_code': 'danfo',
+        'plate_number': 'LND 482 KJ',
+        'seat_capacity': 4,
+        'review_seat_max': 4,
+        'make_model': 'Toyota HiAce',
+      },
+    ],
+    'layouts': [
+      {
+        'id': 'layout-1',
+        'vehicle_id': 'veh-1',
+        'name': 'Morning run',
+        'layout': sampleSeatBoard()['layout'],
+        'passenger_seats': 4,
+        'is_active': true,
+      },
+    ],
+    'corridors': [
+      {'id': 'cor-1', 'name': 'Ikorodu – CMS', 'slug': 'ikorodu-cms'},
+      {'id': 'cor-2', 'name': 'Oshodi – Ikeja', 'slug': 'oshodi-ikeja'},
+    ],
+    'routes': <Object>[],
+    'rules': [
+      {
+        'id': 'rule-1',
+        'title': 'Window stays open',
+        'body': 'Fresh air for everyone on the run.',
+        'effect': 'badge',
+      },
+    ],
+    'presets': [
+      {'id': 'hold', 'title': 'Hold a seat', 'effect': 'hold'},
+      {'id': 'walk', 'title': 'Walk-up stop', 'effect': 'walk'},
+    ],
+  };
+
   static Map<String, dynamic> sampleSeatBoard() => {
     'layout_id': 'layout-1',
     'vehicle_id': 'vehicle-1',
@@ -185,6 +224,9 @@ class FakeAlongSupabase implements AlongSupabase {
 
   /// `seat_board` RPC payload; null keeps the driver without a layout.
   Map<String, dynamic>? seatBoardResponse;
+
+  /// Served for rpc 'my_day_setup' when set.
+  Map<String, dynamic>? myDaySetupResponse;
 
   /// Rows served for `trips` selects (earnings, home today line).
   final List<Map<String, dynamic>> tripRows = [];
@@ -475,6 +517,9 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'driver_earnings_context') {
       return earningsContextResponse ??
           {'online_seconds_by_day': <String, int>{}, 'latest_payout': null};
+    }
+    if (fn == 'my_day_setup' && myDaySetupResponse != null) {
+      return myDaySetupResponse;
     }
     if (fn == 'seat_board' && seatBoardResponse != null) {
       return seatBoardResponse;

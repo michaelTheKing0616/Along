@@ -688,6 +688,55 @@ InputDecoration driveInput(
   );
 }
 
+/// Wrapping pill choices: recessed when idle, ink when selected.
+class DriveChips extends StatelessWidget {
+  const DriveChips({super.key, required this.items});
+
+  /// (key, label, selected, onTap).
+  final List<(Key?, String, bool, VoidCallback?)> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Wrap(
+      spacing: AlongSpace.s8,
+      runSpacing: AlongSpace.s8,
+      children: [
+        for (final (key, label, selected, onTap) in items)
+          Semantics(
+            key: key,
+            button: true,
+            selected: selected,
+            child: Material(
+              color: selected ? p.ink : p.recessed,
+              shape: const StadiumBorder(),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: onTap == null
+                    ? null
+                    : () {
+                        AlongHaptics.selection(context);
+                        onTap();
+                      },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AlongSpace.s16,
+                    vertical: 10,
+                  ),
+                  child: Text(
+                    label,
+                    style: AlongType.label(p)
+                        .copyWith(color: selected ? p.onInk : p.ink),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class DriveSteps extends StatelessWidget {
   const DriveSteps({super.key, required this.steps});
 

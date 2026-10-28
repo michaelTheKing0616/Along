@@ -2978,6 +2978,84 @@ abstract class AppLocalizations {
   /// **'Earned'**
   String get mpEarnedShort;
 
+  /// No description provided for @daySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick where you\'ll work, set your seats and the rules riders see.'**
+  String get daySubtitle;
+
+  /// No description provided for @daySeatsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} seats'**
+  String daySeatsCount(int count);
+
+  /// No description provided for @dayRouteOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Route (optional)'**
+  String get dayRouteOptional;
+
+  /// No description provided for @dayHoursSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hours'**
+  String get dayHoursSection;
+
+  /// No description provided for @daySeatsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Seats'**
+  String get daySeatsSection;
+
+  /// No description provided for @dayRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get dayRemove;
+
+  /// No description provided for @dayAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a rule'**
+  String get dayAddRule;
+
+  /// No description provided for @dayRuleRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to'**
+  String get dayRuleRow;
+
+  /// No description provided for @dayRowN.
+  ///
+  /// In en, this message translates to:
+  /// **'Row {n}'**
+  String dayRowN(int n);
+
+  /// No description provided for @dayRuleDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule details'**
+  String get dayRuleDetails;
+
+  /// No description provided for @dayRuleDetailsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold time, walk extra, seat cap, wording'**
+  String get dayRuleDetailsBody;
+
+  /// No description provided for @dayCustomRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your own rule'**
+  String get dayCustomRule;
+
+  /// No description provided for @dayCustomRuleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown to riders before they book'**
+  String get dayCustomRuleBody;
+
   /// No description provided for @howItWorks.
   ///
   /// In en, this message translates to:

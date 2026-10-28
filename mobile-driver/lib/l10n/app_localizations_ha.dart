@@ -1638,6 +1638,51 @@ class AppLocalizationsHa extends AppLocalizations {
   String get mpEarnedShort => 'An samu';
 
   @override
+  String get daySubtitle =>
+      'Zaɓi inda za ka yi aiki, saita kujeru da dokokin da fasinjoji za su gani.';
+
+  @override
+  String daySeatsCount(int count) {
+    return 'Kujeru $count';
+  }
+
+  @override
+  String get dayRouteOptional => 'Hanya (zaɓi)';
+
+  @override
+  String get dayHoursSection => 'Lokutanka';
+
+  @override
+  String get daySeatsSection => 'Kujeru';
+
+  @override
+  String get dayRemove => 'Cire';
+
+  @override
+  String get dayAddRule => 'Ƙara doka';
+
+  @override
+  String get dayRuleRow => 'Ya shafi';
+
+  @override
+  String dayRowN(int n) {
+    return 'Layi $n';
+  }
+
+  @override
+  String get dayRuleDetails => 'Bayanin doka';
+
+  @override
+  String get dayRuleDetailsBody =>
+      'Lokacin jira, ƙarin tafiya, iyakar kujeru, kalmomi';
+
+  @override
+  String get dayCustomRule => 'Rubuta dokarka';
+
+  @override
+  String get dayCustomRuleBody => 'Ana nuna wa fasinjoji kafin su yi rajista';
+
+  @override
   String get howItWorks => 'Yadda yake aiki';
 
   @override
