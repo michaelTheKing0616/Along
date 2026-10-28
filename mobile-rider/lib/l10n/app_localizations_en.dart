@@ -138,7 +138,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline — search uses cached places';
+  String get searchOfflineHint => 'Offline · searching saved places';
 
   @override
   String get cachedOptionsStaleBadge => 'Cached · may be outdated';
@@ -1642,6 +1642,60 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.';
+
+  @override
+  String get connOffline => 'Offline · you can keep going';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Offline · $count saved to send';
+  }
+
+  @override
+  String get connReconnecting => 'Reconnecting';
+
+  @override
+  String connSending(int count) {
+    return 'Reconnecting · sending $count';
+  }
+
+  @override
+  String get connRestored => 'Back online';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Back online · $count sent';
+  }
+
+  @override
+  String get connRetry => 'Retry';
+
+  @override
+  String get searchPausedTitle => 'Search paused';
+
+  @override
+  String get searchPausedBody =>
+      'The network dropped. Saved places and the map still work.';
+
+  @override
+  String get searchEmptyTitle => 'No places found';
+
+  @override
+  String get searchEmptyBody => 'Try a nearby landmark, market or bus stop.';
+
+  @override
+  String get searchEmptyOfflineBody =>
+      'You\'re offline, so only saved places show. Drop a pin instead.';
+
+  @override
+  String connNeedsConnection(int count) {
+    return 'Offline · $count to redo online';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Offline · $queued to send · $needs to redo';
+  }
 
   @override
   String get walletTitle => 'Wallet';

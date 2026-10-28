@@ -1721,4 +1721,44 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get seatEmptyStep3Body => 'Taɓa kujera don alamta ta';
+
+  @override
+  String get connOffline => 'Babu intanet · za ka iya ci gaba';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Babu intanet · $count an ajiye don aikawa';
+  }
+
+  @override
+  String get connReconnecting => 'Ana sake haɗawa';
+
+  @override
+  String connSending(int count) {
+    return 'Ana sake haɗawa · ana aika $count';
+  }
+
+  @override
+  String get connRestored => 'An dawo kan layi';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'An dawo kan layi · an aika $count';
+  }
+
+  @override
+  String get connRetry => 'Sake gwadawa';
+
+  @override
+  String connNeedsConnection(int count) {
+    return 'Babu intanet · $count a sake yi da intanet';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Babu intanet · $queued za a aika · $needs a sake';
+  }
+
+  @override
+  String get homeOnlineNoSignal => 'A kan layi · babu sigina';
 }

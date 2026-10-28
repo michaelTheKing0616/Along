@@ -184,7 +184,7 @@
   "@searchResultsTitle": {
     "description": "R-06 autocomplete results"
   },
-  "searchOfflineHint": "Offline — search uses cached places",
+  "searchOfflineHint": "Offline · searching saved places",
   "@searchOfflineHint": {
     "description": "R-06 offline state"
   },
@@ -1879,6 +1879,58 @@
   "tripsEmptyCta": "Plan a trip",
   "scanCodeWhereTitle": "Where to find it",
   "scanCodeWhereBody": "The 8-character code is printed under the QR on the driver's sticker, or ask them to open My QR.",
+  "connOffline": "Offline · you can keep going",
+  "connOfflineQueued": "Offline · {count} saved to send",
+  "@connOfflineQueued": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connReconnecting": "Reconnecting",
+  "connSending": "Reconnecting · sending {count}",
+  "@connSending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connRestored": "Back online",
+  "connRestoredSent": "Back online · {count} sent",
+  "@connRestoredSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connRetry": "Retry",
+  "searchPausedTitle": "Search paused",
+  "searchPausedBody": "The network dropped. Saved places and the map still work.",
+  "searchEmptyTitle": "No places found",
+  "searchEmptyBody": "Try a nearby landmark, market or bus stop.",
+  "searchEmptyOfflineBody": "You're offline, so only saved places show. Drop a pin instead.",
+  "connNeedsConnection": "Offline · {count} to redo online",
+  "@connNeedsConnection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connOfflineMixed": "Offline · {queued} to send · {needs} to redo",
+  "@connOfflineMixed": {
+    "placeholders": {
+      "queued": {
+        "type": "int"
+      },
+      "needs": {
+        "type": "int"
+      }
+    }
+  },
   "walletTitle": "Wallet",
   "walletSubtitle": "Along credit",
   "walletBalance": "Balance",

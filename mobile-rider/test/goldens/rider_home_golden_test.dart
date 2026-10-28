@@ -4,6 +4,9 @@ import 'package:along_core/along_core.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:along_data/along_data.dart';
+import 'package:mobile_rider/features/connection/connection_banner_host.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_rider/features/home/data/recent_places_store.dart';
 import 'package:mobile_rider/features/home/presentation/home_controller.dart';
@@ -60,7 +63,7 @@ void main() {
     ],
   );
 
-  Widget home(Brightness brightness, double scale) {
+  Widget home(Brightness brightness, double scale, {bool banner = false}) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: alongTheme(brightness: brightness),
@@ -74,7 +77,7 @@ void main() {
           viewPadding: const EdgeInsets.only(top: 24, bottom: 16),
           disableAnimations: true,
         ),
-        child: child!,
+        child: banner ? ConnectionBannerHost(child: child!) : child!,
       ),
       home: Builder(
         builder: (context) {
@@ -136,5 +139,55 @@ void main() {
         matchesGoldenFile('rider_home_$name.png'),
       );
     });
+  }
+
+  // Offline over the real home map and sheet: the banner reserves its own
+  // row, so the menu, recenter and Where to stay tappable.
+  for (final (name, brightness, scale) in [
+    ('light', Brightness.light, 1.0),
+    ('dark', Brightness.dark, 1.0),
+    ('light_1_3x', Brightness.light, 1.3),
+  ]) {
+    for (final phase in [
+      ConnectionPhase.offline,
+      ConnectionPhase.reconnecting,
+    ]) {
+      testWidgets('rider home connection ${phase.name} $name', (tester) async {
+        await tester.binding.setSurfaceSize(const Size(360, 800));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        // Offline shows the redo-only line; reconnecting sends the rest.
+        final controller = connectionControllerIn(
+          phase,
+          queued: phase == ConnectionPhase.offline ? 0 : 2,
+          needsConnection: 1,
+        );
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              connectionControllerProvider.overrideWith((ref) {
+                controller.start();
+                ref.onDispose(controller.dispose);
+                return controller;
+              }),
+            ],
+            child: home(brightness, scale, banner: true),
+          ),
+        );
+        for (var i = 0; i < 4; i++) {
+          await tester.pump(const Duration(milliseconds: 150));
+        }
+        expect(tester.takeException(), isNull);
+        expect(
+          find.byKey(Key('connection_banner_${phase.name}')),
+          findsOneWidget,
+        );
+        await expectLater(
+          find.byType(MaterialApp),
+          matchesGoldenFile('rider_home_connection_${phase.name}_$name.png'),
+        );
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(seconds: 3));
+      });
+    }
   }
 }

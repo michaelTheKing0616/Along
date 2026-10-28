@@ -62,6 +62,9 @@ class FakeAlongSupabase implements AlongSupabase {
   List<Map<String, dynamic>> modeConfigRows;
   List<Map<String, dynamic>> ambientCells;
   List<Map<String, dynamic>> placeResults;
+
+  /// When true, places-search fails like a dropped network.
+  bool failPlaceSearch = false;
   Map<String, dynamic>? snappedStage;
   String? cityId;
   String? citySlug;
@@ -517,6 +520,7 @@ class FakeAlongSupabase implements AlongSupabase {
       };
     }
     if (slug == 'places-search') {
+      if (failPlaceSearch) throw StateError('network');
       return {
         'data': {'results': placeResults},
       };

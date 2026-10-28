@@ -1,3 +1,4 @@
+import 'package:mobile_driver/features/connection/connection_banner_host.dart';
 import 'package:mobile_driver/features/day/presentation/build_my_day_screen.dart';
 
 import 'dart:convert';
@@ -90,11 +91,17 @@ Widget _overMap(Widget overlay, {bool scrim = false}) => Builder(
   ),
 );
 
-Widget _home(DriverHomeState state, {String? earned, int? trips}) => _overMap(
+Widget _home(
+  DriverHomeState state, {
+  String? earned,
+  int? trips,
+  bool noSignal = false,
+}) => _overMap(
   Align(
     alignment: Alignment.bottomCenter,
     child: DriverHomePanel(
       state: state,
+      noSignal: noSignal,
       todayEarned: earned,
       todayTrips: trips,
       onGo: () {},
@@ -122,10 +129,15 @@ class _NoLocation implements LocationStreamSource {
   Future<bool> ensurePermission() async => true;
 }
 
-ProviderContainer _container(FakeAlongSupabase supabase, AlongDatabase db) {
+ProviderContainer _container(
+  FakeAlongSupabase supabase,
+  AlongDatabase db, {
+  List<Override> extra = const [],
+}) {
   supabase.clock = () => DateTime.utc(2026, 9, 6, 19);
   return ProviderContainer(
     overrides: [
+      ...extra,
       ...buildProviderOverrides(
         config: _config,
         supabase: supabase,
@@ -498,5 +510,157 @@ void main() {
         await tester.pump(const Duration(seconds: 1));
       });
     }
+  }
+  // Offline cycle over a real screen: the banner never blocks the seat map.
+  for (final (name, brightness, scale) in _variants) {
+    for (final phase in [
+      ConnectionPhase.offline,
+      ConnectionPhase.reconnecting,
+      ConnectionPhase.restored,
+    ]) {
+      testWidgets('connection ${phase.name} $name', (tester) async {
+        await tester.binding.setSurfaceSize(const Size(360, 800));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final supabase = FakeAlongSupabase();
+        addTearDown(supabase.dispose);
+        supabase.seatBoardResponse = FakeAlongSupabase.sampleSeatBoard();
+        final controller = connectionControllerIn(phase);
+        final scoped = _container(
+          supabase,
+          AlongDatabase.memory(),
+          extra: [
+            connectionControllerProvider.overrideWith((ref) {
+              controller.start();
+              ref.onDispose(controller.dispose);
+              return controller;
+            }),
+          ],
+        );
+        addTearDown(scoped.dispose);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: scoped,
+            child: _app(
+              brightness,
+              scale,
+              const ConnectionBannerHost(child: SeatBoardScreen()),
+            ),
+          ),
+        );
+        for (var i = 0; i < 4; i++) {
+          await tester.pump(const Duration(milliseconds: 150));
+        }
+        expect(tester.takeException(), isNull);
+        expect(
+          find.byKey(Key('connection_banner_${phase.name}')),
+          findsOneWidget,
+        );
+        await _shoot(tester, 'connection_${phase.name}_$name');
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(seconds: 3));
+      });
+    }
+  }
+
+  // The banner over the home map and a live trip: core actions stay on top.
+  for (final (name, brightness, scale) in _variants) {
+    testWidgets('connection home offline $name', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final controller = connectionControllerIn(
+        ConnectionPhase.offline,
+        needsConnection: 1,
+      );
+      final scoped = ProviderContainer(
+        overrides: [
+          connectionControllerProvider.overrideWith((ref) {
+            controller.start();
+            ref.onDispose(controller.dispose);
+            return controller;
+          }),
+        ],
+      );
+      addTearDown(scoped.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: scoped,
+          child: _app(
+            brightness,
+            scale,
+            ConnectionBannerHost(
+              child: _home(
+                const DriverHomeState(
+                  isVerified: true,
+                  status: DriverStatus.roamingAvailable,
+                  seatsAvailable: 3,
+                  roamingDirection: RoamingDirection.onRoute,
+                  demandLabels: ['High demand · Wuse'],
+                ),
+                earned: '₦18,400',
+                trips: 11,
+                noSignal: true,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('connection_banner_offline')), findsOne);
+      expect(find.text('Online · no signal'), findsOne);
+      expect(find.byKey(const Key('home_demand')), findsNothing);
+      await _shoot(tester, 'connection_home_offline_$name');
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(seconds: 3));
+    });
+
+    testWidgets('connection active reconnecting $name', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final supabase = FakeAlongSupabase();
+      supabase.tripStatuses['trip-in-transit-1'] = 'in_transit';
+      final controller = connectionControllerIn(ConnectionPhase.reconnecting);
+      final container = ProviderContainer(
+        overrides: [
+          connectionControllerProvider.overrideWith((ref) {
+            controller.start();
+            ref.onDispose(controller.dispose);
+            return controller;
+          }),
+          ...buildProviderOverrides(
+            config: _config,
+            supabase: supabase,
+            database: AlongDatabase.memory(),
+            driverChannel: FakeDriverChannel(),
+            locationStreamSource: _NoLocation(),
+          ),
+        ],
+      );
+      addTearDown(supabase.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: _app(
+            brightness,
+            scale,
+            const ConnectionBannerHost(
+              child: ActiveTripScreen(
+                args: ActiveTripArgs(tripId: 'trip-in-transit-1'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('connection_banner_reconnecting')), findsOne);
+      expect(find.byKey(const Key('drive_phase_0')), findsOneWidget);
+      await _shoot(tester, 'connection_active_reconnecting_$name');
+      await tester.pumpWidget(const SizedBox());
+      container.dispose();
+      await tester.pump(const Duration(seconds: 3));
+    });
   }
 }

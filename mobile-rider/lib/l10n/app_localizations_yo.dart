@@ -138,7 +138,7 @@ class AppLocalizationsYo extends AppLocalizations {
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline — search uses cached places';
+  String get searchOfflineHint => 'Offline · searching saved places';
 
   @override
   String get cachedOptionsStaleBadge => 'Cached · may be outdated';
@@ -1641,6 +1641,61 @@ class AppLocalizationsYo extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'Kóòdù oní lẹ́tà 8 wà lábẹ́ QR lórí sítíkà awakọ̀, tàbí ní kí ó ṣí My QR.';
+
+  @override
+  String get connOffline => 'Kò sí íntánẹ́ẹ̀tì · o lè máa bá a lọ';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Kò sí íntánẹ́ẹ̀tì · $count ti fipamọ́ láti fi ránṣẹ́';
+  }
+
+  @override
+  String get connReconnecting => 'Ń tún so pọ̀';
+
+  @override
+  String connSending(int count) {
+    return 'Ń tún so pọ̀ · ń fi $count ránṣẹ́';
+  }
+
+  @override
+  String get connRestored => 'Ti padà sórí íntánẹ́ẹ̀tì';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Ti padà · a ti fi $count ránṣẹ́';
+  }
+
+  @override
+  String get connRetry => 'Tún gbìyànjú';
+
+  @override
+  String get searchPausedTitle => 'Ìwádìí dúró';
+
+  @override
+  String get searchPausedBody =>
+      'Íntánẹ́ẹ̀tì já. Àwọn ibi tí a fipamọ́ àti máàpù ṣì ń ṣiṣẹ́.';
+
+  @override
+  String get searchEmptyTitle => 'A kò rí ibìkan';
+
+  @override
+  String get searchEmptyBody =>
+      'Gbìyànjú àmì-ilẹ̀, ọjà tàbí ibùdókọ̀ tó wà nítòsí.';
+
+  @override
+  String get searchEmptyOfflineBody =>
+      'O kò sí lórí íntánẹ́ẹ̀tì, ibi tí a fipamọ́ nìkan ló ń hàn. Fi pin sí i dípò.';
+
+  @override
+  String connNeedsConnection(int count) {
+    return 'Kò sí íntánẹ́ẹ̀tì · $count láti tún ṣe lórí ayélujára';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Kò sí íntánẹ́ẹ̀tì · $queued láti fi ránṣẹ́ · $needs láti tún ṣe';
+  }
 
   @override
   String get walletTitle => 'Àpamọ́wọ́';

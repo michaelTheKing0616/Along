@@ -8,6 +8,7 @@ import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_rider/features/connection/connection_banner_host.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_chat.dart';
 import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
@@ -41,9 +42,11 @@ class AlongRiderApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => PaymentDeepLinkListener(
-        router: router,
-        child: child ?? const SizedBox.shrink(),
+      builder: (context, child) => ConnectionBannerHost(
+        child: PaymentDeepLinkListener(
+          router: router,
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }
@@ -74,6 +77,7 @@ Future<ProviderContainer> bootstrapApp({AppConfig? configOverride}) async {
         ),
         database: await AlongDatabase.open(fileName: 'rider.db'),
         networkProbe: RiderNetworkProbe(),
+        connectionSource: ConnectivityConnectionSource(),
         corridorTilePrecache: CorridorTilePrecacheService(
           cacheDirectory: mapCacheDir,
         ),

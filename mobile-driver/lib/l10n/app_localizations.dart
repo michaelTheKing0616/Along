@@ -3133,6 +3133,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap a seat to mark it taken or free'**
   String get seatEmptyStep3Body;
+
+  /// No description provided for @connOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · you can keep going'**
+  String get connOffline;
+
+  /// No description provided for @connOfflineQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {count} saved to send'**
+  String connOfflineQueued(int count);
+
+  /// No description provided for @connReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting'**
+  String get connReconnecting;
+
+  /// No description provided for @connSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting · sending {count}'**
+  String connSending(int count);
+
+  /// No description provided for @connRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online'**
+  String get connRestored;
+
+  /// No description provided for @connRestoredSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online · {count} sent'**
+  String connRestoredSent(int count);
+
+  /// No description provided for @connRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get connRetry;
+
+  /// No description provided for @connNeedsConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {count} to redo online'**
+  String connNeedsConnection(int count);
+
+  /// No description provided for @connOfflineMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {queued} to send · {needs} to redo'**
+  String connOfflineMixed(int queued, int needs);
+
+  /// No description provided for @homeOnlineNoSignal.
+  ///
+  /// In en, this message translates to:
+  /// **'Online · no signal'**
+  String get homeOnlineNoSignal;
 }
 
 class _AppLocalizationsDelegate

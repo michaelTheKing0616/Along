@@ -1716,4 +1716,44 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get seatEmptyStep3Body => 'Pịa oche iji kaa ya';
+
+  @override
+  String get connOffline => 'Enweghị ịntanetị · ị nwere ike ịga n\'ihu';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Enweghị ịntanetị · $count echekwara iziga';
+  }
+
+  @override
+  String get connReconnecting => 'Na-ejikọ ọzọ';
+
+  @override
+  String connSending(int count) {
+    return 'Na-ejikọ ọzọ · na-eziga $count';
+  }
+
+  @override
+  String get connRestored => 'Ịlaghachila n\'ịntanetị';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Ịlaghachila · ezigala $count';
+  }
+
+  @override
+  String get connRetry => 'Nwaa ọzọ';
+
+  @override
+  String connNeedsConnection(int count) {
+    return 'Enweghị ịntanetị · $count ka emeghachi n\'ịntanetị';
+  }
+
+  @override
+  String connOfflineMixed(int queued, int needs) {
+    return 'Enweghị ịntanetị · $queued iziga · $needs imeghachi';
+  }
+
+  @override
+  String get homeOnlineNoSignal => 'Nọ n\'ịntanetị · enweghị signal';
 }
