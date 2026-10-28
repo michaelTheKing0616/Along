@@ -20,7 +20,9 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(800, 1600));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      final fakeSupabase = FakeAlongSupabase(configRows: defaultTestConfigRows());
+      final fakeSupabase = FakeAlongSupabase(
+        configRows: defaultTestConfigRows(),
+      );
       final container = ProviderContainer(
         overrides: buildProviderOverrides(
           config: const AppConfig(
@@ -92,10 +94,8 @@ void main() {
               builder: (context) => Scaffold(
                 body: Center(
                   child: ElevatedButton(
-                    onPressed: () => ShareTripSheet.show(
-                      context,
-                      journeyId: trip.journeyId,
-                    ),
+                    onPressed: () =>
+                        ShareTripSheet.show(context, journeyId: trip.journeyId),
                     child: const Text('Open'),
                   ),
                 ),
@@ -120,7 +120,9 @@ void main() {
   });
 
   group('R-26 account settings', () {
-    testWidgets('shows women-only when regulatory flag enabled', (tester) async {
+    testWidgets('shows women-only when regulatory flag enabled', (
+      tester,
+    ) async {
       final fakeSupabase = FakeAlongSupabase(
         configRows: defaultTestConfigRows(),
         cityRegulatoryFlags: const {'women_only_matching': true},
@@ -153,7 +155,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('account_women_only')), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('account_payment_cash')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.byKey(const Key('account_payment_cash')), findsOneWidget);
+      expect(find.byKey(const Key('account_wallet')), findsOneWidget);
 
       fakeSupabase.dispose();
       container.dispose();

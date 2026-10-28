@@ -3082,6 +3082,366 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing was added. Try again.'**
   String get walletTopUpFailed;
+
+  /// No description provided for @walletActionTopUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up'**
+  String get walletActionTopUp;
+
+  /// No description provided for @walletActionSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get walletActionSend;
+
+  /// No description provided for @walletActionPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass'**
+  String get walletActionPass;
+
+  /// No description provided for @walletActionSplit.
+  ///
+  /// In en, this message translates to:
+  /// **'Split'**
+  String get walletActionSplit;
+
+  /// No description provided for @walletActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get walletActivity;
+
+  /// No description provided for @walletEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get walletEarlier;
+
+  /// No description provided for @walletActivityEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity yet. Top up to ride without cash.'**
+  String get walletActivityEmpty;
+
+  /// No description provided for @walletBalanceSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {amount}'**
+  String walletBalanceSemantics(String amount);
+
+  /// No description provided for @walletSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To {name}'**
+  String walletSentTo(String name);
+
+  /// No description provided for @walletReceivedFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {name}'**
+  String walletReceivedFrom(String name);
+
+  /// No description provided for @walletSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get walletSent;
+
+  /// No description provided for @walletReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get walletReceived;
+
+  /// No description provided for @walletPassEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Along Pass'**
+  String get walletPassEntry;
+
+  /// No description provided for @walletSplitPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Split paid'**
+  String get walletSplitPaid;
+
+  /// No description provided for @walletSplitReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Split received'**
+  String get walletSplitReceived;
+
+  /// No description provided for @walletOwedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asked for {amount}'**
+  String walletOwedTitle(String name, String amount);
+
+  /// No description provided for @walletOwedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your share of a shared ride'**
+  String get walletOwedBody;
+
+  /// No description provided for @walletOwedPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get walletOwedPay;
+
+  /// No description provided for @walletOwedDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get walletOwedDecline;
+
+  /// No description provided for @walletOwedPaidSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid {amount}'**
+  String walletOwedPaidSnack(String amount);
+
+  /// No description provided for @walletOwedDeclinedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Request declined'**
+  String get walletOwedDeclinedSnack;
+
+  /// No description provided for @walletInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough credit. Top up first.'**
+  String get walletInsufficient;
+
+  /// No description provided for @walletActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t finish. Try again — you won\'t be charged twice.'**
+  String get walletActionFailed;
+
+  /// No description provided for @walletSendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send credit'**
+  String get walletSendTitle;
+
+  /// No description provided for @walletSendSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To another Along rider'**
+  String get walletSendSubtitle;
+
+  /// No description provided for @walletSendPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get walletSendPhone;
+
+  /// No description provided for @walletSendPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0803 123 4567'**
+  String get walletSendPhoneHint;
+
+  /// No description provided for @walletSendPhoneInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a Nigerian mobile number'**
+  String get walletSendPhoneInvalid;
+
+  /// No description provided for @walletSendAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get walletSendAmount;
+
+  /// No description provided for @walletSendTooSmall.
+  ///
+  /// In en, this message translates to:
+  /// **'Send at least ₦50'**
+  String get walletSendTooSmall;
+
+  /// No description provided for @walletSendTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Send at most ₦50,000'**
+  String get walletSendTooLarge;
+
+  /// No description provided for @walletSendOverBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'More than your balance'**
+  String get walletSendOverBalance;
+
+  /// No description provided for @walletSendCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Send {amount}'**
+  String walletSendCta(String amount);
+
+  /// No description provided for @walletSendCtaEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get walletSendCtaEmpty;
+
+  /// No description provided for @walletSendNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Along rider has that number'**
+  String get walletSendNotFound;
+
+  /// No description provided for @walletSentSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent {amount}'**
+  String walletSentSnack(String amount);
+
+  /// No description provided for @walletAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available {amount}'**
+  String walletAvailable(String amount);
+
+  /// No description provided for @walletPassTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Along Pass'**
+  String get walletPassTitle;
+
+  /// No description provided for @walletPassSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This month, paid from credit'**
+  String get walletPassSubtitle;
+
+  /// No description provided for @walletPassPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a month'**
+  String walletPassPrice(String amount);
+
+  /// No description provided for @walletPassBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One payment from your wallet. No card, no cash at the door.'**
+  String get walletPassBody;
+
+  /// No description provided for @walletPassCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy pass · {amount}'**
+  String walletPassCta(String amount);
+
+  /// No description provided for @walletPassBought.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass bought for this month'**
+  String get walletPassBought;
+
+  /// No description provided for @walletPassShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up {amount} more to buy'**
+  String walletPassShort(String amount);
+
+  /// No description provided for @walletSplitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split a fare'**
+  String get walletSplitTitle;
+
+  /// No description provided for @walletSplitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask co-riders for their share'**
+  String get walletSplitSubtitle;
+
+  /// No description provided for @walletSplitFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get walletSplitFare;
+
+  /// No description provided for @walletSplitYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get walletSplitYou;
+
+  /// No description provided for @walletSplitCoRider.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-rider {n}'**
+  String walletSplitCoRider(int n);
+
+  /// No description provided for @walletSplitAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add co-rider'**
+  String get walletSplitAdd;
+
+  /// No description provided for @walletSplitRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get walletSplitRemove;
+
+  /// No description provided for @walletSplitEach.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} each'**
+  String walletSplitEach(String amount);
+
+  /// No description provided for @walletSplitCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Request {amount} each'**
+  String walletSplitCta(String amount);
+
+  /// No description provided for @walletSplitCtaEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Request share'**
+  String get walletSplitCtaEmpty;
+
+  /// No description provided for @walletSplitFareInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the fare, at least ₦100'**
+  String get walletSplitFareInvalid;
+
+  /// No description provided for @walletSplitSentSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked {count} co-riders'**
+  String walletSplitSentSnack(int count);
+
+  /// No description provided for @walletSplitNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'One of those numbers isn\'t on Along yet'**
+  String get walletSplitNotFound;
+
+  /// No description provided for @walletSplitNote.
+  ///
+  /// In en, this message translates to:
+  /// **'They pay from their wallet. You keep paying the driver as usual.'**
+  String get walletSplitNote;
+
+  /// No description provided for @accountWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get accountWallet;
+
+  /// No description provided for @accountWalletHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up, send, pass, split fares'**
+  String get accountWalletHint;
 }
 
 class _AppLocalizationsDelegate

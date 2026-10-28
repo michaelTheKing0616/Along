@@ -1724,4 +1724,218 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get walletTopUpFailed => 'Ba a ƙara komai ba. Sake gwadawa.';
+
+  @override
+  String get walletActionTopUp => 'Ƙara kuɗi';
+
+  @override
+  String get walletActionSend => 'Aika';
+
+  @override
+  String get walletActionPass => 'Fasi';
+
+  @override
+  String get walletActionSplit => 'Raba';
+
+  @override
+  String get walletActivity => 'Ayyuka';
+
+  @override
+  String get walletEarlier => 'A baya';
+
+  @override
+  String get walletActivityEmpty =>
+      'Babu aiki tukuna. Ƙara kuɗi don hawa ba tare da tsabar kuɗi ba.';
+
+  @override
+  String walletBalanceSemantics(String amount) {
+    return 'Ma\'auni $amount';
+  }
+
+  @override
+  String walletSentTo(String name) {
+    return 'Zuwa ga $name';
+  }
+
+  @override
+  String walletReceivedFrom(String name) {
+    return 'Daga $name';
+  }
+
+  @override
+  String get walletSent => 'An aika';
+
+  @override
+  String get walletReceived => 'An karɓa';
+
+  @override
+  String get walletPassEntry => 'Fasin Along';
+
+  @override
+  String get walletSplitPaid => 'An biya rabo';
+
+  @override
+  String get walletSplitReceived => 'An karɓi rabo';
+
+  @override
+  String walletOwedTitle(String name, String amount) {
+    return '$name ya nemi $amount';
+  }
+
+  @override
+  String get walletOwedBody => 'Rabonka na hawan haɗin gwiwa';
+
+  @override
+  String get walletOwedPay => 'Biya';
+
+  @override
+  String get walletOwedDecline => 'Ƙi';
+
+  @override
+  String walletOwedPaidSnack(String amount) {
+    return 'An biya $amount';
+  }
+
+  @override
+  String get walletOwedDeclinedSnack => 'An ƙi buƙata';
+
+  @override
+  String get walletInsufficient => 'Babu isasshen kuɗi. Ƙara kuɗi tukuna.';
+
+  @override
+  String get walletActionFailed =>
+      'Ba a gama ba. Sake gwadawa — ba za a caje ka sau biyu ba.';
+
+  @override
+  String get walletSendTitle => 'Aika kuɗi';
+
+  @override
+  String get walletSendSubtitle => 'Ga wani mai hawan Along';
+
+  @override
+  String get walletSendPhone => 'Lambar waya';
+
+  @override
+  String get walletSendPhoneHint => '0803 123 4567';
+
+  @override
+  String get walletSendPhoneInvalid => 'Shigar da lambar waya ta Najeriya';
+
+  @override
+  String get walletSendAmount => 'Adadi';
+
+  @override
+  String get walletSendTooSmall => 'Aika aƙalla ₦50';
+
+  @override
+  String get walletSendTooLarge => 'Aika aƙalla bai wuce ₦50,000 ba';
+
+  @override
+  String get walletSendOverBalance => 'Ya fi ma\'aunin ka';
+
+  @override
+  String walletSendCta(String amount) {
+    return 'Aika $amount';
+  }
+
+  @override
+  String get walletSendCtaEmpty => 'Aika';
+
+  @override
+  String get walletSendNotFound => 'Babu mai hawan Along da wannan lamba';
+
+  @override
+  String walletSentSnack(String amount) {
+    return 'An aika $amount';
+  }
+
+  @override
+  String walletAvailable(String amount) {
+    return 'Akwai $amount';
+  }
+
+  @override
+  String get walletPassTitle => 'Fasin Along';
+
+  @override
+  String get walletPassSubtitle => 'Wannan wata, daga kuɗin ka';
+
+  @override
+  String walletPassPrice(String amount) {
+    return '$amount a wata';
+  }
+
+  @override
+  String get walletPassBody =>
+      'Biya ɗaya daga walat ɗinka. Babu kati, babu tsabar kuɗi a ƙofa.';
+
+  @override
+  String walletPassCta(String amount) {
+    return 'Saya fasi · $amount';
+  }
+
+  @override
+  String get walletPassBought => 'An saya fasi na wannan wata';
+
+  @override
+  String walletPassShort(String amount) {
+    return 'Ƙara $amount don saya';
+  }
+
+  @override
+  String get walletSplitTitle => 'Raba kuɗin hawa';
+
+  @override
+  String get walletSplitSubtitle => 'Nemi rabon abokan hawa';
+
+  @override
+  String get walletSplitFare => 'Kuɗin hawa';
+
+  @override
+  String get walletSplitYou => 'Kai';
+
+  @override
+  String walletSplitCoRider(int n) {
+    return 'Abokin hawa $n';
+  }
+
+  @override
+  String get walletSplitAdd => 'Ƙara abokin hawa';
+
+  @override
+  String get walletSplitRemove => 'Cire';
+
+  @override
+  String walletSplitEach(String amount) {
+    return '$amount kowanne';
+  }
+
+  @override
+  String walletSplitCta(String amount) {
+    return 'Nemi $amount kowanne';
+  }
+
+  @override
+  String get walletSplitCtaEmpty => 'Nemi rabo';
+
+  @override
+  String get walletSplitFareInvalid => 'Shigar da kuɗin hawa, aƙalla ₦100';
+
+  @override
+  String walletSplitSentSnack(int count) {
+    return 'An nemi abokan hawa $count';
+  }
+
+  @override
+  String get walletSplitNotFound => 'Ɗaya daga lambobin ba ya kan Along tukuna';
+
+  @override
+  String get walletSplitNote =>
+      'Za su biya daga walat ɗinsu. Kai kuma ka ci gaba da biyan direba kamar yadda aka saba.';
+
+  @override
+  String get accountWallet => 'Walat';
+
+  @override
+  String get accountWalletHint => 'Ƙara kuɗi, aika, fasi, raba kuɗin hawa';
 }

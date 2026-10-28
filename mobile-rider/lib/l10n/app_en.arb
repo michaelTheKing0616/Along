@@ -1917,5 +1917,173 @@
       }
     }
   },
-  "walletTopUpFailed": "Nothing was added. Try again."
+  "walletTopUpFailed": "Nothing was added. Try again.",
+  "walletActionTopUp": "Top up",
+  "walletActionSend": "Send",
+  "walletActionPass": "Pass",
+  "walletActionSplit": "Split",
+  "walletActivity": "Activity",
+  "walletEarlier": "Earlier",
+  "walletActivityEmpty": "No activity yet. Top up to ride without cash.",
+  "walletBalanceSemantics": "Balance {amount}",
+  "@walletBalanceSemantics": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSentTo": "To {name}",
+  "@walletSentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletReceivedFrom": "From {name}",
+  "@walletReceivedFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSent": "Sent",
+  "walletReceived": "Received",
+  "walletPassEntry": "Along Pass",
+  "walletSplitPaid": "Split paid",
+  "walletSplitReceived": "Split received",
+  "walletOwedTitle": "{name} asked for {amount}",
+  "@walletOwedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletOwedBody": "Your share of a shared ride",
+  "walletOwedPay": "Pay",
+  "walletOwedDecline": "Decline",
+  "walletOwedPaidSnack": "Paid {amount}",
+  "@walletOwedPaidSnack": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletOwedDeclinedSnack": "Request declined",
+  "walletInsufficient": "Not enough credit. Top up first.",
+  "walletActionFailed": "Couldn't finish. Try again — you won't be charged twice.",
+  "walletSendTitle": "Send credit",
+  "walletSendSubtitle": "To another Along rider",
+  "walletSendPhone": "Phone number",
+  "walletSendPhoneHint": "0803 123 4567",
+  "walletSendPhoneInvalid": "Enter a Nigerian mobile number",
+  "walletSendAmount": "Amount",
+  "walletSendTooSmall": "Send at least ₦50",
+  "walletSendTooLarge": "Send at most ₦50,000",
+  "walletSendOverBalance": "More than your balance",
+  "walletSendCta": "Send {amount}",
+  "@walletSendCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSendCtaEmpty": "Send",
+  "walletSendNotFound": "No Along rider has that number",
+  "walletSentSnack": "Sent {amount}",
+  "@walletSentSnack": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletAvailable": "Available {amount}",
+  "@walletAvailable": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassTitle": "Along Pass",
+  "walletPassSubtitle": "This month, paid from credit",
+  "walletPassPrice": "{amount} a month",
+  "@walletPassPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassBody": "One payment from your wallet. No card, no cash at the door.",
+  "walletPassCta": "Buy pass · {amount}",
+  "@walletPassCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassBought": "Pass bought for this month",
+  "walletPassShort": "Top up {amount} more to buy",
+  "@walletPassShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitTitle": "Split a fare",
+  "walletSplitSubtitle": "Ask co-riders for their share",
+  "walletSplitFare": "Fare",
+  "walletSplitYou": "You",
+  "walletSplitCoRider": "Co-rider {n}",
+  "@walletSplitCoRider": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "walletSplitAdd": "Add co-rider",
+  "walletSplitRemove": "Remove",
+  "walletSplitEach": "{amount} each",
+  "@walletSplitEach": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitCta": "Request {amount} each",
+  "@walletSplitCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitCtaEmpty": "Request share",
+  "walletSplitFareInvalid": "Enter the fare, at least ₦100",
+  "walletSplitSentSnack": "Asked {count} co-riders",
+  "@walletSplitSentSnack": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletSplitNotFound": "One of those numbers isn't on Along yet",
+  "walletSplitNote": "They pay from their wallet. You keep paying the driver as usual.",
+  "accountWallet": "Wallet",
+  "accountWalletHint": "Top up, send, pass, split fares"
 }

@@ -1004,9 +1004,9 @@ class AlongFlowWallet extends StatelessWidget {
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _BalanceCard(),
+          AlongWalletCard(),
           SizedBox(height: 16),
-          _WalletActions(),
+          AlongWalletActions(),
           SizedBox(height: 8),
           Expanded(child: _ActivityCard()),
         ],
@@ -3755,8 +3755,22 @@ class _ShareToggle extends StatelessWidget {
   }
 }
 
-class _BalanceCard extends StatelessWidget {
-  const _BalanceCard();
+/// The dark Along credit card: brand top-left, balance bottom-left.
+class AlongWalletCard extends StatelessWidget {
+  const AlongWalletCard({
+    super.key,
+    this.brand = 'Along',
+    this.amount = '₦6,400',
+    this.caption,
+    this.semanticsLabel,
+  });
+
+  final String brand;
+  final String amount;
+
+  /// Small line under the balance, e.g. pending requests.
+  final String? caption;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -3782,7 +3796,7 @@ class _BalanceCard extends StatelessWidget {
                 top: 18,
                 right: 20,
                 child: Text(
-                  'Along',
+                  brand,
                   maxLines: 1,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
@@ -3794,14 +3808,36 @@ class _BalanceCard extends StatelessWidget {
                 left: 20,
                 right: 20,
                 bottom: 16,
-                child: Text(
-                  '₦6,400',
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: AlongType.display(palette).copyWith(
-                    color: paper,
-                    fontFeatures: const [FontFeature.tabularFigures()],
+                child: Semantics(
+                  label: semanticsLabel,
+                  excludeSemantics: semanticsLabel != null,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          amount,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AlongType.display(palette).copyWith(
+                            color: paper,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ),
+                      if (caption != null)
+                        Text(
+                          caption!,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: AlongType.caption(palette)
+                              .copyWith(color: paper.withValues(alpha: 0.72)),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -3813,54 +3849,88 @@ class _BalanceCard extends StatelessWidget {
   }
 }
 
-class _WalletActions extends StatelessWidget {
-  const _WalletActions();
+/// One icon-over-label action under the wallet card.
+class AlongWalletAction {
+  const AlongWalletAction({
+    required this.icon,
+    required this.label,
+    this.onTap,
+    this.key,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  final Key? key;
+}
+
+/// Row of wallet actions (Top up · Send · Pass …), equal widths.
+class AlongWalletActions extends StatelessWidget {
+  const AlongWalletActions({
+    super.key,
+    this.actions = const [
+      AlongWalletAction(icon: AlongIcons.plus, label: 'Top up'),
+      AlongWalletAction(icon: AlongIcons.arrowRight, label: 'Send'),
+      AlongWalletAction(icon: AlongIcons.receipt, label: 'Pass'),
+    ],
+  });
+
+  final List<AlongWalletAction> actions;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(
-          child: _WalletAction(icon: AlongIcons.plus, label: 'Top up'),
-        ),
-        Expanded(
-          child: _WalletAction(icon: AlongIcons.arrowRight, label: 'Send'),
-        ),
-        Expanded(
-          child: _WalletAction(icon: AlongIcons.receipt, label: 'Pass'),
-        ),
+        for (final a in actions)
+          Expanded(
+            child: _WalletAction(
+              key: a.key,
+              icon: a.icon,
+              label: a.label,
+              onTap: a.onTap ?? _noop,
+            ),
+          ),
       ],
     );
   }
 }
 
 class _WalletAction extends StatelessWidget {
-  const _WalletAction({required this.icon, required this.label});
+  const _WalletAction({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.05;
-    return InkWell(
-      onTap: _noop,
-      customBorder: AlongCraft.border(AlongRadius.control.x),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Column(
-          children: [
-            AlongIcon(icon, size: 24, color: palette.ink),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              maxLines: roomy ? 2 : 1,
-              softWrap: roomy,
-              textAlign: TextAlign.center,
-              style: AlongType.label(palette),
-            ),
-          ],
+    return Semantics(
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        customBorder: AlongCraft.border(AlongRadius.control.x),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            children: [
+              AlongIcon(icon, size: 24, color: palette.ink),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                maxLines: roomy ? 2 : 1,
+                softWrap: roomy,
+                textAlign: TextAlign.center,
+                style: AlongType.label(palette),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -3875,40 +3945,40 @@ class _ActivityCard extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: const [
-        _TxnGroup(label: 'Today', icon: AlongIcons.schedule),
-        _TxnRow(
+        AlongTxnGroup(label: 'Today', icon: AlongIcons.schedule),
+        AlongTxnRow(
           icon: AlongIcons.navigate,
           title: 'Nyanya',
           detail: 'Seat hold',
           value: '−₦1,200',
         ),
-        _TxnRow(
+        AlongTxnRow(
           icon: AlongIcons.plus,
           title: 'Top up',
           detail: 'Transfer',
           value: '+₦5,000',
         ),
-        _TxnGroup(label: 'Yesterday', icon: AlongIcons.path),
-        _TxnRow(
+        AlongTxnGroup(label: 'Yesterday', icon: AlongIcons.path),
+        AlongTxnRow(
           icon: AlongIcons.navigate,
           title: 'Berger',
           detail: 'Seat hold',
           value: '−₦900',
         ),
-        _TxnGroup(label: 'This week', icon: AlongIcons.receipt),
-        _TxnRow(
+        AlongTxnGroup(label: 'This week', icon: AlongIcons.receipt),
+        AlongTxnRow(
           icon: AlongIcons.navigate,
           title: 'Jabi',
           detail: 'Monday',
           value: '−₦1,600',
         ),
-        _TxnRow(
+        AlongTxnRow(
           icon: AlongIcons.wallet,
           title: 'Cash out',
           detail: 'Sunday · GTBank',
           value: '−₦8,000',
         ),
-        _TxnRow(
+        AlongTxnRow(
           icon: AlongIcons.receipt,
           title: 'Along Pass',
           detail: 'This month',
@@ -3919,8 +3989,9 @@ class _ActivityCard extends StatelessWidget {
   }
 }
 
-class _TxnGroup extends StatelessWidget {
-  const _TxnGroup({required this.label, required this.icon});
+/// Date header in a wallet activity list: icon, label, hairline.
+class AlongTxnGroup extends StatelessWidget {
+  const AlongTxnGroup({super.key, required this.label, required this.icon});
 
   final String label;
   final IconData icon;
@@ -3954,8 +4025,10 @@ class _TxnGroup extends StatelessWidget {
   }
 }
 
-class _TxnRow extends StatelessWidget {
-  const _TxnRow({
+/// One wallet activity line: icon disc, title over detail, signed amount.
+class AlongTxnRow extends StatelessWidget {
+  const AlongTxnRow({
+    super.key,
     required this.icon,
     required this.title,
     required this.detail,

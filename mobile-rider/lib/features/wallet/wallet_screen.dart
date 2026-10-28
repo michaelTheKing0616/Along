@@ -6,13 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_rider/di/providers.dart' show alongSupabaseProvider;
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
-/// Along credit. There is no wallet API yet, so the app overrides this with a
-/// real repository once it ships; until then the screen shows its error state.
+/// Along credit over the `get_wallet` / `wallet_*` RPCs. Tests override it.
 final walletRepositoryProvider = Provider<WalletRepository>(
-  (ref) => throw UnimplementedError('Wallet API not wired yet'),
+  (ref) => SupabaseWalletRepository(ref.watch(alongSupabaseProvider)),
 );
+
+/// A fresh client key for one intended money movement.
+String walletKey(String kind) =>
+    '$kind:${DateTime.now().microsecondsSinceEpoch}:${Random().nextInt(1 << 32)}';
+
+/// What to tell the rider when a wallet write fails.
+String walletFailureText(AppLocalizations l10n, Object error) =>
+    error is WalletException && error.failure == WalletFailure.insufficientFunds
+    ? l10n.walletInsufficient
+    : l10n.walletActionFailed;
 
 final walletSummaryProvider = FutureProvider.autoDispose<WalletSummary>(
   (ref) => ref.watch(walletRepositoryProvider).fetch(),
@@ -21,14 +31,15 @@ final walletSummaryProvider = FutureProvider.autoDispose<WalletSummary>(
 /// Clock for history labels; tests pin it.
 final walletNowProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
-class WalletScreen extends ConsumerStatefulWidget {
-  const WalletScreen({super.key});
+/// Top up Along credit with preset or custom amounts.
+class WalletTopUpScreen extends ConsumerStatefulWidget {
+  const WalletTopUpScreen({super.key});
 
   @override
-  ConsumerState<WalletScreen> createState() => _WalletScreenState();
+  ConsumerState<WalletTopUpScreen> createState() => _WalletTopUpScreenState();
 }
 
-class _WalletScreenState extends ConsumerState<WalletScreen> {
+class _WalletTopUpScreenState extends ConsumerState<WalletTopUpScreen> {
   bool _busy = false;
 
   /// One key per intended top up, so a double tap or retry credits once.
@@ -37,8 +48,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
   Future<void> _add(int amount) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    _pendingKey ??=
-        'topup:${DateTime.now().microsecondsSinceEpoch}:${Random().nextInt(1 << 32)}';
+    _pendingKey ??= walletKey('topup');
     setState(() => _busy = true);
     try {
       await ref
@@ -65,26 +75,13 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     if (amount != null && mounted) await _add(amount);
   }
 
-  String _when(AppLocalizations l10n, DateTime at, DateTime now) {
-    final day = DateTime(at.year, at.month, at.day);
-    final today = DateTime(now.year, now.month, now.day);
-    final diff = today.difference(day).inDays;
-    if (diff == 0) return l10n.walletToday;
-    if (diff == 1) return l10n.walletYesterday;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final tag = DateFormat.localeExists(locale) ? locale : 'en';
-    return diff < 7
-        ? DateFormat.EEEE(tag).format(at)
-        : DateFormat.MMMd(tag).format(at);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final summary = ref.watch(walletSummaryProvider);
     final now = ref.watch(walletNowProvider)();
     final strings = AlongTopUpStrings(
-      title: l10n.walletTitle,
+      title: l10n.walletActionTopUp,
       subtitle: l10n.walletSubtitle,
       balance: l10n.walletBalance,
       balanceNote: l10n.walletBalanceNote,
@@ -96,25 +93,24 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
       add: l10n.walletAdd,
     );
     return summary.when(
-      loading: () => const _WalletLoading(),
+      loading: () => const WalletLoadingView(),
       error: (_, _) =>
-          _WalletError(onRetry: () => ref.invalidate(walletSummaryProvider)),
+          WalletErrorView(onRetry: () => ref.invalidate(walletSummaryProvider)),
       data: (data) => AlongFlowTopUp(
         key: const Key('wallet_topup'),
         balance: data.balance,
         strings: strings,
         busy: _busy,
+        onBack: Navigator.of(context).canPop()
+            ? () => Navigator.of(context).maybePop()
+            : null,
         onAdd: _add,
         onAddCustom: _addCustom,
         history: [
           for (final e in data.entries)
             AlongCreditEntry(
-              switch (e.kind) {
-                WalletEntryKind.topUp => l10n.walletTopUp,
-                WalletEntryKind.fare => l10n.walletFare,
-                WalletEntryKind.refund => l10n.walletRefund,
-              },
-              _when(l10n, e.at, now),
+              walletEntryTitle(l10n, e),
+              walletWhen(context, l10n, e.at, now),
               e.amount,
             ),
         ],
@@ -123,8 +119,8 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
   }
 }
 
-class _WalletLoading extends StatelessWidget {
-  const _WalletLoading();
+class WalletLoadingView extends StatelessWidget {
+  const WalletLoadingView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -150,8 +146,8 @@ class _WalletLoading extends StatelessWidget {
   }
 }
 
-class _WalletError extends StatelessWidget {
-  const _WalletError({required this.onRetry});
+class WalletErrorView extends StatelessWidget {
+  const WalletErrorView({super.key, required this.onRetry});
 
   final VoidCallback onRetry;
 
@@ -190,6 +186,58 @@ class _WalletError extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Day label for a history line: Today, Yesterday, weekday, or date.
+String walletWhen(
+  BuildContext context,
+  AppLocalizations l10n,
+  DateTime at,
+  DateTime now,
+) {
+  final day = DateTime(at.year, at.month, at.day);
+  final today = DateTime(now.year, now.month, now.day);
+  final diff = today.difference(day).inDays;
+  if (diff == 0) return l10n.walletToday;
+  if (diff == 1) return l10n.walletYesterday;
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  final tag = DateFormat.localeExists(locale) ? locale : 'en';
+  return diff < 7
+      ? DateFormat.EEEE(tag).format(at)
+      : DateFormat.MMMd(tag).format(at);
+}
+
+/// Second line of a history row: clock time today and yesterday (the group
+/// header already names the day), otherwise the day label.
+String walletDetail(
+  BuildContext context,
+  AppLocalizations l10n,
+  DateTime at,
+  DateTime now,
+) {
+  final day = DateTime(at.year, at.month, at.day);
+  final diff = DateTime(now.year, now.month, now.day).difference(day).inDays;
+  if (diff > 1) return walletWhen(context, l10n, at, now);
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  final tag = DateFormat.localeExists(locale) ? locale : 'en';
+  return DateFormat.Hm(tag).format(at);
+}
+
+/// Title for a history line, naming the other rider on sends and splits.
+String walletEntryTitle(AppLocalizations l10n, WalletEntry e) {
+  final who = e.counterparty;
+  return switch (e.kind) {
+    WalletEntryKind.topUp => l10n.walletTopUp,
+    WalletEntryKind.fare => l10n.walletFare,
+    WalletEntryKind.refund => l10n.walletRefund,
+    WalletEntryKind.pass => l10n.walletPassEntry,
+    WalletEntryKind.send when who != null =>
+      e.amount < 0 ? l10n.walletSentTo(who) : l10n.walletReceivedFrom(who),
+    WalletEntryKind.send =>
+      e.amount < 0 ? l10n.walletSent : l10n.walletReceived,
+    WalletEntryKind.split =>
+      e.amount < 0 ? l10n.walletSplitPaid : l10n.walletSplitReceived,
+  };
 }
 
 class _CustomAmountDialog extends StatefulWidget {
@@ -253,6 +301,108 @@ class _CustomAmountDialogState extends State<_CustomAmountDialog> {
           child: Text(l10n.walletAddCredit),
         ),
       ],
+    );
+  }
+}
+
+/// Round initials disc for a rider with no photo.
+class WalletInitials extends StatelessWidget {
+  const WalletInitials({
+    super.key,
+    required this.name,
+    this.size = 40,
+    this.highlight = false,
+    this.label,
+  });
+
+  final String name;
+
+  /// Shown instead of initials, e.g. a seat number.
+  final String? label;
+  final double size;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final parts = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+    final initials = label != null
+        ? label!
+        : parts.isEmpty
+        ? '·'
+        : parts.take(2).map((w) => w.characters.first.toUpperCase()).join();
+    return ExcludeSemantics(
+      child: Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: highlight ? p.accent : p.recessed,
+          shape: BoxShape.circle,
+          border: AlongElevation.hairline(p.ink),
+        ),
+        child: Text(
+          initials,
+          maxLines: 1,
+          style: AlongType.body(p).copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: size * 0.36,
+            color: highlight ? p.accentInk : p.ink,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Page frame shared by the wallet sub-screens: back, title, subtitle, body,
+/// and a pinned footer action.
+class WalletPage extends StatelessWidget {
+  const WalletPage({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.child,
+    required this.footer,
+  });
+
+  final String title;
+  final String subtitle;
+  final Widget child;
+  final Widget footer;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Scaffold(
+      backgroundColor: p.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (Navigator.of(context).canPop())
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Transform.translate(
+                    offset: const Offset(-12, 0),
+                    child: BackButton(color: p.ink),
+                  ),
+                )
+              else
+                const SizedBox(height: 16),
+              Text(title, style: AlongType.display(p)),
+              const SizedBox(height: 4),
+              Text(subtitle, style: AlongType.bodyMuted(p)),
+              const SizedBox(height: 20),
+              Expanded(child: SingleChildScrollView(child: child)),
+              const SizedBox(height: 12),
+              footer,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1723,4 +1723,218 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walletTopUpFailed => 'Nothing was added. Try again.';
+
+  @override
+  String get walletActionTopUp => 'Top up';
+
+  @override
+  String get walletActionSend => 'Send';
+
+  @override
+  String get walletActionPass => 'Pass';
+
+  @override
+  String get walletActionSplit => 'Split';
+
+  @override
+  String get walletActivity => 'Activity';
+
+  @override
+  String get walletEarlier => 'Earlier';
+
+  @override
+  String get walletActivityEmpty =>
+      'No activity yet. Top up to ride without cash.';
+
+  @override
+  String walletBalanceSemantics(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String walletSentTo(String name) {
+    return 'To $name';
+  }
+
+  @override
+  String walletReceivedFrom(String name) {
+    return 'From $name';
+  }
+
+  @override
+  String get walletSent => 'Sent';
+
+  @override
+  String get walletReceived => 'Received';
+
+  @override
+  String get walletPassEntry => 'Along Pass';
+
+  @override
+  String get walletSplitPaid => 'Split paid';
+
+  @override
+  String get walletSplitReceived => 'Split received';
+
+  @override
+  String walletOwedTitle(String name, String amount) {
+    return '$name asked for $amount';
+  }
+
+  @override
+  String get walletOwedBody => 'Your share of a shared ride';
+
+  @override
+  String get walletOwedPay => 'Pay';
+
+  @override
+  String get walletOwedDecline => 'Decline';
+
+  @override
+  String walletOwedPaidSnack(String amount) {
+    return 'Paid $amount';
+  }
+
+  @override
+  String get walletOwedDeclinedSnack => 'Request declined';
+
+  @override
+  String get walletInsufficient => 'Not enough credit. Top up first.';
+
+  @override
+  String get walletActionFailed =>
+      'Couldn\'t finish. Try again — you won\'t be charged twice.';
+
+  @override
+  String get walletSendTitle => 'Send credit';
+
+  @override
+  String get walletSendSubtitle => 'To another Along rider';
+
+  @override
+  String get walletSendPhone => 'Phone number';
+
+  @override
+  String get walletSendPhoneHint => '0803 123 4567';
+
+  @override
+  String get walletSendPhoneInvalid => 'Enter a Nigerian mobile number';
+
+  @override
+  String get walletSendAmount => 'Amount';
+
+  @override
+  String get walletSendTooSmall => 'Send at least ₦50';
+
+  @override
+  String get walletSendTooLarge => 'Send at most ₦50,000';
+
+  @override
+  String get walletSendOverBalance => 'More than your balance';
+
+  @override
+  String walletSendCta(String amount) {
+    return 'Send $amount';
+  }
+
+  @override
+  String get walletSendCtaEmpty => 'Send';
+
+  @override
+  String get walletSendNotFound => 'No Along rider has that number';
+
+  @override
+  String walletSentSnack(String amount) {
+    return 'Sent $amount';
+  }
+
+  @override
+  String walletAvailable(String amount) {
+    return 'Available $amount';
+  }
+
+  @override
+  String get walletPassTitle => 'Along Pass';
+
+  @override
+  String get walletPassSubtitle => 'This month, paid from credit';
+
+  @override
+  String walletPassPrice(String amount) {
+    return '$amount a month';
+  }
+
+  @override
+  String get walletPassBody =>
+      'One payment from your wallet. No card, no cash at the door.';
+
+  @override
+  String walletPassCta(String amount) {
+    return 'Buy pass · $amount';
+  }
+
+  @override
+  String get walletPassBought => 'Pass bought for this month';
+
+  @override
+  String walletPassShort(String amount) {
+    return 'Top up $amount more to buy';
+  }
+
+  @override
+  String get walletSplitTitle => 'Split a fare';
+
+  @override
+  String get walletSplitSubtitle => 'Ask co-riders for their share';
+
+  @override
+  String get walletSplitFare => 'Fare';
+
+  @override
+  String get walletSplitYou => 'You';
+
+  @override
+  String walletSplitCoRider(int n) {
+    return 'Co-rider $n';
+  }
+
+  @override
+  String get walletSplitAdd => 'Add co-rider';
+
+  @override
+  String get walletSplitRemove => 'Remove';
+
+  @override
+  String walletSplitEach(String amount) {
+    return '$amount each';
+  }
+
+  @override
+  String walletSplitCta(String amount) {
+    return 'Request $amount each';
+  }
+
+  @override
+  String get walletSplitCtaEmpty => 'Request share';
+
+  @override
+  String get walletSplitFareInvalid => 'Enter the fare, at least ₦100';
+
+  @override
+  String walletSplitSentSnack(int count) {
+    return 'Asked $count co-riders';
+  }
+
+  @override
+  String get walletSplitNotFound => 'One of those numbers isn\'t on Along yet';
+
+  @override
+  String get walletSplitNote =>
+      'They pay from their wallet. You keep paying the driver as usual.';
+
+  @override
+  String get accountWallet => 'Wallet';
+
+  @override
+  String get accountWalletHint => 'Top up, send, pass, split fares';
 }

@@ -514,6 +514,7 @@ class AlongFlowTopUp extends StatefulWidget {
     this.onAdd,
     this.onAddCustom,
     this.busy = false,
+    this.onBack,
   });
 
   final int balance;
@@ -531,6 +532,9 @@ class AlongFlowTopUp extends StatefulWidget {
 
   /// A top up is in flight: the button waits, nothing else is blocked.
   final bool busy;
+
+  /// Back control above the title, for when the screen is pushed.
+  final VoidCallback? onBack;
 
   @override
   State<AlongFlowTopUp> createState() => _AlongFlowTopUpState();
@@ -551,6 +555,7 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
     final palette = AlongPalette.of(context);
     final t = widget.strings;
     return _Page(
+      onBack: widget.onBack,
       title: t.title,
       subtitle: t.subtitle,
       gutter: 16,
@@ -801,12 +806,16 @@ class _Page extends StatelessWidget {
     required this.children,
     this.footer,
     this.gutter = 24,
+    this.onBack,
   });
 
   final String title;
   final String subtitle;
   final List<Widget> children;
   final Widget? footer;
+
+  /// Shows a back control above the title when the page is pushed.
+  final VoidCallback? onBack;
 
   /// Screen inset. Wallet and payout use 16 so amounts share the button margin.
   final double gutter;
@@ -827,6 +836,17 @@ class _Page extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (onBack != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Transform.translate(
+                          offset: const Offset(-12, -8),
+                          child: BackButton(
+                            color: palette.ink,
+                            onPressed: onBack,
+                          ),
+                        ),
+                      ),
                     Text(
                       title,
                       maxLines: roomy ? 2 : 1,
