@@ -90,6 +90,7 @@ create policy wallet_splits_select_party
   using (requester_id = auth.uid() or payer_id = auth.uid() or is_admin());
 
 revoke insert, update, delete, truncate on wallet_accounts, wallet_transactions, wallet_entries, wallet_splits from anon, authenticated;
+grant select on wallet_accounts, wallet_transactions, wallet_entries, wallet_splits to authenticated;
 
 -- Append-only ledger.
 create or replace function private.wallet_block_mutation()
