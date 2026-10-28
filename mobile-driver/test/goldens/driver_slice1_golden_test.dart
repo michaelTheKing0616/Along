@@ -1,3 +1,4 @@
+import 'package:mobile_driver/features/connection/connection_banner_host.dart';
 import 'package:mobile_driver/features/day/presentation/build_my_day_screen.dart';
 
 import 'dart:convert';
@@ -122,10 +123,15 @@ class _NoLocation implements LocationStreamSource {
   Future<bool> ensurePermission() async => true;
 }
 
-ProviderContainer _container(FakeAlongSupabase supabase, AlongDatabase db) {
+ProviderContainer _container(
+  FakeAlongSupabase supabase,
+  AlongDatabase db, {
+  List<Override> extra = const [],
+}) {
   supabase.clock = () => DateTime.utc(2026, 9, 6, 19);
   return ProviderContainer(
     overrides: [
+      ...extra,
       ...buildProviderOverrides(
         config: _config,
         supabase: supabase,
@@ -496,6 +502,56 @@ void main() {
         await _shoot(tester, '${screen}_$name');
         await tester.pumpWidget(const SizedBox());
         await tester.pump(const Duration(seconds: 1));
+      });
+    }
+  }
+  // Offline cycle over a real screen: the banner never blocks the seat map.
+  for (final (name, brightness, scale) in _variants) {
+    for (final phase in [
+      ConnectionPhase.offline,
+      ConnectionPhase.reconnecting,
+      ConnectionPhase.restored,
+    ]) {
+      testWidgets('connection ${phase.name} $name', (tester) async {
+        await tester.binding.setSurfaceSize(const Size(360, 800));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final supabase = FakeAlongSupabase();
+        addTearDown(supabase.dispose);
+        supabase.seatBoardResponse = FakeAlongSupabase.sampleSeatBoard();
+        final controller = connectionControllerIn(phase);
+        final scoped = _container(
+          supabase,
+          AlongDatabase.memory(),
+          extra: [
+            connectionControllerProvider.overrideWith((ref) {
+              controller.start();
+              ref.onDispose(controller.dispose);
+              return controller;
+            }),
+          ],
+        );
+        addTearDown(scoped.dispose);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: scoped,
+            child: _app(
+              brightness,
+              scale,
+              const ConnectionBannerHost(child: SeatBoardScreen()),
+            ),
+          ),
+        );
+        for (var i = 0; i < 4; i++) {
+          await tester.pump(const Duration(milliseconds: 150));
+        }
+        expect(tester.takeException(), isNull);
+        expect(
+          find.byKey(Key('connection_banner_${phase.name}')),
+          findsOneWidget,
+        );
+        await _shoot(tester, 'connection_${phase.name}_$name');
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(seconds: 3));
       });
     }
   }

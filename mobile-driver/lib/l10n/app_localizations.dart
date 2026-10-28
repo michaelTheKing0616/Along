@@ -3133,6 +3133,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap a seat to mark it taken or free'**
   String get seatEmptyStep3Body;
+
+  /// No description provided for @connOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · you can keep going'**
+  String get connOffline;
+
+  /// No description provided for @connOfflineQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {count} saved to send'**
+  String connOfflineQueued(int count);
+
+  /// No description provided for @connReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting'**
+  String get connReconnecting;
+
+  /// No description provided for @connSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting · sending {count}'**
+  String connSending(int count);
+
+  /// No description provided for @connRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online'**
+  String get connRestored;
+
+  /// No description provided for @connRestoredSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online · {count} sent'**
+  String connRestoredSent(int count);
+
+  /// No description provided for @connRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get connRetry;
 }
 
 class _AppLocalizationsDelegate

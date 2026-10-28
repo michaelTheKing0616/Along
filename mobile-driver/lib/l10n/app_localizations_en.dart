@@ -1717,4 +1717,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seatEmptyStep3Body => 'Tap a seat to mark it taken or free';
+
+  @override
+  String get connOffline => 'Offline · you can keep going';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Offline · $count saved to send';
+  }
+
+  @override
+  String get connReconnecting => 'Reconnecting';
+
+  @override
+  String connSending(int count) {
+    return 'Reconnecting · sending $count';
+  }
+
+  @override
+  String get connRestored => 'Back online';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Back online · $count sent';
+  }
+
+  @override
+  String get connRetry => 'Retry';
 }

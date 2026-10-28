@@ -228,7 +228,7 @@ class _DestinationSearchPanelState
         const SizedBox(height: AlongSpace.s8),
         widget.extra!,
       ],
-      if (state.isOffline)
+      if (state.isOffline && !searching)
         Padding(
           padding: const EdgeInsets.only(top: AlongSpace.s12),
           child: Text(
@@ -236,6 +236,34 @@ class _DestinationSearchPanelState
             style: AlongType.caption(palette),
           ),
         ),
+      if (searching && state.searchFailed) ...[
+        const SizedBox(height: AlongSpace.s16),
+        AlongNoticeCard(
+          key: const Key('search_failed_card'),
+          title: l10n.searchPausedTitle,
+          detail: state.query.trim(),
+          body: l10n.searchPausedBody,
+          actionLabel: l10n.connRetry,
+          onAction: ref.read(searchControllerProvider.notifier).retrySearch,
+        ),
+      ] else if (searching &&
+          !state.isSearching &&
+          state.results.isEmpty &&
+          state.query.trim().length >= 2) ...[
+        const SizedBox(height: AlongSpace.s16),
+        AlongNoticeCard(
+          key: const Key('search_empty_card'),
+          title: l10n.searchEmptyTitle,
+          detail: state.query.trim(),
+          body: state.isOffline
+              ? l10n.searchEmptyOfflineBody
+              : l10n.searchEmptyBody,
+          actionLabel: widget.onChooseOnMap == null
+              ? null
+              : l10n.searchChooseOnMapDetail,
+          onAction: widget.onChooseOnMap,
+        ),
+      ],
       if (state.isStaleResults) ...[
         const SizedBox(height: AlongSpace.s8),
         StaleBadge(label: l10n.cachedOptionsStaleBadge),

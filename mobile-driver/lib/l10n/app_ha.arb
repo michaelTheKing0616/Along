@@ -124,5 +124,12 @@
   "seatEmptyStep2": "Zaɓi hanya",
   "seatEmptyStep2Body": "Fasinjoji a kanta suna ganin kujerunka",
   "seatEmptyStep3": "Cika kujeru yayin tafiya",
-  "seatEmptyStep3Body": "Taɓa kujera don alamta ta"
+  "seatEmptyStep3Body": "Taɓa kujera don alamta ta",
+  "connOffline": "Babu intanet · za ka iya ci gaba",
+  "connOfflineQueued": "Babu intanet · {count} an ajiye don aikawa",
+  "connReconnecting": "Ana sake haɗawa",
+  "connSending": "Ana sake haɗawa · ana aika {count}",
+  "connRestored": "An dawo kan layi",
+  "connRestoredSent": "An dawo kan layi · an aika {count}",
+  "connRetry": "Sake gwadawa"
 }

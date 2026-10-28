@@ -1718,4 +1718,31 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get seatEmptyStep3Body => 'Tẹ ìjókòó láti sàmì sí i';
+
+  @override
+  String get connOffline => 'Kò sí íntánẹ́ẹ̀tì · o lè máa bá a lọ';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Kò sí íntánẹ́ẹ̀tì · $count ti fipamọ́ láti fi ránṣẹ́';
+  }
+
+  @override
+  String get connReconnecting => 'Ń tún so pọ̀';
+
+  @override
+  String connSending(int count) {
+    return 'Ń tún so pọ̀ · ń fi $count ránṣẹ́';
+  }
+
+  @override
+  String get connRestored => 'Ti padà sórí íntánẹ́ẹ̀tì';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Ti padà · a ti fi $count ránṣẹ́';
+  }
+
+  @override
+  String get connRetry => 'Tún gbìyànjú';
 }

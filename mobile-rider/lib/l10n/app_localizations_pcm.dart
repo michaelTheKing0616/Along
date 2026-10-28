@@ -138,7 +138,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline — search uses cached places';
+  String get searchOfflineHint => 'Offline · searching saved places';
 
   @override
   String get cachedOptionsStaleBadge => 'Cached · may be outdated';
@@ -1644,4 +1644,49 @@ class AppLocalizationsPcm extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'The 8-character code dey under the QR for driver sticker, or tell am make e open My QR.';
+
+  @override
+  String get connOffline => 'No network · you fit still continue';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'No network · $count dey wait to send';
+  }
+
+  @override
+  String get connReconnecting => 'Dey connect again';
+
+  @override
+  String connSending(int count) {
+    return 'Dey connect again · dey send $count';
+  }
+
+  @override
+  String get connRestored => 'Network don come back';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'Network don come back · $count don send';
+  }
+
+  @override
+  String get connRetry => 'Try again';
+
+  @override
+  String get searchPausedTitle => 'Search don pause';
+
+  @override
+  String get searchPausedBody =>
+      'Network cut. Saved places and map still dey work.';
+
+  @override
+  String get searchEmptyTitle => 'We no see any place';
+
+  @override
+  String get searchEmptyBody =>
+      'Try landmark, market or bus stop wey dey near.';
+
+  @override
+  String get searchEmptyOfflineBody =>
+      'You no get network, na only saved places dey show. Drop pin instead.';
 }

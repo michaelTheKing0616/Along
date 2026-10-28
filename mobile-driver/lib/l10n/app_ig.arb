@@ -124,5 +124,12 @@
   "seatEmptyStep2": "Họrọ ụzọ",
   "seatEmptyStep2Body": "Ndị njem nọ na ya ga-ahụ oche gị",
   "seatEmptyStep3": "Jupụta oche ka ị na-aga",
-  "seatEmptyStep3Body": "Pịa oche iji kaa ya"
+  "seatEmptyStep3Body": "Pịa oche iji kaa ya",
+  "connOffline": "Enweghị ịntanetị · ị nwere ike ịga n'ihu",
+  "connOfflineQueued": "Enweghị ịntanetị · {count} echekwara iziga",
+  "connReconnecting": "Na-ejikọ ọzọ",
+  "connSending": "Na-ejikọ ọzọ · na-eziga {count}",
+  "connRestored": "Ịlaghachila n'ịntanetị",
+  "connRestoredSent": "Ịlaghachila · ezigala {count}",
+  "connRetry": "Nwaa ọzọ"
 }

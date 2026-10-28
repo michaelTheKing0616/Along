@@ -1101,5 +1101,33 @@
   "seatEmptyStep2": "Choose a corridor",
   "seatEmptyStep2Body": "Riders on it can see your free seats",
   "seatEmptyStep3": "Fill seats as you go",
-  "seatEmptyStep3Body": "Tap a seat to mark it taken or free"
+  "seatEmptyStep3Body": "Tap a seat to mark it taken or free",
+  "connOffline": "Offline · you can keep going",
+  "connOfflineQueued": "Offline · {count} saved to send",
+  "@connOfflineQueued": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connReconnecting": "Reconnecting",
+  "connSending": "Reconnecting · sending {count}",
+  "@connSending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connRestored": "Back online",
+  "connRestoredSent": "Back online · {count} sent",
+  "@connRestoredSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connRetry": "Retry"
 }

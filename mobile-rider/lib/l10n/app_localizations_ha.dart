@@ -138,7 +138,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline — search uses cached places';
+  String get searchOfflineHint => 'Offline · searching saved places';
 
   @override
   String get cachedOptionsStaleBadge => 'Cached · may be outdated';
@@ -1643,4 +1643,49 @@ class AppLocalizationsHa extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'An buga lambar haruffa 8 a ƙarƙashin QR a kan sitikar direba, ko ka ce ya buɗe My QR.';
+
+  @override
+  String get connOffline => 'Babu intanet · za ka iya ci gaba';
+
+  @override
+  String connOfflineQueued(int count) {
+    return 'Babu intanet · $count an ajiye don aikawa';
+  }
+
+  @override
+  String get connReconnecting => 'Ana sake haɗawa';
+
+  @override
+  String connSending(int count) {
+    return 'Ana sake haɗawa · ana aika $count';
+  }
+
+  @override
+  String get connRestored => 'An dawo kan layi';
+
+  @override
+  String connRestoredSent(int count) {
+    return 'An dawo kan layi · an aika $count';
+  }
+
+  @override
+  String get connRetry => 'Sake gwadawa';
+
+  @override
+  String get searchPausedTitle => 'An dakatar da bincike';
+
+  @override
+  String get searchPausedBody =>
+      'Intanet ta katse. Wuraren da aka ajiye da taswira suna aiki.';
+
+  @override
+  String get searchEmptyTitle => 'Ba a sami wurare ba';
+
+  @override
+  String get searchEmptyBody =>
+      'Gwada wani sanannen wuri, kasuwa ko tashar mota kusa.';
+
+  @override
+  String get searchEmptyOfflineBody =>
+      'Ba ka kan layi, wuraren da aka ajiye kawai ke nunawa. Sa alama a taswira.';
 }

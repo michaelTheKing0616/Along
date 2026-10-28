@@ -334,7 +334,7 @@ abstract class AppLocalizations {
   /// R-06 offline state
   ///
   /// In en, this message translates to:
-  /// **'Offline — search uses cached places'**
+  /// **'Offline · searching saved places'**
   String get searchOfflineHint;
 
   /// Offline/stale plan or search results badge (doc 07 §4)
@@ -2932,6 +2932,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.'**
   String get scanCodeWhereBody;
+
+  /// No description provided for @connOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · you can keep going'**
+  String get connOffline;
+
+  /// No description provided for @connOfflineQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {count} saved to send'**
+  String connOfflineQueued(int count);
+
+  /// No description provided for @connReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting'**
+  String get connReconnecting;
+
+  /// No description provided for @connSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting · sending {count}'**
+  String connSending(int count);
+
+  /// No description provided for @connRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online'**
+  String get connRestored;
+
+  /// No description provided for @connRestoredSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online · {count} sent'**
+  String connRestoredSent(int count);
+
+  /// No description provided for @connRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get connRetry;
+
+  /// No description provided for @searchPausedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search paused'**
+  String get searchPausedTitle;
+
+  /// No description provided for @searchPausedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The network dropped. Saved places and the map still work.'**
+  String get searchPausedBody;
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No places found'**
+  String get searchEmptyTitle;
+
+  /// No description provided for @searchEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a nearby landmark, market or bus stop.'**
+  String get searchEmptyBody;
+
+  /// No description provided for @searchEmptyOfflineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline, so only saved places show. Drop a pin instead.'**
+  String get searchEmptyOfflineBody;
 }
 
 class _AppLocalizationsDelegate
