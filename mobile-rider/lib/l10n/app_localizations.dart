@@ -2932,6 +2932,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The 8-character code is printed under the QR on the driver\'s sticker, or ask them to open My QR.'**
   String get scanCodeWhereBody;
+
+  /// No description provided for @walletTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get walletTitle;
+
+  /// No description provided for @walletSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Along credit'**
+  String get walletSubtitle;
+
+  /// No description provided for @walletBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get walletBalance;
+
+  /// No description provided for @walletBalanceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in Along'**
+  String get walletBalanceNote;
+
+  /// No description provided for @walletAddCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Add credit'**
+  String get walletAddCredit;
+
+  /// No description provided for @walletCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get walletCustom;
+
+  /// No description provided for @walletHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get walletHistory;
+
+  /// No description provided for @walletHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No credit yet. Top ups, fares and refunds show here.'**
+  String get walletHistoryEmpty;
+
+  /// No description provided for @walletAddCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a custom amount'**
+  String get walletAddCustom;
+
+  /// No description provided for @walletAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {amount}'**
+  String walletAdd(String amount);
+
+  /// No description provided for @walletTopUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up'**
+  String get walletTopUp;
+
+  /// No description provided for @walletFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get walletFare;
+
+  /// No description provided for @walletRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get walletRefund;
+
+  /// No description provided for @walletToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get walletToday;
+
+  /// No description provided for @walletYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get walletYesterday;
+
+  /// No description provided for @walletUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet didn\'t load'**
+  String get walletUnavailable;
+
+  /// No description provided for @walletUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit is safe. Check your connection and try again.'**
+  String get walletUnavailableBody;
+
+  /// No description provided for @walletRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get walletRetry;
+
+  /// No description provided for @walletCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How much?'**
+  String get walletCustomTitle;
+
+  /// No description provided for @walletCustomHint.
+  ///
+  /// In en, this message translates to:
+  /// **'₦100 to ₦50,000'**
+  String get walletCustomHint;
+
+  /// No description provided for @walletCustomTooSmall.
+  ///
+  /// In en, this message translates to:
+  /// **'At least ₦100'**
+  String get walletCustomTooSmall;
+
+  /// No description provided for @walletCustomTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'At most ₦50,000'**
+  String get walletCustomTooLarge;
+
+  /// No description provided for @walletCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get walletCancel;
+
+  /// No description provided for @walletAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} added'**
+  String walletAdded(String amount);
+
+  /// No description provided for @walletTopUpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was added. Try again.'**
+  String get walletTopUpFailed;
 }
 
 class _AppLocalizationsDelegate

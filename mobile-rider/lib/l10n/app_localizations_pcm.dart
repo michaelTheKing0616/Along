@@ -1644,4 +1644,85 @@ class AppLocalizationsPcm extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'The 8-character code dey under the QR for driver sticker, or tell am make e open My QR.';
+
+  @override
+  String get walletTitle => 'Wallet';
+
+  @override
+  String get walletSubtitle => 'Along credit';
+
+  @override
+  String get walletBalance => 'Balance';
+
+  @override
+  String get walletBalanceNote => 'E dey stay inside Along';
+
+  @override
+  String get walletAddCredit => 'Add credit';
+
+  @override
+  String get walletCustom => 'Your own';
+
+  @override
+  String get walletHistory => 'History';
+
+  @override
+  String get walletHistoryEmpty =>
+      'No credit yet. Top up, fare and refund go show here.';
+
+  @override
+  String get walletAddCustom => 'Add the amount wey you want';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Add $amount';
+  }
+
+  @override
+  String get walletTopUp => 'Top up';
+
+  @override
+  String get walletFare => 'Fare';
+
+  @override
+  String get walletRefund => 'Refund';
+
+  @override
+  String get walletToday => 'Today';
+
+  @override
+  String get walletYesterday => 'Yesterday';
+
+  @override
+  String get walletUnavailable => 'Wallet no load';
+
+  @override
+  String get walletUnavailableBody =>
+      'Your credit dey safe. Check your network and try again.';
+
+  @override
+  String get walletRetry => 'Try again';
+
+  @override
+  String get walletCustomTitle => 'How much?';
+
+  @override
+  String get walletCustomHint => '₦100 reach ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'Minimum na ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'Maximum na ₦50,000';
+
+  @override
+  String get walletCancel => 'Cancel';
+
+  @override
+  String walletAdded(String amount) {
+    return '$amount don enter';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Nothing enter. Try again.';
 }

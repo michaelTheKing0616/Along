@@ -1643,4 +1643,85 @@ class AppLocalizationsHa extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'An buga lambar haruffa 8 a ƙarƙashin QR a kan sitikar direba, ko ka ce ya buɗe My QR.';
+
+  @override
+  String get walletTitle => 'Walat';
+
+  @override
+  String get walletSubtitle => 'Kuɗin Along';
+
+  @override
+  String get walletBalance => 'Ragowar kuɗi';
+
+  @override
+  String get walletBalanceNote => 'Yana zama a Along';
+
+  @override
+  String get walletAddCredit => 'Ƙara kuɗi';
+
+  @override
+  String get walletCustom => 'Naka';
+
+  @override
+  String get walletHistory => 'Tarihi';
+
+  @override
+  String get walletHistoryEmpty =>
+      'Babu kuɗi tukuna. Ƙari, kuɗin hawa da maidowa za su bayyana a nan.';
+
+  @override
+  String get walletAddCustom => 'Ƙara adadin da kake so';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Ƙara $amount';
+  }
+
+  @override
+  String get walletTopUp => 'Ƙari';
+
+  @override
+  String get walletFare => 'Kuɗin hawa';
+
+  @override
+  String get walletRefund => 'Maidowa';
+
+  @override
+  String get walletToday => 'Yau';
+
+  @override
+  String get walletYesterday => 'Jiya';
+
+  @override
+  String get walletUnavailable => 'Walat bai buɗe ba';
+
+  @override
+  String get walletUnavailableBody =>
+      'Kuɗinka yana nan lafiya. Duba intanet ka sake gwadawa.';
+
+  @override
+  String get walletRetry => 'Sake gwadawa';
+
+  @override
+  String get walletCustomTitle => 'Nawa?';
+
+  @override
+  String get walletCustomHint => '₦100 zuwa ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'Aƙalla ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'Mafi yawa ₦50,000';
+
+  @override
+  String get walletCancel => 'Soke';
+
+  @override
+  String walletAdded(String amount) {
+    return 'An ƙara $amount';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Ba a ƙara komai ba. Sake gwadawa.';
 }

@@ -1641,4 +1641,85 @@ class AppLocalizationsYo extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'Kóòdù oní lẹ́tà 8 wà lábẹ́ QR lórí sítíkà awakọ̀, tàbí ní kí ó ṣí My QR.';
+
+  @override
+  String get walletTitle => 'Àpamọ́wọ́';
+
+  @override
+  String get walletSubtitle => 'Owó Along';
+
+  @override
+  String get walletBalance => 'Iye tó kù';
+
+  @override
+  String get walletBalanceNote => 'Ó wà nínú Along';
+
+  @override
+  String get walletAddCredit => 'Fi owó kún';
+
+  @override
+  String get walletCustom => 'Tìrẹ';
+
+  @override
+  String get walletHistory => 'Ìtàn';
+
+  @override
+  String get walletHistoryEmpty =>
+      'Kò sí owó síbẹ̀. Ìfikún, owó ọkọ̀ àti ìdápadà yóò hàn níbí.';
+
+  @override
+  String get walletAddCustom => 'Fi iye tí o fẹ́ kún';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Fi $amount kún';
+  }
+
+  @override
+  String get walletTopUp => 'Ìfikún';
+
+  @override
+  String get walletFare => 'Owó ọkọ̀';
+
+  @override
+  String get walletRefund => 'Ìdápadà';
+
+  @override
+  String get walletToday => 'Lónìí';
+
+  @override
+  String get walletYesterday => 'Àná';
+
+  @override
+  String get walletUnavailable => 'Àpamọ́wọ́ kò ṣí';
+
+  @override
+  String get walletUnavailableBody =>
+      'Owó rẹ wà láìléwu. Ṣàyẹ̀wò íntánẹ́ẹ̀tì kí o tún gbìyànjú.';
+
+  @override
+  String get walletRetry => 'Tún gbìyànjú';
+
+  @override
+  String get walletCustomTitle => 'Èló ni?';
+
+  @override
+  String get walletCustomHint => '₦100 sí ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'Ó kéré tán ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'Ó pọ̀ jù ₦50,000';
+
+  @override
+  String get walletCancel => 'Fagilé';
+
+  @override
+  String walletAdded(String amount) {
+    return 'A ti fi $amount kún';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Kò sí ohun tí a fi kún. Tún gbìyànjú.';
 }

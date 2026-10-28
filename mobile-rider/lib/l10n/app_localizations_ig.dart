@@ -1641,4 +1641,85 @@ class AppLocalizationsIg extends AppLocalizations {
   @override
   String get scanCodeWhereBody =>
       'E biri koodu mkpụrụedemede 8 n\'okpuru QR na stịka onye ọkwọ ụgbọ, ma ọ bụ gwa ya mepee My QR.';
+
+  @override
+  String get walletTitle => 'Obere akpa';
+
+  @override
+  String get walletSubtitle => 'Ego Along';
+
+  @override
+  String get walletBalance => 'Ego fọdụrụ';
+
+  @override
+  String get walletBalanceNote => 'Ọ na-anọ na Along';
+
+  @override
+  String get walletAddCredit => 'Tinye ego';
+
+  @override
+  String get walletCustom => 'Nke gị';
+
+  @override
+  String get walletHistory => 'Akụkọ';
+
+  @override
+  String get walletHistoryEmpty =>
+      'Enweghị ego ugbu a. Itinye ego, ụgwọ njem na nkwụghachi ga-egosi ebe a.';
+
+  @override
+  String get walletAddCustom => 'Tinye ego ịchọrọ';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Tinye $amount';
+  }
+
+  @override
+  String get walletTopUp => 'Itinye ego';
+
+  @override
+  String get walletFare => 'Ụgwọ njem';
+
+  @override
+  String get walletRefund => 'Nkwụghachi';
+
+  @override
+  String get walletToday => 'Taa';
+
+  @override
+  String get walletYesterday => 'Ụnyaahụ';
+
+  @override
+  String get walletUnavailable => 'Obere akpa emepeghị';
+
+  @override
+  String get walletUnavailableBody =>
+      'Ego gị dị mma. Lelee ịntanetị gị ma nwaa ọzọ.';
+
+  @override
+  String get walletRetry => 'Nwaa ọzọ';
+
+  @override
+  String get walletCustomTitle => 'Ego ole?';
+
+  @override
+  String get walletCustomHint => '₦100 ruo ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'Opekata mpe ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'Kachasị ₦50,000';
+
+  @override
+  String get walletCancel => 'Kagbuo';
+
+  @override
+  String walletAdded(String amount) {
+    return 'Etinyere $amount';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Ọ dịghị ihe etinyere. Nwaa ọzọ.';
 }

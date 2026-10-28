@@ -1878,5 +1878,44 @@
   "tripsEmptyHint": "Trips you take with Along show up here, with receipts.",
   "tripsEmptyCta": "Plan a trip",
   "scanCodeWhereTitle": "Where to find it",
-  "scanCodeWhereBody": "The 8-character code is printed under the QR on the driver's sticker, or ask them to open My QR."
+  "scanCodeWhereBody": "The 8-character code is printed under the QR on the driver's sticker, or ask them to open My QR.",
+  "walletTitle": "Wallet",
+  "walletSubtitle": "Along credit",
+  "walletBalance": "Balance",
+  "walletBalanceNote": "It stays in Along",
+  "walletAddCredit": "Add credit",
+  "walletCustom": "Custom",
+  "walletHistory": "History",
+  "walletHistoryEmpty": "No credit yet. Top ups, fares and refunds show here.",
+  "walletAddCustom": "Add a custom amount",
+  "walletAdd": "Add {amount}",
+  "@walletAdd": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTopUp": "Top up",
+  "walletFare": "Fare",
+  "walletRefund": "Refund",
+  "walletToday": "Today",
+  "walletYesterday": "Yesterday",
+  "walletUnavailable": "Wallet didn't load",
+  "walletUnavailableBody": "Your credit is safe. Check your connection and try again.",
+  "walletRetry": "Try again",
+  "walletCustomTitle": "How much?",
+  "walletCustomHint": "₦100 to ₦50,000",
+  "walletCustomTooSmall": "At least ₦100",
+  "walletCustomTooLarge": "At most ₦50,000",
+  "walletCancel": "Cancel",
+  "walletAdded": "{amount} added",
+  "@walletAdded": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTopUpFailed": "Nothing was added. Try again."
 }
