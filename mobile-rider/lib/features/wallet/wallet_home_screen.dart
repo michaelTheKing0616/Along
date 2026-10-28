@@ -158,14 +158,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                 ),
               ],
               for (final g in groups.entries) ...[
-                AlongTxnGroup(
-                  label: g.key,
-                  icon: g.key == l10n.walletToday
-                      ? AlongIcons.schedule
-                      : g.key == l10n.walletYesterday
-                      ? AlongIcons.path
-                      : AlongIcons.history,
-                ),
+                AlongTxnGroup(label: g.key, icon: _groupIcon(l10n, g.key)),
                 for (final e in g.value)
                   AlongTxnRow(
                     icon: switch (e.kind) {
@@ -265,4 +258,10 @@ class _OwedCard extends StatelessWidget {
       ),
     );
   }
+}
+
+IconData _groupIcon(AppLocalizations l10n, String day) {
+  if (day == l10n.walletToday) return AlongIcons.schedule;
+  if (day == l10n.walletYesterday) return AlongIcons.path;
+  return AlongIcons.history;
 }
