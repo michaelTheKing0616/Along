@@ -825,7 +825,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Daidaitawa na tsayawa idan bashin ya wuce $amount';
   }
 
   @override
@@ -1548,4 +1548,132 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Ya biya da wuri';
+
+  @override
+  String get guarantorWhoTitle => 'Wanda zai tsaya maka';
+
+  @override
+  String get guarantorDetailsTitle => 'Bayanansu';
+
+  @override
+  String get seatToolsTitle => 'Kayan aiki';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Tsara ranarka don saita kujerun motarka. Sannan za ka iya nuna wanda ke ciki a nan.';
+
+  @override
+  String get mpGoalSection => 'Burin yau';
+
+  @override
+  String get mpDemandSection => 'Inda fasinjoji suke';
+
+  @override
+  String get mpFuelSection => 'Farashin mai';
+
+  @override
+  String get mpEventSection => 'Taruka na kusa';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count babu kowa · taɓa kujera don sauya ta';
+  }
+
+  @override
+  String get mpSubtitle =>
+      'Saita buri, ga inda fasinjoji suke, ka raba bayanai.';
+
+  @override
+  String get mpGoalEmpty => 'Saita buri don ganin kujeru nawa suka rage';
+
+  @override
+  String get mpMoreSection => 'Raba wa direbobi';
+
+  @override
+  String get mpFuelDetail => 'Farashin mai na yau a kusa';
+
+  @override
+  String get mpEventDetail => 'Buɗe wurin ɗauka don taro';
+
+  @override
+  String get restSubtitle =>
+      'Ka huta sosai bayan dogon tuƙi. Cikakken hutu yana ɗaga ka a layi.';
+
+  @override
+  String get restStatusDriving => 'A kan hanya';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Hutu tun $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return 'Hutun minti $rest kowane minti $drive';
+  }
+
+  @override
+  String get restPlanEmpty => 'Saita tsawon tuƙi kafin hutu';
+
+  @override
+  String get restRhythmSection => 'Tsarinka';
+
+  @override
+  String get conductorSubtitle => 'Taimaka wa direba ya sabunta kujeru.';
+
+  @override
+  String get conductorHowTo =>
+      'Direba zai buɗe Taswirar kujeru → Lambar kondakta ya karanta maka lamba mai haruffa 8.';
+
+  @override
+  String get restDriveShort => 'Tuƙi (minti)';
+
+  @override
+  String get restBreakShort => 'Hutu (minti)';
+
+  @override
+  String get mpTargetShort => 'Buri';
+
+  @override
+  String get mpEarnedShort => 'An samu';
+
+  @override
+  String get howItWorks => 'Yadda yake aiki';
+
+  @override
+  String get conductorStep1 => 'Karɓi lambar';
+
+  @override
+  String get conductorStep1Body => 'Direba yana raba ta daga taswirar kujeru';
+
+  @override
+  String get conductorStep2 => 'Shiga motar';
+
+  @override
+  String get conductorStep2Body => 'Kana ganin kujeru ɗaya kai tsaye';
+
+  @override
+  String get conductorStep3 => 'Sabunta kujeru';
+
+  @override
+  String get conductorStep3Body =>
+      'Taɓa kujera idan fasinja ya hau ko ya sauka';
+
+  @override
+  String get seatEmptyStep1 => 'Zaɓi motarka';
+
+  @override
+  String get seatEmptyStep1Body => 'Za mu zana kujerunta';
+
+  @override
+  String get seatEmptyStep2 => 'Zaɓi hanya';
+
+  @override
+  String get seatEmptyStep2Body => 'Fasinjoji a kanta suna ganin kujerunka';
+
+  @override
+  String get seatEmptyStep3 => 'Cika kujeru yayin tafiya';
+
+  @override
+  String get seatEmptyStep3Body => 'Taɓa kujera don alamta ta';
 }

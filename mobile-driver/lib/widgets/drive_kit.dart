@@ -467,9 +467,15 @@ class DriveSection extends StatelessWidget {
         top: AlongSpace.s24,
         bottom: AlongSpace.s8,
       ),
-      child: Text(label, style: AlongType.title(p)),
+      child: Text(_sentence(label), style: AlongType.title(p)),
     );
   }
+
+  /// Older headings were written as all-caps overlines; sections read in
+  /// sentence case.
+  static String _sentence(String s) => s.length > 1 && s == s.toUpperCase()
+      ? s[0] + s.substring(1).toLowerCase()
+      : s;
 }
 
 /// A list row: optional icon, title, detail, trailing text or check.
@@ -660,6 +666,41 @@ class DriveMoneyCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Recessed, borderless text field decoration used across drive pages.
+InputDecoration driveInput(
+  BuildContext context,
+  String label, {
+  Widget? prefix,
+}) {
+  final p = AlongPalette.of(context);
+  return InputDecoration(
+    labelText: label,
+    prefixIcon: prefix,
+    filled: true,
+    fillColor: p.recessed,
+    border: AlongCraft.input(BorderSide.none),
+    enabledBorder: AlongCraft.input(BorderSide.none),
+    focusedBorder: AlongCraft.input(BorderSide(color: p.ink, width: 1.5)),
+  );
+}
+
+class DriveSteps extends StatelessWidget {
+  const DriveSteps({super.key, required this.steps});
+
+  /// (icon, title, detail) per step, shown as a numbered read-only list.
+  final List<(IconData, String, String)> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    return DriveRows(
+      children: [
+        for (final (icon, title, detail) in steps)
+          DriveRow(icon: icon, title: title, detail: detail),
+      ],
     );
   }
 }

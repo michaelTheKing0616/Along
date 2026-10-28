@@ -546,7 +546,7 @@
       }
     }
   },
-  "standingBlockThreshold": "Matching pauses below {amount}",
+  "standingBlockThreshold": "Matching pauses if you owe more than {amount}",
   "@standingBlockThreshold": {
     "placeholders": {
       "amount": {
@@ -1011,5 +1011,68 @@
   "ratingTagPolite": "Polite",
   "ratingTagOnTime": "On time",
   "ratingTagReady": "Ready at pickup",
-  "ratingTagPaidPromptly": "Paid promptly"
+  "ratingTagPaidPromptly": "Paid promptly",
+  "guarantorWhoTitle": "Who vouches for you",
+  "guarantorDetailsTitle": "Their details",
+  "seatToolsTitle": "Quick tools",
+  "seatBoardEmptyBody": "Plan your day to set up your vehicle's seats. Then you can mark who's on board here.",
+  "mpGoalSection": "Today's goal",
+  "mpDemandSection": "Where riders are",
+  "mpFuelSection": "Fuel price",
+  "mpEventSection": "Events nearby",
+  "seatBoardSubtitle": "{count} free · tap a seat to switch it",
+  "@seatBoardSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mpSubtitle": "Set a target, see where riders are, and share local tips.",
+  "mpGoalEmpty": "Set a target to see how many seats to go",
+  "mpMoreSection": "Share with drivers",
+  "mpFuelDetail": "Today's pump price nearby",
+  "mpEventDetail": "Open a pickup point for a crowd",
+  "restSubtitle": "Take a proper break after a long stretch. A full rest moves you up the queue.",
+  "restStatusDriving": "On the road",
+  "restStatusResting": "Resting since {time}",
+  "@restStatusResting": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "restPlan": "{rest} min break every {drive} min",
+  "@restPlan": {
+    "placeholders": {
+      "rest": {
+        "type": "int"
+      },
+      "drive": {
+        "type": "int"
+      }
+    }
+  },
+  "restPlanEmpty": "Set how long you drive before a break",
+  "restRhythmSection": "Your rhythm",
+  "conductorSubtitle": "Help the driver keep seats up to date.",
+  "conductorHowTo": "The driver opens Seat map → Conductor code and reads you the 8-character code.",
+  "restDriveShort": "Drive (min)",
+  "restBreakShort": "Break (min)",
+  "mpTargetShort": "Target",
+  "mpEarnedShort": "Earned",
+  "howItWorks": "How it works",
+  "conductorStep1": "Get the code",
+  "conductorStep1Body": "The driver shares it from their seat map",
+  "conductorStep2": "Join the bus",
+  "conductorStep2Body": "You see the same seats live",
+  "conductorStep3": "Update seats",
+  "conductorStep3Body": "Tap a seat when riders board or leave",
+  "seatEmptyStep1": "Pick your vehicle",
+  "seatEmptyStep1Body": "We draw its seats for you",
+  "seatEmptyStep2": "Choose a corridor",
+  "seatEmptyStep2Body": "Riders on it can see your free seats",
+  "seatEmptyStep3": "Fill seats as you go",
+  "seatEmptyStep3Body": "Tap a seat to mark it taken or free"
 }

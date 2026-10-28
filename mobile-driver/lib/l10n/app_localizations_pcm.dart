@@ -824,7 +824,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Matching go pause if you owe pass $amount';
   }
 
   @override
@@ -1546,4 +1546,131 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Pay sharp sharp';
+
+  @override
+  String get guarantorWhoTitle => 'Who go stand for you';
+
+  @override
+  String get guarantorDetailsTitle => 'Their details';
+
+  @override
+  String get seatToolsTitle => 'Quick tools';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Plan your day to set your motor seats. Then you fit mark who dey inside for here.';
+
+  @override
+  String get mpGoalSection => 'Today target';
+
+  @override
+  String get mpDemandSection => 'Where passengers dey';
+
+  @override
+  String get mpFuelSection => 'Fuel price';
+
+  @override
+  String get mpEventSection => 'Events near you';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count free · touch seat to change am';
+  }
+
+  @override
+  String get mpSubtitle => 'Set target, see where passengers dey, share tips.';
+
+  @override
+  String get mpGoalEmpty => 'Set target to see how many seats remain';
+
+  @override
+  String get mpMoreSection => 'Share with drivers';
+
+  @override
+  String get mpFuelDetail => 'Today pump price near you';
+
+  @override
+  String get mpEventDetail => 'Open pickup point for crowd';
+
+  @override
+  String get restSubtitle =>
+      'Rest well after long driving. Full rest go move you up for queue.';
+
+  @override
+  String get restStatusDriving => 'For road';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Resting since $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return '$rest min rest every $drive min';
+  }
+
+  @override
+  String get restPlanEmpty => 'Set how long you go drive before rest';
+
+  @override
+  String get restRhythmSection => 'Your rhythm';
+
+  @override
+  String get conductorSubtitle => 'Help driver keep seats correct.';
+
+  @override
+  String get conductorHowTo =>
+      'Driver go open Seat map → Conductor code come read the 8-character code give you.';
+
+  @override
+  String get restDriveShort => 'Drive (min)';
+
+  @override
+  String get restBreakShort => 'Rest (min)';
+
+  @override
+  String get mpTargetShort => 'Target';
+
+  @override
+  String get mpEarnedShort => 'Don make';
+
+  @override
+  String get howItWorks => 'How e dey work';
+
+  @override
+  String get conductorStep1 => 'Collect the code';
+
+  @override
+  String get conductorStep1Body => 'Driver go share am from im seat map';
+
+  @override
+  String get conductorStep2 => 'Join the bus';
+
+  @override
+  String get conductorStep2Body => 'You go see the same seats live';
+
+  @override
+  String get conductorStep3 => 'Update seats';
+
+  @override
+  String get conductorStep3Body => 'Tap seat when passenger enter or comot';
+
+  @override
+  String get seatEmptyStep1 => 'Pick your motor';
+
+  @override
+  String get seatEmptyStep1Body => 'We go draw im seats';
+
+  @override
+  String get seatEmptyStep2 => 'Choose corridor';
+
+  @override
+  String get seatEmptyStep2Body =>
+      'Passengers for there go see your free seats';
+
+  @override
+  String get seatEmptyStep3 => 'Fill seats as you dey go';
+
+  @override
+  String get seatEmptyStep3Body => 'Tap seat to mark am taken or free';
 }

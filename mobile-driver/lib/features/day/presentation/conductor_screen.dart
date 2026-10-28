@@ -3,6 +3,7 @@ import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
@@ -64,75 +65,89 @@ class _ConductorScreenState extends ConsumerState<ConductorScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final board = _board;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.conductorTitle),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        children: [
-          TextField(
-            key: const Key('conductor_code_field'),
-            controller: _code,
-            decoration: InputDecoration(labelText: l10n.conductorCode),
-          ),
-          const SizedBox(height: AlongSpace.s12),
-          AlongButton(
-            key: const Key('conductor_join_button'),
-            label: l10n.conductorJoin,
-            visualState: _busy
-                ? AlongButtonVisualState.loading
-                : AlongButtonVisualState.normal,
-            onPressed: _busy ? null : _join,
-          ),
-          if (_error != null) ...[
-            const SizedBox(height: AlongSpace.s12),
-            Text(
-              _error!,
-              style: AlongText.caption.copyWith(
-                color: AlongColors.semanticDanger,
-              ),
-            ),
-          ],
-          if (board != null) ...[
-            const SizedBox(height: AlongSpace.s16),
-            Text(
-              l10n.freeSeatCount(board.freeCount),
-              style: AlongText.bodyStrong,
-            ),
-            const SizedBox(height: AlongSpace.s12),
-            SeatMap(
-              body: board.layout.body,
-              rows: [
-                for (final row in board.layout.rows)
-                  SeatMapRowView(
-                    id: row.id,
-                    seats: [
-                      for (final seat in row.seats)
-                        SeatMapSeat(
-                          id: seat.id,
-                          label: seat.label,
-                          role: seat.role,
-                          status: _status(board, seat.id),
-                          statusWord: seat.isCargo
-                              ? l10n.seatLuggage
-                              : seat.isPassenger
-                              ? _status(board, seat.id)
-                              : l10n.seatDriver,
-                        ),
-                    ],
-                  ),
+    final p = AlongPalette.of(context);
+    return DrivePage(
+      title: l10n.conductorTitle,
+      subtitle: board == null
+          ? l10n.conductorSubtitle
+          : l10n.seatBoardSubtitle(board.freeCount),
+      footer: board == null
+          ? AlongButton(
+              key: const Key('conductor_join_button'),
+              label: l10n.conductorJoin,
+              visualState: _busy
+                  ? AlongButtonVisualState.loading
+                  : AlongButtonVisualState.normal,
+              onPressed: _busy ? null : _join,
+            )
+          : null,
+      children: [
+        const SizedBox(height: AlongSpace.s16),
+        if (board == null)
+          DriveCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.conductorCode, style: AlongType.label(p)),
+                const SizedBox(height: AlongSpace.s8),
+                TextField(
+                  key: const Key('conductor_code_field'),
+                  controller: _code,
+                  textAlign: TextAlign.center,
+                  style: AlongType.title(p).copyWith(letterSpacing: 4),
+                  decoration: driveInput(
+                    context,
+                    '',
+                  ).copyWith(labelText: null, hintText: '— — — — — —'),
+                ),
+                const SizedBox(height: AlongSpace.s12),
+                Text(l10n.conductorHowTo, style: AlongType.bodyMuted(p)),
               ],
-              onSeatTap: (id) {
-                final status = _status(board, id);
-                _set(id, status == 'free' ? 'occupied' : 'free');
-              },
             ),
-          ],
+          ),
+        if (_error != null) ...[
+          const SizedBox(height: AlongSpace.s12),
+          Text(_error!, style: AlongType.caption(p).copyWith(color: p.danger)),
         ],
-      ),
+        if (board == null) ...[
+          DriveSection(l10n.howItWorks),
+          DriveSteps(
+            steps: [
+              (AlongIcons.qrCode, l10n.conductorStep1, l10n.conductorStep1Body),
+              (AlongIcons.danfo, l10n.conductorStep2, l10n.conductorStep2Body),
+              (AlongIcons.shield, l10n.conductorStep3, l10n.conductorStep3Body),
+            ],
+          ),
+        ],
+        if (board != null)
+          SeatMap(
+            body: board.layout.body,
+            rows: [
+              for (final row in board.layout.rows)
+                SeatMapRowView(
+                  id: row.id,
+                  seats: [
+                    for (final seat in row.seats)
+                      SeatMapSeat(
+                        id: seat.id,
+                        label: seat.label,
+                        role: seat.role,
+                        status: _status(board, seat.id),
+                        statusWord: seat.isCargo
+                            ? l10n.seatLuggage
+                            : seat.isPassenger
+                            ? _status(board, seat.id)
+                            : l10n.seatDriver,
+                      ),
+                  ],
+                ),
+            ],
+            onSeatTap: (id) {
+              final status = _status(board, id);
+              _set(id, status == 'free' ? 'occupied' : 'free');
+            },
+          ),
+      ],
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 import 'package:mobile_driver/routing/routes.dart';
@@ -133,154 +134,188 @@ class _SeatBoardScreenState extends ConsumerState<SeatBoardScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final board = _board;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.seatMapTitle),
-        backgroundColor: AlongPalette.of(context).bg,
-        elevation: 0,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : board == null
-          ? Center(
-              child: AlongButton(
+    final p = AlongPalette.of(context);
+    if (_loading || board == null) {
+      return DrivePage(
+        title: l10n.seatMapTitle,
+        subtitle: _loading ? null : l10n.seatBoardEmptyBody,
+        footer: board == null && !_loading
+            ? AlongButton(
                 key: const Key('seat_board_build_day'),
                 label: l10n.buildMyDayTitle,
                 onPressed: () => context.push(AppRoutes.buildMyDay),
+              )
+            : null,
+        children: [
+          const SizedBox(height: AlongSpace.s16),
+          if (_loading) const AlongSkeleton(variant: SkeletonVariant.line),
+          if (!_loading) ...[
+            Center(
+              child: Container(
+                width: 112,
+                height: 112,
+                decoration: BoxDecoration(
+                  color: p.recessed,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(AlongIcons.danfo, size: 52, color: p.ink),
               ),
-            )
-          : ListView(
-              padding: const EdgeInsets.all(AlongSpace.s16),
-              children: [
-                Text(
-                  l10n.freeSeatCount(board.freeCount),
-                  style: AlongText.bodyStrong,
+            ),
+            DriveSection(l10n.howItWorks),
+            DriveSteps(
+              steps: [
+                (
+                  AlongIcons.danfo,
+                  l10n.seatEmptyStep1,
+                  l10n.seatEmptyStep1Body,
                 ),
-                if (board.seatUpdatedAt != null &&
-                    seatStateIsStale(board.seatUpdatedAt!, DateTime.now()))
-                  Text(
-                    l10n.seatStale,
-                    key: const Key('seat_stale_badge'),
-                    style: AlongText.caption.copyWith(
-                      color: AlongColors.semanticWarning,
-                    ),
-                  ),
-                const SizedBox(height: AlongSpace.s12),
-                SeatMap(
-                  body: board.layout.body,
-                  rows: [
-                    for (final row in board.layout.rows)
-                      SeatMapRowView(
-                        id: row.id,
-                        ruleTitle: _rowRule(board.rules, row.id),
-                        seats: [
-                          for (final seat in row.seats)
-                            SeatMapSeat(
-                              id: seat.id,
-                              label: seat.label,
-                              role: seat.role,
-                              status: _status(board, seat.id),
-                              statusWord: seat.isCargo
-                                  ? l10n.seatLuggage
-                                  : seat.isPassenger
-                                  ? _word(l10n, _status(board, seat.id))
-                                  : l10n.seatDriver,
-                            ),
-                        ],
-                      ),
-                  ],
-                  onSeatTap: (id) {
-                    final status = _status(board, id);
-                    _set(id, status == 'free' ? 'occupied' : 'free');
-                  },
-                  onSeatLongPress: (id) => _set(id, 'held'),
-                ),
-                const SizedBox(height: AlongSpace.s16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AlongButton(
-                        key: const Key('seat_board_empty'),
-                        label: l10n.seatEmpty,
-                        variant: AlongButtonVariant.secondary,
-                        onPressed: () async {
-                          await ref
-                              .read(seatRepositoryProvider)
-                              .setAllSeats(
-                                layoutId: board.layoutId,
-                                status: 'free',
-                              );
-                          await _load();
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: AlongSpace.s8),
-                    Expanded(
-                      child: AlongButton(
-                        key: const Key('seat_board_full'),
-                        label: l10n.seatFull,
-                        variant: AlongButtonVariant.secondary,
-                        onPressed: () async {
-                          await ref
-                              .read(seatRepositoryProvider)
-                              .setAllSeats(
-                                layoutId: board.layoutId,
-                                status: 'occupied',
-                              );
-                          await _load();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AlongSpace.s16),
-                TextField(
-                  key: const Key('seat_voice_command'),
-                  decoration: InputDecoration(hintText: l10n.voiceCommandHint),
-                  onSubmitted: (value) => _voice(value, board),
-                ),
-                const SizedBox(height: AlongSpace.s8),
-                AlongButton(
-                  key: const Key('seat_board_conductor'),
-                  label: l10n.conductorOpen,
-                  variant: AlongButtonVariant.secondary,
-                  onPressed: _openConductor,
-                ),
-                if (_conductorCode != null)
-                  Text(
-                    _conductorCode!,
-                    key: const Key('conductor_code'),
-                    style: AlongText.numericL,
-                  ),
-                if (_ghosts(board).isNotEmpty) ...[
-                  const SizedBox(height: AlongSpace.s12),
-                  Text(l10n.ghostSeatTitle, style: AlongText.label),
-                  for (final id in _ghosts(board))
-                    ListTile(
-                      title: Text(board.layout.seatById(id)?.label ?? id),
-                      trailing: TextButton(
-                        key: Key('ghost_free_$id'),
-                        onPressed: () => _set(id, 'free'),
-                        child: Text(l10n.ghostSeatFree),
-                      ),
-                    ),
-                ],
-                const SizedBox(height: AlongSpace.s16),
-                Text(l10n.rideRulesHeading, style: AlongText.label),
-                for (final rule in board.rules)
-                  ListTile(
-                    title: Text(rule.title),
-                    subtitle: Text(rule.body ?? ''),
-                  ),
-                if (_error != null)
-                  Text(
-                    _error!,
-                    style: AlongText.caption.copyWith(
-                      color: AlongColors.semanticDanger,
-                    ),
-                  ),
+                (AlongIcons.path, l10n.seatEmptyStep2, l10n.seatEmptyStep2Body),
+                (AlongIcons.user, l10n.seatEmptyStep3, l10n.seatEmptyStep3Body),
               ],
             ),
+          ],
+        ],
+      );
+    }
+    return DrivePage(
+      title: l10n.seatMapTitle,
+      subtitle: l10n.seatBoardSubtitle(board.freeCount),
+      footer: Row(
+        children: [
+          Expanded(
+            child: AlongButton(
+              key: const Key('seat_board_empty'),
+              label: l10n.seatEmpty,
+              variant: AlongButtonVariant.secondary,
+              onPressed: () async {
+                await ref
+                    .read(seatRepositoryProvider)
+                    .setAllSeats(layoutId: board.layoutId, status: 'free');
+                await _load();
+              },
+            ),
+          ),
+          const SizedBox(width: AlongSpace.s8),
+          Expanded(
+            child: AlongButton(
+              key: const Key('seat_board_full'),
+              label: l10n.seatFull,
+              onPressed: () async {
+                await ref
+                    .read(seatRepositoryProvider)
+                    .setAllSeats(layoutId: board.layoutId, status: 'occupied');
+                await _load();
+              },
+            ),
+          ),
+        ],
+      ),
+      children: [
+        if (board.seatUpdatedAt != null &&
+            seatStateIsStale(board.seatUpdatedAt!, DateTime.now()))
+          Text(
+            l10n.seatStale,
+            key: const Key('seat_stale_badge'),
+            style: AlongType.caption(p).copyWith(color: p.danger),
+          ),
+        const SizedBox(height: AlongSpace.s16),
+        SeatMap(
+          body: board.layout.body,
+          rows: [
+            for (final row in board.layout.rows)
+              SeatMapRowView(
+                id: row.id,
+                ruleTitle: _rowRule(board.rules, row.id),
+                seats: [
+                  for (final seat in row.seats)
+                    SeatMapSeat(
+                      id: seat.id,
+                      label: seat.label,
+                      role: seat.role,
+                      status: _status(board, seat.id),
+                      statusWord: seat.isCargo
+                          ? l10n.seatLuggage
+                          : seat.isPassenger
+                          ? _word(l10n, _status(board, seat.id))
+                          : l10n.seatDriver,
+                    ),
+                ],
+              ),
+          ],
+          onSeatTap: (id) {
+            final status = _status(board, id);
+            _set(id, status == 'free' ? 'occupied' : 'free');
+          },
+          onSeatLongPress: (id) => _set(id, 'held'),
+        ),
+        DriveSection(l10n.seatToolsTitle),
+        TextField(
+          key: const Key('seat_voice_command'),
+          decoration: InputDecoration(
+            hintText: l10n.voiceCommandHint,
+            prefixIcon: AlongIcon(
+              AlongIcons.microphone,
+              size: 18,
+              color: p.muted,
+            ),
+            filled: true,
+            fillColor: p.recessed,
+            border: AlongCraft.input(BorderSide.none),
+            enabledBorder: AlongCraft.input(BorderSide.none),
+          ),
+          onSubmitted: (value) => _voice(value, board),
+        ),
+        const SizedBox(height: AlongSpace.s8),
+        DriveRows(
+          children: [
+            DriveRow(
+              key: const Key('seat_board_conductor'),
+              icon: AlongIcons.user,
+              title: l10n.conductorOpen,
+              chevron: true,
+              onTap: _openConductor,
+            ),
+          ],
+        ),
+        if (_conductorCode != null) ...[
+          const SizedBox(height: AlongSpace.s8),
+          Text(
+            _conductorCode!,
+            key: const Key('conductor_code'),
+            style: AlongType.display(p),
+          ),
+        ],
+        if (_ghosts(board).isNotEmpty) ...[
+          DriveSection(l10n.ghostSeatTitle),
+          DriveRows(
+            children: [
+              for (final id in _ghosts(board))
+                DriveRow(
+                  key: Key('ghost_free_$id'),
+                  icon: Icons.event_seat_rounded,
+                  title: board.layout.seatById(id)?.label ?? id,
+                  trailing: l10n.ghostSeatFree,
+                  onTap: () => _set(id, 'free'),
+                ),
+            ],
+          ),
+        ],
+        if (board.rules.isNotEmpty) ...[
+          DriveSection(l10n.rideRulesHeading),
+          DriveRows(
+            children: [
+              for (final rule in board.rules)
+                DriveRow(
+                  icon: AlongIcons.info,
+                  title: rule.title,
+                  detail: rule.body,
+                ),
+            ],
+          ),
+        ],
+        if (_error != null)
+          Text(_error!, style: AlongType.caption(p).copyWith(color: p.danger)),
+      ],
     );
   }
 

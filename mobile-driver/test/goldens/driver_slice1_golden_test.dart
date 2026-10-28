@@ -15,6 +15,13 @@ import 'package:mobile_driver/features/home/presentation/widgets/driver_home_chr
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_sheet.dart';
 import 'package:mobile_driver/features/trip/presentation/active_trip_controller.dart';
+import 'package:mobile_driver/features/account/presentation/account_screen.dart';
+import 'package:mobile_driver/features/day/presentation/conductor_screen.dart';
+import 'package:mobile_driver/features/day/presentation/seat_board_screen.dart';
+import 'package:mobile_driver/features/marketplace/presentation/marketplace_screen.dart';
+import 'package:mobile_driver/features/safety/presentation/rest_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/guarantor_screen.dart';
+import 'package:mobile_driver/features/ledger/presentation/standing_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/earnings_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/settle_screen.dart';
 import 'package:mobile_driver/features/ledger/presentation/ledger_controller.dart';
@@ -441,5 +448,42 @@ void main() {
       container.dispose();
       await tester.pump(const Duration(seconds: 1));
     });
+  }
+
+  // Slice 2: secondary driver screens on the drive kit.
+  for (final (name, brightness, scale) in _variants) {
+    for (final (screen, widget) in <(String, Widget)>[
+      ('standing', const StandingScreen()),
+      ('guarantor', const GuarantorScreen()),
+      ('account', const AccountScreen()),
+      ('seat_board', const SeatBoardScreen()),
+      ('seat_board_empty', const SeatBoardScreen()),
+      ('conductor', const ConductorScreen()),
+      ('rest', const RestScreen()),
+      ('marketplace', const MarketplaceScreen()),
+    ]) {
+      testWidgets('$screen $name', (tester) async {
+        await tester.binding.setSurfaceSize(const Size(360, 800));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final supabase = FakeAlongSupabase();
+        addTearDown(supabase.dispose);
+        if (screen == 'seat_board') {
+          supabase.seatBoardResponse = FakeAlongSupabase.sampleSeatBoard();
+        }
+        final container = _container(supabase, AlongDatabase.memory());
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: _app(brightness, scale, widget),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.takeException(), isNull);
+        await _shoot(tester, '${screen}_$name');
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(seconds: 1));
+      });
+    }
   }
 }

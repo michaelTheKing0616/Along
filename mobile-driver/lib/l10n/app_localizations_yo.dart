@@ -824,7 +824,7 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Ìbámu dúró tí gbèsè bá ju $amount lọ';
   }
 
   @override
@@ -1546,4 +1546,131 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Sanwó kíákíá';
+
+  @override
+  String get guarantorWhoTitle => 'Ta ló máa ṣe onígbọ̀wọ́ rẹ';
+
+  @override
+  String get guarantorDetailsTitle => 'Àlàyé wọn';
+
+  @override
+  String get seatToolsTitle => 'Irinṣẹ́ kíákíá';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Ṣètò ọjọ́ rẹ láti ṣètò ìjókòó ọkọ̀ rẹ. Lẹ́yìn náà o lè sàmì sí àwọn tó wà nínú rẹ̀ níbí.';
+
+  @override
+  String get mpGoalSection => 'Àfojúsùn òní';
+
+  @override
+  String get mpDemandSection => 'Ibi tí èrò wà';
+
+  @override
+  String get mpFuelSection => 'Iye epo';
+
+  @override
+  String get mpEventSection => 'Ìṣẹ̀lẹ̀ nítòsí';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count ṣófo · tẹ ìjókòó láti yí i padà';
+  }
+
+  @override
+  String get mpSubtitle => 'Ṣètò àfojúsùn, wo ibi tí èrò wà, kí o pín ìmọ̀ràn.';
+
+  @override
+  String get mpGoalEmpty => 'Ṣètò àfojúsùn láti rí iye ìjókòó tó kù';
+
+  @override
+  String get mpMoreSection => 'Pín fún àwọn awakọ̀';
+
+  @override
+  String get mpFuelDetail => 'Iye epo òní nítòsí';
+
+  @override
+  String get mpEventDetail => 'Ṣí ibi ìgbérò fún èrò púpọ̀';
+
+  @override
+  String get restSubtitle =>
+      'Sinmi dáadáa lẹ́yìn ìrìn gígùn. Ìsinmi kíkún ń gbé ọ sókè nínú ìlà.';
+
+  @override
+  String get restStatusDriving => 'Lójú ọ̀nà';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Ń sinmi láti $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return 'Ìsinmi ìṣẹ́jú $rest ní gbogbo ìṣẹ́jú $drive';
+  }
+
+  @override
+  String get restPlanEmpty => 'Ṣètò bí o ṣe ń wakọ̀ pẹ́ tó kí o tó sinmi';
+
+  @override
+  String get restRhythmSection => 'Ìlànà rẹ';
+
+  @override
+  String get conductorSubtitle =>
+      'Ran awakọ̀ lọ́wọ́ láti mú ìjókòó dójú ìwọ̀n.';
+
+  @override
+  String get conductorHowTo =>
+      'Awakọ̀ á ṣí Àwòrán ìjókòó → Kóòdù kọ́ndọ́ktọ̀ á sì ka kóòdù oní-lẹ́tà 8 fún ọ.';
+
+  @override
+  String get restDriveShort => 'Wakọ̀ (ìṣẹ́jú)';
+
+  @override
+  String get restBreakShort => 'Ìsinmi (ìṣẹ́jú)';
+
+  @override
+  String get mpTargetShort => 'Àfojúsùn';
+
+  @override
+  String get mpEarnedShort => 'Tí o rí';
+
+  @override
+  String get howItWorks => 'Bí ó ṣe ń ṣiṣẹ́';
+
+  @override
+  String get conductorStep1 => 'Gba kóòdù';
+
+  @override
+  String get conductorStep1Body => 'Awakọ̀ á pín in láti máàpù ìjókòó';
+
+  @override
+  String get conductorStep2 => 'Darapọ̀ mọ́ ọkọ̀';
+
+  @override
+  String get conductorStep2Body => 'O máa rí ìjókòó kan náà lẹ́sẹ̀kẹsẹ̀';
+
+  @override
+  String get conductorStep3 => 'Ṣàtúnṣe ìjókòó';
+
+  @override
+  String get conductorStep3Body => 'Tẹ ìjókòó nígbà tí èrò bá wọlé tàbí jáde';
+
+  @override
+  String get seatEmptyStep1 => 'Yan ọkọ̀ rẹ';
+
+  @override
+  String get seatEmptyStep1Body => 'A ó ya ìjókòó rẹ̀';
+
+  @override
+  String get seatEmptyStep2 => 'Yan ọ̀nà';
+
+  @override
+  String get seatEmptyStep2Body => 'Èrò lórí rẹ̀ á rí ìjókòó rẹ';
+
+  @override
+  String get seatEmptyStep3 => 'Kún ìjókòó bí o ṣe ń lọ';
+
+  @override
+  String get seatEmptyStep3Body => 'Tẹ ìjókòó láti sàmì sí i';
 }

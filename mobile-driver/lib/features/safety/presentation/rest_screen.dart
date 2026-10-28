@@ -2,6 +2,7 @@ import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
 
@@ -107,56 +108,96 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     if (!_ready) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return DrivePage(
+        title: l10n.restTitle,
+        children: const [
+          SizedBox(height: AlongSpace.s16),
+          AlongSkeleton(variant: SkeletonVariant.line),
+        ],
+      );
     }
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.restTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(AlongSpace.s16),
-        children: [
-          TextField(
-            key: const Key('rest_drive_minutes'),
-            controller: _drive,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.restDriveMinutes),
-          ),
-          TextField(
-            key: const Key('rest_minutes'),
-            controller: _rest,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: l10n.restMinutes),
-          ),
-          const SizedBox(height: AlongSpace.s16),
-          AlongButton(
-            key: const Key('rest_save'),
-            label: l10n.restSave,
-            onPressed: _save,
-          ),
-          const SizedBox(height: AlongSpace.s16),
-          if (_restingSince == null)
-            AlongButton(
+    final prefs = _prefs;
+    final since = _restingSince;
+    return DrivePage(
+      title: l10n.restTitle,
+      subtitle: l10n.restSubtitle,
+      footer: since == null
+          ? AlongButton(
               key: const Key('rest_begin'),
               label: l10n.restStart,
-              variant: AlongButtonVariant.secondary,
               onPressed: _startRest,
             )
-          else
-            AlongButton(
+          : AlongButton(
               key: const Key('rest_finish'),
               label: l10n.restFinish,
               onPressed: _endRest,
             ),
-          if (_priority) ...[
-            const SizedBox(height: AlongSpace.s12),
-            Text(
-              l10n.restPriority,
-              key: const Key('rest_priority_label'),
-              style: AlongText.body,
+      children: [
+        const SizedBox(height: AlongSpace.s16),
+        DriveCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DriveTag(
+                label: since == null
+                    ? l10n.restStatusDriving
+                    : l10n.restStatusResting(
+                        TimeOfDay.fromDateTime(since.toLocal()).format(context),
+                      ),
+                tone: since == null ? DriveTagTone.neutral : DriveTagTone.info,
+              ),
+              const SizedBox(height: AlongSpace.s12),
+              Text(
+                prefs.driveMinutes != null && prefs.restMinutes != null
+                    ? l10n.restPlan(prefs.restMinutes!, prefs.driveMinutes!)
+                    : l10n.restPlanEmpty,
+                style: AlongType.title(p),
+              ),
+              if (_priority) ...[
+                const SizedBox(height: AlongSpace.s8),
+                Text(
+                  l10n.restPriority,
+                  key: const Key('rest_priority_label'),
+                  style: AlongType.label(p).copyWith(color: p.success),
+                ),
+              ],
+            ],
+          ),
+        ),
+        DriveSection(l10n.restRhythmSection),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                key: const Key('rest_drive_minutes'),
+                controller: _drive,
+                keyboardType: TextInputType.number,
+                decoration: driveInput(context, l10n.restDriveShort),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+            const SizedBox(width: AlongSpace.s8),
+            Expanded(
+              child: TextField(
+                key: const Key('rest_minutes'),
+                controller: _rest,
+                keyboardType: TextInputType.number,
+                decoration: driveInput(context, l10n.restBreakShort),
+                onChanged: (_) => setState(() {}),
+              ),
             ),
           ],
-        ],
-      ),
+        ),
+        const SizedBox(height: AlongSpace.s8),
+        AlongButton(
+          key: const Key('rest_save'),
+          label: l10n.restSave,
+          variant: AlongButtonVariant.secondary,
+          onPressed: _save,
+        ),
+      ],
     );
   }
 }

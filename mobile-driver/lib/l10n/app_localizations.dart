@@ -1559,7 +1559,7 @@ abstract class AppLocalizations {
   /// No description provided for @standingBlockThreshold.
   ///
   /// In en, this message translates to:
-  /// **'Matching pauses below {amount}'**
+  /// **'Matching pauses if you owe more than {amount}'**
   String standingBlockThreshold(String amount);
 
   /// No description provided for @standingGraceDeadline.
@@ -2821,6 +2821,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paid promptly'**
   String get ratingTagPaidPromptly;
+
+  /// No description provided for @guarantorWhoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who vouches for you'**
+  String get guarantorWhoTitle;
+
+  /// No description provided for @guarantorDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Their details'**
+  String get guarantorDetailsTitle;
+
+  /// No description provided for @seatToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick tools'**
+  String get seatToolsTitle;
+
+  /// No description provided for @seatBoardEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your day to set up your vehicle\'s seats. Then you can mark who\'s on board here.'**
+  String get seatBoardEmptyBody;
+
+  /// No description provided for @mpGoalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s goal'**
+  String get mpGoalSection;
+
+  /// No description provided for @mpDemandSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Where riders are'**
+  String get mpDemandSection;
+
+  /// No description provided for @mpFuelSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel price'**
+  String get mpFuelSection;
+
+  /// No description provided for @mpEventSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Events nearby'**
+  String get mpEventSection;
+
+  /// No description provided for @seatBoardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free · tap a seat to switch it'**
+  String seatBoardSubtitle(int count);
+
+  /// No description provided for @mpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target, see where riders are, and share local tips.'**
+  String get mpSubtitle;
+
+  /// No description provided for @mpGoalEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target to see how many seats to go'**
+  String get mpGoalEmpty;
+
+  /// No description provided for @mpMoreSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with drivers'**
+  String get mpMoreSection;
+
+  /// No description provided for @mpFuelDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s pump price nearby'**
+  String get mpFuelDetail;
+
+  /// No description provided for @mpEventDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a pickup point for a crowd'**
+  String get mpEventDetail;
+
+  /// No description provided for @restSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a proper break after a long stretch. A full rest moves you up the queue.'**
+  String get restSubtitle;
+
+  /// No description provided for @restStatusDriving.
+  ///
+  /// In en, this message translates to:
+  /// **'On the road'**
+  String get restStatusDriving;
+
+  /// No description provided for @restStatusResting.
+  ///
+  /// In en, this message translates to:
+  /// **'Resting since {time}'**
+  String restStatusResting(String time);
+
+  /// No description provided for @restPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'{rest} min break every {drive} min'**
+  String restPlan(int rest, int drive);
+
+  /// No description provided for @restPlanEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Set how long you drive before a break'**
+  String get restPlanEmpty;
+
+  /// No description provided for @restRhythmSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Your rhythm'**
+  String get restRhythmSection;
+
+  /// No description provided for @conductorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help the driver keep seats up to date.'**
+  String get conductorSubtitle;
+
+  /// No description provided for @conductorHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'The driver opens Seat map → Conductor code and reads you the 8-character code.'**
+  String get conductorHowTo;
+
+  /// No description provided for @restDriveShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive (min)'**
+  String get restDriveShort;
+
+  /// No description provided for @restBreakShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Break (min)'**
+  String get restBreakShort;
+
+  /// No description provided for @mpTargetShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get mpTargetShort;
+
+  /// No description provided for @mpEarnedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned'**
+  String get mpEarnedShort;
+
+  /// No description provided for @howItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get howItWorks;
+
+  /// No description provided for @conductorStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the code'**
+  String get conductorStep1;
+
+  /// No description provided for @conductorStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'The driver shares it from their seat map'**
+  String get conductorStep1Body;
+
+  /// No description provided for @conductorStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the bus'**
+  String get conductorStep2;
+
+  /// No description provided for @conductorStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'You see the same seats live'**
+  String get conductorStep2Body;
+
+  /// No description provided for @conductorStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Update seats'**
+  String get conductorStep3;
+
+  /// No description provided for @conductorStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a seat when riders board or leave'**
+  String get conductorStep3Body;
+
+  /// No description provided for @seatEmptyStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your vehicle'**
+  String get seatEmptyStep1;
+
+  /// No description provided for @seatEmptyStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'We draw its seats for you'**
+  String get seatEmptyStep1Body;
+
+  /// No description provided for @seatEmptyStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a corridor'**
+  String get seatEmptyStep2;
+
+  /// No description provided for @seatEmptyStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Riders on it can see your free seats'**
+  String get seatEmptyStep2Body;
+
+  /// No description provided for @seatEmptyStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill seats as you go'**
+  String get seatEmptyStep3;
+
+  /// No description provided for @seatEmptyStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a seat to mark it taken or free'**
+  String get seatEmptyStep3Body;
 }
 
 class _AppLocalizationsDelegate

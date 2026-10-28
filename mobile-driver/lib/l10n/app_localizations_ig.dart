@@ -824,7 +824,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String standingBlockThreshold(String amount) {
-    return 'Matching pauses below $amount';
+    return 'Nhazi na-akwụsị ma ụgwọ gafere $amount';
   }
 
   @override
@@ -1546,4 +1546,130 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get ratingTagPaidPromptly => 'Kwụrụ ngwa ngwa';
+
+  @override
+  String get guarantorWhoTitle => 'Onye ga-akwado gị';
+
+  @override
+  String get guarantorDetailsTitle => 'Nkọwa ha';
+
+  @override
+  String get seatToolsTitle => 'Ngwa ọrụ ngwa ngwa';
+
+  @override
+  String get seatBoardEmptyBody =>
+      'Hazie ụbọchị gị iji hazie oche ụgbọ gị. Mgbe ahụ ị nwere ike igosi ndị nọ n\'ime ebe a.';
+
+  @override
+  String get mpGoalSection => 'Ebumnuche taa';
+
+  @override
+  String get mpDemandSection => 'Ebe ndị njem nọ';
+
+  @override
+  String get mpFuelSection => 'Ọnụ ahịa mmanụ';
+
+  @override
+  String get mpEventSection => 'Mmemme dị nso';
+
+  @override
+  String seatBoardSubtitle(int count) {
+    return '$count tọgbọrọ chakoo · pịa oche iji gbanwee ya';
+  }
+
+  @override
+  String get mpSubtitle => 'Tọọ ebumnuche, hụ ebe ndị njem nọ, kesaa ndụmọdụ.';
+
+  @override
+  String get mpGoalEmpty => 'Tọọ ebumnuche ka ịhụ oche ole fọdụrụ';
+
+  @override
+  String get mpMoreSection => 'Kesaa ndị ọkwọ ụgbọ';
+
+  @override
+  String get mpFuelDetail => 'Ọnụ ahịa mmanụ taa nso';
+
+  @override
+  String get mpEventDetail => 'Mepee ebe nnabata maka igwe mmadụ';
+
+  @override
+  String get restSubtitle =>
+      'Zuru ike nke ọma mgbe ogologo ịnya. Ezumike zuru oke na-ebuli gị n\'ahịrị.';
+
+  @override
+  String get restStatusDriving => 'N\'okporo ụzọ';
+
+  @override
+  String restStatusResting(String time) {
+    return 'Na-ezu ike kemgbe $time';
+  }
+
+  @override
+  String restPlan(int rest, int drive) {
+    return 'Ezumike nkeji $rest kwa nkeji $drive';
+  }
+
+  @override
+  String get restPlanEmpty => 'Tọọ ogologo ị na-anya tupu ezumike';
+
+  @override
+  String get restRhythmSection => 'Usoro gị';
+
+  @override
+  String get conductorSubtitle => 'Nyere onye ọkwọ aka ka oche dị ọhụrụ.';
+
+  @override
+  String get conductorHowTo =>
+      'Onye ọkwọ na-emepe Map oche → Koodu kondọkta wee gụọrọ gị koodu mkpụrụ 8.';
+
+  @override
+  String get restDriveShort => 'Ịnya (nkeji)';
+
+  @override
+  String get restBreakShort => 'Ezumike (nkeji)';
+
+  @override
+  String get mpTargetShort => 'Ebumnuche';
+
+  @override
+  String get mpEarnedShort => 'Enwetara';
+
+  @override
+  String get howItWorks => 'Otu o si arụ ọrụ';
+
+  @override
+  String get conductorStep1 => 'Nweta koodu';
+
+  @override
+  String get conductorStep1Body => 'Onye ọkwọ ụgbọ na-eker ya site na map oche';
+
+  @override
+  String get conductorStep2 => 'Banye n\'ụgbọ';
+
+  @override
+  String get conductorStep2Body => 'Ị na-ahụ otu oche ozugbo';
+
+  @override
+  String get conductorStep3 => 'Melite oche';
+
+  @override
+  String get conductorStep3Body => 'Pịa oche mgbe ndị njem banyere ma ọ bụ pụọ';
+
+  @override
+  String get seatEmptyStep1 => 'Họrọ ụgbọ gị';
+
+  @override
+  String get seatEmptyStep1Body => 'Anyị ga-ese oche ya';
+
+  @override
+  String get seatEmptyStep2 => 'Họrọ ụzọ';
+
+  @override
+  String get seatEmptyStep2Body => 'Ndị njem nọ na ya ga-ahụ oche gị';
+
+  @override
+  String get seatEmptyStep3 => 'Jupụta oche ka ị na-aga';
+
+  @override
+  String get seatEmptyStep3Body => 'Pịa oche iji kaa ya';
 }
