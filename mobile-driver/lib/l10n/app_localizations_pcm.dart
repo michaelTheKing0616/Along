@@ -447,7 +447,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Along fee $amount · $percent%, e go add for drop';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Balance activity';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1065,7 +1065,7 @@ class AppLocalizationsPcm extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Digital payments';
 
   @override
   String get earningsDigitalCaption =>
@@ -1347,4 +1347,203 @@ class AppLocalizationsPcm extends AppLocalizations {
   String tripEtaPickup(String label) {
     return 'Pickup $label';
   }
+
+  @override
+  String get drivePhasePickup => 'Pickup';
+
+  @override
+  String get drivePhaseBoard => 'Enter';
+
+  @override
+  String get drivePhaseDrop => 'Drop';
+
+  @override
+  String activeTripPickUpTitle(String name) {
+    return 'Carry $name';
+  }
+
+  @override
+  String activeTripOnBoardTitle(String name) {
+    return '$name don enter';
+  }
+
+  @override
+  String activeTripDropTitle(String name) {
+    return 'Drop $name';
+  }
+
+  @override
+  String get activeTripRiderFallback => 'your passenger';
+
+  @override
+  String get activeTripBoardNaMe => 'Enter with Na Me';
+
+  @override
+  String get activeTripEnterPin => 'Put pickup PIN';
+
+  @override
+  String get activeTripPinShort => 'PIN';
+
+  @override
+  String get activeTripMessageShort => 'Message';
+
+  @override
+  String get activeTripSeatsShort => 'Seats';
+
+  @override
+  String get activeTripExtendShort => 'Extend';
+
+  @override
+  String get activeTripReportShort => 'Report';
+
+  @override
+  String get activeTripFareLabel => 'Passenger go pay';
+
+  @override
+  String activeTripFeeCaption(String amount, String percent) {
+    return 'Along fee $amount ($percent%)';
+  }
+
+  @override
+  String incomingAcceptFare(String amount) {
+    return 'Accept · $amount';
+  }
+
+  @override
+  String incomingFareCaption(String tierLabel) {
+    return 'Passenger go pay · $tierLabel';
+  }
+
+  @override
+  String get homeOfflineTitle => 'You no dey online';
+
+  @override
+  String get homeOnlineTitle => 'You dey online';
+
+  @override
+  String get homeOfflineHint => 'Go online make request dey come near you.';
+
+  @override
+  String get homeOnlineHint => 'Request go show here. Accept with one tap.';
+
+  @override
+  String get homeGoOnline => 'GO';
+
+  @override
+  String get homeGoOffline => 'Comot online';
+
+  @override
+  String get homeModeAtPark => 'For park';
+
+  @override
+  String get homeModeRoaming => 'Dey waka';
+
+  @override
+  String get homeModeFull => 'Don full';
+
+  @override
+  String homeTodayEarned(String amount) {
+    return 'Today · $amount';
+  }
+
+  @override
+  String homeTodayTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trips',
+      one: '1 trip',
+      zero: 'No trip yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShortcutsTitle => 'Your day';
+
+  @override
+  String get homeDirectionShortOnRoute => 'For my route';
+
+  @override
+  String get homeDirectionShortNone => 'Any side';
+
+  @override
+  String get homeTileDemand => 'Demand';
+
+  @override
+  String get tripCompleteCashHero => 'Collect cash';
+
+  @override
+  String get tripCompleteRowFare => 'Fare';
+
+  @override
+  String get tripCompleteRowFee => 'Along fee (to balance)';
+
+  @override
+  String get tripCompleteRowBalance => 'New balance';
+
+  @override
+  String tripCompleteYesAmount(String amount) {
+    return 'Yes, I collect $amount';
+  }
+
+  @override
+  String get settleSubtitle => 'Your Along account';
+
+  @override
+  String get settleOwedLabel => 'You dey owe Along';
+
+  @override
+  String get settleCreditLabel => 'Your balance';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Matching go pause if you owe pass $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Pay with';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Settle $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Transfer go your Along account';
+
+  @override
+  String get settleChannelUssdDetail => 'Dial code, no need data';
+
+  @override
+  String get settleChannelCardDetail => 'ATM card';
+
+  @override
+  String get settleChannelAgentDetail => 'Pay cash for Along agent';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Safe driving';
+
+  @override
+  String get ratingTagFairFare => 'Fair fare';
+
+  @override
+  String get ratingTagCleanVehicle => 'Clean motor';
+
+  @override
+  String get ratingTagPolite => 'Get respect';
+
+  @override
+  String get ratingTagOnTime => 'On time';
+
+  @override
+  String get ratingTagReady => 'Ready for pickup';
+
+  @override
+  String get ratingTagPaidPromptly => 'Pay sharp sharp';
 }

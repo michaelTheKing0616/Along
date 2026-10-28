@@ -115,9 +115,17 @@ final earningsLedgerPageProvider =
       return ref.read(ledgerRepositoryProvider).driverLedger(limit: 50);
     });
 
+/// Wall clock for the earnings summary. Goldens pin it so the chart and
+/// "today" do not move between runs.
+final earningsClockProvider = Provider<DateTime Function()>(
+  (ref) => DateTime.now,
+);
+
 final earningsCashTripsProvider =
     FutureProvider.autoDispose<List<TripCashSummary>>((ref) async {
-      return ref.read(ledgerRepositoryProvider).recentCashTrips(days: 7);
+      return ref
+          .read(ledgerRepositoryProvider)
+          .recentCashTrips(days: 7, now: ref.read(earningsClockProvider)());
     });
 
 final earningsContextProvider =

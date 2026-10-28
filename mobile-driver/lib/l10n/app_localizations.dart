@@ -881,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @incomingRequestAlongFee.
   ///
   /// In en, this message translates to:
-  /// **'Along fee {amount} ({percent}%) — added to your balance at completion'**
+  /// **'Along fee {amount} · {percent}%, added at drop-off'**
   String incomingRequestAlongFee(String amount, String percent);
 
   /// No description provided for @incomingRequestLoadDefault.
@@ -1505,7 +1505,7 @@ abstract class AppLocalizations {
   /// No description provided for @earningsLedgerSection.
   ///
   /// In en, this message translates to:
-  /// **'ALONG BALANCE'**
+  /// **'Balance activity'**
   String get earningsLedgerSection;
 
   /// No description provided for @earningsTripsSection.
@@ -1967,7 +1967,7 @@ abstract class AppLocalizations {
   /// No description provided for @earningsDigitalSection.
   ///
   /// In en, this message translates to:
-  /// **'DIGITAL PAYMENTS RECEIVED'**
+  /// **'Digital payments'**
   String get earningsDigitalSection;
 
   /// No description provided for @earningsDigitalCaption.
@@ -2485,6 +2485,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pickup {label}'**
   String tripEtaPickup(String label);
+
+  /// No description provided for @drivePhasePickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup'**
+  String get drivePhasePickup;
+
+  /// No description provided for @drivePhaseBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Board'**
+  String get drivePhaseBoard;
+
+  /// No description provided for @drivePhaseDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop'**
+  String get drivePhaseDrop;
+
+  /// No description provided for @activeTripPickUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick up {name}'**
+  String activeTripPickUpTitle(String name);
+
+  /// No description provided for @activeTripOnBoardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is on board'**
+  String activeTripOnBoardTitle(String name);
+
+  /// No description provided for @activeTripDropTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop {name}'**
+  String activeTripDropTitle(String name);
+
+  /// No description provided for @activeTripRiderFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'your rider'**
+  String get activeTripRiderFallback;
+
+  /// No description provided for @activeTripBoardNaMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Board with Na Me'**
+  String get activeTripBoardNaMe;
+
+  /// No description provided for @activeTripEnterPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter pickup PIN'**
+  String get activeTripEnterPin;
+
+  /// No description provided for @activeTripPinShort.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get activeTripPinShort;
+
+  /// No description provided for @activeTripMessageShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get activeTripMessageShort;
+
+  /// No description provided for @activeTripSeatsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Seats'**
+  String get activeTripSeatsShort;
+
+  /// No description provided for @activeTripExtendShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend'**
+  String get activeTripExtendShort;
+
+  /// No description provided for @activeTripReportShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get activeTripReportShort;
+
+  /// No description provided for @activeTripFareLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider pays'**
+  String get activeTripFareLabel;
+
+  /// No description provided for @activeTripFeeCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Along fee {amount} ({percent}%)'**
+  String activeTripFeeCaption(String amount, String percent);
+
+  /// No description provided for @incomingAcceptFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept · {amount}'**
+  String incomingAcceptFare(String amount);
+
+  /// No description provided for @incomingFareCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider pays · {tierLabel}'**
+  String incomingFareCaption(String tierLabel);
+
+  /// No description provided for @homeOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get homeOfflineTitle;
+
+  /// No description provided for @homeOnlineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re online'**
+  String get homeOnlineTitle;
+
+  /// No description provided for @homeOfflineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Go online to get requests near you.'**
+  String get homeOfflineHint;
+
+  /// No description provided for @homeOnlineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests pop up here. Accept in one tap.'**
+  String get homeOnlineHint;
+
+  /// No description provided for @homeGoOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'GO'**
+  String get homeGoOnline;
+
+  /// No description provided for @homeGoOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Go offline'**
+  String get homeGoOffline;
+
+  /// No description provided for @homeModeAtPark.
+  ///
+  /// In en, this message translates to:
+  /// **'At park'**
+  String get homeModeAtPark;
+
+  /// No description provided for @homeModeRoaming.
+  ///
+  /// In en, this message translates to:
+  /// **'Roaming'**
+  String get homeModeRoaming;
+
+  /// No description provided for @homeModeFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get homeModeFull;
+
+  /// No description provided for @homeTodayEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Today · {amount}'**
+  String homeTodayEarned(String amount);
+
+  /// No description provided for @homeTodayTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No trips yet} =1{1 trip} other{{count} trips}}'**
+  String homeTodayTrips(int count);
+
+  /// No description provided for @homeShortcutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your day'**
+  String get homeShortcutsTitle;
+
+  /// No description provided for @homeDirectionShortOnRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'On my route'**
+  String get homeDirectionShortOnRoute;
+
+  /// No description provided for @homeDirectionShortNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Any direction'**
+  String get homeDirectionShortNone;
+
+  /// No description provided for @homeTileDemand.
+  ///
+  /// In en, this message translates to:
+  /// **'Demand'**
+  String get homeTileDemand;
+
+  /// No description provided for @tripCompleteCashHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect in cash'**
+  String get tripCompleteCashHero;
+
+  /// No description provided for @tripCompleteRowFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get tripCompleteRowFare;
+
+  /// No description provided for @tripCompleteRowFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Along fee (to balance)'**
+  String get tripCompleteRowFee;
+
+  /// No description provided for @tripCompleteRowBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'New balance'**
+  String get tripCompleteRowBalance;
+
+  /// No description provided for @tripCompleteYesAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, I got {amount}'**
+  String tripCompleteYesAmount(String amount);
+
+  /// No description provided for @settleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Along account'**
+  String get settleSubtitle;
+
+  /// No description provided for @settleOwedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe Along'**
+  String get settleOwedLabel;
+
+  /// No description provided for @settleCreditLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance'**
+  String get settleCreditLabel;
+
+  /// No description provided for @settleThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching pauses if you owe more than {amount}'**
+  String settleThreshold(String amount);
+
+  /// No description provided for @settleMethodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with'**
+  String get settleMethodTitle;
+
+  /// No description provided for @settleSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle {amount}'**
+  String settleSubmit(String amount);
+
+  /// No description provided for @settleChannelBankDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer to your Along account'**
+  String get settleChannelBankDetail;
+
+  /// No description provided for @settleChannelUssdDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Dial a code, no data needed'**
+  String get settleChannelUssdDetail;
+
+  /// No description provided for @settleChannelCardDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Debit card'**
+  String get settleChannelCardDetail;
+
+  /// No description provided for @settleChannelAgentDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay cash at an Along agent'**
+  String get settleChannelAgentDetail;
+
+  /// No description provided for @earningsBalanceAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {amount}'**
+  String earningsBalanceAfter(String amount);
+
+  /// No description provided for @ratingTagSafeDriving.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe driving'**
+  String get ratingTagSafeDriving;
+
+  /// No description provided for @ratingTagFairFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair fare'**
+  String get ratingTagFairFare;
+
+  /// No description provided for @ratingTagCleanVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean vehicle'**
+  String get ratingTagCleanVehicle;
+
+  /// No description provided for @ratingTagPolite.
+  ///
+  /// In en, this message translates to:
+  /// **'Polite'**
+  String get ratingTagPolite;
+
+  /// No description provided for @ratingTagOnTime.
+  ///
+  /// In en, this message translates to:
+  /// **'On time'**
+  String get ratingTagOnTime;
+
+  /// No description provided for @ratingTagReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready at pickup'**
+  String get ratingTagReady;
+
+  /// No description provided for @ratingTagPaidPromptly.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid promptly'**
+  String get ratingTagPaidPromptly;
 }
 
 class _AppLocalizationsDelegate

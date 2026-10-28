@@ -447,7 +447,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Kuɗin Along $amount · $percent%';
   }
 
   @override
@@ -792,7 +792,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Ayyukan ma\'auni';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1066,7 +1066,7 @@ class AppLocalizationsHa extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Biyan dijital';
 
   @override
   String get earningsDigitalCaption =>
@@ -1348,4 +1348,204 @@ class AppLocalizationsHa extends AppLocalizations {
   String tripEtaPickup(String label) {
     return 'Dauka $label';
   }
+
+  @override
+  String get drivePhasePickup => 'Ɗauka';
+
+  @override
+  String get drivePhaseBoard => 'Shiga';
+
+  @override
+  String get drivePhaseDrop => 'Sauke';
+
+  @override
+  String activeTripPickUpTitle(String name) {
+    return 'Ɗauki $name';
+  }
+
+  @override
+  String activeTripOnBoardTitle(String name) {
+    return '$name ya shiga';
+  }
+
+  @override
+  String activeTripDropTitle(String name) {
+    return 'Sauke $name';
+  }
+
+  @override
+  String get activeTripRiderFallback => 'fasinjanka';
+
+  @override
+  String get activeTripBoardNaMe => 'Shiga da Na Me';
+
+  @override
+  String get activeTripEnterPin => 'Saka PIN na ɗauka';
+
+  @override
+  String get activeTripPinShort => 'PIN';
+
+  @override
+  String get activeTripMessageShort => 'Saƙo';
+
+  @override
+  String get activeTripSeatsShort => 'Kujeru';
+
+  @override
+  String get activeTripExtendShort => 'Tsawaita';
+
+  @override
+  String get activeTripReportShort => 'Rahoto';
+
+  @override
+  String get activeTripFareLabel => 'Fasinja zai biya';
+
+  @override
+  String activeTripFeeCaption(String amount, String percent) {
+    return 'Kuɗin Along $amount ($percent%)';
+  }
+
+  @override
+  String incomingAcceptFare(String amount) {
+    return 'Karɓa · $amount';
+  }
+
+  @override
+  String incomingFareCaption(String tierLabel) {
+    return 'Fasinja zai biya · $tierLabel';
+  }
+
+  @override
+  String get homeOfflineTitle => 'Ba ka kan layi';
+
+  @override
+  String get homeOnlineTitle => 'Kana kan layi';
+
+  @override
+  String get homeOfflineHint => 'Shiga layi don samun buƙatu kusa da kai.';
+
+  @override
+  String get homeOnlineHint =>
+      'Buƙatu za su bayyana nan. Karɓa da taɓawa ɗaya.';
+
+  @override
+  String get homeGoOnline => 'MU JE';
+
+  @override
+  String get homeGoOffline => 'Fita daga layi';
+
+  @override
+  String get homeModeAtPark => 'A tasha';
+
+  @override
+  String get homeModeRoaming => 'Yawo';
+
+  @override
+  String get homeModeFull => 'Ya cika';
+
+  @override
+  String homeTodayEarned(String amount) {
+    return 'Yau · $amount';
+  }
+
+  @override
+  String homeTodayTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tafiya $count',
+      one: 'Tafiya 1',
+      zero: 'Babu tafiya tukuna',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShortcutsTitle => 'Ranarka';
+
+  @override
+  String get homeDirectionShortOnRoute => 'Kan hanyata';
+
+  @override
+  String get homeDirectionShortNone => 'Kowace hanya';
+
+  @override
+  String get homeTileDemand => 'Buƙata';
+
+  @override
+  String get tripCompleteCashHero => 'Karɓi kuɗi a hannu';
+
+  @override
+  String get tripCompleteRowFare => 'Kuɗin mota';
+
+  @override
+  String get tripCompleteRowFee => 'Kuɗin Along (zuwa ma\'auni)';
+
+  @override
+  String get tripCompleteRowBalance => 'Sabon ma\'auni';
+
+  @override
+  String tripCompleteYesAmount(String amount) {
+    return 'Eh, na karɓi $amount';
+  }
+
+  @override
+  String get settleSubtitle => 'Asusun ka na Along';
+
+  @override
+  String get settleOwedLabel => 'Bashin Along a kanka';
+
+  @override
+  String get settleCreditLabel => 'Ma\'aunin ka';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Daidaitawa na tsayawa idan bashin ya wuce $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Biya da';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Biya $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Tura zuwa asusun Along';
+
+  @override
+  String get settleChannelUssdDetail => 'Danna lamba, ba data';
+
+  @override
+  String get settleChannelCardDetail => 'Katin banki';
+
+  @override
+  String get settleChannelAgentDetail => 'Biya kuɗi a wurin wakilin Along';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Ma\'auni $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Tuki lafiya';
+
+  @override
+  String get ratingTagFairFare => 'Kuɗi daidai';
+
+  @override
+  String get ratingTagCleanVehicle => 'Mota mai tsabta';
+
+  @override
+  String get ratingTagPolite => 'Mai ladabi';
+
+  @override
+  String get ratingTagOnTime => 'A kan lokaci';
+
+  @override
+  String get ratingTagReady => 'A shirye a wurin ɗauka';
+
+  @override
+  String get ratingTagPaidPromptly => 'Ya biya da wuri';
 }

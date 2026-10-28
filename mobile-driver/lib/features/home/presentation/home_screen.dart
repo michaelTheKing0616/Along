@@ -1,9 +1,12 @@
-import 'package:along_design/along_design.dart';
+import 'package:along_core/along_core.dart' show Money, formatMoney;
+import 'package:along_data/along_data.dart' show TripCashSummary;
+import 'package:along_design/along_design.dart' hide formatMoney;
 import 'package:along_map/along_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/home/presentation/home_controller.dart';
+import 'package:mobile_driver/features/home/presentation/widgets/driver_home_chrome.dart';
 import 'package:mobile_driver/features/home/presentation/widgets/park_picker_sheet.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/decline_reason_sheet.dart';
 import 'package:mobile_driver/features/incoming_request/presentation/incoming_request_notifier.dart';
@@ -53,7 +56,9 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
     final pricing = ref.watch(driverPricingNotifierProvider);
     final config = ref.watch(appConfigProvider);
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final today = ref
+        .watch(earningsCashTripsProvider)
+        .whenOrNull(data: (trips) => _today(trips));
 
     ref.listen(incomingRequestNotifierProvider, (previous, next) {
       if (next?.showDeclineReasons == true &&
@@ -82,6 +87,14 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                 citySlug: state.citySlug,
               ),
               allowDemoStyleFallback: false,
+              // Drawn, host-stable city map: what tests and a missing
+              // brand style show instead of a blank land fill.
+              placeholder: const AlongCityMap(
+                mode: AlongCityMapMode.online,
+                sheetInset: 0.4,
+                demoLabel: false,
+                assetPackage: 'along_design',
+              ),
               initialCameraPosition: state.mapCenter == null
                   ? null
                   : MapCamera.forCenter(
@@ -153,24 +166,18 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                     ],
                     if (!state.isVerified) ...[
                       const SizedBox(height: AlongSpace.s8),
-                      _InfoBanner(message: l10n.homeUnverifiedBanner),
+                      DriverHomeNotice(message: l10n.homeUnverifiedBanner),
                     ],
                     if (state.batteryGuardActive) ...[
                       const SizedBox(height: AlongSpace.s8),
-                      _InfoBanner(message: l10n.homeBatteryGuardBanner),
+                      DriverHomeNotice(message: l10n.homeBatteryGuardBanner),
                     ],
+                    _ManifestEntryChip(l10n: l10n),
                   ],
                 ),
               ),
             ),
           ),
-          if (state.demandLabels.isNotEmpty)
-            Positioned(
-              left: AlongSpace.s16,
-              right: AlongSpace.s16,
-              top: 140,
-              child: _DemandLabelsCard(labels: state.demandLabels),
-            ),
           if (paymentToast.event != null)
             Positioned(
               left: AlongSpace.s16,
@@ -186,107 +193,48 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
               ),
             ),
           Positioned(
-            left: AlongSpace.s16,
-            top: 120,
-            child: _ManifestEntryChip(l10n: l10n),
-          ),
-          Positioned(
-            left: AlongSpace.s16,
-            right: AlongSpace.s16,
-            bottom: AlongSpace.s16,
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (state.status == DriverStatus.atPark)
-                    _ParkChip(
-                      label: state.selectedPark == null
-                          ? l10n.homeSelectPark
-                          : l10n.homeAtPark(state.selectedPark!.name),
-                      onTap: _openParkPicker,
-                    ),
-                  if (state.isRoaming) ...[
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _SeatsChip(
-                            seats: state.seatsAvailable,
-                            label: l10n.seatMapTitle,
-                            onTap: () => context.push(AppRoutes.seatBoard),
-                          ),
-                        ),
-                        const SizedBox(width: AlongSpace.s8),
-                        Expanded(
-                          child: _DirectionChip(
-                            direction: state.roamingDirection,
-                            onRouteLabel: l10n.homeDirectionOnRoute,
-                            noneLabel: l10n.homeDirectionNone,
-                            onTap: state.toggleEnabled
-                                ? _toggleDirection
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AlongSpace.s8),
-                  ],
-                  Wrap(
-                    spacing: AlongSpace.s8,
-                    children: [
-                      ActionChip(
-                        key: const Key('build_my_day_button'),
-                        label: Text(l10n.buildMyDayTitle),
-                        onPressed: () => context.push(AppRoutes.buildMyDay),
-                      ),
-                      ActionChip(
-                        key: const Key('conductor_entry_button'),
-                        label: Text(l10n.conductorTitle),
-                        onPressed: () => context.push(AppRoutes.conductor),
-                      ),
-                      ActionChip(
-                        key: const Key('rest_entry_button'),
-                        label: Text(l10n.restTitle),
-                        onPressed: () => context.push(AppRoutes.rest),
-                      ),
-                      ActionChip(
-                        key: const Key('marketplace_entry_button'),
-                        label: Text(l10n.marketplaceTitle),
-                        onPressed: () => context.push(AppRoutes.marketplace),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AlongSpace.s8),
-                  AbsorbPointer(
-                    absorbing: !state.toggleEnabled,
-                    child: Opacity(
-                      opacity: state.toggleEnabled ? 1 : 0.5,
-                      child: StatusToggle(
-                        key: const Key('driver_status_toggle'),
-                        selected: state.status,
-                        onChanged: (next) => ref
-                            .read(driverHomeControllerProvider.notifier)
-                            .setStatus(next),
-                      ),
-                    ),
-                  ),
-                  if (state.errorMessage != null) ...[
-                    const SizedBox(height: AlongSpace.s8),
-                    Text(
-                      _errorText(l10n, state.errorMessage!),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AlongColors.semanticDanger,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: DriverHomePanel(
+              state: state,
+              todayEarned: today?.$1,
+              todayTrips: today?.$2,
+              errorText: state.errorMessage == null
+                  ? null
+                  : _errorText(l10n, state.errorMessage!),
+              onGo: () => ref
+                  .read(driverHomeControllerProvider.notifier)
+                  .setStatus(DriverStatus.roamingAvailable),
+              onGoOffline: () => ref
+                  .read(driverHomeControllerProvider.notifier)
+                  .setStatus(DriverStatus.offline),
+              onMode: (next) => ref
+                  .read(driverHomeControllerProvider.notifier)
+                  .setStatus(next),
+              onPark: _openParkPicker,
+              onSeats: () => context.push(AppRoutes.seatBoard),
+              onDirection: state.toggleEnabled ? _toggleDirection : null,
+              onBuildDay: () => context.push(AppRoutes.buildMyDay),
+              onConductor: () => context.push(AppRoutes.conductor),
+              onRest: () => context.push(AppRoutes.rest),
+              onMarketplace: () => context.push(AppRoutes.marketplace),
             ),
           ),
         ],
       ),
     );
+  }
+
+  /// Today's cash takings and trip count, money formatted the Along way.
+  (String, int) _today(List<TripCashSummary> trips) {
+    final now = DateTime.now();
+    final todays = [
+      for (final t in trips)
+        if (DateUtils.isSameDay(t.completedAt.toLocal(), now)) t,
+    ];
+    final total = todays.fold<Money>(Money.zero(), (sum, t) => sum + t.fare);
+    return (formatMoney(total), todays.length);
   }
 
   String _errorText(AppLocalizations l10n, String key) => switch (key) {
@@ -347,53 +295,6 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   }
 }
 
-class _InfoBanner extends StatelessWidget {
-  const _InfoBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AlongSpace.s12),
-      color: AlongColors.surfaceInverse,
-      child: Text(
-        message,
-        style: AlongText.body.copyWith(color: AlongColors.surface0),
-      ),
-    );
-  }
-}
-
-class _DemandLabelsCard extends StatelessWidget {
-  const _DemandLabelsCard({required this.labels});
-
-  final List<String> labels;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AlongColors.surface0.withValues(alpha: 0.92),
-      shape: AlongCraft.border(AlongRadius.card.x),
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(AlongSpace.s12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final label in labels.take(3))
-              Padding(
-                padding: const EdgeInsets.only(bottom: AlongSpace.s4),
-                child: Text(label, style: AlongText.body),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _ManifestEntryChip extends ConsumerWidget {
   const _ManifestEntryChip({required this.l10n});
 
@@ -403,75 +304,36 @@ class _ManifestEntryChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final manifest = ref.watch(manifestControllerProvider);
     if (manifest.entries.isEmpty) return const SizedBox.shrink();
-
-    return SafeArea(
-      bottom: false,
-      child: ActionChip(
-        key: const Key('home_manifest_chip'),
-        label: Text(l10n.manifestOpen(manifest.entries.length)),
-        onPressed: () => context.push(AppRoutes.manifest),
-      ),
-    );
-  }
-}
-
-class _ParkChip extends StatelessWidget {
-  const _ParkChip({required this.label, required this.onTap});
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: AlongSpace.s8),
+      padding: const EdgeInsets.only(top: AlongSpace.s8),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: ActionChip(label: Text(label), onPressed: onTap),
+        child: Material(
+          color: p.surface,
+          shape: AlongCraft.border(16),
+          clipBehavior: Clip.antiAlias,
+          elevation: 0,
+          child: InkWell(
+            key: const Key('home_manifest_chip'),
+            onTap: () => context.push(AppRoutes.manifest),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AlongIcon(AlongIcons.path, size: 18, color: p.ink),
+                  const SizedBox(width: AlongSpace.s8),
+                  Text(
+                    l10n.manifestOpen(manifest.entries.length),
+                    style: AlongType.label(p),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
-  }
-}
-
-class _SeatsChip extends StatelessWidget {
-  const _SeatsChip({
-    required this.seats,
-    required this.label,
-    required this.onTap,
-  });
-
-  final int seats;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ActionChip(
-      key: const Key('driver_seat_map_chip'),
-      label: Text('$label · $seats'),
-      onPressed: onTap,
-    );
-  }
-}
-
-class _DirectionChip extends StatelessWidget {
-  const _DirectionChip({
-    required this.direction,
-    required this.onRouteLabel,
-    required this.noneLabel,
-    required this.onTap,
-  });
-
-  final RoamingDirection direction;
-  final String onRouteLabel;
-  final String noneLabel;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final label = direction == RoamingDirection.onRoute
-        ? onRouteLabel
-        : noneLabel;
-    return ActionChip(label: Text(label), onPressed: onTap);
   }
 }

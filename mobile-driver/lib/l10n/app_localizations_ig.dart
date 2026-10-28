@@ -447,7 +447,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String incomingRequestAlongFee(String amount, String percent) {
-    return 'Along fee $amount ($percent%) — added to your balance at completion';
+    return 'Ụgwọ Along $amount · $percent%';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsIg extends AppLocalizations {
   String get settleDone => 'Done';
 
   @override
-  String get earningsLedgerSection => 'ALONG BALANCE';
+  String get earningsLedgerSection => 'Mmegharị ego';
 
   @override
   String get earningsTripsSection => 'TRIPS';
@@ -1065,7 +1065,7 @@ class AppLocalizationsIg extends AppLocalizations {
       'Could not verify payment QR — try again';
 
   @override
-  String get earningsDigitalSection => 'DIGITAL PAYMENTS RECEIVED';
+  String get earningsDigitalSection => 'Ịkwụ ụgwọ dijitalụ';
 
   @override
   String get earningsDigitalCaption =>
@@ -1347,4 +1347,203 @@ class AppLocalizationsIg extends AppLocalizations {
   String tripEtaPickup(String label) {
     return 'Ebe nbuli $label';
   }
+
+  @override
+  String get drivePhasePickup => 'Nbuli';
+
+  @override
+  String get drivePhaseBoard => 'Banye';
+
+  @override
+  String get drivePhaseDrop => 'Ịwụda';
+
+  @override
+  String activeTripPickUpTitle(String name) {
+    return 'Buru $name';
+  }
+
+  @override
+  String activeTripOnBoardTitle(String name) {
+    return '$name abanyela';
+  }
+
+  @override
+  String activeTripDropTitle(String name) {
+    return 'Wụda $name';
+  }
+
+  @override
+  String get activeTripRiderFallback => 'onye njem gị';
+
+  @override
+  String get activeTripBoardNaMe => 'Banye na Na Me';
+
+  @override
+  String get activeTripEnterPin => 'Tinye PIN nbuli';
+
+  @override
+  String get activeTripPinShort => 'PIN';
+
+  @override
+  String get activeTripMessageShort => 'Ozi';
+
+  @override
+  String get activeTripSeatsShort => 'Oche';
+
+  @override
+  String get activeTripExtendShort => 'Gbatịa';
+
+  @override
+  String get activeTripReportShort => 'Kọọ';
+
+  @override
+  String get activeTripFareLabel => 'Onye njem ga-akwụ';
+
+  @override
+  String activeTripFeeCaption(String amount, String percent) {
+    return 'Ụgwọ Along $amount ($percent%)';
+  }
+
+  @override
+  String incomingAcceptFare(String amount) {
+    return 'Nabata · $amount';
+  }
+
+  @override
+  String incomingFareCaption(String tierLabel) {
+    return 'Onye njem ga-akwụ · $tierLabel';
+  }
+
+  @override
+  String get homeOfflineTitle => 'Ị nọghị n\'ịntanetị';
+
+  @override
+  String get homeOnlineTitle => 'Ị nọ n\'ịntanetị';
+
+  @override
+  String get homeOfflineHint => 'Banye n\'ịntanetị ka ị nweta arịrịọ nso gị.';
+
+  @override
+  String get homeOnlineHint => 'Arịrịọ ga-apụta ebe a. Nabata n\'otu mmetụ.';
+
+  @override
+  String get homeGoOnline => 'GAA';
+
+  @override
+  String get homeGoOffline => 'Pụọ n\'ịntanetị';
+
+  @override
+  String get homeModeAtPark => 'N\'ogige';
+
+  @override
+  String get homeModeRoaming => 'Na-agagharị';
+
+  @override
+  String get homeModeFull => 'Ejupụtala';
+
+  @override
+  String homeTodayEarned(String amount) {
+    return 'Taa · $amount';
+  }
+
+  @override
+  String homeTodayTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Njem $count',
+      one: 'Njem 1',
+      zero: 'Enweghị njem ka',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShortcutsTitle => 'Ụbọchị gị';
+
+  @override
+  String get homeDirectionShortOnRoute => 'N\'ụzọ m';
+
+  @override
+  String get homeDirectionShortNone => 'Ụzọ ọ bụla';
+
+  @override
+  String get homeTileDemand => 'Ọchịchọ';
+
+  @override
+  String get tripCompleteCashHero => 'Nara ego n\'aka';
+
+  @override
+  String get tripCompleteRowFare => 'Ụgwọ ụgbọ';
+
+  @override
+  String get tripCompleteRowFee => 'Ụgwọ Along (na ego fọdụrụ)';
+
+  @override
+  String get tripCompleteRowBalance => 'Ego fọdụrụ ọhụrụ';
+
+  @override
+  String tripCompleteYesAmount(String amount) {
+    return 'Ee, anatara m $amount';
+  }
+
+  @override
+  String get settleSubtitle => 'Akaụntụ Along gị';
+
+  @override
+  String get settleOwedLabel => 'Ị ji Along ụgwọ';
+
+  @override
+  String get settleCreditLabel => 'Ego fọdụrụ gị';
+
+  @override
+  String settleThreshold(String amount) {
+    return 'Nhazi na-akwụsị ma ụgwọ gafere $amount';
+  }
+
+  @override
+  String get settleMethodTitle => 'Kwụọ site na';
+
+  @override
+  String settleSubmit(String amount) {
+    return 'Kwụọ $amount';
+  }
+
+  @override
+  String get settleChannelBankDetail => 'Zigara akaụntụ Along gị';
+
+  @override
+  String get settleChannelUssdDetail => 'Kpọọ koodu, enweghị data';
+
+  @override
+  String get settleChannelCardDetail => 'Kaadị ụlọ akụ';
+
+  @override
+  String get settleChannelAgentDetail => 'Kwụọ ego n\'aka onye nnọchi Along';
+
+  @override
+  String earningsBalanceAfter(String amount) {
+    return 'Ego fọdụrụ $amount';
+  }
+
+  @override
+  String get ratingTagSafeDriving => 'Ịnya nke ọma';
+
+  @override
+  String get ratingTagFairFare => 'Ụgwọ ziri ezi';
+
+  @override
+  String get ratingTagCleanVehicle => 'Ụgbọ dị ọcha';
+
+  @override
+  String get ratingTagPolite => 'Nwere nsọpụrụ';
+
+  @override
+  String get ratingTagOnTime => 'N\'oge';
+
+  @override
+  String get ratingTagReady => 'Dị njikere';
+
+  @override
+  String get ratingTagPaidPromptly => 'Kwụrụ ngwa ngwa';
 }

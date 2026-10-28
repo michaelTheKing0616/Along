@@ -11,6 +11,7 @@ import 'package:mobile_driver/features/payments/presentation/payment_request_con
 import 'package:mobile_driver/features/safety/domain/rating_config.dart';
 import 'package:mobile_driver/routing/routes.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/widgets/drive_kit.dart';
 
 /// D-18 Trip complete summary — fare, Along fee, balance, cash confirm, rate (doc 06).
 class TripCompleteSheet extends ConsumerStatefulWidget {
@@ -61,10 +62,15 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
 
   int get _fareNaira => widget.result.fare.minorUnits ~/ 100;
 
-  Future<void> _confirmCash({required String outcome, Money? paidAmount}) async {
+  Future<void> _confirmCash({
+    required String outcome,
+    Money? paidAmount,
+  }) async {
     setState(() => _busy = true);
     try {
-      await ref.read(tripsRepositoryProvider).confirmFare(
+      await ref
+          .read(tripsRepositoryProvider)
+          .confirmFare(
             tripId: widget.result.trip.tripId,
             outcome: outcome,
             paidAmount: paidAmount,
@@ -78,7 +84,9 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
   Future<void> _submitRating() async {
     setState(() => _busy = true);
     try {
-      await ref.read(tripsRepositoryProvider).rateTrip(
+      await ref
+          .read(tripsRepositoryProvider)
+          .rateTrip(
             tripId: widget.result.trip.tripId,
             score: _rating,
             tags: _tags.toList(growable: false),
@@ -99,6 +107,7 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
     final ledger = ref.watch(driverLedgerControllerProvider);
     final commission = widget.result.commission;
     final digitalEnabled = ref.watch(digitalPaymentsEnabledProvider);
+    final p = AlongPalette.of(context);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -109,89 +118,140 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_step == _CompleteStep.summary) ...[
-              if (widget.paidDigitally) ...[
-                Text(
-                  l10n.tripCompleteDigitalLine(
-                    formatMoney(widget.driverAmountReceived ?? widget.result.fare),
-                  ),
-                  style: AlongText.bodyStrong,
+              Text(
+                widget.paidDigitally
+                    ? l10n.tripCompleteDigitalLine(
+                        formatMoney(
+                          widget.driverAmountReceived ?? widget.result.fare,
+                        ),
+                      )
+                    : l10n.tripCompleteCashHero,
+                style: AlongType.caption(p),
+              ),
+              const SizedBox(height: AlongSpace.s4),
+              Text(
+                formatMoney(
+                  widget.paidDigitally
+                      ? (widget.driverAmountReceived ?? widget.result.fare)
+                      : widget.result.fare,
                 ),
-                Text(
-                  l10n.tripCompleteDigitalFeeLine(formatMoney(commission)),
-                  style: AlongText.caption.copyWith(color: AlongColors.ink500),
+                key: const Key('trip_complete_hero'),
+                style: AlongType.display(
+                  p,
+                ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+              ),
+              const SizedBox(height: AlongSpace.s16),
+              DrivePanel(
+                child: Column(
+                  children: [
+                    _Line(
+                      label: l10n.tripCompleteRowFare,
+                      value: formatMoney(widget.result.fare),
+                    ),
+                    const SizedBox(height: AlongSpace.s8),
+                    _Line(
+                      label: widget.paidDigitally
+                          ? l10n.tripCompleteDigitalFeeLine(
+                              formatMoney(commission),
+                            )
+                          : l10n.tripCompleteRowFee,
+                      value: '−${formatMoney(commission)}',
+                    ),
+                    if (!widget.paidDigitally) ...[
+                      const SizedBox(height: AlongSpace.s8),
+                      Divider(height: 1, color: p.line),
+                      const SizedBox(height: AlongSpace.s8),
+                      _Line(
+                        label: l10n.tripCompleteRowBalance,
+                        value: formatMoney(ledger.balance),
+                        strong: true,
+                      ),
+                    ],
+                  ],
                 ),
-                const SizedBox(height: AlongSpace.s16),
+              ),
+              const SizedBox(height: AlongSpace.s16),
+              if (widget.paidDigitally)
                 AlongButton(
                   key: const Key('trip_complete_digital_done'),
                   label: l10n.tripCompleteDone,
                   onPressed: _busy
                       ? null
                       : () => setState(() => _step = _CompleteStep.rating),
-                ),
-              ] else ...[
-                Text(l10n.tripCompleteFareLine(formatMoney(widget.result.fare)),
-                    style: AlongText.body),
-                Text(
-                  l10n.tripCompleteAlongFeeLine(formatMoney(commission)),
-                  style: AlongText.caption.copyWith(color: AlongColors.ink500),
-                ),
-                const SizedBox(height: AlongSpace.s8),
-                Text(
-                  l10n.tripCompleteNewBalance(formatMoney(ledger.balance)),
-                  style: AlongText.bodyStrong,
-                ),
-                const SizedBox(height: AlongSpace.s16),
-                digitalEnabled.maybeWhen(
-                  data: (enabled) {
-                    if (!enabled) return const SizedBox.shrink();
-                    return Column(
-                      children: [
-                        AlongButton(
-                          key: const Key('trip_complete_request_payment'),
-                          label: l10n.requestPayment,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: _busy
-                              ? null
-                              : () {
-                                  Navigator.of(context).pop();
-                                  context.push(
-                                    AppRoutes.paymentRequest,
-                                    extra: PaymentRequestArgs(
-                                      tripId: widget.result.trip.tripId,
-                                      riderName:
-                                          widget.result.trip.rider.displayName,
-                                    ),
-                                  );
-                                },
-                        ),
-                        const SizedBox(height: AlongSpace.s8),
-                      ],
-                    );
-                  },
-                  orElse: () => const SizedBox.shrink(),
-                ),
-                Text(l10n.tripCompleteCashQuestion, style: AlongText.heading2),
+                )
+              else ...[
+                Text(l10n.tripCompleteCashQuestion, style: AlongType.title(p)),
                 const SizedBox(height: AlongSpace.s12),
                 AlongButton(
                   key: const Key('trip_complete_yes'),
-                  label: l10n.tripCompleteYes,
+                  label: l10n.tripCompleteYesAmount(
+                    formatMoney(widget.result.fare),
+                  ),
                   visualState: _busy
                       ? AlongButtonVisualState.loading
                       : AlongButtonVisualState.normal,
-                  onPressed: _busy ? null : () => _confirmCash(outcome: 'as_shown'),
-                ),
-                const SizedBox(height: AlongSpace.s8),
-                AlongButton(
-                  key: const Key('trip_complete_different'),
-                  label: l10n.tripCompleteDifferent,
-                  variant: AlongButtonVariant.secondary,
                   onPressed: _busy
                       ? null
-                      : () => setState(() => _step = _CompleteStep.different),
+                      : () {
+                          AlongHaptics.confirm(context);
+                          _confirmCash(outcome: 'as_shown');
+                        },
+                ),
+                const SizedBox(height: AlongSpace.s8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AlongButton(
+                        key: const Key('trip_complete_different'),
+                        label: l10n.tripCompleteDifferent,
+                        variant: AlongButtonVariant.secondary,
+                        size: AlongButtonSize.secondary,
+                        onPressed: _busy
+                            ? null
+                            : () => setState(
+                                () => _step = _CompleteStep.different,
+                              ),
+                      ),
+                    ),
+                    ...digitalEnabled.maybeWhen(
+                      data: (enabled) => enabled
+                          ? [
+                              const SizedBox(width: AlongSpace.s8),
+                              Expanded(
+                                child: AlongButton(
+                                  key: const Key(
+                                    'trip_complete_request_payment',
+                                  ),
+                                  label: l10n.requestPayment,
+                                  variant: AlongButtonVariant.secondary,
+                                  size: AlongButtonSize.secondary,
+                                  onPressed: _busy
+                                      ? null
+                                      : () {
+                                          Navigator.of(context).pop();
+                                          context.push(
+                                            AppRoutes.paymentRequest,
+                                            extra: PaymentRequestArgs(
+                                              tripId: widget.result.trip.tripId,
+                                              riderName: widget
+                                                  .result
+                                                  .trip
+                                                  .rider
+                                                  .displayName,
+                                            ),
+                                          );
+                                        },
+                                ),
+                              ),
+                            ]
+                          : const <Widget>[],
+                      orElse: () => const <Widget>[],
+                    ),
+                  ],
                 ),
               ],
             ] else if (_step == _CompleteStep.different) ...[
-              Text(l10n.tripCompleteDifferentPrompt, style: AlongText.heading2),
+              Text(l10n.tripCompleteDifferentPrompt, style: AlongType.title(p)),
               const SizedBox(height: AlongSpace.s16),
               Wrap(
                 spacing: AlongSpace.s8,
@@ -207,31 +267,33 @@ class _TripCompleteSheetState extends ConsumerState<TripCompleteSheet> {
                       onTap: _busy
                           ? null
                           : () => _confirmCash(
-                                outcome: 'different',
-                                paidAmount: Money.fromMinorUnits(
-                                  amount * 100,
-                                  currency: widget.result.fare.currency,
-                                ),
+                              outcome: 'different',
+                              paidAmount: Money.fromMinorUnits(
+                                amount * 100,
+                                currency: widget.result.fare.currency,
                               ),
+                            ),
                     ),
                 ],
               ),
             ] else ...[
-              Text(l10n.tripCompleteRateTitle, style: AlongText.heading2),
+              Text(l10n.tripCompleteRateTitle, style: AlongType.title(p)),
               const SizedBox(height: AlongSpace.s12),
               _StarRow(
                 rating: _rating,
                 onChanged: (value) => setState(() => _rating = value),
               ),
               const SizedBox(height: AlongSpace.s12),
-              ref.watch(ratingTagsProvider).when(
+              ref
+                  .watch(ratingTagsProvider)
+                  .when(
                     data: (tags) => Wrap(
                       spacing: AlongSpace.s8,
                       runSpacing: AlongSpace.s8,
                       children: tags
                           .map(
                             (tag) => _TagChip(
-                              label: tag.replaceAll('_', ' '),
+                              label: _tagLabel(l10n, tag),
                               selected: _tags.contains(tag),
                               onTap: () => setState(() {
                                 if (_tags.contains(tag)) {
@@ -336,7 +398,9 @@ class _TagChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? AlongColors.brandYellow : AlongColors.surface100,
+      color: selected
+          ? AlongColors.brandYellow
+          : AlongPalette.of(context).recessed,
       shape: AlongCraft.border(AlongRadius.control.x),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -350,7 +414,9 @@ class _TagChip extends StatelessWidget {
           child: Text(
             label,
             style: AlongText.label.copyWith(
-              color: selected ? AlongColors.brandYellowOn : AlongColors.ink700,
+              color: selected
+                  ? AlongColors.brandYellowOn
+                  : AlongPalette.of(context).ink,
             ),
           ),
         ),
@@ -358,3 +424,44 @@ class _TagChip extends StatelessWidget {
     );
   }
 }
+
+class _Line extends StatelessWidget {
+  const _Line({required this.label, required this.value, this.strong = false});
+
+  final String label;
+  final String value;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final style = strong ? AlongType.label(p) : AlongType.body(p);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: Text(label, style: style)),
+        const SizedBox(width: AlongSpace.s12),
+        Text(
+          value,
+          style: style.copyWith(
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+String _tagLabel(AppLocalizations l10n, String tag) => switch (tag) {
+  'safe_driving' => l10n.ratingTagSafeDriving,
+  'fair_fare' => l10n.ratingTagFairFare,
+  'clean_vehicle' => l10n.ratingTagCleanVehicle,
+  'polite' || 'respectful' => l10n.ratingTagPolite,
+  'on_time' => l10n.ratingTagOnTime,
+  'ready_at_pickup' => l10n.ratingTagReady,
+  'paid_promptly' => l10n.ratingTagPaidPromptly,
+  _ =>
+    tag.isEmpty
+        ? tag
+        : tag[0].toUpperCase() + tag.substring(1).replaceAll('_', ' '),
+};
