@@ -1912,7 +1912,7 @@
   "searchEmptyTitle": "No places found",
   "searchEmptyBody": "Try a nearby landmark, market or bus stop.",
   "searchEmptyOfflineBody": "You're offline, so only saved places show. Drop a pin instead.",
-  "connNeedsConnection": "{count} to redo online",
+  "connNeedsConnection": "Offline · {count} to redo online",
   "@connNeedsConnection": {
     "placeholders": {
       "count": {

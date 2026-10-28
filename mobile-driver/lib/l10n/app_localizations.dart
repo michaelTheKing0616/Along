@@ -3179,7 +3179,7 @@ abstract class AppLocalizations {
   /// No description provided for @connNeedsConnection.
   ///
   /// In en, this message translates to:
-  /// **'{count} to redo online'**
+  /// **'Offline · {count} to redo online'**
   String connNeedsConnection(int count);
 
   /// No description provided for @connOfflineMixed.
@@ -3187,6 +3187,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offline · {queued} to send · {needs} to redo'**
   String connOfflineMixed(int queued, int needs);
+
+  /// No description provided for @homeOnlineNoSignal.
+  ///
+  /// In en, this message translates to:
+  /// **'Online · no signal'**
+  String get homeOnlineNoSignal;
 }
 
 class _AppLocalizationsDelegate

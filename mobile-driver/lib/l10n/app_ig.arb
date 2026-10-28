@@ -132,6 +132,7 @@
   "connRestored": "Ịlaghachila n'ịntanetị",
   "connRestoredSent": "Ịlaghachila · ezigala {count}",
   "connRetry": "Nwaa ọzọ",
-  "connNeedsConnection": "{count} ka emeghachi n'ịntanetị",
-  "connOfflineMixed": "Enweghị ịntanetị · {queued} iziga · {needs} imeghachi"
+  "connNeedsConnection": "Enweghị ịntanetị · {count} ka emeghachi n'ịntanetị",
+  "connOfflineMixed": "Enweghị ịntanetị · {queued} iziga · {needs} imeghachi",
+  "homeOnlineNoSignal": "Nọ n'ịntanetị · enweghị signal"
 }

@@ -1689,7 +1689,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count to redo online';
+    return 'Offline · $count to redo online';
   }
 
   @override

@@ -91,11 +91,17 @@ Widget _overMap(Widget overlay, {bool scrim = false}) => Builder(
   ),
 );
 
-Widget _home(DriverHomeState state, {String? earned, int? trips}) => _overMap(
+Widget _home(
+  DriverHomeState state, {
+  String? earned,
+  int? trips,
+  bool noSignal = false,
+}) => _overMap(
   Align(
     alignment: Alignment.bottomCenter,
     child: DriverHomePanel(
       state: state,
+      noSignal: noSignal,
       todayEarned: earned,
       todayTrips: trips,
       onGo: () {},
@@ -592,6 +598,7 @@ void main() {
                 ),
                 earned: '₦18,400',
                 trips: 11,
+                noSignal: true,
               ),
             ),
           ),
@@ -600,6 +607,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(find.byKey(const Key('connection_banner_offline')), findsOne);
+      expect(find.text('Online · no signal'), findsOne);
+      expect(find.byKey(const Key('home_demand')), findsNothing);
       await _shoot(tester, 'connection_home_offline_$name');
       await tester.pumpWidget(const SizedBox());
       await tester.pump(const Duration(seconds: 3));

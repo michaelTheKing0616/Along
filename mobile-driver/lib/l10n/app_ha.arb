@@ -132,6 +132,7 @@
   "connRestored": "An dawo kan layi",
   "connRestoredSent": "An dawo kan layi · an aika {count}",
   "connRetry": "Sake gwadawa",
-  "connNeedsConnection": "{count} a sake yi da intanet",
-  "connOfflineMixed": "Babu intanet · {queued} za a aika · {needs} a sake"
+  "connNeedsConnection": "Babu intanet · {count} a sake yi da intanet",
+  "connOfflineMixed": "Babu intanet · {queued} za a aika · {needs} a sake",
+  "homeOnlineNoSignal": "A kan layi · babu sigina"
 }

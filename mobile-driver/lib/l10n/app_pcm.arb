@@ -132,6 +132,7 @@
   "connRestored": "Network don come back",
   "connRestoredSent": "Network don come back · {count} don send",
   "connRetry": "Try again",
-  "connNeedsConnection": "{count} to do again when network dey",
-  "connOfflineMixed": "No network · {queued} go send · {needs} to do again"
+  "connNeedsConnection": "No network · {count} to do again when network dey",
+  "connOfflineMixed": "No network · {queued} go send · {needs} to do again",
+  "homeOnlineNoSignal": "Online · no network"
 }

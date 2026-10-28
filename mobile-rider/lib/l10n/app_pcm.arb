@@ -214,6 +214,6 @@
   "searchEmptyTitle": "We no see any place",
   "searchEmptyBody": "Try landmark, market or bus stop wey dey near.",
   "searchEmptyOfflineBody": "You no get network, na only saved places dey show. Drop pin instead.",
-  "connNeedsConnection": "{count} to do again when network dey",
+  "connNeedsConnection": "No network · {count} to do again when network dey",
   "connOfflineMixed": "No network · {queued} go send · {needs} to do again"
 }

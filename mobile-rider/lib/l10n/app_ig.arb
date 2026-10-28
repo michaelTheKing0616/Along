@@ -214,6 +214,6 @@
   "searchEmptyTitle": "Ahụghị ebe ọ bụla",
   "searchEmptyBody": "Nwaa ebe a ma ama, ahịa ma ọ bụ ebe nkwụsị ụgbọ dị nso.",
   "searchEmptyOfflineBody": "Ị nọghị n'ịntanetị, ya mere naanị ebe echekwara na-egosi. Tinye pin kama.",
-  "connNeedsConnection": "{count} ka emeghachi n'ịntanetị",
+  "connNeedsConnection": "Enweghị ịntanetị · {count} ka emeghachi n'ịntanetị",
   "connOfflineMixed": "Enweghị ịntanetị · {queued} iziga · {needs} imeghachi"
 }

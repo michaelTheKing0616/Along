@@ -155,7 +155,12 @@ void main() {
       testWidgets('rider home connection ${phase.name} $name', (tester) async {
         await tester.binding.setSurfaceSize(const Size(360, 800));
         addTearDown(() => tester.binding.setSurfaceSize(null));
-        final controller = connectionControllerIn(phase, needsConnection: 1);
+        // Offline shows the redo-only line; reconnecting sends the rest.
+        final controller = connectionControllerIn(
+          phase,
+          queued: phase == ConnectionPhase.offline ? 0 : 2,
+          needsConnection: 1,
+        );
         await tester.pumpWidget(
           ProviderScope(
             overrides: [

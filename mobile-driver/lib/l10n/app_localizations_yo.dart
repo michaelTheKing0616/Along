@@ -1748,11 +1748,14 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count láti tún ṣe lórí ayélujára';
+    return 'Kò sí íntánẹ́ẹ̀tì · $count láti tún ṣe lórí ayélujára';
   }
 
   @override
   String connOfflineMixed(int queued, int needs) {
     return 'Kò sí íntánẹ́ẹ̀tì · $queued láti fi ránṣẹ́ · $needs láti tún ṣe';
   }
+
+  @override
+  String get homeOnlineNoSignal => 'Wà lórí ayélujára · kò sí àmì';
 }

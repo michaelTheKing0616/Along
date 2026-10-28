@@ -1691,7 +1691,7 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count a sake yi da intanet';
+    return 'Babu intanet · $count a sake yi da intanet';
   }
 
   @override

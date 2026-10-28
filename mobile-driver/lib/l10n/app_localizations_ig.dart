@@ -1746,11 +1746,14 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count ka emeghachi n\'ịntanetị';
+    return 'Enweghị ịntanetị · $count ka emeghachi n\'ịntanetị';
   }
 
   @override
   String connOfflineMixed(int queued, int needs) {
     return 'Enweghị ịntanetị · $queued iziga · $needs imeghachi';
   }
+
+  @override
+  String get homeOnlineNoSignal => 'Nọ n\'ịntanetị · enweghị signal';
 }

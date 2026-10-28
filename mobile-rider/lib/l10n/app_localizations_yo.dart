@@ -1689,7 +1689,7 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count láti tún ṣe lórí ayélujára';
+    return 'Kò sí íntánẹ́ẹ̀tì · $count láti tún ṣe lórí ayélujára';
   }
 
   @override

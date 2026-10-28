@@ -214,6 +214,6 @@
   "searchEmptyTitle": "A kò rí ibìkan",
   "searchEmptyBody": "Gbìyànjú àmì-ilẹ̀, ọjà tàbí ibùdókọ̀ tó wà nítòsí.",
   "searchEmptyOfflineBody": "O kò sí lórí íntánẹ́ẹ̀tì, ibi tí a fipamọ́ nìkan ló ń hàn. Fi pin sí i dípò.",
-  "connNeedsConnection": "{count} láti tún ṣe lórí ayélujára",
+  "connNeedsConnection": "Kò sí íntánẹ́ẹ̀tì · {count} láti tún ṣe lórí ayélujára",
   "connOfflineMixed": "Kò sí íntánẹ́ẹ̀tì · {queued} láti fi ránṣẹ́ · {needs} láti tún ṣe"
 }

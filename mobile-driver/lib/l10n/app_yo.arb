@@ -132,6 +132,7 @@
   "connRestored": "Ti padà sórí íntánẹ́ẹ̀tì",
   "connRestoredSent": "Ti padà · a ti fi {count} ránṣẹ́",
   "connRetry": "Tún gbìyànjú",
-  "connNeedsConnection": "{count} láti tún ṣe lórí ayélujára",
-  "connOfflineMixed": "Kò sí íntánẹ́ẹ̀tì · {queued} láti fi ránṣẹ́ · {needs} láti tún ṣe"
+  "connNeedsConnection": "Kò sí íntánẹ́ẹ̀tì · {count} láti tún ṣe lórí ayélujára",
+  "connOfflineMixed": "Kò sí íntánẹ́ẹ̀tì · {queued} láti fi ránṣẹ́ · {needs} láti tún ṣe",
+  "homeOnlineNoSignal": "Wà lórí ayélujára · kò sí àmì"
 }

@@ -1692,7 +1692,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count to do again when network dey';
+    return 'No network · $count to do again when network dey';
   }
 
   @override

@@ -214,6 +214,6 @@
   "searchEmptyTitle": "Ba a sami wurare ba",
   "searchEmptyBody": "Gwada wani sanannen wuri, kasuwa ko tashar mota kusa.",
   "searchEmptyOfflineBody": "Ba ka kan layi, wuraren da aka ajiye kawai ke nunawa. Sa alama a taswira.",
-  "connNeedsConnection": "{count} a sake yi da intanet",
+  "connNeedsConnection": "Babu intanet · {count} a sake yi da intanet",
   "connOfflineMixed": "Babu intanet · {queued} za a aika · {needs} a sake"
 }

@@ -3008,7 +3008,7 @@ abstract class AppLocalizations {
   /// No description provided for @connNeedsConnection.
   ///
   /// In en, this message translates to:
-  /// **'{count} to redo online'**
+  /// **'Offline · {count} to redo online'**
   String connNeedsConnection(int count);
 
   /// No description provided for @connOfflineMixed.

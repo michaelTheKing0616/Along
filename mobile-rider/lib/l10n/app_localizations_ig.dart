@@ -1689,7 +1689,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count ka emeghachi n\'ịntanetị';
+    return 'Enweghị ịntanetị · $count ka emeghachi n\'ịntanetị';
   }
 
   @override

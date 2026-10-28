@@ -1747,11 +1747,14 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String connNeedsConnection(int count) {
-    return '$count to do again when network dey';
+    return 'No network · $count to do again when network dey';
   }
 
   @override
   String connOfflineMixed(int queued, int needs) {
     return 'No network · $queued go send · $needs to do again';
   }
+
+  @override
+  String get homeOnlineNoSignal => 'Online · no network';
 }

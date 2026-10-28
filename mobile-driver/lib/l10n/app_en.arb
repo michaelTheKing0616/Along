@@ -1130,7 +1130,7 @@
     }
   },
   "connRetry": "Retry",
-  "connNeedsConnection": "{count} to redo online",
+  "connNeedsConnection": "Offline · {count} to redo online",
   "@connNeedsConnection": {
     "placeholders": {
       "count": {
@@ -1148,5 +1148,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "homeOnlineNoSignal": "Online · no signal"
 }
