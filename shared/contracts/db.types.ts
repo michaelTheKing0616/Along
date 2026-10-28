@@ -9589,7 +9589,10 @@ export type Database = {
         Args: { p_pin: string; p_trip_id: string }
         Returns: Json
       }
-      wallet_buy_pass: { Args: { p_idempotency_key: string }; Returns: Json }
+      wallet_buy_pass: {
+        Args: { p_idempotency_key: string; p_plan: string }
+        Returns: Json
+      }
       wallet_ledger_check: {
         Args: never
         Returns: {

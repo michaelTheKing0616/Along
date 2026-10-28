@@ -3,7 +3,7 @@
 create extension if not exists pgtap;
 
 begin;
-select plan(30);
+select plan(37);
 
 insert into auth.users (id, aud, role, phone) values
   ('3a100000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', '+2348000027001'),
@@ -44,12 +44,20 @@ select throws_ok($$ select wallet_send('+2348000027999', 100, 'ts-wallet-send-3'
 select throws_ok($$ select wallet_send('+2348000027001', 100, 'ts-wallet-send-4') $$, 'P0001', 'VALIDATION', 'cannot send to self');
 
 -- Pass
-select is((wallet_buy_pass('ts-wallet-pass-1')->>'balance')::numeric, 1800.00, 'pass costs 2000');
+select is(jsonb_array_length(get_wallet()->'pass_plans'), 3, 'server lists pass plans');
+select is(get_wallet()->'active_pass', 'null'::jsonb, 'no active pass yet');
+select throws_ok($$ select wallet_buy_pass('lifetime', 'ts-wallet-pass-0') $$, 'P0001', 'VALIDATION', 'unknown plan rejected');
+select is((wallet_buy_pass('pack', 'ts-wallet-pass-1')->>'balance')::numeric, 1200.00, 'ride pack costs 2600');
+select is(get_wallet()->'active_pass'->>'plan', 'pack', 'bought pack is active');
 
 -- Split with Bayo and Chi
 select is(jsonb_array_length(wallet_request_split(array['+2348000027002', '+2348000027003'], 700, null, 'ts-wallet-split-1')->'split_ids'), 2, 'split request creates one row per co-rider');
 select is((wallet_request_split(array['+2348000027002', '+2348000027003'], 700, null, 'ts-wallet-split-1')->>'replayed')::boolean, true, 'split request replays');
 select is((select count(*)::int from wallet_splits), 2, 'requester sees both splits');
+select is(jsonb_array_length(get_wallet()->'splits_requested'), 2, 'requester gets a status row per co-rider');
+select is((select count(*)::int from jsonb_array_elements(get_wallet()->'splits_requested') r where r->>'status' = 'pending'), 2, 'new requests are pending');
+select throws_ok($$ select wallet_request_split(array['+2348000027002', '+2348000027998'], 700, null, 'ts-wallet-split-2') $$,
+  'P0001', 'NOT_FOUND', 'unknown co-rider rejected');
 
 -- RLS: Ada never sees system or other riders' rows
 select is((select count(*)::int from wallet_accounts), 1, 'rider sees only own account');

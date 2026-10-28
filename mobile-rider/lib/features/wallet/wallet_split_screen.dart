@@ -31,6 +31,9 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
   String? _error;
   String? _key;
 
+  /// Index of the co-rider whose number is not on Along.
+  int? _missing;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +44,7 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
   void _changed() => setState(() {
     _key = null;
     _error = null;
+    _missing = null;
   });
 
   @override
@@ -66,7 +70,6 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
   Future<void> _request(List<String> phones, int share) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
     final key = _key ??= walletKey('split');
     setState(() => _busy = true);
     try {
@@ -76,13 +79,26 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.walletSplitSentSnack(sent))),
       );
-      if (navigator.canPop()) navigator.pop();
+      ref.invalidate(walletSummaryProvider);
+      for (final c in _phones.skip(1)) {
+        c.dispose();
+      }
+      _phones.removeRange(1, _phones.length);
+      _phones.first.clear();
+      _fare.clear();
+      setState(() => _submitted = false);
     } on WalletException catch (e) {
-      setState(
-        () => _error = e.failure == WalletFailure.notFound
-            ? l10n.walletSplitNotFound
-            : l10n.walletActionFailed,
-      );
+      final at = e.detail == null ? -1 : phones.indexOf(e.detail!);
+      setState(() {
+        if (e.failure == WalletFailure.notFound && at >= 0) {
+          _missing = at;
+          _error = l10n.walletSplitNotFoundNumber(_phones[at].text.trim());
+        } else {
+          _error = e.failure == WalletFailure.notFound
+              ? l10n.walletSplitNotFound
+              : l10n.walletActionFailed;
+        }
+      });
     } catch (_) {
       setState(() => _error = l10n.walletActionFailed);
     } finally {
@@ -103,6 +119,9 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
     final phonesOk =
         normalised.every((n) => n != null) &&
         normalised.toSet().length == normalised.length;
+    final sent =
+        ref.watch(walletSummaryProvider).value?.splitsSent ??
+        const <WalletSplitSent>[];
     final ready = fareOk && phonesOk && each != null && each >= walletSendMin;
     return WalletPage(
       title: l10n.walletSplitTitle,
@@ -168,6 +187,8 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
                       hintText: l10n.walletSendPhoneHint,
                       errorText: _submitted && normalised[i] == null
                           ? l10n.walletSendPhoneInvalid
+                          : _missing == i
+                          ? l10n.walletSplitNotOnAlong
                           : null,
                     ),
                   ),
@@ -209,6 +230,15 @@ class _WalletSplitScreenState extends ConsumerState<WalletSplitScreen> {
               ),
             ),
           ],
+          if (sent.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            AlongTxnGroup(
+              label: l10n.walletSplitRequests,
+              icon: AlongIcons.history,
+            ),
+            const SizedBox(height: 4),
+            for (final r in sent) _StatusRow(request: r),
+          ],
         ],
       ),
     );
@@ -239,6 +269,7 @@ class _ShareStrip extends StatelessWidget {
                   size: 48,
                   highlight: i == 0,
                   label: i == 0 ? names[0] : '$i',
+                  tintSeed: 'co-rider-$i',
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -282,6 +313,84 @@ class _ShareStrip extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// One co-rider's share and where it stands.
+class _StatusRow extends StatelessWidget {
+  const _StatusRow({required this.request});
+
+  final WalletSplitSent request;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    final l10n = AppLocalizations.of(context);
+    final (label, color, icon) = switch (request.status) {
+      WalletSplitStatus.paid => (
+        l10n.walletSplitPaidStatus,
+        p.success,
+        AlongIcons.verified,
+      ),
+      WalletSplitStatus.declined => (
+        l10n.walletSplitDeclined,
+        p.danger,
+        AlongIcons.close,
+      ),
+      WalletSplitStatus.pending => (
+        l10n.walletSplitPending,
+        p.muted,
+        AlongIcons.schedule,
+      ),
+    };
+    return MergeSemantics(
+      child: Padding(
+        key: Key('wallet_split_status_${request.id}'),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            WalletInitials(name: request.payerName, size: 36),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    request.payerName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AlongType.label(p),
+                  ),
+                  Row(
+                    children: [
+                      AlongIcon(icon, size: 14, color: color),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          label,
+                          style: AlongType.caption(p).copyWith(color: color),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              alongNaira(request.amount),
+              style: AlongType.body(p).copyWith(
+                fontWeight: FontWeight.w700,
+                fontFeatures: const [FontFeature.tabularFigures()],
+                decoration: request.status == WalletSplitStatus.declined
+                    ? TextDecoration.lineThrough
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1858,7 +1858,7 @@ class AppLocalizationsHa extends AppLocalizations {
   String get walletPassTitle => 'Fasin Along';
 
   @override
-  String get walletPassSubtitle => 'Wannan wata, daga kuɗin ka';
+  String get walletPassSubtitle => 'Hawa da aka biya gaba daga kuɗinka';
 
   @override
   String walletPassPrice(String amount) {
@@ -1875,7 +1875,7 @@ class AppLocalizationsHa extends AppLocalizations {
   }
 
   @override
-  String get walletPassBought => 'An saya fasi na wannan wata';
+  String get walletPassBought => 'Fasi yana aiki · An gama';
 
   @override
   String walletPassShort(String amount) {
@@ -1938,4 +1938,90 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get accountWalletHint => 'Ƙara kuɗi, aika, fasi, raba kuɗin hawa';
+
+  @override
+  String get walletPassPlanWeek => 'Mako';
+
+  @override
+  String get walletPassPlanPack => 'Hawa 5';
+
+  @override
+  String get walletPassPlanMonth => 'Wata';
+
+  @override
+  String walletPassRides(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hawa $count',
+      one: 'Hawa 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletPassValidity(int days) {
+    return 'Yana aiki na kwanaki $days';
+  }
+
+  @override
+  String walletPassPerRide(String amount) {
+    return '$amount kowace hawa';
+  }
+
+  @override
+  String get walletPassVersus => 'Idan aka kwatanta da kuɗin hawa ɗaya-ɗaya';
+
+  @override
+  String walletPassSingleRow(int count, String fare) {
+    return '$count × $fare ɗaya';
+  }
+
+  @override
+  String get walletPassPassRow => 'Fasi';
+
+  @override
+  String walletPassSave(String amount) {
+    return 'Ka tanadi $amount';
+  }
+
+  @override
+  String get walletPassNoSave => 'Babu tanadi a kuɗin hawanka na yau da kullum';
+
+  @override
+  String get walletPassNoHistory =>
+      'Tanadi zai bayyana bayan kuɗin hawanka na farko daga walat';
+
+  @override
+  String walletPassUsualFare(String amount) {
+    return 'Kuɗin hawanka na yau da kullum $amount';
+  }
+
+  @override
+  String walletPassActive(String date) {
+    return 'Yana aiki har zuwa $date';
+  }
+
+  @override
+  String walletSplitNotFoundNumber(String phone) {
+    return '$phone ba ya kan Along tukuna';
+  }
+
+  @override
+  String get walletSplitNotOnAlong => 'Ba ya kan Along tukuna';
+
+  @override
+  String get walletSplitRequests => 'Buƙatunka';
+
+  @override
+  String get walletSplitPending => 'Ana jira';
+
+  @override
+  String get walletSplitPaidStatus => 'An biya';
+
+  @override
+  String get walletSplitDeclined => 'An ƙi';
+
+  @override
+  String get walletPassSaveLabel => 'Tanadinka';
 }

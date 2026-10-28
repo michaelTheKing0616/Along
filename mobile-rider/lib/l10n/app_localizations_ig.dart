@@ -1856,7 +1856,7 @@ class AppLocalizationsIg extends AppLocalizations {
   String get walletPassTitle => 'Along Pass';
 
   @override
-  String get walletPassSubtitle => 'Ọnwa a, site n\'ego gị';
+  String get walletPassSubtitle => 'Njem akwụọla ugwo site n\'ego gị';
 
   @override
   String walletPassPrice(String amount) {
@@ -1873,7 +1873,7 @@ class AppLocalizationsIg extends AppLocalizations {
   }
 
   @override
-  String get walletPassBought => 'Azụtala pass maka ọnwa a';
+  String get walletPassBought => 'Pass na-arụ ọrụ · Emechala';
 
   @override
   String walletPassShort(String amount) {
@@ -1936,4 +1936,90 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get accountWalletHint => 'Tinye ego, zipu, pass, kee ụgwọ njem';
+
+  @override
+  String get walletPassPlanWeek => 'Izu';
+
+  @override
+  String get walletPassPlanPack => 'Njem 5';
+
+  @override
+  String get walletPassPlanMonth => 'Ọnwa';
+
+  @override
+  String walletPassRides(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Njem $count',
+      one: 'Njem 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletPassValidity(int days) {
+    return 'Ọ dị mma maka ụbọchị $days';
+  }
+
+  @override
+  String walletPassPerRide(String amount) {
+    return '$amount otu njem';
+  }
+
+  @override
+  String get walletPassVersus => 'Ma e jiri ya tụnyere ụgwọ otu otu';
+
+  @override
+  String walletPassSingleRow(int count, String fare) {
+    return '$count × $fare otu';
+  }
+
+  @override
+  String get walletPassPassRow => 'Pass';
+
+  @override
+  String walletPassSave(String amount) {
+    return 'Ị chekwara $amount';
+  }
+
+  @override
+  String get walletPassNoSave => 'Enweghị nchekwa n\'ụgwọ ị na-akwụ mgbe niile';
+
+  @override
+  String get walletPassNoHistory =>
+      'Nchekwa ga-egosi mgbe ị kwụchara ụgwọ mbụ site na wallet';
+
+  @override
+  String walletPassUsualFare(String amount) {
+    return 'Ụgwọ ị na-akwụ mgbe niile bụ $amount';
+  }
+
+  @override
+  String walletPassActive(String date) {
+    return 'Na-arụ ọrụ ruo $date';
+  }
+
+  @override
+  String walletSplitNotFoundNumber(String phone) {
+    return '$phone anọghị na Along';
+  }
+
+  @override
+  String get walletSplitNotOnAlong => 'Anọghị na Along';
+
+  @override
+  String get walletSplitRequests => 'Arịrịọ gị';
+
+  @override
+  String get walletSplitPending => 'Na-eche';
+
+  @override
+  String get walletSplitPaidStatus => 'Akwụọla';
+
+  @override
+  String get walletSplitDeclined => 'Ajụrụ';
+
+  @override
+  String get walletPassSaveLabel => 'Ihe ị chekwara';
 }

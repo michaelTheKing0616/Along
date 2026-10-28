@@ -35,11 +35,77 @@ class WalletSplitRequest {
   final String requesterName;
 }
 
+/// One way to buy rides ahead. Plans come from the server (`pass_plans`).
+class WalletPassPlan {
+  const WalletPassPlan({
+    required this.id,
+    required this.rides,
+    required this.price,
+    required this.days,
+  });
+
+  /// `week`, `pack` or `month`.
+  final String id;
+  final int rides;
+
+  /// Whole naira.
+  final int price;
+  final int days;
+
+  /// Whole naira per ride, rounded up.
+  int get perRide => (price + rides - 1) ~/ rides;
+
+  /// What [rides] single fares at [avgFare] would cost minus the plan price.
+  /// Null when there is no fare history to compare with.
+  int? savingVs(int? avgFare) =>
+      avgFare == null ? null : avgFare * rides - price;
+}
+
+/// Mirrors `private.wallet_pass_plans()`; used when the server sends none.
+const walletDefaultPassPlans = [
+  WalletPassPlan(id: 'week', rides: 10, price: 4800, days: 7),
+  WalletPassPlan(id: 'pack', rides: 5, price: 2600, days: 30),
+  WalletPassPlan(id: 'month', rides: 40, price: 17000, days: 30),
+];
+
+class WalletActivePass {
+  const WalletActivePass({
+    required this.plan,
+    required this.rides,
+    required this.expiresAt,
+  });
+
+  final String plan;
+  final int rides;
+  final DateTime expiresAt;
+}
+
+enum WalletSplitStatus { pending, paid, declined }
+
+/// A share this rider asked a co-rider for, with where it stands.
+class WalletSplitSent {
+  const WalletSplitSent({
+    required this.id,
+    required this.payerName,
+    required this.amount,
+    required this.status,
+  });
+
+  final String id;
+  final String payerName;
+  final int amount;
+  final WalletSplitStatus status;
+}
+
 class WalletSummary {
   const WalletSummary({
     required this.balance,
     this.entries = const [],
     this.splitsOwed = const [],
+    this.splitsSent = const [],
+    this.passPlans = walletDefaultPassPlans,
+    this.avgFare,
+    this.activePass,
   });
 
   /// Whole naira.
@@ -50,15 +116,44 @@ class WalletSummary {
 
   /// Pending requests this rider can pay or decline.
   final List<WalletSplitRequest> splitsOwed;
+
+  /// Newest first; the latest ten shares this rider asked for.
+  final List<WalletSplitSent> splitsSent;
+
+  final List<WalletPassPlan> passPlans;
+
+  /// Mean of the rider's recent wallet fares, whole naira. Null with no fares.
+  final int? avgFare;
+
+  final WalletActivePass? activePass;
+
+  WalletSummary copyWith({
+    int? balance,
+    List<WalletEntry>? entries,
+    List<WalletSplitRequest>? splitsOwed,
+    List<WalletSplitSent>? splitsSent,
+    WalletActivePass? activePass,
+  }) => WalletSummary(
+    balance: balance ?? this.balance,
+    entries: entries ?? this.entries,
+    splitsOwed: splitsOwed ?? this.splitsOwed,
+    splitsSent: splitsSent ?? this.splitsSent,
+    passPlans: passPlans,
+    avgFare: avgFare,
+    activePass: activePass ?? this.activePass,
+  );
 }
 
 /// Why a wallet call failed, so the screen can say what to do next.
 enum WalletFailure { insufficientFunds, notFound, invalid, unavailable }
 
 class WalletException implements Exception {
-  const WalletException(this.failure);
+  const WalletException(this.failure, {this.detail});
 
   final WalletFailure failure;
+
+  /// Server detail, e.g. the phone number that is not on Along.
+  final String? detail;
 
   @override
   String toString() => 'WalletException($failure)';
@@ -77,7 +172,7 @@ abstract class WalletRepository {
     required String idempotencyKey,
   });
 
-  Future<void> buyPass({required String idempotencyKey});
+  Future<void> buyPass({required String plan, required String idempotencyKey});
 
   /// Asks each co-rider for [share]. Returns how many requests went out.
   Future<int> requestSplit({
@@ -99,9 +194,6 @@ const walletTopUpMax = 50000;
 
 /// Smallest send or split share, in naira.
 const walletSendMin = 50;
-
-/// Monthly Along Pass price, in naira. Matches `wallet_buy_pass`.
-const walletPassPrice = 2000;
 
 /// Returns an error key for a custom amount, or null when it is valid.
 String? validateTopUpAmount(int? amount) {
@@ -150,7 +242,12 @@ class SupabaseWalletRepository implements WalletRepository {
     try {
       return await _gateway.rpc(fn, params: params);
     } on PostgrestException catch (e) {
-      throw WalletException(walletFailureFor(e.message));
+      throw WalletException(
+        walletFailureFor(e.message),
+        detail: (e.details is String && '${e.details}'.isNotEmpty)
+            ? '${e.details}'
+            : null,
+      );
     } on WalletException {
       rethrow;
     } catch (_) {
@@ -181,8 +278,13 @@ class SupabaseWalletRepository implements WalletRepository {
   });
 
   @override
-  Future<void> buyPass({required String idempotencyKey}) =>
-      _call('wallet_buy_pass', {'p_idempotency_key': idempotencyKey});
+  Future<void> buyPass({
+    required String plan,
+    required String idempotencyKey,
+  }) => _call('wallet_buy_pass', {
+    'p_plan': plan,
+    'p_idempotency_key': idempotencyKey,
+  });
 
   @override
   Future<int> requestSplit({
@@ -271,6 +373,48 @@ WalletSummary parseWalletSummary(Object? raw) {
             requesterName: '${s['requester_name'] ?? ''}',
           ),
     ],
+    splitsSent: [
+      for (final s in (raw['splits_requested'] as List?) ?? const [])
+        if (s is Map)
+          WalletSplitSent(
+            id: '${s['id']}',
+            payerName: '${s['payer_name'] ?? ''}',
+            amount: _naira(s['amount']),
+            status: switch (s['status']) {
+              'paid' => WalletSplitStatus.paid,
+              'declined' => WalletSplitStatus.declined,
+              _ => WalletSplitStatus.pending,
+            },
+          ),
+    ],
+    passPlans: _plans(raw['pass_plans']),
+    avgFare: raw['avg_fare'] == null ? null : _naira(raw['avg_fare']),
+    activePass: _activePass(raw['active_pass']),
+  );
+}
+
+List<WalletPassPlan> _plans(Object? raw) {
+  if (raw is! List || raw.isEmpty) return walletDefaultPassPlans;
+  return [
+    for (final p in raw)
+      if (p is Map && _naira(p['rides']) > 0)
+        WalletPassPlan(
+          id: '${p['plan']}',
+          rides: _naira(p['rides']),
+          price: _naira(p['price']),
+          days: _naira(p['days']),
+        ),
+  ];
+}
+
+WalletActivePass? _activePass(Object? raw) {
+  if (raw is! Map) return null;
+  final at = DateTime.tryParse('${raw['expires_at']}');
+  if (at == null) return null;
+  return WalletActivePass(
+    plan: '${raw['plan']}',
+    rides: _naira(raw['rides']),
+    expiresAt: at.toLocal(),
   );
 }
 
@@ -303,13 +447,12 @@ class FakeWalletRepository implements WalletRepository {
     if (_summary.balance + amount < 0) {
       throw const WalletException(WalletFailure.insufficientFunds);
     }
-    _summary = WalletSummary(
+    _summary = _summary.copyWith(
       balance: _summary.balance + amount,
       entries: [
         WalletEntry(kind: kind, amount: amount, at: _now(), counterparty: who),
         ..._summary.entries,
       ],
-      splitsOwed: _summary.splitsOwed,
     );
   }
 
@@ -346,10 +489,22 @@ class FakeWalletRepository implements WalletRepository {
   }
 
   @override
-  Future<void> buyPass({required String idempotencyKey}) async {
+  Future<void> buyPass({
+    required String plan,
+    required String idempotencyKey,
+  }) async {
     _guard();
     if (_seen.contains(idempotencyKey)) return;
-    _post(WalletEntryKind.pass, -walletPassPrice);
+    final p = _summary.passPlans.where((x) => x.id == plan).firstOrNull;
+    if (p == null) throw const WalletException(WalletFailure.invalid);
+    _post(WalletEntryKind.pass, -p.price);
+    _summary = _summary.copyWith(
+      activePass: WalletActivePass(
+        plan: p.id,
+        rides: p.rides,
+        expiresAt: _now().add(Duration(days: p.days)),
+      ),
+    );
     _seen.add(idempotencyKey);
   }
 
@@ -360,10 +515,24 @@ class FakeWalletRepository implements WalletRepository {
     required String idempotencyKey,
   }) async {
     _guard();
-    if (phones.any((p) => !knownPhones.containsKey(p))) {
-      throw const WalletException(WalletFailure.notFound);
+    final missing = phones.where((p) => !knownPhones.containsKey(p));
+    if (missing.isNotEmpty) {
+      throw WalletException(WalletFailure.notFound, detail: missing.first);
     }
-    _seen.add(idempotencyKey);
+    if (_seen.add(idempotencyKey)) {
+      _summary = _summary.copyWith(
+        splitsSent: [
+          for (var i = 0; i < phones.length; i++)
+            WalletSplitSent(
+              id: '$idempotencyKey-$i',
+              payerName: knownPhones[phones[i]]!,
+              amount: share,
+              status: WalletSplitStatus.pending,
+            ),
+          ..._summary.splitsSent,
+        ],
+      );
+    }
     return phones.length;
   }
 
@@ -379,9 +548,7 @@ class FakeWalletRepository implements WalletRepository {
     if (accept) {
       _post(WalletEntryKind.split, -req.amount, who: req.requesterName);
     }
-    _summary = WalletSummary(
-      balance: _summary.balance,
-      entries: _summary.entries,
+    _summary = _summary.copyWith(
       splitsOwed: [
         for (final s in _summary.splitsOwed)
           if (s.id != splitId) s,

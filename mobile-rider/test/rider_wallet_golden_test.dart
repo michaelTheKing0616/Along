@@ -60,7 +60,29 @@ void main() {
     splitsOwed: const [
       WalletSplitRequest(id: 's1', amount: 600, requesterName: 'Ada Okafor'),
     ],
+    avgFare: 1200,
   );
+  final rich = sample.copyWith(balance: 9000);
+  const statuses = [
+    WalletSplitSent(
+      id: 'r1',
+      payerName: 'Ada Okafor',
+      amount: 600,
+      status: WalletSplitStatus.paid,
+    ),
+    WalletSplitSent(
+      id: 'r2',
+      payerName: 'Chinedu Eze',
+      amount: 600,
+      status: WalletSplitStatus.pending,
+    ),
+    WalletSplitSent(
+      id: 'r3',
+      payerName: 'Bayo Adeyemi',
+      amount: 400,
+      status: WalletSplitStatus.declined,
+    ),
+  ];
   const phones = {'+2348031234567': 'Ada Okafor', '+2348059876543': 'Chi'};
   FakeWalletRepository repoOf(WalletSummary s, {bool fail = false}) =>
       FakeWalletRepository(initial: s, fail: fail, knownPhones: phones);
@@ -162,21 +184,58 @@ void main() {
             await t.pumpAndSettle();
           },
         ),
-        ('pass_ready', () => repoOf(sample), const WalletPassScreen(), null),
+        ('pass_ready', () => repoOf(rich), const WalletPassScreen(), null),
+        (
+          'pass_month',
+          () => repoOf(rich),
+          const WalletPassScreen(),
+          (t) async {
+            await t.tap(find.byKey(const Key('wallet_pass_plan_month')));
+            await t.pumpAndSettle();
+          },
+        ),
+        (
+          'pass_no_history',
+          () => repoOf(const WalletSummary(balance: 6000)),
+          const WalletPassScreen(),
+          null,
+        ),
+        (
+          'pass_no_save',
+          () => repoOf(const WalletSummary(balance: 6000, avgFare: 400)),
+          const WalletPassScreen(),
+          null,
+        ),
         (
           'pass_short',
-          () => repoOf(const WalletSummary(balance: 500)),
+          () => repoOf(const WalletSummary(balance: 500, avgFare: 1200)),
           const WalletPassScreen(),
           null,
         ),
         (
           'pass_bought',
-          () => repoOf(sample),
+          () => repoOf(rich),
           const WalletPassScreen(),
           (t) async {
             await t.tap(find.byKey(const Key('wallet_pass_cta')));
             await t.pumpAndSettle();
           },
+        ),
+        (
+          'pass_active',
+          () => repoOf(
+            WalletSummary(
+              balance: 4200,
+              avgFare: 1200,
+              activePass: WalletActivePass(
+                plan: 'pack',
+                rides: 5,
+                expiresAt: DateTime(2026, 11, 27),
+              ),
+            ),
+          ),
+          const WalletPassScreen(initialPlan: 'pack'),
+          null,
         ),
         (
           'split_filled',
@@ -186,6 +245,12 @@ void main() {
             'wallet_split_fare': '1200',
             'wallet_split_phone_0': '0803 123 4567',
           }),
+        ),
+        (
+          'split_status',
+          () => repoOf(sample.copyWith(splitsSent: statuses)),
+          const WalletSplitScreen(),
+          null,
         ),
         (
           'split_not_found',
@@ -312,14 +377,19 @@ void main() {
   testWidgets('pass buys once', (tester) async {
     await tester.binding.setSurfaceSize(const Size(360, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    final repo = repoOf(sample);
+    final repo = repoOf(rich);
     await tester.pumpWidget(
       app(repo, Brightness.light, 1, home: const WalletPassScreen()),
     );
     await tester.pumpAndSettle();
+    expect(find.text('₦7,200'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('wallet_pass_plan_pack')));
+    await tester.pumpAndSettle();
+    expect(find.text('₦520 a ride · Good for 30 days'), findsOneWidget);
     await tester.tap(find.byKey(const Key('wallet_pass_cta')));
     await tester.pumpAndSettle();
-    expect(repo.summary.balance, 2200);
+    expect(repo.summary.balance, 6400);
+    expect(repo.summary.activePass?.plan, 'pack');
     expect(find.byKey(const Key('wallet_pass_done')), findsOneWidget);
   });
 
@@ -329,7 +399,8 @@ void main() {
       app(poor, Brightness.light, 1, home: const WalletPassScreen()),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Top up ₦1,500 more to buy'), findsOneWidget);
+    expect(find.byKey(const Key('wallet_pass_no_history')), findsOneWidget);
+    expect(find.text('Top up ₦4,300 more to buy'), findsOneWidget);
     await tester.tap(find.byKey(const Key('wallet_pass_topup')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('topup_add')), findsOneWidget);
@@ -354,6 +425,28 @@ void main() {
     await tester.tap(find.byKey(const Key('wallet_split_cta')));
     await tester.pumpAndSettle();
     expect(find.text('Asked 2 co-riders'), findsOneWidget);
+    expect(repo.summary.splitsSent, hasLength(2));
+    expect(find.text('Waiting'), findsNWidgets(2));
+  });
+
+  testWidgets('split names the number that is not on Along', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      app(repoOf(sample), Brightness.light, 1, home: const WalletSplitScreen()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('wallet_split_add')));
+    await tester.pumpAndSettle();
+    await fill(tester, {
+      'wallet_split_fare': '1800',
+      'wallet_split_phone_0': '0803 123 4567',
+      'wallet_split_phone_1': '0812 000 0000',
+    });
+    await tester.tap(find.byKey(const Key('wallet_split_cta')));
+    await tester.pumpAndSettle();
+    expect(find.text("0812 000 0000 isn't on Along yet"), findsOneWidget);
+    expect(find.text('Not on Along yet'), findsOneWidget);
   });
 
   testWidgets('paying a split request debits once and clears it', (

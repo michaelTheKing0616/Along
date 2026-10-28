@@ -122,7 +122,7 @@ void main() {
         ),
       );
       await expectLater(
-        repo.buyPass(idempotencyKey: 'pass-123456'),
+        repo.buyPass(plan: 'week', idempotencyKey: 'pass-123456'),
         throwsA(
           isA<WalletException>().having(
             (e) => e.failure,
@@ -134,5 +134,69 @@ void main() {
       expect(walletFailureFor('NOT_FOUND'), WalletFailure.notFound);
       expect(walletFailureFor('boom'), WalletFailure.unavailable);
     });
+  });
+
+  test('pass plans: per ride, savings from real fares, active pass', () async {
+    const week = WalletPassPlan(id: 'week', rides: 10, price: 4800, days: 7);
+    expect(week.perRide, 480);
+    expect(week.savingVs(1200), 7200);
+    expect(week.savingVs(null), isNull);
+    final s = parseWalletSummary({
+      'balance': 9000,
+      'avg_fare': 1150,
+      'pass_plans': [
+        {'plan': 'pack', 'rides': 5, 'price': 2600, 'days': 30},
+      ],
+      'active_pass': {
+        'plan': 'pack',
+        'rides': 5,
+        'expires_at': '2026-11-27T10:00:00Z',
+      },
+      'splits_requested': [
+        {'id': 'a', 'payer_name': 'Ada', 'amount': 600, 'status': 'paid'},
+      ],
+    });
+    expect(s.avgFare, 1150);
+    expect(s.passPlans.single.id, 'pack');
+    expect(s.activePass!.rides, 5);
+    expect(s.splitsSent.single.status, WalletSplitStatus.paid);
+    expect(
+      parseWalletSummary({'balance': 0}).passPlans,
+      walletDefaultPassPlans,
+    );
+
+    final fake = FakeWalletRepository(
+      initial: const WalletSummary(balance: 5000),
+      now: () => DateTime(2026, 10, 28),
+    );
+    await fake.buyPass(plan: 'week', idempotencyKey: 'p-1');
+    await fake.buyPass(plan: 'week', idempotencyKey: 'p-1');
+    expect(fake.summary.balance, 200);
+    expect(fake.summary.activePass!.expiresAt, DateTime(2026, 11, 4));
+  });
+
+  test('split names the missing number and tracks each share', () async {
+    final fake = FakeWalletRepository(knownPhones: {'+2348031234567': 'Ada'});
+    await expectLater(
+      fake.requestSplit(
+        phones: ['+2348031234567', '+2348120000000'],
+        share: 600,
+        idempotencyKey: 's-1',
+      ),
+      throwsA(
+        isA<WalletException>().having(
+          (e) => e.detail,
+          'detail',
+          '+2348120000000',
+        ),
+      ),
+    );
+    await fake.requestSplit(
+      phones: ['+2348031234567'],
+      share: 600,
+      idempotencyKey: 's-2',
+    );
+    expect(fake.summary.splitsSent.single.payerName, 'Ada');
+    expect(fake.summary.splitsSent.single.status, WalletSplitStatus.pending);
   });
 }

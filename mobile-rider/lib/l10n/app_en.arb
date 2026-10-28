@@ -2015,7 +2015,7 @@
     }
   },
   "walletPassTitle": "Along Pass",
-  "walletPassSubtitle": "This month, paid from credit",
+  "walletPassSubtitle": "Rides paid ahead from your credit",
   "walletPassPrice": "{amount} a month",
   "@walletPassPrice": {
     "placeholders": {
@@ -2033,7 +2033,7 @@
       }
     }
   },
-  "walletPassBought": "Pass bought for this month",
+  "walletPassBought": "Pass active · Done",
   "walletPassShort": "Top up {amount} more to buy",
   "@walletPassShort": {
     "placeholders": {
@@ -2085,5 +2085,85 @@
   "walletSplitNotFound": "One of those numbers isn't on Along yet",
   "walletSplitNote": "They pay from their wallet. You keep paying the driver as usual.",
   "accountWallet": "Wallet",
-  "accountWalletHint": "Top up, send, pass, split fares"
+  "accountWalletHint": "Top up, send, pass, split fares",
+  "walletPassPlanWeek": "Week",
+  "walletPassPlanPack": "5 rides",
+  "walletPassPlanMonth": "Month",
+  "walletPassRides": "{count, plural, =1{1 ride} other{{count} rides}}",
+  "@walletPassRides": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletPassValidity": "Good for {days} days",
+  "@walletPassValidity": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "walletPassPerRide": "{amount} a ride",
+  "@walletPassPerRide": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassVersus": "Versus single fares",
+  "walletPassSingleRow": "{count} × {fare} single",
+  "@walletPassSingleRow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassPassRow": "Pass",
+  "walletPassSave": "You save {amount}",
+  "@walletPassSave": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassNoSave": "No saving at your usual fare",
+  "walletPassNoHistory": "Savings show after your first fare paid from the wallet",
+  "walletPassUsualFare": "Your usual fare is {amount}",
+  "@walletPassUsualFare": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassActive": "Active until {date}",
+  "@walletPassActive": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitNotFoundNumber": "{phone} isn't on Along yet",
+  "@walletSplitNotFoundNumber": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitNotOnAlong": "Not on Along yet",
+  "walletSplitRequests": "Your requests",
+  "walletSplitPending": "Waiting",
+  "walletSplitPaidStatus": "Paid",
+  "walletSplitDeclined": "Declined",
+  "walletPassSaveLabel": "You save"
 }

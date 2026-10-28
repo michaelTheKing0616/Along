@@ -1857,7 +1857,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get walletPassTitle => 'Along Pass';
 
   @override
-  String get walletPassSubtitle => 'This month, paid from credit';
+  String get walletPassSubtitle => 'Rides paid ahead from your credit';
 
   @override
   String walletPassPrice(String amount) {
@@ -1874,7 +1874,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get walletPassBought => 'Pass bought for this month';
+  String get walletPassBought => 'Pass active · Done';
 
   @override
   String walletPassShort(String amount) {
@@ -1937,4 +1937,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountWalletHint => 'Top up, send, pass, split fares';
+
+  @override
+  String get walletPassPlanWeek => 'Week';
+
+  @override
+  String get walletPassPlanPack => '5 rides';
+
+  @override
+  String get walletPassPlanMonth => 'Month';
+
+  @override
+  String walletPassRides(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rides',
+      one: '1 ride',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletPassValidity(int days) {
+    return 'Good for $days days';
+  }
+
+  @override
+  String walletPassPerRide(String amount) {
+    return '$amount a ride';
+  }
+
+  @override
+  String get walletPassVersus => 'Versus single fares';
+
+  @override
+  String walletPassSingleRow(int count, String fare) {
+    return '$count × $fare single';
+  }
+
+  @override
+  String get walletPassPassRow => 'Pass';
+
+  @override
+  String walletPassSave(String amount) {
+    return 'You save $amount';
+  }
+
+  @override
+  String get walletPassNoSave => 'No saving at your usual fare';
+
+  @override
+  String get walletPassNoHistory =>
+      'Savings show after your first fare paid from the wallet';
+
+  @override
+  String walletPassUsualFare(String amount) {
+    return 'Your usual fare is $amount';
+  }
+
+  @override
+  String walletPassActive(String date) {
+    return 'Active until $date';
+  }
+
+  @override
+  String walletSplitNotFoundNumber(String phone) {
+    return '$phone isn\'t on Along yet';
+  }
+
+  @override
+  String get walletSplitNotOnAlong => 'Not on Along yet';
+
+  @override
+  String get walletSplitRequests => 'Your requests';
+
+  @override
+  String get walletSplitPending => 'Waiting';
+
+  @override
+  String get walletSplitPaidStatus => 'Paid';
+
+  @override
+  String get walletSplitDeclined => 'Declined';
+
+  @override
+  String get walletPassSaveLabel => 'You save';
 }

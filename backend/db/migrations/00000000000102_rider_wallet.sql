@@ -228,6 +228,18 @@ revoke execute on function private.wallet_system_account(text) from public, anon
 revoke execute on function private.wallet_post(text, uuid, text, uuid, uuid, numeric, jsonb) from public, anon, authenticated;
 
 -- Caller's balance, recent history (newest first) and open split requests.
+-- Pass plans live here so the app renders exactly what the server will charge.
+create or replace function private.wallet_pass_plans()
+returns jsonb
+language sql
+immutable
+as $$
+  select '[{"plan":"week","rides":10,"price":4800,"days":7},
+           {"plan":"pack","rides":5,"price":2600,"days":30},
+           {"plan":"month","rides":40,"price":17000,"days":30}]'::jsonb;
+$$;
+revoke execute on function private.wallet_pass_plans() from public, anon, authenticated;
+
 create or replace function get_wallet()
 returns jsonb
 language plpgsql
@@ -259,7 +271,37 @@ begin
         'id', s.id, 'amount', s.amount, 'trip_id', s.trip_id, 'created_at', s.created_at,
         'requester_name', coalesce(p.display_name, '')) order by s.created_at desc)
       from wallet_splits s join profiles p on p.id = s.requester_id
-      where s.payer_id = v_user and s.status = 'pending'), '[]'::jsonb)
+      where s.payer_id = v_user and s.status = 'pending'), '[]'::jsonb),
+    'splits_requested', coalesce((
+      select jsonb_agg(x order by x->>'created_at' desc, x->>'id')
+      from (
+        select jsonb_build_object(
+          'id', s.id, 'amount', s.amount, 'status', s.status, 'created_at', s.created_at,
+          'payer_name', coalesce(p.display_name, '')) x
+        from wallet_splits s join profiles p on p.id = s.payer_id
+        where s.requester_id = v_user
+        order by s.created_at desc, s.id
+        limit 10
+      ) r), '[]'::jsonb),
+    'pass_plans', private.wallet_pass_plans(),
+    -- Mean of the rider's last 20 fares, the base for pass savings.
+    'avg_fare', (
+      select round(avg(-x.amount))
+      from (
+        select e.amount
+        from wallet_entries e join wallet_transactions t on t.id = e.transaction_id
+        where e.account_id = v_account and t.kind = 'fare' and e.amount < 0
+        order by e.created_at desc
+        limit 20
+      ) x),
+    'active_pass', (
+      select jsonb_build_object('plan', t.memo->>'pass', 'rides', (t.memo->>'rides')::int,
+        'expires_at', t.created_at + make_interval(days => (t.memo->>'days')::int))
+      from wallet_transactions t
+      where t.initiator_id = v_user and t.kind = 'pass'
+        and t.created_at + make_interval(days => coalesce((t.memo->>'days')::int, 0)) > now()
+      order by t.created_at desc
+      limit 1)
   );
 end;
 $$;
@@ -327,7 +369,7 @@ end;
 $$;
 
 -- Buy the monthly Along Pass (fixed price) from wallet credit.
-create or replace function wallet_buy_pass(p_idempotency_key text)
+create or replace function wallet_buy_pass(p_plan text, p_idempotency_key text)
 returns jsonb
 language plpgsql
 security definer
@@ -335,15 +377,23 @@ set search_path = public, private
 as $$
 declare
   v_user uuid := auth.uid();
+  v_plan jsonb;
   v_res record;
 begin
   if v_user is null then
     raise exception 'UNAUTHENTICATED' using errcode = 'P0001';
   end if;
+  select p into v_plan from jsonb_array_elements(private.wallet_pass_plans()) p
+  where p->>'plan' = p_plan;
+  if v_plan is null then
+    raise exception 'VALIDATION' using errcode = 'P0001';
+  end if;
   select * into v_res from private.wallet_post(
     'pass', v_user, p_idempotency_key,
-    private.wallet_account_for(v_user), private.wallet_system_account('fares'), 2000,
-    jsonb_build_object('pass', 'monthly'));
+    private.wallet_account_for(v_user), private.wallet_system_account('fares'),
+    (v_plan->>'price')::numeric,
+    jsonb_build_object('pass', p_plan, 'rides', (v_plan->>'rides')::int,
+      'days', (v_plan->>'days')::int));
   return jsonb_build_object('transaction_id', v_res.transaction_id, 'replayed', v_res.replayed,
     'balance', (select balance from wallet_accounts where owner_id = v_user and kind = 'rider'));
 end;
@@ -361,6 +411,7 @@ declare
   v_user uuid := auth.uid();
   v_payers uuid[];
   v_ids uuid[];
+  v_missing text;
 begin
   if v_user is null then
     raise exception 'UNAUTHENTICATED' using errcode = 'P0001';
@@ -376,8 +427,12 @@ begin
   end if;
   select array_agg(distinct p.id) into v_payers from profiles p
   where p.phone_e164 = any(p_phones) and p.id <> v_user;
-  if coalesce(array_length(v_payers, 1), 0) <> (select count(distinct x) from unnest(p_phones) x) then
-    raise exception 'NOT_FOUND' using errcode = 'P0001';
+  -- Name the first number that is not an Along rider so the app can mark it.
+  select x into v_missing from unnest(p_phones) with ordinality u(x, n)
+  where not exists (select 1 from profiles p where p.phone_e164 = x and p.id <> v_user)
+  order by n limit 1;
+  if v_missing is not null then
+    raise exception 'NOT_FOUND' using errcode = 'P0001', detail = v_missing;
   end if;
   perform pg_advisory_xact_lock(hashtext('wallet_split:' || v_user || ':' || p_idempotency_key));
   select array_agg(s.id order by s.id) into v_ids from wallet_splits s
@@ -474,7 +529,7 @@ $$;
 revoke execute on function get_wallet() from public, anon;
 revoke execute on function wallet_top_up(numeric, text) from public, anon;
 revoke execute on function wallet_send(text, numeric, text) from public, anon;
-revoke execute on function wallet_buy_pass(text) from public, anon;
+revoke execute on function wallet_buy_pass(text, text) from public, anon;
 revoke execute on function wallet_request_split(text[], numeric, uuid, text) from public, anon;
 revoke execute on function wallet_settle_split(uuid, boolean, text) from public, anon;
 revoke execute on function wallet_ledger_check() from public, anon;
@@ -482,7 +537,7 @@ revoke execute on function wallet_ledger_check() from public, anon;
 grant execute on function get_wallet() to authenticated;
 grant execute on function wallet_top_up(numeric, text) to authenticated;
 grant execute on function wallet_send(text, numeric, text) to authenticated;
-grant execute on function wallet_buy_pass(text) to authenticated;
+grant execute on function wallet_buy_pass(text, text) to authenticated;
 grant execute on function wallet_request_split(text[], numeric, uuid, text) to authenticated;
 grant execute on function wallet_settle_split(uuid, boolean, text) to authenticated;
 grant execute on function wallet_ledger_check() to authenticated, service_role;

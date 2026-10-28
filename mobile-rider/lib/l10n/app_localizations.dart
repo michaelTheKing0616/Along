@@ -3314,7 +3314,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletPassSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'This month, paid from credit'**
+  /// **'Rides paid ahead from your credit'**
   String get walletPassSubtitle;
 
   /// No description provided for @walletPassPrice.
@@ -3338,7 +3338,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletPassBought.
   ///
   /// In en, this message translates to:
-  /// **'Pass bought for this month'**
+  /// **'Pass active · Done'**
   String get walletPassBought;
 
   /// No description provided for @walletPassShort.
@@ -3442,6 +3442,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Top up, send, pass, split fares'**
   String get accountWalletHint;
+
+  /// No description provided for @walletPassPlanWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get walletPassPlanWeek;
+
+  /// No description provided for @walletPassPlanPack.
+  ///
+  /// In en, this message translates to:
+  /// **'5 rides'**
+  String get walletPassPlanPack;
+
+  /// No description provided for @walletPassPlanMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get walletPassPlanMonth;
+
+  /// No description provided for @walletPassRides.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 ride} other{{count} rides}}'**
+  String walletPassRides(int count);
+
+  /// No description provided for @walletPassValidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Good for {days} days'**
+  String walletPassValidity(int days);
+
+  /// No description provided for @walletPassPerRide.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a ride'**
+  String walletPassPerRide(String amount);
+
+  /// No description provided for @walletPassVersus.
+  ///
+  /// In en, this message translates to:
+  /// **'Versus single fares'**
+  String get walletPassVersus;
+
+  /// No description provided for @walletPassSingleRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} × {fare} single'**
+  String walletPassSingleRow(int count, String fare);
+
+  /// No description provided for @walletPassPassRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass'**
+  String get walletPassPassRow;
+
+  /// No description provided for @walletPassSave.
+  ///
+  /// In en, this message translates to:
+  /// **'You save {amount}'**
+  String walletPassSave(String amount);
+
+  /// No description provided for @walletPassNoSave.
+  ///
+  /// In en, this message translates to:
+  /// **'No saving at your usual fare'**
+  String get walletPassNoSave;
+
+  /// No description provided for @walletPassNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings show after your first fare paid from the wallet'**
+  String get walletPassNoHistory;
+
+  /// No description provided for @walletPassUsualFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Your usual fare is {amount}'**
+  String walletPassUsualFare(String amount);
+
+  /// No description provided for @walletPassActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active until {date}'**
+  String walletPassActive(String date);
+
+  /// No description provided for @walletSplitNotFoundNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'{phone} isn\'t on Along yet'**
+  String walletSplitNotFoundNumber(String phone);
+
+  /// No description provided for @walletSplitNotOnAlong.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on Along yet'**
+  String get walletSplitNotOnAlong;
+
+  /// No description provided for @walletSplitRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Your requests'**
+  String get walletSplitRequests;
+
+  /// No description provided for @walletSplitPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get walletSplitPending;
+
+  /// No description provided for @walletSplitPaidStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get walletSplitPaidStatus;
+
+  /// No description provided for @walletSplitDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get walletSplitDeclined;
+
+  /// No description provided for @walletPassSaveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'You save'**
+  String get walletPassSaveLabel;
 }
 
 class _AppLocalizationsDelegate

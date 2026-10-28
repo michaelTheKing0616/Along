@@ -306,6 +306,13 @@ class _CustomAmountDialogState extends State<_CustomAmountDialog> {
 }
 
 /// Round initials disc for a rider with no photo.
+/// Soft map tints that read in light and dark; stable per seed.
+Color walletAvatarTint(AlongPalette p, String seed) {
+  final tints = [p.mapPark, p.mapWater, p.mapLand, p.recessed];
+  final h = seed.codeUnits.fold<int>(7, (a, c) => (a * 31 + c) & 0x7fffffff);
+  return tints[h % tints.length];
+}
+
 class WalletInitials extends StatelessWidget {
   const WalletInitials({
     super.key,
@@ -313,12 +320,16 @@ class WalletInitials extends StatelessWidget {
     this.size = 40,
     this.highlight = false,
     this.label,
+    this.tintSeed,
   });
 
   final String name;
 
   /// Shown instead of initials, e.g. a seat number.
   final String? label;
+
+  /// Picks the tint; defaults to [name] so one person keeps one colour.
+  final String? tintSeed;
   final double size;
   final bool highlight;
 
@@ -337,7 +348,7 @@ class WalletInitials extends StatelessWidget {
         height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: highlight ? p.accent : p.recessed,
+          color: highlight ? p.accent : walletAvatarTint(p, tintSeed ?? name),
           shape: BoxShape.circle,
           border: AlongElevation.hairline(p.ink),
         ),
