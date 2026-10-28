@@ -209,6 +209,40 @@ class _WalletPassScreenState extends ConsumerState<WalletPassScreen> {
           ),
           const SizedBox(height: 12),
           _Versus(plan: plan, avgFare: s.avgFare),
+          if (active == null) ...[
+            const SizedBox(height: 24),
+            _Section(
+              title: l10n.walletPassHow,
+              children: [
+                for (final (i, t) in [
+                  l10n.walletPassStep1,
+                  l10n.walletPassStep2,
+                  l10n.walletPassStep3(plan.days),
+                ].indexed)
+                  _Step(n: i + 1, text: t),
+              ],
+            ),
+          ],
+          const SizedBox(height: 16),
+          _Section(
+            key: const Key('wallet_pass_details'),
+            title: l10n.walletPassDetails,
+            children: [
+              _Row(l10n.walletPassRowRides, '${plan.rides}'),
+              _Row(
+                l10n.walletPassRowValid,
+                DateFormat.yMMMd(
+                  Localizations.localeOf(context).toLanguageTag(),
+                ).format(
+                  active?.expiresAt ??
+                      ref
+                          .watch(walletNowProvider)()
+                          .add(Duration(days: plan.days)),
+                ),
+              ),
+              _Row(l10n.walletPassRowPaid, l10n.walletPassRowPaidValue),
+            ],
+          ),
           const SizedBox(height: 12),
           Text(
             l10n.walletAvailable(alongNaira(s.balance)),
@@ -356,6 +390,94 @@ class _Versus extends StatelessWidget {
                 style: AlongType.caption(p),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Section extends StatelessWidget {
+  const _Section({super.key, required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(header: true, child: Text(title, style: AlongType.label(p))),
+        const SizedBox(height: 8),
+        ...children,
+      ],
+    );
+  }
+}
+
+class _Step extends StatelessWidget {
+  const _Step({required this.n, required this.text});
+
+  final int n;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: p.ink, shape: BoxShape.circle),
+            child: Text(
+              '$n',
+              style: AlongType.caption(p)
+                  .copyWith(color: p.onInk, fontWeight: FontWeight.w700),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Text(text, style: AlongType.body(p))),
+        ],
+      ),
+    );
+  }
+}
+
+class _Row extends StatelessWidget {
+  const _Row(this.label, this.value);
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = AlongPalette.of(context);
+    return MergeSemantics(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: p.line.withValues(alpha: 0.5)),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(child: Text(label, style: AlongType.bodyMuted(p))),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+                style: AlongType.body(p).copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
           ],
         ),
       ),

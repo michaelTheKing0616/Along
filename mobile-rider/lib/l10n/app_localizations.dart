@@ -3458,7 +3458,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletSplitCoRider.
   ///
   /// In en, this message translates to:
-  /// **'Co-rider {n}'**
+  /// **'Rider {n}'**
   String walletSplitCoRider(int n);
 
   /// No description provided for @walletSplitAdd.
@@ -3652,6 +3652,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You save'**
   String get walletPassSaveLabel;
+
+  /// No description provided for @walletPassHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get walletPassHow;
+
+  /// No description provided for @walletPassStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a plan above'**
+  String get walletPassStep1;
+
+  /// No description provided for @walletPassStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay once from your Along credit. No card needed'**
+  String get walletPassStep2;
+
+  /// No description provided for @walletPassStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays active for {days} days from today'**
+  String walletPassStep3(int days);
+
+  /// No description provided for @walletPassDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get walletPassDetails;
+
+  /// No description provided for @walletPassRowRides.
+  ///
+  /// In en, this message translates to:
+  /// **'Rides'**
+  String get walletPassRowRides;
+
+  /// No description provided for @walletPassRowValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until'**
+  String get walletPassRowValid;
+
+  /// No description provided for @walletPassRowPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid with'**
+  String get walletPassRowPaid;
+
+  /// No description provided for @walletPassRowPaidValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Along credit'**
+  String get walletPassRowPaidValue;
 }
 
 class _AppLocalizationsDelegate

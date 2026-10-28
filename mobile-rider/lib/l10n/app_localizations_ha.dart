@@ -2079,4 +2079,34 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get walletPassSaveLabel => 'Tanadinka';
+
+  @override
+  String get walletPassHow => 'Yadda yake aiki';
+
+  @override
+  String get walletPassStep1 => 'Zaɓi tsari a sama';
+
+  @override
+  String get walletPassStep2 =>
+      'Biya sau ɗaya daga kuɗin Along ɗinka. Ba a buƙatar kati';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'Zai ci gaba da aiki na kwanaki $days daga yau';
+  }
+
+  @override
+  String get walletPassDetails => 'Bayani';
+
+  @override
+  String get walletPassRowRides => 'Hawa';
+
+  @override
+  String get walletPassRowValid => 'Yana aiki har';
+
+  @override
+  String get walletPassRowPaid => 'An biya da';
+
+  @override
+  String get walletPassRowPaidValue => 'Kuɗin Along';
 }

@@ -2077,4 +2077,34 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get walletPassSaveLabel => 'Ihe ị chekwara';
+
+  @override
+  String get walletPassHow => 'Otu o si arụ ọrụ';
+
+  @override
+  String get walletPassStep1 => 'Họrọ atụmatụ n\'elu';
+
+  @override
+  String get walletPassStep2 =>
+      'Kwụọ otu ugboro site n\'ego Along gị. Ọ dịghị mkpa kaadị';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'Ọ ga-arụ ọrụ ụbọchị $days site taa';
+  }
+
+  @override
+  String get walletPassDetails => 'Nkọwa';
+
+  @override
+  String get walletPassRowRides => 'Njem';
+
+  @override
+  String get walletPassRowValid => 'Dị irè ruo';
+
+  @override
+  String get walletPassRowPaid => 'Ejiri kwụọ';
+
+  @override
+  String get walletPassRowPaidValue => 'Ego Along';
 }

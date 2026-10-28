@@ -2098,7 +2098,7 @@
   "walletSplitSubtitle": "Ask co-riders for their share",
   "walletSplitFare": "Fare",
   "walletSplitYou": "You",
-  "walletSplitCoRider": "Co-rider {n}",
+  "walletSplitCoRider": "Rider {n}",
   "@walletSplitCoRider": {
     "placeholders": {
       "n": {
@@ -2217,5 +2217,21 @@
   "walletSplitPending": "Waiting",
   "walletSplitPaidStatus": "Paid",
   "walletSplitDeclined": "Declined",
-  "walletPassSaveLabel": "You save"
+  "walletPassSaveLabel": "You save",
+  "walletPassHow": "How it works",
+  "walletPassStep1": "Pick a plan above",
+  "walletPassStep2": "Pay once from your Along credit. No card needed",
+  "walletPassStep3": "It stays active for {days} days from today",
+  "@walletPassStep3": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "walletPassDetails": "Details",
+  "walletPassRowRides": "Rides",
+  "walletPassRowValid": "Valid until",
+  "walletPassRowPaid": "Paid with",
+  "walletPassRowPaidValue": "Along credit"
 }

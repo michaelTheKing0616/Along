@@ -321,5 +321,14 @@
   "walletSplitPending": "Na-eche",
   "walletSplitPaidStatus": "Akwụọla",
   "walletSplitDeclined": "Ajụrụ",
-  "walletPassSaveLabel": "Ihe ị chekwara"
+  "walletPassSaveLabel": "Ihe ị chekwara",
+  "walletPassHow": "Otu o si arụ ọrụ",
+  "walletPassStep1": "Họrọ atụmatụ n'elu",
+  "walletPassStep2": "Kwụọ otu ugboro site n'ego Along gị. Ọ dịghị mkpa kaadị",
+  "walletPassStep3": "Ọ ga-arụ ọrụ ụbọchị {days} site taa",
+  "walletPassDetails": "Nkọwa",
+  "walletPassRowRides": "Njem",
+  "walletPassRowValid": "Dị irè ruo",
+  "walletPassRowPaid": "Ejiri kwụọ",
+  "walletPassRowPaidValue": "Ego Along"
 }

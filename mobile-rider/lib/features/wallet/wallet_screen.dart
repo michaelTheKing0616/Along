@@ -321,7 +321,11 @@ class WalletInitials extends StatelessWidget {
     this.highlight = false,
     this.label,
     this.tintSeed,
+    this.icon,
   });
+
+  /// Shown instead of initials, e.g. a person glyph for an empty seat.
+  final IconData? icon;
 
   final String name;
 
@@ -352,15 +356,17 @@ class WalletInitials extends StatelessWidget {
           shape: BoxShape.circle,
           border: AlongElevation.hairline(p.ink),
         ),
-        child: Text(
-          initials,
-          maxLines: 1,
-          style: AlongType.body(p).copyWith(
-            fontWeight: FontWeight.w700,
-            fontSize: size * 0.36,
-            color: highlight ? p.accentInk : p.ink,
-          ),
-        ),
+        child: icon != null
+            ? AlongIcon(icon!, size: size * 0.5, color: p.ink)
+            : Text(
+                initials,
+                maxLines: 1,
+                style: AlongType.body(p).copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: size * 0.36,
+                  color: highlight ? p.accentInk : p.ink,
+                ),
+              ),
       ),
     );
   }

@@ -321,5 +321,14 @@
   "walletSplitPending": "Ana jira",
   "walletSplitPaidStatus": "An biya",
   "walletSplitDeclined": "An ƙi",
-  "walletPassSaveLabel": "Tanadinka"
+  "walletPassSaveLabel": "Tanadinka",
+  "walletPassHow": "Yadda yake aiki",
+  "walletPassStep1": "Zaɓi tsari a sama",
+  "walletPassStep2": "Biya sau ɗaya daga kuɗin Along ɗinka. Ba a buƙatar kati",
+  "walletPassStep3": "Zai ci gaba da aiki na kwanaki {days} daga yau",
+  "walletPassDetails": "Bayani",
+  "walletPassRowRides": "Hawa",
+  "walletPassRowValid": "Yana aiki har",
+  "walletPassRowPaid": "An biya da",
+  "walletPassRowPaidValue": "Kuɗin Along"
 }

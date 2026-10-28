@@ -321,5 +321,14 @@
   "walletSplitPending": "Ń dúró",
   "walletSplitPaidStatus": "Ti san",
   "walletSplitDeclined": "Kọ̀",
-  "walletPassSaveLabel": "Ìfipamọ́ rẹ"
+  "walletPassSaveLabel": "Ìfipamọ́ rẹ",
+  "walletPassHow": "Bí ó ṣe ń ṣiṣẹ́",
+  "walletPassStep1": "Yan ètò lókè",
+  "walletPassStep2": "San lẹ́ẹ̀kan láti owó Along rẹ. Kò nílò káàdì",
+  "walletPassStep3": "Yóò ṣiṣẹ́ fún ọjọ́ {days} láti òní",
+  "walletPassDetails": "Àlàyé",
+  "walletPassRowRides": "Ìrìn",
+  "walletPassRowValid": "Wúlò títí",
+  "walletPassRowPaid": "A san pẹ̀lú",
+  "walletPassRowPaidValue": "Owó Along"
 }

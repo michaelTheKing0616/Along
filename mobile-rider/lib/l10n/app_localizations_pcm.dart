@@ -1953,7 +1953,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String walletSplitCoRider(int n) {
-    return 'Co-rider $n';
+    return 'Rider $n';
   }
 
   @override
@@ -2081,4 +2081,34 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get walletPassSaveLabel => 'You save';
+
+  @override
+  String get walletPassHow => 'How e dey work';
+
+  @override
+  String get walletPassStep1 => 'Pick one plan for up';
+
+  @override
+  String get walletPassStep2 =>
+      'Pay one time from your Along credit. No card need';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'E go dey active for $days days from today';
+  }
+
+  @override
+  String get walletPassDetails => 'Details';
+
+  @override
+  String get walletPassRowRides => 'Rides';
+
+  @override
+  String get walletPassRowValid => 'Valid reach';
+
+  @override
+  String get walletPassRowPaid => 'Pay with';
+
+  @override
+  String get walletPassRowPaidValue => 'Along credit';
 }

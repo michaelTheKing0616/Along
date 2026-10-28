@@ -1949,7 +1949,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String walletSplitCoRider(int n) {
-    return 'Co-rider $n';
+    return 'Rider $n';
   }
 
   @override
@@ -2077,4 +2077,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walletPassSaveLabel => 'You save';
+
+  @override
+  String get walletPassHow => 'How it works';
+
+  @override
+  String get walletPassStep1 => 'Pick a plan above';
+
+  @override
+  String get walletPassStep2 =>
+      'Pay once from your Along credit. No card needed';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'It stays active for $days days from today';
+  }
+
+  @override
+  String get walletPassDetails => 'Details';
+
+  @override
+  String get walletPassRowRides => 'Rides';
+
+  @override
+  String get walletPassRowValid => 'Valid until';
+
+  @override
+  String get walletPassRowPaid => 'Paid with';
+
+  @override
+  String get walletPassRowPaidValue => 'Along credit';
 }

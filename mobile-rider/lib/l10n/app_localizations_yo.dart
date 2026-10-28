@@ -2078,4 +2078,33 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get walletPassSaveLabel => 'Ìfipamọ́ rẹ';
+
+  @override
+  String get walletPassHow => 'Bí ó ṣe ń ṣiṣẹ́';
+
+  @override
+  String get walletPassStep1 => 'Yan ètò lókè';
+
+  @override
+  String get walletPassStep2 => 'San lẹ́ẹ̀kan láti owó Along rẹ. Kò nílò káàdì';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'Yóò ṣiṣẹ́ fún ọjọ́ $days láti òní';
+  }
+
+  @override
+  String get walletPassDetails => 'Àlàyé';
+
+  @override
+  String get walletPassRowRides => 'Ìrìn';
+
+  @override
+  String get walletPassRowValid => 'Wúlò títí';
+
+  @override
+  String get walletPassRowPaid => 'A san pẹ̀lú';
+
+  @override
+  String get walletPassRowPaidValue => 'Owó Along';
 }
