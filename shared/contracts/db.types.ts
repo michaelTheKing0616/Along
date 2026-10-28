@@ -6365,7 +6365,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       wallet_entries: {
@@ -6404,7 +6404,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "wallet_transactions"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       wallet_splits: {
@@ -6472,7 +6472,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "trips"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       wallet_transactions: {
@@ -6507,7 +6507,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
     }
@@ -9599,15 +9599,28 @@ export type Database = {
         }[]
       }
       wallet_request_split: {
-        Args: { p_idempotency_key: string; p_phones: string[]; p_share: number; p_trip_id: string }
+        Args: {
+          p_idempotency_key: string
+          p_phones: string[]
+          p_share: number
+          p_trip_id: string
+        }
         Returns: Json
       }
       wallet_send: {
-        Args: { p_amount: number; p_idempotency_key: string; p_to_phone: string }
+        Args: {
+          p_amount: number
+          p_idempotency_key: string
+          p_to_phone: string
+        }
         Returns: Json
       }
       wallet_settle_split: {
-        Args: { p_accept: boolean; p_idempotency_key: string; p_split_id: string }
+        Args: {
+          p_accept: boolean
+          p_idempotency_key: string
+          p_split_id: string
+        }
         Returns: Json
       }
       wallet_top_up: {
