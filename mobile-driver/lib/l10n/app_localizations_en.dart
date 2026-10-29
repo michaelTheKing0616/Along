@@ -354,12 +354,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navAccount => 'Account';
 
   @override
-  String get earningsStubBody => 'Earnings and balance coming in Phase 4.';
-
-  @override
-  String get accountStubBody => 'Account settings coming soon.';
-
-  @override
   String get homeUnverifiedBanner => 'Complete verification to go online.';
 
   @override
@@ -604,12 +598,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportIncidentDescriptionHint =>
       'Describe what happened (optional details help)';
-
-  @override
-  String get reportIncidentAttachPhoto => 'Attach photo';
-
-  @override
-  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
 
   @override
   String get reportIncidentSubmit => 'Submit report';

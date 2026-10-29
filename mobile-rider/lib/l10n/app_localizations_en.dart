@@ -606,9 +606,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportIncidentAttachPhoto => 'Attach photo';
 
   @override
-  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
-
-  @override
   String get reportIncidentSubmit => 'Submit report';
 
   @override

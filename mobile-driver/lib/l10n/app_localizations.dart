@@ -728,18 +728,6 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get navAccount;
 
-  /// No description provided for @earningsStubBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Earnings and balance coming in Phase 4.'**
-  String get earningsStubBody;
-
-  /// No description provided for @accountStubBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Account settings coming soon.'**
-  String get accountStubBody;
-
   /// No description provided for @homeUnverifiedBanner.
   ///
   /// In en, this message translates to:
@@ -1159,18 +1147,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Describe what happened (optional details help)'**
   String get reportIncidentDescriptionHint;
-
-  /// No description provided for @reportIncidentAttachPhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'Attach photo'**
-  String get reportIncidentAttachPhoto;
-
-  /// No description provided for @reportIncidentPhotoAttached.
-  ///
-  /// In en, this message translates to:
-  /// **'Photo attached (stub)'**
-  String get reportIncidentPhotoAttached;
 
   /// No description provided for @reportIncidentSubmit.
   ///

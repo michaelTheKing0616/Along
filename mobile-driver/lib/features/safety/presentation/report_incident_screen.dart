@@ -7,10 +7,7 @@ import 'package:mobile_driver/l10n/app_localizations.dart';
 
 /// D-16 Report incident — category grid, description, optional photo stub.
 class ReportIncidentScreen extends ConsumerStatefulWidget {
-  const ReportIncidentScreen({
-    super.key,
-    this.tripId,
-  });
+  const ReportIncidentScreen({super.key, this.tripId});
 
   final String? tripId;
 
@@ -23,7 +20,6 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
   String? _selectedType;
   final _descriptionController = TextEditingController();
   bool _submitting = false;
-  String? _photoStubPath;
 
   @override
   void dispose() {
@@ -37,9 +33,9 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (type == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.reportIncidentPickCategory)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.reportIncidentPickCategory)));
       return;
     }
     if (description.isEmpty) {
@@ -51,17 +47,17 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
 
     setState(() => _submitting = true);
     try {
-      await ref.read(safetyRepositoryProvider).reportIncident(
+      await ref
+          .read(safetyRepositoryProvider)
+          .reportIncident(
             tripId: widget.tripId,
             type: type,
             description: description,
-            attachmentPaths:
-                _photoStubPath == null ? const [] : [_photoStubPath!],
+            attachmentPaths: const [],
           );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.reportIncidentSubmitted)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.reportIncidentSubmitted)));
       Navigator.of(context).pop();
     } finally {
       if (mounted) setState(() => _submitting = false);
@@ -69,13 +65,13 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
   }
 
   IconData _iconFor(String iconName) => switch (iconName) {
-        'shield' => Icons.shield_outlined,
-        'payments' => Icons.payments_outlined,
-        'directions_car' => Icons.directions_car_outlined,
-        'person' => Icons.person_outline,
-        'inventory_2' => Icons.inventory_2_outlined,
-        _ => Icons.more_horiz,
-      };
+    'shield' => Icons.shield_outlined,
+    'payments' => Icons.payments_outlined,
+    'directions_car' => Icons.directions_car_outlined,
+    'person' => Icons.person_outline,
+    'inventory_2' => Icons.inventory_2_outlined,
+    _ => Icons.more_horiz,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +111,10 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
             ],
           ),
           const SizedBox(height: AlongSpace.s24),
-          Text(l10n.reportIncidentDescriptionHeading, style: AlongText.heading2),
+          Text(
+            l10n.reportIncidentDescriptionHeading,
+            style: AlongText.heading2,
+          ),
           const SizedBox(height: AlongSpace.s8),
           TextField(
             key: const Key('report_incident_description'),
@@ -128,17 +127,6 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
             ),
           ),
           const SizedBox(height: AlongSpace.s12),
-          AlongButton(
-            key: const Key('report_incident_attach'),
-            label: _photoStubPath == null
-                ? l10n.reportIncidentAttachPhoto
-                : l10n.reportIncidentPhotoAttached,
-            variant: AlongButtonVariant.secondary,
-            onPressed: () => setState(
-              () => _photoStubPath = 'stub/incident-photo.jpg',
-            ),
-          ),
-          const SizedBox(height: AlongSpace.s24),
           AlongButton(
             key: const Key('report_incident_submit'),
             label: l10n.reportIncidentSubmit,
@@ -153,14 +141,14 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
   }
 
   String _l10nKey(AppLocalizations l10n, String key) => switch (key) {
-        'incidentCategorySafety' => l10n.incidentCategorySafety,
-        'incidentCategoryFareDispute' => l10n.incidentCategoryFareDispute,
-        'incidentCategoryVehicleQuality' => l10n.incidentCategoryVehicleQuality,
-        'incidentCategoryDriverBehavior' => l10n.incidentCategoryDriverBehavior,
-        'incidentCategoryLostItem' => l10n.incidentCategoryLostItem,
-        'incidentCategoryOther' => l10n.incidentCategoryOther,
-        _ => key,
-      };
+    'incidentCategorySafety' => l10n.incidentCategorySafety,
+    'incidentCategoryFareDispute' => l10n.incidentCategoryFareDispute,
+    'incidentCategoryVehicleQuality' => l10n.incidentCategoryVehicleQuality,
+    'incidentCategoryDriverBehavior' => l10n.incidentCategoryDriverBehavior,
+    'incidentCategoryLostItem' => l10n.incidentCategoryLostItem,
+    'incidentCategoryOther' => l10n.incidentCategoryOther,
+    _ => key,
+  };
 }
 
 class _CategoryTile extends StatelessWidget {
@@ -196,11 +184,7 @@ class _CategoryTile extends StatelessWidget {
                 color: selected ? AlongColors.ink900 : AlongColors.ink700,
               ),
               const SizedBox(height: AlongSpace.s8),
-              Text(
-                label,
-                style: AlongText.label,
-                textAlign: TextAlign.center,
-              ),
+              Text(label, style: AlongText.label, textAlign: TextAlign.center),
             ],
           ),
         ),

@@ -1181,12 +1181,6 @@ abstract class AppLocalizations {
   /// **'Attach photo'**
   String get reportIncidentAttachPhoto;
 
-  /// R-24 photo stub attached
-  ///
-  /// In en, this message translates to:
-  /// **'Photo attached (stub)'**
-  String get reportIncidentPhotoAttached;
-
   /// R-24 submit CTA
   ///
   /// In en, this message translates to:

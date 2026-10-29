@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/features/safety/presentation/trip_thread_screen.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_controller.dart';
@@ -35,7 +36,7 @@ class TripDetailScreen extends ConsumerWidget {
       );
     }
     final receipt = entry.receipt;
-    final locale = Localizations.localeOf(context).toLanguageTag();
+    final locale = intlLocaleOf(context);
     return TripPage(
       title: receipt == null
           ? l10n.tripDetailTitle

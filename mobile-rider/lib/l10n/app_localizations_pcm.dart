@@ -10,17 +10,17 @@ class AppLocalizationsPcm extends AppLocalizations {
   AppLocalizationsPcm([String locale = 'pcm']) : super(locale);
 
   @override
-  String get phoneEntryTitle => 'Move around. Your way.';
+  String get phoneEntryTitle => 'Move anyhow. Your way.';
 
   @override
   String get phoneEntrySubtitle =>
-      'We text a code to this number so the ride stays yours.';
+      'We go text code to this number so the ride go be your own.';
 
   @override
   String get continueButton => 'Continue';
 
   @override
-  String get legalPrefix => 'By continuing, you agree to our ';
+  String get legalPrefix => 'If you continue, you agree to our ';
 
   @override
   String get termsLink => 'Terms';
@@ -33,22 +33,22 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String otpTitle(String phone) {
-    return 'Enter the 6-digit code sent to $phone';
+    return 'Put the 6-digit code wey we send to $phone';
   }
 
   @override
   String get wrongNumber => 'Wrong number?';
 
   @override
-  String get resendCode => 'Resend code';
+  String get resendCode => 'Send code again';
 
   @override
   String resendCountdown(int seconds) {
-    return 'Resend in ${seconds}s';
+    return 'Send again in ${seconds}s';
   }
 
   @override
-  String get nameTitle => 'What should drivers call you?';
+  String get nameTitle => 'Wetin drivers go dey call you?';
 
   @override
   String get nameHint => 'Your name';
@@ -57,25 +57,25 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get skip => 'Skip am';
 
   @override
-  String get errorInvalidPhone => 'Enter a valid Nigerian number';
+  String get errorInvalidPhone => 'Put correct Naija number';
 
   @override
   String errorRateLimited(int seconds) {
-    return 'Too many attempts. Try again in ${seconds}s';
+    return 'You don try too many times. Try again in ${seconds}s';
   }
 
   @override
-  String get errorWrongOtp => 'Incorrect code — try again';
+  String get errorWrongOtp => 'Code no correct — try again';
 
   @override
-  String get errorExpiredOtp => 'Code expired — request a new one';
+  String get errorExpiredOtp => 'Code don expire — ask for new one';
 
   @override
-  String get errorGeneric => 'Something went wrong. Please try again.';
+  String get errorGeneric => 'Something no work. Abeg try again.';
 
   @override
   String get errorAuthNotConfigured =>
-      'This build is not connected to Along. Rebuild the staging APK with env/staging.json.';
+      'This build no connect to Along. Rebuild the staging APK with env/staging.json.';
 
   @override
   String get navHome => 'Home';
@@ -96,24 +96,24 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get homeMenu => 'Menu';
 
   @override
-  String get homeVehicles => 'Vehicles';
+  String get homeVehicles => 'Motor dem';
 
   @override
-  String get homeRecenter => 'Recenter';
+  String get homeRecenter => 'Center am again';
 
   @override
   String get guardianIntro =>
-      'A check-in on this ride, only when you ask for it.';
+      'Check-in for this ride, only when you ask for am.';
 
   @override
   String get homeLocationDeniedBanner =>
-      'Enable location to see nearby vehicles';
+      'On location to see motor wey dey near';
 
   @override
-  String get homeChooseOnMap => 'Choose on map';
+  String get homeChooseOnMap => 'Choose for map';
 
   @override
-  String get homeNearbyTitle => 'Nearby';
+  String get homeNearbyTitle => 'Near you';
 
   @override
   String homeNearbyRow(
@@ -122,26 +122,26 @@ class AppLocalizationsPcm extends AppLocalizations {
     String heading,
     int minutes,
   ) {
-    return '$countBucket $mode nearby · heading $heading · ~$minutes min';
+    return '$countBucket $mode near · dey go $heading · ~$minutes min';
   }
 
   @override
-  String get modeKeke => 'kekes';
+  String get modeKeke => 'keke';
 
   @override
   String get searchTitle => 'Where you dey go?';
 
   @override
-  String get searchRecentsTitle => 'Recents';
+  String get searchRecentsTitle => 'Recent ones';
 
   @override
   String get searchResultsTitle => 'Results';
 
   @override
-  String get searchOfflineHint => 'Offline · searching saved places';
+  String get searchOfflineHint => 'No network · dey search saved places';
 
   @override
-  String get cachedOptionsStaleBadge => 'Cached · may be outdated';
+  String get cachedOptionsStaleBadge => 'Saved · fit don old';
 
   @override
   String get adjustPickupTitle => 'Change pickup';
@@ -155,42 +155,42 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get adjustPickupConfirm => 'Confirm place';
 
   @override
-  String get tripOptionsHeading => 'Choose how to go';
+  String get tripOptionsHeading => 'Choose how you go go';
 
   @override
-  String get tripOptionsDegradedBanner => 'Live times unavailable';
+  String get tripOptionsDegradedBanner => 'Live time no dey';
 
   @override
-  String get tripOptionsSlowerDirectCaption => 'Slower than transfer options';
+  String get tripOptionsSlowerDirectCaption => 'E slow pass transfer options';
 
   @override
   String get tripOptionsAgreePrice => 'Agree price';
 
   @override
-  String get pricingTitle => 'Along Pricing';
+  String get pricingTitle => 'Along Price';
 
   @override
-  String get pricingLapsed => 'No agreement — try another vehicle';
+  String get pricingLapsed => 'No agreement — try another motor';
 
   @override
-  String get pricingOutOfRange => 'Vehicle has passed';
+  String get pricingOutOfRange => 'Motor don pass';
 
   @override
-  String get pricingDeclined => 'Offer declined';
+  String get pricingDeclined => 'Dem no gree the offer';
 
   @override
   String pricingDriverOffer(String amount) {
-    return 'Driver offered $amount';
+    return 'Driver offer $amount';
   }
 
   @override
   String get hailSearchTitle => 'Where you dey go?';
 
   @override
-  String get requestUndoMessage => 'Requesting…';
+  String get requestUndoMessage => 'Dey request…';
 
   @override
-  String get loadFlagTitle => 'Carrying load?';
+  String get loadFlagTitle => 'You carry load?';
 
   @override
   String get loadFlagSizeSmall => 'Small';
@@ -199,19 +199,19 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get loadFlagSizeMedium => 'Medium';
 
   @override
-  String get loadFlagSizeLarge => 'Large';
+  String get loadFlagSizeLarge => 'Big';
 
   @override
-  String get loadFlagNoteHint => 'Optional note (140 characters)';
+  String get loadFlagNoteHint => 'Small note if you want (140 letters)';
 
   @override
-  String get loadFlagRememberDay => 'Remember for today';
+  String get loadFlagRememberDay => 'Remember am for today';
 
   @override
-  String get loadFlagCapacityWarning => 'This mode may not fit your load';
+  String get loadFlagCapacityWarning => 'This one fit no carry your load';
 
   @override
-  String get loadFlagRequestAnyway => 'Request anyway';
+  String get loadFlagRequestAnyway => 'Request am anyway';
 
   @override
   String get loadFlagDone => 'Done';
@@ -231,11 +231,11 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get requestingExpired => 'No driver answer — check other options';
 
   @override
-  String get coverageGapTitle => 'No mapped routes here yet';
+  String get coverageGapTitle => 'No route for here yet';
 
   @override
   String coverageGapNearestBoarding(String name, String distance) {
-    return 'Nearest known boarding point: $name · $distance';
+    return 'Nearest park: $name · $distance';
   }
 
   @override
@@ -249,27 +249,27 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get coverageGapVehiclesNone => 'Vehicles nearby: none';
+  String get coverageGapVehiclesNone => 'Motor wey near: none';
 
   @override
   String coverageGapVehiclesNearby(int count) {
-    return 'Vehicles nearby: $count';
+    return 'Motor wey near: $count';
   }
 
   @override
-  String get coverageGapWalkThere => 'Walk there';
+  String get coverageGapWalkThere => 'Waka go there';
 
   @override
   String get coverageGapTellUs => 'Tell us about this area';
 
   @override
-  String get coverageGapThanks => 'Thanks — we logged your report';
+  String get coverageGapThanks => 'Thank you — we don log your report';
 
   @override
   String get tripOptionsWhy => 'Why?';
 
   @override
-  String get tripOptionsWhyTitle => 'Why recommended';
+  String get tripOptionsWhyTitle => 'Why we recommend am';
 
   @override
   String get tripOptionsWhyFare => 'Fare';
@@ -278,7 +278,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get tripOptionsWhyTime => 'Time';
 
   @override
-  String get tripOptionsWhyEffort => 'Effort';
+  String get tripOptionsWhyEffort => 'Stress';
 
   @override
   String get tripOptionsShowLegs => 'Show legs';
@@ -299,7 +299,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String transferSupply(String bucket) {
-    return '$bucket loading';
+    return '$bucket dey load';
   }
 
   @override
@@ -309,7 +309,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get transferChangePlan => 'Change plan';
 
   @override
-  String get transferWalkLoading => 'Loading walking directions…';
+  String get transferWalkLoading => 'Dey load waka direction…';
 
   @override
   String get wayfindingTitle => 'Waka direction';
@@ -330,10 +330,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get wayfindingPause => 'Pause';
 
   @override
-  String get wayfindingArrived => 'Arrived';
+  String get wayfindingArrived => 'You don reach';
 
   @override
-  String get wayfindingDegraded => 'Directions may be approximate';
+  String get wayfindingDegraded => 'Direction fit no too correct';
 
   @override
   String get wayfindingNoSteps => 'No steps dey';
@@ -394,11 +394,11 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get extendTripTitle => 'Extend trip';
 
   @override
-  String get extendTripSearchHint => 'Where to now?';
+  String get extendTripSearchHint => 'Where now?';
 
   @override
   String extendTripDestination(String destination) {
-    return 'Continuing to $destination';
+    return 'Dey continue go $destination';
   }
 
   @override
@@ -409,14 +409,14 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String incomingExtensionBody(String destination, String delta) {
-    return 'Driver proposes continuing to $destination for +$delta';
+    return 'Driver wan continue go $destination for +$delta';
   }
 
   @override
   String get incomingExtensionAccept => 'Accept';
 
   @override
-  String get incomingExtensionDecline => 'Decline';
+  String get incomingExtensionDecline => 'No gree';
 
   @override
   String get payDriverTitle => 'Pay driver';
@@ -427,34 +427,34 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get payDriverAmountLocked => 'Amount locked to this trip';
+  String get payDriverAmountLocked => 'Amount don lock to this trip';
 
   @override
   String get payDriverMethodSaved => 'Visa ···4242';
 
   @override
   String payDriverPending(String amount) {
-    return 'Transfer $amount in your bank app';
+    return 'Transfer $amount for your bank app';
   }
 
   @override
   String get payDriverCopyAccount => 'Copy number';
 
   @override
-  String get payDriverAccountCopied => 'Account number copied';
+  String get payDriverAccountCopied => 'Account number don copy';
 
   @override
-  String get payDriverWaitingTransfer => 'Waiting for your transfer';
+  String get payDriverWaitingTransfer => 'We dey wait for your transfer';
 
   @override
   String get payDriverOtherAmount => 'Other';
 
   @override
-  String get payDriverOtherHint => 'Enter amount';
+  String get payDriverOtherHint => 'Put amount';
 
   @override
   String payDriverExpires(int seconds) {
-    return 'Expires in ${seconds}s';
+    return 'E go expire in ${seconds}s';
   }
 
   @override
@@ -471,22 +471,21 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String payDriverCashOnly(String name) {
-    return '$name accepts cash only';
+    return '$name dey collect cash only';
   }
 
   @override
-  String get payDriverInactive => 'This code is no longer active';
+  String get payDriverInactive => 'This code no dey work again';
 
   @override
   String get payDriverDifferentDriver =>
-      'Your active trip is with another driver';
+      'Your trip now dey with another driver';
 
   @override
-  String get payDriverConfirmOther =>
-      'This isn\'t my trip\'s driver — pay anyway';
+  String get payDriverConfirmOther => 'No be my trip driver — pay am anyway';
 
   @override
-  String get payDriverFailed => 'Payment failed';
+  String get payDriverFailed => 'Payment no go';
 
   @override
   String get payDriverRetry => 'Try again';
@@ -510,10 +509,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get scanToPayTitle => 'Scan to pay';
 
   @override
-  String get scanEnterCode => 'Enter code instead';
+  String get scanEnterCode => 'Type code instead';
 
   @override
-  String get scanEnterCodePrompt => 'Enter driver code';
+  String get scanEnterCodePrompt => 'Put driver code';
 
   @override
   String get scanCodeHint => '8-character code';
@@ -522,19 +521,19 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get scanCodeSubmit => 'Continue';
 
   @override
-  String get scanBackToCamera => 'Back to camera';
+  String get scanBackToCamera => 'Go back to camera';
 
   @override
-  String get scanNotAlong => 'Not an Along code';
+  String get scanNotAlong => 'No be Along code';
 
   @override
-  String get payMethodsTitle => 'Payment methods';
+  String get payMethodsTitle => 'How to pay';
 
   @override
   String get payMethodsDefault => 'Default';
 
   @override
-  String get payMethodsSetDefault => 'Set as default';
+  String get payMethodsSetDefault => 'Make am default';
 
   @override
   String get payMethodsRemove => 'Remove';
@@ -549,25 +548,25 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get activeTripScan => 'Scan';
 
   @override
-  String get tripsEmpty => 'No completed trips yet.';
+  String get tripsEmpty => 'No finished trip yet.';
 
   @override
   String get tripDetailTitle => 'Trip details';
 
   @override
-  String get tripDetailMissing => 'Trip not found';
+  String get tripDetailMissing => 'We no see the trip';
 
   @override
   String get tripDetailShareReceipt => 'Share receipt';
 
   @override
-  String get tripDetailReceiptCopied => 'Receipt copied to clipboard';
+  String get tripDetailReceiptCopied => 'Receipt don copy';
 
   @override
   String get sosTeamAlerted => 'Ready to call 112';
 
   @override
-  String get sosSharingDetails => 'Share your live location with your contacts';
+  String get sosSharingDetails => 'Share your live location with your people';
 
   @override
   String sosCallEmergency(String number) {
@@ -575,65 +574,62 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get sosShareWithContact => 'Share with a contact';
+  String get sosShareWithContact => 'Share with one contact';
 
   @override
-  String get sosHoldToCancel => 'Hold to cancel';
+  String get sosHoldToCancel => 'Hold am to cancel';
 
   @override
-  String get sosRaising => 'Opening the 112 call…';
+  String get sosRaising => 'Dey open the 112 call…';
 
   @override
-  String get sosRaiseFailed => 'Could not open the 112 call';
+  String get sosRaiseFailed => '112 call no gree open';
 
   @override
   String get sosRetry => 'Try again';
 
   @override
-  String get reportIncidentTitle => 'Report incident';
+  String get reportIncidentTitle => 'Report wetin happen';
 
   @override
-  String get reportIncidentCategoryHeading => 'What happened?';
+  String get reportIncidentCategoryHeading => 'Wetin happen?';
 
   @override
   String get reportIncidentDescriptionHeading => 'Tell us more';
 
   @override
   String get reportIncidentDescriptionHint =>
-      'Describe what happened (optional details help)';
+      'Talk wetin happen (details dey help)';
 
   @override
-  String get reportIncidentAttachPhoto => 'Attach photo';
+  String get reportIncidentAttachPhoto => 'Add photo';
 
   @override
-  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
+  String get reportIncidentSubmit => 'Send report';
 
   @override
-  String get reportIncidentSubmit => 'Submit report';
+  String get reportIncidentPickCategory => 'Pick one category';
 
   @override
-  String get reportIncidentPickCategory => 'Pick a category';
+  String get reportIncidentDescriptionRequired => 'Add small explanation';
 
   @override
-  String get reportIncidentDescriptionRequired => 'Add a short description';
-
-  @override
-  String get reportIncidentSubmitted => 'Report saved on this phone';
+  String get reportIncidentSubmitted => 'Report don save for this phone';
 
   @override
   String get incidentCategorySafety => 'Safety';
 
   @override
-  String get incidentCategoryFareDispute => 'Fare dispute';
+  String get incidentCategoryFareDispute => 'Fare wahala';
 
   @override
-  String get incidentCategoryVehicleQuality => 'Vehicle quality';
+  String get incidentCategoryVehicleQuality => 'Motor condition';
 
   @override
   String get incidentCategoryDriverBehavior => 'Driver behaviour';
 
   @override
-  String get incidentCategoryLostItem => 'Lost item';
+  String get incidentCategoryLostItem => 'Something lost';
 
   @override
   String get incidentCategoryOther => 'Other';
@@ -642,7 +638,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get shareTripTitle => 'Share live trip';
 
   @override
-  String get shareTripCreateLink => 'Create share link';
+  String get shareTripCreateLink => 'Make share link';
 
   @override
   String get shareTripCopy => 'Copy link';
@@ -651,32 +647,32 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get shareTripSms => 'SMS';
 
   @override
-  String get shareTripCopied => 'Link copied';
+  String get shareTripCopied => 'Link don copy';
 
   @override
-  String get shareTripExpiryNote => 'Links auto-expire when your trip ends';
+  String get shareTripExpiryNote => 'Link go expire when your trip finish';
 
   @override
-  String get shareTripActiveHeading => 'Active shares';
+  String get shareTripActiveHeading => 'Shares wey dey on';
 
   @override
   String get shareTripAnonymousContact => 'Shared contact';
 
   @override
   String shareTripExpires(String date) {
-    return 'Expires $date';
+    return 'E go expire $date';
   }
 
   @override
   String shareTripSmsBody(String url) {
-    return 'Track my Along trip: $url';
+    return 'Follow my Along trip: $url';
   }
 
   @override
   String get accountProfileHeading => 'PROFILE';
 
   @override
-  String get accountPreferencesHeading => 'PREFERENCES';
+  String get accountPreferencesHeading => 'WETIN YOU LIKE';
 
   @override
   String get accountCityLabel => 'Home city';
@@ -692,33 +688,32 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get accountSafetyHeading => 'SAFETY';
 
   @override
-  String get accountWayfindingLabel => 'Wayfinding mode';
+  String get accountWayfindingLabel => 'Direction style';
 
   @override
   String get accountSortLabel => 'Default trip sort';
 
   @override
-  String get accountWomenOnlyLabel => 'Women-only matching';
+  String get accountWomenOnlyLabel => 'Women-only match';
 
   @override
-  String get accountWomenOnlyHint =>
-      'Prefer trips with women-only drivers when available';
+  String get accountWomenOnlyHint => 'Prefer women drivers when dem dey';
 
   @override
   String get accountPaymentCashDefault => 'Cash';
 
   @override
-  String get accountPaymentCashHint => 'Default payment method for Along trips';
+  String get accountPaymentCashHint => 'Default way to pay for Along trips';
 
   @override
-  String get accountSafetyHowSos => 'How SOS works';
+  String get accountSafetyHowSos => 'How SOS dey work';
 
   @override
   String get accountSafetyHowSosBody =>
-      'Hold SOS to call 112 and share your location with contacts';
+      'Hold SOS to call 112 and share where you dey with your people';
 
   @override
-  String get accountHelp => 'Help & support';
+  String get accountHelp => 'Help';
 
   @override
   String get accountLegal => 'Legal';
@@ -730,14 +725,14 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get homePlanYourDay => 'Plan your day';
 
   @override
-  String get dayPlannerTitle => 'Today\'s plan';
+  String get dayPlannerTitle => 'Today plan';
 
   @override
-  String get dayPlannerEmpty => 'No stops in your plan yet';
+  String get dayPlannerEmpty => 'No stop for your plan yet';
 
   @override
   String get dayPlannerNotBookedHint =>
-      'Stops are planned — matching starts when you tap Match now. Nothing is reserved ahead of time.';
+      'Stops don plan — matching go start when you tap Match now. Nothing dey reserved before time.';
 
   @override
   String get dayPlannerLoadToggle => 'Load today';
@@ -756,17 +751,17 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String dayPlannerStopInProgress(int minutes) {
-    return 'In progress · ETA $minutes min';
+    return 'E dey go · ETA $minutes min';
   }
 
   @override
   String get dayPlannerStopReady => 'Ready — tap Match now below';
 
   @override
-  String get dayPlannerStopPrepareHint => 'Tap Prepare when you are ready';
+  String get dayPlannerStopPrepareHint => 'Tap Prepare when you ready';
 
   @override
-  String get dayPlannerStopPending => 'Up next';
+  String get dayPlannerStopPending => 'Next';
 
   @override
   String get dayPlannerStopSkipped => 'Skipped';
@@ -781,51 +776,51 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get itineraryEntryNaturalLanguage => 'Describe';
 
   @override
-  String get itineraryEntryStopHint => 'Where to?';
+  String get itineraryEntryStopHint => 'Where you dey go?';
 
   @override
   String get itineraryEntryAddRow => 'Add another stop';
 
   @override
-  String get itineraryEntryDescribeDay => 'Describe your day';
+  String get itineraryEntryDescribeDay => 'Talk about your day';
 
   @override
   String get itineraryEntryNlHint =>
-      'e.g. drop kids at school, then work, then market';
+      'e.g. drop pikin for school, then work, then market';
 
   @override
-  String get itineraryEntryMicTitle => 'Say your stops';
+  String get itineraryEntryMicTitle => 'Talk your stops';
 
   @override
-  String get itineraryEntryMicHint => 'Speak or type your stops…';
+  String get itineraryEntryMicHint => 'Talk or type your stops…';
 
   @override
   String get itineraryEntryParse => 'Preview stops';
 
   @override
-  String get itineraryEntryProposalTitle => 'We heard';
+  String get itineraryEntryProposalTitle => 'Wetin we hear';
 
   @override
-  String get itineraryEntryUnresolved => 'Needs a place name';
+  String get itineraryEntryUnresolved => 'E need place name';
 
   @override
-  String get itineraryEntryLooksRight => 'Looks right';
+  String get itineraryEntryLooksRight => 'E correct';
 
   @override
   String get itineraryEntrySavePlan => 'Save plan';
 
   @override
   String get sosQueued =>
-      'Saved on this phone. Call 112 when you are back online.';
+      'E don save for this phone. Call 112 when network come back.';
 
   @override
   String get sosLiveLink => 'Copy live location link';
 
   @override
-  String get sosLiveLinkCopied => 'Live location link copied';
+  String get sosLiveLinkCopied => 'Live location link don copy';
 
   @override
-  String get sosContactsHeading => 'Tell someone you trust';
+  String get sosContactsHeading => 'Tell person wey you trust';
 
   @override
   String sosContactWhatsapp(String name) {
@@ -842,10 +837,10 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get emergencyContactsHint =>
-      'We notify these people if you raise SOS. Up to 5. WhatsApp or a text opens on your phone.';
+      'We go tell these people if you press SOS. Up to 5. WhatsApp or text go open for your phone.';
 
   @override
-  String get emergencyContactsEmpty => 'No emergency contacts yet';
+  String get emergencyContactsEmpty => 'No emergency contact yet';
 
   @override
   String get emergencyContactName => 'Name';
@@ -862,17 +857,16 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get emergencyContactInvalidPhone =>
-      'Use a phone number like +2348012345678';
+  String get emergencyContactInvalidPhone => 'Use number like +2348012345678';
 
   @override
-  String get emergencyContactLimit => 'You can save up to 5 contacts';
+  String get emergencyContactLimit => 'You fit save up to 5 contacts';
 
   @override
-  String get emergencyContactSaveFailed => 'Could not save that contact';
+  String get emergencyContactSaveFailed => 'We no fit save that contact';
 
   @override
-  String get vehiclesTitle => 'Vehicles';
+  String get vehiclesTitle => 'Motor dem';
 
   @override
   String freeSeatCount(int count) {
@@ -880,25 +874,25 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get seatStale => 'Seat map is more than a minute old';
+  String get seatStale => 'Seat map don pass one minute';
 
   @override
-  String get filterRulesHint => 'Search a driver\'s rules';
+  String get filterRulesHint => 'Search driver rules';
 
   @override
-  String get seatTaken => 'That seat was just taken';
+  String get seatTaken => 'Person just take that seat';
 
   @override
-  String get acknowledgeToClaim => 'I agree';
+  String get acknowledgeToClaim => 'I gree';
 
   @override
-  String get noVehicles => 'No vehicles match these rules';
+  String get noVehicles => 'No motor match these rules';
 
   @override
   String get seatFree => 'free';
 
   @override
-  String get seatOccupied => 'occupied';
+  String get seatOccupied => 'person dey';
 
   @override
   String get seatHeld => 'held';
@@ -910,16 +904,16 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get seatDriver => 'driver';
 
   @override
-  String get seatLuggage => 'luggage';
+  String get seatLuggage => 'load';
 
   @override
   String get voiceBookingHint => 'Talk am, like Wuse go Berger';
 
   @override
-  String get textMapTitle => 'Vehicles nearby';
+  String get textMapTitle => 'Motor wey near';
 
   @override
-  String get textMapEmpty => 'No vehicles in this direction yet';
+  String get textMapEmpty => 'No motor for this side yet';
 
   @override
   String get plateCheck => 'I see dis plate';
@@ -931,15 +925,15 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get plateScan => 'Scan plate';
 
   @override
-  String get plateScanHint => 'Fit the plate in the frame';
+  String get plateScanHint => 'Put the plate inside the frame';
 
   @override
   String get plateScanDenied =>
-      'Camera is off. You can still confirm the plate yourself.';
+      'Camera dey off. You fit still confirm the plate yourself.';
 
   @override
   String get plateScanMismatch =>
-      'This plate does not match the registered one.';
+      'This plate no match the one wey dem register.';
 
   @override
   String get plateScanReport => 'Report';
@@ -957,10 +951,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get guardianTitle => 'Guardian';
 
   @override
-  String get guardianEnabled => 'Check in on this trip';
+  String get guardianEnabled => 'Check-in for this trip';
 
   @override
-  String get guardianOffRoute => 'Off-route metres';
+  String get guardianOffRoute => 'Metres off route';
 
   @override
   String get guardianLongStop => 'Long stop minutes';
@@ -999,7 +993,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get tripMessagesTitle => 'Message the driver';
 
   @override
-  String get tripMessagesClosed => 'This conversation is closed.';
+  String get tripMessagesClosed => 'This chat don close.';
 
   @override
   String get tripMessagesDriver => 'Driver';
@@ -1008,22 +1002,22 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get tripMessagesRider => 'You';
 
   @override
-  String get tripMessagesHint => 'A note about something left behind';
+  String get tripMessagesHint => 'Note about something wey you forget';
 
   @override
   String get tripMessagesSend => 'Send';
 
   @override
-  String get holdNotOffered => 'This driver has not turned on seat holds';
+  String get holdNotOffered => 'This driver never on seat hold';
 
   @override
-  String get walkExtension => 'Minutes you need to walk';
+  String get walkExtension => 'Minutes wey you need to waka';
 
   @override
   String get stageRadarTitle => 'Park board';
 
   @override
-  String get stageRadarLeaving => 'Leaves next';
+  String get stageRadarLeaving => 'Next to comot';
 
   @override
   String stageRadarSeats(int free, int total) {
@@ -1031,7 +1025,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get stageRadarEmpty => 'No car is loading here yet';
+  String get stageRadarEmpty => 'No motor dey load here yet';
 
   @override
   String get stageRadarVerified => 'Verified';
@@ -1043,14 +1037,14 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get fareShieldTitle => 'Fair fare';
 
   @override
-  String get fareShieldQuiet => 'Not enough trips on this corridor yet';
+  String get fareShieldQuiet => 'Trips never reach for this road';
 
   @override
-  String get fareShieldDispute => 'This fare is high';
+  String get fareShieldDispute => 'This fare too high';
 
   @override
   String fareShieldAnchored(int seconds) {
-    return 'One offer, open for $seconds seconds';
+    return 'One offer, e open for $seconds seconds';
   }
 
   @override

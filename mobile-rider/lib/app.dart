@@ -6,7 +6,6 @@ import 'package:along_design/along_design.dart';
 import 'package:along_map/along_map.dart';
 import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/features/connection/connection_banner_host.dart';
 import 'package:mobile_rider/features/live_trip/presentation/trip_chat.dart';
@@ -16,6 +15,7 @@ import 'package:mobile_rider/features/offline/low_data_providers.dart';
 import 'package:mobile_rider/features/payments/presentation/payment_deep_link_listener.dart';
 import 'package:mobile_rider/features/tenant/tenant_providers.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/fallback_localizations.dart';
 import 'package:mobile_rider/routing/app_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -35,12 +35,7 @@ class AlongRiderApp extends ConsumerWidget {
       darkTheme: alongTheme(branding: branding, brightness: Brightness.dark),
       themeMode: ThemeMode.system,
       routerConfig: router,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) => ConnectionBannerHost(
         child: PaymentDeepLinkListener(

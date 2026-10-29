@@ -18,6 +18,7 @@ import 'package:mobile_rider/features/safety/presentation/safety_kit.dart';
 import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_rider/features/wayfinding/wayfinding_tts.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/l10n/fallback_localizations.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
 import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/testing/fakes/fake_recent_places_store.dart';
@@ -104,6 +105,7 @@ void main() {
       List<Map<String, dynamic>> contactRows = const [],
       Object? raiseError,
       List<Override> extra = const [],
+      Locale? locale,
     }) async {
       await tester.binding.setSurfaceSize(const Size(360, 800));
       addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -138,8 +140,9 @@ void main() {
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
             theme: alongTheme(brightness: brightness),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
+            locale: locale,
             builder: (context, child) => MediaQuery(
               data: MediaQuery.of(context).copyWith(
                 textScaler: TextScaler.linear(scale),
@@ -216,6 +219,35 @@ void main() {
       expect(find.byKey(const Key('guardian_status_sharing')), findsOneWidget);
       await shootApp(tester, 'rider_guardian_live_$name');
     });
+
+    // Longest translations at 1.3x must lay out without overflow.
+    if (scale > 1) {
+      for (final code in const ['ha', 'ig', 'yo', 'pcm']) {
+        testWidgets('safety screens fit in $code at 1.3x', (tester) async {
+          final locale = Locale(code);
+          await pump(
+            tester,
+            (trip) => SosActiveScreen(args: SosActiveRouteArgs(trip: trip)),
+            contactRows: contacts,
+            locale: locale,
+          );
+          expect(tester.takeException(), isNull);
+          await pump(
+            tester,
+            (trip) => GuardianShareScreen(args: GuardianShareArgs(trip: trip)),
+            contactRows: contacts,
+            locale: locale,
+          );
+          expect(tester.takeException(), isNull);
+          await pump(
+            tester,
+            (trip) => const ReportIncidentScreen(tripId: 'trip-1'),
+            locale: locale,
+          );
+          expect(tester.takeException(), isNull);
+        });
+      }
+    }
 
     testWidgets('rider report incident photos $name', (tester) async {
       var n = 0;

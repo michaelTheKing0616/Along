@@ -4,10 +4,7 @@ import 'package:mobile_driver/l10n/app_localizations.dart';
 
 /// Bottom nav shell — Home · Routes · Earnings · Account (doc 06 D-08).
 class DriverShellScreen extends StatelessWidget {
-  const DriverShellScreen({
-    super.key,
-    required this.navigationShell,
-  });
+  const DriverShellScreen({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
@@ -44,15 +41,5 @@ class DriverShellScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class EarningsStubScreen extends StatelessWidget {
-  const EarningsStubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Center(child: Text(l10n.earningsStubBody));
   }
 }

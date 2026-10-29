@@ -885,10 +885,6 @@
   "@reportIncidentAttachPhoto": {
     "description": "R-24 optional photo stub"
   },
-  "reportIncidentPhotoAttached": "Photo attached (stub)",
-  "@reportIncidentPhotoAttached": {
-    "description": "R-24 photo stub attached"
-  },
   "reportIncidentSubmit": "Submit report",
   "@reportIncidentSubmit": {
     "description": "R-24 submit CTA"

@@ -4,7 +4,6 @@ import 'package:along_location/along_location.dart';
 import 'package:along_notifications/along_notifications.dart';
 import 'package:along_realtime/along_realtime.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_driver/features/connection/connection_banner_host.dart';
 import 'package:mobile_driver/features/trip/presentation/trip_chat.dart';
@@ -12,6 +11,7 @@ import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/tenant/tenant_providers.dart';
 import 'package:mobile_driver/l10n/app_localizations.dart';
+import 'package:mobile_driver/l10n/fallback_localizations.dart';
 import 'package:mobile_driver/routing/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -30,12 +30,7 @@ class AlongDriverApp extends ConsumerWidget {
       darkTheme: alongTheme(branding: branding, brightness: Brightness.dark),
       themeMode: ThemeMode.system,
       routerConfig: router,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) =>
           ConnectionBannerHost(child: child ?? const SizedBox.shrink()),

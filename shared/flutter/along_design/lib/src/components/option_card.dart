@@ -130,20 +130,25 @@ class OptionCard extends StatelessWidget {
                               size: ModeChipSize.small,
                             ),
                           ],
-                          const Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                formatMoney(fareNaira),
-                                style: AlongText.numericL.copyWith(
-                                  color: palette.ink,
+                          const SizedBox(width: AlongSpace.s8),
+                          // Expanded, not Spacer: long tier labels (yo/ig
+                          // at 1.3x) wrap inside the pill instead of
+                          // pushing the row off the card.
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  formatMoney(fareNaira),
+                                  style: AlongText.numericL.copyWith(
+                                    color: palette.ink,
+                                  ),
+                                  softWrap: false,
                                 ),
-                                softWrap: false,
-                              ),
-                              const SizedBox(height: AlongSpace.s4),
-                              TierPill(tier: tier, label: tierLabel),
-                            ],
+                                const SizedBox(height: AlongSpace.s4),
+                                TierPill(tier: tier, label: tierLabel),
+                              ],
+                            ),
                           ),
                         ],
                       ),

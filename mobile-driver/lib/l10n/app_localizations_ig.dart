@@ -13,333 +13,334 @@ class AppLocalizationsIg extends AppLocalizations {
   String get driverBrandingLine => 'Nyere Along aka';
 
   @override
-  String get phoneEntryTitle => 'Drive with Along';
+  String get phoneEntryTitle => 'Nyere Along aka';
 
   @override
   String get phoneEntrySubtitle =>
-      'We text a code to this number so your day stays yours.';
+      'Anyị ga-ezitere nọmba a koodu ka ụbọchị gị bụrụ nke gị.';
 
   @override
   String get continueButton => 'Gaa n\'ihu';
 
   @override
-  String get legalPrefix => 'By continuing, you agree to our ';
+  String get legalPrefix => 'Ọ bụrụ na ị gaa n\'ihu, ị kwenyere na ';
 
   @override
-  String get termsLink => 'Terms';
+  String get termsLink => 'Usoro';
 
   @override
-  String get legalMiddle => ' and ';
+  String get legalMiddle => ' na ';
 
   @override
-  String get privacyLink => 'Privacy Policy';
+  String get privacyLink => 'Iwu Nzuzo';
 
   @override
   String otpTitle(String phone) {
-    return 'Enter the 6-digit code sent to $phone';
+    return 'Tinye koodu ọnụọgụ 6 e zigara $phone';
   }
 
   @override
-  String get wrongNumber => 'Wrong number?';
+  String get wrongNumber => 'Nọmba ezighi ezi?';
 
   @override
-  String get resendCode => 'Resend code';
+  String get resendCode => 'Zigharịa koodu';
 
   @override
   String resendCountdown(int seconds) {
-    return 'Resend in ${seconds}s';
+    return 'Zigharịa n\'ime ${seconds}s';
   }
 
   @override
-  String get errorInvalidPhone => 'Enter a valid Nigerian number';
+  String get errorInvalidPhone => 'Tinye nọmba Naịjirịa ziri ezi';
 
   @override
-  String get errorWrongOtp => 'Incorrect code — try again';
+  String get errorWrongOtp => 'Koodu ezighi ezi — nwaa ọzọ';
 
   @override
-  String get errorExpiredOtp => 'Code expired — request a new one';
+  String get errorExpiredOtp => 'Koodu agwụla — rịọ nke ọhụrụ';
 
   @override
   String errorRateLimited(int seconds) {
-    return 'Too many attempts. Try again in ${seconds}s';
+    return 'Ọ gafere ugboro. Nwaa ọzọ n\'ime ${seconds}s';
   }
 
   @override
-  String get errorGeneric => 'Something went wrong. Please try again.';
+  String get errorGeneric => 'Ihe adịghị mma mere. Biko nwaa ọzọ.';
 
   @override
   String get errorAuthNotConfigured =>
-      'This build is not connected to Along. Rebuild the staging APK with env/staging.json.';
+      'Ewu a ejikọghị na Along. Wughachi staging APK jiri env/staging.json.';
 
   @override
-  String get errorValidation => 'Please check the fields and try again.';
+  String get errorValidation => 'Biko lelee mpaghara ndị ahụ ma nwaa ọzọ.';
 
   @override
-  String get errorPlateConflict => 'This plate is already registered.';
+  String get errorPlateConflict => 'E debanyelarị nọmba ụgbọ a.';
 
   @override
-  String get profileTitle => 'Your profile';
+  String get profileTitle => 'Profaịlụ gị';
 
   @override
-  String get profileSubtitle => 'Tell us a bit about yourself';
+  String get profileSubtitle => 'Gwa anyị ntakịrị maka onwe gị';
 
   @override
-  String get nameLabel => 'Full name';
+  String get nameLabel => 'Aha zuru ezu';
 
   @override
-  String get nameHint => 'Your name';
+  String get nameHint => 'Aha gị';
 
   @override
-  String get cityLabel => 'City';
+  String get cityLabel => 'Obodo';
 
   @override
-  String get genderLabel => 'Gender (optional)';
+  String get genderLabel => 'Okike (nhọrọ)';
 
   @override
-  String get genderFemale => 'Female';
+  String get genderFemale => 'Nwaanyị';
 
   @override
-  String get genderMale => 'Male';
+  String get genderMale => 'Nwoke';
 
   @override
-  String get genderOther => 'Prefer not to say';
+  String get genderOther => 'Achọghị m ikwu';
 
   @override
-  String get photoOptional => 'Add photo (optional)';
+  String get photoOptional => 'Tinye foto (nhọrọ)';
 
   @override
-  String get vehicleTitle => 'Your vehicle';
+  String get vehicleTitle => 'Ụgbọala gị';
 
   @override
-  String get vehicleSubtitle => 'How will you drive on Along?';
+  String get vehicleSubtitle => 'Kedu ka ị ga-esi kwọọ na Along?';
 
   @override
-  String get plateLabel => 'Plate number';
+  String get plateLabel => 'Nọmba ụgbọ';
 
   @override
-  String get plateHint => 'e.g. ABC-123-XY';
+  String get plateHint => 'dịka ABC-123-XY';
 
   @override
-  String get seatsLabel => 'Seats';
+  String get seatsLabel => 'Oche';
 
   @override
-  String get colorLabel => 'Colour';
+  String get colorLabel => 'Agba';
 
   @override
-  String get makeModelLabel => 'Make & model';
+  String get makeModelLabel => 'Ụdị na model';
 
   @override
-  String get ownerQuestion => 'Is this your vehicle?';
+  String get ownerQuestion => 'Ụgbọala a ọ bụ nke gị?';
 
   @override
-  String get ownerYes => 'Yes, it\'s mine';
+  String get ownerYes => 'Ee, ọ bụ nke m';
 
   @override
-  String get ownerNo => 'No, someone else owns it';
+  String get ownerNo => 'Mba, ọ bụ nke onye ọzọ';
 
   @override
-  String get ownerNameLabel => 'Owner name';
+  String get ownerNameLabel => 'Aha onye nwe ya';
 
   @override
-  String get ownerPhoneLabel => 'Owner phone';
+  String get ownerPhoneLabel => 'Ekwentị onye nwe ya';
 
   @override
-  String get documentsTitle => 'Verify your documents';
+  String get documentsTitle => 'Kwado akwụkwọ gị';
 
   @override
-  String get documentsSubtitle => 'Upload each document to start driving';
+  String get documentsSubtitle => 'Bulite akwụkwọ ọ bụla ka ịmalite ịkwọ';
 
   @override
-  String get docStatusNotStarted => 'Not started';
+  String get docStatusNotStarted => 'Amalitebeghị';
 
   @override
-  String get docStatusPending => 'Pending';
+  String get docStatusPending => 'Na-echere';
 
   @override
-  String get docStatusApproved => 'Approved';
+  String get docStatusApproved => 'Akwadola';
 
   @override
-  String get docStatusRejected => 'Rejected';
+  String get docStatusRejected => 'A jụrụ ya';
 
   @override
-  String get saveAndContinueLater => 'Save and continue later';
+  String get saveAndContinueLater => 'Chekwaa ma gaa n\'ihu emesịa';
 
   @override
   String captureTitle(String document) {
-    return 'Capture $document';
+    return 'See $document';
   }
 
   @override
-  String get captureGuide => 'Fit the document inside the frame';
+  String get captureGuide => 'Tinye akwụkwọ n\'ime okpokolo';
 
   @override
-  String get takePhoto => 'Take photo';
+  String get takePhoto => 'See foto';
 
   @override
-  String get retakePhoto => 'Retake';
+  String get retakePhoto => 'See ọzọ';
 
   @override
-  String get submitDocument => 'Submit document';
+  String get submitDocument => 'Ziga akwụkwọ';
 
   @override
-  String get ocrReviewTitle => 'Review extracted details';
+  String get ocrReviewTitle => 'Lelee nkọwa e wepụtara';
 
   @override
-  String get ocrReviewSubtitle => 'Confirm each field before submitting';
+  String get ocrReviewSubtitle => 'Kwado mpaghara ọ bụla tupu iziga';
 
   @override
   String ocrSuggestedValue(String value) {
-    return 'Suggested: $value';
+    return 'Atụrụ aro: $value';
   }
 
   @override
-  String get ocrConfirmField => 'Use this value';
+  String get ocrConfirmField => 'Jiri nke a';
 
   @override
-  String get ocrFieldConfirmed => 'Confirmed';
+  String get ocrFieldConfirmed => 'Akwadola';
 
   @override
   String get ocrNoAutoFillNote =>
-      'ID numbers are never filled automatically — tap confirm for each field.';
+      'Anaghị etinye nọmba NJ n\'onwe ya — pịa kwado maka mpaghara ọ bụla.';
 
   @override
-  String get pendingTitle => 'Verification in progress';
+  String get pendingTitle => 'Nkwado na-aga n\'ihu';
 
   @override
-  String get pendingHero => 'We\'re reviewing your documents';
+  String get pendingHero => 'Anyị na-enyocha akwụkwọ gị';
 
   @override
-  String get pendingExpectedGeneric => 'This usually takes 1–3 business days';
+  String get pendingExpectedGeneric => 'Ọ na-ewekarị ụbọchị ọrụ 1–3';
 
   @override
   String pendingExpectedHours(int hours) {
-    return 'Expected within $hours hours';
+    return 'A na-atụ anya n\'ime awa $hours';
   }
 
   @override
   String get pendingWhatNext =>
-      'We\'ll notify you when you\'re approved. You can set up your route while you wait.';
+      'Anyị ga-agwa gị mgbe akwadoro gị. Ị nwere ike ịhazi ụzọ gị ka ị na-eche.';
 
   @override
-  String get setupRouteCta => 'Set up your route while you wait';
+  String get setupRouteCta => 'Hazie ụzọ gị ka ị na-eche';
 
   @override
-  String get routesListTitle => 'Your routes';
+  String get routesListTitle => 'Ụzọ gị';
 
   @override
-  String get routesAddRoute => 'Add route';
+  String get routesAddRoute => 'Tinye ụzọ';
 
   @override
-  String get routesEmptyTitle => 'Set up your route in a few taps';
+  String get routesEmptyTitle => 'Hazie ụzọ gị na mpịa ole na ole';
 
   @override
   String get routesEmptyBody =>
-      'Publish your stops and prices so riders can find you on your usual path.';
+      'Bipụta ebe nkwụsị na ọnụahịa gị ka ndị njem chọta gị n\'ụzọ gị.';
 
   @override
-  String get routeSuggestedCardTitle => 'Suggested route';
+  String get routeSuggestedCardTitle => 'Ụzọ a tụrụ aro';
 
   @override
   String routeSuggestedCardBody(String mode, int stopCount) {
-    return 'We detected a usual $mode path with $stopCount stops.';
+    return 'Anyị chọpụtara ụzọ $mode ị na-aga nwere ebe nkwụsị $stopCount.';
   }
 
   @override
-  String get routeSuggestedCardCta => 'Tap to review and publish';
+  String get routeSuggestedCardCta => 'Pịa ka ilele ma bipụta';
 
   @override
   String routeUnnamedProfile(String mode) {
-    return '$mode route';
+    return 'Ụzọ $mode';
   }
 
   @override
   String routeStopsCount(int count) {
-    return '$count stops';
+    return 'Ebe nkwụsị $count';
   }
 
   @override
   String routeLoadSurchargeLabel(String amount) {
-    return 'Load surcharge: $amount';
+    return 'Ego mgbakwunye ibu: $amount';
   }
 
   @override
-  String get routeLoadSurchargeOptional => 'Load surcharge (optional)';
+  String get routeLoadSurchargeOptional => 'Ego mgbakwunye ibu (nhọrọ)';
 
   @override
-  String get routeLoadSurchargeHint => 'e.g. 50';
+  String get routeLoadSurchargeHint => 'dịka 50';
 
   @override
-  String get routeFastSetupTitle => 'Route setup';
+  String get routeFastSetupTitle => 'Nhazi ụzọ';
 
   @override
-  String get routeFastSetupQuestion => 'Is this your route?';
+  String get routeFastSetupQuestion => 'Nke a ọ bụ ụzọ gị?';
 
   @override
   String routeFastSetupSubtitle(int count) {
-    return '$count stops detected from your usual path';
+    return 'Achọpụtara ebe nkwụsị $count n\'ụzọ gị';
   }
 
   @override
-  String get routeYesPublish => 'Yes, publish';
+  String get routeYesPublish => 'Ee, bipụta';
 
   @override
-  String get routeEditPrices => 'Edit prices';
+  String get routeEditPrices => 'Dezie ọnụahịa';
 
   @override
-  String get routeDrawManually => 'No, draw manually';
+  String get routeDrawManually => 'Mba, see ya n\'aka';
 
   @override
-  String get routeDrawTitle => 'Draw your route';
+  String get routeDrawTitle => 'See ụzọ gị';
 
   @override
-  String get routeDrawHint => 'Tap the map to add stops';
+  String get routeDrawHint => 'Pịa maapụ ka itinye ebe nkwụsị';
 
   @override
-  String get routeDrawEmptyStops => 'Add at least two stops on the map';
+  String get routeDrawEmptyStops => 'Tinye ọ dịkarịa ala ebe nkwụsị abụọ';
 
   @override
-  String get routePublish => 'Publish';
+  String get routePublish => 'Bipụta';
 
   @override
   String routePriceToEnd(String amount) {
-    return 'To end: $amount';
+    return 'Ruo ọgwụgwụ: $amount';
   }
 
   @override
   String routeSnapMatched(String name) {
-    return 'Matched: $name ✓';
+    return 'Dabara: $name ✓';
   }
 
   @override
-  String get routeSnapNewStopHint => 'New stop — name?';
+  String get routeSnapNewStopHint => 'Ebe nkwụsị ọhụrụ — aha?';
 
   @override
-  String get routeSnapPending => 'Snapping…';
+  String get routeSnapPending => 'Na-edozi…';
 
   @override
-  String get routePriceKeypadTitle => 'Set price to end';
+  String get routePriceKeypadTitle => 'Tọọ ọnụahịa ruo ọgwụgwụ';
 
   @override
-  String get routePriceKeypadSet => 'Set';
+  String get routePriceKeypadSet => 'Tọọ';
 
   @override
   String get routePriceErrorNonMonotone =>
-      'Prices must not increase toward the destination.';
+      'Ọnụahịa ekwesịghị ịrị elu ka a na-aga ebe a na-aga.';
 
   @override
-  String get routePriceErrorLastNotZero => 'Last stop must be ₦0.';
+  String get routePriceErrorLastNotZero => 'Ebe nkwụsị ikpeazụ ga-abụ ₦0.';
 
   @override
-  String get routePriceErrorEmpty => 'Add at least one priced stop.';
+  String get routePriceErrorEmpty =>
+      'Tinye ọ dịkarịa ala otu ebe nwere ọnụahịa.';
 
   @override
-  String get routeLoadError => 'Could not load routes.';
+  String get routeLoadError => 'Enweghị ike ibuli ụzọ.';
 
   @override
-  String get routePublishError => 'Could not publish route. Try again.';
+  String get routePublishError => 'Enweghị ike ibipụta ụzọ. Nwaa ọzọ.';
 
   @override
-  String get back => 'Back';
+  String get back => 'Laghachi';
 
   @override
   String get navHome => 'Ụlọ';
@@ -354,59 +355,52 @@ class AppLocalizationsIg extends AppLocalizations {
   String get navAccount => 'Akaụnt';
 
   @override
-  String get earningsStubBody => 'Earnings and balance coming in Phase 4.';
-
-  @override
-  String get accountStubBody => 'Account settings coming soon.';
-
-  @override
-  String get homeUnverifiedBanner => 'Complete verification to go online.';
+  String get homeUnverifiedBanner => 'Mezue nkwado ka ị banye n\'ịntanetị.';
 
   @override
   String get homeBatteryGuardBanner =>
-      'Battery low — location updates slowed to save power.';
+      'Batrị adịla ala — ọnọdụ na-emelite nwayọ iji chekwa ike.';
 
   @override
   String get homeLedgerBlockedBanner =>
-      'Matching paused — settle your balance to go online.';
+      'Akwụsịtụla njikọ — kwụọ ụgwọ gị ka ị banye.';
 
   @override
-  String get homeSelectPark => 'At: select park ▾';
+  String get homeSelectPark => 'Na: họrọ ogige ▾';
 
   @override
   String homeAtPark(String parkName) {
-    return 'At: $parkName ▾';
+    return 'Na: $parkName ▾';
   }
 
   @override
-  String get homeDirectionOnRoute => 'Direction: on my route ▾';
+  String get homeDirectionOnRoute => 'Ụzọ: n\'ụzọ m ▾';
 
   @override
-  String get homeDirectionNone => 'Direction: none ▾';
+  String get homeDirectionNone => 'Ụzọ: ọ dịghị ▾';
 
   @override
-  String get homeErrorSelectPark =>
-      'Choose a park before going online at park.';
+  String get homeErrorSelectPark => 'Họrọ ogige tupu ị banye n\'ogige.';
 
   @override
-  String get homeErrorLocation => 'Enable location to go online.';
+  String get homeErrorLocation => 'Gbanye ọnọdụ ka ị banye.';
 
   @override
-  String get homeParkPickerTitle => 'Nearby parks';
+  String get homeParkPickerTitle => 'Ogige dị nso';
 
   @override
-  String get homeParkPickerEmpty => 'No parks within range.';
+  String get homeParkPickerEmpty => 'Enweghị ogige nso.';
 
   @override
   String homeParkDistance(int meters) {
-    return '$meters m away';
+    return '$meters m site ebe a';
   }
 
   @override
-  String get homeParkSomewhereElse => 'I\'m somewhere else';
+  String get homeParkSomewhereElse => 'Anọ m ebe ọzọ';
 
   @override
-  String get incomingRequestTitle => 'New request';
+  String get incomingRequestTitle => 'Arịrịọ ọhụrụ';
 
   @override
   String incomingRequestCountdown(int seconds) {
@@ -415,25 +409,26 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String incomingRequestRiderLine(String name, String rating, int trips) {
-    return '$name · $rating · $trips trips';
+    return '$name · $rating · njem $trips';
   }
 
   @override
-  String get incomingRequestPickup => 'Pickup';
+  String get incomingRequestPickup => 'Nbuli';
 
   @override
-  String get incomingRequestRoamingPickup => 'Rider location';
+  String get incomingRequestRoamingPickup => 'Ebe onye njem nọ';
 
   @override
-  String get incomingRequestRoamingPickupMeta => 'Cell hail — meet at pin';
+  String get incomingRequestRoamingPickupMeta =>
+      'Ịkpọ ụgbọ n\'ụzọ — zute na ntụtụ';
 
   @override
   String incomingRequestCascade(int attempt, int max) {
-    return 'Retry $attempt of $max';
+    return 'Nwaa ọzọ $attempt n\'ime $max';
   }
 
   @override
-  String get incomingRequestDropoff => 'Drop-off';
+  String get incomingRequestDropoff => 'Ebe ọdịda';
 
   @override
   String incomingRequestPickupMeta(int distance, int eta) {
@@ -442,7 +437,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String incomingRequestFareLine(String amount, String tierLabel) {
-    return 'Rider pays $amount · $tierLabel';
+    return 'Onye njem ga-akwụ $amount · $tierLabel';
   }
 
   @override
@@ -451,104 +446,105 @@ class AppLocalizationsIg extends AppLocalizations {
   }
 
   @override
-  String get incomingRequestLoadDefault => 'Passenger flagged load';
+  String get incomingRequestLoadDefault => 'Onye njem nwere ibu';
 
   @override
   String incomingRequestLoadDetail(String size, String note) {
-    return '$size load — $note';
+    return 'Ibu $size — $note';
   }
 
   @override
-  String get incomingRequestWomenOnly => 'Women-only match';
+  String get incomingRequestWomenOnly => 'Njikọ ụmụnwaanyị naanị';
 
   @override
-  String get incomingRequestApproachBandUnder2 => 'under 2 min';
+  String get incomingRequestApproachBandUnder2 => 'n\'okpuru min 2';
 
   @override
-  String get incomingRequestApproachBandM2_5 => '2–5 min';
+  String get incomingRequestApproachBandM2_5 => 'min 2–5';
 
   @override
-  String get incomingRequestApproachBandOver5 => '5+ min';
+  String get incomingRequestApproachBandOver5 => 'min 5+';
 
   @override
-  String get incomingRequestAccept => 'Accept';
+  String get incomingRequestAccept => 'Nabata';
 
   @override
-  String get incomingRequestDecline => 'Decline';
+  String get incomingRequestDecline => 'Jụ';
 
   @override
-  String get declineReasonTitle => 'Why are you declining?';
+  String get declineReasonTitle => 'Gịnị mere ị jụrụ?';
 
   @override
-  String get declineReasonNoRoomForLoad => 'No room for load';
+  String get declineReasonNoRoomForLoad => 'Enweghị ohere maka ibu';
 
   @override
-  String get declineReasonTooFar => 'Too far';
+  String get declineReasonTooFar => 'O teere aka';
 
   @override
-  String get declineReasonEndingShift => 'Ending shift';
+  String get declineReasonEndingShift => 'Ana m akwụsị ọrụ';
 
   @override
-  String get declineReasonOther => 'Other';
+  String get declineReasonOther => 'Ọzọ';
 
   @override
-  String get fareTierStandard => 'Standard fare';
+  String get fareTierStandard => 'Ụgwọ nkịtị';
 
   @override
-  String get fareTierCommunity => 'Community fare';
+  String get fareTierCommunity => 'Ụgwọ ndị mmadụ';
 
   @override
-  String get fareTierProfile => 'Driver price';
+  String get fareTierProfile => 'Ọnụahịa ọkwọ ụgbọ';
 
   @override
-  String get fareTierEstimate => 'Estimate — agree price';
+  String get fareTierEstimate => 'Atụmatụ — kwenye ọnụahịa';
 
   @override
   String pricingRiderOffer(String amount) {
-    return 'Rider offered $amount';
+    return 'Onye njem nyere $amount';
   }
 
   @override
-  String get pricingLapsed => 'No agreement — rider may choose another vehicle';
+  String get pricingLapsed =>
+      'Enweghị nkwekọrịta — onye njem nwere ike ịhọrọ ụgbọ ọzọ';
 
   @override
-  String get pricingOutOfRange => 'Vehicle has passed — negotiation closed';
+  String get pricingOutOfRange => 'Ụgbọala agafeela — mkparịta ụka emechiela';
 
   @override
-  String get pricingDeclined => 'You declined this fare';
+  String get pricingDeclined => 'Ị jụrụ ego a';
 
   @override
-  String get pricingDismiss => 'Back to map';
+  String get pricingDismiss => 'Laghachi na maapụ';
 
   @override
-  String get manifestTitle => 'Active trips';
+  String get manifestTitle => 'Njem na-aga';
 
   @override
-  String get manifestEmpty => 'No accepted riders yet';
+  String get manifestEmpty => 'Enweghị onye njem a nabatara';
 
   @override
   String manifestBoarding(String stage) {
-    return 'Boarding: $stage';
+    return 'Mbata: $stage';
   }
 
   @override
   String manifestStatus(String status) {
-    return 'Status: $status';
+    return 'Ọnọdụ: $status';
   }
 
   @override
-  String get manifestMarkBoarded => 'Boarded';
+  String get manifestMarkBoarded => 'Abanyela';
 
   @override
   String manifestOpen(int count) {
-    return 'Active trips ($count)';
+    return 'Njem na-aga ($count)';
   }
 
   @override
-  String get activeTripStart => 'Start trip';
+  String get activeTripStart => 'Malite njem';
 
   @override
-  String get activeTripComplete => 'Complete trip';
+  String get activeTripComplete => 'Mechaa njem';
 
   @override
   String activeTripBoardAlight(String board, String alight) {
@@ -557,149 +553,143 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String activeTripWalkEta(int minutes) {
-    return '$minutes min walk';
+    return 'Ije nkeji $minutes';
   }
 
   @override
-  String get activeTripStalledCaption => 'not moving closer';
+  String get activeTripStalledCaption => 'anaghị abịaru nso';
 
   @override
-  String get activeTripRelease => 'Release';
+  String get activeTripRelease => 'Hapụ';
 
   @override
-  String get activeTripReport => 'Report';
+  String get activeTripReport => 'Kọọ akụkọ';
 
   @override
-  String get sosTeamAlerted => 'Ready to call 112';
+  String get sosTeamAlerted => 'Njikere ịkpọ 112';
 
   @override
-  String get sosSharingDetails => 'Share your live location with your contacts';
+  String get sosSharingDetails => 'Kesaa ọnọdụ gị ugbu a na ndị kọntaktị gị';
 
   @override
   String sosCallEmergency(String number) {
-    return 'Call $number';
+    return 'Kpọọ $number';
   }
 
   @override
-  String get sosHoldToCancel => 'Hold to cancel';
+  String get sosHoldToCancel => 'Jide ka ịkagbu';
 
   @override
-  String get sosRaising => 'Opening the 112 call…';
+  String get sosRaising => 'Na-emepe oku 112…';
 
   @override
-  String get sosRaiseFailed => 'Could not open the 112 call';
+  String get sosRaiseFailed => 'Enweghị ike imepe oku 112';
 
   @override
-  String get sosRetry => 'Try again';
+  String get sosRetry => 'Nwaa ọzọ';
 
   @override
-  String get reportIncidentTitle => 'Report incident';
+  String get reportIncidentTitle => 'Kọọ ihe mere';
 
   @override
-  String get reportIncidentCategoryHeading => 'What happened?';
+  String get reportIncidentCategoryHeading => 'Gịnị mere?';
 
   @override
-  String get reportIncidentDescriptionHeading => 'Tell us more';
+  String get reportIncidentDescriptionHeading => 'Gwakwuo anyị';
 
   @override
   String get reportIncidentDescriptionHint =>
-      'Describe what happened (optional details help)';
+      'Kọwaa ihe mere (nkọwa na-enyere aka)';
 
   @override
-  String get reportIncidentAttachPhoto => 'Attach photo';
+  String get reportIncidentSubmit => 'Ziga akụkọ';
 
   @override
-  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
+  String get reportIncidentPickCategory => 'Họrọ otu';
 
   @override
-  String get reportIncidentSubmit => 'Submit report';
+  String get reportIncidentDescriptionRequired => 'Tinye nkọwa dị mkpirikpi';
 
   @override
-  String get reportIncidentPickCategory => 'Pick a category';
+  String get reportIncidentSubmitted => 'Echekwara akụkọ na ekwentị a';
 
   @override
-  String get reportIncidentDescriptionRequired => 'Add a short description';
+  String get incidentCategorySafety => 'Nchegbu nchekwa';
 
   @override
-  String get reportIncidentSubmitted => 'Report saved on this phone';
+  String get incidentCategoryFareDispute => 'Esemokwu ego ụgbọ';
 
   @override
-  String get incidentCategorySafety => 'Safety concern';
+  String get incidentCategoryVehicleQuality => 'Ọnọdụ ụgbọala';
 
   @override
-  String get incidentCategoryFareDispute => 'Fare dispute';
+  String get incidentCategoryDriverBehavior => 'Omume ọkwọ ụgbọ';
 
   @override
-  String get incidentCategoryVehicleQuality => 'Vehicle quality';
+  String get incidentCategoryLostItem => 'Ihe furu efu';
 
   @override
-  String get incidentCategoryDriverBehavior => 'Driver behavior';
+  String get incidentCategoryOther => 'Ọzọ';
 
   @override
-  String get incidentCategoryLostItem => 'Lost item';
+  String get accountProfileHeading => 'PROFAỊLỤ';
 
   @override
-  String get incidentCategoryOther => 'Other';
+  String get accountProfileUnknown => 'Ọkwọ ụgbọ';
 
   @override
-  String get accountProfileHeading => 'PROFILE';
+  String get accountVerified => 'Enyochaala';
 
   @override
-  String get accountProfileUnknown => 'Driver';
+  String get accountUnverified => 'Akwadobeghị';
 
   @override
-  String get accountVerified => 'Verified';
+  String get accountVehicleHeading => 'ỤGBỌALA';
 
   @override
-  String get accountUnverified => 'Unverified';
+  String get accountVehicleActiveHint => 'Ụgbọala na-arụ ọrụ';
 
   @override
-  String get accountVehicleHeading => 'VEHICLE';
+  String get accountVehicleEmpty => 'Tinye ụgbọala gị';
 
   @override
-  String get accountVehicleActiveHint => 'Active vehicle';
+  String get accountVehicleSwitchHint => 'Kpọtụrụ enyemaka ka ịgbanwe ụgbọala';
 
   @override
-  String get accountVehicleEmpty => 'Add your vehicle';
+  String get accountDocumentsHeading => 'AKWỤKWỌ';
 
   @override
-  String get accountVehicleSwitchHint =>
-      'Contact support to switch active vehicle';
+  String get accountDocumentsAllApproved => 'Akwadola akwụkwọ niile';
 
   @override
-  String get accountDocumentsHeading => 'DOCUMENTS';
+  String get accountDocumentsPending => 'Akwụkwọ na-eche nyocha';
 
   @override
-  String get accountDocumentsAllApproved => 'All documents approved';
+  String get accountDocumentsNeedsAttention =>
+      'Ụfọdụ akwụkwọ chọrọ nlebara anya';
 
   @override
-  String get accountDocumentsPending => 'Documents pending review';
+  String get accountDocumentsIncomplete => 'Akwụkwọ ezughị ezu';
 
   @override
-  String get accountDocumentsNeedsAttention => 'Some documents need attention';
+  String get accountDocumentsUnknown => 'Ọnọdụ akwụkwọ adịghị';
 
   @override
-  String get accountDocumentsIncomplete => 'Documents incomplete';
+  String get accountPayoutHeading => 'ỊNATA EGO';
 
   @override
-  String get accountDocumentsUnknown => 'Document status unavailable';
-
-  @override
-  String get accountPayoutHeading => 'PAYOUT';
-
-  @override
-  String get accountPayoutBank => 'Payout bank';
+  String get accountPayoutBank => 'Ụlọakụ ịnata ego';
 
   @override
   String accountPayoutConfigured(String last4) {
-    return 'Bank ending $last4';
+    return 'Ụlọakụ na-akwụsị na $last4';
   }
 
   @override
-  String get accountPayoutNotConfigured => 'Set up your payout bank';
+  String get accountPayoutNotConfigured => 'Tọọ ụlọakụ ịnata ego';
 
   @override
-  String get accountPreferencesHeading => 'PREFERENCES';
+  String get accountPreferencesHeading => 'NHỌRỌ';
 
   @override
   String get accountCityLabel => 'Obodo ọrụ';
@@ -708,118 +698,118 @@ class AppLocalizationsIg extends AppLocalizations {
   String get accountCityHint => 'Maapụ, paks na arịrịọ na-eji obodo a';
 
   @override
-  String get accountLanguage => 'Language';
+  String get accountLanguage => 'Asụsụ';
 
   @override
-  String get accountLanguageValue => 'English';
+  String get accountLanguageValue => 'Igbo';
 
   @override
-  String get accountSafetyHeading => 'SAFETY';
+  String get accountSafetyHeading => 'NCHEKWA';
 
   @override
-  String get accountSafetyHowSos => 'How SOS works';
+  String get accountSafetyHowSos => 'Otu SOS si arụ ọrụ';
 
   @override
   String get accountSafetyHowSosBody =>
-      'Hold SOS to call 112 and share your location with contacts';
+      'Jide SOS ka ịkpọ 112 ma kesaa ọnọdụ gị';
 
   @override
-  String get accountHelp => 'Help & support';
+  String get accountHelp => 'Enyemaka';
 
   @override
-  String get accountLegal => 'Legal';
+  String get accountLegal => 'Iwu';
 
   @override
-  String get accountSignOut => 'Sign out';
+  String get accountSignOut => 'Pụọ';
 
   @override
-  String get homeLedgerBlockedTitle => 'Matching paused';
+  String get homeLedgerBlockedTitle => 'Akwụsịtụla njikọ';
 
   @override
   String homeLedgerBlockedBalance(String amount) {
-    return 'Balance $amount';
+    return 'Ego fọdụrụ $amount';
   }
 
   @override
   String homeLedgerBlockedThreshold(String amount) {
-    return 'Block limit $amount';
+    return 'Oke mgbochi $amount';
   }
 
   @override
   String get settleCta => 'Kwụọ ụgwọ';
 
   @override
-  String get settleTitle => 'Settle balance';
+  String get settleTitle => 'Kwụọ ụgwọ';
 
   @override
   String settleCurrentBalance(String amount) {
-    return 'Current balance: $amount';
+    return 'Ego fọdụrụ ugbu a: $amount';
   }
 
   @override
-  String get settleAmountLabel => 'Amount to pay';
+  String get settleAmountLabel => 'Ego a ga-akwụ';
 
   @override
-  String get settleChannelBank => 'Bank transfer';
+  String get settleChannelBank => 'Nzipu ụlọakụ';
 
   @override
   String get settleChannelUssd => 'USSD';
 
   @override
-  String get settleChannelCard => 'Card';
+  String get settleChannelCard => 'Kaadị';
 
   @override
-  String get settleChannelAgent => 'Pay an agent';
+  String get settleChannelAgent => 'Kwụọ onye nnọchite';
 
   @override
-  String get settleAgentCodeTitle => 'Your agent code';
+  String get settleAgentCodeTitle => 'Koodu onye nnọchite gị';
 
   @override
   String settleAgentExpires(String time) {
-    return 'Expires $time';
+    return 'Ọ ga-agwụ $time';
   }
 
   @override
-  String get settleNearbyAgentsTitle => 'Nearby agents';
+  String get settleNearbyAgentsTitle => 'Ndị nnọchite nso';
 
   @override
   String settleNearbyAgentDistance(int distance) {
-    return '$distance m away';
+    return '$distance m site ebe a';
   }
 
   @override
-  String get settleDone => 'Done';
+  String get settleDone => 'Emechaala';
 
   @override
   String get earningsLedgerSection => 'Mmegharị ego';
 
   @override
-  String get earningsTripsSection => 'TRIPS';
+  String get earningsTripsSection => 'NJEM';
 
   @override
-  String get earningsLedgerEmpty => 'No ledger entries yet';
+  String get earningsLedgerEmpty => 'Enweghị ndekọ ugbu a';
 
   @override
   String get earningsTripsCaption =>
-      'Cash you collected directly — not part of your Along balance';
+      'Ego aka ị natara ozugbo — ọ bụghị akụkụ ego Along gị';
 
   @override
-  String get earningsTripsEmpty => 'No completed cash trips today';
+  String get earningsTripsEmpty => 'Enweghị njem ego aka emechara taa';
 
   @override
   String earningsTripsTodaySummary(int count, String amount) {
-    return '$count trips today · $amount collected';
+    return 'Njem $count taa · natara $amount';
   }
 
   @override
-  String get standingLink => 'Standing';
+  String get standingLink => 'Ọnọdụ';
 
   @override
-  String get standingTitle => 'Your standing';
+  String get standingTitle => 'Ọnọdụ gị';
 
   @override
   String standingBalanceAt(String amount) {
-    return 'Balance at transition: $amount';
+    return 'Ego fọdụrụ mgbe mgbanwe: $amount';
   }
 
   @override
@@ -829,268 +819,269 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String standingGraceDeadline(String date) {
-    return 'Grace deadline: $date';
+    return 'Oge ntachi obi: $date';
   }
 
   @override
   String get standingRestoreHint =>
-      'Settle above the warn threshold to restore good standing';
+      'Kwụọ karịa oke ịdọ aka na ntị ka ọnọdụ gị laghachi';
 
   @override
-  String get standingHistoryTitle => 'HISTORY';
+  String get standingHistoryTitle => 'AKỤKỌ';
 
   @override
-  String get standingHistoryEmpty => 'No standing changes yet';
+  String get standingHistoryEmpty => 'Enweghị mgbanwe ọnọdụ';
 
   @override
-  String get guarantorLink => 'Add a guarantor';
+  String get guarantorLink => 'Tinye onye nkwado';
 
   @override
-  String get guarantorTitle => 'Guarantor';
+  String get guarantorTitle => 'Onye nkwado';
 
   @override
   String get guarantorExplainer =>
-      'Your guarantor is notified if your balance stays unsettled after the grace period. Nothing is ever deducted from them.';
+      'A na-agwa onye nkwado gị ma ụgwọ gị anaghị akwụ mgbe oge ntachi obi gafere. Anaghị ewepụ ego n\'aka ya.';
 
   @override
-  String get guarantorTypeDriver => 'Fellow driver';
+  String get guarantorTypeDriver => 'Ọkwọ ụgbọ ibe';
 
   @override
-  String get guarantorTypeOwner => 'Vehicle owner';
+  String get guarantorTypeOwner => 'Onye nwe ụgbọ';
 
   @override
-  String get guarantorNameLabel => 'Full name';
+  String get guarantorNameLabel => 'Aha zuru ezu';
 
   @override
-  String get guarantorPhoneLabel => 'Phone number';
+  String get guarantorPhoneLabel => 'Nọmba ekwentị';
 
   @override
-  String get guarantorSubmit => 'Add guarantor';
+  String get guarantorSubmit => 'Tinye onye nkwado';
 
   @override
   String get guarantorSuccess =>
-      'Guarantor added — they will receive an acknowledgement link';
+      'Etinyela onye nkwado — ọ ga-anata njikọ nkwenye';
 
   @override
-  String get extendTripTitle => 'Extend trip';
+  String get extendTripTitle => 'Gbatịa njem';
 
   @override
-  String get extendTripSearchHint => 'Where to now?';
+  String get extendTripSearchHint => 'Ebee ugbu a?';
 
   @override
   String extendTripDestination(String destination) {
-    return 'Continuing to $destination';
+    return 'Na-aga n\'ihu ruo $destination';
   }
 
   @override
-  String get extendTripPropose => 'Propose to rider';
+  String get extendTripPropose => 'Tụọ onye njem aro';
 
   @override
-  String get incomingExtensionTitle => 'Extension request';
+  String get incomingExtensionTitle => 'Arịrịọ mgbatị';
 
   @override
-  String get incomingExtensionDecline => 'Decline';
+  String get incomingExtensionDecline => 'Jụ';
 
   @override
-  String get incomingExtensionAccept => 'Accept';
+  String get incomingExtensionAccept => 'Nabata';
 
   @override
   String incomingRiderExtensionBody(String destination, String delta) {
-    return 'Rider proposes continuing to $destination for +$delta';
+    return 'Onye njem chọrọ ịga n\'ihu ruo $destination maka +$delta';
   }
 
   @override
-  String get tripCompleteTitle => 'Trip complete';
+  String get tripCompleteTitle => 'Njem agwụla';
 
   @override
   String tripCompleteFareLine(String amount) {
-    return 'Fare $amount — rider pays you in cash';
+    return 'Ego $amount — onye njem ga-akwụ gị ego aka';
   }
 
   @override
   String tripCompleteAlongFeeLine(String amount) {
-    return 'Along fee $amount — posted to your balance';
+    return 'Ego Along $amount — etinyere n\'akaụnt gị';
   }
 
   @override
   String tripCompleteNewBalance(String amount) {
-    return 'New balance $amount';
+    return 'Ego fọdụrụ ọhụrụ $amount';
   }
 
   @override
-  String get tripCompleteCashQuestion => 'Confirm cash received?';
+  String get tripCompleteCashQuestion => 'Kwado na ị natara ego aka?';
 
   @override
-  String get tripCompleteYes => 'Yes';
+  String get tripCompleteYes => 'Ee';
 
   @override
-  String get tripCompleteDifferent => 'Different amount';
+  String get tripCompleteDifferent => 'Ego dị iche';
 
   @override
-  String get tripCompleteDifferentPrompt => 'How much did you receive?';
+  String get tripCompleteDifferentPrompt => 'Ego ole ka ị natara?';
 
   @override
-  String get tripCompleteRateTitle => 'Rate your rider';
+  String get tripCompleteRateTitle => 'Nye onye njem gị akara';
 
   @override
-  String get tripCompleteDone => 'Done';
+  String get tripCompleteDone => 'Emechaala';
 
   @override
-  String get requestPayment => 'Request payment';
+  String get requestPayment => 'Rịọ ụgwọ';
 
   @override
   String tripCompleteDigitalLine(String amount) {
-    return 'Paid digitally · $amount sent to your bank';
+    return 'Akwụrụ n\'ịntanetị · $amount ezigara ụlọakụ gị';
   }
 
   @override
   String tripCompleteDigitalFeeLine(String amount) {
-    return 'Along fee $amount already deducted';
+    return 'Ewepụlarị ego Along $amount';
   }
 
   @override
-  String get myQrTitle => 'My QR code';
+  String get myQrTitle => 'Koodu QR m';
 
   @override
-  String get myQrAccountSubtitle => 'Share your code for digital payments';
+  String get myQrAccountSubtitle => 'Kesaa koodu gị maka ịkwụ ụgwọ n\'ịntanetị';
 
   @override
   String get myQrDigitalDisabledBanner =>
-      'Digital payments are not live yet — your QR is for setup and testing only.';
+      'Ịkwụ ụgwọ n\'ịntanetị amalitebeghị — QR gị bụ maka nhazi na nnwale naanị.';
 
   @override
-  String get myQrPayoutPrompt => 'Set up payout bank';
+  String get myQrPayoutPrompt => 'Tọọ ụlọakụ ịnata ego';
 
   @override
   String get myQrPayoutHint =>
-      'Add your bank account so riders can pay you digitally. Along never holds your money.';
+      'Tinye akaụnt ụlọakụ gị ka ndị njem kwụọ gị n\'ịntanetị. Along anaghị ejide ego gị.';
 
   @override
-  String get myQrSetupPayout => 'Set up payout bank';
+  String get myQrSetupPayout => 'Tọọ ụlọakụ ịnata ego';
 
   @override
   String get myQrPayoutComingSoon =>
-      'Payout setup opens from Account once digital payments go live.';
+      'Nhazi ịnata ego ga-emepe na Akaụnt mgbe ịkwụ ụgwọ n\'ịntanetị malitere.';
 
   @override
-  String get myQrShare => 'Share as image';
+  String get myQrShare => 'Kesaa dịka foto';
 
   @override
-  String get myQrOrderSticker => 'Order printed sticker';
+  String get myQrOrderSticker => 'Tụọ sitika';
 
   @override
   String myQrStickerStatus(String status) {
-    return 'Sticker request: $status';
+    return 'Arịrịọ sitika: $status';
   }
 
   @override
-  String get myQrVerifySticker => 'Verify my sticker';
+  String get myQrVerifySticker => 'Kwado sitika m';
 
   @override
-  String get myQrVerifyMatch => 'Sticker matches your code and plate';
+  String get myQrVerifyMatch => 'Sitika dabara koodu na nọmba ụgbọ gị';
 
   @override
-  String get myQrVerifyMismatch => 'This sticker does not match your account';
+  String get myQrVerifyMismatch => 'Sitika a adabaghị akaụnt gị';
 
   @override
-  String get myQrVerifyInvalid => 'Not a valid Along QR code';
+  String get myQrVerifyInvalid => 'Ọ bụghị koodu QR Along';
 
   @override
-  String get myQrVerifyTimeout => 'Scan timed out — try again';
+  String get myQrVerifyTimeout => 'Oge nyocha agwụla — nwaa ọzọ';
 
   @override
-  String get myQrPauseDigital => 'Pause digital payments';
+  String get myQrPauseDigital => 'Kwụsịtụ ịkwụ ụgwọ n\'ịntanetị';
 
   @override
-  String get myQrPauseDigitalHint => 'Riders will see cash only while paused';
+  String get myQrPauseDigitalHint =>
+      'Ndị njem ga-ahụ naanị ego aka mgbe akwụsịtụrụ';
 
   @override
   String get myQrPausedBanner =>
-      'Digital payments are paused — riders see cash only';
+      'Akwụsịtụla ịkwụ ụgwọ n\'ịntanetị — ndị njem na-ahụ naanị ego aka';
 
   @override
-  String get myQrRotate => 'Rotate code';
+  String get myQrRotate => 'Gbanwee koodu';
 
   @override
-  String get myQrRotateConfirmTitle => 'Rotate QR code?';
+  String get myQrRotateConfirmTitle => 'Gbanwee koodu QR?';
 
   @override
   String get myQrRotateConfirmBody =>
-      'Your current stickers will stop working. Ops will need to print new ones.';
+      'Sitika gị ugbu a ga-akwụsị ịrụ ọrụ. Ndị ọrụ ga-ebipụta ọhụrụ.';
 
   @override
-  String get myQrRotateCancel => 'Cancel';
+  String get myQrRotateCancel => 'Kagbuo';
 
   @override
-  String get myQrRotateConfirm => 'Rotate';
+  String get myQrRotateConfirm => 'Gbanwee';
 
   @override
-  String get paymentRequestTitle => 'Payment request';
+  String get paymentRequestTitle => 'Arịrịọ ụgwọ';
 
   @override
   String paymentRequestForRider(String riderName) {
-    return 'For $riderName';
+    return 'Maka $riderName';
   }
 
   @override
   String paymentRequestCountdown(int seconds) {
-    return 'Expires in ${seconds}s';
+    return 'Ọ ga-agwụ n\'ime ${seconds}s';
   }
 
   @override
-  String get paymentRequestWaiting => 'Waiting for payment…';
+  String get paymentRequestWaiting => 'Na-eche ụgwọ…';
 
   @override
   String paymentRequestPaidLine(String amount) {
-    return 'Paid $amount ✓';
+    return 'Akwụọla $amount ✓';
   }
 
   @override
   String paymentRequestBankLine(String amount) {
-    return '$amount to your bank';
+    return '$amount na ụlọakụ gị';
   }
 
   @override
-  String get paymentRequestDone => 'Done';
+  String get paymentRequestDone => 'Emechaala';
 
   @override
-  String get paymentRequestExpired => 'This QR has expired — create a new one';
+  String get paymentRequestExpired => 'QR a agwụla — mepụta ọhụrụ';
 
   @override
   String get paymentRequestDigitalDisabled =>
-      'Digital payments are not enabled yet';
+      'Ịkwụ ụgwọ n\'ịntanetị amalitebeghị';
 
   @override
   String get paymentRequestTokenError =>
-      'Could not verify payment QR — try again';
+      'Enweghị ike ịkwado QR ụgwọ — nwaa ọzọ';
 
   @override
   String get earningsDigitalSection => 'Ịkwụ ụgwọ dijitalụ';
 
   @override
   String get earningsDigitalCaption =>
-      'Paid straight to your bank — not part of your Along balance';
+      'Akwụrụ ozugbo n\'ụlọakụ gị — ọ bụghị akụkụ ego Along gị';
 
   @override
-  String get earningsDigitalEmpty => 'No digital payments yet';
+  String get earningsDigitalEmpty => 'Enweghị ụgwọ n\'ịntanetị';
 
   @override
   String earningsDigitalRow(String source) {
-    return 'Digital · $source';
+    return 'Ịntanetị · $source';
   }
 
   @override
   String get sosQueued =>
-      'Saved on this phone. Call 112 when you are back online.';
+      'Echekwara na ekwentị a. Kpọọ 112 mgbe ị laghachiri n\'ịntanetị.';
 
   @override
-  String get sosLiveLink => 'Copy live location link';
+  String get sosLiveLink => 'Detuo njikọ ọnọdụ ugbu a';
 
   @override
-  String get sosLiveLinkCopied => 'Live location link copied';
+  String get sosLiveLinkCopied => 'E detuola njikọ ọnọdụ';
 
   @override
-  String get sosContactsHeading => 'Tell someone you trust';
+  String get sosContactsHeading => 'Gwa onye ị tụkwasịrị obi';
 
   @override
   String sosContactWhatsapp(String name) {
@@ -1099,238 +1090,238 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String sosContactSms(String name) {
-    return 'Text $name';
+    return 'Ziga ozi nye $name';
   }
 
   @override
-  String get emergencyContactsHeading => 'EMERGENCY CONTACTS';
+  String get emergencyContactsHeading => 'NDỊ KỌNTAKTỊ MBEREDE';
 
   @override
   String get emergencyContactsHint =>
-      'We notify these people if you raise SOS. Up to 5. WhatsApp or a text opens on your phone.';
+      'Anyị na-agwa ndị a ma ị pịa SOS. Ruo 5. WhatsApp ma ọ bụ ozi ga-emepe na ekwentị gị.';
 
   @override
-  String get emergencyContactsEmpty => 'No emergency contacts yet';
+  String get emergencyContactsEmpty => 'Enweghị onye kọntaktị mberede';
 
   @override
-  String get emergencyContactName => 'Name';
+  String get emergencyContactName => 'Aha';
 
   @override
-  String get emergencyContactPhone => 'Phone';
+  String get emergencyContactPhone => 'Ekwentị';
 
   @override
-  String get emergencyContactAdd => 'Add contact';
+  String get emergencyContactAdd => 'Tinye kọntaktị';
 
   @override
   String emergencyContactRemove(String name) {
-    return 'Remove $name';
+    return 'Wepụ $name';
   }
 
   @override
-  String get emergencyContactInvalidPhone =>
-      'Use a phone number like +2348012345678';
+  String get emergencyContactInvalidPhone => 'Jiri nọmba dịka +2348012345678';
 
   @override
-  String get emergencyContactLimit => 'You can save up to 5 contacts';
+  String get emergencyContactLimit => 'Ị nwere ike ichekwa ruo mmadụ 5';
 
   @override
-  String get emergencyContactSaveFailed => 'Could not save that contact';
+  String get emergencyContactSaveFailed => 'Enweghị ike ichekwa onye ahụ';
 
   @override
-  String get buildMyDayTitle => 'Build my day';
+  String get buildMyDayTitle => 'Wuo ụbọchị m';
 
   @override
-  String get buildMyDayStart => 'Save and use this day';
+  String get buildMyDayStart => 'Chekwaa ma jiri ụbọchị a';
 
   @override
-  String get buildMyDayCorridor => 'Corridor';
+  String get buildMyDayCorridor => 'Ụzọ';
 
   @override
-  String get saveLayout => 'Save layout';
+  String get saveLayout => 'Chekwaa nhazi';
 
   @override
-  String get layoutName => 'Layout name';
+  String get layoutName => 'Aha nhazi';
 
   @override
-  String get addRow => 'Add row';
+  String get addRow => 'Tinye ahịrị';
 
   @override
-  String get addSeat => 'Add seat';
+  String get addSeat => 'Tinye oche';
 
   @override
-  String get removeRow => 'Remove row';
+  String get removeRow => 'Wepụ ahịrị';
 
   @override
   String get overCapacityNote =>
-      'This is over the usual seat count. It is saved and flagged for review.';
+      'Nke a karịrị ọnụọgụ oche a na-ahụ. Echekwara ya ma debe ya maka nyocha.';
 
   @override
-  String get seatMapTitle => 'Seat map';
+  String get seatMapTitle => 'Maapụ oche';
 
   @override
-  String get seatFull => 'Full';
+  String get seatFull => 'Ejupụtala';
 
   @override
-  String get seatEmpty => 'Empty';
+  String get seatEmpty => 'Tọgbọrọ';
 
   @override
-  String get seatFree => 'free';
+  String get seatFree => 'tọgbọrọ';
 
   @override
-  String get seatOccupied => 'occupied';
+  String get seatOccupied => 'e nwere onye';
 
   @override
-  String get seatHeld => 'held';
+  String get seatHeld => 'ejidere';
 
   @override
-  String get seatBlocked => 'blocked';
+  String get seatBlocked => 'egbochiri';
 
   @override
-  String get seatDriver => 'driver';
+  String get seatDriver => 'onye ọkwọ';
 
   @override
-  String get rideRulesHeading => 'Ride rules';
+  String get rideRulesHeading => 'Iwu njem';
 
   @override
-  String get customRuleHint => 'Rule title';
+  String get customRuleHint => 'Isiokwu iwu';
 
   @override
-  String get customRuleBody => 'What riders should know';
+  String get customRuleBody => 'Ihe ndị njem kwesịrị ịma';
 
   @override
-  String get customRuleSave => 'Add my rule';
+  String get customRuleSave => 'Tinye iwu m';
 
   @override
-  String get holdMinutes => 'Hold minutes';
+  String get holdMinutes => 'Nkeji njide';
 
   @override
-  String get capMax => 'Seat cap';
+  String get capMax => 'Oke oche';
 
   @override
-  String get deleteRule => 'Remove rule';
+  String get deleteRule => 'Wepụ iwu';
 
   @override
-  String get dayNeedsCorridor => 'Choose a corridor';
+  String get dayNeedsCorridor => 'Họrọ ụzọ';
 
   @override
-  String get seatStale => 'Seat map is more than a minute old';
+  String get seatStale => 'Maapụ oche karịrị otu nkeji';
 
   @override
-  String get shiftStart => 'Shift starts';
+  String get shiftStart => 'Ọrụ na-amalite';
 
   @override
-  String get shiftEnd => 'Shift ends';
+  String get shiftEnd => 'Ọrụ na-akwụsị';
 
   @override
-  String get homeLabel => 'Home-bound stop';
+  String get homeLabel => 'Ebe nkwụsị ụzọ ụlọ';
 
   @override
-  String get walkExtension => 'Extra hold minutes for a walking rider';
+  String get walkExtension => 'Nkeji njide ọzọ maka onye na-eje ije';
 
   @override
-  String get seatLuggage => 'luggage';
+  String get seatLuggage => 'ibu';
 
   @override
-  String get voiceCommandHint => 'Say accept, full, or seat back left free';
+  String get voiceCommandHint =>
+      'Kwuo nabata, juru, ma ọ bụ oche azụ aka ekpe tọgbọrọ';
 
   @override
-  String get conductorOpen => 'Conductor code';
+  String get conductorOpen => 'Koodu kọndọkịta';
 
   @override
-  String get conductorTitle => 'Conductor';
+  String get conductorTitle => 'Kọndọkịta';
 
   @override
-  String get conductorCode => 'Code from the driver';
+  String get conductorCode => 'Koodu sitere n\'aka ọkwọ ụgbọ';
 
   @override
-  String get conductorJoin => 'Open the seat map';
+  String get conductorJoin => 'Mepee maapụ oche';
 
   @override
-  String get ghostSeatTitle => 'Still taken after the drop?';
+  String get ghostSeatTitle => 'Ka nwere onye mgbe ọdịda gasịrị?';
 
   @override
-  String get ghostSeatFree => 'Free it';
+  String get ghostSeatFree => 'Tọhapụ ya';
 
   @override
   String freeSeatCount(int count) {
-    return '$count free';
+    return '$count tọgbọrọ chakoo';
   }
 
   @override
-  String get restTitle => 'Rest';
+  String get restTitle => 'Izu ike';
 
   @override
-  String get restDriveMinutes => 'Drive minutes before a rest';
+  String get restDriveMinutes => 'Nkeji ịkwọ tupu izu ike';
 
   @override
-  String get restMinutes => 'Rest minutes';
+  String get restMinutes => 'Nkeji izu ike';
 
   @override
-  String get restSave => 'Save';
+  String get restSave => 'Chekwaa';
 
   @override
-  String get restStart => 'Start rest';
+  String get restStart => 'Malite izu ike';
 
   @override
-  String get restFinish => 'Finish rest';
+  String get restFinish => 'Kwụsị izu ike';
 
   @override
-  String get restPriority => 'Priority dispatch until your rest window ends';
+  String get restPriority => 'Ụzọ mbụ n\'ọrụ ruo mgbe oge izu ike gị gwụrụ';
 
   @override
-  String get marketplaceTitle => 'Today';
+  String get marketplaceTitle => 'Taa';
 
   @override
-  String get marketplaceGoal => 'Daily target';
+  String get marketplaceGoal => 'Ebumnuche taa';
 
   @override
-  String get marketplaceEarned => 'Already earned';
+  String get marketplaceEarned => 'Enwetala';
 
   @override
-  String get marketplaceTypical => 'Usual seat fare';
+  String get marketplaceTypical => 'Ego oche a na-akwụkarị';
 
   @override
   String marketplaceSeats(int count) {
-    return '$count seats to go';
+    return 'Oche $count fọdụrụ';
   }
 
   @override
-  String get marketplaceGoalMet => 'Target reached';
+  String get marketplaceGoalMet => 'Erutela ebumnuche';
 
   @override
-  String get marketplaceSave => 'Save';
+  String get marketplaceSave => 'Chekwaa';
 
   @override
-  String get marketplaceCorridor => 'Corridor you watch';
+  String get marketplaceCorridor => 'Ụzọ ị na-ele';
 
   @override
-  String get marketplaceRequests => 'Requests';
+  String get marketplaceRequests => 'Arịrịọ';
 
   @override
-  String get marketplaceAddCorridor => 'Add';
+  String get marketplaceAddCorridor => 'Tinye';
 
   @override
   String marketplaceTip(String corridor) {
-    return 'Queue toward $corridor';
+    return 'Banye n\'ahịrị gaa $corridor';
   }
 
   @override
-  String get marketplaceFuel => 'Price per litre';
+  String get marketplaceFuel => 'Ọnụahịa otu lita';
 
   @override
-  String get marketplaceFuelLabel => 'Pump';
+  String get marketplaceFuelLabel => 'Pọmpụ';
 
   @override
-  String get marketplaceFuelSave => 'Save price';
+  String get marketplaceFuelSave => 'Chekwaa ọnụahịa';
 
   @override
-  String get marketplaceEventName => 'Event name';
+  String get marketplaceEventName => 'Aha emume';
 
   @override
-  String get marketplaceEventHours => 'Hours the point stays open';
+  String get marketplaceEventHours => 'Awa ebe ahụ ga-emeghe';
 
   @override
-  String get marketplaceEventSave => 'Open the point';
+  String get marketplaceEventSave => 'Mepee ebe ahụ';
 
   @override
   String activeTripMessageRider(String name) {

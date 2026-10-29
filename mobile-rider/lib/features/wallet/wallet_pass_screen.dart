@@ -3,6 +3,7 @@ import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/features/wallet/wallet_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 
@@ -72,8 +73,7 @@ class _WalletPassScreenState extends ConsumerState<WalletPassScreen> {
     final active = s.activePass;
     final until = active == null
         ? null
-        : DateFormat.MMMd(Localizations.localeOf(context).toLanguageTag())
-              .format(active.expiresAt);
+        : DateFormat.MMMd(intlLocaleOf(context)).format(active.expiresAt);
     final short = (plan.price - s.balance).clamp(0, plan.price);
     final Widget footer;
     if (_bought) {
@@ -231,9 +231,7 @@ class _WalletPassScreenState extends ConsumerState<WalletPassScreen> {
               _Row(l10n.walletPassRowRides, '${plan.rides}'),
               _Row(
                 l10n.walletPassRowValid,
-                DateFormat.yMMMd(
-                  Localizations.localeOf(context).toLanguageTag(),
-                ).format(
+                DateFormat.yMMMd(intlLocaleOf(context)).format(
                   active?.expiresAt ??
                       ref
                           .watch(walletNowProvider)()
