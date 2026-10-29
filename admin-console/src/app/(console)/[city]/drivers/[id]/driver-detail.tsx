@@ -162,9 +162,6 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
           <p className="kpi-value">
             {driver.flags.filter((f) => f.status === "open").length}
           </p>
-          <p className="kpi-sub">
-            {maskPhone(driver.phone_e164)} · {driver.city_name}
-          </p>
         </Link>
       </div>
 
