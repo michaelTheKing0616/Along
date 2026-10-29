@@ -257,7 +257,30 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       await settle(tester);
+      // Decoded thumbnails anti-alias ~0.02% differently on CI's Skia; allow
+      // 0.1% on these three shots only.
+      final strict = goldenFileComparator;
+      goldenFileComparator = _Tolerant(
+        Uri.parse(
+          '${Directory.current.path}/test/rider_safety_golden_test.dart',
+        ),
+      );
+      addTearDown(() => goldenFileComparator = strict);
       await shootApp(tester, 'rider_report_incident_photos_$name');
     });
+  }
+}
+
+class _Tolerant extends LocalFileComparator {
+  _Tolerant(super.testFile);
+
+  @override
+  Future<bool> compare(Uint8List imageBytes, Uri golden) async {
+    final result = await GoldenFileComparator.compareLists(
+      imageBytes,
+      await getGoldenBytes(golden),
+    );
+    if (result.passed || result.diffPercent <= 0.001) return true;
+    throw FlutterError(await generateFailureOutput(result, golden, basedir));
   }
 }

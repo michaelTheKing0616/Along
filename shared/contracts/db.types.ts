@@ -2916,6 +2916,7 @@ export type Database = {
         Row: {
           assigned_to: string | null
           attachment_paths: string[]
+          client_ref: string | null
           description: string | null
           id: string
           reported_at: string
@@ -2932,6 +2933,7 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           attachment_paths?: string[]
+          client_ref?: string | null
           description?: string | null
           id?: string
           reported_at?: string
@@ -2948,6 +2950,7 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           attachment_paths?: string[]
+          client_ref?: string | null
           description?: string | null
           id?: string
           reported_at?: string
@@ -5902,6 +5905,7 @@ export type Database = {
           journey_id: string
           revoked_at: string | null
           rider_id: string
+          share_plate: boolean
           token_hash: string
         }
         Insert: {
@@ -5913,6 +5917,7 @@ export type Database = {
           journey_id: string
           revoked_at?: string | null
           rider_id: string
+          share_plate?: boolean
           token_hash: string
         }
         Update: {
@@ -5924,6 +5929,7 @@ export type Database = {
           journey_id?: string
           revoked_at?: string | null
           rider_id?: string
+          share_plate?: boolean
           token_hash?: string
         }
         Relationships: [
@@ -7905,6 +7911,8 @@ export type Database = {
           p_contact_name?: string
           p_contact_phone?: string
           p_journey_id: string
+          p_share_plate?: boolean
+          p_ttl_minutes?: number
         }
         Returns: Json
       }
@@ -8629,6 +8637,7 @@ export type Database = {
       report_incident: {
         Args: {
           p_attachment_paths?: string[]
+          p_client_ref?: string
           p_description?: string
           p_trip_id?: string
           p_type?: string
