@@ -1181,12 +1181,6 @@ abstract class AppLocalizations {
   /// **'Attach photo'**
   String get reportIncidentAttachPhoto;
 
-  /// R-24 photo stub attached
-  ///
-  /// In en, this message translates to:
-  /// **'Photo attached (stub)'**
-  String get reportIncidentPhotoAttached;
-
   /// R-24 submit CTA
   ///
   /// In en, this message translates to:
@@ -3988,6 +3982,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t add that photo'**
   String get reportIncidentPhotoError;
+
+  /// Option card route line: boarding park → alighting park.
+  ///
+  /// In en, this message translates to:
+  /// **'Board at {board} → {alight}'**
+  String optionCardRouteLine(String board, String alight);
 }
 
 class _AppLocalizationsDelegate

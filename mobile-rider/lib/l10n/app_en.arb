@@ -885,10 +885,6 @@
   "@reportIncidentAttachPhoto": {
     "description": "R-24 optional photo stub"
   },
-  "reportIncidentPhotoAttached": "Photo attached (stub)",
-  "@reportIncidentPhotoAttached": {
-    "description": "R-24 photo stub attached"
-  },
   "reportIncidentSubmit": "Submit report",
   "@reportIncidentSubmit": {
     "description": "R-24 submit CTA"
@@ -2332,5 +2328,17 @@
   "reportIncidentSent": "Report sent. Our safety team will follow up.",
   "reportIncidentQueued": "No signal. Report saved, it sends when you're back.",
   "reportIncidentFailed": "Couldn't send the report. Try again.",
-  "reportIncidentPhotoError": "Couldn't add that photo"
+  "reportIncidentPhotoError": "Couldn't add that photo",
+  "optionCardRouteLine": "Board at {board} → {alight}",
+  "@optionCardRouteLine": {
+    "description": "Option card route line: boarding park → alighting park.",
+    "placeholders": {
+      "board": {
+        "type": "String"
+      },
+      "alight": {
+        "type": "String"
+      }
+    }
+  }
 }

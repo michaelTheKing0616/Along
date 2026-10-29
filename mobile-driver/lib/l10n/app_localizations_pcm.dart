@@ -17,13 +17,13 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get phoneEntrySubtitle =>
-      'We text a code to this number so your day stays yours.';
+      'We go text code to this number so your day go be your own.';
 
   @override
   String get continueButton => 'Continue';
 
   @override
-  String get legalPrefix => 'By continuing, you agree to our ';
+  String get legalPrefix => 'If you continue, you agree to our ';
 
   @override
   String get termsLink => 'Terms';
@@ -36,52 +36,52 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String otpTitle(String phone) {
-    return 'Enter the 6-digit code sent to $phone';
+    return 'Put the 6-digit code wey we send to $phone';
   }
 
   @override
   String get wrongNumber => 'Wrong number?';
 
   @override
-  String get resendCode => 'Resend code';
+  String get resendCode => 'Send code again';
 
   @override
   String resendCountdown(int seconds) {
-    return 'Resend in ${seconds}s';
+    return 'Send again in ${seconds}s';
   }
 
   @override
-  String get errorInvalidPhone => 'Enter a valid Nigerian number';
+  String get errorInvalidPhone => 'Put correct Naija number';
 
   @override
-  String get errorWrongOtp => 'Incorrect code — try again';
+  String get errorWrongOtp => 'Code no correct — try again';
 
   @override
-  String get errorExpiredOtp => 'Code expired — request a new one';
+  String get errorExpiredOtp => 'Code don expire — ask for new one';
 
   @override
   String errorRateLimited(int seconds) {
-    return 'Too many attempts. Try again in ${seconds}s';
+    return 'You don try too many times. Try again in ${seconds}s';
   }
 
   @override
-  String get errorGeneric => 'Something went wrong. Please try again.';
+  String get errorGeneric => 'Something no work. Abeg try again.';
 
   @override
   String get errorAuthNotConfigured =>
-      'This build is not connected to Along. Rebuild the staging APK with env/staging.json.';
+      'This build no connect to Along. Rebuild the staging APK with env/staging.json.';
 
   @override
-  String get errorValidation => 'Please check the fields and try again.';
+  String get errorValidation => 'Abeg check the fields come try again.';
 
   @override
-  String get errorPlateConflict => 'This plate is already registered.';
+  String get errorPlateConflict => 'Dem don register this plate before.';
 
   @override
   String get profileTitle => 'Your profile';
 
   @override
-  String get profileSubtitle => 'Tell us a bit about yourself';
+  String get profileSubtitle => 'Tell us small about yourself';
 
   @override
   String get nameLabel => 'Full name';
@@ -93,25 +93,25 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get cityLabel => 'City';
 
   @override
-  String get genderLabel => 'Gender (optional)';
+  String get genderLabel => 'Gender (if you want)';
 
   @override
-  String get genderFemale => 'Female';
+  String get genderFemale => 'Woman';
 
   @override
-  String get genderMale => 'Male';
+  String get genderMale => 'Man';
 
   @override
-  String get genderOther => 'Prefer not to say';
+  String get genderOther => 'I no wan talk';
 
   @override
-  String get photoOptional => 'Add photo (optional)';
+  String get photoOptional => 'Add photo (if you want)';
 
   @override
-  String get vehicleTitle => 'Your vehicle';
+  String get vehicleTitle => 'Your motor';
 
   @override
-  String get vehicleSubtitle => 'How will you drive on Along?';
+  String get vehicleSubtitle => 'How you go drive for Along?';
 
   @override
   String get plateLabel => 'Plate number';
@@ -129,13 +129,13 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get makeModelLabel => 'Make & model';
 
   @override
-  String get ownerQuestion => 'Is this your vehicle?';
+  String get ownerQuestion => 'Na your motor be this?';
 
   @override
-  String get ownerYes => 'Yes, it\'s mine';
+  String get ownerYes => 'Yes, na my own';
 
   @override
-  String get ownerNo => 'No, someone else owns it';
+  String get ownerNo => 'No, na another person own';
 
   @override
   String get ownerNameLabel => 'Owner name';
@@ -144,48 +144,48 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get ownerPhoneLabel => 'Owner phone';
 
   @override
-  String get documentsTitle => 'Verify your documents';
+  String get documentsTitle => 'Verify your papers';
 
   @override
-  String get documentsSubtitle => 'Upload each document to start driving';
+  String get documentsSubtitle => 'Upload each paper to start to drive';
 
   @override
-  String get docStatusNotStarted => 'Not started';
+  String get docStatusNotStarted => 'Never start';
 
   @override
-  String get docStatusPending => 'Pending';
+  String get docStatusPending => 'E dey wait';
 
   @override
   String get docStatusApproved => 'Approved';
 
   @override
-  String get docStatusRejected => 'Rejected';
+  String get docStatusRejected => 'Dem reject am';
 
   @override
-  String get saveAndContinueLater => 'Save and continue later';
+  String get saveAndContinueLater => 'Save am, continue later';
 
   @override
   String captureTitle(String document) {
-    return 'Capture $document';
+    return 'Snap $document';
   }
 
   @override
-  String get captureGuide => 'Fit the document inside the frame';
+  String get captureGuide => 'Put the paper inside the frame';
 
   @override
-  String get takePhoto => 'Take photo';
+  String get takePhoto => 'Snap photo';
 
   @override
-  String get retakePhoto => 'Retake';
+  String get retakePhoto => 'Snap again';
 
   @override
-  String get submitDocument => 'Submit document';
+  String get submitDocument => 'Send paper';
 
   @override
-  String get ocrReviewTitle => 'Review extracted details';
+  String get ocrReviewTitle => 'Check the details wey we pull out';
 
   @override
-  String get ocrReviewSubtitle => 'Confirm each field before submitting';
+  String get ocrReviewSubtitle => 'Confirm each field before you send';
 
   @override
   String ocrSuggestedValue(String value) {
@@ -193,35 +193,35 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get ocrConfirmField => 'Use this value';
+  String get ocrConfirmField => 'Use this one';
 
   @override
   String get ocrFieldConfirmed => 'Confirmed';
 
   @override
   String get ocrNoAutoFillNote =>
-      'ID numbers are never filled automatically — tap confirm for each field.';
+      'We no dey fill ID numbers by ourself — tap confirm for each field.';
 
   @override
-  String get pendingTitle => 'Verification in progress';
+  String get pendingTitle => 'Verification dey go on';
 
   @override
-  String get pendingHero => 'We\'re reviewing your documents';
+  String get pendingHero => 'We dey check your papers';
 
   @override
-  String get pendingExpectedGeneric => 'This usually takes 1–3 business days';
+  String get pendingExpectedGeneric => 'E dey take 1–3 work days';
 
   @override
   String pendingExpectedHours(int hours) {
-    return 'Expected within $hours hours';
+    return 'Expect am inside $hours hours';
   }
 
   @override
   String get pendingWhatNext =>
-      'We\'ll notify you when you\'re approved. You can set up your route while you wait.';
+      'We go tell you when dem approve you. You fit set your route while you dey wait.';
 
   @override
-  String get setupRouteCta => 'Set up your route while you wait';
+  String get setupRouteCta => 'Set your route while you dey wait';
 
   @override
   String get routesListTitle => 'Your routes';
@@ -230,22 +230,22 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get routesAddRoute => 'Add route';
 
   @override
-  String get routesEmptyTitle => 'Set up your route in a few taps';
+  String get routesEmptyTitle => 'Set your route with small taps';
 
   @override
   String get routesEmptyBody =>
-      'Publish your stops and prices so riders can find you on your usual path.';
+      'Publish your stops and prices so passengers fit find you for your usual road.';
 
   @override
   String get routeSuggestedCardTitle => 'Suggested route';
 
   @override
   String routeSuggestedCardBody(String mode, int stopCount) {
-    return 'We detected a usual $mode path with $stopCount stops.';
+    return 'We see your usual $mode road with $stopCount stops.';
   }
 
   @override
-  String get routeSuggestedCardCta => 'Tap to review and publish';
+  String get routeSuggestedCardCta => 'Tap to check and publish';
 
   @override
   String routeUnnamedProfile(String mode) {
@@ -259,11 +259,11 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String routeLoadSurchargeLabel(String amount) {
-    return 'Load surcharge: $amount';
+    return 'Load extra: $amount';
   }
 
   @override
-  String get routeLoadSurchargeOptional => 'Load surcharge (optional)';
+  String get routeLoadSurchargeOptional => 'Load extra (if you want)';
 
   @override
   String get routeLoadSurchargeHint => 'e.g. 50';
@@ -272,11 +272,11 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get routeFastSetupTitle => 'Route setup';
 
   @override
-  String get routeFastSetupQuestion => 'Is this your route?';
+  String get routeFastSetupQuestion => 'Na your route be this?';
 
   @override
   String routeFastSetupSubtitle(int count) {
-    return '$count stops detected from your usual path';
+    return 'We see $count stops from your usual road';
   }
 
   @override
@@ -286,7 +286,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get routeEditPrices => 'Edit prices';
 
   @override
-  String get routeDrawManually => 'No, draw manually';
+  String get routeDrawManually => 'No, draw am myself';
 
   @override
   String get routeDrawTitle => 'Draw your route';
@@ -295,14 +295,14 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get routeDrawHint => 'Tap the map to add stops';
 
   @override
-  String get routeDrawEmptyStops => 'Add at least two stops on the map';
+  String get routeDrawEmptyStops => 'Add at least two stops for map';
 
   @override
   String get routePublish => 'Publish';
 
   @override
   String routePriceToEnd(String amount) {
-    return 'To end: $amount';
+    return 'Reach end: $amount';
   }
 
   @override
@@ -314,29 +314,29 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get routeSnapNewStopHint => 'New stop — name?';
 
   @override
-  String get routeSnapPending => 'Snapping…';
+  String get routeSnapPending => 'Dey match…';
 
   @override
-  String get routePriceKeypadTitle => 'Set price to end';
+  String get routePriceKeypadTitle => 'Set price reach end';
 
   @override
   String get routePriceKeypadSet => 'Set';
 
   @override
   String get routePriceErrorNonMonotone =>
-      'Prices must not increase toward the destination.';
+      'Price no suppose increase as you dey reach destination.';
 
   @override
   String get routePriceErrorLastNotZero => 'Last stop must be ₦0.';
 
   @override
-  String get routePriceErrorEmpty => 'Add at least one priced stop.';
+  String get routePriceErrorEmpty => 'Add at least one stop wey get price.';
 
   @override
-  String get routeLoadError => 'Could not load routes.';
+  String get routeLoadError => 'Routes no gree load.';
 
   @override
-  String get routePublishError => 'Could not publish route. Try again.';
+  String get routePublishError => 'Route no gree publish. Try again.';
 
   @override
   String get back => 'Back';
@@ -354,24 +354,18 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get navAccount => 'Account';
 
   @override
-  String get earningsStubBody => 'Earnings and balance coming in Phase 4.';
-
-  @override
-  String get accountStubBody => 'Account settings coming soon.';
-
-  @override
-  String get homeUnverifiedBanner => 'Complete verification to go online.';
+  String get homeUnverifiedBanner => 'Finish verification to go online.';
 
   @override
   String get homeBatteryGuardBanner =>
-      'Battery low — location updates slowed to save power.';
+      'Battery don low — location update don slow to save power.';
 
   @override
   String get homeLedgerBlockedBanner =>
-      'Matching paused — settle your balance to go online.';
+      'Matching don pause — settle your balance to go online.';
 
   @override
-  String get homeSelectPark => 'At: select park ▾';
+  String get homeSelectPark => 'At: choose park ▾';
 
   @override
   String homeAtPark(String parkName) {
@@ -386,16 +380,16 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get homeErrorSelectPark =>
-      'Choose a park before going online at park.';
+      'Choose park before you go online for park.';
 
   @override
-  String get homeErrorLocation => 'Enable location to go online.';
+  String get homeErrorLocation => 'On location to go online.';
 
   @override
-  String get homeParkPickerTitle => 'Nearby parks';
+  String get homeParkPickerTitle => 'Parks wey near';
 
   @override
-  String get homeParkPickerEmpty => 'No parks within range.';
+  String get homeParkPickerEmpty => 'No park near.';
 
   @override
   String homeParkDistance(int meters) {
@@ -403,7 +397,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get homeParkSomewhereElse => 'I\'m somewhere else';
+  String get homeParkSomewhereElse => 'I dey another place';
 
   @override
   String get incomingRequestTitle => 'New request';
@@ -422,10 +416,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get incomingRequestPickup => 'Pickup';
 
   @override
-  String get incomingRequestRoamingPickup => 'Rider location';
+  String get incomingRequestRoamingPickup => 'Passenger location';
 
   @override
-  String get incomingRequestRoamingPickupMeta => 'Cell hail — meet at pin';
+  String get incomingRequestRoamingPickupMeta => 'Road hail — meet for pin';
 
   @override
   String incomingRequestCascade(int attempt, int max) {
@@ -442,7 +436,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String incomingRequestFareLine(String amount, String tierLabel) {
-    return 'Rider pays $amount · $tierLabel';
+    return 'Passenger go pay $amount · $tierLabel';
   }
 
   @override
@@ -451,7 +445,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get incomingRequestLoadDefault => 'Passenger flagged load';
+  String get incomingRequestLoadDefault => 'Passenger get load';
 
   @override
   String incomingRequestLoadDetail(String size, String note) {
@@ -474,28 +468,28 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get incomingRequestAccept => 'Accept';
 
   @override
-  String get incomingRequestDecline => 'Decline';
+  String get incomingRequestDecline => 'No gree';
 
   @override
-  String get declineReasonTitle => 'Why are you declining?';
+  String get declineReasonTitle => 'Why you no gree?';
 
   @override
-  String get declineReasonNoRoomForLoad => 'No room for load';
+  String get declineReasonNoRoomForLoad => 'No space for load';
 
   @override
-  String get declineReasonTooFar => 'Too far';
+  String get declineReasonTooFar => 'E too far';
 
   @override
-  String get declineReasonEndingShift => 'Ending shift';
+  String get declineReasonEndingShift => 'I dey close work';
 
   @override
   String get declineReasonOther => 'Other';
 
   @override
-  String get fareTierStandard => 'Standard fare';
+  String get fareTierStandard => 'Normal price';
 
   @override
-  String get fareTierCommunity => 'Community fare';
+  String get fareTierCommunity => 'Wetin people dey pay';
 
   @override
   String get fareTierProfile => 'Driver price';
@@ -505,26 +499,27 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String pricingRiderOffer(String amount) {
-    return 'Rider offered $amount';
+    return 'Passenger offer $amount';
   }
 
   @override
-  String get pricingLapsed => 'No agreement — rider may choose another vehicle';
+  String get pricingLapsed =>
+      'No agreement — passenger fit choose another motor';
 
   @override
-  String get pricingOutOfRange => 'Vehicle has passed — negotiation closed';
+  String get pricingOutOfRange => 'Motor don pass — price talk don close';
 
   @override
-  String get pricingDeclined => 'You declined this fare';
+  String get pricingDeclined => 'You no gree this fare';
 
   @override
   String get pricingDismiss => 'Back to map';
 
   @override
-  String get manifestTitle => 'Active trips';
+  String get manifestTitle => 'Trips wey dey on';
 
   @override
-  String get manifestEmpty => 'No accepted riders yet';
+  String get manifestEmpty => 'No passenger accept yet';
 
   @override
   String manifestBoarding(String stage) {
@@ -537,18 +532,18 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get manifestMarkBoarded => 'Boarded';
+  String get manifestMarkBoarded => 'Don enter';
 
   @override
   String manifestOpen(int count) {
-    return 'Active trips ($count)';
+    return 'Trips wey dey on ($count)';
   }
 
   @override
   String get activeTripStart => 'Start trip';
 
   @override
-  String get activeTripComplete => 'Complete trip';
+  String get activeTripComplete => 'Finish trip';
 
   @override
   String activeTripBoardAlight(String board, String alight) {
@@ -557,11 +552,11 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String activeTripWalkEta(int minutes) {
-    return '$minutes min walk';
+    return '$minutes min waka';
   }
 
   @override
-  String get activeTripStalledCaption => 'not moving closer';
+  String get activeTripStalledCaption => 'e no dey come near';
 
   @override
   String get activeTripRelease => 'Release';
@@ -573,7 +568,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get sosTeamAlerted => 'Ready to call 112';
 
   @override
-  String get sosSharingDetails => 'Share your live location with your contacts';
+  String get sosSharingDetails => 'Share your live location with your people';
 
   @override
   String sosCallEmergency(String number) {
@@ -581,62 +576,56 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get sosHoldToCancel => 'Hold to cancel';
+  String get sosHoldToCancel => 'Hold am to cancel';
 
   @override
-  String get sosRaising => 'Opening the 112 call…';
+  String get sosRaising => 'Dey open the 112 call…';
 
   @override
-  String get sosRaiseFailed => 'Could not open the 112 call';
+  String get sosRaiseFailed => '112 call no gree open';
 
   @override
   String get sosRetry => 'Try again';
 
   @override
-  String get reportIncidentTitle => 'Report incident';
+  String get reportIncidentTitle => 'Report wetin happen';
 
   @override
-  String get reportIncidentCategoryHeading => 'What happened?';
+  String get reportIncidentCategoryHeading => 'Wetin happen?';
 
   @override
   String get reportIncidentDescriptionHeading => 'Tell us more';
 
   @override
   String get reportIncidentDescriptionHint =>
-      'Describe what happened (optional details help)';
+      'Talk wetin happen (details dey help)';
 
   @override
-  String get reportIncidentAttachPhoto => 'Attach photo';
+  String get reportIncidentSubmit => 'Send report';
 
   @override
-  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
+  String get reportIncidentPickCategory => 'Pick one category';
 
   @override
-  String get reportIncidentSubmit => 'Submit report';
+  String get reportIncidentDescriptionRequired => 'Add small explanation';
 
   @override
-  String get reportIncidentPickCategory => 'Pick a category';
+  String get reportIncidentSubmitted => 'Report don save for this phone';
 
   @override
-  String get reportIncidentDescriptionRequired => 'Add a short description';
+  String get incidentCategorySafety => 'Safety worry';
 
   @override
-  String get reportIncidentSubmitted => 'Report saved on this phone';
+  String get incidentCategoryFareDispute => 'Fare wahala';
 
   @override
-  String get incidentCategorySafety => 'Safety concern';
+  String get incidentCategoryVehicleQuality => 'Motor condition';
 
   @override
-  String get incidentCategoryFareDispute => 'Fare dispute';
+  String get incidentCategoryDriverBehavior => 'Driver behaviour';
 
   @override
-  String get incidentCategoryVehicleQuality => 'Vehicle quality';
-
-  @override
-  String get incidentCategoryDriverBehavior => 'Driver behavior';
-
-  @override
-  String get incidentCategoryLostItem => 'Lost item';
+  String get incidentCategoryLostItem => 'Something lost';
 
   @override
   String get incidentCategoryOther => 'Other';
@@ -651,38 +640,37 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get accountVerified => 'Verified';
 
   @override
-  String get accountUnverified => 'Unverified';
+  String get accountUnverified => 'Never verify';
 
   @override
-  String get accountVehicleHeading => 'VEHICLE';
+  String get accountVehicleHeading => 'MOTOR';
 
   @override
-  String get accountVehicleActiveHint => 'Active vehicle';
+  String get accountVehicleActiveHint => 'Motor wey dey work';
 
   @override
-  String get accountVehicleEmpty => 'Add your vehicle';
+  String get accountVehicleEmpty => 'Add your motor';
 
   @override
-  String get accountVehicleSwitchHint =>
-      'Contact support to switch active vehicle';
+  String get accountVehicleSwitchHint => 'Contact support to change motor';
 
   @override
-  String get accountDocumentsHeading => 'DOCUMENTS';
+  String get accountDocumentsHeading => 'PAPERS';
 
   @override
-  String get accountDocumentsAllApproved => 'All documents approved';
+  String get accountDocumentsAllApproved => 'All papers don approve';
 
   @override
-  String get accountDocumentsPending => 'Documents pending review';
+  String get accountDocumentsPending => 'Papers dey wait for check';
 
   @override
-  String get accountDocumentsNeedsAttention => 'Some documents need attention';
+  String get accountDocumentsNeedsAttention => 'Some papers need attention';
 
   @override
-  String get accountDocumentsIncomplete => 'Documents incomplete';
+  String get accountDocumentsIncomplete => 'Papers never complete';
 
   @override
-  String get accountDocumentsUnknown => 'Document status unavailable';
+  String get accountDocumentsUnknown => 'Paper status no dey';
 
   @override
   String get accountPayoutHeading => 'PAYOUT';
@@ -692,14 +680,14 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String accountPayoutConfigured(String last4) {
-    return 'Bank ending $last4';
+    return 'Bank wey end with $last4';
   }
 
   @override
-  String get accountPayoutNotConfigured => 'Set up your payout bank';
+  String get accountPayoutNotConfigured => 'Set your payout bank';
 
   @override
-  String get accountPreferencesHeading => 'PREFERENCES';
+  String get accountPreferencesHeading => 'WETIN YOU LIKE';
 
   @override
   String get accountCityLabel => 'Operating city';
@@ -711,20 +699,20 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get accountLanguage => 'Language';
 
   @override
-  String get accountLanguageValue => 'English';
+  String get accountLanguageValue => 'Naija Pidgin';
 
   @override
   String get accountSafetyHeading => 'SAFETY';
 
   @override
-  String get accountSafetyHowSos => 'How SOS works';
+  String get accountSafetyHowSos => 'How SOS dey work';
 
   @override
   String get accountSafetyHowSosBody =>
-      'Hold SOS to call 112 and share your location with contacts';
+      'Hold SOS to call 112 and share where you dey with your people';
 
   @override
-  String get accountHelp => 'Help & support';
+  String get accountHelp => 'Help';
 
   @override
   String get accountLegal => 'Legal';
@@ -733,7 +721,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get accountSignOut => 'Sign out';
 
   @override
-  String get homeLedgerBlockedTitle => 'Matching paused';
+  String get homeLedgerBlockedTitle => 'Matching don pause';
 
   @override
   String homeLedgerBlockedBalance(String amount) {
@@ -753,7 +741,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String settleCurrentBalance(String amount) {
-    return 'Current balance: $amount';
+    return 'Balance now: $amount';
   }
 
   @override
@@ -769,18 +757,18 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get settleChannelCard => 'Card';
 
   @override
-  String get settleChannelAgent => 'Pay an agent';
+  String get settleChannelAgent => 'Pay agent';
 
   @override
   String get settleAgentCodeTitle => 'Your agent code';
 
   @override
   String settleAgentExpires(String time) {
-    return 'Expires $time';
+    return 'E go expire $time';
   }
 
   @override
-  String get settleNearbyAgentsTitle => 'Nearby agents';
+  String get settleNearbyAgentsTitle => 'Agents wey near';
 
   @override
   String settleNearbyAgentDistance(int distance) {
@@ -797,14 +785,14 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get earningsTripsSection => 'TRIPS';
 
   @override
-  String get earningsLedgerEmpty => 'No ledger entries yet';
+  String get earningsLedgerEmpty => 'No record yet';
 
   @override
   String get earningsTripsCaption =>
-      'Cash you collected directly — not part of your Along balance';
+      'Cash wey you collect direct — e no join your Along balance';
 
   @override
-  String get earningsTripsEmpty => 'No completed cash trips today';
+  String get earningsTripsEmpty => 'No cash trip finish today';
 
   @override
   String earningsTripsTodaySummary(int count, String amount) {
@@ -819,7 +807,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String standingBalanceAt(String amount) {
-    return 'Balance at transition: $amount';
+    return 'Balance when e change: $amount';
   }
 
   @override
@@ -834,29 +822,29 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get standingRestoreHint =>
-      'Settle above the warn threshold to restore good standing';
+      'Pay pass the warn limit to get good standing back';
 
   @override
   String get standingHistoryTitle => 'HISTORY';
 
   @override
-  String get standingHistoryEmpty => 'No standing changes yet';
+  String get standingHistoryEmpty => 'No standing change yet';
 
   @override
-  String get guarantorLink => 'Add a guarantor';
+  String get guarantorLink => 'Add guarantor';
 
   @override
   String get guarantorTitle => 'Guarantor';
 
   @override
   String get guarantorExplainer =>
-      'Your guarantor is notified if your balance stays unsettled after the grace period. Nothing is ever deducted from them.';
+      'We go tell your guarantor if your balance never settle after grace time. We no go ever remove money from am.';
 
   @override
   String get guarantorTypeDriver => 'Fellow driver';
 
   @override
-  String get guarantorTypeOwner => 'Vehicle owner';
+  String get guarantorTypeOwner => 'Motor owner';
 
   @override
   String get guarantorNameLabel => 'Full name';
@@ -868,48 +856,47 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get guarantorSubmit => 'Add guarantor';
 
   @override
-  String get guarantorSuccess =>
-      'Guarantor added — they will receive an acknowledgement link';
+  String get guarantorSuccess => 'Guarantor don add — dem go get confirm link';
 
   @override
   String get extendTripTitle => 'Extend trip';
 
   @override
-  String get extendTripSearchHint => 'Where to now?';
+  String get extendTripSearchHint => 'Where now?';
 
   @override
   String extendTripDestination(String destination) {
-    return 'Continuing to $destination';
+    return 'Dey continue go $destination';
   }
 
   @override
-  String get extendTripPropose => 'Propose to rider';
+  String get extendTripPropose => 'Propose to passenger';
 
   @override
   String get incomingExtensionTitle => 'Extension request';
 
   @override
-  String get incomingExtensionDecline => 'Decline';
+  String get incomingExtensionDecline => 'No gree';
 
   @override
   String get incomingExtensionAccept => 'Accept';
 
   @override
   String incomingRiderExtensionBody(String destination, String delta) {
-    return 'Rider proposes continuing to $destination for +$delta';
+    return 'Passenger wan continue go $destination for +$delta';
   }
 
   @override
-  String get tripCompleteTitle => 'Trip complete';
+  String get tripCompleteTitle => 'Trip don finish';
 
   @override
   String tripCompleteFareLine(String amount) {
-    return 'Fare $amount — rider pays you in cash';
+    return 'Fare $amount — passenger go pay you cash';
   }
 
   @override
   String tripCompleteAlongFeeLine(String amount) {
-    return 'Along fee $amount — posted to your balance';
+    return 'Along fee $amount — e don enter your balance';
   }
 
   @override
@@ -918,7 +905,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get tripCompleteCashQuestion => 'Confirm cash received?';
+  String get tripCompleteCashQuestion => 'You don collect the cash?';
 
   @override
   String get tripCompleteYes => 'Yes';
@@ -927,10 +914,10 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get tripCompleteDifferent => 'Different amount';
 
   @override
-  String get tripCompleteDifferentPrompt => 'How much did you receive?';
+  String get tripCompleteDifferentPrompt => 'How much you collect?';
 
   @override
-  String get tripCompleteRateTitle => 'Rate your rider';
+  String get tripCompleteRateTitle => 'Rate your passenger';
 
   @override
   String get tripCompleteDone => 'Done';
@@ -940,43 +927,43 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String tripCompleteDigitalLine(String amount) {
-    return 'Paid digitally · $amount sent to your bank';
+    return 'Paid online · $amount don enter your bank';
   }
 
   @override
   String tripCompleteDigitalFeeLine(String amount) {
-    return 'Along fee $amount already deducted';
+    return 'Along fee $amount don comot already';
   }
 
   @override
   String get myQrTitle => 'My QR code';
 
   @override
-  String get myQrAccountSubtitle => 'Share your code for digital payments';
+  String get myQrAccountSubtitle => 'Share your code for online payment';
 
   @override
   String get myQrDigitalDisabledBanner =>
-      'Digital payments are not live yet — your QR is for setup and testing only.';
+      'Online payment never start — your QR na only for setup and test.';
 
   @override
-  String get myQrPayoutPrompt => 'Set up payout bank';
+  String get myQrPayoutPrompt => 'Set payout bank';
 
   @override
   String get myQrPayoutHint =>
-      'Add your bank account so riders can pay you digitally. Along never holds your money.';
+      'Add your bank account so passengers fit pay you online. Along no dey hold your money.';
 
   @override
-  String get myQrSetupPayout => 'Set up payout bank';
+  String get myQrSetupPayout => 'Set payout bank';
 
   @override
   String get myQrPayoutComingSoon =>
-      'Payout setup opens from Account once digital payments go live.';
+      'Payout setup go open from Account once online payment start.';
 
   @override
-  String get myQrShare => 'Share as image';
+  String get myQrShare => 'Share as picture';
 
   @override
-  String get myQrOrderSticker => 'Order printed sticker';
+  String get myQrOrderSticker => 'Order sticker';
 
   @override
   String myQrStickerStatus(String status) {
@@ -984,45 +971,46 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get myQrVerifySticker => 'Verify my sticker';
+  String get myQrVerifySticker => 'Check my sticker';
 
   @override
-  String get myQrVerifyMatch => 'Sticker matches your code and plate';
+  String get myQrVerifyMatch => 'Sticker match your code and plate';
 
   @override
-  String get myQrVerifyMismatch => 'This sticker does not match your account';
+  String get myQrVerifyMismatch => 'This sticker no match your account';
 
   @override
-  String get myQrVerifyInvalid => 'Not a valid Along QR code';
+  String get myQrVerifyInvalid => 'No be Along QR code';
 
   @override
-  String get myQrVerifyTimeout => 'Scan timed out — try again';
+  String get myQrVerifyTimeout => 'Scan time don finish — try again';
 
   @override
-  String get myQrPauseDigital => 'Pause digital payments';
+  String get myQrPauseDigital => 'Pause online payment';
 
   @override
-  String get myQrPauseDigitalHint => 'Riders will see cash only while paused';
+  String get myQrPauseDigitalHint =>
+      'Passengers go see cash only while e pause';
 
   @override
   String get myQrPausedBanner =>
-      'Digital payments are paused — riders see cash only';
+      'Online payment don pause — passengers see cash only';
 
   @override
-  String get myQrRotate => 'Rotate code';
+  String get myQrRotate => 'Change code';
 
   @override
-  String get myQrRotateConfirmTitle => 'Rotate QR code?';
+  String get myQrRotateConfirmTitle => 'Change QR code?';
 
   @override
   String get myQrRotateConfirmBody =>
-      'Your current stickers will stop working. Ops will need to print new ones.';
+      'Your stickers now go stop to work. Ops go print new ones.';
 
   @override
   String get myQrRotateCancel => 'Cancel';
 
   @override
-  String get myQrRotateConfirm => 'Rotate';
+  String get myQrRotateConfirm => 'Change';
 
   @override
   String get paymentRequestTitle => 'Payment request';
@@ -1034,11 +1022,11 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String paymentRequestCountdown(int seconds) {
-    return 'Expires in ${seconds}s';
+    return 'E go expire in ${seconds}s';
   }
 
   @override
-  String get paymentRequestWaiting => 'Waiting for payment…';
+  String get paymentRequestWaiting => 'Dey wait for payment…';
 
   @override
   String paymentRequestPaidLine(String amount) {
@@ -1054,43 +1042,42 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get paymentRequestDone => 'Done';
 
   @override
-  String get paymentRequestExpired => 'This QR has expired — create a new one';
+  String get paymentRequestExpired => 'This QR don expire — make new one';
 
   @override
-  String get paymentRequestDigitalDisabled =>
-      'Digital payments are not enabled yet';
+  String get paymentRequestDigitalDisabled => 'Online payment never start';
 
   @override
   String get paymentRequestTokenError =>
-      'Could not verify payment QR — try again';
+      'We no fit confirm payment QR — try again';
 
   @override
   String get earningsDigitalSection => 'Digital payments';
 
   @override
   String get earningsDigitalCaption =>
-      'Paid straight to your bank — not part of your Along balance';
+      'Paid straight to your bank — e no join your Along balance';
 
   @override
-  String get earningsDigitalEmpty => 'No digital payments yet';
+  String get earningsDigitalEmpty => 'No online payment yet';
 
   @override
   String earningsDigitalRow(String source) {
-    return 'Digital · $source';
+    return 'Online · $source';
   }
 
   @override
   String get sosQueued =>
-      'Saved on this phone. Call 112 when you are back online.';
+      'E don save for this phone. Call 112 when network come back.';
 
   @override
   String get sosLiveLink => 'Copy live location link';
 
   @override
-  String get sosLiveLinkCopied => 'Live location link copied';
+  String get sosLiveLinkCopied => 'Live location link don copy';
 
   @override
-  String get sosContactsHeading => 'Tell someone you trust';
+  String get sosContactsHeading => 'Tell person wey you trust';
 
   @override
   String sosContactWhatsapp(String name) {
@@ -1107,10 +1094,10 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get emergencyContactsHint =>
-      'We notify these people if you raise SOS. Up to 5. WhatsApp or a text opens on your phone.';
+      'We go tell these people if you press SOS. Up to 5. WhatsApp or text go open for your phone.';
 
   @override
-  String get emergencyContactsEmpty => 'No emergency contacts yet';
+  String get emergencyContactsEmpty => 'No emergency contact yet';
 
   @override
   String get emergencyContactName => 'Name';
@@ -1127,14 +1114,13 @@ class AppLocalizationsPcm extends AppLocalizations {
   }
 
   @override
-  String get emergencyContactInvalidPhone =>
-      'Use a phone number like +2348012345678';
+  String get emergencyContactInvalidPhone => 'Use number like +2348012345678';
 
   @override
-  String get emergencyContactLimit => 'You can save up to 5 contacts';
+  String get emergencyContactLimit => 'You fit save up to 5 contacts';
 
   @override
-  String get emergencyContactSaveFailed => 'Could not save that contact';
+  String get emergencyContactSaveFailed => 'We no fit save that contact';
 
   @override
   String get buildMyDayTitle => 'Build my day';
@@ -1162,13 +1148,13 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get overCapacityNote =>
-      'This is over the usual seat count. It is saved and flagged for review.';
+      'This one pass the usual seat count. We don save am and flag am for check.';
 
   @override
   String get seatMapTitle => 'Seat map';
 
   @override
-  String get seatFull => 'Full';
+  String get seatFull => 'Don full';
 
   @override
   String get seatEmpty => 'Empty';
@@ -1177,7 +1163,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get seatFree => 'free';
 
   @override
-  String get seatOccupied => 'occupied';
+  String get seatOccupied => 'person dey';
 
   @override
   String get seatHeld => 'held';
@@ -1195,7 +1181,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get customRuleHint => 'Rule title';
 
   @override
-  String get customRuleBody => 'What riders should know';
+  String get customRuleBody => 'Wetin passengers suppose know';
 
   @override
   String get customRuleSave => 'Add my rule';
@@ -1204,34 +1190,34 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get holdMinutes => 'Hold minutes';
 
   @override
-  String get capMax => 'Seat cap';
+  String get capMax => 'Seat limit';
 
   @override
   String get deleteRule => 'Remove rule';
 
   @override
-  String get dayNeedsCorridor => 'Choose a corridor';
+  String get dayNeedsCorridor => 'Choose corridor';
 
   @override
-  String get seatStale => 'Seat map is more than a minute old';
+  String get seatStale => 'Seat map don pass one minute';
 
   @override
-  String get shiftStart => 'Shift starts';
+  String get shiftStart => 'Work start';
 
   @override
-  String get shiftEnd => 'Shift ends';
+  String get shiftEnd => 'Work end';
 
   @override
-  String get homeLabel => 'Home-bound stop';
+  String get homeLabel => 'Stop wey dey go house';
 
   @override
-  String get walkExtension => 'Extra hold minutes for a walking rider';
+  String get walkExtension => 'Extra hold minutes for passenger wey dey waka';
 
   @override
-  String get seatLuggage => 'luggage';
+  String get seatLuggage => 'load';
 
   @override
-  String get voiceCommandHint => 'Say accept, full, or seat back left free';
+  String get voiceCommandHint => 'Talk accept, full, or back left seat free';
 
   @override
   String get conductorOpen => 'Conductor code';
@@ -1240,16 +1226,16 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get conductorTitle => 'Conductor';
 
   @override
-  String get conductorCode => 'Code from the driver';
+  String get conductorCode => 'Code from driver';
 
   @override
-  String get conductorJoin => 'Open the seat map';
+  String get conductorJoin => 'Open seat map';
 
   @override
-  String get ghostSeatTitle => 'Still taken after the drop?';
+  String get ghostSeatTitle => 'Seat still taken after drop?';
 
   @override
-  String get ghostSeatFree => 'Free it';
+  String get ghostSeatFree => 'Free am';
 
   @override
   String freeSeatCount(int count) {
@@ -1260,7 +1246,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get restTitle => 'Rest';
 
   @override
-  String get restDriveMinutes => 'Drive minutes before a rest';
+  String get restDriveMinutes => 'Drive minutes before rest';
 
   @override
   String get restMinutes => 'Rest minutes';
@@ -1275,43 +1261,44 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get restFinish => 'Finish rest';
 
   @override
-  String get restPriority => 'Priority dispatch until your rest window ends';
+  String get restPriority =>
+      'You go first for jobs until your rest time finish';
 
   @override
   String get marketplaceTitle => 'Today';
 
   @override
-  String get marketplaceGoal => 'Daily target';
+  String get marketplaceGoal => 'Today target';
 
   @override
-  String get marketplaceEarned => 'Already earned';
+  String get marketplaceEarned => 'Don collect';
 
   @override
   String get marketplaceTypical => 'Usual seat fare';
 
   @override
   String marketplaceSeats(int count) {
-    return '$count seats to go';
+    return '$count seats remain';
   }
 
   @override
-  String get marketplaceGoalMet => 'Target reached';
+  String get marketplaceGoalMet => 'Target don reach';
 
   @override
   String get marketplaceSave => 'Save';
 
   @override
-  String get marketplaceCorridor => 'Corridor you watch';
+  String get marketplaceCorridor => 'Corridor wey you dey watch';
 
   @override
   String get marketplaceRequests => 'Requests';
 
   @override
-  String get marketplaceAddCorridor => 'Add';
+  String get marketplaceAddCorridor => 'Add am';
 
   @override
   String marketplaceTip(String corridor) {
-    return 'Queue toward $corridor';
+    return 'Join queue go $corridor';
   }
 
   @override
@@ -1327,7 +1314,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   String get marketplaceEventName => 'Event name';
 
   @override
-  String get marketplaceEventHours => 'Hours the point stays open';
+  String get marketplaceEventHours => 'Hours wey the point go open';
 
   @override
   String get marketplaceEventSave => 'Open the point';

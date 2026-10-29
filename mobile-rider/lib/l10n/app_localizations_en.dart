@@ -606,9 +606,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportIncidentAttachPhoto => 'Attach photo';
 
   @override
-  String get reportIncidentPhotoAttached => 'Photo attached (stub)';
-
-  @override
   String get reportIncidentSubmit => 'Submit report';
 
   @override
@@ -2282,4 +2279,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportIncidentPhotoError => 'Couldn\'t add that photo';
+
+  @override
+  String optionCardRouteLine(String board, String alight) {
+    return 'Board at $board → $alight';
+  }
 }

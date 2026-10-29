@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_rider/l10n/l10n_format.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/placements/presentation/placement_providers.dart';
 import 'package:mobile_rider/features/placements/presentation/sponsored_placement_slot.dart';
@@ -22,7 +23,7 @@ class TripsHistoryScreen extends ConsumerWidget {
     final p = AlongPalette.of(context);
     final history = ref.watch(tripsHistoryProvider);
     final placementsAsync = ref.watch(tripsHistoryPlacementProvider);
-    final locale = Localizations.localeOf(context).toLanguageTag();
+    final locale = intlLocaleOf(context);
 
     return TripPage(
       title: l10n.navTrips,

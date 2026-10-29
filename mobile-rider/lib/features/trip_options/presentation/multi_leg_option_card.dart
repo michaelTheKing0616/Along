@@ -49,6 +49,10 @@ class MultiLegOptionCard extends StatelessWidget {
               : null,
           boardLabel: firstLeg.boardName,
           alightLabel: candidate.legs.last.alightName,
+          routeLine: l10n.optionCardRouteLine(
+            firstLeg.boardName,
+            candidate.legs.last.alightName,
+          ),
           meta: OptionCardMapper.metaForCandidate(candidate, l10n),
           fareNaira: candidate.totalFareMinorUnits ~/ 100,
           tier: OptionCardMapper.mapFareTier(
@@ -104,9 +108,7 @@ class MultiLegOptionCard extends StatelessWidget {
               AlongSpace.s16,
               AlongSpace.s12,
             ),
-            child: LegTimeline(
-              legs: _timelineLegs(candidate),
-            ),
+            child: LegTimeline(legs: _timelineLegs(candidate)),
           ),
           for (var i = 0; i < candidate.legs.length; i++)
             if (!candidate.legs[i].fare.unconfirmed)

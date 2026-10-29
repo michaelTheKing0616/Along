@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:along_design/along_design.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -21,4 +22,11 @@ extension AlongL10nFormat on AppLocalizations {
     FareTier.candidate => fareTierCandidate,
     FareTier.estimate => fareTierEstimate,
   };
+}
+
+/// Locale tag for `intl` date/number formats. intl has no data for ha, ig,
+/// yo or pcm, so those fall back to English formats instead of throwing.
+String intlLocaleOf(BuildContext context) {
+  final tag = Localizations.localeOf(context).toLanguageTag();
+  return DateFormat.localeExists(tag) ? tag : 'en';
 }
