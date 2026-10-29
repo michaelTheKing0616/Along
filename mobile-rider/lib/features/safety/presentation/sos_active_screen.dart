@@ -4,13 +4,14 @@ import 'package:along_core/along_core.dart';
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/live_trip/domain/live_trip_config.dart';
-import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
+import 'package:mobile_rider/features/safety/presentation/guardian_share_screen.dart';
+import 'package:mobile_rider/features/safety/presentation/safety_kit.dart';
+import 'package:mobile_rider/routing/routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// Route args for R-23 SOS active.
 class SosActiveRouteArgs {
@@ -41,6 +42,7 @@ class _SosActiveScreenState extends ConsumerState<SosActiveScreen> {
   String? _error;
   List<EmergencyContact> _contacts = const [];
   Timer? _retryTimer;
+  DateTime? _sentAt;
 
   @override
   void initState() {
@@ -158,6 +160,7 @@ class _SosActiveScreenState extends ConsumerState<SosActiveScreen> {
 
   void _applyOutcome(SosDeliveryOutcome outcome) {
     if (outcome.isQueued) {
+      AlongHaptics.confirm(context);
       setState(() {
         _raising = false;
         _queued = true;
@@ -167,7 +170,9 @@ class _SosActiveScreenState extends ConsumerState<SosActiveScreen> {
       return;
     }
     final result = outcome.result;
+    AlongHaptics.success(context);
     setState(() {
+      _sentAt = ref.read(safetyNowProvider)();
       _sosId = result?.sosId;
       _emergencyNumber = result?.emergencyNumber;
       _shareUrl = result?.shareUrl;
@@ -188,35 +193,83 @@ class _SosActiveScreenState extends ConsumerState<SosActiveScreen> {
   Future<void> _callEmergency() async {
     final number = _emergencyNumber ?? '112';
     final uri = Uri(scheme: 'tel', path: number);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
+    await ref.read(safetyLauncherProvider)(uri);
   }
 
   Future<void> _openExternal(String raw) async {
     final uri = Uri.tryParse(raw);
     if (uri == null) return;
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    await ref.read(safetyLauncherProvider)(uri);
   }
 
-  Future<void> _copyShare() async {
-    final url = _shareUrl;
-    if (url == null || url.isEmpty) return;
-    await Clipboard.setData(ClipboardData(text: url));
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).sosLiveLinkCopied)),
-    );
-  }
-
-  Future<void> _cancelSos() async {
+  Future<void> _confirmSafe() async {
     final sosId = _sosId;
     if (sosId == null) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.sosImSafeTitle),
+        content: Text(l10n.sosImSafeBody),
+        actions: [
+          TextButton(
+            key: const Key('sos_keep_alert'),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.sosKeepAlert),
+          ),
+          TextButton(
+            key: const Key('sos_confirm_safe'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.sosImSafeConfirm),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
     _retryTimer?.cancel();
     await ref.read(safetyRepositoryProvider).cancelSos(sosId);
     if (mounted) Navigator.of(context).pop();
+  }
+
+  void _openContact(SosContactChannel channel) {
+    final l10n = AppLocalizations.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        final p = AlongPalette.of(context);
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.sosReach(channel.name), style: AlongType.title(p)),
+                const SizedBox(height: 16),
+                AlongButton(
+                  key: const Key('sos_contact_whatsapp'),
+                  label: l10n.sosContactWhatsapp(safetyFirstName(channel.name)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _openExternal(channel.whatsappUrl);
+                  },
+                ),
+                const SizedBox(height: 8),
+                AlongButton(
+                  key: const Key('sos_contact_sms'),
+                  label: l10n.sosContactSms(safetyFirstName(channel.name)),
+                  variant: AlongButtonVariant.secondary,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _openExternal(channel.smsUri);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   List<SosContactChannel> _channels() {
@@ -234,152 +287,146 @@ class _SosActiveScreenState extends ConsumerState<SosActiveScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final p = AlongPalette.of(context);
     final holdDuration = ref
         .watch(liveTripConfigProvider)
         .maybeWhen(
           data: (cfg) => cfg.sosHoldDurationMs,
-          orElse: () => const Duration(milliseconds: 600),
+          orElse: () => AlongDurations.sos,
         );
+    final number = _emergencyNumber ?? '112';
+    final failed = !_raising && _error != null;
+    final status = _raising
+        ? SafetyStatusLine(
+            key: const Key('sos_status_sending'),
+            label: l10n.sosStatusSending,
+            tone: SafetyTone.working,
+          )
+        : failed
+        ? SafetyStatusLine(
+            key: const Key('sos_status_failed'),
+            label: l10n.sosStatusFailed,
+            tone: SafetyTone.alarm,
+          )
+        : _queued
+        ? SafetyStatusLine(
+            key: const Key('sos_status_queued'),
+            label: l10n.sosStatusQueued,
+            tone: SafetyTone.waiting,
+          )
+        : SafetyStatusLine(
+            key: const Key('sos_team_alerted'),
+            label: l10n.sosStatusSent(
+              safetyClock(_sentAt ?? ref.read(safetyNowProvider)()),
+            ),
+            tone: SafetyTone.ok,
+          );
+    final channels = _channels();
 
     return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: AlongColors.semanticDangerTint,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AlongSpace.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: AlongSpace.s32),
-                if (_raising) ...[
-                  const Center(child: CircularProgressIndicator()),
-                  const SizedBox(height: AlongSpace.s16),
-                  Text(
-                    l10n.sosRaising,
-                    style: AlongText.heading2,
-                    textAlign: TextAlign.center,
-                  ),
-                ] else if (_error != null) ...[
-                  Text(
-                    l10n.sosRaiseFailed,
-                    style: AlongText.heading2.copyWith(
-                      color: AlongColors.semanticDanger,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AlongSpace.s12),
-                  AlongButton(
-                    key: const Key('sos_retry'),
-                    label: l10n.sosRetry,
-                    variant: AlongButtonVariant.secondary,
-                    onPressed: _raiseSos,
-                  ),
-                ] else
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        Text(
-                          _queued ? l10n.sosQueued : l10n.sosTeamAlerted,
-                          key: _queued ? null : const Key('sos_team_alerted'),
-                          style: AlongText.heading1.copyWith(
-                            color: AlongColors.semanticDanger,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AlongSpace.s12),
-                        Text(
-                          l10n.sosSharingDetails,
-                          style: AlongText.body,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AlongSpace.s24),
-                        AlongButton(
-                          key: const Key('sos_call_emergency'),
-                          label: l10n.sosCallEmergency(
-                            _emergencyNumber ?? '112',
-                          ),
-                          variant: AlongButtonVariant.danger,
-                          onPressed: _callEmergency,
-                        ),
-                        if (_shareUrl != null) ...[
-                          const SizedBox(height: AlongSpace.s12),
-                          AlongButton(
-                            key: const Key('sos_copy_live_link'),
-                            label: l10n.sosLiveLink,
-                            variant: AlongButtonVariant.secondary,
-                            onPressed: _copyShare,
-                          ),
-                        ],
-                        const SizedBox(height: AlongSpace.s12),
-                        AlongButton(
-                          key: const Key('sos_share_contact'),
-                          label: l10n.sosShareWithContact,
-                          variant: AlongButtonVariant.secondary,
-                          onPressed: () => ShareTripSheet.show(
-                            context,
-                            journeyId: widget.args.trip.journeyId,
-                          ),
-                        ),
-                        if (_channels().isNotEmpty) ...[
-                          const SizedBox(height: AlongSpace.s24),
-                          Text(
-                            l10n.sosContactsHeading,
-                            style: AlongText.bodyStrong,
-                            textAlign: TextAlign.center,
-                          ),
-                          for (final channel in _channels()) ...[
-                            const SizedBox(height: AlongSpace.s12),
-                            AlongButton(
-                              label: l10n.sosContactWhatsapp(channel.name),
-                              variant: AlongButtonVariant.secondary,
-                              onPressed: () =>
-                                  _openExternal(channel.whatsappUrl),
-                            ),
-                            const SizedBox(height: AlongSpace.s8),
-                            AlongButton(
-                              label: l10n.sosContactSms(channel.name),
-                              variant: AlongButtonVariant.secondary,
-                              onPressed: () => _openExternal(channel.smsUri),
-                            ),
-                          ],
-                        ],
-                        if (_queued) ...[
-                          const SizedBox(height: AlongSpace.s12),
-                          AlongButton(
-                            key: const Key('sos_retry'),
-                            label: l10n.sosRetry,
-                            variant: AlongButtonVariant.secondary,
-                            onPressed: _raiseSos,
-                          ),
-                        ],
-                        if (_sosId != null) ...[
-                          const SizedBox(height: AlongSpace.s24),
-                          Center(
-                            child: Column(
-                              children: [
-                                HoldButton(
-                                  key: const Key('sos_hold_cancel'),
-                                  type: HoldButtonType.sos,
-                                  holdDuration: holdDuration,
-                                  label: l10n.sosHoldToCancel,
-                                  onFired: _cancelSos,
-                                ),
-                                const SizedBox(height: AlongSpace.s8),
-                                Text(
-                                  l10n.sosHoldToCancel,
-                                  style: AlongText.label,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-              ],
+      canPop: _sosId == null && !_raising,
+      child: SafetyPage(
+        title: l10n.sosTitle,
+        status: status,
+        canClose: _sosId == null && !_raising,
+        footer: Row(
+          children: [
+            Expanded(
+              child: AlongButton(
+                key: const Key('sos_share_contact'),
+                label: l10n.sosShareLive,
+                variant: AlongButtonVariant.secondary,
+                onPressed: () => context.push(
+                  AppRoutes.guardianShare,
+                  extra: GuardianShareArgs(trip: widget.args.trip),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: failed || _queued
+                  ? AlongButton(
+                      key: const Key('sos_retry'),
+                      label: l10n.sosRetry,
+                      variant: AlongButtonVariant.secondary,
+                      onPressed: _raiseSos,
+                    )
+                  : AlongButton(
+                      key: const Key('sos_hold_cancel'),
+                      label: l10n.sosImSafe,
+                      variant: AlongButtonVariant.secondary,
+                      onPressed: _sosId == null ? null : _confirmSafe,
+                    ),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: AlongHoldRing(
+                key: const Key('sos_call_emergency'),
+                label: l10n.sosCallEmergency(number),
+                hint: l10n.sosHoldHint,
+                holdDuration: holdDuration,
+                onFired: _callEmergency,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sosHoldHint,
+              textAlign: TextAlign.center,
+              style: AlongType.caption(p),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: SafetyTripMap(
+                trip: widget.args.trip,
+                chip: l10n.sosMapLive,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sosContactsTitle,
+              style: AlongType.caption(p)
+                  .copyWith(color: p.ink, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              child: channels.isEmpty
+                  ? Row(
+                      children: [
+                        SafetyAddFace(
+                          key: const Key('sos_add_contact'),
+                          label: l10n.sosAddContact,
+                          onTap: () => context.push(AppRoutes.account),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            l10n.sosNoContacts,
+                            style: AlongType.bodyMuted(p),
+                          ),
+                        ),
+                      ],
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 4,
+                        children: [
+                          for (final (i, channel) in channels.indexed)
+                            SafetyContactFace(
+                              key: Key('sos_contact_$i'),
+                              name: channel.name,
+                              onTap: () => _openContact(channel),
+                            ),
+                        ],
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );

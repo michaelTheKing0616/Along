@@ -3706,6 +3706,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Along credit'**
   String get walletPassRowPaidValue;
+
+  /// No description provided for @sosTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety'**
+  String get sosTitle;
+
+  /// No description provided for @sosStatusSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerting the Along safety team…'**
+  String get sosStatusSending;
+
+  /// No description provided for @sosStatusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety team alerted · {time}'**
+  String sosStatusSent(String time);
+
+  /// No description provided for @sosStatusQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'No signal · alert saved, sends when you\'re back'**
+  String get sosStatusQueued;
+
+  /// No description provided for @sosStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert not sent · call 112 now'**
+  String get sosStatusFailed;
+
+  /// No description provided for @sosHoldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to call'**
+  String get sosHoldHint;
+
+  /// No description provided for @sosMapLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get sosMapLive;
+
+  /// No description provided for @sosContactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get sosContactsTitle;
+
+  /// No description provided for @sosNoContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No trusted contacts yet'**
+  String get sosNoContacts;
+
+  /// No description provided for @sosAddContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get sosAddContact;
+
+  /// No description provided for @sosShareLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Share live trip'**
+  String get sosShareLive;
+
+  /// No description provided for @sosImSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m safe'**
+  String get sosImSafe;
+
+  /// No description provided for @sosImSafeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel the alert?'**
+  String get sosImSafeTitle;
+
+  /// No description provided for @sosImSafeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The safety team stops following this trip. Only cancel if you are safe.'**
+  String get sosImSafeBody;
+
+  /// No description provided for @sosImSafeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, I\'m safe'**
+  String get sosImSafeConfirm;
+
+  /// No description provided for @sosKeepAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep alert on'**
+  String get sosKeepAlert;
+
+  /// No description provided for @sosReach.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach {name}'**
+  String sosReach(String name);
+
+  /// No description provided for @guardianShareSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let someone you trust follow this trip'**
+  String get guardianShareSubtitle;
+
+  /// No description provided for @guardianShareWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person can see this trip} other{{count} people can see this trip}}'**
+  String guardianShareWatching(int count);
+
+  /// No description provided for @guardianShareWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can follow'**
+  String get guardianShareWho;
+
+  /// No description provided for @guardianShareNoContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a trusted contact to share in one tap'**
+  String get guardianShareNoContacts;
+
+  /// No description provided for @guardianShareAddContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get guardianShareAddContact;
+
+  /// No description provided for @guardianSharePlate.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the plate'**
+  String get guardianSharePlate;
+
+  /// No description provided for @guardianShareLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Share live location'**
+  String get guardianShareLocation;
+
+  /// No description provided for @guardianShareExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop after'**
+  String get guardianShareExpiry;
+
+  /// No description provided for @guardianShare30.
+  ///
+  /// In en, this message translates to:
+  /// **'30 min'**
+  String get guardianShare30;
+
+  /// No description provided for @guardianShare60.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get guardianShare60;
+
+  /// No description provided for @guardianShareTripEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip ends'**
+  String get guardianShareTripEnd;
+
+  /// No description provided for @guardianShareCta.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Create a share link} =1{Share with 1 person} other{Share with {count} people}}'**
+  String guardianShareCta(int count);
+
+  /// No description provided for @guardianShareStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get guardianShareStop;
+
+  /// No description provided for @guardianShareUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Until {time}'**
+  String guardianShareUntil(String time);
+
+  /// No description provided for @guardianShareWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get guardianShareWhatsapp;
+
+  /// No description provided for @guardianShareOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing needs a connection. SOS still works offline.'**
+  String get guardianShareOffline;
+
+  /// No description provided for @guardianShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start sharing. Try again.'**
+  String get guardianShareFailed;
+
+  /// No description provided for @guardianShareStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing stopped'**
+  String get guardianShareStopped;
+
+  /// No description provided for @guardianShareNoTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing starts once you\'re on a trip'**
+  String get guardianShareNoTrip;
+
+  /// No description provided for @reportIncidentPhotosHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get reportIncidentPhotosHeading;
+
+  /// No description provided for @reportIncidentPhotosNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 4 · only our safety team sees them'**
+  String get reportIncidentPhotosNote;
+
+  /// No description provided for @reportIncidentAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get reportIncidentAddPhoto;
+
+  /// No description provided for @reportIncidentTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get reportIncidentTakePhoto;
+
+  /// No description provided for @reportIncidentChoosePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get reportIncidentChoosePhoto;
+
+  /// No description provided for @reportIncidentRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo {n}'**
+  String reportIncidentRemovePhoto(int n);
+
+  /// No description provided for @reportIncidentUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending photo {done} of {total}'**
+  String reportIncidentUploading(int done, int total);
+
+  /// No description provided for @reportIncidentSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Report sent. Our safety team will follow up.'**
+  String get reportIncidentSent;
+
+  /// No description provided for @reportIncidentQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'No signal. Report saved, it sends when you\'re back.'**
+  String get reportIncidentQueued;
+
+  /// No description provided for @reportIncidentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send the report. Try again.'**
+  String get reportIncidentFailed;
+
+  /// No description provided for @reportIncidentPhotoError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t add that photo'**
+  String get reportIncidentPhotoError;
 }
 
 class _AppLocalizationsDelegate

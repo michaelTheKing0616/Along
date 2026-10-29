@@ -152,6 +152,20 @@ final sosOutboxProvider = Provider<SosOutbox>((ref) {
   return SosOutbox(PendingActionQueue(ref.watch(alongDatabaseProvider)));
 });
 
+/// Reads a picked incident photo. Goldens inject bytes.
+final incidentPhotoBytesProvider = Provider<PhotoBytesReader>(
+  (ref) => readPhotoFile,
+);
+
+final incidentReporterProvider = Provider<IncidentReporter>((ref) {
+  return IncidentReporter(
+    gateway: ref.watch(alongSupabaseProvider),
+    safety: ref.watch(safetyRepositoryProvider),
+    queue: PendingActionQueue(ref.watch(alongDatabaseProvider)),
+    readBytes: ref.watch(incidentPhotoBytesProvider),
+  );
+});
+
 final sosRaiseCoordinatorProvider = Provider<SosRaiseCoordinator>((ref) {
   return SosRaiseCoordinator(
     repository: ref.watch(safetyRepositoryProvider),

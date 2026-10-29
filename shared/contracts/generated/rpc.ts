@@ -752,12 +752,16 @@ export interface CreateTripShareRequest {
   p_journey_id: string;
   p_contact_name?: string;
   p_contact_phone?: string;
+  p_share_plate?: boolean;
+  p_ttl_minutes?: number;
 }
 
 /** safety.json → CreateTripShareResponse */
 export interface CreateTripShareResponse {
   url: string;
   expires_at: string;
+  share_id?: string;
+  share_plate?: boolean;
 }
 
 /** safety.json → RevokeTripShareRequest */
@@ -821,7 +825,11 @@ export interface ReportIncidentRequest {
   p_trip_id?: string;
   p_type: string;
   p_description: string;
-  p_attachment_paths: string[];
+  /**
+   * @maxItems 4
+   */
+  p_attachment_paths: [] | [string] | [string, string] | [string, string, string] | [string, string, string, string];
+  p_client_ref?: string;
 }
 
 /** trips.json → RequestTripRequest */

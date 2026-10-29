@@ -2107,4 +2107,179 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walletPassRowPaidValue => 'Along credit';
+
+  @override
+  String get sosTitle => 'Safety';
+
+  @override
+  String get sosStatusSending => 'Alerting the Along safety team…';
+
+  @override
+  String sosStatusSent(String time) {
+    return 'Safety team alerted · $time';
+  }
+
+  @override
+  String get sosStatusQueued =>
+      'No signal · alert saved, sends when you\'re back';
+
+  @override
+  String get sosStatusFailed => 'Alert not sent · call 112 now';
+
+  @override
+  String get sosHoldHint => 'Hold to call';
+
+  @override
+  String get sosMapLive => 'Live';
+
+  @override
+  String get sosContactsTitle => 'Contacts';
+
+  @override
+  String get sosNoContacts => 'No trusted contacts yet';
+
+  @override
+  String get sosAddContact => 'Add';
+
+  @override
+  String get sosShareLive => 'Share live trip';
+
+  @override
+  String get sosImSafe => 'I\'m safe';
+
+  @override
+  String get sosImSafeTitle => 'Cancel the alert?';
+
+  @override
+  String get sosImSafeBody =>
+      'The safety team stops following this trip. Only cancel if you are safe.';
+
+  @override
+  String get sosImSafeConfirm => 'Yes, I\'m safe';
+
+  @override
+  String get sosKeepAlert => 'Keep alert on';
+
+  @override
+  String sosReach(String name) {
+    return 'Reach $name';
+  }
+
+  @override
+  String get guardianShareSubtitle => 'Let someone you trust follow this trip';
+
+  @override
+  String guardianShareWatching(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people can see this trip',
+      one: '1 person can see this trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareWho => 'Who can follow';
+
+  @override
+  String get guardianShareNoContacts =>
+      'Add a trusted contact to share in one tap';
+
+  @override
+  String get guardianShareAddContact => 'Add contact';
+
+  @override
+  String get guardianSharePlate => 'Share the plate';
+
+  @override
+  String get guardianShareLocation => 'Share live location';
+
+  @override
+  String get guardianShareExpiry => 'Stop after';
+
+  @override
+  String get guardianShare30 => '30 min';
+
+  @override
+  String get guardianShare60 => '1 hour';
+
+  @override
+  String get guardianShareTripEnd => 'Trip ends';
+
+  @override
+  String guardianShareCta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Share with $count people',
+      one: 'Share with 1 person',
+      zero: 'Create a share link',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareStop => 'Stop sharing';
+
+  @override
+  String guardianShareUntil(String time) {
+    return 'Until $time';
+  }
+
+  @override
+  String get guardianShareWhatsapp => 'WhatsApp';
+
+  @override
+  String get guardianShareOffline =>
+      'Sharing needs a connection. SOS still works offline.';
+
+  @override
+  String get guardianShareFailed => 'Couldn\'t start sharing. Try again.';
+
+  @override
+  String get guardianShareStopped => 'Sharing stopped';
+
+  @override
+  String get guardianShareNoTrip => 'Sharing starts once you\'re on a trip';
+
+  @override
+  String get reportIncidentPhotosHeading => 'Photos';
+
+  @override
+  String get reportIncidentPhotosNote =>
+      'Up to 4 · only our safety team sees them';
+
+  @override
+  String get reportIncidentAddPhoto => 'Add photo';
+
+  @override
+  String get reportIncidentTakePhoto => 'Take photo';
+
+  @override
+  String get reportIncidentChoosePhoto => 'Choose from gallery';
+
+  @override
+  String reportIncidentRemovePhoto(int n) {
+    return 'Remove photo $n';
+  }
+
+  @override
+  String reportIncidentUploading(int done, int total) {
+    return 'Sending photo $done of $total';
+  }
+
+  @override
+  String get reportIncidentSent =>
+      'Report sent. Our safety team will follow up.';
+
+  @override
+  String get reportIncidentQueued =>
+      'No signal. Report saved, it sends when you\'re back.';
+
+  @override
+  String get reportIncidentFailed => 'Couldn\'t send the report. Try again.';
+
+  @override
+  String get reportIncidentPhotoError => 'Couldn\'t add that photo';
 }

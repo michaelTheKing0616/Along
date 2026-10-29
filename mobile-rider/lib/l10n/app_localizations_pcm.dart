@@ -2111,4 +2111,180 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get walletPassRowPaidValue => 'Along credit';
+
+  @override
+  String get sosTitle => 'Safety';
+
+  @override
+  String get sosStatusSending => 'We dey tell Along safety team…';
+
+  @override
+  String sosStatusSent(String time) {
+    return 'Safety team don hear · $time';
+  }
+
+  @override
+  String get sosStatusQueued =>
+      'No network · we don save am, e go send when network come';
+
+  @override
+  String get sosStatusFailed => 'E no send · call 112 now';
+
+  @override
+  String get sosHoldHint => 'Hold am to call';
+
+  @override
+  String get sosMapLive => 'Live';
+
+  @override
+  String get sosContactsTitle => 'Contacts';
+
+  @override
+  String get sosNoContacts => 'You never add person wey you trust';
+
+  @override
+  String get sosAddContact => 'Add';
+
+  @override
+  String get sosShareLive => 'Share live trip';
+
+  @override
+  String get sosImSafe => 'I dey safe';
+
+  @override
+  String get sosImSafeTitle => 'Cancel the alert?';
+
+  @override
+  String get sosImSafeBody =>
+      'Safety team go stop to follow this trip. Cancel only if you dey safe.';
+
+  @override
+  String get sosImSafeConfirm => 'Yes, I dey safe';
+
+  @override
+  String get sosKeepAlert => 'Leave the alert';
+
+  @override
+  String sosReach(String name) {
+    return 'Reach $name';
+  }
+
+  @override
+  String get guardianShareSubtitle =>
+      'Make person wey you trust follow this trip';
+
+  @override
+  String guardianShareWatching(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people fit see this trip',
+      one: '1 person fit see this trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareWho => 'Who fit follow';
+
+  @override
+  String get guardianShareNoContacts =>
+      'Add person wey you trust to share with one tap';
+
+  @override
+  String get guardianShareAddContact => 'Add contact';
+
+  @override
+  String get guardianSharePlate => 'Share the plate number';
+
+  @override
+  String get guardianShareLocation => 'Share live location';
+
+  @override
+  String get guardianShareExpiry => 'Stop after';
+
+  @override
+  String get guardianShare30 => '30 min';
+
+  @override
+  String get guardianShare60 => '1 hour';
+
+  @override
+  String get guardianShareTripEnd => 'Trip finish';
+
+  @override
+  String guardianShareCta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Share with $count people',
+      one: 'Share with 1 person',
+      zero: 'Make share link',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareStop => 'Stop sharing';
+
+  @override
+  String guardianShareUntil(String time) {
+    return 'Till $time';
+  }
+
+  @override
+  String get guardianShareWhatsapp => 'WhatsApp';
+
+  @override
+  String get guardianShareOffline =>
+      'Sharing need network. SOS still dey work without network.';
+
+  @override
+  String get guardianShareFailed => 'E no fit start sharing. Try again.';
+
+  @override
+  String get guardianShareStopped => 'Sharing don stop';
+
+  @override
+  String get guardianShareNoTrip => 'Sharing go start when you dey for trip';
+
+  @override
+  String get reportIncidentPhotosHeading => 'Photos';
+
+  @override
+  String get reportIncidentPhotosNote =>
+      'Reach 4 · na only our safety team go see am';
+
+  @override
+  String get reportIncidentAddPhoto => 'Add photo';
+
+  @override
+  String get reportIncidentTakePhoto => 'Snap photo';
+
+  @override
+  String get reportIncidentChoosePhoto => 'Pick from gallery';
+
+  @override
+  String reportIncidentRemovePhoto(int n) {
+    return 'Remove photo $n';
+  }
+
+  @override
+  String reportIncidentUploading(int done, int total) {
+    return 'We dey send photo $done of $total';
+  }
+
+  @override
+  String get reportIncidentSent =>
+      'Report don send. Our safety team go follow up.';
+
+  @override
+  String get reportIncidentQueued =>
+      'No network. Report don save, e go send when network come.';
+
+  @override
+  String get reportIncidentFailed => 'E no fit send the report. Try again.';
+
+  @override
+  String get reportIncidentPhotoError => 'E no fit add that photo';
 }

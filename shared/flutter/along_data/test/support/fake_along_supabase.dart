@@ -7,12 +7,17 @@ class FakeAlongSupabase implements AlongSupabase {
     this.rpcHandler,
     this.functionHandler,
     this._user,
+    this.uploadHandler,
   });
 
+  final Future<void> Function(String bucket, String path)? uploadHandler;
+
   User? _user;
+
+  set user(User? value) => _user = value;
   dynamic Function(String fn, Map<String, dynamic> params)? rpcHandler;
   Map<String, dynamic> Function(String slug, Map<String, dynamic> body)?
-      functionHandler;
+  functionHandler;
 
   final List<(String fn, Map<String, dynamic> params)> rpcCalls = [];
   final List<(String slug, Map<String, dynamic> body)> functionCalls = [];
@@ -40,10 +45,7 @@ class FakeAlongSupabase implements AlongSupabase {
   }
 
   @override
-  Future<dynamic> rpc(
-    String fn, {
-    Map<String, dynamic>? params,
-  }) async {
+  Future<dynamic> rpc(String fn, {Map<String, dynamic>? params}) async {
     final p = params ?? {};
     rpcCalls.add((fn, p));
     if (rpcHandler == null) return {};
@@ -70,8 +72,7 @@ class FakeAlongSupabase implements AlongSupabase {
     Map<String, Object?> filters = const {},
     String? inColumn,
     List<Object?>? inValues,
-  }) async =>
-      const [];
+  }) async => const [];
 
   @override
   Future<void> uploadStorageObject({
@@ -79,5 +80,7 @@ class FakeAlongSupabase implements AlongSupabase {
     required String path,
     required List<int> bytes,
     String contentType = 'image/jpeg',
-  }) async {}
+  }) async {
+    await uploadHandler?.call(bucket, path);
+  }
 }

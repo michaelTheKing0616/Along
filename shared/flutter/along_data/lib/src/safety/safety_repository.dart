@@ -175,6 +175,7 @@ class SafetyRepository {
     required String type,
     required String description,
     List<String> attachmentPaths = const [],
+    String? clientRef,
   }) async {
     try {
       await _gateway.rpc(
@@ -184,6 +185,7 @@ class SafetyRepository {
           p_type: type,
           p_description: description,
           p_attachment_paths: attachmentPaths,
+          p_client_ref: clientRef,
         ).toJson(),
       );
     } catch (e) {
@@ -195,6 +197,8 @@ class SafetyRepository {
     required String journeyId,
     String? contactName,
     String? contactPhone,
+    bool sharePlate = true,
+    int? ttlMinutes,
   }) async {
     try {
       final raw = await _gateway.rpc(
@@ -203,6 +207,8 @@ class SafetyRepository {
           p_journey_id: journeyId,
           p_contact_name: contactName,
           p_contact_phone: contactPhone,
+          p_share_plate: sharePlate,
+          p_ttl_minutes: ttlMinutes,
         ).toJson(),
       );
       final map = raw as Map<String, dynamic>;

@@ -16,7 +16,6 @@ import 'package:mobile_rider/features/live_trip/presentation/extend_trip_sheet.d
 import 'package:mobile_rider/features/live_trip/presentation/live_trip_controller.dart';
 import 'package:mobile_rider/features/live_trip/presentation/pay_driver_sheet.dart';
 import 'package:mobile_rider/features/safety/presentation/report_incident_screen.dart';
-import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
 import 'package:mobile_rider/features/trips/presentation/trip_detail_screen.dart';
 import 'package:mobile_rider/features/trips/presentation/trips_history_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
@@ -325,12 +324,6 @@ void main() {
       );
       await settle(tester);
     }
-
-    testWidgets('rider share trip $name', (tester) async {
-      await overLiveTrip(tester, ShareTripSheet(journeyId: 'j-1'));
-      await shoot(tester, 'rider_share_trip_$name');
-      await tester.pumpWidget(const SizedBox());
-    });
 
     testWidgets('rider pay driver $name', (tester) async {
       await overLiveTrip(

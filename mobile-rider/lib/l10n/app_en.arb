@@ -2233,5 +2233,104 @@
   "walletPassRowRides": "Rides",
   "walletPassRowValid": "Valid until",
   "walletPassRowPaid": "Paid with",
-  "walletPassRowPaidValue": "Along credit"
+  "walletPassRowPaidValue": "Along credit",
+  "sosTitle": "Safety",
+  "sosStatusSending": "Alerting the Along safety team…",
+  "sosStatusSent": "Safety team alerted · {time}",
+  "@sosStatusSent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sosStatusQueued": "No signal · alert saved, sends when you're back",
+  "sosStatusFailed": "Alert not sent · call 112 now",
+  "sosHoldHint": "Hold to call",
+  "sosMapLive": "Live",
+  "sosContactsTitle": "Contacts",
+  "sosNoContacts": "No trusted contacts yet",
+  "sosAddContact": "Add",
+  "sosShareLive": "Share live trip",
+  "sosImSafe": "I'm safe",
+  "sosImSafeTitle": "Cancel the alert?",
+  "sosImSafeBody": "The safety team stops following this trip. Only cancel if you are safe.",
+  "sosImSafeConfirm": "Yes, I'm safe",
+  "sosKeepAlert": "Keep alert on",
+  "sosReach": "Reach {name}",
+  "@sosReach": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "guardianShareSubtitle": "Let someone you trust follow this trip",
+  "guardianShareWatching": "{count, plural, =1{1 person can see this trip} other{{count} people can see this trip}}",
+  "@guardianShareWatching": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "guardianShareWho": "Who can follow",
+  "guardianShareNoContacts": "Add a trusted contact to share in one tap",
+  "guardianShareAddContact": "Add contact",
+  "guardianSharePlate": "Share the plate",
+  "guardianShareLocation": "Share live location",
+  "guardianShareExpiry": "Stop after",
+  "guardianShare30": "30 min",
+  "guardianShare60": "1 hour",
+  "guardianShareTripEnd": "Trip ends",
+  "guardianShareCta": "{count, plural, =0{Create a share link} =1{Share with 1 person} other{Share with {count} people}}",
+  "@guardianShareCta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "guardianShareStop": "Stop sharing",
+  "guardianShareUntil": "Until {time}",
+  "@guardianShareUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "guardianShareWhatsapp": "WhatsApp",
+  "guardianShareOffline": "Sharing needs a connection. SOS still works offline.",
+  "guardianShareFailed": "Couldn't start sharing. Try again.",
+  "guardianShareStopped": "Sharing stopped",
+  "guardianShareNoTrip": "Sharing starts once you're on a trip",
+  "reportIncidentPhotosHeading": "Photos",
+  "reportIncidentPhotosNote": "Up to 4 · only our safety team sees them",
+  "reportIncidentAddPhoto": "Add photo",
+  "reportIncidentTakePhoto": "Take photo",
+  "reportIncidentChoosePhoto": "Choose from gallery",
+  "reportIncidentRemovePhoto": "Remove photo {n}",
+  "@reportIncidentRemovePhoto": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reportIncidentUploading": "Sending photo {done} of {total}",
+  "@reportIncidentUploading": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reportIncidentSent": "Report sent. Our safety team will follow up.",
+  "reportIncidentQueued": "No signal. Report saved, it sends when you're back.",
+  "reportIncidentFailed": "Couldn't send the report. Try again.",
+  "reportIncidentPhotoError": "Couldn't add that photo"
 }

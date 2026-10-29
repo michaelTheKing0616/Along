@@ -29,6 +29,7 @@ abstract final class AppRoutes {
   static const itineraryEntry = '/itinerary-entry';
   static const plateScan = '/plate-scan';
   static const guardian = '/guardian';
+  static const guardianShare = '/guardian/share';
   static const wallet = '/wallet';
   static const tripMessages = '/trip-messages';
   static const stageRadar = '/stage-radar';
