@@ -1,5 +1,6 @@
 import 'package:along_data/src/contracts/api_contracts.g.dart' as dto;
 import 'package:along_data/src/database/pending_action_queue.dart';
+import 'package:along_data/src/safety/incident_delivery.dart';
 import 'package:along_data/src/safety/safety_repository.dart';
 import 'package:along_data/src/safety/sos_delivery.dart';
 import 'package:along_data/src/supabase/along_supabase.dart';
@@ -24,7 +25,9 @@ const idempotentQueuedRpcs = {
 };
 
 QueuedDelivery queuedDeliveryFor(String type) =>
-    type == SosOutbox.actionType || idempotentQueuedRpcs.contains(type)
+    type == SosOutbox.actionType ||
+        type == IncidentReporter.actionType ||
+        idempotentQueuedRpcs.contains(type)
     ? QueuedDelivery.sendsWhenOnline
     : QueuedDelivery.needsConnection;
 
@@ -77,6 +80,12 @@ class QueuedActionReplayer {
             location: dto.Point(lat: r.lat, lng: r.lng),
             accuracyM: r.accuracyM,
           );
+        } else if (action.type == IncidentReporter.actionType) {
+          await IncidentReporter(
+            gateway: gateway,
+            safety: safety,
+            queue: queue,
+          ).send(IncidentReportDraft.fromJson(action.payload));
         } else {
           await gateway.rpc(action.type, params: action.payload);
         }

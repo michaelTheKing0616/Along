@@ -87,6 +87,9 @@ insert into trips (
   'red', 'circle'
 ) on conflict (id) do nothing;
 
+insert into storage.objects (bucket_id, name, owner)
+values ('incidents', '0e100000-0000-4000-8000-000000000001/test.jpg', '0e100000-0000-4000-8000-000000000001');
+
 select set_config('request.jwt.claim.sub', '0e100000-0000-4000-8000-000000000001', true);
 select set_config('request.jwt.claim.role', 'authenticated', true);
 set local role authenticated;

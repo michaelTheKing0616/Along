@@ -2107,4 +2107,182 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get walletPassRowPaidValue => 'Owó Along';
+
+  @override
+  String get sosTitle => 'Ààbò';
+
+  @override
+  String get sosStatusSending => 'À ń sọ fún ẹgbẹ́ ààbò Along…';
+
+  @override
+  String sosStatusSent(String time) {
+    return 'A ti sọ fún ẹgbẹ́ ààbò · $time';
+  }
+
+  @override
+  String get sosStatusQueued =>
+      'Kò sí àmì · a ti fi pamọ́, yóò lọ tí ó bá padà';
+
+  @override
+  String get sosStatusFailed => 'Kò lọ · pe 112 báyìí';
+
+  @override
+  String get sosHoldHint => 'Di mú láti pè';
+
+  @override
+  String get sosMapLive => 'Láàyè';
+
+  @override
+  String get sosContactsTitle => 'Àwọn olùbásọ̀rọ̀';
+
+  @override
+  String get sosNoContacts => 'Kò sí olùbásọ̀rọ̀ tí o gbẹ́kẹ̀lé síbẹ̀';
+
+  @override
+  String get sosAddContact => 'Fi kún';
+
+  @override
+  String get sosShareLive => 'Pín ìrìn àjò láàyè';
+
+  @override
+  String get sosImSafe => 'Mo wà láìléwu';
+
+  @override
+  String get sosImSafeTitle => 'Fagilé ìkìlọ̀ náà?';
+
+  @override
+  String get sosImSafeBody =>
+      'Ẹgbẹ́ ààbò yóò dẹ́kun títẹ̀lé ìrìn àjò yìí. Fagilé nìkan tí o bá wà láìléwu.';
+
+  @override
+  String get sosImSafeConfirm => 'Bẹ́ẹ̀ni, mo wà láìléwu';
+
+  @override
+  String get sosKeepAlert => 'Fi ìkìlọ̀ sílẹ̀';
+
+  @override
+  String sosReach(String name) {
+    return 'Kàn sí $name';
+  }
+
+  @override
+  String get guardianShareSubtitle =>
+      'Jẹ́ kí ẹni tí o gbẹ́kẹ̀lé tẹ̀lé ìrìn àjò yìí';
+
+  @override
+  String guardianShareWatching(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ènìyàn $count ń rí ìrìn àjò yìí',
+      one: 'Ènìyàn 1 ń rí ìrìn àjò yìí',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareWho => 'Ta ló lè tẹ̀lé';
+
+  @override
+  String get guardianShareNoContacts =>
+      'Fi olùbásọ̀rọ̀ kan kún láti pín pẹ̀lú ìfọwọ́kàn kan';
+
+  @override
+  String get guardianShareAddContact => 'Fi olùbásọ̀rọ̀ kún';
+
+  @override
+  String get guardianSharePlate => 'Pín nọ́mbà ọkọ̀';
+
+  @override
+  String get guardianShareLocation => 'Pín ibi tí o wà láàyè';
+
+  @override
+  String get guardianShareExpiry => 'Dúró lẹ́yìn';
+
+  @override
+  String get guardianShare30 => 'Ìṣẹ́jú 30';
+
+  @override
+  String get guardianShare60 => 'Wákàtí 1';
+
+  @override
+  String get guardianShareTripEnd => 'Ìrìn parí';
+
+  @override
+  String guardianShareCta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Pín pẹ̀lú ènìyàn $count',
+      one: 'Pín pẹ̀lú ènìyàn 1',
+      zero: 'Ṣe ìjápọ̀ ìpín',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareStop => 'Dẹ́kun pípín';
+
+  @override
+  String guardianShareUntil(String time) {
+    return 'Títí di $time';
+  }
+
+  @override
+  String get guardianShareWhatsapp => 'WhatsApp';
+
+  @override
+  String get guardianShareOffline =>
+      'Pípín nílò ìsopọ̀. SOS ṣì ń ṣiṣẹ́ láìsí ìsopọ̀.';
+
+  @override
+  String get guardianShareFailed =>
+      'Kò lè bẹ̀rẹ̀ pípín. Gbìyànjú lẹ́ẹ̀kan sí i.';
+
+  @override
+  String get guardianShareStopped => 'A ti dẹ́kun pípín';
+
+  @override
+  String get guardianShareNoTrip => 'Pípín ń bẹ̀rẹ̀ nígbà tí o bá wà nínú ìrìn';
+
+  @override
+  String get reportIncidentPhotosHeading => 'Àwòrán';
+
+  @override
+  String get reportIncidentPhotosNote =>
+      'Títí di 4 · ẹgbẹ́ ààbò wa nìkan ló ń rí wọn';
+
+  @override
+  String get reportIncidentAddPhoto => 'Fi àwòrán kún';
+
+  @override
+  String get reportIncidentTakePhoto => 'Ya àwòrán';
+
+  @override
+  String get reportIncidentChoosePhoto => 'Yan láti inú àwòrán';
+
+  @override
+  String reportIncidentRemovePhoto(int n) {
+    return 'Yọ àwòrán $n kúrò';
+  }
+
+  @override
+  String reportIncidentUploading(int done, int total) {
+    return 'À ń fi àwòrán $done nínú $total ránṣẹ́';
+  }
+
+  @override
+  String get reportIncidentSent =>
+      'A ti fi ìròyìn ránṣẹ́. Ẹgbẹ́ ààbò wa yóò tẹ̀lé e.';
+
+  @override
+  String get reportIncidentQueued =>
+      'Kò sí àmì. A ti fi ìròyìn pamọ́, yóò lọ tí ó bá padà.';
+
+  @override
+  String get reportIncidentFailed =>
+      'Kò lè fi ìròyìn ránṣẹ́. Gbìyànjú lẹ́ẹ̀kan sí i.';
+
+  @override
+  String get reportIncidentPhotoError => 'Kò lè fi àwòrán náà kún';
 }

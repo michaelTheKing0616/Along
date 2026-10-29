@@ -896,11 +896,15 @@ class CreateTripShareRequest {
   final String p_journey_id;
   final String? p_contact_name;
   final String? p_contact_phone;
+  final bool? p_share_plate;
+  final int? p_ttl_minutes;
 
   const CreateTripShareRequest({
     required this.p_journey_id,
     this.p_contact_name,
     this.p_contact_phone,
+    this.p_share_plate,
+    this.p_ttl_minutes,
   });
 
   factory CreateTripShareRequest.fromJson(Map<String, dynamic> json) {
@@ -908,6 +912,8 @@ class CreateTripShareRequest {
       p_journey_id: json["p_journey_id"] as String,
       p_contact_name: json["p_contact_name"] as String?,
       p_contact_phone: json["p_contact_phone"] as String?,
+      p_share_plate: json["p_share_plate"] as bool?,
+      p_ttl_minutes: (json["p_ttl_minutes"] as num?)?.toInt(),
     );
   }
 
@@ -915,28 +921,38 @@ class CreateTripShareRequest {
     "p_journey_id": p_journey_id,
     "p_contact_name": p_contact_name,
     "p_contact_phone": p_contact_phone,
+    "p_share_plate": p_share_plate,
+    "p_ttl_minutes": p_ttl_minutes,
   };
 }
 
 class CreateTripShareResponse {
   final String url;
   final String expires_at;
+  final String? share_id;
+  final bool? share_plate;
 
   const CreateTripShareResponse({
     required this.url,
     required this.expires_at,
+    this.share_id,
+    this.share_plate,
   });
 
   factory CreateTripShareResponse.fromJson(Map<String, dynamic> json) {
     return CreateTripShareResponse(
       url: json["url"] as String,
       expires_at: json["expires_at"] as String,
+      share_id: json["share_id"] as String?,
+      share_plate: json["share_plate"] as bool?,
     );
   }
 
   Map<String, dynamic> toJson() => {
     "url": url,
     "expires_at": expires_at,
+    "share_id": share_id,
+    "share_plate": share_plate,
   };
 }
 
@@ -2005,12 +2021,14 @@ class ReportIncidentRequest {
   final String p_type;
   final String p_description;
   final List<String> p_attachment_paths;
+  final String? p_client_ref;
 
   const ReportIncidentRequest({
     this.p_trip_id,
     required this.p_type,
     required this.p_description,
     required this.p_attachment_paths,
+    this.p_client_ref,
   });
 
   factory ReportIncidentRequest.fromJson(Map<String, dynamic> json) {
@@ -2019,6 +2037,7 @@ class ReportIncidentRequest {
       p_type: json["p_type"] as String,
       p_description: json["p_description"] as String,
       p_attachment_paths: (json["p_attachment_paths"] as List<dynamic>).cast<String>(),
+      p_client_ref: json["p_client_ref"] as String?,
     );
   }
 
@@ -2027,6 +2046,7 @@ class ReportIncidentRequest {
     "p_type": p_type,
     "p_description": p_description,
     "p_attachment_paths": p_attachment_paths,
+    "p_client_ref": p_client_ref,
   };
 }
 

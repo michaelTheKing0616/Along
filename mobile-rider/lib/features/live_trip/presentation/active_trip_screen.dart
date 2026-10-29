@@ -21,7 +21,7 @@ import 'package:mobile_rider/features/live_trip/presentation/trip_receipt_page.d
 import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
 import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
-import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
+import 'package:mobile_rider/features/safety/presentation/guardian_share_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/sos_active_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -601,8 +601,10 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen> {
                 key: const Key('active_trip_share'),
                 icon: AlongIcons.share,
                 label: l10n.activeTripShare,
-                onPressed: () =>
-                    ShareTripSheet.show(context, journeyId: liveTrip.journeyId),
+                onPressed: () => context.push(
+                  AppRoutes.guardianShare,
+                  extra: GuardianShareArgs(trip: liveTrip),
+                ),
               ),
             ),
             const SizedBox(width: AlongSpace.s8),

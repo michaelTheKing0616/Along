@@ -27,7 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Along uses the camera on this phone to read the vehicle plate. The photo stays on the phone.</string>
+	<string>Along uses the camera to read the vehicle plate, which stays on the phone, and to take photos you choose to attach to a safety report.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose photos to attach to a safety report. Only the photos you pick are sent.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

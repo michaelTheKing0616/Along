@@ -85,7 +85,12 @@ void main() {
   ];
   const phones = {'+2348031234567': 'Ada Okafor', '+2348059876543': 'Chi'};
   FakeWalletRepository repoOf(WalletSummary s, {bool fail = false}) =>
-      FakeWalletRepository(initial: s, fail: fail, knownPhones: phones);
+      FakeWalletRepository(
+        initial: s,
+        fail: fail,
+        knownPhones: phones,
+        now: () => now,
+      );
 
   Widget app(
     WalletRepository repo,

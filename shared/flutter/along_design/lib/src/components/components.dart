@@ -12,6 +12,7 @@ export 'empty_state.dart';
 export 'fair_fare_card.dart';
 export 'fare_hero.dart';
 export 'hold_button.dart';
+export 'hold_ring.dart';
 export 'leg_timeline.dart';
 export 'ledger_row.dart';
 export 'mode_chip.dart';

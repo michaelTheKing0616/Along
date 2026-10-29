@@ -122,6 +122,24 @@ class FakeAlongSupabase implements AlongSupabase {
   int raiseSosInvokeCount = 0;
   int updateSosInvokeCount = 0;
   int reportIncidentInvokeCount = 0;
+
+  /// Wall clock for share expiry; goldens pin it.
+  DateTime Function() now = DateTime.now;
+
+  /// When set, `raise_sos` throws it (no signal).
+  Object? raiseSosError;
+
+  /// Rows `list_emergency_contacts` returns.
+  List<Map<String, dynamic>> emergencyContactRows = [];
+
+  /// Every `create_trip_share` call's params, in order.
+  final List<Map<String, dynamic>?> createTripShareCalls = [];
+
+  /// When set, incident uploads and `report_incident` throw it (offline).
+  Object? incidentError;
+
+  /// Storage objects uploaded, as `bucket/path`.
+  final List<String> uploadedObjects = [];
   int createTripShareInvokeCount = 0;
   int revokeTripShareInvokeCount = 0;
   Map<String, dynamic>? lastRaiseSosParams;
@@ -287,6 +305,7 @@ class FakeAlongSupabase implements AlongSupabase {
     if (fn == 'raise_sos') {
       raiseSosInvokeCount++;
       lastRaiseSosParams = params;
+      if (raiseSosError case final e?) throw e;
       if (raiseSosDelay > Duration.zero) {
         await Future<void>.delayed(raiseSosDelay);
       }
@@ -297,17 +316,23 @@ class FakeAlongSupabase implements AlongSupabase {
       updateSosInvokeCount++;
       return {'sos_id': params?['p_sos_id'], 'status': 'false_alarm'};
     }
+    if (fn == 'list_emergency_contacts') {
+      return emergencyContactRows;
+    }
     if (fn == 'report_incident') {
+      if (incidentError case final e?) throw e;
       reportIncidentInvokeCount++;
       lastReportIncidentParams = params;
       return {'incident_id': 'incident-test-001'};
     }
     if (fn == 'create_trip_share') {
       createTripShareInvokeCount++;
+      createTripShareCalls.add(params);
       final shareId = 'share-${tripShareRows.length + 1}';
       final url = 'https://along.ng/s/test-token-$shareId';
-      final expiresAt = DateTime.now()
-          .add(const Duration(hours: 6))
+      final ttl = params?['p_ttl_minutes'] as int?;
+      final expiresAt = now()
+          .add(ttl == null ? const Duration(hours: 6) : Duration(minutes: ttl))
           .toUtc()
           .toIso8601String();
       tripShareRows = [
@@ -320,7 +345,12 @@ class FakeAlongSupabase implements AlongSupabase {
           'contact_name': params?['p_contact_name'],
         },
       ];
-      return {'url': url, 'expires_at': expiresAt, 'share_id': shareId};
+      return {
+        'url': url,
+        'expires_at': expiresAt,
+        'share_id': shareId,
+        'share_plate': params?['p_share_plate'] ?? true,
+      };
     }
     if (fn == 'revoke_trip_share') {
       revokeTripShareInvokeCount++;
@@ -574,7 +604,10 @@ class FakeAlongSupabase implements AlongSupabase {
     required String path,
     required List<int> bytes,
     String contentType = 'image/jpeg',
-  }) async {}
+  }) async {
+    if (incidentError case final e? when bucket == 'incidents') throw e;
+    uploadedObjects.add('$bucket/$path');
+  }
 
   /// Na Me handshake secrets by trip id (trip_handshakes rows).
   final Map<String, String> naMeSecrets = {};

@@ -2109,4 +2109,178 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get walletPassRowPaidValue => 'Kuɗin Along';
+
+  @override
+  String get sosTitle => 'Tsaro';
+
+  @override
+  String get sosStatusSending => 'Ana sanar da ƙungiyar tsaro ta Along…';
+
+  @override
+  String sosStatusSent(String time) {
+    return 'An sanar da ƙungiyar tsaro · $time';
+  }
+
+  @override
+  String get sosStatusQueued =>
+      'Babu sigina · an ajiye, za a tura idan ya dawo';
+
+  @override
+  String get sosStatusFailed => 'Ba a tura ba · kira 112 yanzu';
+
+  @override
+  String get sosHoldHint => 'Riƙe don kira';
+
+  @override
+  String get sosMapLive => 'Kai tsaye';
+
+  @override
+  String get sosContactsTitle => 'Lambobi';
+
+  @override
+  String get sosNoContacts => 'Babu amintattun lambobi tukuna';
+
+  @override
+  String get sosAddContact => 'Ƙara';
+
+  @override
+  String get sosShareLive => 'Raba tafiya kai tsaye';
+
+  @override
+  String get sosImSafe => 'Ina lafiya';
+
+  @override
+  String get sosImSafeTitle => 'Soke faɗakarwar?';
+
+  @override
+  String get sosImSafeBody =>
+      'Ƙungiyar tsaro za ta daina bin tafiyar nan. Soke kawai idan kana lafiya.';
+
+  @override
+  String get sosImSafeConfirm => 'Eh, ina lafiya';
+
+  @override
+  String get sosKeepAlert => 'Bar faɗakarwa';
+
+  @override
+  String sosReach(String name) {
+    return 'Tuntuɓi $name';
+  }
+
+  @override
+  String get guardianShareSubtitle =>
+      'Bari wanda ka amince da shi ya bi tafiyar nan';
+
+  @override
+  String guardianShareWatching(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mutane $count na ganin tafiyar nan',
+      one: 'Mutum 1 na ganin tafiyar nan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareWho => 'Wa zai iya bi';
+
+  @override
+  String get guardianShareNoContacts =>
+      'Ƙara amintaccen lamba don rabawa da taɓawa ɗaya';
+
+  @override
+  String get guardianShareAddContact => 'Ƙara lamba';
+
+  @override
+  String get guardianSharePlate => 'Raba lambar mota';
+
+  @override
+  String get guardianShareLocation => 'Raba wuri kai tsaye';
+
+  @override
+  String get guardianShareExpiry => 'Tsaya bayan';
+
+  @override
+  String get guardianShare30 => 'Minti 30';
+
+  @override
+  String get guardianShare60 => 'Awa 1';
+
+  @override
+  String get guardianShareTripEnd => 'Ƙarshen tafiya';
+
+  @override
+  String guardianShareCta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Raba da mutane $count',
+      one: 'Raba da mutum 1',
+      zero: 'Ƙirƙiri hanyar rabawa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareStop => 'Daina rabawa';
+
+  @override
+  String guardianShareUntil(String time) {
+    return 'Har zuwa $time';
+  }
+
+  @override
+  String get guardianShareWhatsapp => 'WhatsApp';
+
+  @override
+  String get guardianShareOffline =>
+      'Rabawa na buƙatar intanet. SOS na aiki ba tare da intanet ba.';
+
+  @override
+  String get guardianShareFailed => 'Ba a iya fara rabawa ba. Sake gwadawa.';
+
+  @override
+  String get guardianShareStopped => 'An daina rabawa';
+
+  @override
+  String get guardianShareNoTrip => 'Rabawa na farawa idan kana cikin tafiya';
+
+  @override
+  String get reportIncidentPhotosHeading => 'Hotuna';
+
+  @override
+  String get reportIncidentPhotosNote => 'Har 4 · ƙungiyar tsaro kawai ke gani';
+
+  @override
+  String get reportIncidentAddPhoto => 'Ƙara hoto';
+
+  @override
+  String get reportIncidentTakePhoto => 'Ɗauki hoto';
+
+  @override
+  String get reportIncidentChoosePhoto => 'Zaɓi daga hotuna';
+
+  @override
+  String reportIncidentRemovePhoto(int n) {
+    return 'Cire hoto $n';
+  }
+
+  @override
+  String reportIncidentUploading(int done, int total) {
+    return 'Ana tura hoto $done cikin $total';
+  }
+
+  @override
+  String get reportIncidentSent => 'An tura rahoto. Ƙungiyar tsaro za ta biyo.';
+
+  @override
+  String get reportIncidentQueued =>
+      'Babu sigina. An ajiye rahoto, za a tura idan ya dawo.';
+
+  @override
+  String get reportIncidentFailed => 'Ba a iya tura rahoton ba. Sake gwadawa.';
+
+  @override
+  String get reportIncidentPhotoError => 'Ba a iya ƙara hoton ba';
 }

@@ -13,7 +13,7 @@ import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/plate_scan_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/trip_kit.dart';
 import 'package:mobile_rider/features/live_trip/presentation/widgets/vehicle_marker_panel.dart';
-import 'package:mobile_rider/features/safety/presentation/share_trip_sheet.dart';
+import 'package:mobile_rider/features/safety/presentation/guardian_share_screen.dart';
 import 'package:mobile_rider/features/wayfinding/presentation/wayfinding_screen.dart';
 import 'package:mobile_rider/l10n/app_localizations.dart';
 import 'package:mobile_rider/routing/routes.dart';
@@ -131,8 +131,10 @@ class _MeetVehicleScreenState extends ConsumerState<MeetVehicleScreen> {
         key: const Key('meet_vehicle_share'),
         icon: AlongIcons.share,
         tooltip: l10n.meetVehicleShare,
-        onPressed: () =>
-            ShareTripSheet.show(context, journeyId: trip.journeyId),
+        onPressed: () => context.push(
+          AppRoutes.guardianShare,
+          extra: GuardianShareArgs(trip: trip),
+        ),
       ),
       map: (top, bottom) => VehicleMarkerPanel(
         from: driverPoint ?? trip.live?.rider?.point,

@@ -34,7 +34,9 @@
       "properties": {
         "p_journey_id": { "$ref": "../common.json#/$defs/Uuid" },
         "p_contact_name": { "type": "string" },
-        "p_contact_phone": { "type": "string" }
+        "p_contact_phone": { "type": "string" },
+        "p_share_plate": { "type": "boolean" },
+        "p_ttl_minutes": { "type": "integer", "minimum": 15 }
       }
     },
     "CreateTripShareResponse": {
@@ -42,7 +44,9 @@
       "required": ["url", "expires_at"],
       "properties": {
         "url": { "type": "string", "format": "uri" },
-        "expires_at": { "$ref": "../common.json#/$defs/IsoDateTime" }
+        "expires_at": { "$ref": "../common.json#/$defs/IsoDateTime" },
+        "share_id": { "$ref": "../common.json#/$defs/Uuid" },
+        "share_plate": { "type": "boolean" }
       }
     },
     "RevokeTripShareRequest": {
@@ -101,8 +105,10 @@
         "p_description": { "type": "string", "maxLength": 2000 },
         "p_attachment_paths": {
           "type": "array",
+          "maxItems": 4,
           "items": { "type": "string" }
-        }
+        },
+        "p_client_ref": { "$ref": "../common.json#/$defs/Uuid" }
       }
     }
   }

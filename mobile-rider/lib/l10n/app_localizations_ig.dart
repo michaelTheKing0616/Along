@@ -2107,4 +2107,179 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get walletPassRowPaidValue => 'Ego Along';
+
+  @override
+  String get sosTitle => 'Nchekwa';
+
+  @override
+  String get sosStatusSending => 'Anyị na-agwa ndị nchekwa Along…';
+
+  @override
+  String sosStatusSent(String time) {
+    return 'Agwala ndị nchekwa · $time';
+  }
+
+  @override
+  String get sosStatusQueued =>
+      'Enweghị signal · echekwara ya, ọ ga-eziga mgbe ọ lọghachiri';
+
+  @override
+  String get sosStatusFailed => 'Eziteghị ya · kpọọ 112 ugbu a';
+
+  @override
+  String get sosHoldHint => 'Jide ka ị kpọọ';
+
+  @override
+  String get sosMapLive => 'Ndụ';
+
+  @override
+  String get sosContactsTitle => 'Ndị kọntaktị';
+
+  @override
+  String get sosNoContacts => 'Enweghị onye ntụkwasị obi ka';
+
+  @override
+  String get sosAddContact => 'Tinye';
+
+  @override
+  String get sosShareLive => 'Kesaa njem ndụ';
+
+  @override
+  String get sosImSafe => 'Adị m mma';
+
+  @override
+  String get sosImSafeTitle => 'Kagbuo mkpu a?';
+
+  @override
+  String get sosImSafeBody =>
+      'Ndị nchekwa ga-akwụsị ịgbaso njem a. Kagbuo naanị ma ọ bụrụ na ị dị mma.';
+
+  @override
+  String get sosImSafeConfirm => 'Ee, adị m mma';
+
+  @override
+  String get sosKeepAlert => 'Hapụ mkpu ahụ';
+
+  @override
+  String sosReach(String name) {
+    return 'Kpọtụrụ $name';
+  }
+
+  @override
+  String get guardianShareSubtitle => 'Ka onye ị tụkwasịrị obi soro njem a';
+
+  @override
+  String guardianShareWatching(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mmadụ $count na-ahụ njem a',
+      one: 'Mmadụ 1 na-ahụ njem a',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareWho => 'Onye nwere ike iso';
+
+  @override
+  String get guardianShareNoContacts =>
+      'Tinye onye ntụkwasị obi ka ị kesaa n\'otu mmetụ';
+
+  @override
+  String get guardianShareAddContact => 'Tinye kọntaktị';
+
+  @override
+  String get guardianSharePlate => 'Kesaa nọmba ụgbọ';
+
+  @override
+  String get guardianShareLocation => 'Kesaa ebe ị nọ ugbu a';
+
+  @override
+  String get guardianShareExpiry => 'Kwụsị mgbe';
+
+  @override
+  String get guardianShare30 => 'Nkeji 30';
+
+  @override
+  String get guardianShare60 => 'Awa 1';
+
+  @override
+  String get guardianShareTripEnd => 'Njem kwụsịrị';
+
+  @override
+  String guardianShareCta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Kesaa mmadụ $count',
+      one: 'Kesaa mmadụ 1',
+      zero: 'Mepụta njikọ nkesa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianShareStop => 'Kwụsị ịkesa';
+
+  @override
+  String guardianShareUntil(String time) {
+    return 'Ruo $time';
+  }
+
+  @override
+  String get guardianShareWhatsapp => 'WhatsApp';
+
+  @override
+  String get guardianShareOffline =>
+      'Ịkesa chọrọ ịntanetị. SOS ka na-arụ ọrụ na-enweghị ya.';
+
+  @override
+  String get guardianShareFailed => 'Enweghị ike ịmalite ịkesa. Nwaa ọzọ.';
+
+  @override
+  String get guardianShareStopped => 'Akwụsịla ịkesa';
+
+  @override
+  String get guardianShareNoTrip => 'Ịkesa na-amalite mgbe ị nọ na njem';
+
+  @override
+  String get reportIncidentPhotosHeading => 'Foto';
+
+  @override
+  String get reportIncidentPhotosNote =>
+      'Ruo 4 · naanị ndị nchekwa anyị na-ahụ ha';
+
+  @override
+  String get reportIncidentAddPhoto => 'Tinye foto';
+
+  @override
+  String get reportIncidentTakePhoto => 'See foto';
+
+  @override
+  String get reportIncidentChoosePhoto => 'Họrọ site na gallery';
+
+  @override
+  String reportIncidentRemovePhoto(int n) {
+    return 'Wepụ foto $n';
+  }
+
+  @override
+  String reportIncidentUploading(int done, int total) {
+    return 'Na-eziga foto $done n\'ime $total';
+  }
+
+  @override
+  String get reportIncidentSent =>
+      'Ezigala akụkọ. Ndị nchekwa anyị ga-esochi ya.';
+
+  @override
+  String get reportIncidentQueued =>
+      'Enweghị signal. Echekwala akụkọ, ọ ga-eziga mgbe ọ lọghachiri.';
+
+  @override
+  String get reportIncidentFailed => 'Enweghị ike iziga akụkọ. Nwaa ọzọ.';
+
+  @override
+  String get reportIncidentPhotoError => 'Enweghị ike itinye foto ahụ';
 }
