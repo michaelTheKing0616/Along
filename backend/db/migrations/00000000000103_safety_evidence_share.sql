@@ -63,14 +63,14 @@ begin
   end if;
 
   if v_j.status not in ('active', 'transfer') then
-    raise exception 'STATE_INVALID' using errcode = 'P0001', message = 'journey not active';
+    raise exception 'STATE_INVALID' using errcode = 'P0001', detail = 'journey not active';
   end if;
 
   v_max_minutes := greatest(15, (cfg_num('share.link_ttl_hours', v_j.city_id) * 60)::int);
   if p_ttl_minutes is null then
     v_minutes := v_max_minutes;
   elsif p_ttl_minutes < 15 or p_ttl_minutes > v_max_minutes then
-    raise exception 'VALIDATION' using errcode = 'P0001', message = 'ttl out of range';
+    raise exception 'VALIDATION' using errcode = 'P0001', detail = 'ttl out of range';
   else
     v_minutes := p_ttl_minutes;
   end if;
@@ -306,11 +306,11 @@ begin
   end if;
 
   if p_description is not null and char_length(p_description) > 2000 then
-    raise exception 'VALIDATION' using errcode = 'P0001', message = 'description too long';
+    raise exception 'VALIDATION' using errcode = 'P0001', detail = 'description too long';
   end if;
 
   if cardinality(v_paths) > 4 then
-    raise exception 'VALIDATION' using errcode = 'P0001', message = 'too many photos';
+    raise exception 'VALIDATION' using errcode = 'P0001', detail = 'too many photos';
   end if;
 
   if p_trip_id is not null then
@@ -339,14 +339,14 @@ begin
       or not v_path like v_prefix || '%'
       or position('..' in v_path) > 0
     then
-      raise exception 'VALIDATION' using errcode = 'P0001', message = 'invalid attachment path';
+      raise exception 'VALIDATION' using errcode = 'P0001', detail = 'invalid attachment path';
     end if;
     if not exists (
       select 1 from storage.objects o
       where o.bucket_id = 'incidents'
         and o.name = substr(v_path, char_length('incidents/') + 1)
     ) then
-      raise exception 'VALIDATION' using errcode = 'P0001', message = 'photo not uploaded';
+      raise exception 'VALIDATION' using errcode = 'P0001', detail = 'photo not uploaded';
     end if;
   end loop;
 

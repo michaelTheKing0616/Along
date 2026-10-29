@@ -512,13 +512,17 @@ class _ExpiryPill extends StatelessWidget {
             ),
             color: selected ? p.ink : p.surface,
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: AlongType.caption(p).copyWith(
-              color: selected ? p.onInk : p.ink,
-              fontWeight: FontWeight.w600,
-              fontFeatures: const [FontFeature.tabularFigures()],
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: AlongType.caption(p).copyWith(
+                color: selected ? p.onInk : p.ink,
+                fontWeight: FontWeight.w600,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
           ),
         ),

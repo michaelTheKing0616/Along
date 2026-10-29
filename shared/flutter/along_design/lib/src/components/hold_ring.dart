@@ -160,6 +160,15 @@ class _RingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
     final radius = size.width / 2 - 14;
+    // Accent halo: marks the one action on the screen, even at rest.
+    canvas.drawCircle(
+      center,
+      radius + 7,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 4
+        ..color = arc,
+    );
     canvas.drawCircle(center, radius, Paint()..color = fill);
     final ring = Rect.fromCircle(center: center, radius: radius - 8);
     canvas.drawCircle(

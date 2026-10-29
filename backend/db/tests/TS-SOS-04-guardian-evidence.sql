@@ -145,12 +145,12 @@ select is(
 );
 select throws_ok(
   $$ select create_trip_share('0e500000-0000-4000-8000-000000000011', null, null, true, 5) $$,
-  'P0001', 'ttl out of range',
+  'P0001', 'VALIDATION',
   'TS-SOS-04: expiry under 15 min rejected'
 );
 select throws_ok(
   $$ select create_trip_share('0e500000-0000-4000-8000-000000000011', null, null, true, 100000) $$,
-  'P0001', 'ttl out of range',
+  'P0001', 'VALIDATION',
   'TS-SOS-04: expiry over the city cap rejected'
 );
 
@@ -180,13 +180,13 @@ select is(
 select throws_ok(
   $$ select report_incident(null, 'safety', null,
        array['incidents/0e100000-0000-4000-8000-000000000011/missing.jpg']) $$,
-  'P0001', 'photo not uploaded',
+  'P0001', 'VALIDATION',
   'TS-SOS-04: path with no uploaded object rejected'
 );
 select throws_ok(
   $$ select report_incident(null, 'safety', null,
        array['incidents/0e100000-0000-4000-8000-000000000011/../x/a.jpg']) $$,
-  'P0001', 'invalid attachment path',
+  'P0001', 'VALIDATION',
   'TS-SOS-04: path traversal rejected'
 );
 select throws_ok(
@@ -196,7 +196,7 @@ select throws_ok(
        'incidents/0e100000-0000-4000-8000-000000000011/a.jpg',
        'incidents/0e100000-0000-4000-8000-000000000011/a.jpg',
        'incidents/0e100000-0000-4000-8000-000000000011/a.jpg']) $$,
-  'P0001', 'too many photos',
+  'P0001', 'VALIDATION',
   'TS-SOS-04: more than 4 photos rejected'
 );
 
