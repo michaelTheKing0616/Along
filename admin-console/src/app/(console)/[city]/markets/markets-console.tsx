@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useMemo, useState, useTransition } from 'react';
-import { ghanaHypotheticalForm } from '@/lib/markets/payload';
+import { useMemo, useState, useTransition } from "react";
+import { ghanaHypotheticalForm } from "@/lib/markets/payload";
 import type {
   CountryFormInput,
   CountryRow,
@@ -10,13 +10,13 @@ import type {
   MarketsTab,
   PaymentProvider,
   VerificationDocRow,
-} from '@/lib/markets/types';
+} from "@/lib/markets/types";
 import {
   setCountrySchema,
   updateCountryFlags,
   updatePaymentProvider,
   upsertCountry,
-} from './actions';
+} from "./actions";
 
 interface MarketsConsoleProps {
   citySlug: string;
@@ -26,14 +26,18 @@ interface MarketsConsoleProps {
 }
 
 const TABS: { id: MarketsTab; label: string }[] = [
-  { id: 'countries', label: 'Countries' },
-  { id: 'verification', label: 'Verification schema' },
-  { id: 'regulatory', label: 'Regulatory flags' },
-  { id: 'i18n', label: 'i18n coverage' },
-  { id: 'payment', label: 'Payment provider' },
+  { id: "countries", label: "Countries" },
+  { id: "verification", label: "Verification schema" },
+  { id: "regulatory", label: "Regulatory flags" },
+  { id: "i18n", label: "i18n coverage" },
+  { id: "payment", label: "Payment provider" },
 ];
 
-const PAYMENT_PROVIDERS: PaymentProvider[] = ['paystack', 'flutterwave', 'none'];
+const PAYMENT_PROVIDERS: PaymentProvider[] = [
+  "paystack",
+  "flutterwave",
+  "none",
+];
 
 function countryToForm(row: CountryRow): CountryFormInput {
   return {
@@ -52,12 +56,12 @@ function countryToForm(row: CountryRow): CountryFormInput {
     verification_schema:
       row.verification_schema.length > 0
         ? row.verification_schema
-        : [{ type: '', label: '', pattern: '', provider: 'verifyme' }],
+        : [{ type: "", label: "", pattern: "", provider: "verifyme" }],
   };
 }
 
 function emptyDocRow(): VerificationDocRow {
-  return { type: '', label: '', pattern: '', provider: 'verifyme' };
+  return { type: "", label: "", pattern: "", provider: "verifyme" };
 }
 
 export function MarketsConsole({
@@ -66,25 +70,27 @@ export function MarketsConsole({
   deployments,
   i18nCoverage,
 }: MarketsConsoleProps) {
-  const [tab, setTab] = useState<MarketsTab>('countries');
+  const [tab, setTab] = useState<MarketsTab>("countries");
   const [countries, setCountries] = useState(initialCountries);
-  const [selectedCode, setSelectedCode] = useState(initialCountries[0]?.code ?? '');
+  const [selectedCode, setSelectedCode] = useState(
+    initialCountries[0]?.code ?? "",
+  );
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const defaultDeploymentId = deployments[0]?.id ?? '';
+  const defaultDeploymentId = deployments[0]?.id ?? "";
   const [newCountry, setNewCountry] = useState<CountryFormInput>(() =>
-    ghanaHypotheticalForm(defaultDeploymentId)
+    ghanaHypotheticalForm(defaultDeploymentId),
   );
 
   const selectedCountry = useMemo(
     () => countries.find((c) => c.code === selectedCode) ?? null,
-    [countries, selectedCode]
+    [countries, selectedCode],
   );
 
   const [editForm, setEditForm] = useState<CountryFormInput | null>(() =>
-    selectedCountry ? countryToForm(selectedCountry) : null
+    selectedCountry ? countryToForm(selectedCountry) : null,
   );
 
   function syncEditForm(code: string) {
@@ -93,15 +99,17 @@ export function MarketsConsole({
     setEditForm(row ? countryToForm(row) : null);
   }
 
-  function runAction(action: () => Promise<{ ok: boolean; message?: string; error?: string }>) {
+  function runAction(
+    action: () => Promise<{ ok: boolean; message?: string; error?: string }>,
+  ) {
     setMessage(null);
     setError(null);
     startTransition(async () => {
       const result = await action();
       if (result.ok) {
-        setMessage(result.message ?? 'Done.');
+        setMessage(result.message ?? "Done.");
       } else {
-        setError(result.error ?? 'Action failed.');
+        setError(result.error ?? "Action failed.");
       }
     });
   }
@@ -118,7 +126,9 @@ export function MarketsConsole({
         default_locale: form.default_locale,
         timezone: form.timezone,
         deployment_id: form.deployment_id,
-        verification_schema: form.verification_schema.filter((d) => d.type.trim()),
+        verification_schema: form.verification_schema.filter((d) =>
+          d.type.trim(),
+        ),
         regulatory_flags: { women_only_matching: form.women_only_matching },
         active: form.active,
         payment_provider: form.payment_provider,
@@ -137,7 +147,7 @@ export function MarketsConsole({
   function updateDocRow(index: number, patch: Partial<VerificationDocRow>) {
     if (!editForm) return;
     const schema = editForm.verification_schema.map((row, i) =>
-      i === index ? { ...row, ...patch } : row
+      i === index ? { ...row, ...patch } : row,
     );
     setEditForm({ ...editForm, verification_schema: schema });
   }
@@ -155,9 +165,9 @@ export function MarketsConsole({
           role="status"
           data-testid="markets-success"
           style={{
-            marginBottom: 'var(--space-4)',
-            borderColor: 'var(--color-brand-yellow)',
-            fontSize: '0.875rem',
+            marginBottom: "var(--space-4)",
+            borderColor: "var(--color-brand-yellow)",
+            fontSize: "0.875rem",
           }}
         >
           {message}
@@ -168,7 +178,7 @@ export function MarketsConsole({
         className="seg"
         role="tablist"
         aria-label="Markets & portability"
-        style={{ marginBottom: 'var(--space-4)' }}
+        style={{ marginBottom: "var(--space-4)" }}
       >
         {TABS.map(({ id, label }) => (
           <button
@@ -176,7 +186,7 @@ export function MarketsConsole({
             type="button"
             role="tab"
             aria-selected={tab === id}
-            className={tab === id ? 'nav-link-active' : undefined}
+            className={tab === id ? "nav-link-active" : undefined}
             onClick={() => setTab(id)}
             data-testid={`markets-tab-${id}`}
           >
@@ -185,7 +195,7 @@ export function MarketsConsole({
         ))}
       </div>
 
-      {tab === 'countries' ? (
+      {tab === "countries" ? (
         <section aria-label="Countries" data-testid="markets-countries">
           <table className="data-table">
             <thead>
@@ -210,17 +220,22 @@ export function MarketsConsole({
                   <td>{row.phone_prefix}</td>
                   <td>{row.default_locale}</td>
                   <td>{row.timezone}</td>
-                  <td>{row.active ? 'Yes' : 'No'}</td>
+                  <td>{row.active ? "Yes" : "No"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <div className="card" style={{ marginTop: 'var(--space-6)' }}>
-            <h2 className="section-title">Add hypothetical country (config-only)</h2>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-              Example: Ghana (GH) writes <code>countries</code>, verification schema, regulatory
-              flags, and country-scoped <code>payments.provider</code>. No app code changes.
+          <div className="card" style={{ marginTop: "var(--space-6)" }}>
+            <h2 className="section-title">
+              Add hypothetical country (config-only)
+            </h2>
+            <p
+              style={{ color: "var(--color-text-muted)", fontSize: "0.875rem" }}
+            >
+              Example: Ghana (GH) writes <code>countries</code>, verification
+              schema, regulatory flags, and country-scoped{" "}
+              <code>payments.provider</code>. No app code changes.
             </p>
             <div className="field">
               <label htmlFor="markets-new-code">Country code</label>
@@ -228,7 +243,12 @@ export function MarketsConsole({
                 id="markets-new-code"
                 data-testid="markets-new-code"
                 value={newCountry.code}
-                onChange={(e) => setNewCountry({ ...newCountry, code: e.target.value.toUpperCase() })}
+                onChange={(e) =>
+                  setNewCountry({
+                    ...newCountry,
+                    code: e.target.value.toUpperCase(),
+                  })
+                }
                 maxLength={2}
               />
             </div>
@@ -238,7 +258,9 @@ export function MarketsConsole({
                 id="markets-new-name"
                 data-testid="markets-new-name"
                 value={newCountry.name}
-                onChange={(e) => setNewCountry({ ...newCountry, name: e.target.value })}
+                onChange={(e) =>
+                  setNewCountry({ ...newCountry, name: e.target.value })
+                }
               />
             </div>
             <div className="field">
@@ -248,7 +270,10 @@ export function MarketsConsole({
                 data-testid="markets-new-currency"
                 value={newCountry.currency_code}
                 onChange={(e) =>
-                  setNewCountry({ ...newCountry, currency_code: e.target.value.toUpperCase() })
+                  setNewCountry({
+                    ...newCountry,
+                    currency_code: e.target.value.toUpperCase(),
+                  })
                 }
               />
             </div>
@@ -258,7 +283,12 @@ export function MarketsConsole({
                 id="markets-new-symbol"
                 data-testid="markets-new-symbol"
                 value={newCountry.currency_symbol}
-                onChange={(e) => setNewCountry({ ...newCountry, currency_symbol: e.target.value })}
+                onChange={(e) =>
+                  setNewCountry({
+                    ...newCountry,
+                    currency_symbol: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="field">
@@ -267,7 +297,9 @@ export function MarketsConsole({
                 id="markets-new-phone"
                 data-testid="markets-new-phone"
                 value={newCountry.phone_prefix}
-                onChange={(e) => setNewCountry({ ...newCountry, phone_prefix: e.target.value })}
+                onChange={(e) =>
+                  setNewCountry({ ...newCountry, phone_prefix: e.target.value })
+                }
               />
             </div>
             <div className="field">
@@ -276,7 +308,12 @@ export function MarketsConsole({
                 id="markets-new-locale"
                 data-testid="markets-new-locale"
                 value={newCountry.default_locale}
-                onChange={(e) => setNewCountry({ ...newCountry, default_locale: e.target.value })}
+                onChange={(e) =>
+                  setNewCountry({
+                    ...newCountry,
+                    default_locale: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="field">
@@ -285,7 +322,9 @@ export function MarketsConsole({
                 id="markets-new-timezone"
                 data-testid="markets-new-timezone"
                 value={newCountry.timezone}
-                onChange={(e) => setNewCountry({ ...newCountry, timezone: e.target.value })}
+                onChange={(e) =>
+                  setNewCountry({ ...newCountry, timezone: e.target.value })
+                }
               />
             </div>
             <div className="field">
@@ -294,7 +333,12 @@ export function MarketsConsole({
                 id="markets-new-deployment"
                 data-testid="markets-new-deployment"
                 value={newCountry.deployment_id}
-                onChange={(e) => setNewCountry({ ...newCountry, deployment_id: e.target.value })}
+                onChange={(e) =>
+                  setNewCountry({
+                    ...newCountry,
+                    deployment_id: e.target.value,
+                  })
+                }
               >
                 {deployments.map((d) => (
                   <option key={d.id} value={d.id}>
@@ -303,15 +347,17 @@ export function MarketsConsole({
                 ))}
               </select>
             </div>
-            <div className="field">
+            <div className="field field-check">
               <label htmlFor="markets-new-active">
                 <input
                   id="markets-new-active"
                   type="checkbox"
                   data-testid="markets-new-active"
                   checked={newCountry.active}
-                  onChange={(e) => setNewCountry({ ...newCountry, active: e.target.checked })}
-                />{' '}
+                  onChange={(e) =>
+                    setNewCountry({ ...newCountry, active: e.target.checked })
+                  }
+                />{" "}
                 Active (shown in phone country picker)
               </label>
             </div>
@@ -333,9 +379,11 @@ export function MarketsConsole({
             <button
               type="button"
               className="btn"
-              style={{ marginLeft: 'var(--space-2)' }}
+              style={{ marginLeft: "var(--space-2)" }}
               data-testid="markets-prefill-ghana"
-              onClick={() => setNewCountry(ghanaHypotheticalForm(defaultDeploymentId))}
+              onClick={() =>
+                setNewCountry(ghanaHypotheticalForm(defaultDeploymentId))
+              }
             >
               Prefill Ghana (GH)
             </button>
@@ -343,8 +391,11 @@ export function MarketsConsole({
         </section>
       ) : null}
 
-      {tab === 'verification' ? (
-        <section aria-label="Verification schema" data-testid="markets-verification">
+      {tab === "verification" ? (
+        <section
+          aria-label="Verification schema"
+          data-testid="markets-verification"
+        >
           <div className="field">
             <label htmlFor="markets-verification-country">Country</label>
             <select
@@ -363,14 +414,22 @@ export function MarketsConsole({
           {editForm ? (
             <>
               {editForm.verification_schema.map((doc, index) => (
-                <div key={index} className="card" style={{ marginBottom: 'var(--space-3)' }}>
+                <div
+                  key={index}
+                  className="card"
+                  style={{ marginBottom: "var(--space-3)" }}
+                >
                   <div className="field">
-                    <label htmlFor={`markets-doc-type-${index}`}>Document type</label>
+                    <label htmlFor={`markets-doc-type-${index}`}>
+                      Document type
+                    </label>
                     <input
                       id={`markets-doc-type-${index}`}
                       data-testid={`markets-doc-type-${index}`}
                       value={doc.type}
-                      onChange={(e) => updateDocRow(index, { type: e.target.value })}
+                      onChange={(e) =>
+                        updateDocRow(index, { type: e.target.value })
+                      }
                     />
                   </div>
                   <div className="field">
@@ -379,25 +438,35 @@ export function MarketsConsole({
                       id={`markets-doc-label-${index}`}
                       data-testid={`markets-doc-label-${index}`}
                       value={doc.label}
-                      onChange={(e) => updateDocRow(index, { label: e.target.value })}
+                      onChange={(e) =>
+                        updateDocRow(index, { label: e.target.value })
+                      }
                     />
                   </div>
                   <div className="field">
-                    <label htmlFor={`markets-doc-pattern-${index}`}>Pattern</label>
+                    <label htmlFor={`markets-doc-pattern-${index}`}>
+                      Pattern
+                    </label>
                     <input
                       id={`markets-doc-pattern-${index}`}
                       data-testid={`markets-doc-pattern-${index}`}
                       value={doc.pattern}
-                      onChange={(e) => updateDocRow(index, { pattern: e.target.value })}
+                      onChange={(e) =>
+                        updateDocRow(index, { pattern: e.target.value })
+                      }
                     />
                   </div>
                   <div className="field">
-                    <label htmlFor={`markets-doc-provider-${index}`}>Provider</label>
+                    <label htmlFor={`markets-doc-provider-${index}`}>
+                      Provider
+                    </label>
                     <input
                       id={`markets-doc-provider-${index}`}
                       data-testid={`markets-doc-provider-${index}`}
                       value={doc.provider}
-                      onChange={(e) => updateDocRow(index, { provider: e.target.value })}
+                      onChange={(e) =>
+                        updateDocRow(index, { provider: e.target.value })
+                      }
                     />
                   </div>
                 </div>
@@ -409,12 +478,15 @@ export function MarketsConsole({
                 onClick={() =>
                   setEditForm({
                     ...editForm,
-                    verification_schema: [...editForm.verification_schema, emptyDocRow()],
+                    verification_schema: [
+                      ...editForm.verification_schema,
+                      emptyDocRow(),
+                    ],
                   })
                 }
               >
                 Add document type
-              </button>{' '}
+              </button>{" "}
               <button
                 type="button"
                 className="btn btn-primary"
@@ -422,10 +494,19 @@ export function MarketsConsole({
                 data-testid="markets-save-schema"
                 onClick={() =>
                   runAction(async () => {
-                    const schema = editForm.verification_schema.filter((d) => d.type.trim());
-                    const result = await setCountrySchema(citySlug, editForm.code, schema);
+                    const schema = editForm.verification_schema.filter((d) =>
+                      d.type.trim(),
+                    );
+                    const result = await setCountrySchema(
+                      citySlug,
+                      editForm.code,
+                      schema,
+                    );
                     if (result.ok) {
-                      patchCountrySaved({ ...editForm, verification_schema: schema });
+                      patchCountrySaved({
+                        ...editForm,
+                        verification_schema: schema,
+                      });
                     }
                     return result;
                   })
@@ -435,12 +516,14 @@ export function MarketsConsole({
               </button>
             </>
           ) : (
-            <p style={{ color: 'var(--color-text-muted)' }}>Select a country to edit its schema.</p>
+            <p style={{ color: "var(--color-text-muted)" }}>
+              Select a country to edit its schema.
+            </p>
           )}
         </section>
       ) : null}
 
-      {tab === 'regulatory' ? (
+      {tab === "regulatory" ? (
         <section aria-label="Regulatory flags" data-testid="markets-regulatory">
           <div className="field">
             <label htmlFor="markets-regulatory-country">Country</label>
@@ -467,9 +550,12 @@ export function MarketsConsole({
                     data-testid="markets-women-only"
                     checked={editForm.women_only_matching}
                     onChange={(e) =>
-                      setEditForm({ ...editForm, women_only_matching: e.target.checked })
+                      setEditForm({
+                        ...editForm,
+                        women_only_matching: e.target.checked,
+                      })
                     }
-                  />{' '}
+                  />{" "}
                   women_only_matching (gates request/hail when enabled)
                 </label>
               </div>
@@ -493,10 +579,11 @@ export function MarketsConsole({
         </section>
       ) : null}
 
-      {tab === 'i18n' ? (
+      {tab === "i18n" ? (
         <section aria-label="i18n coverage" data-testid="markets-i18n">
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-            Static coverage from packaged ARB keys (rider + driver union). Locale packs are P10-B-01.
+          <p style={{ color: "var(--color-text-muted)", fontSize: "0.875rem" }}>
+            Static coverage from packaged ARB keys (rider + driver union).
+            Locale packs are P10-B-01.
           </p>
           <table className="data-table">
             <thead>
@@ -523,10 +610,10 @@ export function MarketsConsole({
         </section>
       ) : null}
 
-      {tab === 'payment' ? (
+      {tab === "payment" ? (
         <section aria-label="Payment provider" data-testid="markets-payment">
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-            Country-scoped <code>payments.provider</code>. Does not flip{' '}
+          <p style={{ color: "var(--color-text-muted)", fontSize: "0.875rem" }}>
+            Country-scoped <code>payments.provider</code>. Does not flip{" "}
             <code>payments.digital_enabled</code>.
           </p>
           <table className="data-table">
@@ -553,11 +640,16 @@ export function MarketsConsole({
                         const provider = e.target.value as PaymentProvider;
                         setCountries((prev) =>
                           prev.map((c) =>
-                            c.code === row.code ? { ...c, payment_provider: provider } : c
-                          )
+                            c.code === row.code
+                              ? { ...c, payment_provider: provider }
+                              : c,
+                          ),
                         );
                         if (editForm?.code === row.code) {
-                          setEditForm({ ...editForm, payment_provider: provider });
+                          setEditForm({
+                            ...editForm,
+                            payment_provider: provider,
+                          });
                         }
                       }}
                     >
@@ -577,11 +669,14 @@ export function MarketsConsole({
                         const form = countryToForm({
                           ...row,
                           payment_provider:
-                            countries.find((c) => c.code === row.code)?.payment_provider ??
-                            row.payment_provider,
+                            countries.find((c) => c.code === row.code)
+                              ?.payment_provider ?? row.payment_provider,
                         });
                         runAction(async () => {
-                          const result = await updatePaymentProvider(citySlug, form);
+                          const result = await updatePaymentProvider(
+                            citySlug,
+                            form,
+                          );
                           if (result.ok) patchCountrySaved(form);
                           return result;
                         });

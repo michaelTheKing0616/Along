@@ -56,6 +56,19 @@ const LAYER_OPTIONS: { id: LiveMapLayerId; label: string }[] = [
   { id: "coverageGaps", label: "Coverage gaps" },
 ];
 
+const LAYER_SWATCH: Record<
+  LiveMapLayerId,
+  keyof ReturnType<typeof buildLiveMapPaintColors>
+> = {
+  routes: "routeFieldVerified",
+  parks: "park",
+  stages: "stage",
+  presence: "presenceRoamingAvailable",
+  trips: "tripLink",
+  sos: "sosFill",
+  coverageGaps: "coverageGap",
+};
+
 interface AdminLiveMapProps {
   citySlug: string;
   cityId: string;
@@ -109,6 +122,19 @@ export function AdminLiveMap({
   const [trips, setTrips] = useState<LiveMapActiveTrip[]>([]);
   const [selection, setSelection] = useState<LiveMapSelection>(null);
   const [sosPulse, setSosPulse] = useState(0);
+  const [palette, setPalette] = useState<ReturnType<
+    typeof buildLiveMapPaintColors
+  > | null>(null);
+  useEffect(() => setPalette(buildLiveMapPaintColors()), []);
+  const presenceCounts = useMemo(() => {
+    const counts = { at_park: 0, roaming_available: 0, roaming_full: 0 };
+    for (const vehicle of presence) {
+      const status = (vehicle as { status?: string }).status;
+      if (status && status in counts)
+        counts[status as keyof typeof counts] += 1;
+    }
+    return counts;
+  }, [presence]);
 
   const filtered = useMemo(
     () =>
@@ -449,13 +475,53 @@ export function AdminLiveMap({
                   checked={visibility[id]}
                   onChange={() => toggleLayer(id)}
                 />
-                {label}
+                <span className="live-map-label">{label}</span>
+                {palette ? (
+                  <span
+                    className={`live-map-swatch${id === "routes" || id === "trips" ? " live-map-swatch-line" : ""}`}
+                    style={{ background: palette[LAYER_SWATCH[id]] }}
+                    aria-hidden="true"
+                  />
+                ) : null}
               </label>
             </li>
           ))}
         </ul>
+        {palette && visibility.presence ? (
+          <div className="live-map-legend" aria-label="Vehicle status">
+            <h3 className="live-map-controls-title">Vehicles</h3>
+            <ul>
+              <li>
+                <span
+                  className="live-map-swatch"
+                  style={{ background: palette.presenceAtPark }}
+                  aria-hidden="true"
+                />
+                At a park <span className="num">{presenceCounts.at_park}</span>
+              </li>
+              <li>
+                <span
+                  className="live-map-swatch"
+                  style={{ background: palette.presenceRoamingAvailable }}
+                  aria-hidden="true"
+                />
+                Roaming, seats free{" "}
+                <span className="num">{presenceCounts.roaming_available}</span>
+              </li>
+              <li>
+                <span
+                  className="live-map-swatch"
+                  style={{ background: palette.presenceRoamingFull }}
+                  aria-hidden="true"
+                />
+                Roaming, full{" "}
+                <span className="num">{presenceCounts.roaming_full}</span>
+              </li>
+            </ul>
+          </div>
+        ) : null}
         <fieldset className="live-map-route-filters">
-          <legend>Route tiers</legend>
+          <legend>Show routes that are</legend>
           <label>
             <input
               type="checkbox"
@@ -467,7 +533,7 @@ export function AdminLiveMap({
                 }))
               }
             />
-            Verified
+            Verified (crowd or field)
           </label>
           <label>
             <input
@@ -480,7 +546,7 @@ export function AdminLiveMap({
                 }))
               }
             />
-            Candidate
+            Candidate (not yet verified)
           </label>
         </fieldset>
         <p className="live-map-meta">

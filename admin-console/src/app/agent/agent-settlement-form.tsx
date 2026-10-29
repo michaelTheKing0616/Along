@@ -1,20 +1,23 @@
-'use client';
+"use client";
 
-import { FormEvent, useState, useTransition } from 'react';
-import { formatMoney } from '@/lib/drivers/format';
-import { confirmAgentSettlement } from './actions';
+import { FormEvent, useState, useTransition } from "react";
+import { formatMoney } from "@/lib/drivers/format";
+import { confirmAgentSettlement } from "./actions";
 
 interface AgentSettlementFormProps {
   businessName: string;
 }
 
-export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) {
-  const [agentCode, setAgentCode] = useState('');
-  const [amount, setAmount] = useState('');
+export function AgentSettlementForm({
+  businessName,
+}: AgentSettlementFormProps) {
+  const [agentCode, setAgentCode] = useState("");
+  const [amount, setAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<{ ledgerEntryId: string; balanceAfter: number } | null>(
-    null
-  );
+  const [success, setSuccess] = useState<{
+    ledgerEntryId: string;
+    balanceAfter: number;
+  } | null>(null);
   const [pending, startTransition] = useTransition();
 
   function handleSubmit(e: FormEvent) {
@@ -30,8 +33,8 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
           ledgerEntryId: result.ledgerEntryId,
           balanceAfter: result.balanceAfter,
         });
-        setAgentCode('');
-        setAmount('');
+        setAgentCode("");
+        setAmount("");
       } else {
         setError(result.error);
       }
@@ -40,9 +43,14 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
 
   return (
     <div data-testid="agent-settlement-form">
-      <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-6)' }}>
-        Signed in as <strong>{businessName}</strong>. Enter the driver&apos;s settlement code and
-        cash amount received.
+      <p
+        style={{
+          color: "var(--color-text-muted)",
+          marginBottom: "var(--space-6)",
+        }}
+      >
+        Signed in as <strong>{businessName}</strong>. Enter the driver&apos;s
+        settlement code and cash amount received.
       </p>
 
       {error ? (
@@ -56,11 +64,11 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
           className="card agent-success-banner"
           role="status"
           data-testid="agent-success"
-          style={{ marginBottom: 'var(--space-4)' }}
+          style={{ marginBottom: "var(--space-4)" }}
         >
           <strong>Credit posted.</strong>
-          <p style={{ margin: 'var(--space-2) 0 0' }}>
-            Ledger entry #{success.ledgerEntryId}. Driver balance after:{' '}
+          <p style={{ margin: "var(--space-2) 0 0" }}>
+            Ledger entry #{success.ledgerEntryId}. Driver balance after:{" "}
             {formatMoney(success.balanceAfter)}
           </p>
         </div>
@@ -68,7 +76,7 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
 
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="agent-code">Agent code</label>
+          <label htmlFor="agent-code">Settlement code</label>
           <input
             id="agent-code"
             data-testid="agent-code-input"
@@ -78,7 +86,7 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
             required
             value={agentCode}
             onChange={(e) => setAgentCode(e.target.value.toUpperCase())}
-            placeholder="6-character code from driver"
+            placeholder="6 characters, from the driver's app"
           />
         </div>
         <div className="field">
@@ -101,9 +109,9 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
           type="submit"
           disabled={pending}
           data-testid="agent-submit"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         >
-          {pending ? 'Confirming…' : 'Confirm settlement'}
+          {pending ? "Confirming…" : "Confirm settlement"}
         </button>
       </form>
     </div>

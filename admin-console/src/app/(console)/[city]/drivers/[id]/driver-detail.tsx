@@ -1,18 +1,22 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useTransition } from 'react';
-import { formatMoney, maskPhone, standingLabel } from '@/lib/drivers/format';
-import { evidenceBullets, flagTypeLabel, scorePct } from '@/lib/integrity/format';
-import type { IntegrityFlagRow } from '@/lib/integrity/types';
-import { STANDING_OPTIONS } from '@/lib/integrity/types';
+import Link from "next/link";
+import { useState, useTransition } from "react";
+import { formatMoney, maskPhone, standingLabel } from "@/lib/drivers/format";
+import {
+  evidenceBullets,
+  flagTypeLabel,
+  scorePct,
+} from "@/lib/integrity/format";
+import type { IntegrityFlagRow } from "@/lib/integrity/types";
+import { STANDING_OPTIONS } from "@/lib/integrity/types";
 import {
   notifyGuarantor,
   postManualAdjustment,
   rotateDriverCode,
   transitionDriverStanding,
-} from './actions';
-import { humanize } from '@/lib/ui/label';
+} from "./actions";
+import { humanize } from "@/lib/ui/label";
 
 export interface LedgerEntryRow {
   id: number;
@@ -79,7 +83,8 @@ export interface StickerRequestRow {
   created_at: string;
 }
 
-type Tab = 'overview' | 'ledger' | 'standing' | 'flags' | 'guarantor' | 'payments';
+type Tab =
+  "overview" | "ledger" | "standing" | "flags" | "guarantor" | "payments";
 
 interface DriverDetailProps {
   citySlug: string;
@@ -87,45 +92,80 @@ interface DriverDetailProps {
 }
 
 export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
-  const [tab, setTab] = useState<Tab>('overview');
-  const [amount, setAmount] = useState('');
-  const [memo, setMemo] = useState('');
-  const [toStanding, setToStanding] = useState<string>(STANDING_OPTIONS[0].value);
-  const [standingReason, setStandingReason] = useState('');
+  const [tab, setTab] = useState<Tab>("overview");
+  const [amount, setAmount] = useState("");
+  const [memo, setMemo] = useState("");
+  const [toStanding, setToStanding] = useState<string>(
+    STANDING_OPTIONS[0].value,
+  );
+  const [standingReason, setStandingReason] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function runAction(action: () => Promise<{ ok: boolean; message?: string; error?: string }>) {
+  function runAction(
+    action: () => Promise<{ ok: boolean; message?: string; error?: string }>,
+  ) {
     setMessage(null);
     setError(null);
     startTransition(async () => {
       const result = await action();
-      if (result.ok) setMessage(result.message ?? 'Done.');
-      else setError(result.error ?? 'Action failed.');
+      if (result.ok) setMessage(result.message ?? "Done.");
+      else setError(result.error ?? "Action failed.");
     });
   }
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'ledger', label: 'Ledger' },
-    { id: 'standing', label: 'Standing' },
-    { id: 'flags', label: 'Flags' },
-    { id: 'guarantor', label: 'Guarantor' },
-    { id: 'payments', label: 'Payments' },
+    { id: "overview", label: "Overview" },
+    { id: "ledger", label: "Ledger" },
+    { id: "standing", label: "Standing" },
+    { id: "flags", label: "Flags" },
+    { id: "guarantor", label: "Guarantor" },
+    { id: "payments", label: "Payments" },
   ];
 
   return (
     <div data-testid="driver-detail">
-      <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
-        <h2 className="section-title">
-          {driver.display_name ?? driver.driver_code ?? 'Driver'}
-        </h2>
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-          {maskPhone(driver.phone_e164)} · {driver.city_name} ·{' '}
-          <span className={`badge badge-${driver.verified_status}`}>{humanize(driver.verified_status)}</span>{' '}
-          · {standingLabel(driver.standing)} · balance {formatMoney(driver.balance, driver.currency)}
-        </p>
+      <div className="kpi-grid" style={{ marginBottom: "var(--space-6)" }}>
+        <div className="kpi">
+          <p className="kpi-label">Balance</p>
+          <p className="kpi-value">
+            {formatMoney(driver.balance, driver.currency)}
+          </p>
+        </div>
+        <div className="kpi">
+          <p className="kpi-label">Rating</p>
+          <p className="kpi-value">
+            {driver.rating != null ? driver.rating.toFixed(2) : "—"}
+          </p>
+          <p className="kpi-sub">{driver.rating_count} ratings</p>
+        </div>
+        <div className="kpi">
+          <p className="kpi-label">Standing</p>
+          <p className="kpi-value" style={{ fontSize: 18 }}>
+            {standingLabel(driver.standing)}
+          </p>
+        </div>
+        <div className="kpi">
+          <p className="kpi-label">Verification</p>
+          <p className="kpi-value" style={{ fontSize: 18 }}>
+            <span className={`badge badge-${driver.verified_status}`}>
+              {humanize(driver.verified_status)}
+            </span>
+          </p>
+        </div>
+        <Link
+          href={`/${citySlug}/integrity`}
+          className={`kpi kpi-link${driver.flags.filter((f) => f.status === "open").length > 0 ? " kpi-hot" : ""}`}
+        >
+          <p className="kpi-label">Open flags</p>
+          <p className="kpi-value">
+            {driver.flags.filter((f) => f.status === "open").length}
+          </p>
+          <p className="kpi-sub">
+            {maskPhone(driver.phone_e164)} · {driver.city_name}
+          </p>
+        </Link>
       </div>
 
       {error ? (
@@ -134,60 +174,62 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
         </div>
       ) : null}
       {message ? (
-        <div className="card" role="status" data-testid="driver-success" style={{ marginBottom: 'var(--space-4)' }}>
+        <div
+          className="card"
+          role="status"
+          data-testid="driver-success"
+          style={{ marginBottom: "var(--space-4)" }}
+        >
           {message}
         </div>
       ) : null}
 
-      <nav className="nav-links" aria-label="Driver sections" style={{ marginBottom: 'var(--space-4)' }}>
+      <div
+        className="seg"
+        role="tablist"
+        aria-label="Driver sections"
+        style={{ marginBottom: "var(--space-4)" }}
+      >
         {tabs.map(({ id, label }) => (
           <button
             key={id}
             type="button"
-            className="btn"
+            role="tab"
+            aria-selected={tab === id}
+            className={tab === id ? "nav-link-active" : undefined}
             data-testid={`driver-tab-${id}`}
-            style={{
-              background: tab === id ? 'var(--color-brand-yellow)' : undefined,
-              color: tab === id ? 'var(--color-brand-yellow-on)' : undefined,
-            }}
             onClick={() => setTab(id)}
           >
             {label}
           </button>
         ))}
-      </nav>
+      </div>
 
-      {tab === 'overview' ? (
+      {tab === "overview" ? (
         <div className="card" data-testid="driver-overview">
-          <dl
-            style={{
-              margin: 0,
-              display: 'grid',
-              gridTemplateColumns: 'max-content 1fr',
-              gap: 'var(--space-2) var(--space-4)',
-              fontSize: '0.875rem',
-            }}
-          >
+          <dl className="dl">
             <dt>Driver code</dt>
-            <dd>{driver.driver_code ?? '—'}</dd>
+            <dd>{driver.driver_code ?? "—"}</dd>
             <dt>Rating</dt>
             <dd>
-              {driver.rating != null ? `${driver.rating.toFixed(2)} (${driver.rating_count})` : '—'}
+              {driver.rating != null
+                ? `${driver.rating.toFixed(2)} (${driver.rating_count})`
+                : "—"}
             </dd>
-            <dt>Open flags</dt>
-            <dd>
-              {driver.flags.filter((f) => f.status === 'open').length}
-            </dd>
+            <dt>Phone</dt>
+            <dd>{maskPhone(driver.phone_e164)}</dd>
+            <dt>City</dt>
+            <dd>{driver.city_name}</dd>
           </dl>
-          <p style={{ marginTop: 'var(--space-4)' }}>
-            <Link href={`/${citySlug}/integrity`}>View integrity queue</Link>
-          </p>
         </div>
       ) : null}
 
-      {tab === 'ledger' ? (
+      {tab === "ledger" ? (
         <div data-testid="driver-ledger">
-          <table className="data-table" style={{ marginBottom: 'var(--space-6)' }}>
+          <table
+            className="data-table"
+            style={{ marginBottom: "var(--space-6)" }}
+          >
             <thead>
               <tr>
                 <th>Date</th>
@@ -202,9 +244,13 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
                 <tr key={entry.id}>
                   <td>{new Date(entry.created_at).toLocaleString()}</td>
                   <td>{entry.entry_type}</td>
-                  <td className="num">{formatMoney(entry.amount, entry.currency)}</td>
-                  <td className="num">{formatMoney(entry.balance_after, entry.currency)}</td>
-                  <td>{entry.memo ?? '—'}</td>
+                  <td className="num">
+                    {formatMoney(entry.amount, entry.currency)}
+                  </td>
+                  <td className="num">
+                    {formatMoney(entry.balance_after, entry.currency)}
+                  </td>
+                  <td>{entry.memo ?? "—"}</td>
                 </tr>
               ))}
             </tbody>
@@ -238,7 +284,12 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
               data-testid="submit-adjustment"
               onClick={() =>
                 runAction(() =>
-                  postManualAdjustment(citySlug, driver.id, Number(amount), memo)
+                  postManualAdjustment(
+                    citySlug,
+                    driver.id,
+                    Number(amount),
+                    memo,
+                  ),
                 )
               }
             >
@@ -248,9 +299,12 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
         </div>
       ) : null}
 
-      {tab === 'standing' ? (
+      {tab === "standing" ? (
         <div data-testid="driver-standing">
-          <table className="data-table" style={{ marginBottom: 'var(--space-6)' }}>
+          <table
+            className="data-table"
+            style={{ marginBottom: "var(--space-6)" }}
+          >
             <thead>
               <tr>
                 <th>Date</th>
@@ -263,7 +317,9 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
               {driver.transitions.map((row) => (
                 <tr key={row.id}>
                   <td>{new Date(row.created_at).toLocaleString()}</td>
-                  <td>{row.from_standing ? standingLabel(row.from_standing) : '—'}</td>
+                  <td>
+                    {row.from_standing ? standingLabel(row.from_standing) : "—"}
+                  </td>
                   <td>{standingLabel(row.to_standing)}</td>
                   <td>{row.reason}</td>
                 </tr>
@@ -305,7 +361,12 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
               data-testid="submit-standing"
               onClick={() =>
                 runAction(() =>
-                  transitionDriverStanding(citySlug, driver.id, toStanding, standingReason)
+                  transitionDriverStanding(
+                    citySlug,
+                    driver.id,
+                    toStanding,
+                    standingReason,
+                  ),
                 )
               }
             >
@@ -315,16 +376,23 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
         </div>
       ) : null}
 
-      {tab === 'flags' ? (
+      {tab === "flags" ? (
         <div data-testid="driver-flags">
           {driver.flags.length === 0 ? (
             <p className="empty-inline">No reconciliation flags.</p>
           ) : (
             driver.flags.map((flag) => (
-              <div key={flag.id} className="card" style={{ marginBottom: 'var(--space-3)' }}>
-                <strong>{flagTypeLabel(flag.flag_type)}</strong> · {scorePct(flag.score)} ·{' '}
-                <span className={`badge badge-${flag.status}`}>{humanize(flag.status)}</span>
-                <ul style={{ fontSize: '0.875rem', marginBottom: 0 }}>
+              <div
+                key={flag.id}
+                className="card"
+                style={{ marginBottom: "var(--space-3)" }}
+              >
+                <strong>{flagTypeLabel(flag.flag_type)}</strong> ·{" "}
+                {scorePct(flag.score)} ·{" "}
+                <span className={`badge badge-${flag.status}`}>
+                  {humanize(flag.status)}
+                </span>
+                <ul style={{ fontSize: "0.875rem", marginBottom: 0 }}>
                   {evidenceBullets(flag.evidence).map((item) => (
                     <li key={item}>{item}</li>
                   ))}
@@ -335,30 +403,37 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
         </div>
       ) : null}
 
-      {tab === 'guarantor' ? (
+      {tab === "guarantor" ? (
         <div className="card" data-testid="driver-guarantor">
           {driver.guarantor ? (
             <>
               <p>
-                <strong>{driver.guarantor.guarantor_name}</strong> ·{' '}
+                <strong>{driver.guarantor.guarantor_name}</strong> ·{" "}
                 {maskPhone(driver.guarantor.guarantor_phone_e164)}
               </p>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-                Acknowledged:{' '}
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "var(--color-text-muted)",
+                }}
+              >
+                Acknowledged:{" "}
                 {driver.guarantor.acknowledged_at
                   ? new Date(driver.guarantor.acknowledged_at).toLocaleString()
-                  : 'Pending'}
-                · Last notified:{' '}
+                  : "Pending"}
+                · Last notified:{" "}
                 {driver.guarantor.last_notified_at
                   ? new Date(driver.guarantor.last_notified_at).toLocaleString()
-                  : 'Never'}
+                  : "Never"}
               </p>
               <button
                 type="button"
                 className="btn btn-primary"
                 disabled={pending}
                 data-testid="notify-guarantor"
-                onClick={() => runAction(() => notifyGuarantor(citySlug, driver.id))}
+                onClick={() =>
+                  runAction(() => notifyGuarantor(citySlug, driver.id))
+                }
               >
                 Notify guarantor
               </button>
@@ -369,38 +444,40 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
         </div>
       ) : null}
 
-      {tab === 'payments' ? (
+      {tab === "payments" ? (
         <div data-testid="driver-payments">
           <dl
             className="card"
             style={{
               margin: 0,
-              marginBottom: 'var(--space-4)',
-              display: 'grid',
-              gridTemplateColumns: 'max-content 1fr',
-              gap: 'var(--space-2) var(--space-4)',
-              fontSize: '0.875rem',
+              marginBottom: "var(--space-4)",
+              display: "grid",
+              gridTemplateColumns: "max-content 1fr",
+              gap: "var(--space-2) var(--space-4)",
+              fontSize: "0.875rem",
             }}
           >
             <dt>Driver code</dt>
             <dd data-testid="driver-payments-code">
-              {driver.driver_code ?? '—'}
+              {driver.driver_code ?? "—"}
             </dd>
             <dt>Subaccount</dt>
             <dd data-testid="driver-payments-subaccount">
-              {driver.payout_subaccount_code ? 'Active' : 'Not configured'}
+              {driver.payout_subaccount_code ? "Active" : "Not configured"}
             </dd>
             <dt>Digital acceptance</dt>
             <dd data-testid="driver-payments-digital">
               {driver.accepts_digital && driver.payout_subaccount_code
-                ? 'Accepting QR / digital'
-                : 'Cash only / paused'}
+                ? "Accepting QR / digital"
+                : "Cash only / paused"}
             </dd>
           </dl>
 
-          <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
+          <div className="card" style={{ marginBottom: "var(--space-4)" }}>
             <h3 className="sub-title">Rotate code</h3>
-            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+            <p
+              style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}
+            >
               Invalidates printed stickers and creates a reprint request.
             </p>
             <button
@@ -408,13 +485,15 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
               className="btn btn-primary"
               disabled={pending || !driver.driver_code}
               data-testid="rotate-driver-code"
-              onClick={() => runAction(() => rotateDriverCode(citySlug, driver.id))}
+              onClick={() =>
+                runAction(() => rotateDriverCode(citySlug, driver.id))
+              }
             >
               Rotate driver code
             </button>
           </div>
 
-          <section style={{ marginBottom: 'var(--space-6)' }}>
+          <section style={{ marginBottom: "var(--space-6)" }}>
             <h3>QR payments received</h3>
             {driver.qrPayments.length === 0 ? (
               <p className="empty-inline">No QR payments yet.</p>
@@ -433,10 +512,12 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
                   {driver.qrPayments.map((row) => (
                     <tr key={row.id}>
                       <td>{new Date(row.created_at).toLocaleString()}</td>
-                      <td className="num">{formatMoney(row.amount, row.currency)}</td>
+                      <td className="num">
+                        {formatMoney(row.amount, row.currency)}
+                      </td>
                       <td>{row.source}</td>
                       <td>{row.status}</td>
-                      <td>{row.trip_id ? 'Attributed' : 'Unattributed'}</td>
+                      <td>{row.trip_id ? "Attributed" : "Unattributed"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -449,7 +530,10 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
             {driver.stickerRequests.length === 0 ? (
               <p className="empty-inline">No sticker requests.</p>
             ) : (
-              <table className="data-table" data-testid="driver-sticker-requests">
+              <table
+                className="data-table"
+                data-testid="driver-sticker-requests"
+              >
                 <thead>
                   <tr>
                     <th>Date</th>

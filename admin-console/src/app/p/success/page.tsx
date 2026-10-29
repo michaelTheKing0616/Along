@@ -1,13 +1,14 @@
-import { formatNaira } from '@/lib/payments/web-pay-api';
-import { fetchPaymentReceiptServer } from '@/lib/payments/receipt-server';
-import '../pay.css';
+import { formatNaira } from "@/lib/payments/web-pay-api";
+import { fetchPaymentReceiptServer } from "@/lib/payments/receipt-server";
+import "../pay.css";
 
 interface PageProps {
   searchParams: Promise<{ payment_id?: string; receipt_token?: string }>;
 }
 
 export default async function PaySuccessPage({ searchParams }: PageProps) {
-  const { payment_id: paymentId, receipt_token: receiptToken } = await searchParams;
+  const { payment_id: paymentId, receipt_token: receiptToken } =
+    await searchParams;
 
   if (!paymentId || !receiptToken) {
     return (
@@ -23,14 +24,14 @@ export default async function PaySuccessPage({ searchParams }: PageProps) {
   try {
     receipt = await fetchPaymentReceiptServer(paymentId, receiptToken);
   } catch (err) {
-    error = err instanceof Error ? err.message : 'Could not load receipt';
+    error = err instanceof Error ? err.message : "Could not load receipt";
   }
 
   if (error || !receipt) {
     return (
       <main className="w04-main w04-state" data-testid="w04-success-error">
         <h1>Receipt unavailable</h1>
-        <p>{error ?? 'Could not load receipt'}</p>
+        <p>{error ?? "Could not load receipt"}</p>
       </main>
     );
   }
@@ -38,11 +39,16 @@ export default async function PaySuccessPage({ searchParams }: PageProps) {
   return (
     <main className="w04-main" data-testid="w04-success">
       <p className="w04-brand">Payment received</p>
-      <h1 className="w04-plate">{formatNaira(receipt.amount)}</h1>
-      <p className="w04-driver">Paid to {receipt.driver_first_name ?? 'driver'}</p>
-      {receipt.plate ? <p style={{ color: '#b8b8b8' }}>{receipt.plate}</p> : null}
+      <div className="w04-paid-mark" aria-hidden="true">
+        ✓
+      </div>
+      <h1 className="w04-paid-amount">{formatNaira(receipt.amount)}</h1>
+      <p className="w04-driver">
+        Paid to {receipt.driver_first_name ?? "driver"}
+        {receipt.plate ? ` · ${receipt.plate}` : ""}
+      </p>
 
-      <div style={{ marginTop: 'var(--space-6)' }}>
+      <div className="w04-receipt">
         <div className="w04-receipt-row">
           <span>To driver</span>
           <span>{formatNaira(receipt.driver_amount)}</span>

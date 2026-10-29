@@ -579,3 +579,24 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
 .card .data-table thead th { background: transparent; }
 .page-center .card h1 { font-size: 22px; letter-spacing: -0.02em; line-height: 1.2; }
 .shell-brand { white-space: nowrap; flex-shrink: 0; }
+.section-gap-b { margin-bottom: 32px; }
+.live-map-layer-toggle { display: flex; align-items: center; gap: 8px; }
+.live-map-label { flex: 1; }
+.live-map-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.live-map-swatch-line { width: 14px; height: 3px; border-radius: 2px; }
+.live-map-legend { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--a-border, var(--color-border)); }
+.live-map-legend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; }
+.live-map-legend li { display: flex; align-items: center; gap: 8px; }
+.live-map-legend li .num { margin-left: auto; color: var(--a-text-muted, var(--color-text-muted)); }
+.tree-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.tree-head .section-title { margin: 0; }
+.tree-search { width: 220px; height: 32px; padding: 0 10px; border: 1px solid var(--a-border, var(--color-border)); border-radius: 8px; font: inherit; font-size: 13px; background: var(--a-surface, #fff); }
+.tree-corridor { margin-bottom: 14px; }
+.tree-row { display: flex; align-items: center; gap: 6px; }
+.tree-toggle { width: 22px; height: 22px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--a-text-muted, var(--color-text-muted)); border-radius: 6px; font-size: 11px; }
+.tree-toggle:hover { background: var(--a-accent-tint, #f2f0ea); }
+.tree-count { margin-left: auto; font-size: 12px; color: var(--a-text-muted, var(--color-text-muted)); font-variant-numeric: tabular-nums; }
+.agent-header { border-bottom: 1px solid var(--a-border, var(--color-border)); }
+.agent-card { border-top: 1px solid var(--a-border, var(--color-border)); }
+.field-check { grid-column: 1 / -1; }
+.field-check label { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
