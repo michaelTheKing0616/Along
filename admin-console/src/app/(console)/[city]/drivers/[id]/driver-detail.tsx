@@ -203,21 +203,94 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
       </div>
 
       {tab === "overview" ? (
-        <div className="card" data-testid="driver-overview">
-          <dl className="dl">
-            <dt>Driver code</dt>
-            <dd>{driver.driver_code ?? "—"}</dd>
-            <dt>Rating</dt>
-            <dd>
-              {driver.rating != null
-                ? `${driver.rating.toFixed(2)} (${driver.rating_count})`
-                : "—"}
-            </dd>
-            <dt>Phone</dt>
-            <dd>{maskPhone(driver.phone_e164)}</dd>
-            <dt>City</dt>
-            <dd>{driver.city_name}</dd>
-          </dl>
+        <div className="overview-grid" data-testid="driver-overview">
+          <section className="card">
+            <h2 className="section-title">Profile</h2>
+            <dl className="dl">
+              <dt>Driver code</dt>
+              <dd>{driver.driver_code ?? "—"}</dd>
+              <dt>Rating</dt>
+              <dd>
+                {driver.rating != null
+                  ? `${driver.rating.toFixed(2)} (${driver.rating_count})`
+                  : "—"}
+              </dd>
+              <dt>Phone</dt>
+              <dd>{maskPhone(driver.phone_e164)}</dd>
+              <dt>City</dt>
+              <dd>{driver.city_name}</dd>
+              <dt>Payout account</dt>
+              <dd>{driver.payout_subaccount_code ? "Linked" : "Not linked"}</dd>
+              <dt>Digital pay</dt>
+              <dd>{driver.accepts_digital ? "Accepts QR" : "Cash only"}</dd>
+            </dl>
+          </section>
+          <section className="card">
+            <h2 className="section-title">Recent paid trips</h2>
+            {driver.qrPayments.length === 0 ? (
+              <p className="empty-inline">No digital payments yet.</p>
+            ) : (
+              <ul className="mini-list">
+                {driver.qrPayments.slice(0, 4).map((p) => (
+                  <li key={p.id}>
+                    <span>
+                      {new Date(p.created_at).toLocaleDateString()}
+                      <span className="cell-sub">
+                        {humanize(p.source)} · {humanize(p.status)}
+                      </span>
+                    </span>
+                    <span className="num">
+                      {formatMoney(p.amount, p.currency)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section className="card">
+            <h2 className="section-title">Standing history</h2>
+            {driver.transitions.length === 0 ? (
+              <p className="empty-inline">No standing changes.</p>
+            ) : (
+              <ul className="mini-list">
+                {driver.transitions.slice(0, 4).map((t) => (
+                  <li key={t.id}>
+                    <span>
+                      <span
+                        className="kpi-sentence"
+                        style={{ display: "block" }}
+                      >
+                        {standingLabel(t.to_standing)}
+                      </span>
+                      <span className="cell-sub">{t.reason}</span>
+                    </span>
+                    <span className="cell-sub">
+                      {new Date(t.created_at).toLocaleDateString()}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section className="card">
+            <h2 className="section-title">Guarantor</h2>
+            {driver.guarantor ? (
+              <dl className="dl">
+                <dt>Name</dt>
+                <dd>{driver.guarantor.guarantor_name}</dd>
+                <dt>Acknowledged</dt>
+                <dd>
+                  {driver.guarantor.acknowledged_at
+                    ? new Date(
+                        driver.guarantor.acknowledged_at,
+                      ).toLocaleDateString()
+                    : "Not yet"}
+                </dd>
+              </dl>
+            ) : (
+              <p className="empty-inline">No guarantor on file.</p>
+            )}
+          </section>
         </div>
       ) : null}
 

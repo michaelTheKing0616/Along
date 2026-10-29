@@ -635,3 +635,20 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
 .kpi-sentence::first-letter { text-transform: uppercase; }
 .field-hint { overflow-wrap: anywhere; } .field-hint code, .field-hint .mono { white-space: normal; overflow-wrap: anywhere; }
 @media (max-width: 1199px) { .dash-side { display: none; } }
+
+/* Driver overview cards. */
+.overview-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start; }
+.overview-grid .card { margin: 0; }
+.mini-list { list-style: none; margin: 0; padding: 0; }
+.mini-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--a-line); font-size: 13.5px; }
+.mini-list li:last-child { border-bottom: 0; }
+.mini-list .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Dashboard demand: even 3x2. */
+.kpi-grid-even { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+@media (max-width: 700px) { .kpi-grid-even { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+/* Playbook: sticky checklist column, steps 2-4 on the right. */
+@media (min-width: 1200px) {
+  .playbook-steps { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+  .playbook-steps > .playbook-step:first-child { grid-column: 1; grid-row: 1 / span 3; position: sticky; top: 16px; }
+  .playbook-steps > .playbook-step:not(:first-child) { grid-column: 2; }
+}

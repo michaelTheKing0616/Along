@@ -101,7 +101,12 @@ export function OpsDashboard({
   ];
 
   const byId = new Map(tiles.map((t) => [t.testId, t]));
-  const sections: { title: string; ids: string[]; attention?: boolean }[] = [
+  const sections: {
+    title: string;
+    ids: string[];
+    attention?: boolean;
+    even?: boolean;
+  }[] = [
     {
       title: "Right now",
       ids: [
@@ -122,6 +127,7 @@ export function OpsDashboard({
         "kpi-wait",
         "kpi-fare-discrepancy",
       ],
+      even: true,
     },
     { title: "Diagnostic", ids: ["kpi-conversion"] },
   ];
@@ -185,7 +191,7 @@ export function OpsDashboard({
           >
             <h2 className="section-label">{section.title}</h2>
             <div
-              className={`kpi-grid${section.ids.length === 1 ? " kpi-grid-single" : ""}`}
+              className={`kpi-grid${section.ids.length === 1 ? " kpi-grid-single" : ""}${section.even ? " kpi-grid-even" : ""}`}
             >
               {section.ids.map((id) =>
                 renderTile(byId.get(id)!, Boolean(section.attention)),
