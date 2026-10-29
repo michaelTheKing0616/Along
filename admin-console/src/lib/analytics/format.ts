@@ -50,6 +50,10 @@ export function aggregateSummaries(
       acc.coverage_gap_count += s.coverage_gap_count;
       acc.candidate_sum += s.avg_candidates_per_search * s.searches;
       acc.direct_sum += s.avg_direct_candidates * s.searches;
+      if (s.fare_discrepancy_rate != null && s.completed_trips > 0) {
+        acc.discrepancy_weighted += s.fare_discrepancy_rate * s.completed_trips;
+        acc.discrepancy_trips += s.completed_trips;
+      }
       if (s.median_wait_s > 0) {
         acc.wait_samples.push(s.median_wait_s);
       }
@@ -65,6 +69,8 @@ export function aggregateSummaries(
       coverage_gap_count: 0,
       candidate_sum: 0,
       direct_sum: 0,
+      discrepancy_weighted: 0,
+      discrepancy_trips: 0,
       wait_samples: [] as number[],
     }
   );
@@ -90,7 +96,8 @@ export function aggregateSummaries(
     fulfilment_rate:
       totals.accepts > 0 ? totals.completed_trips / totals.accepts : null,
     median_wait_s: medianWait,
-    fare_discrepancy_rate: null,
+    fare_discrepancy_rate:
+      totals.discrepancy_trips > 0 ? totals.discrepancy_weighted / totals.discrepancy_trips : null,
     avg_candidates_per_search:
       totals.searches > 0 ? totals.candidate_sum / totals.searches : 0,
     avg_direct_candidates:

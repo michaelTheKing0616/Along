@@ -142,7 +142,7 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
         </div>
         <div className="kpi">
           <p className="kpi-label">Standing</p>
-          <p className="kpi-value" style={{ fontSize: 18 }}>
+          <p className="kpi-value kpi-sentence" style={{ fontSize: 18 }}>
             {standingLabel(driver.standing)}
           </p>
         </div>

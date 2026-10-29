@@ -30,6 +30,10 @@ interface FinanceConsoleProps {
 
 type FinanceTab = "approvals" | "settlements" | "agents" | "qr";
 
+function sumAmount(rows: { amount: number | string | null }[]): number {
+  return rows.reduce((acc, r) => acc + (Number(r.amount) || 0), 0);
+}
+
 export function FinanceConsole({
   citySlug,
   cityId,
@@ -135,6 +139,35 @@ export function FinanceConsole({
           {message}
         </div>
       ) : null}
+
+      <div className="kpi-grid finance-summary" aria-label="Finance summary">
+        <div className="kpi">
+          <div className="kpi-label">Awaiting second approval</div>
+          <div className="kpi-value">
+            {formatMoney(sumAmount(pendingAdjustments), "NGN")}
+          </div>
+          <div className="kpi-sub">{pendingAdjustments.length} adjustments</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Payouts</div>
+          <div className="kpi-value">
+            {formatMoney(sumAmount(payouts), "NGN")}
+          </div>
+          <div className="kpi-sub">{payouts.length} in window</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">QR payments</div>
+          <div className="kpi-value">
+            {formatMoney(sumAmount(qrPayments), "NGN")}
+          </div>
+          <div className="kpi-sub">{qrPayments.length} received</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Cash agents</div>
+          <div className="kpi-value">{agents.length}</div>
+          <div className="kpi-sub">{settlements.length} settlements</div>
+        </div>
+      </div>
 
       <div
         className="seg"

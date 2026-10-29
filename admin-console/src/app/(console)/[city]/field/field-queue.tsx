@@ -127,7 +127,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
       {rows.length === 0 ? (
         <p className="empty-inline">No field reconciliations for this city.</p>
       ) : (
-        <>
+        <div className="split field-split">
           <table
             className="data-table"
             data-testid="field-reconciliation-table"
@@ -176,10 +176,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
           </table>
 
           {selected ? (
-            <section
-              style={{ marginTop: "var(--space-6)" }}
-              data-testid="field-detail"
-            >
+            <section className="split-detail" data-testid="field-detail">
               <h2 className="section-title">{selected.entity_key}</h2>
 
               <div
@@ -387,7 +384,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
               ) : null}
             </section>
           ) : null}
-        </>
+        </div>
       )}
     </div>
   );
