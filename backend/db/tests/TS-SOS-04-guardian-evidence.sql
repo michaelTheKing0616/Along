@@ -1,4 +1,4 @@
--- pgTAP: TS-SOS-03 — guardian share controls + incident photo evidence (migration 103)
+-- pgTAP: TS-SOS-04 — guardian share controls + incident photo evidence (migration 103)
 create extension if not exists pgtap;
 
 begin;
@@ -121,36 +121,37 @@ select set_config('test.s3_token',
 
 select ok(
   (current_setting('test.s3_share')::jsonb->>'share_plate')::boolean = false,
-  'TS-SOS-03: create_trip_share echoes share_plate=false'
+  'TS-SOS-04: create_trip_share echoes share_plate=false'
 );
 select ok(
   (current_setting('test.s3_share')::jsonb->>'expires_at')::timestamptz
     between now() + interval '29 minutes' and now() + interval '31 minutes',
-  'TS-SOS-03: rider-chosen 30 min expiry is honoured'
+  'TS-SOS-04: rider-chosen 30 min expiry is honoured'
 );
 select is(
   shared_trip_view(current_setting('test.s3_token'))->'vehicle'->>'plate', '',
-  'TS-SOS-03: plate hidden when share_plate=false'
+  'TS-SOS-04: plate hidden when share_plate=false'
 );
 select is(
   shared_trip_view(current_setting('test.s3_token'))->'vehicle'->>'color', 'blue',
-  'TS-SOS-03: colour still visible so the contact can spot the car'
+  'TS-SOS-04: colour still visible so the contact can spot the car'
 );
+-- Separate statement: a stable view can't see a row inserted in its own.
+select set_config('test.s3_default_token',
+  regexp_replace(create_trip_share('0e500000-0000-4000-8000-000000000011')->>'url', '^.*/s/', ''), true);
 select is(
-  shared_trip_view(
-    regexp_replace(create_trip_share('0e500000-0000-4000-8000-000000000011')->>'url', '^.*/s/', '')
-  )->'vehicle'->>'plate', 'SHR-01',
-  'TS-SOS-03: default share keeps the plate'
+  shared_trip_view(current_setting('test.s3_default_token'))->'vehicle'->>'plate', 'SHR-01',
+  'TS-SOS-04: default share keeps the plate'
 );
 select throws_ok(
   $$ select create_trip_share('0e500000-0000-4000-8000-000000000011', null, null, true, 5) $$,
   'P0001', 'ttl out of range',
-  'TS-SOS-03: expiry under 15 min rejected'
+  'TS-SOS-04: expiry under 15 min rejected'
 );
 select throws_ok(
   $$ select create_trip_share('0e500000-0000-4000-8000-000000000011', null, null, true, 100000) $$,
   'P0001', 'ttl out of range',
-  'TS-SOS-03: expiry over the city cap rejected'
+  'TS-SOS-04: expiry over the city cap rejected'
 );
 
 -- Incident evidence
@@ -162,31 +163,31 @@ select set_config('test.s3_inc', report_incident(
 
 select ok(
   (current_setting('test.s3_inc')::jsonb->>'replayed')::boolean = false,
-  'TS-SOS-03: report with two uploaded photos accepted'
+  'TS-SOS-04: report with two uploaded photos accepted'
 );
 select is(
   report_incident('0e600000-0000-4000-8000-000000000011', 'safety', 'driver took a strange road',
     array['incidents/0e100000-0000-4000-8000-000000000011/a.jpg'],
     '0e700000-0000-4000-8000-000000000011')->>'incident_id',
   current_setting('test.s3_inc')::jsonb->>'incident_id',
-  'TS-SOS-03: queue replay with same client_ref returns the same incident'
+  'TS-SOS-04: queue replay with same client_ref returns the same incident'
 );
 select is(
   (select count(*)::int from incidents where reported_by = '0e100000-0000-4000-8000-000000000011'),
   1,
-  'TS-SOS-03: replay does not duplicate the incident'
+  'TS-SOS-04: replay does not duplicate the incident'
 );
 select throws_ok(
   $$ select report_incident(null, 'safety', null,
        array['incidents/0e100000-0000-4000-8000-000000000011/missing.jpg']) $$,
   'P0001', 'photo not uploaded',
-  'TS-SOS-03: path with no uploaded object rejected'
+  'TS-SOS-04: path with no uploaded object rejected'
 );
 select throws_ok(
   $$ select report_incident(null, 'safety', null,
        array['incidents/0e100000-0000-4000-8000-000000000011/../x/a.jpg']) $$,
   'P0001', 'invalid attachment path',
-  'TS-SOS-03: path traversal rejected'
+  'TS-SOS-04: path traversal rejected'
 );
 select throws_ok(
   $$ select report_incident(null, 'safety', null, array[
@@ -196,7 +197,7 @@ select throws_ok(
        'incidents/0e100000-0000-4000-8000-000000000011/a.jpg',
        'incidents/0e100000-0000-4000-8000-000000000011/a.jpg']) $$,
   'P0001', 'too many photos',
-  'TS-SOS-03: more than 4 photos rejected'
+  'TS-SOS-04: more than 4 photos rejected'
 );
 
 reset role;
@@ -206,7 +207,7 @@ select is(
    where p.schemaname = 'storage' and p.tablename = 'objects'
      and p.policyname = 'incidents_objects_delete_own_unattached'),
   array['incidents_objects_delete_own_unattached'],
-  'TS-SOS-03: reporter may discard only unattached photos (delete policy present)'
+  'TS-SOS-04: reporter may discard only unattached photos (delete policy present)'
 );
 
 select * from finish();
