@@ -2279,4 +2279,9 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get reportIncidentPhotoError => 'Kò lè fi àwòrán náà kún';
+
+  @override
+  String optionCardRouteLine(String board, String alight) {
+    return 'Wọ̀ ní $board → $alight';
+  }
 }

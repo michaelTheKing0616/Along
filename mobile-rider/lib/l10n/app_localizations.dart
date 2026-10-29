@@ -3982,6 +3982,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t add that photo'**
   String get reportIncidentPhotoError;
+
+  /// Option card route line: boarding park → alighting park.
+  ///
+  /// In en, this message translates to:
+  /// **'Board at {board} → {alight}'**
+  String optionCardRouteLine(String board, String alight);
 }
 
 class _AppLocalizationsDelegate

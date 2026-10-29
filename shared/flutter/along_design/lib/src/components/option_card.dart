@@ -29,6 +29,7 @@ class OptionCard extends StatelessWidget {
     this.secondaryMode,
     this.boardLabel = 'Lugbe Park',
     this.alightLabel = 'Area 1 Park',
+    this.routeLine,
     this.meta = '4 min walk · ~6 min wait · direct',
     this.fareNaira = 450,
     this.tier = FareTier.verified,
@@ -49,6 +50,9 @@ class OptionCard extends StatelessWidget {
   final TransportMode? secondaryMode;
   final String boardLabel;
   final String alightLabel;
+
+  /// Localised "Board at X → Y" line; English fallback when null.
+  final String? routeLine;
   final String meta;
   final int fareNaira;
   final FareTier tier;
@@ -154,7 +158,7 @@ class OptionCard extends StatelessWidget {
                       ),
                       const SizedBox(height: AlongSpace.s8),
                       Text(
-                        'Board at $boardLabel → $alightLabel',
+                        routeLine ?? 'Board at $boardLabel → $alightLabel',
                         style: AlongType.title(palette),
                       ),
                       const SizedBox(height: AlongSpace.s4),

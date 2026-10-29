@@ -2283,4 +2283,9 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get reportIncidentPhotoError => 'Ba a iya ƙara hoton ba';
+
+  @override
+  String optionCardRouteLine(String board, String alight) {
+    return 'Hau a $board → $alight';
+  }
 }

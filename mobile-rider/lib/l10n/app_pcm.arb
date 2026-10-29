@@ -644,5 +644,6 @@
   "reportIncidentSent": "Report don send. Our safety team go follow up.",
   "reportIncidentQueued": "No network. Report don save, e go send when network come.",
   "reportIncidentFailed": "E no fit send the report. Try again.",
-  "reportIncidentPhotoError": "E no fit add that photo"
+  "reportIncidentPhotoError": "E no fit add that photo",
+  "optionCardRouteLine": "Enter for {board} → {alight}"
 }

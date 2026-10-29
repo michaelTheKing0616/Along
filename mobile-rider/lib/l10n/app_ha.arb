@@ -644,5 +644,6 @@
   "reportIncidentSent": "An tura rahoto. Ƙungiyar tsaro za ta biyo.",
   "reportIncidentQueued": "Babu sigina. An ajiye rahoto, za a tura idan ya dawo.",
   "reportIncidentFailed": "Ba a iya tura rahoton ba. Sake gwadawa.",
-  "reportIncidentPhotoError": "Ba a iya ƙara hoton ba"
+  "reportIncidentPhotoError": "Ba a iya ƙara hoton ba",
+  "optionCardRouteLine": "Hau a {board} → {alight}"
 }

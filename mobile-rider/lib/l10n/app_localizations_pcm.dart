@@ -2281,4 +2281,9 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get reportIncidentPhotoError => 'E no fit add that photo';
+
+  @override
+  String optionCardRouteLine(String board, String alight) {
+    return 'Enter for $board → $alight';
+  }
 }

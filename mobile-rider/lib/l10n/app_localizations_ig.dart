@@ -2273,4 +2273,9 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get reportIncidentPhotoError => 'Enweghị ike itinye foto ahụ';
+
+  @override
+  String optionCardRouteLine(String board, String alight) {
+    return 'Banye na $board → $alight';
+  }
 }

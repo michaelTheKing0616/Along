@@ -644,5 +644,6 @@
   "reportIncidentSent": "A ti fi ìròyìn ránṣẹ́. Ẹgbẹ́ ààbò wa yóò tẹ̀lé e.",
   "reportIncidentQueued": "Kò sí àmì. A ti fi ìròyìn pamọ́, yóò lọ tí ó bá padà.",
   "reportIncidentFailed": "Kò lè fi ìròyìn ránṣẹ́. Gbìyànjú lẹ́ẹ̀kan sí i.",
-  "reportIncidentPhotoError": "Kò lè fi àwòrán náà kún"
+  "reportIncidentPhotoError": "Kò lè fi àwòrán náà kún",
+  "optionCardRouteLine": "Wọ̀ ní {board} → {alight}"
 }

@@ -454,6 +454,7 @@ class _TripOptionsScreenState extends ConsumerState<TripOptionsScreen> {
           mode: OptionCardMapper.mapMode(leg.mode),
           boardLabel: leg.boardName,
           alightLabel: leg.alightName,
+          routeLine: l10n.optionCardRouteLine(leg.boardName, leg.alightName),
           meta: OptionCardMapper.metaForCandidate(candidate, l10n),
           fareNaira: candidate.totalFareMinorUnits ~/ 100,
           tier: OptionCardMapper.mapFareTier(
