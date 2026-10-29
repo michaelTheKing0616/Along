@@ -473,6 +473,36 @@ class _AlongFlowRideOptionsState extends State<AlongFlowRideOptions> {
 }
 
 /// Closed-loop Along credit. Top up, then the recent lines.
+/// Copy for [AlongFlowTopUp]. Apps pass localized strings; the defaults are
+/// the design reference.
+class AlongTopUpStrings {
+  const AlongTopUpStrings({
+    this.title = 'Wallet',
+    this.subtitle = 'Along credit',
+    this.balance = 'Balance',
+    this.balanceNote = 'It stays in Along',
+    this.addCredit = 'Add credit',
+    this.custom = 'Custom',
+    this.history = 'History',
+    this.emptyHistory = 'No credit yet. Top ups, fares and refunds show here.',
+    this.addCustom = 'Add a custom amount',
+    this.add = _defaultAdd,
+  });
+
+  final String title;
+  final String subtitle;
+  final String balance;
+  final String balanceNote;
+  final String addCredit;
+  final String custom;
+  final String history;
+  final String emptyHistory;
+  final String addCustom;
+  final String Function(String amount) add;
+
+  static String _defaultAdd(String amount) => 'Add $amount';
+}
+
 class AlongFlowTopUp extends StatefulWidget {
   const AlongFlowTopUp({
     super.key,
@@ -480,12 +510,31 @@ class AlongFlowTopUp extends StatefulWidget {
     this.choices = const [1000, 2000, 5000],
     this.selected = 2000,
     this.history = AlongCreditEntry.sample,
+    this.strings = const AlongTopUpStrings(),
+    this.onAdd,
+    this.onAddCustom,
+    this.busy = false,
+    this.onBack,
   });
 
   final int balance;
   final List<int> choices;
   final int selected;
   final List<AlongCreditEntry> history;
+  final AlongTopUpStrings strings;
+
+  /// Called with the chosen amount. Null keeps the button live but inert,
+  /// as in the design gallery.
+  final ValueChanged<int>? onAdd;
+
+  /// Called when Custom is chosen and the button is tapped.
+  final VoidCallback? onAddCustom;
+
+  /// A top up is in flight: the button waits, nothing else is blocked.
+  final bool busy;
+
+  /// Back control above the title, for when the screen is pushed.
+  final VoidCallback? onBack;
 
   @override
   State<AlongFlowTopUp> createState() => _AlongFlowTopUpState();
@@ -504,19 +553,32 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
   @override
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
+    final t = widget.strings;
     return _Page(
-      title: 'Wallet',
-      subtitle: 'Along credit',
+      onBack: widget.onBack,
+      title: t.title,
+      subtitle: t.subtitle,
       gutter: 16,
       footer: AlongButton(
         key: const Key('topup_add'),
-        label: _custom ? 'Add a custom amount' : 'Add ${_naira(_choice)}',
-        onPressed: () {},
+        label: _custom ? t.addCustom : t.add(_naira(_choice)),
+        visualState: widget.busy
+            ? AlongButtonVisualState.loading
+            : AlongButtonVisualState.normal,
+        onPressed: widget.busy
+            ? null
+            : () => _custom
+                  ? widget.onAddCustom?.call()
+                  : widget.onAdd?.call(_choice),
       ),
       children: [
-        _BalanceHero(balance: widget.balance),
+        _BalanceHero(
+          balance: widget.balance,
+          label: t.balance,
+          note: t.balanceNote,
+        ),
         const SizedBox(height: 20),
-        Text('Add credit', style: AlongType.title(palette)),
+        Text(t.addCredit, style: AlongType.title(palette)),
         const SizedBox(height: 12),
         _CreditGrid(
           choices: widget.choices,
@@ -527,10 +589,17 @@ class _AlongFlowTopUpState extends State<AlongFlowTopUp> {
             _choice = amount;
           }),
           onCustom: () => setState(() => _custom = true),
+          customLabel: t.custom,
         ),
         const SizedBox(height: 16),
-        Text('History', style: AlongType.title(palette)),
+        Text(t.history, style: AlongType.title(palette)),
         const SizedBox(height: 8),
+        if (widget.history.isEmpty)
+          Padding(
+            key: const Key('topup_history_empty'),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(t.emptyHistory, style: AlongType.bodyMuted(palette)),
+          ),
         for (final entry in widget.history) _HistoryRow(entry: entry),
       ],
     );
@@ -737,12 +806,16 @@ class _Page extends StatelessWidget {
     required this.children,
     this.footer,
     this.gutter = 24,
+    this.onBack,
   });
 
   final String title;
   final String subtitle;
   final List<Widget> children;
   final Widget? footer;
+
+  /// Shows a back control above the title when the page is pushed.
+  final VoidCallback? onBack;
 
   /// Screen inset. Wallet and payout use 16 so amounts share the button margin.
   final double gutter;
@@ -763,6 +836,17 @@ class _Page extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (onBack != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Transform.translate(
+                          offset: const Offset(-12, -8),
+                          child: BackButton(
+                            color: palette.ink,
+                            onPressed: onBack,
+                          ),
+                        ),
+                      ),
                     Text(
                       title,
                       maxLines: roomy ? 2 : 1,
@@ -1265,8 +1349,10 @@ class _CreditGrid extends StatelessWidget {
     required this.custom,
     required this.onAmount,
     required this.onCustom,
+    this.customLabel = 'Custom',
   });
 
+  final String customLabel;
   final List<int> choices;
   final int? selected;
   final bool custom;
@@ -1285,7 +1371,7 @@ class _CreditGrid extends StatelessWidget {
         ),
       _CreditTile(
         key: const Key('topup_custom'),
-        title: 'Custom',
+        title: customLabel,
         selected: custom,
         onTap: onCustom,
       ),
@@ -2321,9 +2407,15 @@ class _TripStrip extends StatelessWidget {
 }
 
 class _BalanceHero extends StatelessWidget {
-  const _BalanceHero({required this.balance});
+  const _BalanceHero({
+    required this.balance,
+    this.label = 'Balance',
+    this.note = 'It stays in Along',
+  });
 
   final int balance;
+  final String label;
+  final String note;
 
   @override
   Widget build(BuildContext context) {
@@ -2351,7 +2443,7 @@ class _BalanceHero extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Balance',
+                    label,
                     maxLines: 1,
                     softWrap: false,
                     style: _quiet(palette),
@@ -2367,7 +2459,7 @@ class _BalanceHero extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'It stays in Along',
+                    note,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,

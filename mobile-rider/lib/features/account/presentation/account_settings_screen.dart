@@ -196,6 +196,15 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         Text(l10n.accountPaymentHeading, style: AlongText.overline),
         const SizedBox(height: AlongSpace.s8),
         ListTile(
+          key: const Key('account_wallet'),
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.account_balance_wallet_outlined),
+          title: Text(l10n.accountWallet, style: AlongText.bodyStrong),
+          subtitle: Text(l10n.accountWalletHint, style: AlongText.caption),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => context.push(AppRoutes.wallet),
+        ),
+        ListTile(
           key: const Key('account_payment_cash'),
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.payments_outlined),

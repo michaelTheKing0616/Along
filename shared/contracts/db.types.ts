@@ -6333,6 +6333,183 @@ export type Database = {
           },
         ]
       }
+      wallet_accounts: {
+        Row: {
+          balance: number
+          created_at: string
+          currency: string
+          id: string
+          kind: string
+          owner_id: string | null
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          kind: string
+          owner_id?: string | null
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          kind?: string
+          owner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_accounts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallet_entries: {
+        Row: {
+          account_id: string
+          amount: number
+          created_at: string
+          id: string
+          transaction_id: string
+        }
+        Insert: {
+          account_id: string
+          amount: number
+          created_at?: string
+          id?: string
+          transaction_id: string
+        }
+        Update: {
+          account_id?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_entries_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_entries_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallet_splits: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          payer_id: string
+          request_key: string
+          requester_id: string
+          settled_at: string | null
+          status: string
+          transaction_id: string | null
+          trip_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          payer_id: string
+          request_key: string
+          requester_id: string
+          settled_at?: string | null
+          status?: string
+          transaction_id?: string | null
+          trip_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payer_id?: string
+          request_key?: string
+          requester_id?: string
+          settled_at?: string | null
+          status?: string
+          transaction_id?: string | null
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_splits_payer_id_fkey"
+            columns: ["payer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_splits_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_splits_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_splits_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallet_transactions: {
+        Row: {
+          created_at: string
+          id: string
+          idempotency_key: string
+          initiator_id: string
+          kind: string
+          memo: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          initiator_id: string
+          kind: string
+          memo?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          initiator_id?: string
+          kind?: string
+          memo?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_initiator_id_fkey"
+            columns: ["initiator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       driver_balances: {
@@ -7949,6 +8126,7 @@ export type Database = {
         Returns: boolean
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
+      get_wallet: { Args: never; Returns: Json }
       gettransactionid: { Args: never; Returns: unknown }
       graph_bundle_compact: {
         Args: {
@@ -9409,6 +9587,47 @@ export type Database = {
       }
       verify_trip_pin: {
         Args: { p_pin: string; p_trip_id: string }
+        Returns: Json
+      }
+      wallet_buy_pass: {
+        Args: { p_idempotency_key: string; p_plan: string }
+        Returns: Json
+      }
+      wallet_ledger_check: {
+        Args: never
+        Returns: {
+          detail: number
+          problem: string
+          ref: string
+        }[]
+      }
+      wallet_request_split: {
+        Args: {
+          p_idempotency_key: string
+          p_phones: string[]
+          p_share: number
+          p_trip_id: string
+        }
+        Returns: Json
+      }
+      wallet_send: {
+        Args: {
+          p_amount: number
+          p_idempotency_key: string
+          p_to_phone: string
+        }
+        Returns: Json
+      }
+      wallet_settle_split: {
+        Args: {
+          p_accept: boolean
+          p_idempotency_key: string
+          p_split_id: string
+        }
+        Returns: Json
+      }
+      wallet_top_up: {
+        Args: { p_amount: number; p_idempotency_key: string }
         Returns: Json
       }
       weighted_median_fare: {

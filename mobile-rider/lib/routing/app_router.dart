@@ -24,6 +24,7 @@ import 'package:mobile_rider/features/live_trip/presentation/plate_scan_screen.d
 import 'package:mobile_rider/features/marketplace/presentation/fare_shield_screen.dart';
 import 'package:mobile_rider/features/marketplace/presentation/stage_radar_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/guardian_screen.dart';
+import 'package:mobile_rider/features/wallet/wallet_home_screen.dart';
 import 'package:mobile_rider/features/safety/presentation/trip_thread_screen.dart';
 import 'package:mobile_rider/features/live_trip/presentation/na_me_screen.dart';
 import 'package:mobile_rider/features/trip_options/presentation/requesting_screen.dart';
@@ -237,6 +238,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.guardian,
         builder: (context, state) => const GuardianScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.wallet,
+        builder: (context, state) => const WalletScreen(),
       ),
       GoRoute(
         path: AppRoutes.stageRadar,

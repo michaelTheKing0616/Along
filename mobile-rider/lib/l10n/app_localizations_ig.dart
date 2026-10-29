@@ -1696,4 +1696,415 @@ class AppLocalizationsIg extends AppLocalizations {
   String connOfflineMixed(int queued, int needs) {
     return 'Enweghị ịntanetị · $queued iziga · $needs imeghachi';
   }
+
+  @override
+  String get walletTitle => 'Obere akpa';
+
+  @override
+  String get walletSubtitle => 'Ego Along';
+
+  @override
+  String get walletBalance => 'Ego fọdụrụ';
+
+  @override
+  String get walletBalanceNote => 'Ọ na-anọ na Along';
+
+  @override
+  String get walletAddCredit => 'Tinye ego';
+
+  @override
+  String get walletCustom => 'Nke gị';
+
+  @override
+  String get walletHistory => 'Akụkọ';
+
+  @override
+  String get walletHistoryEmpty =>
+      'Enweghị ego ugbu a. Itinye ego, ụgwọ njem na nkwụghachi ga-egosi ebe a.';
+
+  @override
+  String get walletAddCustom => 'Tinye ego ịchọrọ';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Tinye $amount';
+  }
+
+  @override
+  String get walletTopUp => 'Itinye ego';
+
+  @override
+  String get walletFare => 'Ụgwọ njem';
+
+  @override
+  String get walletRefund => 'Nkwụghachi';
+
+  @override
+  String get walletToday => 'Taa';
+
+  @override
+  String get walletYesterday => 'Ụnyaahụ';
+
+  @override
+  String get walletUnavailable => 'Obere akpa emepeghị';
+
+  @override
+  String get walletUnavailableBody =>
+      'Ego gị dị mma. Lelee ịntanetị gị ma nwaa ọzọ.';
+
+  @override
+  String get walletRetry => 'Nwaa ọzọ';
+
+  @override
+  String get walletCustomTitle => 'Ego ole?';
+
+  @override
+  String get walletCustomHint => '₦100 ruo ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'Opekata mpe ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'Kachasị ₦50,000';
+
+  @override
+  String get walletCancel => 'Kagbuo';
+
+  @override
+  String walletAdded(String amount) {
+    return 'Etinyere $amount';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Ọ dịghị ihe etinyere. Nwaa ọzọ.';
+
+  @override
+  String get walletActionTopUp => 'Tinye ego';
+
+  @override
+  String get walletActionSend => 'Zipu';
+
+  @override
+  String get walletActionPass => 'Pass';
+
+  @override
+  String get walletActionSplit => 'Kee';
+
+  @override
+  String get walletActivity => 'Ihe omume';
+
+  @override
+  String get walletEarlier => 'Na mbụ';
+
+  @override
+  String get walletActivityEmpty =>
+      'Enweghị ihe omume. Tinye ego ka ị gaa n\'ụzọ na-enweghị ego aka.';
+
+  @override
+  String walletBalanceSemantics(String amount) {
+    return 'Ego fọdụrụ $amount';
+  }
+
+  @override
+  String walletSentTo(String name) {
+    return 'Nye $name';
+  }
+
+  @override
+  String walletReceivedFrom(String name) {
+    return 'Site n\'aka $name';
+  }
+
+  @override
+  String get walletSent => 'Ezigara';
+
+  @override
+  String get walletReceived => 'Natara';
+
+  @override
+  String get walletPassEntry => 'Along Pass';
+
+  @override
+  String get walletSplitPaid => 'Akwụọla òkè';
+
+  @override
+  String get walletSplitReceived => 'Natara òkè';
+
+  @override
+  String walletOwedTitle(String name, String amount) {
+    return '$name rịọrọ $amount';
+  }
+
+  @override
+  String get walletOwedBody => 'Òkè gị n\'njem e kekọrịtara';
+
+  @override
+  String get walletOwedPay => 'Kwụọ';
+
+  @override
+  String get walletOwedDecline => 'Jụ';
+
+  @override
+  String walletOwedPaidSnack(String amount) {
+    return 'Akwụọla $amount';
+  }
+
+  @override
+  String get walletOwedDeclinedSnack => 'Ajụrụ arịrịọ';
+
+  @override
+  String get walletInsufficient => 'Ego ezughị. Buru ụzọ tinye ego.';
+
+  @override
+  String get walletActionFailed =>
+      'Ọ gwụchaghị. Nwaa ọzọ — a gaghị ana gị ugboro abụọ.';
+
+  @override
+  String get walletSendTitle => 'Zipu ego';
+
+  @override
+  String get walletSendSubtitle => 'Nye onye ọzọ na-eji Along';
+
+  @override
+  String get walletSendPhone => 'Nọmba ekwentị';
+
+  @override
+  String get walletSendPhoneHint => '0803 123 4567';
+
+  @override
+  String get walletSendPhoneInvalid => 'Tinye nọmba ekwentị Naịjirịa';
+
+  @override
+  String get walletSendAmount => 'Ego ole';
+
+  @override
+  String get walletSendTooSmall => 'Zipu opekata mpe ₦50';
+
+  @override
+  String get walletSendTooLarge => 'Zipu ọ karịghị ₦50,000';
+
+  @override
+  String get walletSendOverBalance => 'Ọ karịrị ego gị';
+
+  @override
+  String walletSendCta(String amount) {
+    return 'Zipu $amount';
+  }
+
+  @override
+  String get walletSendCtaEmpty => 'Zipu';
+
+  @override
+  String get walletSendNotFound => 'Ọ dịghị onye Along nwere nọmba ahụ';
+
+  @override
+  String walletSentSnack(String amount) {
+    return 'Ezigara $amount';
+  }
+
+  @override
+  String walletAvailable(String amount) {
+    return 'Dị $amount';
+  }
+
+  @override
+  String get walletPassTitle => 'Along Pass';
+
+  @override
+  String get walletPassSubtitle => 'Njem akwụọla ugwo site n\'ego gị';
+
+  @override
+  String walletPassPrice(String amount) {
+    return '$amount kwa ọnwa';
+  }
+
+  @override
+  String get walletPassBody =>
+      'Otu ịkwụ ụgwọ site na wallet gị. Enweghị kaadị, enweghị ego aka n\'ọnụ ụzọ.';
+
+  @override
+  String walletPassCta(String amount) {
+    return 'Zụta pass · $amount';
+  }
+
+  @override
+  String get walletPassBought => 'Pass na-arụ ọrụ · Emechala';
+
+  @override
+  String walletPassShort(String amount) {
+    return 'Tinye $amount ọzọ ka ị zụta';
+  }
+
+  @override
+  String get walletSplitTitle => 'Kee ụgwọ njem';
+
+  @override
+  String get walletSplitSubtitle => 'Rịọ ndị ibe gị òkè ha';
+
+  @override
+  String get walletSplitFare => 'Ụgwọ njem';
+
+  @override
+  String get walletSplitYou => 'Gị';
+
+  @override
+  String walletSplitCoRider(int n) {
+    return 'Onye ibe $n';
+  }
+
+  @override
+  String get walletSplitAdd => 'Tinye onye ibe';
+
+  @override
+  String get walletSplitRemove => 'Wepụ';
+
+  @override
+  String walletSplitEach(String amount) {
+    return '$amount onye ọ bụla';
+  }
+
+  @override
+  String walletSplitCta(String amount) {
+    return 'Rịọ $amount onye ọ bụla';
+  }
+
+  @override
+  String get walletSplitCtaEmpty => 'Rịọ òkè';
+
+  @override
+  String get walletSplitFareInvalid => 'Tinye ụgwọ njem, opekata mpe ₦100';
+
+  @override
+  String walletSplitSentSnack(int count) {
+    return 'Arịọrọ ndị ibe $count';
+  }
+
+  @override
+  String get walletSplitNotFound => 'Otu n\'ime nọmba ndị ahụ anọghị na Along';
+
+  @override
+  String get walletSplitNote =>
+      'Ha ga-akwụ site na wallet ha. Ị ga-akwụ onye ọkwọ ụgbọ dịka ọ dị na mbụ.';
+
+  @override
+  String get accountWallet => 'Wallet';
+
+  @override
+  String get accountWalletHint => 'Tinye ego, zipu, pass, kee ụgwọ njem';
+
+  @override
+  String get walletPassPlanWeek => 'Izu';
+
+  @override
+  String get walletPassPlanPack => 'Njem 5';
+
+  @override
+  String get walletPassPlanMonth => 'Ọnwa';
+
+  @override
+  String walletPassRides(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Njem $count',
+      one: 'Njem 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletPassValidity(int days) {
+    return 'Ọ dị mma maka ụbọchị $days';
+  }
+
+  @override
+  String walletPassPerRide(String amount) {
+    return '$amount otu njem';
+  }
+
+  @override
+  String get walletPassVersus => 'Ma e jiri ya tụnyere ụgwọ otu otu';
+
+  @override
+  String walletPassSingleRow(int count, String fare) {
+    return '$count × $fare otu';
+  }
+
+  @override
+  String get walletPassPassRow => 'Pass';
+
+  @override
+  String walletPassSave(String amount) {
+    return 'Ị chekwara $amount';
+  }
+
+  @override
+  String get walletPassNoSave => 'Enweghị nchekwa n\'ụgwọ ị na-akwụ mgbe niile';
+
+  @override
+  String get walletPassNoHistory =>
+      'Nchekwa ga-egosi mgbe ị kwụchara ụgwọ mbụ site na wallet';
+
+  @override
+  String walletPassUsualFare(String amount) {
+    return 'Ụgwọ ị na-akwụ mgbe niile bụ $amount';
+  }
+
+  @override
+  String walletPassActive(String date) {
+    return 'Na-arụ ọrụ ruo $date';
+  }
+
+  @override
+  String walletSplitNotFoundNumber(String phone) {
+    return '$phone anọghị na Along';
+  }
+
+  @override
+  String get walletSplitNotOnAlong => 'Anọghị na Along';
+
+  @override
+  String get walletSplitRequests => 'Arịrịọ gị';
+
+  @override
+  String get walletSplitPending => 'Na-eche';
+
+  @override
+  String get walletSplitPaidStatus => 'Akwụọla';
+
+  @override
+  String get walletSplitDeclined => 'Ajụrụ';
+
+  @override
+  String get walletPassSaveLabel => 'Ihe ị chekwara';
+
+  @override
+  String get walletPassHow => 'Otu o si arụ ọrụ';
+
+  @override
+  String get walletPassStep1 => 'Họrọ atụmatụ n\'elu';
+
+  @override
+  String get walletPassStep2 =>
+      'Kwụọ otu ugboro site n\'ego Along gị. Ọ dịghị mkpa kaadị';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'Ọ ga-arụ ọrụ ụbọchị $days site taa';
+  }
+
+  @override
+  String get walletPassDetails => 'Nkọwa';
+
+  @override
+  String get walletPassRowRides => 'Njem';
+
+  @override
+  String get walletPassRowValid => 'Dị irè ruo';
+
+  @override
+  String get walletPassRowPaid => 'Ejiri kwụọ';
+
+  @override
+  String get walletPassRowPaidValue => 'Ego Along';
 }

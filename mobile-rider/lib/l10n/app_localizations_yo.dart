@@ -1696,4 +1696,415 @@ class AppLocalizationsYo extends AppLocalizations {
   String connOfflineMixed(int queued, int needs) {
     return 'Kò sí íntánẹ́ẹ̀tì · $queued láti fi ránṣẹ́ · $needs láti tún ṣe';
   }
+
+  @override
+  String get walletTitle => 'Àpamọ́wọ́';
+
+  @override
+  String get walletSubtitle => 'Owó Along';
+
+  @override
+  String get walletBalance => 'Iye tó kù';
+
+  @override
+  String get walletBalanceNote => 'Ó wà nínú Along';
+
+  @override
+  String get walletAddCredit => 'Fi owó kún';
+
+  @override
+  String get walletCustom => 'Tìrẹ';
+
+  @override
+  String get walletHistory => 'Ìtàn';
+
+  @override
+  String get walletHistoryEmpty =>
+      'Kò sí owó síbẹ̀. Ìfikún, owó ọkọ̀ àti ìdápadà yóò hàn níbí.';
+
+  @override
+  String get walletAddCustom => 'Fi iye tí o fẹ́ kún';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Fi $amount kún';
+  }
+
+  @override
+  String get walletTopUp => 'Ìfikún';
+
+  @override
+  String get walletFare => 'Owó ọkọ̀';
+
+  @override
+  String get walletRefund => 'Ìdápadà';
+
+  @override
+  String get walletToday => 'Lónìí';
+
+  @override
+  String get walletYesterday => 'Àná';
+
+  @override
+  String get walletUnavailable => 'Àpamọ́wọ́ kò ṣí';
+
+  @override
+  String get walletUnavailableBody =>
+      'Owó rẹ wà láìléwu. Ṣàyẹ̀wò íntánẹ́ẹ̀tì kí o tún gbìyànjú.';
+
+  @override
+  String get walletRetry => 'Tún gbìyànjú';
+
+  @override
+  String get walletCustomTitle => 'Èló ni?';
+
+  @override
+  String get walletCustomHint => '₦100 sí ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'Ó kéré tán ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'Ó pọ̀ jù ₦50,000';
+
+  @override
+  String get walletCancel => 'Fagilé';
+
+  @override
+  String walletAdded(String amount) {
+    return 'A ti fi $amount kún';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Kò sí ohun tí a fi kún. Tún gbìyànjú.';
+
+  @override
+  String get walletActionTopUp => 'Fi owó kún';
+
+  @override
+  String get walletActionSend => 'Fi ránṣẹ́';
+
+  @override
+  String get walletActionPass => 'Pass';
+
+  @override
+  String get walletActionSplit => 'Pín';
+
+  @override
+  String get walletActivity => 'Ìṣe';
+
+  @override
+  String get walletEarlier => 'Tẹ́lẹ̀';
+
+  @override
+  String get walletActivityEmpty =>
+      'Kò sí ìṣe síbẹ̀. Fi owó kún láti rìn láìsí owó ọwọ́.';
+
+  @override
+  String walletBalanceSemantics(String amount) {
+    return 'Iye tó kù $amount';
+  }
+
+  @override
+  String walletSentTo(String name) {
+    return 'Sí $name';
+  }
+
+  @override
+  String walletReceivedFrom(String name) {
+    return 'Láti ọ̀dọ̀ $name';
+  }
+
+  @override
+  String get walletSent => 'Ti fi ránṣẹ́';
+
+  @override
+  String get walletReceived => 'Ti gbà';
+
+  @override
+  String get walletPassEntry => 'Along Pass';
+
+  @override
+  String get walletSplitPaid => 'Ti san ìpín';
+
+  @override
+  String get walletSplitReceived => 'Ti gba ìpín';
+
+  @override
+  String walletOwedTitle(String name, String amount) {
+    return '$name béèrè $amount';
+  }
+
+  @override
+  String get walletOwedBody => 'Ìpín rẹ nínú ìrìn àjọpín';
+
+  @override
+  String get walletOwedPay => 'San';
+
+  @override
+  String get walletOwedDecline => 'Kọ̀';
+
+  @override
+  String walletOwedPaidSnack(String amount) {
+    return 'Ti san $amount';
+  }
+
+  @override
+  String get walletOwedDeclinedSnack => 'A kọ ìbéèrè';
+
+  @override
+  String get walletInsufficient => 'Owó kò tó. Kọ́kọ́ fi owó kún.';
+
+  @override
+  String get walletActionFailed =>
+      'Kò parí. Gbìyànjú lẹ́ẹ̀kan sí i — a kò ní gbà lẹ́ẹ̀mejì.';
+
+  @override
+  String get walletSendTitle => 'Fi owó ránṣẹ́';
+
+  @override
+  String get walletSendSubtitle => 'Sí arìnrìn-àjò Along mìíràn';
+
+  @override
+  String get walletSendPhone => 'Nọ́mbà fóònù';
+
+  @override
+  String get walletSendPhoneHint => '0803 123 4567';
+
+  @override
+  String get walletSendPhoneInvalid => 'Tẹ nọ́mbà fóònù Nàìjíríà';
+
+  @override
+  String get walletSendAmount => 'Iye';
+
+  @override
+  String get walletSendTooSmall => 'Fi ₦50 ránṣẹ́ ó kéré tán';
+
+  @override
+  String get walletSendTooLarge => 'Má ṣe ju ₦50,000 lọ';
+
+  @override
+  String get walletSendOverBalance => 'Ó ju iye tó kù lọ';
+
+  @override
+  String walletSendCta(String amount) {
+    return 'Fi $amount ránṣẹ́';
+  }
+
+  @override
+  String get walletSendCtaEmpty => 'Fi ránṣẹ́';
+
+  @override
+  String get walletSendNotFound => 'Kò sí arìnrìn-àjò Along tó ní nọ́mbà yẹn';
+
+  @override
+  String walletSentSnack(String amount) {
+    return 'Ti fi $amount ránṣẹ́';
+  }
+
+  @override
+  String walletAvailable(String amount) {
+    return 'Ó wà $amount';
+  }
+
+  @override
+  String get walletPassTitle => 'Along Pass';
+
+  @override
+  String get walletPassSubtitle => 'Ìrìn tí o ti san ṣáájú láti owó rẹ';
+
+  @override
+  String walletPassPrice(String amount) {
+    return '$amount lóṣooṣù';
+  }
+
+  @override
+  String get walletPassBody =>
+      'Ìsanwó kan láti inú wọ́lẹ́ẹ̀tì rẹ. Kò sí káàdì, kò sí owó ọwọ́ ní ẹnu ọ̀nà.';
+
+  @override
+  String walletPassCta(String amount) {
+    return 'Ra pass · $amount';
+  }
+
+  @override
+  String get walletPassBought => 'Pass ń ṣiṣẹ́ · Ó parí';
+
+  @override
+  String walletPassShort(String amount) {
+    return 'Fi $amount sí i láti rà á';
+  }
+
+  @override
+  String get walletSplitTitle => 'Pín owó ọkọ̀';
+
+  @override
+  String get walletSplitSubtitle => 'Béèrè ìpín lọ́wọ́ àwọn alábàárìn';
+
+  @override
+  String get walletSplitFare => 'Owó ọkọ̀';
+
+  @override
+  String get walletSplitYou => 'Ìwọ';
+
+  @override
+  String walletSplitCoRider(int n) {
+    return 'Alábàárìn $n';
+  }
+
+  @override
+  String get walletSplitAdd => 'Fi alábàárìn kún';
+
+  @override
+  String get walletSplitRemove => 'Yọ kúrò';
+
+  @override
+  String walletSplitEach(String amount) {
+    return '$amount ẹnì kọ̀ọ̀kan';
+  }
+
+  @override
+  String walletSplitCta(String amount) {
+    return 'Béèrè $amount ẹnì kọ̀ọ̀kan';
+  }
+
+  @override
+  String get walletSplitCtaEmpty => 'Béèrè ìpín';
+
+  @override
+  String get walletSplitFareInvalid => 'Tẹ owó ọkọ̀, ó kéré tán ₦100';
+
+  @override
+  String walletSplitSentSnack(int count) {
+    return 'A béèrè lọ́wọ́ alábàárìn $count';
+  }
+
+  @override
+  String get walletSplitNotFound =>
+      'Ọ̀kan nínú nọ́mbà yẹn kò tíì wà lórí Along';
+
+  @override
+  String get walletSplitNote =>
+      'Wọn yóò san láti inú wọ́lẹ́ẹ̀tì wọn. Ìwọ yóò máa san awakọ̀ bí ti tẹ́lẹ̀.';
+
+  @override
+  String get accountWallet => 'Wọ́lẹ́ẹ̀tì';
+
+  @override
+  String get accountWalletHint => 'Fi owó kún, fi ránṣẹ́, pass, pín owó ọkọ̀';
+
+  @override
+  String get walletPassPlanWeek => 'Ọ̀sẹ̀';
+
+  @override
+  String get walletPassPlanPack => 'Ìrìn 5';
+
+  @override
+  String get walletPassPlanMonth => 'Oṣù';
+
+  @override
+  String walletPassRides(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ìrìn $count',
+      one: 'Ìrìn 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletPassValidity(int days) {
+    return 'Ó wúlò fún ọjọ́ $days';
+  }
+
+  @override
+  String walletPassPerRide(String amount) {
+    return '$amount ìrìn kan';
+  }
+
+  @override
+  String get walletPassVersus => 'Ní ìfiwéra pẹ̀lú owó ìrìn kọ̀ọ̀kan';
+
+  @override
+  String walletPassSingleRow(int count, String fare) {
+    return '$count × $fare kọ̀ọ̀kan';
+  }
+
+  @override
+  String get walletPassPassRow => 'Pass';
+
+  @override
+  String walletPassSave(String amount) {
+    return 'O fi $amount pamọ́';
+  }
+
+  @override
+  String get walletPassNoSave => 'Kò sí ìfipamọ́ ní owó ìrìn rẹ tó wọ́pọ̀';
+
+  @override
+  String get walletPassNoHistory =>
+      'Ìfipamọ́ yóò hàn lẹ́yìn owó ìrìn àkọ́kọ́ láti wallet';
+
+  @override
+  String walletPassUsualFare(String amount) {
+    return 'Owó ìrìn rẹ tó wọ́pọ̀ jẹ́ $amount';
+  }
+
+  @override
+  String walletPassActive(String date) {
+    return 'Ó ń ṣiṣẹ́ títí $date';
+  }
+
+  @override
+  String walletSplitNotFoundNumber(String phone) {
+    return '$phone kò sí lórí Along síbẹ̀';
+  }
+
+  @override
+  String get walletSplitNotOnAlong => 'Kò sí lórí Along síbẹ̀';
+
+  @override
+  String get walletSplitRequests => 'Àwọn ìbéèrè rẹ';
+
+  @override
+  String get walletSplitPending => 'Ń dúró';
+
+  @override
+  String get walletSplitPaidStatus => 'Ti san';
+
+  @override
+  String get walletSplitDeclined => 'Kọ̀';
+
+  @override
+  String get walletPassSaveLabel => 'Ìfipamọ́ rẹ';
+
+  @override
+  String get walletPassHow => 'Bí ó ṣe ń ṣiṣẹ́';
+
+  @override
+  String get walletPassStep1 => 'Yan ètò lókè';
+
+  @override
+  String get walletPassStep2 => 'San lẹ́ẹ̀kan láti owó Along rẹ. Kò nílò káàdì';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'Yóò ṣiṣẹ́ fún ọjọ́ $days láti òní';
+  }
+
+  @override
+  String get walletPassDetails => 'Àlàyé';
+
+  @override
+  String get walletPassRowRides => 'Ìrìn';
+
+  @override
+  String get walletPassRowValid => 'Wúlò títí';
+
+  @override
+  String get walletPassRowPaid => 'A san pẹ̀lú';
+
+  @override
+  String get walletPassRowPaidValue => 'Owó Along';
 }

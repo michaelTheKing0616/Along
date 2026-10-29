@@ -1930,5 +1930,308 @@
         "type": "int"
       }
     }
-  }
+  },
+  "walletTitle": "Wallet",
+  "walletSubtitle": "Along credit",
+  "walletBalance": "Balance",
+  "walletBalanceNote": "It stays in Along",
+  "walletAddCredit": "Add credit",
+  "walletCustom": "Custom",
+  "walletHistory": "History",
+  "walletHistoryEmpty": "No credit yet. Top ups, fares and refunds show here.",
+  "walletAddCustom": "Add a custom amount",
+  "walletAdd": "Add {amount}",
+  "@walletAdd": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTopUp": "Top up",
+  "walletFare": "Fare",
+  "walletRefund": "Refund",
+  "walletToday": "Today",
+  "walletYesterday": "Yesterday",
+  "walletUnavailable": "Wallet didn't load",
+  "walletUnavailableBody": "Your credit is safe. Check your connection and try again.",
+  "walletRetry": "Try again",
+  "walletCustomTitle": "How much?",
+  "walletCustomHint": "₦100 to ₦50,000",
+  "walletCustomTooSmall": "At least ₦100",
+  "walletCustomTooLarge": "At most ₦50,000",
+  "walletCancel": "Cancel",
+  "walletAdded": "{amount} added",
+  "@walletAdded": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTopUpFailed": "Nothing was added. Try again.",
+  "walletActionTopUp": "Top up",
+  "walletActionSend": "Send",
+  "walletActionPass": "Pass",
+  "walletActionSplit": "Split",
+  "walletActivity": "Activity",
+  "walletEarlier": "Earlier",
+  "walletActivityEmpty": "No activity yet. Top up to ride without cash.",
+  "walletBalanceSemantics": "Balance {amount}",
+  "@walletBalanceSemantics": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSentTo": "To {name}",
+  "@walletSentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletReceivedFrom": "From {name}",
+  "@walletReceivedFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSent": "Sent",
+  "walletReceived": "Received",
+  "walletPassEntry": "Along Pass",
+  "walletSplitPaid": "Split paid",
+  "walletSplitReceived": "Split received",
+  "walletOwedTitle": "{name} asked for {amount}",
+  "@walletOwedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletOwedBody": "Your share of a shared ride",
+  "walletOwedPay": "Pay",
+  "walletOwedDecline": "Decline",
+  "walletOwedPaidSnack": "Paid {amount}",
+  "@walletOwedPaidSnack": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletOwedDeclinedSnack": "Request declined",
+  "walletInsufficient": "Not enough credit. Top up first.",
+  "walletActionFailed": "Couldn't finish. Try again — you won't be charged twice.",
+  "walletSendTitle": "Send credit",
+  "walletSendSubtitle": "To another Along rider",
+  "walletSendPhone": "Phone number",
+  "walletSendPhoneHint": "0803 123 4567",
+  "walletSendPhoneInvalid": "Enter a Nigerian mobile number",
+  "walletSendAmount": "Amount",
+  "walletSendTooSmall": "Send at least ₦50",
+  "walletSendTooLarge": "Send at most ₦50,000",
+  "walletSendOverBalance": "More than your balance",
+  "walletSendCta": "Send {amount}",
+  "@walletSendCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSendCtaEmpty": "Send",
+  "walletSendNotFound": "No Along rider has that number",
+  "walletSentSnack": "Sent {amount}",
+  "@walletSentSnack": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletAvailable": "Available {amount}",
+  "@walletAvailable": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassTitle": "Along Pass",
+  "walletPassSubtitle": "Rides paid ahead from your credit",
+  "walletPassPrice": "{amount} a month",
+  "@walletPassPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassBody": "One payment from your wallet. No card, no cash at the door.",
+  "walletPassCta": "Buy pass · {amount}",
+  "@walletPassCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassBought": "Pass active · Done",
+  "walletPassShort": "Top up {amount} more to buy",
+  "@walletPassShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitTitle": "Split a fare",
+  "walletSplitSubtitle": "Ask co-riders for their share",
+  "walletSplitFare": "Fare",
+  "walletSplitYou": "You",
+  "walletSplitCoRider": "Rider {n}",
+  "@walletSplitCoRider": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "walletSplitAdd": "Add co-rider",
+  "walletSplitRemove": "Remove",
+  "walletSplitEach": "{amount} each",
+  "@walletSplitEach": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitCta": "Request {amount} each",
+  "@walletSplitCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitCtaEmpty": "Request share",
+  "walletSplitFareInvalid": "Enter the fare, at least ₦100",
+  "walletSplitSentSnack": "Asked {count} co-riders",
+  "@walletSplitSentSnack": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletSplitNotFound": "One of those numbers isn't on Along yet",
+  "walletSplitNote": "They pay from their wallet. You keep paying the driver as usual.",
+  "accountWallet": "Wallet",
+  "accountWalletHint": "Top up, send, pass, split fares",
+  "walletPassPlanWeek": "Week",
+  "walletPassPlanPack": "5 rides",
+  "walletPassPlanMonth": "Month",
+  "walletPassRides": "{count, plural, =1{1 ride} other{{count} rides}}",
+  "@walletPassRides": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletPassValidity": "Good for {days} days",
+  "@walletPassValidity": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "walletPassPerRide": "{amount} a ride",
+  "@walletPassPerRide": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassVersus": "Versus single fares",
+  "walletPassSingleRow": "{count} × {fare} single",
+  "@walletPassSingleRow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassPassRow": "Pass",
+  "walletPassSave": "You save {amount}",
+  "@walletPassSave": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassNoSave": "No saving at your usual fare",
+  "walletPassNoHistory": "Savings show after your first fare paid from the wallet",
+  "walletPassUsualFare": "Your usual fare is {amount}",
+  "@walletPassUsualFare": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPassActive": "Active until {date}",
+  "@walletPassActive": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitNotFoundNumber": "{phone} isn't on Along yet",
+  "@walletSplitNotFoundNumber": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "walletSplitNotOnAlong": "Not on Along yet",
+  "walletSplitRequests": "Your requests",
+  "walletSplitPending": "Waiting",
+  "walletSplitPaidStatus": "Paid",
+  "walletSplitDeclined": "Declined",
+  "walletPassSaveLabel": "You save",
+  "walletPassHow": "How it works",
+  "walletPassStep1": "Pick a plan above",
+  "walletPassStep2": "Pay once from your Along credit. No card needed",
+  "walletPassStep3": "It stays active for {days} days from today",
+  "@walletPassStep3": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "walletPassDetails": "Details",
+  "walletPassRowRides": "Rides",
+  "walletPassRowValid": "Valid until",
+  "walletPassRowPaid": "Paid with",
+  "walletPassRowPaidValue": "Along credit"
 }

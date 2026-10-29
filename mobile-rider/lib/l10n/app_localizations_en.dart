@@ -1696,4 +1696,415 @@ class AppLocalizationsEn extends AppLocalizations {
   String connOfflineMixed(int queued, int needs) {
     return 'Offline · $queued to send · $needs to redo';
   }
+
+  @override
+  String get walletTitle => 'Wallet';
+
+  @override
+  String get walletSubtitle => 'Along credit';
+
+  @override
+  String get walletBalance => 'Balance';
+
+  @override
+  String get walletBalanceNote => 'It stays in Along';
+
+  @override
+  String get walletAddCredit => 'Add credit';
+
+  @override
+  String get walletCustom => 'Custom';
+
+  @override
+  String get walletHistory => 'History';
+
+  @override
+  String get walletHistoryEmpty =>
+      'No credit yet. Top ups, fares and refunds show here.';
+
+  @override
+  String get walletAddCustom => 'Add a custom amount';
+
+  @override
+  String walletAdd(String amount) {
+    return 'Add $amount';
+  }
+
+  @override
+  String get walletTopUp => 'Top up';
+
+  @override
+  String get walletFare => 'Fare';
+
+  @override
+  String get walletRefund => 'Refund';
+
+  @override
+  String get walletToday => 'Today';
+
+  @override
+  String get walletYesterday => 'Yesterday';
+
+  @override
+  String get walletUnavailable => 'Wallet didn\'t load';
+
+  @override
+  String get walletUnavailableBody =>
+      'Your credit is safe. Check your connection and try again.';
+
+  @override
+  String get walletRetry => 'Try again';
+
+  @override
+  String get walletCustomTitle => 'How much?';
+
+  @override
+  String get walletCustomHint => '₦100 to ₦50,000';
+
+  @override
+  String get walletCustomTooSmall => 'At least ₦100';
+
+  @override
+  String get walletCustomTooLarge => 'At most ₦50,000';
+
+  @override
+  String get walletCancel => 'Cancel';
+
+  @override
+  String walletAdded(String amount) {
+    return '$amount added';
+  }
+
+  @override
+  String get walletTopUpFailed => 'Nothing was added. Try again.';
+
+  @override
+  String get walletActionTopUp => 'Top up';
+
+  @override
+  String get walletActionSend => 'Send';
+
+  @override
+  String get walletActionPass => 'Pass';
+
+  @override
+  String get walletActionSplit => 'Split';
+
+  @override
+  String get walletActivity => 'Activity';
+
+  @override
+  String get walletEarlier => 'Earlier';
+
+  @override
+  String get walletActivityEmpty =>
+      'No activity yet. Top up to ride without cash.';
+
+  @override
+  String walletBalanceSemantics(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String walletSentTo(String name) {
+    return 'To $name';
+  }
+
+  @override
+  String walletReceivedFrom(String name) {
+    return 'From $name';
+  }
+
+  @override
+  String get walletSent => 'Sent';
+
+  @override
+  String get walletReceived => 'Received';
+
+  @override
+  String get walletPassEntry => 'Along Pass';
+
+  @override
+  String get walletSplitPaid => 'Split paid';
+
+  @override
+  String get walletSplitReceived => 'Split received';
+
+  @override
+  String walletOwedTitle(String name, String amount) {
+    return '$name asked for $amount';
+  }
+
+  @override
+  String get walletOwedBody => 'Your share of a shared ride';
+
+  @override
+  String get walletOwedPay => 'Pay';
+
+  @override
+  String get walletOwedDecline => 'Decline';
+
+  @override
+  String walletOwedPaidSnack(String amount) {
+    return 'Paid $amount';
+  }
+
+  @override
+  String get walletOwedDeclinedSnack => 'Request declined';
+
+  @override
+  String get walletInsufficient => 'Not enough credit. Top up first.';
+
+  @override
+  String get walletActionFailed =>
+      'Couldn\'t finish. Try again — you won\'t be charged twice.';
+
+  @override
+  String get walletSendTitle => 'Send credit';
+
+  @override
+  String get walletSendSubtitle => 'To another Along rider';
+
+  @override
+  String get walletSendPhone => 'Phone number';
+
+  @override
+  String get walletSendPhoneHint => '0803 123 4567';
+
+  @override
+  String get walletSendPhoneInvalid => 'Enter a Nigerian mobile number';
+
+  @override
+  String get walletSendAmount => 'Amount';
+
+  @override
+  String get walletSendTooSmall => 'Send at least ₦50';
+
+  @override
+  String get walletSendTooLarge => 'Send at most ₦50,000';
+
+  @override
+  String get walletSendOverBalance => 'More than your balance';
+
+  @override
+  String walletSendCta(String amount) {
+    return 'Send $amount';
+  }
+
+  @override
+  String get walletSendCtaEmpty => 'Send';
+
+  @override
+  String get walletSendNotFound => 'No Along rider has that number';
+
+  @override
+  String walletSentSnack(String amount) {
+    return 'Sent $amount';
+  }
+
+  @override
+  String walletAvailable(String amount) {
+    return 'Available $amount';
+  }
+
+  @override
+  String get walletPassTitle => 'Along Pass';
+
+  @override
+  String get walletPassSubtitle => 'Rides paid ahead from your credit';
+
+  @override
+  String walletPassPrice(String amount) {
+    return '$amount a month';
+  }
+
+  @override
+  String get walletPassBody =>
+      'One payment from your wallet. No card, no cash at the door.';
+
+  @override
+  String walletPassCta(String amount) {
+    return 'Buy pass · $amount';
+  }
+
+  @override
+  String get walletPassBought => 'Pass active · Done';
+
+  @override
+  String walletPassShort(String amount) {
+    return 'Top up $amount more to buy';
+  }
+
+  @override
+  String get walletSplitTitle => 'Split a fare';
+
+  @override
+  String get walletSplitSubtitle => 'Ask co-riders for their share';
+
+  @override
+  String get walletSplitFare => 'Fare';
+
+  @override
+  String get walletSplitYou => 'You';
+
+  @override
+  String walletSplitCoRider(int n) {
+    return 'Rider $n';
+  }
+
+  @override
+  String get walletSplitAdd => 'Add co-rider';
+
+  @override
+  String get walletSplitRemove => 'Remove';
+
+  @override
+  String walletSplitEach(String amount) {
+    return '$amount each';
+  }
+
+  @override
+  String walletSplitCta(String amount) {
+    return 'Request $amount each';
+  }
+
+  @override
+  String get walletSplitCtaEmpty => 'Request share';
+
+  @override
+  String get walletSplitFareInvalid => 'Enter the fare, at least ₦100';
+
+  @override
+  String walletSplitSentSnack(int count) {
+    return 'Asked $count co-riders';
+  }
+
+  @override
+  String get walletSplitNotFound => 'One of those numbers isn\'t on Along yet';
+
+  @override
+  String get walletSplitNote =>
+      'They pay from their wallet. You keep paying the driver as usual.';
+
+  @override
+  String get accountWallet => 'Wallet';
+
+  @override
+  String get accountWalletHint => 'Top up, send, pass, split fares';
+
+  @override
+  String get walletPassPlanWeek => 'Week';
+
+  @override
+  String get walletPassPlanPack => '5 rides';
+
+  @override
+  String get walletPassPlanMonth => 'Month';
+
+  @override
+  String walletPassRides(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rides',
+      one: '1 ride',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletPassValidity(int days) {
+    return 'Good for $days days';
+  }
+
+  @override
+  String walletPassPerRide(String amount) {
+    return '$amount a ride';
+  }
+
+  @override
+  String get walletPassVersus => 'Versus single fares';
+
+  @override
+  String walletPassSingleRow(int count, String fare) {
+    return '$count × $fare single';
+  }
+
+  @override
+  String get walletPassPassRow => 'Pass';
+
+  @override
+  String walletPassSave(String amount) {
+    return 'You save $amount';
+  }
+
+  @override
+  String get walletPassNoSave => 'No saving at your usual fare';
+
+  @override
+  String get walletPassNoHistory =>
+      'Savings show after your first fare paid from the wallet';
+
+  @override
+  String walletPassUsualFare(String amount) {
+    return 'Your usual fare is $amount';
+  }
+
+  @override
+  String walletPassActive(String date) {
+    return 'Active until $date';
+  }
+
+  @override
+  String walletSplitNotFoundNumber(String phone) {
+    return '$phone isn\'t on Along yet';
+  }
+
+  @override
+  String get walletSplitNotOnAlong => 'Not on Along yet';
+
+  @override
+  String get walletSplitRequests => 'Your requests';
+
+  @override
+  String get walletSplitPending => 'Waiting';
+
+  @override
+  String get walletSplitPaidStatus => 'Paid';
+
+  @override
+  String get walletSplitDeclined => 'Declined';
+
+  @override
+  String get walletPassSaveLabel => 'You save';
+
+  @override
+  String get walletPassHow => 'How it works';
+
+  @override
+  String get walletPassStep1 => 'Pick a plan above';
+
+  @override
+  String get walletPassStep2 =>
+      'Pay once from your Along credit. No card needed';
+
+  @override
+  String walletPassStep3(int days) {
+    return 'It stays active for $days days from today';
+  }
+
+  @override
+  String get walletPassDetails => 'Details';
+
+  @override
+  String get walletPassRowRides => 'Rides';
+
+  @override
+  String get walletPassRowValid => 'Valid until';
+
+  @override
+  String get walletPassRowPaid => 'Paid with';
+
+  @override
+  String get walletPassRowPaidValue => 'Along credit';
 }
