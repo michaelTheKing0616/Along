@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { buildI18nCoverage } from '@/lib/markets/i18n-coverage';
 import type { CountryRow, DeploymentOption } from '@/lib/markets/types';
 import { createClient } from '@/lib/supabase/server';
@@ -99,11 +98,9 @@ export default async function MarketsPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Markets &amp; portability</h1>
         <p>
-          Country catalog, verification schema, regulatory flags, i18n coverage, and payment
-          provider — config-only; no application code forks.
+          Countries, verification requirements, regulatory flags, translation coverage, and payment providers. All configuration; no code changes.
         </p>
       </div>
-      <ConsoleNav city={citySlug} />
       <MarketsConsole
         citySlug={citySlug}
         countries={countries}

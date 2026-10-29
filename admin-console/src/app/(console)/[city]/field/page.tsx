@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type {
   FieldReconciliationRow,
@@ -88,8 +87,7 @@ export default async function FieldReconciliationPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Field reconciliation</h1>
         <p>
-          Two-scout queue for <strong>{city?.name ?? citySlug}</strong> — merge, resolve, or publish
-          to <code>field_verified</code>.
+          Stops and fares where two scouts disagree in <strong>{city?.name ?? citySlug}</strong>. Merge, resolve, or publish as field-verified.
         </p>
       </div>
       {!city ? (
@@ -97,7 +95,6 @@ export default async function FieldReconciliationPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <FieldQueue citySlug={citySlug} initialRows={reconciliations} />
     </>
   );

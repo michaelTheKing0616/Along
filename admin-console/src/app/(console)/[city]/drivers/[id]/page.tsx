@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type { IntegrityFlagRow } from '@/lib/integrity/types';
 import { createClient } from '@/lib/supabase/server';
@@ -52,8 +51,7 @@ export default async function DriverDetailPage({ params }: PageProps) {
         <div className="page-header">
           <h1>Driver not found</h1>
         </div>
-        <ConsoleNav city={citySlug} />
-        <p style={{ color: 'var(--color-text-muted)' }}>No driver in this city with id {driverId}.</p>
+        <p className="empty-inline">No driver in this city with id {driverId}.</p>
       </>
     );
   }
@@ -182,10 +180,9 @@ export default async function DriverDetailPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Driver detail</h1>
         <p>
-          {profile?.display_name ?? driverRow.driver_code ?? driverId} — {city.name}
+          {profile?.display_name ?? driverRow.driver_code ?? driverId}
         </p>
       </div>
-      <ConsoleNav city={citySlug} />
       <DriverDetail citySlug={citySlug} driver={driver} />
     </>
   );

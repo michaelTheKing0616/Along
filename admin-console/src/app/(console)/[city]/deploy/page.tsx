@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { createClient } from '@/lib/supabase/server';
 import { DeployPlaybook } from './deploy-playbook';
@@ -38,8 +37,7 @@ export default async function DeployPlaybookPage({ params }: PageProps) {
       <div className="page-header">
         <h1>City deployment playbook</h1>
         <p>
-          Checklist and CSV seed path for <strong>{city?.name ?? citySlug}</strong> (status:{' '}
-          <code>{city?.status ?? 'unknown'}</code>).
+          Launch checklist and seed data import for <strong>{city?.name ?? citySlug}</strong>. Status: <code>{city?.status ?? 'unknown'}</code>.
         </p>
       </div>
       {!city ? (
@@ -47,7 +45,6 @@ export default async function DeployPlaybookPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       {city ? (
         <DeployPlaybook
           citySlug={citySlug}

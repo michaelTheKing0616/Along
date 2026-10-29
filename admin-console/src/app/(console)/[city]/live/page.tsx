@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { parseLiveMapStaticPayload } from '@/lib/map/parse';
 import type { LiveMapStaticPayload } from '@/lib/map/types';
 import { getCityBySlug } from '@/lib/city/resolve';
@@ -105,8 +104,7 @@ export default async function LiveMapPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Live map</h1>
         <p>
-          Tier I ops view for <strong>{city?.name ?? citySlug}</strong> — precise positions,
-          routes, active trips, SOS, and coverage-gap heat. Vector tiles only (MapLibre + PMTiles).
+          Driver positions, active trips, open SOS, and coverage gaps in <strong>{city?.name ?? citySlug}</strong>.
         </p>
       </div>
       {!city ? (
@@ -114,7 +112,6 @@ export default async function LiveMapPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       {city ? (
         <LiveMapClient
           citySlug={citySlug}

@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { aggregateSummaries } from '@/lib/analytics/format';
 import type {
   CorridorAnalyticsResponse,
@@ -141,7 +140,7 @@ export default async function DashboardPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Ops dashboard</h1>
         <p>
-          City KPIs for <strong>{city?.name ?? citySlug}</strong> — last 24 hours.
+          What needs a decision in <strong>{city?.name ?? citySlug}</strong> right now, then how the last 24 hours went.
         </p>
       </div>
       {!city ? (
@@ -149,7 +148,6 @@ export default async function DashboardPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <OpsDashboard citySlug={citySlug} windowLabel="24 h" kpis={kpis} counts={counts} />
     </>
   );

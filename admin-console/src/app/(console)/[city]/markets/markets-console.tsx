@@ -165,7 +165,7 @@ export function MarketsConsole({
       ) : null}
 
       <div
-        className="nav-links"
+        className="seg"
         role="tablist"
         aria-label="Markets & portability"
         style={{ marginBottom: 'var(--space-4)' }}
@@ -217,9 +217,9 @@ export function MarketsConsole({
           </table>
 
           <div className="card" style={{ marginTop: 'var(--space-6)' }}>
-            <h2 style={{ marginTop: 0, fontSize: '1rem' }}>Add hypothetical country (config-only)</h2>
+            <h2 className="section-title">Add hypothetical country (config-only)</h2>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-              Example: Ghana (GH) — writes <code>countries</code>, verification schema, regulatory
+              Example: Ghana (GH) writes <code>countries</code>, verification schema, regulatory
               flags, and country-scoped <code>payments.provider</code>. No app code changes.
             </p>
             <div className="field">
@@ -355,7 +355,7 @@ export function MarketsConsole({
             >
               {countries.map((c) => (
                 <option key={c.code} value={c.code}>
-                  {c.code} — {c.name}
+                  {c.code} · {c.name}
                 </option>
               ))}
             </select>
@@ -452,7 +452,7 @@ export function MarketsConsole({
             >
               {countries.map((c) => (
                 <option key={c.code} value={c.code}>
-                  {c.code} — {c.name}
+                  {c.code} · {c.name}
                 </option>
               ))}
             </select>
@@ -526,7 +526,7 @@ export function MarketsConsole({
       {tab === 'payment' ? (
         <section aria-label="Payment provider" data-testid="markets-payment">
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-            Country-scoped <code>payments.provider</code> — does not flip{' '}
+            Country-scoped <code>payments.provider</code>. Does not flip{' '}
             <code>payments.digital_enabled</code>.
           </p>
           <table className="data-table">
@@ -542,7 +542,7 @@ export function MarketsConsole({
               {countries.map((row) => (
                 <tr key={row.code} data-testid={`payment-row-${row.code}`}>
                   <td>
-                    {row.code} — {row.name}
+                    {row.code} · {row.name}
                   </td>
                   <td>{row.currency_code}</td>
                   <td>

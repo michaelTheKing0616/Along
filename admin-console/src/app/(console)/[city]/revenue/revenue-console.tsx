@@ -112,7 +112,7 @@ export function RevenueConsole({
       ) : null}
 
       <div
-        className="nav-links"
+        className="seg"
         role="tablist"
         aria-label="Revenue hooks"
         style={{ marginBottom: 'var(--space-4)' }}
@@ -135,7 +135,7 @@ export function RevenueConsole({
       {tab === 'placements' ? (
         <section data-testid="revenue-placements">
           <p style={{ color: 'var(--color-text-muted)' }}>
-            Contextual placements only — keyed to destination, park, or corridor (FM39). No rider
+            Contextual placements only, keyed to destination, park, or corridor. No rider
             targeting.
           </p>
           <div className="field">
@@ -236,7 +236,7 @@ export function RevenueConsole({
             Create placement
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Placements</h2>
+          <h2 className="section-title section-gap">Placements</h2>
           <table className="data-table" data-testid="revenue-placements-table">
             <thead>
               <tr>
@@ -330,7 +330,7 @@ export function RevenueConsole({
             Create API key
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Keys</h2>
+          <h2 className="section-title section-gap">Keys</h2>
           <table className="data-table" data-testid="revenue-api-keys-table">
             <thead>
               <tr>
@@ -372,7 +372,7 @@ export function RevenueConsole({
 
       {tab === 'accounts' ? (
         <section data-testid="revenue-accounts">
-          <h2 style={{ fontSize: '1.125rem' }}>Create corporate account</h2>
+          <h2 className="section-title">Create corporate account</h2>
           <div className="field">
             <label htmlFor="revenue-corp-deployment">Deployment</label>
             <select
@@ -436,7 +436,7 @@ export function RevenueConsole({
             Create corporate account
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Create operator account</h2>
+          <h2 className="section-title section-gap">Create operator account</h2>
           <div className="field">
             <label htmlFor="revenue-op-name">Name</label>
             <input
@@ -478,13 +478,13 @@ export function RevenueConsole({
             Create operator account
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Corporate accounts</h2>
+          <h2 className="section-title section-gap">Corporate accounts</h2>
           <table className="data-table" data-testid="revenue-corporate-accounts-table">
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Budget</th>
+                <th className="num">Budget</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -493,14 +493,14 @@ export function RevenueConsole({
                 <tr key={row.id}>
                   <td>{row.name}</td>
                   <td>{row.billing_email}</td>
-                  <td>{row.monthly_budget ?? '—'}</td>
+                  <td className="num">{row.monthly_budget ?? '—'}</td>
                   <td>{row.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Operator accounts</h2>
+          <h2 className="section-title section-gap">Operator accounts</h2>
           <table className="data-table" data-testid="revenue-operator-accounts-table">
             <thead>
               <tr>

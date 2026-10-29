@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { parseGeoPoint } from '@/lib/safety/format';
 import type {
@@ -240,7 +239,7 @@ export default async function SafetyPage({ params }: PageProps) {
         <h1>Safety board</h1>
         <p>
           Live SOS and incident triage for <strong>{city?.name ?? citySlug}</strong>. Acknowledge
-          within {sla.ackSlaS}s; rows escalate at {sla.escalateSlaS}s unacknowledged.
+          within {sla.ackSlaS}s; unacknowledged alerts escalate at {sla.escalateSlaS}s.
         </p>
       </div>
       {!city ? (
@@ -248,7 +247,6 @@ export default async function SafetyPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <SafetyBoard
         citySlug={citySlug}
         cityId={city?.id ?? citySlug}

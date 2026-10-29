@@ -107,7 +107,7 @@ export function IntelligenceConsole({
       ) : null}
 
       <div
-        className="nav-links"
+        className="seg"
         role="tablist"
         aria-label="Intelligence review tabs"
         style={{ marginBottom: 'var(--space-4)' }}
@@ -131,7 +131,7 @@ export function IntelligenceConsole({
       {tab === 'parks' ? (
         <section aria-label="Candidate parks" data-testid="intelligence-parks">
           {parks.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>No candidate park clusters for this city.</p>
+            <p className="empty-inline">No candidate park clusters for this city.</p>
           ) : (
             <table className="data-table">
               <thead>
@@ -202,7 +202,7 @@ export function IntelligenceConsole({
       {tab === 'routes' ? (
         <section aria-label="Route inference" data-testid="intelligence-routes">
           {routes.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>No route inference candidates for this city.</p>
+            <p className="empty-inline">No route inference candidates for this city.</p>
           ) : (
             <table className="data-table">
               <thead>
@@ -312,11 +312,11 @@ export function IntelligenceConsole({
               color: 'var(--color-text-muted)',
             }}
           >
-            Promote marks a correction as reviewed for manual OSM contribution — nothing is written to
+            Promote marks a correction as reviewed for manual OSM contribution. Nothing is written to
             OpenStreetMap automatically.
           </p>
           {geometry.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>
+            <p className="empty-inline">
               No geometry correction candidates for this city.
             </p>
           ) : (

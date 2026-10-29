@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { sortFlagsByScore } from '@/lib/integrity/format';
 import type { IntegrityFlagRow } from '@/lib/integrity/types';
@@ -118,8 +117,7 @@ export default async function IntegrityPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Integrity review</h1>
         <p>
-          Reconciliation flags for <strong>{city?.name ?? citySlug}</strong> — clear or action
-          with explicit standing transition (FM13).
+          Reconciliation flags in <strong>{city?.name ?? citySlug}</strong>. Clear a flag, or act on it with an explicit standing change.
         </p>
       </div>
       {!city ? (
@@ -127,7 +125,6 @@ export default async function IntegrityPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <IntegrityQueue
         citySlug={citySlug}
         initialRows={queue}

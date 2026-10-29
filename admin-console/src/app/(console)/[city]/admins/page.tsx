@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import type { AdminUserRow } from '@/lib/admins/types';
 import { createClient } from '@/lib/supabase/server';
 import { AdminsConsole } from './admins-console';
@@ -50,11 +49,9 @@ export default async function AdminsPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Admin users</h1>
         <p>
-          Invite admins, assign roles and deployment/city scope, disable accounts, and review TOTP
-          enforcement status — <strong>{city}</strong>.
+          Invite admins, set roles and city scope, disable accounts, and check two-factor enrolment.
         </p>
       </div>
-      <ConsoleNav city={city} />
       <AdminsConsole
         citySlug={city}
         initialRows={rows}

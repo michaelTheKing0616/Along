@@ -117,8 +117,8 @@ export function CorridorAnalytics({
         </div>
       ) : null}
 
-      <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
-        <div className="field">
+      <div className="filter-bar">
+        <div className="field" style={{ marginBottom: 0, minWidth: 280 }}>
           <label htmlFor="corridor-select">Corridor</label>
           <select
             id="corridor-select"
@@ -138,28 +138,17 @@ export function CorridorAnalytics({
             ))}
           </select>
         </div>
-        <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-2)' }}>
-          Window: last 24 h · page size from <code>analytics.page_size</code>
-        </p>
+        <span className="note" style={{ margin: 0, alignSelf: 'center' }}>
+          Last 24 hours
+        </span>
       </div>
 
-      <p
-        className="card"
-        data-testid="conversion-diagnostic-note"
-        style={{ marginBottom: 'var(--space-4)', fontSize: '0.875rem' }}
-      >
+      <p className="note" data-testid="conversion-diagnostic-note" style={{ margin: '0 0 var(--space-4)' }}>
         {CONVERSION_DIAGNOSTIC_NOTE}
       </p>
 
       {summary ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(10rem, 1fr))',
-            gap: 'var(--space-3)',
-            marginBottom: 'var(--space-4)',
-          }}
-        >
+        <div className="kpi-grid" style={{ marginBottom: 'var(--space-3)' }}>
           {[
             { id: 'analytics-searches', label: 'Searches', value: formatCount(summary.searches) },
             {
@@ -186,46 +175,46 @@ export function CorridorAnalytics({
               value: summary.avg_direct_candidates.toFixed(1),
             },
           ].map((tile) => (
-            <div key={tile.id} className="card" data-testid={tile.id}>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>{tile.label}</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{tile.value}</div>
+            <div key={tile.id} className="kpi" data-testid={tile.id}>
+              <div className="kpi-label">{tile.label}</div>
+              <div className="kpi-value">{tile.value}</div>
             </div>
           ))}
         </div>
       ) : null}
 
       <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
-        <button type="button" className="btn btn-primary" onClick={() => exportCsv()} disabled={!data}>
+        <button type="button" className="btn btn-secondary" onClick={() => exportCsv()} disabled={!data}>
           Export CSV
         </button>
-        <Link href={`/${citySlug}/dashboard`} className="btn">
+        <Link href={`/${citySlug}/dashboard`} className="btn btn-ghost">
           Back to dashboard
         </Link>
       </div>
 
-      <h2 style={{ fontSize: '1rem' }}>Time series</h2>
+      <h2 className="section-title">Time series</h2>
       <table className="data-table" data-testid="analytics-series-table">
         <thead>
           <tr>
             <th>Bucket</th>
-            <th>Searches</th>
-            <th>Ambient views</th>
-            <th>Commits</th>
-            <th>Conversion</th>
-            <th>Requests</th>
-            <th>Completed</th>
+            <th className="num">Searches</th>
+            <th className="num">Ambient views</th>
+            <th className="num">Commits</th>
+            <th className="num">Conversion</th>
+            <th className="num">Requests</th>
+            <th className="num">Completed</th>
           </tr>
         </thead>
         <tbody>
           {(data?.series ?? []).map((row) => (
             <tr key={row.bucket_start}>
               <td>{new Date(row.bucket_start).toLocaleString()}</td>
-              <td>{row.searches}</td>
-              <td>{row.ambient_views}</td>
-              <td>{row.commits}</td>
-              <td>{formatRate(row.ambient_to_commit_rate)}</td>
-              <td>{row.requests}</td>
-              <td>{row.completed_trips}</td>
+              <td className="num">{row.searches}</td>
+              <td className="num">{row.ambient_views}</td>
+              <td className="num">{row.commits}</td>
+              <td className="num">{formatRate(row.ambient_to_commit_rate)}</td>
+              <td className="num">{row.requests}</td>
+              <td className="num">{row.completed_trips}</td>
             </tr>
           ))}
         </tbody>
@@ -244,14 +233,14 @@ export function CorridorAnalytics({
         </button>
       ) : null}
 
-      <h2 style={{ fontSize: '1rem', marginTop: 'var(--space-6)' }}>Coverage gaps</h2>
+      <h2 className="section-title section-gap">Coverage gaps</h2>
       <table className="data-table" data-testid="analytics-gaps-table">
         <thead>
           <tr>
             <th>Searched at</th>
             <th>Nearest stage</th>
-            <th>Distance (m)</th>
-            <th>Ambient vehicles</th>
+            <th className="num">Distance (m)</th>
+            <th className="num">Ambient vehicles</th>
             <th>Location</th>
           </tr>
         </thead>
@@ -260,8 +249,8 @@ export function CorridorAnalytics({
             <tr key={gap.id}>
               <td>{new Date(gap.searched_at).toLocaleString()}</td>
               <td>{gap.nearest_stage_name ?? '—'}</td>
-              <td>{gap.nearest_stage_distance_m ?? '—'}</td>
-              <td>{gap.ambient_vehicle_count}</td>
+              <td className="num">{gap.nearest_stage_distance_m ?? '—'}</td>
+              <td className="num">{gap.ambient_vehicle_count}</td>
               <td>
                 {gap.location.lat.toFixed(4)}, {gap.location.lng.toFixed(4)}
               </td>

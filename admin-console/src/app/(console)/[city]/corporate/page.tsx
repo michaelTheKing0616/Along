@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import type {
   CorporateAllocationRow,
   CorporateInvoiceRow,
@@ -170,7 +169,6 @@ export default async function CorporatePage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <CorporateConsole citySlug={citySlug} {...portal} />
     </>
   );

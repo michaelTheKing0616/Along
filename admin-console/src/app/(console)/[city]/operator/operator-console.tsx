@@ -76,53 +76,43 @@ export function OperatorConsole({ initialOverview, isOperatorViewer }: OperatorC
         </div>
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-secondary"
           data-testid="operator-refresh"
           disabled={pending}
           onClick={refreshOverview}
         >
-          Refresh aggregates
+          Update
         </button>
       </div>
 
-      <p style={{ color: 'var(--color-text-muted)' }} data-testid="operator-aggregate-note">
-        Aggregate driver metrics only — no per-rider data (FM39).
-      </p>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(11rem, 1fr))',
-          gap: 'var(--space-4)',
-        }}
-      >
-        <div className="card" data-testid="operator-online-total">
-          <h3 style={{ marginTop: 0 }}>Drivers online</h3>
-          <p style={{ fontSize: '1.5rem', margin: 0 }}>{overview?.online_total ?? 0}</p>
-          <p style={{ color: 'var(--color-text-muted)' }}>
+      <div className="kpi-grid">
+        <div className="kpi" data-testid="operator-online-total">
+          <div className="kpi-label">Drivers online</div>
+          <p className="kpi-value">{overview?.online_total ?? 0}</p>
+          <p className="kpi-sub">
             At park {overview?.online_at_park ?? 0} · Roaming {overview?.online_roaming ?? 0}
           </p>
         </div>
-        <div className="card" data-testid="operator-trips-day">
-          <h3 style={{ marginTop: 0 }}>Trips / day</h3>
-          <p style={{ fontSize: '1.5rem', margin: 0 }}>
+        <div className="kpi" data-testid="operator-trips-day">
+          <div className="kpi-label">Trips / day</div>
+          <p className="kpi-value">
             {overview?.trips_per_day != null ? overview.trips_per_day.toFixed(1) : '—'}
           </p>
-          <p style={{ color: 'var(--color-text-muted)' }}>
+          <p className="kpi-sub">
             {overview?.trips_completed ?? 0} completed in window
           </p>
         </div>
-        <div className="card" data-testid="operator-fare-discrepancy">
-          <h3 style={{ marginTop: 0 }}>Fare discrepancy rate</h3>
-          <p style={{ fontSize: '1.5rem', margin: 0 }}>
+        <div className="kpi" data-testid="operator-fare-discrepancy">
+          <div className="kpi-label">Fare discrepancy rate</div>
+          <p className="kpi-value">
             {overview?.fare_discrepancy_rate != null
               ? `${(overview.fare_discrepancy_rate * 100).toFixed(1)}%`
               : '—'}
           </p>
         </div>
-        <div className="card" data-testid="operator-driver-count">
-          <h3 style={{ marginTop: 0 }}>Drivers in roster</h3>
-          <p style={{ fontSize: '1.5rem', margin: 0 }}>{overview?.driver_count ?? 0}</p>
+        <div className="kpi" data-testid="operator-driver-count">
+          <div className="kpi-label">Drivers in roster</div>
+          <p className="kpi-value">{overview?.driver_count ?? 0}</p>
         </div>
       </div>
     </div>

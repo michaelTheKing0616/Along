@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import type { CorridorAnalyticsResponse, CorridorOption } from '@/lib/analytics/types';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { createClient } from '@/lib/supabase/server';
@@ -53,7 +52,6 @@ export default async function AnalyticsPage({ params }: PageProps) {
           No corridors configured for this city.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       {city && corridors.length > 0 ? (
         <CorridorAnalytics
           citySlug={citySlug}

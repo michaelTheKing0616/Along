@@ -21,6 +21,7 @@ import type {
   SosBoardRow,
 } from '@/lib/safety/types';
 import { acknowledgeSos, resolveSos, triageIncident } from './actions';
+import { humanize } from '@/lib/ui/label';
 
 const RUNBOOK_PATH = '/docs/runbooks/sos_escalation.md';
 
@@ -152,13 +153,12 @@ export function SafetyBoard({
 
   return (
     <div data-testid="safety-board" data-live-status={liveStatus}>
-      <p style={{ marginBottom: 'var(--space-4)', fontSize: '0.875rem' }}>
-        SLA targets from config: acknowledge within{' '}
-        <strong>{sla.ackSlaS}s</strong>, escalate visually at{' '}
-        <strong>{sla.escalateSlaS}s</strong>.{' '}
+      <p className="note" style={{ margin: '0 0 var(--space-4)' }}>
+        Targets come from city config. Follow the{' '}
         <Link href={RUNBOOK_PATH} data-testid="safety-runbook-link">
           SOS escalation runbook
-        </Link>
+        </Link>{' '}
+        when a row escalates.
       </p>
 
       {error ? (
@@ -178,9 +178,9 @@ export function SafetyBoard({
       ) : null}
 
       <section style={{ marginBottom: 'var(--space-8)' }}>
-        <h2 style={{ margin: '0 0 var(--space-3)', fontSize: '1.125rem' }}>Open SOS</h2>
+        <h2 className="section-title">SOS alerts</h2>
         {sosRows.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }} data-testid="safety-sos-empty">
+          <p className="empty-inline" data-testid="safety-sos-empty">
             No open SOS alerts for this city.
           </p>
         ) : (
@@ -218,16 +218,16 @@ export function SafetyBoard({
                         data-testid={`safety-sos-sla-${row.id}`}
                         style={slaStyle(tier)}
                       >
-                        {row.status === 'open' ? slaTierLabel(tier) : row.status}
+                        {row.status === 'open' ? slaTierLabel(tier) : 'Closed'}
                       </span>
                     </td>
                     <td>
-                      {row.raiser_name ?? row.raised_by.slice(0, 8)} ({row.raised_role})
+                      {row.raiser_name ?? row.raised_by.slice(0, 8)} <span className="cell-sub">{humanize(row.raised_role)}</span>
                     </td>
-                    <td>{row.trip_id?.slice(0, 8) ?? '—'}</td>
+                    <td className="mono">{row.trip_id?.slice(0, 8) ?? '—'}</td>
                     <td>{formatCoordinates(row.lat, row.lng)}</td>
                     <td>
-                      <span className={`badge badge-${row.status}`}>{row.status}</span>
+                      <span className={`badge badge-${row.status}`}>{humanize(row.status)}</span>
                     </td>
                     <td>
                       {canAck && row.status === 'open' ? (
@@ -244,7 +244,7 @@ export function SafetyBoard({
                           Acknowledge
                         </button>
                       ) : (
-                        '—'
+                        <span className="cell-muted">—</span>
                       )}
                     </td>
                   </tr>
@@ -261,40 +261,40 @@ export function SafetyBoard({
           style={{ marginBottom: 'var(--space-8)' }}
           data-testid="safety-sos-detail"
         >
-          <h2 style={{ margin: '0 0 var(--space-3)', fontSize: '1.125rem' }}>Trip context</h2>
-          <dl style={{ margin: 0, display: 'grid', gap: 'var(--space-2)', fontSize: '0.875rem' }}>
+          <h2 className="section-title">Trip context</h2>
+          <dl className="dl">
             <div>
-              <dt style={{ fontWeight: 600 }}>Rider</dt>
-              <dd style={{ margin: 0 }}>{selectedSos.rider_name ?? '—'}</dd>
+              <dt>Rider</dt>
+              <dd>{selectedSos.rider_name ?? '—'}</dd>
             </div>
             <div>
-              <dt style={{ fontWeight: 600 }}>Driver</dt>
-              <dd style={{ margin: 0 }}>{selectedSos.driver_name ?? '—'}</dd>
+              <dt>Driver</dt>
+              <dd>{selectedSos.driver_name ?? '—'}</dd>
             </div>
             <div>
-              <dt style={{ fontWeight: 600 }}>Vehicle</dt>
-              <dd style={{ margin: 0 }}>{selectedSos.vehicle_plate ?? '—'}</dd>
+              <dt>Vehicle</dt>
+              <dd>{selectedSos.vehicle_plate ?? '—'}</dd>
             </div>
             <div>
-              <dt style={{ fontWeight: 600 }}>Trip status</dt>
-              <dd style={{ margin: 0 }}>{selectedSos.trip_status ?? '—'}</dd>
+              <dt>Trip status</dt>
+              <dd>{humanize(selectedSos.trip_status)}</dd>
             </div>
             <div>
-              <dt style={{ fontWeight: 600 }}>Destination</dt>
-              <dd style={{ margin: 0 }}>{selectedSos.destination_label ?? '—'}</dd>
+              <dt>Destination</dt>
+              <dd>{selectedSos.destination_label ?? '—'}</dd>
             </div>
             {selectedSos.share_issued ? (
               <div>
-                <dt style={{ fontWeight: 600 }}>Live trip link</dt>
-                <dd style={{ margin: 0 }} data-testid="safety-sos-share-issued">
+                <dt>Live trip link</dt>
+                <dd data-testid="safety-sos-share-issued">
                   Issued with this alert. The link was sent to the rider&apos;s emergency
                   contacts. The token is not stored on this desk.
                 </dd>
               </div>
             ) : null}
             <div>
-              <dt style={{ fontWeight: 600 }}>Live location</dt>
-              <dd style={{ margin: 0 }}>
+              <dt>Live location</dt>
+              <dd>
                 {formatCoordinates(selectedSos.lat, selectedSos.lng)}
                 {selectedSos.lat != null && selectedSos.lng != null ? (
                   <>
@@ -355,9 +355,9 @@ export function SafetyBoard({
       ) : null}
 
       <section>
-        <h2 style={{ margin: '0 0 var(--space-3)', fontSize: '1.125rem' }}>Incident queue</h2>
+        <h2 className="section-title">Incident queue</h2>
         {incidentRows.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }} data-testid="safety-incidents-empty">
+          <p className="empty-inline" data-testid="safety-incidents-empty">
             No open incidents for this city.
           </p>
         ) : (
@@ -387,7 +387,7 @@ export function SafetyBoard({
                     <td>S{row.severity}</td>
                     <td>{row.reporter_name ?? row.reported_by.slice(0, 8)}</td>
                     <td>
-                      <span className={`badge badge-${row.status}`}>{row.status}</span>
+                      <span className={`badge badge-${row.status}`}>{humanize(row.status)}</span>
                     </td>
                     <td>{new Date(row.reported_at).toLocaleString()}</td>
                   </tr>
@@ -401,7 +401,7 @@ export function SafetyBoard({
                 style={{ marginTop: 'var(--space-4)' }}
                 data-testid="safety-incident-triage"
               >
-                <h3 style={{ margin: '0 0 var(--space-3)', fontSize: '1rem' }}>Triage</h3>
+                <h3 className="sub-title">Triage</h3>
                 <p style={{ margin: '0 0 var(--space-3)', fontSize: '0.875rem' }}>
                   {selectedIncident.description ?? 'No description.'}
                 </p>

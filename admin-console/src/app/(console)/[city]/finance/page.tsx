@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type {
   FeeBearerReport,
@@ -218,8 +217,7 @@ export default async function FinancePage({ params }: PageProps) {
       <div className="page-header">
         <h1>Finance</h1>
         <p>
-          Settlements, agents, dual-control adjustments, and payouts —{' '}
-          <strong>{city?.name ?? citySlug}</strong>
+          Settlements, cash agents, two-person adjustments, and payouts in <strong>{city?.name ?? citySlug}</strong>.
         </p>
       </div>
       {!city ? (
@@ -227,7 +225,6 @@ export default async function FinancePage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       {city && data ? (
         <FinanceConsole
           citySlug={citySlug}

@@ -101,4 +101,4 @@ export function aggregateSummaries(
 
 /** Guardrail copy — conversion is ops review signal, never an automatic action trigger. */
 export const CONVERSION_DIAGNOSTIC_NOTE =
-  'Ambient→commit conversion is a diagnostic signal for ops review (§4.1.2). It does not trigger driver or rider consequences.';
+  'Ambient→commit is a diagnostic signal for ops review. It does not trigger driver or rider consequences.';

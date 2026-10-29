@@ -60,7 +60,7 @@ export function AgentSettlementForm({ businessName }: AgentSettlementFormProps) 
         >
           <strong>Credit posted.</strong>
           <p style={{ margin: 'var(--space-2) 0 0' }}>
-            Ledger entry #{success.ledgerEntryId} — driver balance after:{' '}
+            Ledger entry #{success.ledgerEntryId}. Driver balance after:{' '}
             {formatMoney(success.balanceAfter)}
           </p>
         </div>

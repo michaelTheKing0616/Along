@@ -33,7 +33,6 @@ export function OpsDashboard({ citySlug, windowLabel, kpis, counts }: OpsDashboa
       label: 'Ambient→commit',
       value: formatRate(kpis.ambient_to_commit_rate),
       href: `/${citySlug}/analytics`,
-      hint: 'Diagnostic only',
     },
     { testId: 'kpi-requests', label: 'Requests', value: formatCount(kpis.requests), href: `/${citySlug}/integrity` },
     { testId: 'kpi-accept-rate', label: 'Accept rate', value: formatRate(kpis.accept_rate) },
@@ -61,49 +60,53 @@ export function OpsDashboard({ citySlug, windowLabel, kpis, counts }: OpsDashboa
     },
   ];
 
+  const byId = new Map(tiles.map((t) => [t.testId, t]));
+  const sections: { title: string; ids: string[]; attention?: boolean }[] = [
+    {
+      title: 'Right now',
+      ids: ['kpi-open-sos', 'kpi-open-flags', 'kpi-verification-queue', 'kpi-drivers-online'],
+      attention: true,
+    },
+    {
+      title: `Demand, last ${windowLabel} across ${kpis.corridors} corridor${kpis.corridors === 1 ? '' : 's'}`,
+      ids: ['kpi-searches', 'kpi-requests', 'kpi-accept-rate', 'kpi-completed', 'kpi-wait', 'kpi-fare-discrepancy'],
+    },
+    { title: 'Diagnostic', ids: ['kpi-conversion'] },
+  ];
+
+  const renderTile = (tile: Tile, attention: boolean) => {
+    const hot = attention && tile.testId !== 'kpi-drivers-online' && tile.value !== '0' && tile.value !== '—';
+    const body = (
+      <div className={`kpi${tile.href ? ' kpi-link' : ''}${hot ? ' kpi-hot' : ''}`} data-testid={tile.testId}>
+        <div className="kpi-label">{tile.label}</div>
+        <div className="kpi-value">{tile.value}</div>
+        {tile.hint ? <div className="kpi-sub">{tile.hint}</div> : null}
+      </div>
+    );
+    return tile.href ? (
+      <Link key={tile.testId} href={tile.href} className="kpi-anchor" aria-label={`${tile.label}: ${tile.value}`}>
+        {body}
+      </Link>
+    ) : (
+      <div key={tile.testId}>{body}</div>
+    );
+  };
+
   return (
     <div data-testid="ops-dashboard">
-      <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-4)' }}>
-        City KPIs for the last {windowLabel} across {kpis.corridors} corridor
-        {kpis.corridors === 1 ? '' : 's'}.
-      </p>
-      <p
-        className="card"
-        data-testid="conversion-diagnostic-note"
-        style={{ marginBottom: 'var(--space-4)', fontSize: '0.875rem' }}
-      >
-        {CONVERSION_DIAGNOSTIC_NOTE}
-      </p>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(11rem, 1fr))',
-          gap: 'var(--space-4)',
-        }}
-      >
-        {tiles.map((tile) => {
-          const body = (
-            <div className="card" data-testid={tile.testId} style={{ height: '100%' }}>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>{tile.label}</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 600, marginTop: 'var(--space-1)' }}>{tile.value}</div>
-              {tile.hint ? (
-                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-1)' }}>
-                  {tile.hint}
-                </div>
-              ) : null}
-            </div>
-          );
-
-          if (tile.href) {
-            return (
-              <Link key={tile.testId} href={tile.href} style={{ textDecoration: 'none', color: 'inherit' }}>
-                {body}
-              </Link>
-            );
-          }
-          return <div key={tile.testId}>{body}</div>;
-        })}
-      </div>
+      {sections.map((section) => (
+        <section key={section.title} className="kpi-section" aria-label={section.title}>
+          <h2 className="section-label">{section.title}</h2>
+          <div className={`kpi-grid${section.ids.length === 1 ? ' kpi-grid-single' : ''}`}>
+            {section.ids.map((id) => renderTile(byId.get(id)!, Boolean(section.attention)))}
+            {section.title === 'Diagnostic' ? (
+              <p className="note" data-testid="conversion-diagnostic-note">
+                {CONVERSION_DIAGNOSTIC_NOTE}
+              </p>
+            ) : null}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

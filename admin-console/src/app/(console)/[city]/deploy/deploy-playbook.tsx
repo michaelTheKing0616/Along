@@ -146,7 +146,7 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
       ) : null}
 
       <section className="card" style={{ marginBottom: 'var(--space-6)' }}>
-        <h2 style={{ margin: '0 0 var(--space-4)', fontSize: '1rem' }}>Deployment checklist</h2>
+        <h2 className="section-title">Deployment checklist</h2>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {CHECKLIST.map((item) => {
             const done = item.manual ? checked[item.id] : autoChecks[item.id as keyof typeof autoChecks];
@@ -177,13 +177,12 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
       </section>
 
       <section className="card" style={{ marginBottom: 'var(--space-6)' }}>
-        <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1rem' }}>Corridor backbone import (A-08)</h2>
+        <h2 className="section-title">Corridor backbone import</h2>
         <p style={{ margin: '0 0 var(--space-4)', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-          Paste doc 13 CSV sections for a new corridor. Dry-run calls{' '}
-          <code>admin_import_dry_run</code>; apply calls <code>admin_import_apply</code>. Rows use{' '}
-          <code>import</code> source and <code>candidate</code> verification status.
+          Paste the CSV sections for a new corridor, run a dry run, then apply. Imported rows
+          start as <code>candidate</code> until verified in the field.
         </p>
-        <div style={{ display: 'grid', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+        <div className="form-grid" style={{ marginBottom: 'var(--space-4)' }}>
           <div className="field">
             <label htmlFor="corridor-name">Corridor name</label>
             <input
@@ -203,34 +202,33 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
             />
           </div>
         </div>
+        <div className="form-grid" style={{ marginBottom: 'var(--space-4)' }}>
         {(
           [
-            ['parksCsv', 'Parks CSV (name,aliases,lat,lng,modes)', 'deploy-corridor-parks'],
-            ['routesCsv', 'Routes CSV (origin_park,destination_park,mode,name)', 'deploy-corridor-routes'],
-            ['stagesCsv', 'Stages CSV (route_name,sequence,stage_name,lat,lng,is_official_park)', 'deploy-corridor-stages'],
-            ['legFaresCsv', 'Leg fares CSV (route_name,from_seq,to_seq,fare)', 'deploy-corridor-leg-fares'],
-            ['throughFaresCsv', 'Through fares CSV (optional)', 'deploy-corridor-through-fares'],
+            ['parksCsv', 'Parks', 'name,aliases,lat,lng,modes', 'deploy-corridor-parks'],
+            ['routesCsv', 'Routes', 'origin_park,destination_park,mode,name', 'deploy-corridor-routes'],
+            ['stagesCsv', 'Stages', 'route_name,sequence,stage_name,lat,lng,is_official_park', 'deploy-corridor-stages'],
+            ['legFaresCsv', 'Leg fares', 'route_name,from_seq,to_seq,fare', 'deploy-corridor-leg-fares'],
+            ['throughFaresCsv', 'Through fares (optional)', 'route_name,from_seq,to_seq,fare', 'deploy-corridor-through-fares'],
           ] as const
-        ).map(([key, label, testId]) => (
-          <div key={key} className="field" style={{ marginBottom: 'var(--space-3)' }}>
+        ).map(([key, label, columns, testId]) => (
+          <div key={key} className="field">
             <label htmlFor={testId}>{label}</label>
             <textarea
               id={testId}
+              className="csv-input"
               value={corridor[key]}
               onChange={(e) => setCorridor((prev) => ({ ...prev, [key]: e.target.value }))}
               rows={4}
-              style={{
-                width: '100%',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.8125rem',
-                padding: 'var(--space-3)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-sm)',
-              }}
+              aria-describedby={`${testId}-cols`}
               data-testid={testId}
             />
+            <span id={`${testId}-cols`} className="field-hint mono">
+              {columns}
+            </span>
           </div>
         ))}
+        </div>
         <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-4)' }}>
           <button
             type="button"
@@ -284,7 +282,7 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
       </section>
 
       <section className="card" style={{ marginBottom: 'var(--space-6)' }}>
-        <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1rem' }}>Backbone parks CSV</h2>
+        <h2 className="section-title">Backbone parks CSV</h2>
         <p style={{ margin: '0 0 var(--space-4)', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
           Format: <code>name,lat,lng[,aliases pipe-separated]</code>. Use for parks-only drops; full
           corridors should use the bundle above.
@@ -353,7 +351,7 @@ export function DeployPlaybook({ citySlug, cityId, cityStatus, stats }: DeployPl
       </section>
 
       <section className="card">
-        <h2 style={{ margin: '0 0 var(--space-4)', fontSize: '1rem' }}>City status</h2>
+        <h2 className="section-title">City status</h2>
         <p style={{ margin: '0 0 var(--space-4)', fontSize: '0.875rem' }}>
           Current: <strong>{cityStatus}</strong>
         </p>

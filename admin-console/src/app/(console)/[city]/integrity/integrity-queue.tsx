@@ -1,11 +1,16 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useMemo, useState, useTransition } from 'react';
-import { evidenceBullets, flagTypeLabel, scorePct } from '@/lib/integrity/format';
-import type { IntegrityFlagRow } from '@/lib/integrity/types';
-import { STANDING_OPTIONS } from '@/lib/integrity/types';
-import { clearIntegrityFlag, transitionStandingAndActionFlag } from './actions';
+import Link from "next/link";
+import { useMemo, useState, useTransition } from "react";
+import {
+  evidenceBullets,
+  flagTypeLabel,
+  scorePct,
+} from "@/lib/integrity/format";
+import type { IntegrityFlagRow } from "@/lib/integrity/types";
+import { STANDING_OPTIONS } from "@/lib/integrity/types";
+import { clearIntegrityFlag, transitionStandingAndActionFlag } from "./actions";
+import { humanize } from "@/lib/ui/label";
 
 interface IntegrityQueueProps {
   citySlug: string;
@@ -21,34 +26,40 @@ export function IntegrityQueue({
   canActionFlag,
 }: IntegrityQueueProps) {
   const [rows, setRows] = useState(initialRows);
-  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
-  const [note, setNote] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(
+    initialSelectedId,
+  );
+  const [note, setNote] = useState("");
   const [showStandingDialog, setShowStandingDialog] = useState(false);
-  const [toStanding, setToStanding] = useState<string>(STANDING_OPTIONS[0].value);
-  const [reason, setReason] = useState('');
+  const [toStanding, setToStanding] = useState<string>(
+    STANDING_OPTIONS[0].value,
+  );
+  const [reason, setReason] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const selected = useMemo(
     () => rows.find((r) => r.id === selectedId) ?? null,
-    [rows, selectedId]
+    [rows, selectedId],
   );
 
-  function refreshLocal(id: string, status: IntegrityFlagRow['status']) {
+  function refreshLocal(id: string, status: IntegrityFlagRow["status"]) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
   }
 
-  function runAction(action: () => Promise<{ ok: boolean; message?: string; error?: string }>) {
+  function runAction(
+    action: () => Promise<{ ok: boolean; message?: string; error?: string }>,
+  ) {
     setMessage(null);
     setError(null);
     startTransition(async () => {
       const result = await action();
       if (result.ok) {
-        setMessage(result.message ?? 'Done.');
+        setMessage(result.message ?? "Done.");
         setShowStandingDialog(false);
       } else {
-        setError(result.error ?? 'Action failed.');
+        setError(result.error ?? "Action failed.");
       }
     });
   }
@@ -56,7 +67,11 @@ export function IntegrityQueue({
   return (
     <div data-testid="integrity-queue">
       {error ? (
-        <div className="error-banner" role="alert" data-testid="integrity-error">
+        <div
+          className="error-banner"
+          role="alert"
+          data-testid="integrity-error"
+        >
           {error}
         </div>
       ) : null}
@@ -65,16 +80,16 @@ export function IntegrityQueue({
           className="card"
           role="status"
           data-testid="integrity-success"
-          style={{ marginBottom: 'var(--space-4)', fontSize: '0.875rem' }}
+          style={{ marginBottom: "var(--space-4)", fontSize: "0.875rem" }}
         >
           {message}
         </div>
       ) : null}
 
       {rows.length === 0 ? (
-        <p style={{ color: 'var(--color-text-muted)' }}>No integrity flags for this city.</p>
+        <p className="empty-inline">No integrity flags for this city.</p>
       ) : (
-        <>
+        <div className="split">
           <table className="data-table" data-testid="integrity-table">
             <thead>
               <tr>
@@ -93,21 +108,28 @@ export function IntegrityQueue({
                   onClick={() => {
                     setSelectedId(row.id);
                     setShowStandingDialog(false);
-                    setReason('');
+                    setReason("");
                   }}
                   style={{
-                    cursor: 'pointer',
-                    background: row.id === selectedId ? 'var(--color-bg)' : undefined,
+                    cursor: "pointer",
+                    background:
+                      row.id === selectedId ? "var(--color-bg)" : undefined,
                   }}
                 >
                   <td>{scorePct(row.score)}</td>
                   <td>{flagTypeLabel(row.flag_type)}</td>
                   <td>
-                    {row.driver_name ?? row.driver_code ?? row.driver_id.slice(0, 8)}
+                    {row.driver_name ??
+                      row.driver_code ??
+                      row.driver_id.slice(0, 8)}
                   </td>
-                  <td data-testid={`corroborating-${row.id}`}>{row.corroborating_rider_count}</td>
+                  <td data-testid={`corroborating-${row.id}`}>
+                    {row.corroborating_rider_count}
+                  </td>
                   <td>
-                    <span className={`badge badge-${row.status}`}>{row.status}</span>
+                    <span className={`badge badge-${row.status}`}>
+                      {humanize(row.status)}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -115,54 +137,56 @@ export function IntegrityQueue({
           </table>
 
           {selected ? (
-            <section style={{ marginTop: 'var(--space-6)' }} data-testid="integrity-detail">
-              <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1.125rem' }}>
-                Flag detail
-              </h2>
+            <section className="split-detail" data-testid="integrity-detail">
+              <h2 className="section-title">Flag detail</h2>
 
-              <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
+              <div className="card" style={{ marginBottom: "var(--space-4)" }}>
                 <dl
                   style={{
                     margin: 0,
-                    display: 'grid',
-                    gridTemplateColumns: 'max-content 1fr',
-                    gap: 'var(--space-2) var(--space-4)',
-                    fontSize: '0.875rem',
+                    display: "grid",
+                    gridTemplateColumns: "max-content 1fr",
+                    gap: "var(--space-2) var(--space-4)",
+                    fontSize: "0.875rem",
                   }}
                 >
-                  <dt style={{ color: 'var(--color-text-muted)' }}>Trip</dt>
-                  <dd style={{ margin: 0 }}>
+                  <dt>Trip</dt>
+                  <dd>
                     <code>{selected.trip_id}</code>
                   </dd>
-                  <dt style={{ color: 'var(--color-text-muted)' }}>Driver</dt>
-                  <dd style={{ margin: 0 }}>
+                  <dt>Driver</dt>
+                  <dd>
                     <Link href={`/${citySlug}/drivers/${selected.driver_id}`}>
-                      {selected.driver_name ?? selected.driver_code ?? selected.driver_id}
+                      {selected.driver_name ??
+                        selected.driver_code ??
+                        selected.driver_id}
                     </Link>
                   </dd>
-                  <dt style={{ color: 'var(--color-text-muted)' }}>Rider trace</dt>
-                  <dd style={{ margin: 0 }}>{selected.rider_trace_quality}</dd>
-                  <dt style={{ color: 'var(--color-text-muted)' }}>Corroborating riders</dt>
-                  <dd style={{ margin: 0 }} data-testid="corroborating-count">
+                  <dt>Rider trace</dt>
+                  <dd>{selected.rider_trace_quality}</dd>
+                  <dt>Corroborating riders</dt>
+                  <dd data-testid="corroborating-count">
                     {selected.corroborating_rider_count}
                   </dd>
                   {selected.risk_cancel_rate != null ? (
                     <>
-                      <dt style={{ color: 'var(--color-text-muted)' }}>30d cancel rate</dt>
-                      <dd style={{ margin: 0 }}>
-                        {(selected.risk_cancel_rate * 100).toFixed(1)}% · open flags{' '}
-                        {selected.risk_open_flags ?? 0}
+                      <dt>30d cancel rate</dt>
+                      <dd>
+                        {(selected.risk_cancel_rate * 100).toFixed(1)}% · open
+                        flags {selected.risk_open_flags ?? 0}
                       </dd>
                     </>
                   ) : null}
                 </dl>
 
-                <h3 style={{ fontSize: '0.9375rem', margin: 'var(--space-4) 0 var(--space-2)' }}>
-                  Evidence
-                </h3>
+                <h3 className="sub-title">Evidence</h3>
                 <ul
                   data-testid="evidence-list"
-                  style={{ margin: 0, paddingLeft: 'var(--space-5)', fontSize: '0.875rem' }}
+                  style={{
+                    margin: 0,
+                    paddingLeft: "var(--space-5)",
+                    fontSize: "0.875rem",
+                  }}
                 >
                   {evidenceBullets(selected.evidence).map((item) => (
                     <li key={item}>{item}</li>
@@ -171,19 +195,18 @@ export function IntegrityQueue({
 
                 <p
                   style={{
-                    margin: 'var(--space-4) 0 0',
-                    fontSize: '0.8125rem',
-                    color: 'var(--color-text-muted)',
+                    margin: "var(--space-4) 0 0",
+                    fontSize: "0.8125rem",
+                    color: "var(--color-text-muted)",
                   }}
                 >
-                  Side-by-side trace map is deferred to live-device work (P1-G-01). Review
-                  evidence and trip timeline before acting.
+                  Review the evidence and the trip timeline before acting.
                 </p>
               </div>
 
-              {selected.status === 'open' ? (
+              {selected.status === "open" ? (
                 <>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                  <div className="decision-row">
                     <button
                       type="button"
                       className="btn"
@@ -191,8 +214,12 @@ export function IntegrityQueue({
                       data-testid="clear-flag"
                       onClick={() =>
                         runAction(async () => {
-                          const result = await clearIntegrityFlag(citySlug, selected.id, note);
-                          if (result.ok) refreshLocal(selected.id, 'cleared');
+                          const result = await clearIntegrityFlag(
+                            citySlug,
+                            selected.id,
+                            note,
+                          );
+                          if (result.ok) refreshLocal(selected.id, "cleared");
                           return result;
                         })
                       }
@@ -208,7 +235,7 @@ export function IntegrityQueue({
                         onClick={() => {
                           setShowStandingDialog(true);
                           setReason(
-                            `Integrity review — ${flagTypeLabel(selected.flag_type)} (score ${scorePct(selected.score)})`
+                            `Integrity review: ${flagTypeLabel(selected.flag_type)} (score ${scorePct(selected.score)})`,
                           );
                         }}
                       >
@@ -241,11 +268,17 @@ export function IntegrityQueue({
                     <div
                       className="card"
                       data-testid="standing-dialog"
-                      style={{ marginTop: 'var(--space-4)' }}
+                      style={{ marginTop: "var(--space-4)" }}
                     >
-                      <h3 style={{ marginTop: 0, fontSize: '1rem' }}>Standing transition</h3>
-                      <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-                        Human confirmation required — standing will not change until you submit.
+                      <h3 className="sub-title">Standing transition</h3>
+                      <p
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "var(--color-text-muted)",
+                        }}
+                      >
+                        Human confirmation required. Standing will not change
+                        until you submit.
                       </p>
                       <div className="field">
                         <label htmlFor="standing-to">To standing</label>
@@ -279,15 +312,17 @@ export function IntegrityQueue({
                         data-testid="confirm-standing-action"
                         onClick={() =>
                           runAction(async () => {
-                            const result = await transitionStandingAndActionFlag(
-                              citySlug,
-                              selected.id,
-                              selected.driver_id,
-                              toStanding,
-                              reason,
-                              note
-                            );
-                            if (result.ok) refreshLocal(selected.id, 'actioned');
+                            const result =
+                              await transitionStandingAndActionFlag(
+                                citySlug,
+                                selected.id,
+                                selected.driver_id,
+                                toStanding,
+                                reason,
+                                note,
+                              );
+                            if (result.ok)
+                              refreshLocal(selected.id, "actioned");
                             return result;
                           })
                         }
@@ -300,7 +335,7 @@ export function IntegrityQueue({
               ) : null}
             </section>
           ) : null}
-        </>
+        </div>
       )}
     </div>
   );

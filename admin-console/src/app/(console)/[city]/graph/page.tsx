@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type { GraphMapPoint, GraphMapRoute } from '@/lib/graph/types';
 import { parseGeoPoint } from '@/lib/safety/format';
@@ -191,9 +190,7 @@ export default async function GraphEditorPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Graph editor</h1>
         <p>
-          Read and edit parks, routes, and stages for <strong>{city?.name ?? citySlug}</strong>.
-          Saves go through <code>admin_update_graph_entity</code> (one RPC per entity) and write{' '}
-          <code>graph_revisions</code> + audit. Field publish remains on the reconciliation queue.
+          Parks, routes, and stages in <strong>{city?.name ?? citySlug}</strong>. Each save is versioned and audited; field-verified publishes stay in the reconciliation queue.
         </p>
       </div>
       {!city ? (
@@ -201,7 +198,6 @@ export default async function GraphEditorPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <GraphEditor
         citySlug={citySlug}
         cityId={city?.id ?? ''}

@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { AuditDrawer } from '@/components/along/AuditDrawer';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { sortCorrectionQueue } from '@/lib/corrections/format';
@@ -283,8 +282,7 @@ export default async function CorrectionsPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Fare corrections</h1>
         <p>
-          Review queue for <strong>{city?.name ?? citySlug}</strong> — proposed vs current fares,
-          MAD outliers, and negotiation-sourced rows.
+          Proposed fare changes in <strong>{city?.name ?? citySlug}</strong>, with statistical outliers and negotiated fares flagged.
         </p>
       </div>
       {!city ? (
@@ -292,7 +290,6 @@ export default async function CorrectionsPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <CorrectionsQueue
         citySlug={citySlug}
         initialRows={queue}

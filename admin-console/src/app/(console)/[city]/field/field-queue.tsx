@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import type { FieldReconciliationRow, FieldSubmissionPayload } from '@/lib/field/types';
 import { publishFieldEntity, reconcileFieldEntity } from './actions';
+import { humanize, shortId } from '@/lib/ui/label';
 
 interface FieldQueueProps {
   citySlug: string;
@@ -33,7 +34,7 @@ function ScoutPanel({
 }) {
   return (
     <div className="card" style={{ flex: 1 }}>
-      <h3 style={{ margin: '0 0 var(--space-2)', fontSize: '0.9375rem' }}>{label}</h3>
+      <h3 className="sub-title">{label}</h3>
       <p style={{ margin: '0 0 var(--space-2)', fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
         Scout {scoutId.slice(0, 8)}… · {new Date(submittedAt).toLocaleString()}
       </p>
@@ -111,7 +112,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
       ) : null}
 
       {rows.length === 0 ? (
-        <p style={{ color: 'var(--color-text-muted)' }}>No field reconciliations for this city.</p>
+        <p className="empty-inline">No field reconciliations for this city.</p>
       ) : (
         <>
           <table className="data-table" data-testid="field-reconciliation-table">
@@ -138,7 +139,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
                   <td>{row.entity_key}</td>
                   <td>{row.entity_type}</td>
                   <td>
-                    <span className={`badge badge-${row.status}`}>{row.status}</span>
+                    <span className={`badge badge-${row.status}`}>{humanize(row.status)}</span>
                   </td>
                   <td>
                     {row.variance?.location_m != null
@@ -155,7 +156,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
 
           {selected ? (
             <section style={{ marginTop: 'var(--space-6)' }} data-testid="field-detail">
-              <h2 style={{ margin: '0 0 var(--space-4)', fontSize: '1.125rem' }}>
+              <h2 className="section-title">
                 {selected.entity_key}
               </h2>
 
@@ -265,7 +266,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
 
               {selected.status === 'discrepant' ? (
                 <div className="card" style={{ marginTop: 'var(--space-4)' }}>
-                  <h3 style={{ margin: '0 0 var(--space-3)', fontSize: '0.9375rem' }}>
+                  <h3 className="sub-title">
                     Resolve with chosen values
                   </h3>
                   <div className="field">
@@ -332,7 +333,7 @@ export function FieldQueue({ citySlug, initialRows }: FieldQueueProps) {
                   style={{ marginTop: 'var(--space-4)', fontSize: '0.875rem' }}
                 >
                   Published as <strong>{selected.published_target_type}</strong>{' '}
-                  <code>{selected.published_target_id}</code>
+                  <code title={selected.published_target_id ?? undefined}>{shortId(selected.published_target_id)}</code>
                 </p>
               ) : null}
             </section>

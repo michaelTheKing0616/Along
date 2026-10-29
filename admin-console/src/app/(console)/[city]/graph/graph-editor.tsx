@@ -305,13 +305,13 @@ export function GraphEditor({ citySlug, cityId, parkNames, graph }: GraphEditorP
           }}
         />
         <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-2)' }}>
-          Drag a stage marker to adjust location (optimistic — saved via pending changes tray).
+          Drag a stage marker to adjust location (saved through the pending changes tray).
         </p>
       </section>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>
         <section>
-          <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-3)' }}>Corridors → routes → stages</h2>
+          <h2 className="section-title">Corridors → routes → stages</h2>
           {graph.corridors.length === 0 ? (
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>No corridors seeded.</p>
           ) : (
@@ -319,7 +319,7 @@ export function GraphEditor({ citySlug, cityId, parkNames, graph }: GraphEditorP
               {graph.corridors.map((corridor) => (
                 <li key={corridor.id} style={{ marginBottom: 'var(--space-3)' }}>
                   <strong>{corridor.name}</strong>{' '}
-                  <span className="badge">{corridor.status}</span>
+                  <span className="badge">{corridor.status.replace(/_/g, ' ')}</span>
                   <ul style={{ listStyle: 'none', paddingLeft: 'var(--space-4)', margin: 'var(--space-2) 0 0' }}>
                     {(routesByCorridor.get(corridor.id) ?? []).map((route) => (
                       <li key={route.id} style={{ marginBottom: 'var(--space-2)' }}>
@@ -367,7 +367,7 @@ export function GraphEditor({ citySlug, cityId, parkNames, graph }: GraphEditorP
             </ul>
           )}
 
-          <h2 style={{ fontSize: '1rem', margin: 'var(--space-6) 0 var(--space-3)' }}>Parks</h2>
+          <h2 className="section-title section-gap">Parks</h2>
           <ul className="tree-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {graph.parks.map((park) => (
               <li key={park.id} style={{ marginBottom: 'var(--space-1)' }}>
@@ -386,7 +386,7 @@ export function GraphEditor({ citySlug, cityId, parkNames, graph }: GraphEditorP
         </section>
 
         <section className="card" data-testid="graph-edit-panel">
-          <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-4)' }}>Edit selected entity</h2>
+          <h2 className="section-title">Edit selected entity</h2>
           {!selected ? (
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
               Select a park, route, or stage from the tree or map.
@@ -452,7 +452,7 @@ export function GraphEditor({ citySlug, cityId, parkNames, graph }: GraphEditorP
       </div>
 
       <section className="card" style={{ marginTop: 'var(--space-6)' }} data-testid="graph-pending-tray">
-        <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-3)' }}>Pending changes</h2>
+        <h2 className="section-title">Pending changes</h2>
         {pendingList.length === 0 ? (
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>No pending edits.</p>
         ) : (
@@ -487,7 +487,7 @@ export function GraphEditor({ citySlug, cityId, parkNames, graph }: GraphEditorP
       </section>
 
       <section className="card" style={{ marginTop: 'var(--space-6)' }}>
-        <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-2)' }}>Bulk parks CSV import</h2>
+        <h2 className="section-title">Bulk parks CSV import</h2>
         <p style={{ margin: '0 0 var(--space-3)', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
           Format: <code>name,lat,lng</code>. Runs <code>admin_import_dry_run</code> then{' '}
           <code>admin_import_apply</code>.
