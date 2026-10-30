@@ -532,5 +532,6 @@
   "permTitle": "Shirye don tuƙi",
   "permLocationBody": "Nuna wa fasinjoji inda kake yayin da kake kan layi.",
   "permNotifBody": "Ji labarin sabbin buƙatu da biyan kuɗi.",
-  "permCameraBody": "Ɗauki hoton takardunka kuma duba lambobin QR."
+  "permCameraBody": "Ɗauki hoton takardunka kuma duba lambobin QR.",
+  "otpDidntGet": "Ba ka samu ba?"
 }

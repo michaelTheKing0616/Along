@@ -532,5 +532,6 @@
   "permTitle": "Ready to drive",
   "permLocationBody": "Show passengers where you dey when you dey online.",
   "permNotifBody": "Hear about new requests and payment.",
-  "permCameraBody": "Snap your documents and scan QR code."
+  "permCameraBody": "Snap your documents and scan QR code.",
+  "otpDidntGet": "E no reach you?"
 }

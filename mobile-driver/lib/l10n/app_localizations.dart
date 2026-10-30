@@ -3301,6 +3301,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photograph your documents and scan QR codes.'**
   String get permCameraBody;
+
+  /// No description provided for @otpDidntGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t get it?'**
+  String get otpDidntGet;
 }
 
 class _AppLocalizationsDelegate

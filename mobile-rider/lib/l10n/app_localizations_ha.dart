@@ -2365,4 +2365,7 @@ class AppLocalizationsHa extends AppLocalizations {
   @override
   String get permCameraBody =>
       'Duba don biya kuma ka duba lambar mota kafin ka hau.';
+
+  @override
+  String get otpDidntGet => 'Ba ka samu ba?';
 }

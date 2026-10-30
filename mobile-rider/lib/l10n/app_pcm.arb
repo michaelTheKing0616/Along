@@ -669,5 +669,6 @@
   "permTitle": "Ready for your first ride",
   "permLocationBody": "Find where dem go pick you and show driver where you dey.",
   "permNotifBody": "Know the moment your driver land.",
-  "permCameraBody": "Scan to pay and check the plate before you enter."
+  "permCameraBody": "Scan to pay and check the plate before you enter.",
+  "otpDidntGet": "E no reach you?"
 }

@@ -496,7 +496,7 @@ class AlongCodeInput extends StatelessWidget {
                 return Row(
                   children: [
                     for (var i = 0; i < length; i++) ...[
-                      if (i > 0) SizedBox(width: i == length ~/ 2 ? 16 : 8),
+                      if (i > 0) SizedBox(width: i == length ~/ 2 ? 14 : 6),
                       Expanded(
                         child: _CodeBox(
                           digit: i < code.length ? code[i] : null,
@@ -577,7 +577,7 @@ class _CodeBox extends StatelessWidget {
         ? p.ink
         : p.line;
     return AspectRatio(
-      aspectRatio: 0.82,
+      aspectRatio: 0.74,
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 150),
         opacity: checking ? 0.55 : 1,
@@ -592,8 +592,10 @@ class _CodeBox extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Text(
               digit ?? '',
-              style: AlongType.display(p)
-                  .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+              style: AlongType.display(p).copyWith(
+                fontSize: 34,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
           ),
         ),
@@ -670,10 +672,14 @@ class AlongResendRow extends StatelessWidget {
     this.resendKey,
     this.changeKey,
     this.enabled = true,
+    this.prompt,
   });
 
   /// False while a rate limit or the network blocks a resend.
   final bool enabled;
+
+  /// Lead line such as "Didn't get it?". Renders the row as a help card.
+  final String? prompt;
   final int secondsRemaining;
   final String Function(String clock) countdownLabel;
   final String resendLabel;
@@ -710,7 +716,7 @@ class AlongResendRow extends StatelessWidget {
       );
     }
 
-    return Wrap(
+    final row = Wrap(
       alignment: WrapAlignment.spaceBetween,
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 8,
@@ -723,6 +729,24 @@ class AlongResendRow extends StatelessWidget {
         ),
         link(changeLabel, onChange, changeKey, p.ink),
       ],
+    );
+    if (prompt == null) return row;
+    return DecoratedBox(
+      decoration: AlongCraft.surface(p, radius: AlongRadius.card.x),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 8, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(prompt!, style: AlongType.bodyMuted(p)),
+            ),
+            row,
+          ],
+        ),
+      ),
     );
   }
 }
@@ -751,6 +775,7 @@ class AlongPermissionPrime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = AlongPalette.of(context);
+    final compact = MediaQuery.textScalerOf(context).scale(1) > 1.05;
     return DecoratedBox(
       decoration: AlongCraft.surface(p, radius: AlongRadius.card.x),
       child: Column(
@@ -759,17 +784,22 @@ class AlongPermissionPrime extends StatelessWidget {
             if (i > 0)
               Divider(
                 height: 1,
-                indent: 68,
+                indent: compact ? 60 : 68,
                 color: p.line.withValues(alpha: 0.6),
               ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+              padding: EdgeInsets.fromLTRB(
+                16,
+                compact ? 10 : 14,
+                16,
+                compact ? 10 : 14,
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: compact ? 32 : 40,
+                    height: compact ? 32 : 40,
                     alignment: Alignment.center,
                     decoration: AlongCraft.fill(
                       items[i].granted ? p.success : p.recessed,

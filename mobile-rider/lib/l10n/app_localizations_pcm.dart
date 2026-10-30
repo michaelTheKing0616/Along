@@ -2363,4 +2363,7 @@ class AppLocalizationsPcm extends AppLocalizations {
   @override
   String get permCameraBody =>
       'Scan to pay and check the plate before you enter.';
+
+  @override
+  String get otpDidntGet => 'E no reach you?';
 }

@@ -1814,4 +1814,7 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get permCameraBody => 'Snap your documents and scan QR code.';
+
+  @override
+  String get otpDidntGet => 'E no reach you?';
 }

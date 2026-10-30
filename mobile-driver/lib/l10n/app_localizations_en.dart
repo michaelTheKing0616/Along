@@ -1814,4 +1814,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permCameraBody => 'Photograph your documents and scan QR codes.';
+
+  @override
+  String get otpDidntGet => 'Didn\'t get it?';
 }

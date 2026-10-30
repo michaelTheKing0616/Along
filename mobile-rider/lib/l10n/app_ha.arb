@@ -669,5 +669,6 @@
   "permTitle": "Shirye don hawanka na farko",
   "permLocationBody": "Nemo wurin ɗaukar ka kuma nuna wa direba inda kake.",
   "permNotifBody": "San lokacin da direbanka ya iso.",
-  "permCameraBody": "Duba don biya kuma ka duba lambar mota kafin ka hau."
+  "permCameraBody": "Duba don biya kuma ka duba lambar mota kafin ka hau.",
+  "otpDidntGet": "Ba ka samu ba?"
 }

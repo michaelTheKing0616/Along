@@ -2362,4 +2362,7 @@ class AppLocalizationsYo extends AppLocalizations {
   @override
   String get permCameraBody =>
       'Ṣàyẹ̀wò láti sanwó, kí o wo nọ́mbà ọkọ̀ kí o tó wọ̀.';
+
+  @override
+  String get otpDidntGet => 'Kò dé ọ̀dọ̀ rẹ?';
 }

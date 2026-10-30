@@ -2364,5 +2364,6 @@
   "permTitle": "Ready for your first ride",
   "permLocationBody": "Find your pickup and show the driver where you are.",
   "permNotifBody": "Know the moment your driver arrives.",
-  "permCameraBody": "Scan to pay and check the plate before you board."
+  "permCameraBody": "Scan to pay and check the plate before you board.",
+  "otpDidntGet": "Didn't get it?"
 }

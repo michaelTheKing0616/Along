@@ -156,22 +156,21 @@ class _OtpScreenState extends ConsumerState<OtpScreen> with AuthOfflineAware {
               style: AlongType.caption(AlongPalette.of(context)),
             ),
           ],
-          const SizedBox(height: 16),
-          AlongResendRow(
-            resendKey: const Key('otp_resend_button'),
-            changeKey: const Key('otp_wrong_number_button'),
-            enabled: !waiting && !offline && !state.isSubmitting,
-            secondsRemaining: waiting ? 0 : state.resendSecondsRemaining,
-            countdownLabel: (_) =>
-                l10n.resendCountdown(state.resendSecondsRemaining),
-            resendLabel: l10n.resendCode,
-            changeLabel: l10n.wrongNumber,
-            onResend: _resend,
-            onChange: _changeNumber,
-          ),
         ],
       ),
-      bottom: const SizedBox.shrink(),
+      bottom: AlongResendRow(
+        prompt: l10n.otpDidntGet,
+        resendKey: const Key('otp_resend_button'),
+        changeKey: const Key('otp_wrong_number_button'),
+        enabled: !waiting && !offline && !state.isSubmitting,
+        secondsRemaining: waiting ? 0 : state.resendSecondsRemaining,
+        countdownLabel: (_) =>
+            l10n.resendCountdown(state.resendSecondsRemaining),
+        resendLabel: l10n.resendCode,
+        changeLabel: l10n.wrongNumber,
+        onResend: _resend,
+        onChange: _changeNumber,
+      ),
     );
   }
 }

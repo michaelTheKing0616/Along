@@ -11,6 +11,7 @@ import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/onboarding/presentation/name_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
+import 'package:mobile_rider/features/onboarding/presentation/launch_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/permissions_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
@@ -153,6 +154,7 @@ void main() {
       null,
     ),
     ('otp_offline', const OtpScreen(), sent, false, null),
+    ('launch', const LaunchScreen(), const OnboardingState(), true, null),
     ('name_empty', const NameScreen(), const OnboardingState(), true, null),
     ('name_filled', const NameScreen(), const OnboardingState(), true, 'Ada'),
     (
@@ -248,7 +250,10 @@ void main() {
               .reseed();
           await tester.pump();
         }
-        await tester.pump(const Duration(milliseconds: 300));
+        // The splash routes away after 300 ms; shoot it before that.
+        if (screen is! LaunchScreen) {
+          await tester.pump(const Duration(milliseconds: 300));
+        }
         expect(tester.takeException(), isNull);
         await expectLater(
           find.byType(MaterialApp),

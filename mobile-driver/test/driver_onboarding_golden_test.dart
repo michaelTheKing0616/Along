@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/onboarding/presentation/auth_controller.dart';
+import 'package:mobile_driver/features/onboarding/presentation/launch_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/otp_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/permissions_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/phone_entry_screen.dart';
@@ -143,6 +144,7 @@ void main() {
       null,
     ),
     ('otp_offline', const OtpScreen(), sent, false, null),
+    ('launch', const LaunchScreen(), const AuthState(), true, null),
     ('permissions', const PermissionsScreen(), const AuthState(), true, null),
   ];
 
@@ -230,7 +232,10 @@ void main() {
           (container.read(authControllerProvider.notifier) as _Seeded).reseed();
           await tester.pump();
         }
-        await tester.pump(const Duration(milliseconds: 300));
+        // The splash routes away after 300 ms; shoot it before that.
+        if (screen is! LaunchScreen) {
+          await tester.pump(const Duration(milliseconds: 300));
+        }
         expect(tester.takeException(), isNull);
         await expectLater(
           find.byType(MaterialApp),

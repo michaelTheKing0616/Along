@@ -4132,6 +4132,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan to pay and check the plate before you board.'**
   String get permCameraBody;
+
+  /// No description provided for @otpDidntGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t get it?'**
+  String get otpDidntGet;
 }
 
 class _AppLocalizationsDelegate

@@ -1815,4 +1815,7 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get permCameraBody => 'See foto akwụkwọ gị, nyochaa koodu QR.';
+
+  @override
+  String get otpDidntGet => 'Ọ bịaghị?';
 }

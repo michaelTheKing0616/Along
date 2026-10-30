@@ -349,6 +349,13 @@ abstract final class AlongIcons {
     fontPackage: _package,
   );
 
+  /// Bell: notifications.
+  static const bell = IconData(
+    0xe0cf,
+    fontFamily: _family,
+    fontPackage: _package,
+  );
+
   /// Speaker: audio directions.
   static const speaker = IconData(
     0xe44b,

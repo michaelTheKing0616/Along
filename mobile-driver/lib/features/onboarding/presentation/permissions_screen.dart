@@ -38,7 +38,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen> {
             body: l10n.permLocationBody,
           ),
           AlongPrimeItem(
-            icon: AlongIcons.speaker,
+            icon: AlongIcons.bell,
             title: l10n.permNotifTitle,
             body: l10n.permNotifBody,
           ),

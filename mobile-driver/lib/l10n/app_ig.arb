@@ -532,5 +532,6 @@
   "permTitle": "Dị njikere ịkwọ ụgbọ",
   "permLocationBody": "Gosi ndị njem ebe ị nọ mgbe ị nọ n'ịntanetị.",
   "permNotifBody": "Nụ maka arịrịọ ọhụrụ na ịkwụ ụgwọ.",
-  "permCameraBody": "See foto akwụkwọ gị, nyochaa koodu QR."
+  "permCameraBody": "See foto akwụkwọ gị, nyochaa koodu QR.",
+  "otpDidntGet": "Ọ bịaghị?"
 }

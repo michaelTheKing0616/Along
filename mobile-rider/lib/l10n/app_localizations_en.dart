@@ -2362,4 +2362,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get permCameraBody =>
       'Scan to pay and check the plate before you board.';
+
+  @override
+  String get otpDidntGet => 'Didn\'t get it?';
 }

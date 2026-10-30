@@ -1167,5 +1167,6 @@
   "permTitle": "Ready to drive",
   "permLocationBody": "Show riders where you are while you are online.",
   "permNotifBody": "Hear about new requests and payouts.",
-  "permCameraBody": "Photograph your documents and scan QR codes."
+  "permCameraBody": "Photograph your documents and scan QR codes.",
+  "otpDidntGet": "Didn't get it?"
 }
