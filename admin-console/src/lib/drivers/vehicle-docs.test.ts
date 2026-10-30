@@ -51,3 +51,8 @@ describe("documentExpiry", () => {
     expect(documentExpiry(null, now)).toBeNull();
   });
 });
+it("labels NIN", async () => {
+  const { documentLabel } = await import("./vehicle-docs");
+  expect(documentLabel("nin")).toBe("NIN");
+  expect(documentLabel("road_worthiness")).toBe("Road worthiness");
+});

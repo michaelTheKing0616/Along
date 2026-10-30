@@ -19,6 +19,7 @@ import {
 import { humanize } from "@/lib/ui/label";
 import {
   documentExpiry,
+  documentLabel,
   type DriverDocumentCard,
   type DriverVehicleCard,
 } from "@/lib/drivers/vehicle-docs";
@@ -283,7 +284,7 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
                           className="kpi-sentence"
                           style={{ display: "block" }}
                         >
-                          {humanize(d.document_type)}
+                          {documentLabel(d.document_type)}
                         </span>
                         <span className="cell-sub">
                           {d.rejection_reason

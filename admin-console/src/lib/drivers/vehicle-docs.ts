@@ -58,3 +58,18 @@ export function documentExpiry(
   if (ms < 0) return "expired";
   return ms < 30 * 86_400_000 ? "soon" : null;
 }
+
+const DOC_LABELS: Record<string, string> = {
+  nin: "NIN",
+  bvn: "BVN",
+  drivers_licence: "Driver's licence",
+  vehicle_registration: "Vehicle registration",
+  insurance: "Insurance",
+};
+
+export function documentLabel(type: string): string {
+  return (
+    DOC_LABELS[type] ??
+    type.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase())
+  );
+}
