@@ -17,6 +17,11 @@ import {
   transitionDriverStanding,
 } from "./actions";
 import { humanize } from "@/lib/ui/label";
+import {
+  documentExpiry,
+  type DriverDocumentCard,
+  type DriverVehicleCard,
+} from "@/lib/drivers/vehicle-docs";
 
 export interface LedgerEntryRow {
   id: number;
@@ -61,6 +66,8 @@ export interface DriverDetailData {
   transitions: StandingTransitionRow[];
   flags: IntegrityFlagRow[];
   guarantor: GuarantorRow | null;
+  vehicle: DriverVehicleCard | null;
+  documents: DriverDocumentCard[];
   qrPayments: QrPaymentRow[];
   stickerRequests: StickerRequestRow[];
 }
@@ -224,6 +231,82 @@ export function DriverDetail({ citySlug, driver }: DriverDetailProps) {
               <dt>Digital pay</dt>
               <dd>{driver.accepts_digital ? "Accepts QR" : "Cash only"}</dd>
             </dl>
+          </section>
+          <section className="card" data-testid="driver-vehicle">
+            <h2 className="section-title">Vehicle</h2>
+            {driver.vehicle ? (
+              <dl className="dl">
+                <dt>Plate</dt>
+                <dd className="mono">{driver.vehicle.plate_number}</dd>
+                <dt>Vehicle</dt>
+                <dd>
+                  {[driver.vehicle.color, driver.vehicle.make_model]
+                    .filter(Boolean)
+                    .join(" ") || "—"}
+                </dd>
+                <dt>Mode · seats</dt>
+                <dd>
+                  {humanize(driver.vehicle.mode_code).replace(/^./, (c) =>
+                    c.toUpperCase(),
+                  )}{" "}
+                  · {driver.vehicle.seat_capacity}
+                </dd>
+                <dt>Verification</dt>
+                <dd>
+                  <span
+                    className={`badge badge-${driver.vehicle.verification_status === "verified" ? "approved" : driver.vehicle.verification_status}`}
+                  >
+                    {humanize(driver.vehicle.verification_status)}
+                  </span>
+                </dd>
+                <dt>Driving since</dt>
+                <dd>{new Date(driver.vehicle.since).toLocaleDateString()}</dd>
+              </dl>
+            ) : (
+              <p className="empty-inline">No active vehicle linked.</p>
+            )}
+          </section>
+          <section className="card" data-testid="driver-documents">
+            <h2 className="section-title">Documents</h2>
+            {driver.documents.length === 0 ? (
+              <p className="empty-inline">
+                No documents visible. Verifiers and ops leads can see uploads.
+              </p>
+            ) : (
+              <ul className="mini-list">
+                {driver.documents.map((d) => {
+                  const exp = documentExpiry(d.expires_at);
+                  return (
+                    <li key={d.id}>
+                      <span>
+                        <span
+                          className="kpi-sentence"
+                          style={{ display: "block" }}
+                        >
+                          {humanize(d.document_type)}
+                        </span>
+                        <span className="cell-sub">
+                          {d.rejection_reason
+                            ? d.rejection_reason
+                            : d.expires_at
+                              ? `${exp === "expired" ? "Expired" : "Expires"} ${new Date(d.expires_at).toLocaleDateString()}`
+                              : `Submitted ${new Date(d.submitted_at).toLocaleDateString()}`}
+                        </span>
+                      </span>
+                      <span
+                        className={`badge badge-${exp === "expired" ? "rejected" : exp === "soon" ? "acknowledged" : d.status}`}
+                      >
+                        {exp === "expired"
+                          ? "Expired"
+                          : exp === "soon"
+                            ? "Expiring"
+                            : humanize(d.status)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </section>
           <section className="card">
             <h2 className="section-title">Recent paid trips</h2>
