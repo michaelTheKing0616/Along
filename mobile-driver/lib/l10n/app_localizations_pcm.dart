@@ -1744,4 +1744,77 @@ class AppLocalizationsPcm extends AppLocalizations {
 
   @override
   String get homeOnlineNoSignal => 'Online · no network';
+
+  @override
+  String get authYourNumber => 'Your number';
+
+  @override
+  String get authSendCode => 'Text me the code';
+
+  @override
+  String get otpCheckTitle => 'Check your text message';
+
+  @override
+  String get otpChecking => 'We dey check the code…';
+
+  @override
+  String get otpAutofillHint =>
+      'The code go fill by itself when the text land.';
+
+  @override
+  String get authOffline => 'Network no dey. Connect make you get your code.';
+
+  @override
+  String get permSubtitle =>
+      'Along go ask only once. You fit change am for Settings any time.';
+
+  @override
+  String get permLocationTitle => 'Location';
+
+  @override
+  String get permNotifTitle => 'Notifications';
+
+  @override
+  String get permCameraTitle => 'Camera';
+
+  @override
+  String get permAllow => 'Allow am';
+
+  @override
+  String get permLater => 'No be now';
+
+  @override
+  String get authStory1H => 'Drive with Along.';
+
+  @override
+  String get authStory1B => 'Passengers go find you for park and for road.';
+
+  @override
+  String get authStory2H => 'Your price, your route.';
+
+  @override
+  String get authStory2B =>
+      'Set price for each stop and collect your money sharp sharp.';
+
+  @override
+  String get authStory3H => 'Safe for every trip.';
+
+  @override
+  String get authStory3B => 'Verified passengers and SOS just one hold away.';
+
+  @override
+  String get permTitle => 'Ready to drive';
+
+  @override
+  String get permLocationBody =>
+      'Show passengers where you dey when you dey online.';
+
+  @override
+  String get permNotifBody => 'Hear about new requests and payment.';
+
+  @override
+  String get permCameraBody => 'Snap your documents and scan QR code.';
+
+  @override
+  String get otpDidntGet => 'E no reach you?';
 }

@@ -9,6 +9,7 @@ import 'package:mobile_rider/features/onboarding/presentation/launch_screen.dart
 import 'package:mobile_rider/features/onboarding/presentation/name_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
+import 'package:mobile_rider/features/onboarding/presentation/permissions_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_rider/features/search/presentation/search_screens.dart';
 import 'package:mobile_rider/features/account/presentation/account_settings_screen.dart';
@@ -65,6 +66,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.name,
         builder: (context, state) => const NameScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.permissions,
+        builder: (context, state) => const PermissionsScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

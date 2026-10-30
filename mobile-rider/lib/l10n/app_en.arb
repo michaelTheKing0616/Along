@@ -2340,5 +2340,30 @@
         "type": "String"
       }
     }
-  }
+  },
+  "authYourNumber": "Your number",
+  "authSendCode": "Text me the code",
+  "otpCheckTitle": "Check your texts",
+  "otpChecking": "Checking the code…",
+  "otpAutofillHint": "The code fills in by itself when the text arrives.",
+  "authOffline": "You are offline. Connect to get your code.",
+  "authBack": "Back",
+  "permSubtitle": "Along asks once. You can change this any time in Settings.",
+  "permLocationTitle": "Location",
+  "permNotifTitle": "Notifications",
+  "permCameraTitle": "Camera",
+  "permAllow": "Allow access",
+  "permLater": "Not now",
+  "authStory1H": "Move around. Your way.",
+  "authStory1B": "Keke, okada, danfo and taxi in one app.",
+  "authStory2H": "A fair fare, every time.",
+  "authStory2B": "See the price before you go. No haggling.",
+  "authStory3H": "Someone always knows.",
+  "authStory3B": "Share your trip and hold for SOS if you need help.",
+  "nameSubtitle": "Drivers see your first name only. You can skip this.",
+  "permTitle": "Ready for your first ride",
+  "permLocationBody": "Find your pickup and show the driver where you are.",
+  "permNotifBody": "Know the moment your driver arrives.",
+  "permCameraBody": "Scan to pay and check the plate before you board.",
+  "otpDidntGet": "Didn't get it?"
 }

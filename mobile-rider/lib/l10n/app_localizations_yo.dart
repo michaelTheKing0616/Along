@@ -2284,4 +2284,85 @@ class AppLocalizationsYo extends AppLocalizations {
   String optionCardRouteLine(String board, String alight) {
     return 'Wọ̀ ní $board → $alight';
   }
+
+  @override
+  String get authYourNumber => 'Nọ́mbà rẹ';
+
+  @override
+  String get authSendCode => 'Fi kóòdù ránṣẹ́ sí mi';
+
+  @override
+  String get otpCheckTitle => 'Ṣàyẹ̀wò àtẹ̀jíṣẹ́ rẹ';
+
+  @override
+  String get otpChecking => 'À ń ṣàyẹ̀wò kóòdù…';
+
+  @override
+  String get otpAutofillHint =>
+      'Kóòdù yóò kún ara rẹ̀ nígbà tí àtẹ̀jíṣẹ́ bá dé.';
+
+  @override
+  String get authOffline => 'O kò sí lórí ayélujára. Sopọ̀ láti gba kóòdù rẹ.';
+
+  @override
+  String get authBack => 'Padà';
+
+  @override
+  String get permSubtitle =>
+      'Along yóò béèrè lẹ́ẹ̀kan. O lè yí èyí padà nínú Ètò.';
+
+  @override
+  String get permLocationTitle => 'Ibùdó';
+
+  @override
+  String get permNotifTitle => 'Ìfitónilétí';
+
+  @override
+  String get permCameraTitle => 'Kámẹ́rà';
+
+  @override
+  String get permAllow => 'Fún ní àṣẹ';
+
+  @override
+  String get permLater => 'Kì í ṣe báyìí';
+
+  @override
+  String get authStory1H => 'Rìn kiri. Bí o ṣe fẹ́.';
+
+  @override
+  String get authStory1B => 'Kẹ̀kẹ́, ọ̀kadà, dánfó àti takisí nínú áàpù kan.';
+
+  @override
+  String get authStory2H => 'Owó ọkọ̀ tó tọ́, nígbà gbogbo.';
+
+  @override
+  String get authStory2B => 'Wo iye owó kí o tó lọ. Kò sí ìdúnàádúrà.';
+
+  @override
+  String get authStory3H => 'Ẹnìkan máa ń mọ̀ nígbà gbogbo.';
+
+  @override
+  String get authStory3B =>
+      'Pín ìrìn àjò rẹ, kí o di SOS mú tí o bá nílò ìrànlọ́wọ́.';
+
+  @override
+  String get nameSubtitle =>
+      'Àwọn awakọ̀ rí orúkọ àkọ́kọ́ rẹ nìkan. O lè fò ó.';
+
+  @override
+  String get permTitle => 'Ṣetán fún ìrìn àkọ́kọ́ rẹ';
+
+  @override
+  String get permLocationBody =>
+      'Wá ibi ìgbéwọlé rẹ, kí o fi ibi tí o wà han awakọ̀.';
+
+  @override
+  String get permNotifBody => 'Mọ̀ nígbà tí awakọ̀ rẹ bá dé.';
+
+  @override
+  String get permCameraBody =>
+      'Ṣàyẹ̀wò láti sanwó, kí o wo nọ́mbà ọkọ̀ kí o tó wọ̀.';
+
+  @override
+  String get otpDidntGet => 'Kò dé ọ̀dọ̀ rẹ?';
 }

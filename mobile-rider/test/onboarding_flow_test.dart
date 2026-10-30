@@ -6,6 +6,7 @@ import 'package:mobile_rider/config/app_config.dart';
 import 'package:mobile_rider/di/providers.dart';
 import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:mobile_rider/features/onboarding/presentation/name_screen.dart';
+import 'package:mobile_rider/features/onboarding/presentation/permissions_screen.dart';
 import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
 import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
@@ -75,6 +76,7 @@ void main() {
       expect(find.byType(PhoneEntryScreen), findsOneWidget);
 
       await tester.enterText(find.byType(TextField).first, '8012345678');
+      await tester.pump();
       await tester.tap(find.byKey(const Key('phone_continue_button')));
       await tester.pumpAndSettle();
 
@@ -88,7 +90,12 @@ void main() {
       expect(find.byType(NameScreen), findsOneWidget);
 
       await tester.enterText(find.byKey(const Key('name_field')), 'Ada');
+      await tester.pump();
       await tester.tap(find.byKey(const Key('name_continue_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PermissionsScreen), findsOneWidget);
+      await tester.tap(find.byKey(const Key('permissions_later')));
       await tester.pumpAndSettle();
 
       expect(savedName, 'Ada');
@@ -105,6 +112,7 @@ void main() {
       await pumpOnboardingApp(tester);
 
       await tester.enterText(find.byType(TextField).first, '9012345678');
+      await tester.pump();
       await tester.tap(find.byKey(const Key('phone_continue_button')));
       await tester.pumpAndSettle();
 
@@ -112,6 +120,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('name_skip_button')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('permissions_later')));
       await tester.pumpAndSettle();
 
       expect(fakePrefs.complete, isTrue);

@@ -4,6 +4,7 @@ abstract final class AppRoutes {
   static const phone = '/phone';
   static const otp = '/otp';
   static const name = '/name';
+  static const permissions = '/permissions';
 
   static const home = '/home';
   static const vehicles = '/vehicles';

@@ -23,11 +23,12 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
   }
 
   Future<void> _routeAfterSplash() async {
-    await Future<void>.delayed(const Duration(milliseconds: 800));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     if (!mounted) return;
 
-    final step =
-        await ref.read(authControllerProvider.notifier).resolveLaunchStep();
+    final step = await ref
+        .read(authControllerProvider.notifier)
+        .resolveLaunchStep();
 
     if (!mounted) return;
     context.go(_routeForStep(step));
@@ -46,13 +47,14 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width * 0.6;
+    final width = MediaQuery.sizeOf(context).width * 0.5;
+    final dark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: AlongPalette.of(context).bg,
       body: Center(
         child: SvgPicture.asset(
-          alongLogoBlackSvg,
+          dark ? alongLogoYellowSvg : alongLogoBlackSvg,
           package: 'along_design',
           width: width,
         ),

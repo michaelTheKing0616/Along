@@ -2286,4 +2286,84 @@ class AppLocalizationsPcm extends AppLocalizations {
   String optionCardRouteLine(String board, String alight) {
     return 'Enter for $board → $alight';
   }
+
+  @override
+  String get authYourNumber => 'Your number';
+
+  @override
+  String get authSendCode => 'Text me the code';
+
+  @override
+  String get otpCheckTitle => 'Check your text message';
+
+  @override
+  String get otpChecking => 'We dey check the code…';
+
+  @override
+  String get otpAutofillHint =>
+      'The code go fill by itself when the text land.';
+
+  @override
+  String get authOffline => 'Network no dey. Connect make you get your code.';
+
+  @override
+  String get authBack => 'Go back';
+
+  @override
+  String get permSubtitle =>
+      'Along go ask only once. You fit change am for Settings any time.';
+
+  @override
+  String get permLocationTitle => 'Location';
+
+  @override
+  String get permNotifTitle => 'Notifications';
+
+  @override
+  String get permCameraTitle => 'Camera';
+
+  @override
+  String get permAllow => 'Allow am';
+
+  @override
+  String get permLater => 'No be now';
+
+  @override
+  String get authStory1H => 'Move around. Your own way.';
+
+  @override
+  String get authStory1B => 'Keke, okada, danfo and taxi for one app.';
+
+  @override
+  String get authStory2H => 'Correct price, every time.';
+
+  @override
+  String get authStory2B => 'See the price before you move. No price wahala.';
+
+  @override
+  String get authStory3H => 'Person go always know.';
+
+  @override
+  String get authStory3B => 'Share your trip and hold SOS if you need help.';
+
+  @override
+  String get nameSubtitle =>
+      'Driver go see only your first name. You fit skip am.';
+
+  @override
+  String get permTitle => 'Ready for your first ride';
+
+  @override
+  String get permLocationBody =>
+      'Find where dem go pick you and show driver where you dey.';
+
+  @override
+  String get permNotifBody => 'Know the moment your driver land.';
+
+  @override
+  String get permCameraBody =>
+      'Scan to pay and check the plate before you enter.';
+
+  @override
+  String get otpDidntGet => 'E no reach you?';
 }

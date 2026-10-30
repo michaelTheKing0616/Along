@@ -1745,4 +1745,77 @@ class AppLocalizationsYo extends AppLocalizations {
 
   @override
   String get homeOnlineNoSignal => 'Wà lórí ayélujára · kò sí àmì';
+
+  @override
+  String get authYourNumber => 'Nọ́mbà rẹ';
+
+  @override
+  String get authSendCode => 'Fi kóòdù ránṣẹ́ sí mi';
+
+  @override
+  String get otpCheckTitle => 'Ṣàyẹ̀wò àtẹ̀jíṣẹ́ rẹ';
+
+  @override
+  String get otpChecking => 'À ń ṣàyẹ̀wò kóòdù…';
+
+  @override
+  String get otpAutofillHint =>
+      'Kóòdù yóò kún ara rẹ̀ nígbà tí àtẹ̀jíṣẹ́ bá dé.';
+
+  @override
+  String get authOffline => 'O kò sí lórí ayélujára. Sopọ̀ láti gba kóòdù rẹ.';
+
+  @override
+  String get permSubtitle =>
+      'Along yóò béèrè lẹ́ẹ̀kan. O lè yí èyí padà nínú Ètò.';
+
+  @override
+  String get permLocationTitle => 'Ibùdó';
+
+  @override
+  String get permNotifTitle => 'Ìfitónilétí';
+
+  @override
+  String get permCameraTitle => 'Kámẹ́rà';
+
+  @override
+  String get permAllow => 'Fún ní àṣẹ';
+
+  @override
+  String get permLater => 'Kì í ṣe báyìí';
+
+  @override
+  String get authStory1H => 'Wakọ̀ pẹ̀lú Along.';
+
+  @override
+  String get authStory1B => 'Àwọn èrò ń rí ọ ní gareji àti lójú ọ̀nà.';
+
+  @override
+  String get authStory2H => 'Iye owó rẹ, ọ̀nà rẹ.';
+
+  @override
+  String get authStory2B =>
+      'Ṣètò owó ní ibùdókọ̀ kọ̀ọ̀kan, kí o gba owó lẹ́sẹ̀kẹsẹ̀.';
+
+  @override
+  String get authStory3H => 'Ààbò ní gbogbo ìrìn àjò.';
+
+  @override
+  String get authStory3B => 'Àwọn èrò tí a fọwọ́sí àti SOS ní ìdìmú kan.';
+
+  @override
+  String get permTitle => 'Ṣetán láti wakọ̀';
+
+  @override
+  String get permLocationBody =>
+      'Fi ibi tí o wà han àwọn èrò nígbà tí o wà lórí ayélujára.';
+
+  @override
+  String get permNotifBody => 'Gbọ́ nípa ìbéèrè tuntun àti owó sísan.';
+
+  @override
+  String get permCameraBody => 'Ya fọ́tò ìwé rẹ, kí o ṣàyẹ̀wò kóòdù QR.';
+
+  @override
+  String get otpDidntGet => 'Kò dé ọ̀dọ̀ rẹ?';
 }

@@ -33,6 +33,11 @@ final connectionSnapshotProvider = StreamProvider<ConnectionSnapshot>((ref) {
   return controller.changes;
 });
 
+/// Count of open screens that explain the offline state inline (sign-in).
+/// While above zero the global offline banner stays hidden so the two
+/// messages never disagree.
+final connectionBannerMutedProvider = StateProvider<int>((ref) => 0);
+
 /// Shows the offline / reconnecting / back-online banner over every route.
 class ConnectionBannerHost extends ConsumerWidget {
   const ConnectionBannerHost({super.key, required this.child});
@@ -69,7 +74,10 @@ class ConnectionBannerHost extends ConsumerWidget {
             : l10n.connRestored,
       ),
     };
-    return AlongConnectionHost(banner: banner, child: child);
+    final muted =
+        ref.watch(connectionBannerMutedProvider) > 0 &&
+        snap.phase == ConnectionPhase.offline;
+    return AlongConnectionHost(banner: muted ? null : banner, child: child);
   }
 
   static String _offlineLabel(AppLocalizations l10n, ConnectionSnapshot snap) {

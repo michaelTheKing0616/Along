@@ -1745,4 +1745,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeOnlineNoSignal => 'Online · no signal';
+
+  @override
+  String get authYourNumber => 'Your number';
+
+  @override
+  String get authSendCode => 'Text me the code';
+
+  @override
+  String get otpCheckTitle => 'Check your texts';
+
+  @override
+  String get otpChecking => 'Checking the code…';
+
+  @override
+  String get otpAutofillHint =>
+      'The code fills in by itself when the text arrives.';
+
+  @override
+  String get authOffline => 'You are offline. Connect to get your code.';
+
+  @override
+  String get permSubtitle =>
+      'Along asks once. You can change this any time in Settings.';
+
+  @override
+  String get permLocationTitle => 'Location';
+
+  @override
+  String get permNotifTitle => 'Notifications';
+
+  @override
+  String get permCameraTitle => 'Camera';
+
+  @override
+  String get permAllow => 'Allow access';
+
+  @override
+  String get permLater => 'Not now';
+
+  @override
+  String get authStory1H => 'Drive with Along.';
+
+  @override
+  String get authStory1B => 'Riders find you at the park and on the road.';
+
+  @override
+  String get authStory2H => 'Your price, your route.';
+
+  @override
+  String get authStory2B => 'Set fares by stop and get paid straight away.';
+
+  @override
+  String get authStory3H => 'Safe on every trip.';
+
+  @override
+  String get authStory3B => 'Verified riders and SOS one hold away.';
+
+  @override
+  String get permTitle => 'Ready to drive';
+
+  @override
+  String get permLocationBody =>
+      'Show riders where you are while you are online.';
+
+  @override
+  String get permNotifBody => 'Hear about new requests and payouts.';
+
+  @override
+  String get permCameraBody => 'Photograph your documents and scan QR codes.';
+
+  @override
+  String get otpDidntGet => 'Didn\'t get it?';
 }

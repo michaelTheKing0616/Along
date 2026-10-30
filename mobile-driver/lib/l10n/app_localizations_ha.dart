@@ -1757,4 +1757,75 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get homeOnlineNoSignal => 'A kan layi · babu sigina';
+
+  @override
+  String get authYourNumber => 'Lambar wayarka';
+
+  @override
+  String get authSendCode => 'Tura min lambar sirri';
+
+  @override
+  String get otpCheckTitle => 'Duba saƙonninka';
+
+  @override
+  String get otpChecking => 'Ana duba lambar…';
+
+  @override
+  String get otpAutofillHint => 'Lambar za ta cika da kanta idan saƙon ya iso.';
+
+  @override
+  String get authOffline => 'Ba ka da intanet. Haɗa don samun lambarka.';
+
+  @override
+  String get permSubtitle =>
+      'Along zai tambaya sau ɗaya. Za ka iya canza wannan a Saituna.';
+
+  @override
+  String get permLocationTitle => 'Wuri';
+
+  @override
+  String get permNotifTitle => 'Sanarwa';
+
+  @override
+  String get permCameraTitle => 'Kyamara';
+
+  @override
+  String get permAllow => 'Ba da izini';
+
+  @override
+  String get permLater => 'Ba yanzu ba';
+
+  @override
+  String get authStory1H => 'Tuƙa tare da Along.';
+
+  @override
+  String get authStory1B => 'Fasinjoji suna samunka a tasha da kan hanya.';
+
+  @override
+  String get authStory2H => 'Farashinka, hanyarka.';
+
+  @override
+  String get authStory2B => 'Saita kuɗi bisa tasha kuma a biya ka nan take.';
+
+  @override
+  String get authStory3H => 'Lafiya a kowace tafiya.';
+
+  @override
+  String get authStory3B => 'Fasinjoji da aka tabbatar da SOS a riƙo ɗaya.';
+
+  @override
+  String get permTitle => 'Shirye don tuƙi';
+
+  @override
+  String get permLocationBody =>
+      'Nuna wa fasinjoji inda kake yayin da kake kan layi.';
+
+  @override
+  String get permNotifBody => 'Ji labarin sabbin buƙatu da biyan kuɗi.';
+
+  @override
+  String get permCameraBody => 'Ɗauki hoton takardunka kuma duba lambobin QR.';
+
+  @override
+  String get otpDidntGet => 'Ba ka samu ba?';
 }

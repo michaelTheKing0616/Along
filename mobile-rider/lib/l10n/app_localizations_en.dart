@@ -2284,4 +2284,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String optionCardRouteLine(String board, String alight) {
     return 'Board at $board → $alight';
   }
+
+  @override
+  String get authYourNumber => 'Your number';
+
+  @override
+  String get authSendCode => 'Text me the code';
+
+  @override
+  String get otpCheckTitle => 'Check your texts';
+
+  @override
+  String get otpChecking => 'Checking the code…';
+
+  @override
+  String get otpAutofillHint =>
+      'The code fills in by itself when the text arrives.';
+
+  @override
+  String get authOffline => 'You are offline. Connect to get your code.';
+
+  @override
+  String get authBack => 'Back';
+
+  @override
+  String get permSubtitle =>
+      'Along asks once. You can change this any time in Settings.';
+
+  @override
+  String get permLocationTitle => 'Location';
+
+  @override
+  String get permNotifTitle => 'Notifications';
+
+  @override
+  String get permCameraTitle => 'Camera';
+
+  @override
+  String get permAllow => 'Allow access';
+
+  @override
+  String get permLater => 'Not now';
+
+  @override
+  String get authStory1H => 'Move around. Your way.';
+
+  @override
+  String get authStory1B => 'Keke, okada, danfo and taxi in one app.';
+
+  @override
+  String get authStory2H => 'A fair fare, every time.';
+
+  @override
+  String get authStory2B => 'See the price before you go. No haggling.';
+
+  @override
+  String get authStory3H => 'Someone always knows.';
+
+  @override
+  String get authStory3B =>
+      'Share your trip and hold for SOS if you need help.';
+
+  @override
+  String get nameSubtitle =>
+      'Drivers see your first name only. You can skip this.';
+
+  @override
+  String get permTitle => 'Ready for your first ride';
+
+  @override
+  String get permLocationBody =>
+      'Find your pickup and show the driver where you are.';
+
+  @override
+  String get permNotifBody => 'Know the moment your driver arrives.';
+
+  @override
+  String get permCameraBody =>
+      'Scan to pay and check the plate before you board.';
+
+  @override
+  String get otpDidntGet => 'Didn\'t get it?';
 }
