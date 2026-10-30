@@ -244,9 +244,9 @@ legend { font-size: 12.5px; font-weight: 600; padding: 0 4px; }
 .badge-discrepant, .badge-candidate, .badge-awaiting-second, .badge-warn, .badge-acknowledged, .badge-pending-review {
   background: var(--a-warn-tint); color: var(--a-warn);
 }
-.badge-rejected, .badge-resolved, .badge-muted, .badge-closed, .badge-dismissed { background: var(--a-sunken); color: var(--a-muted); }
+.badge-resolved, .badge-muted, .badge-closed, .badge-dismissed { background: var(--a-sunken); color: var(--a-muted); }
 .badge-pending, .badge-info { background: var(--a-info-tint); color: var(--a-info); }
-.badge-open, .badge-danger, .badge-failed, .badge-false-alarm { background: var(--a-bad-tint); color: var(--a-bad); }
+.badge-open, .badge-rejected, .badge-danger, .badge-failed, .badge-false-alarm { background: var(--a-bad-tint); color: var(--a-bad); }
 
 /* Empty, loading and error states. */
 .empty-state {
@@ -637,7 +637,8 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
 @media (max-width: 1199px) { .dash-side { display: none; } }
 
 /* Driver overview cards. */
-.overview-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start; }
+.overview-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: stretch; }
+.overview-grid > .card { height: 100%; }
 .overview-grid .card { margin: 0; }
 .mini-list { list-style: none; margin: 0; padding: 0; }
 .mini-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--a-line); font-size: 13.5px; }

@@ -1,3 +1,4 @@
+import { latestDocuments, toVehicleCard } from "@/lib/drivers/vehicle-docs";
 import { getCityBySlug } from "@/lib/city/resolve";
 import type { IntegrityFlagRow } from "@/lib/integrity/types";
 import { createClient } from "@/lib/supabase/server";
@@ -71,6 +72,8 @@ export default async function DriverDetailPage({ params }: PageProps) {
     { data: guarantorRows },
     { data: paymentRows },
     { data: stickerRows },
+    { data: vehicleRow },
+    { data: documentRows },
   ] = await Promise.all([
     supabase
       .from("driver_balances")
@@ -119,6 +122,22 @@ export default async function DriverDetailPage({ params }: PageProps) {
       .eq("driver_id", driverId)
       .order("created_at", { ascending: false })
       .limit(20),
+    supabase
+      .from("driver_vehicles")
+      .select(
+        "since, vehicles(plate_number, make_model, color, seat_capacity, mode_code, verification_status)",
+      )
+      .eq("driver_id", driverId)
+      .eq("active", true)
+      .maybeSingle(),
+    supabase
+      .from("driver_verifications")
+      .select(
+        "id, document_type, status, submitted_at, expires_at, rejection_reason",
+      )
+      .eq("driver_id", driverId)
+      .order("submitted_at", { ascending: false })
+      .limit(30),
   ]);
 
   const flags: IntegrityFlagRow[] = (flagRows ?? []).map((row) => ({
@@ -169,6 +188,8 @@ export default async function DriverDetailPage({ params }: PageProps) {
       created_at: t.created_at,
     })),
     flags,
+    vehicle: toVehicleCard(vehicleRow),
+    documents: latestDocuments(documentRows),
     guarantor: guarantorRows?.[0] ?? null,
     qrPayments: (paymentRows ?? []).map((p) => ({
       id: p.id,
