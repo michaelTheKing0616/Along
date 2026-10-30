@@ -1,18 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useRef } from 'react';
-import * as maplibregl from 'maplibre-gl';
-import { Protocol } from 'pmtiles';
-import { loadAlongStyle } from '@/lib/map/style';
+import { useEffect, useMemo, useRef } from "react";
+import * as maplibregl from "maplibre-gl";
+import { Protocol } from "pmtiles";
+import { loadAlongStyle } from "@/lib/map/style";
 import {
   buildLiveMapPaintColors,
   parksToGeoJson,
   routesToGeoJson,
   stagesToGeoJson,
-} from '@/lib/map/geojson';
-import type { GraphMapPoint, GraphMapRoute } from '@/lib/graph/types';
+} from "@/lib/map/geojson";
+import type { GraphMapPoint, GraphMapRoute } from "@/lib/graph/types";
 
-import 'maplibre-gl/dist/maplibre-gl.css';
+import "maplibre-gl/dist/maplibre-gl.css";
+import { configureMapWorker } from "@/lib/map/worker";
 
 interface GraphMapProps {
   center: { lat: number; lng: number };
@@ -27,11 +28,13 @@ interface GraphMapProps {
 
 function mergeStagePositions(
   stages: GraphMapPoint[],
-  pending: Record<string, { lat: number; lng: number }>
+  pending: Record<string, { lat: number; lng: number }>,
 ): GraphMapPoint[] {
   return stages.map((stage) => {
     const override = pending[stage.id];
-    return override ? { ...stage, lat: override.lat, lng: override.lng } : stage;
+    return override
+      ? { ...stage, lat: override.lat, lng: override.lng }
+      : stage;
   });
 }
 
@@ -52,7 +55,7 @@ export function GraphMap({
 
   const displayStages = useMemo(
     () => mergeStagePositions(stages, pendingStagePositions),
-    [stages, pendingStagePositions]
+    [stages, pendingStagePositions],
   );
 
   const parksGeo = useMemo(
@@ -64,9 +67,9 @@ export function GraphMap({
           lat: p.lat,
           lng: p.lng,
           verification_status: p.verification_status,
-        }))
+        })),
       ),
-    [parks]
+    [parks],
   );
 
   const stagesGeo = useMemo(
@@ -74,16 +77,16 @@ export function GraphMap({
       stagesToGeoJson(
         displayStages.map((s) => ({
           id: s.id,
-          route_id: s.route_id ?? '',
+          route_id: s.route_id ?? "",
           name: s.name,
           lat: s.lat,
           lng: s.lng,
           verification_status: s.verification_status,
           is_official_park: s.is_official_park ?? false,
           sequence: 0,
-        }))
+        })),
       ),
-    [displayStages]
+    [displayStages],
   );
 
   const routesGeo = useMemo(
@@ -94,9 +97,9 @@ export function GraphMap({
           mode_code: r.mode_code,
           verification_status: r.verification_status,
           coordinates: r.coordinates,
-        }))
+        })),
       ),
-    [routes]
+    [routes],
   );
 
   useEffect(() => {
@@ -105,12 +108,13 @@ export function GraphMap({
     let cancelled = false;
     const protocol = new Protocol();
     protocolRef.current = protocol;
-    maplibregl.addProtocol('pmtiles', protocol.tile);
+    maplibregl.addProtocol("pmtiles", protocol.tile);
 
     void (async () => {
       const style = await loadAlongStyle();
       if (cancelled || !containerRef.current) return;
 
+      configureMapWorker();
       const map = new maplibregl.Map({
         container: containerRef.current,
         style: style as maplibregl.StyleSpecification,
@@ -119,77 +123,77 @@ export function GraphMap({
         attributionControl: {},
       });
 
-      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+      map.addControl(new maplibregl.NavigationControl(), "top-right");
 
-      map.on('load', () => {
+      map.on("load", () => {
         const colors = buildLiveMapPaintColors();
 
-        map.addSource('graph-routes', { type: 'geojson', data: routesGeo });
-        map.addSource('graph-parks', { type: 'geojson', data: parksGeo });
-        map.addSource('graph-stages', { type: 'geojson', data: stagesGeo });
+        map.addSource("graph-routes", { type: "geojson", data: routesGeo });
+        map.addSource("graph-parks", { type: "geojson", data: parksGeo });
+        map.addSource("graph-stages", { type: "geojson", data: stagesGeo });
 
         map.addLayer({
-          id: 'graph-routes-line',
-          type: 'line',
-          source: 'graph-routes',
+          id: "graph-routes-line",
+          type: "line",
+          source: "graph-routes",
           paint: {
-            'line-color': colors.routeFieldVerified,
-            'line-width': 2,
-            'line-opacity': 0.7,
+            "line-color": colors.routeFieldVerified,
+            "line-width": 2,
+            "line-opacity": 0.7,
           },
         });
 
         map.addLayer({
-          id: 'graph-parks-circle',
-          type: 'circle',
-          source: 'graph-parks',
+          id: "graph-parks-circle",
+          type: "circle",
+          source: "graph-parks",
           paint: {
-            'circle-radius': 7,
-            'circle-color': colors.park,
-            'circle-stroke-width': 2,
-            'circle-stroke-color': colors.strokeLight,
+            "circle-radius": 7,
+            "circle-color": colors.park,
+            "circle-stroke-width": 2,
+            "circle-stroke-color": colors.strokeLight,
           },
         });
 
         map.addLayer({
-          id: 'graph-stages-circle',
-          type: 'circle',
-          source: 'graph-stages',
+          id: "graph-stages-circle",
+          type: "circle",
+          source: "graph-stages",
           paint: {
-            'circle-radius': 6,
-            'circle-color': colors.stage,
-            'circle-stroke-width': 2,
-            'circle-stroke-color': colors.strokeLight,
+            "circle-radius": 6,
+            "circle-color": colors.stage,
+            "circle-stroke-width": 2,
+            "circle-stroke-color": colors.strokeLight,
           },
         });
 
-        map.on('click', 'graph-parks-circle', (event) => {
+        map.on("click", "graph-parks-circle", (event) => {
           const parkId = event.features?.[0]?.id;
-          if (typeof parkId === 'string') onSelectPark(parkId);
+          if (typeof parkId === "string") onSelectPark(parkId);
         });
 
-        map.on('click', 'graph-stages-circle', (event) => {
+        map.on("click", "graph-stages-circle", (event) => {
           const stageId = event.features?.[0]?.id;
-          if (typeof stageId === 'string') onSelectStage(stageId);
+          if (typeof stageId === "string") onSelectStage(stageId);
         });
 
-        map.on('mousedown', 'graph-stages-circle', (event) => {
+        map.on("mousedown", "graph-stages-circle", (event) => {
           const stageId = event.features?.[0]?.id;
-          if (typeof stageId !== 'string') return;
+          if (typeof stageId !== "string") return;
           dragStageRef.current = stageId;
-          map.getCanvas().style.cursor = 'grabbing';
+          map.getCanvas().style.cursor = "grabbing";
           event.preventDefault();
         });
 
-        map.on('mousemove', (event) => {
+        map.on("mousemove", (event) => {
           if (!dragStageRef.current) return;
           onStageDrag(dragStageRef.current, event.lngLat.lat, event.lngLat.lng);
         });
 
-        map.on('mouseup', () => {
+        map.on("mouseup", () => {
           if (dragStageRef.current) {
             dragStageRef.current = null;
-            map.getCanvas().style.cursor = '';
+            map.getCanvas().style.cursor = "";
           }
         });
       });
@@ -202,7 +206,7 @@ export function GraphMap({
       mapRef.current?.remove();
       mapRef.current = null;
       if (protocolRef.current) {
-        maplibregl.removeProtocol('pmtiles');
+        maplibregl.removeProtocol("pmtiles");
         protocolRef.current = null;
       }
     };
@@ -211,9 +215,12 @@ export function GraphMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map?.isStyleLoaded()) return;
-    const parksSource = map.getSource('graph-parks') as maplibregl.GeoJSONSource | undefined;
-    const stagesSource = map.getSource('graph-stages') as maplibregl.GeoJSONSource | undefined;
-    const routesSource = map.getSource('graph-routes') as maplibregl.GeoJSONSource | undefined;
+    const parksSource = map.getSource("graph-parks") as
+      maplibregl.GeoJSONSource | undefined;
+    const stagesSource = map.getSource("graph-stages") as
+      maplibregl.GeoJSONSource | undefined;
+    const routesSource = map.getSource("graph-routes") as
+      maplibregl.GeoJSONSource | undefined;
     parksSource?.setData(parksGeo);
     stagesSource?.setData(stagesGeo);
     routesSource?.setData(routesGeo);
@@ -223,7 +230,11 @@ export function GraphMap({
     <div
       ref={containerRef}
       data-testid="graph-map"
-      style={{ width: '100%', height: '420px', borderRadius: 'var(--radius-md)' }}
+      style={{
+        width: "100%",
+        height: "420px",
+        borderRadius: "var(--radius-md)",
+      }}
     />
   );
 }

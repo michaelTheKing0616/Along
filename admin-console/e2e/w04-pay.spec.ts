@@ -96,6 +96,7 @@ test.describe('W-04 anonymous web pay (TS-UI-06)', () => {
 test.describe('A-13 sticker batch PDF', () => {
   test('PDF preview contains plate, driver code, and QR image', async ({ page }) => {
     await signInAs(page, FINANCE_USER, { landing: `/${E2E_CITY}/finance` });
+    await page.getByTestId('finance-tab-qr').click();
     await page.getByTestId(`sticker-select-${DRIVER_CODE}`).check();
 
     let pdfBytes: Buffer | null = null;

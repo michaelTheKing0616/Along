@@ -1,5 +1,4 @@
 import type { Json } from '@along/contracts/db.types';
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { fetchAuditLogForTarget } from '@/lib/supabase/server';
 import { createClient } from '@/lib/supabase/server';
@@ -66,8 +65,7 @@ export default async function ConfigPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Configuration</h1>
         <p>
-          Edit <code>app_config</code> with schema validation, effective-value preview, and audited
-          changes (reason required).
+          Runtime settings with validation and an effective-value preview. Every change needs a reason and is audited.
         </p>
       </div>
       {!city ? (
@@ -75,7 +73,6 @@ export default async function ConfigPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <ConfigEditor
         citySlug={citySlug}
         cityId={city?.id ?? ''}

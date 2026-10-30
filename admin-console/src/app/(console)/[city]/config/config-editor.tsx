@@ -9,6 +9,7 @@ import {
 } from '@/lib/config/keys';
 import { formatConfigValue, getConfigSchema, parseConfigInput } from '@/lib/config/schemas';
 import { setConfigValue } from './actions';
+import { shortId } from '@/lib/ui/label';
 
 type ScopedValue = {
   key: string;
@@ -207,25 +208,21 @@ export function ConfigEditor({
         </div>
       ) : null}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 'var(--space-6)' }}>
+      <div className="config-layout">
         <aside>
-          <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-3)' }}>Config keys</h2>
+          <h2 className="section-title">Config keys</h2>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {keys.map((key) => (
-              <li key={key.key} style={{ marginBottom: 'var(--space-1)' }}>
+              <li key={key.key}>
                 <button
                   type="button"
-                  className="tree-button"
+                  className="key-item"
+                  aria-current={selectedKey === key.key ? 'true' : undefined}
                   data-testid={`config-key-${key.key}`}
                   onClick={() => onSelectKey(key.key)}
-                  style={{
-                    fontWeight: selectedKey === key.key ? 600 : 400,
-                    width: '100%',
-                    textAlign: 'left',
-                  }}
                 >
-                  {key.key}
-                  {key.readOnly ? ' (read-only)' : ''}
+                  <span className="mono">{key.key}</span>
+                  {key.readOnly ? <span className="key-tag">read-only</span> : null}
                 </button>
               </li>
             ))}
@@ -233,14 +230,14 @@ export function ConfigEditor({
         </aside>
 
         <section className="card">
-          <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-2)' }}>{selectedKey}</h2>
+          <h2 className="section-title">{selectedKey}</h2>
           {keyMeta?.description ? (
             <p style={{ margin: '0 0 var(--space-4)', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
               {keyMeta.description}
             </p>
           ) : null}
 
-          <div className="nav-links" style={{ marginBottom: 'var(--space-4)' }} role="tablist">
+          <div className="seg" role="tablist" aria-label="Config scope">
             {allowedScopes.map((scope) => (
               <button
                 key={scope}
@@ -249,13 +246,6 @@ export function ConfigEditor({
                 aria-selected={scopeTab === scope}
                 data-testid={`config-scope-${scope}`}
                 onClick={() => onScopeChange(scope)}
-                style={{
-                  border: scopeTab === scope ? '1px solid var(--color-primary)' : '1px solid transparent',
-                  background: scopeTab === scope ? 'var(--color-surface-muted)' : 'transparent',
-                  padding: 'var(--space-2) var(--space-3)',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: 'pointer',
-                }}
               >
                 {CONFIG_SCOPE_LABELS[scope]}
               </button>
@@ -321,15 +311,16 @@ export function ConfigEditor({
       </div>
 
       <section className="card" style={{ marginTop: 'var(--space-6)' }}>
-        <h2 style={{ fontSize: '1rem', margin: '0 0 var(--space-3)' }}>Recent audit history</h2>
+        <h2 className="section-title">Recent audit history</h2>
         {auditRows.length === 0 ? (
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>No audit rows yet.</p>
         ) : (
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} data-testid="config-audit-history">
             {auditRows.slice(0, 8).map((row) => (
               <li key={row.id} style={{ fontSize: '0.8125rem', marginBottom: 'var(--space-2)' }}>
-                <code>{row.target_id}</code> — {row.action} by {row.actor_role ?? 'unknown'} at{' '}
-                {new Date(row.created_at).toLocaleString()}
+                <code title={row.target_id ?? undefined}>{shortId(row.target_id)}</code> {row.action} by{' '}
+                {row.actor_role?.replace(/_/g, ' ') ?? 'unknown'}{' '}
+                <span className="cell-muted">{new Date(row.created_at).toLocaleString()}</span>
               </li>
             ))}
           </ul>

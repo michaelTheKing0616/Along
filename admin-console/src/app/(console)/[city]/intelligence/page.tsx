@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { AuditDrawer } from '@/components/along/AuditDrawer';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type {
@@ -132,8 +131,7 @@ export default async function IntelligencePage({ params }: PageProps) {
       <div className="page-header">
         <h1>Intelligence review</h1>
         <p>
-          Trace-derived candidates for <strong>{city?.name ?? citySlug}</strong> — promote to the
-          along graph as <code>candidate</code> rows with provenance, or dismiss.
+          Candidates found in trip traces in <strong>{city?.name ?? citySlug}</strong>. Promote one to the graph as a candidate, or dismiss it.
         </p>
       </div>
       {!city ? (
@@ -141,7 +139,6 @@ export default async function IntelligencePage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <IntelligenceConsole
         citySlug={citySlug}
         candidateParks={candidateParks}

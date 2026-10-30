@@ -41,6 +41,15 @@ describe('analytics format', () => {
     expect(merged.ambient_to_commit_diagnostic).toBe(true);
   });
 
+  it('aggregateSummaries weights fare discrepancy by completed trips', () => {
+    const merged = aggregateSummaries([
+      { summary: baseSummary({ fare_discrepancy_rate: 0.1, completed_trips: 100 }) },
+      { summary: baseSummary({ fare_discrepancy_rate: 0.2, completed_trips: 300 }) },
+      { summary: baseSummary({ fare_discrepancy_rate: null, completed_trips: 50 }) },
+    ]);
+    expect(merged.fare_discrepancy_rate).toBeCloseTo(0.175);
+  });
+
   it('conversion diagnostic note states display-only intent (FM13)', () => {
     expect(CONVERSION_DIAGNOSTIC_NOTE).toMatch(/diagnostic/i);
     expect(CONVERSION_DIAGNOSTIC_NOTE).toMatch(/does not trigger/i);

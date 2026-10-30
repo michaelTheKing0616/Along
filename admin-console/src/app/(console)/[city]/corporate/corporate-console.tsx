@@ -163,7 +163,7 @@ export function CorporateConsole({
       ) : null}
 
       <div
-        className="nav-links"
+        className="seg"
         role="tablist"
         aria-label="Corporate portal sections"
         style={{ marginBottom: 'var(--space-4)' }}
@@ -185,39 +185,32 @@ export function CorporateConsole({
 
       {tab === 'overview' ? (
         <section data-testid="corporate-overview">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(11rem, 1fr))',
-              gap: 'var(--space-4)',
-              marginBottom: 'var(--space-6)',
-            }}
-          >
-            <div className="card" data-testid="corporate-subsidy-mtd">
-              <h3 style={{ marginTop: 0 }}>Subsidy used MTD</h3>
-              <p style={{ fontSize: '1.5rem', margin: 0 }}>
+          <div className="kpi-grid">
+            <div className="kpi" data-testid="corporate-subsidy-mtd">
+              <div className="kpi-label">Subsidy used MTD</div>
+              <p className="kpi-value">
                 {formatMoney(overview?.subsidy_used_mtd ?? 0, overview?.currency ?? 'NGN')}
               </p>
               {overview?.monthly_budget != null ? (
-                <p style={{ color: 'var(--color-text-muted)' }}>
+                <p className="kpi-sub">
                   Budget {formatMoney(overview.monthly_budget, overview.currency)}
                   {budgetPct != null ? ` · ${budgetPct.toFixed(1)}% used` : null}
                 </p>
               ) : null}
             </div>
-            <div className="card" data-testid="corporate-enrolled-staff">
-              <h3 style={{ marginTop: 0 }}>Enrolled staff</h3>
-              <p style={{ fontSize: '1.5rem', margin: 0 }}>{overview?.enrolled_staff ?? 0}</p>
+            <div className="kpi" data-testid="corporate-enrolled-staff">
+              <div className="kpi-label">Enrolled staff</div>
+              <p className="kpi-value">{overview?.enrolled_staff ?? 0}</p>
             </div>
-            <div className="card" data-testid="corporate-active-trips">
-              <h3 style={{ marginTop: 0 }}>Active staff trips</h3>
-              <p style={{ fontSize: '1.5rem', margin: 0 }}>{overview?.live_trips?.length ?? 0}</p>
+            <div className="kpi" data-testid="corporate-active-trips">
+              <div className="kpi-label">Active staff trips</div>
+              <p className="kpi-value">{overview?.live_trips?.length ?? 0}</p>
             </div>
           </div>
 
-          <h2 style={{ fontSize: '1.125rem' }}>Live trips</h2>
+          <h2 className="section-title">Live trips</h2>
           {(overview?.live_trips?.length ?? 0) === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>No staff trips in progress.</p>
+            <p className="empty-inline">No staff trips in progress.</p>
           ) : (
             <table className="data-table" data-testid="corporate-live-trips">
               <thead>
@@ -226,7 +219,7 @@ export function CorporateConsole({
                   <th>Department</th>
                   <th>Status</th>
                   <th>Mode</th>
-                  <th>Fare</th>
+                  <th className="num">Fare</th>
                 </tr>
               </thead>
               <tbody>
@@ -236,7 +229,7 @@ export function CorporateConsole({
                     <td>{trip.department ?? '—'}</td>
                     <td>{trip.status}</td>
                     <td>{trip.mode_code}</td>
-                    <td>{formatMoney(trip.fare_shown, overview?.currency ?? 'NGN')}</td>
+                    <td className="num">{formatMoney(trip.fare_shown, overview?.currency ?? 'NGN')}</td>
                   </tr>
                 ))}
               </tbody>
@@ -247,7 +240,7 @@ export function CorporateConsole({
 
       {tab === 'roster' ? (
         <section data-testid="corporate-roster">
-          <h2 style={{ fontSize: '1.125rem' }}>Invite staff</h2>
+          <h2 className="section-title">Invite staff</h2>
           <div className="field">
             <label htmlFor="corporate-invite-phone">Phone (E.164)</label>
             <input
@@ -311,9 +304,9 @@ export function CorporateConsole({
             Invite by phone
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Roster</h2>
+          <h2 className="section-title section-gap">Roster</h2>
           {members.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>No staff enrolled yet.</p>
+            <p className="empty-inline">No staff enrolled yet.</p>
           ) : (
             <table className="data-table" data-testid="corporate-roster-table">
               <thead>
@@ -362,7 +355,7 @@ export function CorporateConsole({
 
       {tab === 'policies' ? (
         <section data-testid="corporate-policies">
-          <h2 style={{ fontSize: '1.125rem' }}>Create policy</h2>
+          <h2 className="section-title">Create policy</h2>
           <div className="field">
             <label htmlFor="corporate-policy-name">Name</label>
             <input
@@ -425,13 +418,13 @@ export function CorporateConsole({
             Save policy
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Policies</h2>
+          <h2 className="section-title section-gap">Policies</h2>
           <table className="data-table" data-testid="corporate-policies-table">
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Subsidy</th>
-                <th>Cap</th>
+                <th className="num">Subsidy</th>
+                <th className="num">Cap</th>
                 <th>Hours</th>
                 <th>Status</th>
               </tr>
@@ -440,8 +433,8 @@ export function CorporateConsole({
               {policies.map((policy) => (
                 <tr key={policy.id}>
                   <td>{policy.name}</td>
-                  <td>{(policy.subsidy_pct * 100).toFixed(0)}%</td>
-                  <td>{policy.max_per_trip != null ? formatMoney(policy.max_per_trip) : '—'}</td>
+                  <td className="num">{(policy.subsidy_pct * 100).toFixed(0)}%</td>
+                  <td className="num">{policy.max_per_trip != null ? formatMoney(policy.max_per_trip) : '—'}</td>
                   <td>{policy.allowed_hours ? 'Configured' : 'Any'}</td>
                   <td>{policy.active ? 'Active' : 'Inactive'}</td>
                 </tr>
@@ -454,7 +447,7 @@ export function CorporateConsole({
       {tab === 'history' ? (
         <section data-testid="corporate-history">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 style={{ fontSize: '1.125rem' }}>Trip allocations</h2>
+            <h2 className="section-title">Trip allocations</h2>
             <button
               type="button"
               className="btn btn-primary"
@@ -465,7 +458,7 @@ export function CorporateConsole({
             </button>
           </div>
           {allocations.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>No subsidized trips yet.</p>
+            <p className="empty-inline">No subsidized trips yet.</p>
           ) : (
             <table className="data-table" data-testid="corporate-history-table">
               <thead>
@@ -474,8 +467,8 @@ export function CorporateConsole({
                   <th>Employee</th>
                   <th>Department</th>
                   <th>Mode</th>
-                  <th>Fare</th>
-                  <th>Subsidy</th>
+                  <th className="num">Fare</th>
+                  <th className="num">Subsidy</th>
                   <th>Policy</th>
                 </tr>
               </thead>
@@ -487,7 +480,7 @@ export function CorporateConsole({
                     <td>{row.department ?? '—'}</td>
                     <td>{row.mode_code ?? '—'}</td>
                     <td>{row.fare_shown != null ? formatMoney(row.fare_shown) : '—'}</td>
-                    <td>{formatMoney(row.subsidized_amount)}</td>
+                    <td className="num">{formatMoney(row.subsidized_amount)}</td>
                     <td>{row.policy_name ?? '—'}</td>
                   </tr>
                 ))}
@@ -499,15 +492,15 @@ export function CorporateConsole({
 
       {tab === 'billing' ? (
         <section data-testid="corporate-billing">
-          <h2 style={{ fontSize: '1.125rem' }}>Invoices</h2>
+          <h2 className="section-title">Invoices</h2>
           {invoices.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)' }}>No invoices generated yet.</p>
+            <p className="empty-inline">No invoices generated yet.</p>
           ) : (
             <table className="data-table" data-testid="corporate-invoices-table">
               <thead>
                 <tr>
                   <th>Period</th>
-                  <th>Total</th>
+                  <th className="num">Total</th>
                   <th>Status</th>
                   <th />
                 </tr>
@@ -519,7 +512,7 @@ export function CorporateConsole({
                       {new Date(invoice.period_start).toLocaleDateString()} –{' '}
                       {new Date(invoice.period_end).toLocaleDateString()}
                     </td>
-                    <td>{formatMoney(invoice.total, invoice.currency)}</td>
+                    <td className="num">{formatMoney(invoice.total, invoice.currency)}</td>
                     <td>{invoice.status}</td>
                     <td>
                       <button

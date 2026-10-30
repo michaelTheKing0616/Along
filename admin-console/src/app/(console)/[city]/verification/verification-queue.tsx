@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState, useTransition } from 'react';
-import { redactOcrExtract } from '@/lib/verification/redact-ocr';
-import { queueAgeLabel } from '@/lib/verification/format';
-import type { VerificationQueueRow } from '@/lib/verification/types';
-import { approveVerification, rejectVerification } from './actions';
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { redactOcrExtract } from "@/lib/verification/redact-ocr";
+import { queueAgeLabel } from "@/lib/verification/format";
+import type { VerificationQueueRow } from "@/lib/verification/types";
+import { approveVerification, rejectVerification } from "./actions";
+import { humanize } from "@/lib/ui/label";
 
 interface VerificationQueueProps {
   citySlug: string;
@@ -35,27 +36,45 @@ function DocumentPanel({
     setDocError(null);
     try {
       const res = await fetch(`/api/verification/${row.id}/document`);
-      const body = (await res.json()) as DocumentViewState & { error?: string; logged?: boolean };
+      const body = (await res.json()) as DocumentViewState & {
+        error?: string;
+        logged?: boolean;
+      };
       if (!res.ok) {
         if (body.logged) onViewed(row.id);
-        throw new Error(body.error ?? 'Failed to load document');
+        throw new Error(body.error ?? "Failed to load document");
       }
       setDoc(body);
       onViewed(row.id);
     } catch (err) {
-      setDocError(err instanceof Error ? err.message : 'Failed to load document');
+      setDocError(
+        err instanceof Error ? err.message : "Failed to load document",
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  const redacted = useMemo(() => redactOcrExtract(row.ocr_extract), [row.ocr_extract]);
+  const redacted = useMemo(
+    () => redactOcrExtract(row.ocr_extract),
+    [row.ocr_extract],
+  );
 
   return (
-    <div className="card verification-doc-panel" data-testid={`verification-doc-${row.document_type}`}>
-      <h3 style={{ margin: '0 0 var(--space-2)', fontSize: '0.9375rem' }}>{label}</h3>
-      <p style={{ margin: '0 0 var(--space-2)', fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
-        {row.document_type} · submitted {new Date(row.submitted_at).toLocaleString()}
+    <div
+      className="card verification-doc-panel"
+      data-testid={`verification-doc-${row.document_type}`}
+    >
+      <h3 className="sub-title">{label}</h3>
+      <p
+        style={{
+          margin: "0 0 var(--space-2)",
+          fontSize: "0.8125rem",
+          color: "var(--color-text-muted)",
+        }}
+      >
+        {row.document_type} · submitted{" "}
+        {new Date(row.submitted_at).toLocaleString()}
       </p>
 
       {!doc ? (
@@ -66,10 +85,13 @@ function DocumentPanel({
           data-testid={`view-document-${row.id}`}
           onClick={() => void loadDocument()}
         >
-          {loading ? 'Loading…' : 'View document'}
+          {loading ? "Loading…" : "View document"}
         </button>
       ) : (
-        <div className="verification-doc-viewer" data-testid="verification-doc-viewer">
+        <div
+          className="verification-doc-viewer"
+          data-testid="verification-doc-viewer"
+        >
           <div className="verification-doc-frame">
             <div
               className="verification-doc-image"
@@ -78,7 +100,7 @@ function DocumentPanel({
               style={{ backgroundImage: `url(${doc.url})` }}
             />
             <div className="verification-doc-watermark" aria-hidden="true">
-              {doc.watermark.reviewerId.slice(0, 8)}… ·{' '}
+              {doc.watermark.reviewerId.slice(0, 8)}… ·{" "}
               {new Date(doc.watermark.viewedAt).toLocaleString()}
             </div>
           </div>
@@ -86,18 +108,26 @@ function DocumentPanel({
       )}
 
       {docError ? (
-        <p className="verification-doc-error" role="alert" data-testid="verification-doc-error">
+        <p
+          className="verification-doc-error"
+          role="alert"
+          data-testid="verification-doc-error"
+        >
           {docError}
         </p>
       ) : null}
 
-      <div style={{ marginTop: 'var(--space-3)' }}>
-        <h4 style={{ margin: '0 0 var(--space-1)', fontSize: '0.8125rem' }}>OCR extract (redacted)</h4>
-        <pre className="verification-ocr-pre">{JSON.stringify(redacted, null, 2)}</pre>
+      <div style={{ marginTop: "var(--space-3)" }}>
+        <h4 style={{ margin: "0 0 var(--space-1)", fontSize: "0.8125rem" }}>
+          OCR extract (redacted)
+        </h4>
+        <pre className="verification-ocr-pre">
+          {JSON.stringify(redacted, null, 2)}
+        </pre>
       </div>
 
       {row.face_match_score != null ? (
-        <p style={{ marginTop: 'var(--space-2)', fontSize: '0.875rem' }}>
+        <p style={{ marginTop: "var(--space-2)", fontSize: "0.875rem" }}>
           Face-match score: <strong>{row.face_match_score.toFixed(3)}</strong>
         </p>
       ) : null}
@@ -111,8 +141,10 @@ export function VerificationQueue({
   initialSelectedId,
 }: VerificationQueueProps) {
   const [rows, setRows] = useState(initialRows);
-  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
-  const [rejectReason, setRejectReason] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(
+    initialSelectedId,
+  );
+  const [rejectReason, setRejectReason] = useState("");
   const [womenOnlyEligible, setWomenOnlyEligible] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -121,47 +153,55 @@ export function VerificationQueue({
 
   const selected = useMemo(
     () => rows.find((r) => r.id === selectedId) ?? null,
-    [rows, selectedId]
+    [rows, selectedId],
   );
 
   const driverPendingDocs = useMemo(() => {
     if (!selected) return [];
-    return rows.filter((r) => r.driver_id === selected.driver_id && r.status === 'pending');
+    return rows.filter(
+      (r) => r.driver_id === selected.driver_id && r.status === "pending",
+    );
   }, [rows, selected]);
 
   useEffect(() => {
     setWomenOnlyEligible(false);
-    setRejectReason('');
+    setRejectReason("");
   }, [selectedId]);
 
   function markViewed(id: string) {
     setViewedIds((prev) => new Set(prev).add(id));
   }
 
-  function refreshLocal(id: string, status: VerificationQueueRow['status']) {
+  function refreshLocal(id: string, status: VerificationQueueRow["status"]) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
   }
 
-  function runAction(action: () => Promise<{ ok: boolean; message?: string; error?: string }>) {
+  function runAction(
+    action: () => Promise<{ ok: boolean; message?: string; error?: string }>,
+  ) {
     setMessage(null);
     setError(null);
     startTransition(async () => {
       const result = await action();
       if (result.ok) {
-        setMessage(result.message ?? 'Done.');
+        setMessage(result.message ?? "Done.");
       } else {
-        setError(result.error ?? 'Action failed.');
+        setError(result.error ?? "Action failed.");
       }
     });
   }
 
   const duplicateBlocksVerifier =
-    selected?.duplicate && selected.status === 'pending';
+    selected?.duplicate && selected.status === "pending";
 
   return (
     <div data-testid="verification-queue">
       {error ? (
-        <div className="error-banner" role="alert" data-testid="verification-error">
+        <div
+          className="error-banner"
+          role="alert"
+          data-testid="verification-error"
+        >
           {error}
         </div>
       ) : null}
@@ -171,9 +211,9 @@ export function VerificationQueue({
           role="status"
           data-testid="verification-success"
           style={{
-            marginBottom: 'var(--space-4)',
-            borderColor: 'var(--color-primary)',
-            fontSize: '0.875rem',
+            marginBottom: "var(--space-4)",
+            borderColor: "var(--color-primary)",
+            fontSize: "0.875rem",
           }}
         >
           {message}
@@ -181,9 +221,11 @@ export function VerificationQueue({
       ) : null}
 
       {rows.length === 0 ? (
-        <p style={{ color: 'var(--color-text-muted)' }}>No verification submissions for this city.</p>
+        <p className="empty-inline">
+          No verification submissions for this city.
+        </p>
       ) : (
-        <>
+        <div className="split">
           <table className="data-table" data-testid="verification-table">
             <thead>
               <tr>
@@ -201,27 +243,34 @@ export function VerificationQueue({
                   data-testid={`verification-row-${row.id}`}
                   onClick={() => setSelectedId(row.id)}
                   style={{
-                    cursor: 'pointer',
-                    background: row.id === selectedId ? 'var(--color-bg)' : undefined,
+                    cursor: "pointer",
+                    background:
+                      row.id === selectedId ? "var(--color-bg)" : undefined,
                   }}
                 >
-                  <td>{row.driver_display_name ?? row.driver_id.slice(0, 8)}</td>
+                  <td>
+                    {row.driver_display_name ?? row.driver_id.slice(0, 8)}
+                  </td>
                   <td>{row.document_type}</td>
                   <td>
-                    <span className={`badge badge-${row.status}`}>{row.status}</span>
+                    <span className={`badge badge-${row.status}`}>
+                      {humanize(row.status)}
+                    </span>
                   </td>
                   <td>{queueAgeLabel(row.submitted_at)}</td>
-                  <td>{row.vehicle_plate ?? '—'}</td>
+                  <td>{row.vehicle_plate ?? "—"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           {selected ? (
-            <section style={{ marginTop: 'var(--space-6)' }} data-testid="verification-detail">
-              <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1.125rem' }}>
-                {selected.driver_display_name ?? 'Driver'}{' '}
-                <span style={{ fontWeight: 400, color: 'var(--color-text-muted)' }}>
+            <section className="split-detail" data-testid="verification-detail">
+              <h2 className="section-title">
+                {selected.driver_display_name ?? "Driver"}{" "}
+                <span
+                  style={{ fontWeight: 400, color: "var(--color-text-muted)" }}
+                >
                   ({selected.driver_phone_masked})
                 </span>
               </h2>
@@ -231,24 +280,31 @@ export function VerificationQueue({
                   className="error-banner"
                   role="alert"
                   data-testid="duplicate-hash-banner"
-                  style={{ marginBottom: 'var(--space-4)' }}
+                  style={{ marginBottom: "var(--space-4)" }}
                 >
-                  Duplicate identity hash — matches driver{' '}
-                  <strong>{selected.other_driver_masked ?? 'unknown'}</strong>. Approval requires{' '}
-                  <strong>ops_lead</strong>.
+                  Duplicate identity hash. Matches driver{" "}
+                  <strong>{selected.other_driver_masked ?? "unknown"}</strong>.
+                  Approval requires <strong>ops_lead</strong>.
                 </div>
               ) : null}
 
               {selected.vehicle_plate ? (
-                <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
-                  <h3 style={{ margin: '0 0 var(--space-2)', fontSize: '0.9375rem' }}>Vehicle</h3>
-                  <p style={{ margin: 0, fontSize: '0.875rem' }}>
+                <div
+                  className="card"
+                  style={{ marginBottom: "var(--space-4)" }}
+                >
+                  <h3 className="sub-title">Vehicle</h3>
+                  <p style={{ margin: 0, fontSize: "0.875rem" }}>
                     {selected.vehicle_plate}
-                    {selected.vehicle_make_model ? ` · ${selected.vehicle_make_model}` : ''}
-                    {selected.vehicle_color ? ` · ${selected.vehicle_color}` : ''}
+                    {selected.vehicle_make_model
+                      ? ` · ${selected.vehicle_make_model}`
+                      : ""}
+                    {selected.vehicle_color
+                      ? ` · ${selected.vehicle_color}`
+                      : ""}
                     {selected.vehicle_seat_capacity != null
                       ? ` · ${selected.vehicle_seat_capacity} seats`
-                      : ''}
+                      : ""}
                   </p>
                 </div>
               ) : null}
@@ -256,28 +312,37 @@ export function VerificationQueue({
               <div
                 className="verification-compare-row"
                 data-testid="verification-compare-row"
-                style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}
+                style={{
+                  display: "flex",
+                  gap: "var(--space-4)",
+                  flexWrap: "wrap",
+                }}
               >
                 {driverPendingDocs.map((doc, index) => (
                   <DocumentPanel
                     key={doc.id}
                     row={doc}
-                    label={driverPendingDocs.length > 1 ? `Document ${index + 1}` : 'Document'}
+                    label={
+                      driverPendingDocs.length > 1
+                        ? `Document ${index + 1}`
+                        : "Document"
+                    }
                     onViewed={markViewed}
                   />
                 ))}
               </div>
 
-              {selected.status === 'pending' ? (
-                <div style={{ marginTop: 'var(--space-4)' }}>
-                  {selected.driver_gender === 'female' ? (
+              {selected.status === "pending" ? (
+                <div className="card" style={{ marginTop: "var(--space-3)" }}>
+                  <h3 className="sub-title">Decision</h3>
+                  {selected.driver_gender === "female" ? (
                     <label
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--space-2)',
-                        marginBottom: 'var(--space-3)',
-                        fontSize: '0.875rem',
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "var(--space-2)",
+                        marginBottom: "var(--space-3)",
+                        fontSize: "0.875rem",
                       }}
                     >
                       <input
@@ -290,7 +355,7 @@ export function VerificationQueue({
                     </label>
                   ) : null}
 
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                  <div className="decision-row">
                     <button
                       type="button"
                       className="btn btn-primary"
@@ -301,9 +366,9 @@ export function VerificationQueue({
                           const result = await approveVerification(
                             citySlug,
                             selected.id,
-                            womenOnlyEligible || undefined
+                            womenOnlyEligible || undefined,
                           );
-                          if (result.ok) refreshLocal(selected.id, 'approved');
+                          if (result.ok) refreshLocal(selected.id, "approved");
                           return result;
                         })
                       }
@@ -311,7 +376,13 @@ export function VerificationQueue({
                       Approve
                     </button>
 
-                    <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'flex-end' }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "var(--space-2)",
+                        alignItems: "flex-end",
+                      }}
+                    >
                       <div className="field" style={{ marginBottom: 0 }}>
                         <label htmlFor="reject-reason">Reject reason</label>
                         <input
@@ -332,9 +403,10 @@ export function VerificationQueue({
                             const result = await rejectVerification(
                               citySlug,
                               selected.id,
-                              rejectReason
+                              rejectReason,
                             );
-                            if (result.ok) refreshLocal(selected.id, 'rejected');
+                            if (result.ok)
+                              refreshLocal(selected.id, "rejected");
                             return result;
                           })
                         }
@@ -350,9 +422,9 @@ export function VerificationQueue({
                 <p
                   data-testid="verification-viewed-flag"
                   style={{
-                    marginTop: 'var(--space-3)',
-                    fontSize: '0.8125rem',
-                    color: 'var(--color-text-muted)',
+                    marginTop: "var(--space-3)",
+                    fontSize: "0.8125rem",
+                    color: "var(--color-text-muted)",
                   }}
                 >
                   Document view logged for audit.
@@ -360,7 +432,7 @@ export function VerificationQueue({
               ) : null}
             </section>
           ) : null}
-        </>
+        </div>
       )}
     </div>
   );

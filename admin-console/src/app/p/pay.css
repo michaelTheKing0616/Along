@@ -212,3 +212,18 @@
   color: #b8b8b8;
   font-size: 0.875rem;
 }
+
+/* Rider-app bar fixes: visible headline on dark, calmer disabled state, receipt hierarchy. */
+.w04-main { font-size: 15px; line-height: 1.45; padding: 20px 20px 32px; }
+.w04-main h1, .w04-plate { color: #fff; }
+.w04-brand { font-size: 11px; font-weight: 600; margin-bottom: 20px; }
+.w04-plate { font-size: 34px; letter-spacing: 0.01em; }
+.w04-driver { font-size: 15px; color: #b8b8b8; }
+.w04-mode { border-radius: 6px; }
+.w04-pay-btn:disabled { opacity: 1; background: #262626; color: #6b6b6b; }
+.w04-paid-mark { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--w04-yellow); color: #111; font-size: 22px; font-weight: 700; margin: 8px 0 16px; }
+.w04-paid-amount { font-size: 40px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.05; margin: 0 0 6px; color: #fff; font-variant-numeric: tabular-nums; }
+.w04-receipt { margin-top: 24px; border-top: 1px solid #333; }
+.w04-receipt-row { padding: 12px 0; }
+.w04-receipt-row span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+.w04-footer { font-size: 13px; }

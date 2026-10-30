@@ -1,38 +1,74 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface ConsoleNavProps {
   city: string;
 }
 
-const LINKS = [
-  { segment: 'dashboard', label: 'Dashboard' },
-  { segment: 'live', label: 'Live map' },
-  { segment: 'field', label: 'Field reconciliation' },
-  { segment: 'graph', label: 'Graph editor' },
-  { segment: 'config', label: 'Config' },
-  { segment: 'deploy', label: 'City playbook' },
-  { segment: 'verification', label: 'Verification' },
-  { segment: 'corrections', label: 'Fare corrections' },
-  { segment: 'integrity', label: 'Integrity' },
-  { segment: 'finance', label: 'Finance' },
-  { segment: 'analytics', label: 'Analytics' },
-  { segment: 'intelligence', label: 'Intelligence' },
-  { segment: 'corporate', label: 'Corporate' },
-  { segment: 'operator', label: 'Operator' },
-  { segment: 'revenue', label: 'Revenue' },
-  { segment: 'markets', label: 'Markets' },
-  { segment: 'safety', label: 'Safety' },
-  { segment: 'audit', label: 'Audit' },
-  { segment: 'admins', label: 'Admins' },
+/** Grouped by job so an operator scans by intent, not alphabet. */
+export const NAV_GROUPS = [
+  {
+    label: 'Operate',
+    links: [
+      { segment: 'dashboard', label: 'Dashboard' },
+      { segment: 'live', label: 'Live map' },
+      { segment: 'safety', label: 'Safety' },
+      { segment: 'verification', label: 'Verification' },
+      { segment: 'integrity', label: 'Integrity' },
+      { segment: 'corrections', label: 'Fare corrections' },
+      { segment: 'field', label: 'Field reconciliation' },
+    ],
+  },
+  {
+    label: 'Network',
+    links: [
+      { segment: 'graph', label: 'Graph editor' },
+      { segment: 'intelligence', label: 'Intelligence' },
+      { segment: 'deploy', label: 'City playbook' },
+      { segment: 'markets', label: 'Markets' },
+      { segment: 'config', label: 'Config' },
+    ],
+  },
+  {
+    label: 'Money',
+    links: [
+      { segment: 'finance', label: 'Finance' },
+      { segment: 'revenue', label: 'Revenue' },
+      { segment: 'corporate', label: 'Corporate' },
+      { segment: 'operator', label: 'Operator' },
+    ],
+  },
+  {
+    label: 'Insight',
+    links: [
+      { segment: 'analytics', label: 'Analytics' },
+      { segment: 'audit', label: 'Audit' },
+      { segment: 'admins', label: 'Admins' },
+    ],
+  },
 ] as const;
 
 export function ConsoleNav({ city }: ConsoleNavProps) {
+  const pathname = usePathname() ?? '';
+  const active = pathname.split('/')[2] ?? '';
   return (
-    <nav className="nav-links" aria-label="Console navigation">
-      {LINKS.map(({ segment, label }) => (
-        <Link key={segment} href={`/${city}/${segment}`}>
-          {label}
-        </Link>
+    <nav className="nav-groups" aria-label="Console navigation">
+      {NAV_GROUPS.map((group) => (
+        <div key={group.label} className="nav-group" role="group" aria-label={group.label}>
+          <span className="nav-group-label">{group.label}</span>
+          {group.links.map(({ segment, label }) => (
+            <Link
+              key={segment}
+              href={`/${city}/${segment}`}
+              className="nav-item"
+              aria-current={active === segment ? 'page' : undefined}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
       ))}
     </nav>
   );

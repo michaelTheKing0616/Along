@@ -6,3 +6,4 @@ e2e/.auth/
 test-results/
 playwright-report/
 tsconfig.tsbuildinfo
+public/maplibre-gl-worker.mjs

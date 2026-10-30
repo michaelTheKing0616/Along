@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from 'react';
 import { changedAuditKeys, formatAuditJson } from '@/lib/audit/diff';
 import type { AuditLogPage, AuditLogRow } from '@/lib/audit/types';
 import { loadAuditPage } from './actions';
+import { shortId } from '@/lib/ui/label';
 
 interface AuditViewerProps {
   citySlug: string;
@@ -120,14 +121,14 @@ export function AuditViewer({ citySlug, initialPage }: AuditViewerProps) {
           alignItems: 'start',
         }}
       >
-        <div className="card" style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="data-table">
             <thead>
               <tr>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Time</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Action</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Target</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Role</th>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Role</th>
               </tr>
             </thead>
             <tbody>
@@ -146,19 +147,19 @@ export function AuditViewer({ citySlug, initialPage }: AuditViewerProps) {
                     style={{
                       cursor: 'pointer',
                       background:
-                        selected?.id === row.id ? 'var(--color-surface-muted, #f4f4f5)' : undefined,
+                        selected?.id === row.id ? 'var(--a-accent-tint)' : undefined,
                     }}
                   >
-                    <td style={{ padding: 'var(--space-2)' }}>
+                    <td>
                       {new Date(row.created_at).toLocaleString()}
                     </td>
-                    <td style={{ padding: 'var(--space-2)' }}>{row.action}</td>
-                    <td style={{ padding: 'var(--space-2)' }}>
+                    <td>{row.action}</td>
+                    <td>
                       <code>
-                        {row.target_type}/{row.target_id}
+                        {row.target_type}/{shortId(row.target_id)}
                       </code>
                     </td>
-                    <td style={{ padding: 'var(--space-2)' }}>{row.actor_role ?? '—'}</td>
+                    <td>{row.actor_role?.replace(/_/g, ' ') ?? '—'}</td>
                   </tr>
                 ))
               )}
@@ -187,7 +188,7 @@ export function AuditViewer({ citySlug, initialPage }: AuditViewerProps) {
         </div>
 
         <aside className="card" aria-label="Audit diff" data-testid="audit-diff-panel">
-          <h2 style={{ margin: '0 0 var(--space-2)', fontSize: '1rem' }}>Before / after</h2>
+          <h2 className="section-title">Before / after</h2>
           {!selected ? (
             <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
               Select a row to inspect the JSON diff.
@@ -195,9 +196,9 @@ export function AuditViewer({ citySlug, initialPage }: AuditViewerProps) {
           ) : (
             <>
               <p style={{ margin: '0 0 var(--space-3)', fontSize: '0.875rem' }}>
-                Audit #{selected.id} — {selected.action} on{' '}
+                Audit #{shortId(String(selected.id))}: {selected.action} on{' '}
                 <code>
-                  {selected.target_type}/{selected.target_id}
+                  {selected.target_type}/{shortId(selected.target_id)}
                 </code>
               </p>
               {changedKeys.length > 0 ? (
@@ -213,7 +214,7 @@ export function AuditViewer({ citySlug, initialPage }: AuditViewerProps) {
                 }}
               >
                 <div>
-                  <h3 style={{ margin: '0 0 var(--space-1)', fontSize: '0.875rem' }}>Before</h3>
+                  <h3 className="sub-title">Before</h3>
                   <pre
                     data-testid="audit-diff-before"
                     style={{
@@ -232,7 +233,7 @@ export function AuditViewer({ citySlug, initialPage }: AuditViewerProps) {
                   </pre>
                 </div>
                 <div>
-                  <h3 style={{ margin: '0 0 var(--space-1)', fontSize: '0.875rem' }}>After</h3>
+                  <h3 className="sub-title">After</h3>
                   <pre
                     data-testid="audit-diff-after"
                     style={{

@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type {
   AnonymizedExportRow,
@@ -172,8 +171,7 @@ export default async function RevenuePage({ params }: PageProps) {
       <div className="page-header">
         <h1>Revenue hooks</h1>
         <p>
-          Sponsored placements, API keys, B2B accounts, and anonymized export jobs for{' '}
-          <strong>{city?.name ?? citySlug}</strong>.
+          Sponsored placements, API keys, business accounts, and anonymised data exports in <strong>{city?.name ?? citySlug}</strong>.
         </p>
       </div>
       {!city ? (
@@ -181,7 +179,6 @@ export default async function RevenuePage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <RevenueConsole citySlug={citySlug} {...revenue} />
     </>
   );

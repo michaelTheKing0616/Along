@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useTransition } from 'react';
-import { formatMoney } from '@/lib/drivers/format';
+import Link from "next/link";
+import { useState, useTransition } from "react";
+import { formatMoney } from "@/lib/drivers/format";
 import type {
   FeeBearerReport,
   PendingAdjustmentRow,
@@ -11,8 +11,9 @@ import type {
   SettlementAgentRow,
   SettlementRow,
   StickerBatchDriver,
-} from '@/lib/finance/types';
-import { approvePendingAdjustment, upsertSettlementAgent } from './actions';
+} from "@/lib/finance/types";
+import { approvePendingAdjustment, upsertSettlementAgent } from "./actions";
+import { humanize } from "@/lib/ui/label";
 
 interface FinanceConsoleProps {
   citySlug: string;
@@ -27,6 +28,12 @@ interface FinanceConsoleProps {
   currentAdminId: string | null;
 }
 
+type FinanceTab = "approvals" | "settlements" | "agents" | "qr";
+
+function sumAmount(rows: { amount: number | string | null }[]): number {
+  return rows.reduce((acc, r) => acc + (Number(r.amount) || 0), 0);
+}
+
 export function FinanceConsole({
   citySlug,
   cityId,
@@ -39,25 +46,30 @@ export function FinanceConsole({
   stickerDrivers,
   currentAdminId,
 }: FinanceConsoleProps) {
-  const [businessName, setBusinessName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [selectedStickerDrivers, setSelectedStickerDrivers] = useState<Set<string>>(new Set());
+  const [tab, setTab] = useState<FinanceTab>("approvals");
+  const [businessName, setBusinessName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [selectedStickerDrivers, setSelectedStickerDrivers] = useState<
+    Set<string>
+  >(new Set());
   const [exportingPdf, setExportingPdf] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function runAction(action: () => Promise<{ ok: boolean; message?: string; error?: string }>) {
+  function runAction(
+    action: () => Promise<{ ok: boolean; message?: string; error?: string }>,
+  ) {
     setMessage(null);
     setError(null);
     startTransition(async () => {
       const result = await action();
       if (result.ok) {
-        setMessage(result.message ?? 'Done.');
-        setBusinessName('');
-        setPhone('');
+        setMessage(result.message ?? "Done.");
+        setBusinessName("");
+        setPhone("");
       } else {
-        setError(result.error ?? 'Action failed.');
+        setError(result.error ?? "Action failed.");
       }
     });
   }
@@ -75,14 +87,14 @@ export function FinanceConsole({
     setMessage(null);
     setError(null);
     if (selectedStickerDrivers.size === 0) {
-      setError('Select at least one driver.');
+      setError("Select at least one driver.");
       return;
     }
     setExportingPdf(true);
     try {
-      const res = await fetch('/api/finance/sticker-batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/finance/sticker-batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cityId,
           driverIds: [...selectedStickerDrivers],
@@ -90,18 +102,18 @@ export function FinanceConsole({
       });
       if (!res.ok) {
         const body = (await res.json()) as { error?: string };
-        throw new Error(body.error ?? 'Export failed');
+        throw new Error(body.error ?? "Export failed");
       }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'along-sticker-batch-preview.pdf';
+      a.download = "along-sticker-batch-preview.pdf";
       a.click();
       URL.revokeObjectURL(url);
-      setMessage('Sticker batch PDF downloaded (preview).');
+      setMessage("Sticker batch PDF downloaded (preview).");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Export failed');
+      setError(err instanceof Error ? err.message : "Export failed");
     } finally {
       setExportingPdf(false);
     }
@@ -118,21 +130,83 @@ export function FinanceConsole({
         </div>
       ) : null}
       {message ? (
-        <div className="card" role="status" data-testid="finance-success" style={{ marginBottom: 'var(--space-4)' }}>
+        <div
+          className="card"
+          role="status"
+          data-testid="finance-success"
+          style={{ marginBottom: "var(--space-4)" }}
+        >
           {message}
         </div>
       ) : null}
 
-      <section style={{ marginBottom: 'var(--space-8)' }}>
-        <h2 style={{ fontSize: '1.125rem' }}>Dual-control queue</h2>
+      <div className="kpi-grid finance-summary" aria-label="Finance summary">
+        <div className="kpi">
+          <div className="kpi-label">Awaiting second approval</div>
+          <div className="kpi-value">
+            {formatMoney(sumAmount(pendingAdjustments), "NGN")}
+          </div>
+          <div className="kpi-sub">{pendingAdjustments.length} adjustments</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Payouts</div>
+          <div className="kpi-value">
+            {formatMoney(sumAmount(payouts), "NGN")}
+          </div>
+          <div className="kpi-sub">{payouts.length} in window</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">QR payments</div>
+          <div className="kpi-value">
+            {formatMoney(sumAmount(qrPayments), "NGN")}
+          </div>
+          <div className="kpi-sub">{qrPayments.length} received</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Cash agents</div>
+          <div className="kpi-value">{agents.length}</div>
+          <div className="kpi-sub">{settlements.length} settlements</div>
+        </div>
+      </div>
+
+      <div
+        className="seg"
+        role="tablist"
+        aria-label="Finance sections"
+        style={{ marginBottom: "var(--space-6)" }}
+      >
+        {(
+          [
+            ["approvals", `Approvals (${pendingAdjustments.length})`],
+            ["settlements", "Settlements and payouts"],
+            ["agents", "Agents"],
+            ["qr", "QR payments and stickers"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={tab === id}
+            className={tab === id ? "nav-link-active" : undefined}
+            data-testid={`finance-tab-${id}`}
+            onClick={() => setTab(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <section hidden={tab !== "approvals"} className="section-gap-b">
+        <h2 className="section-title">Dual-control queue</h2>
         {pendingAdjustments.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }}>No pending adjustments.</p>
+          <p className="empty-inline">No pending adjustments.</p>
         ) : (
           <table className="data-table" data-testid="dual-control-queue">
             <thead>
               <tr>
                 <th>Driver</th>
-                <th>Amount</th>
+                <th className="num">Amount</th>
                 <th>Memo</th>
                 <th>Requested by</th>
                 <th />
@@ -140,7 +214,8 @@ export function FinanceConsole({
             </thead>
             <tbody>
               {pendingAdjustments.map((row) => {
-                const isOwnRequest = currentAdminId != null && row.requested_by === currentAdminId;
+                const isOwnRequest =
+                  currentAdminId != null && row.requested_by === currentAdminId;
                 return (
                   <tr key={row.id} data-testid={`pending-adjustment-${row.id}`}>
                     <td>
@@ -148,18 +223,28 @@ export function FinanceConsole({
                         {row.driver_code ?? row.driver_id.slice(0, 8)}
                       </Link>
                     </td>
-                    <td>{formatMoney(row.amount, row.currency)}</td>
+                    <td className="num">
+                      {formatMoney(row.amount, row.currency)}
+                    </td>
                     <td>{row.memo}</td>
-                    <td>{row.requested_by_name ?? row.requested_by.slice(0, 8)}</td>
+                    <td>
+                      {row.requested_by_name ?? row.requested_by.slice(0, 8)}
+                    </td>
                     <td>
                       <button
                         type="button"
                         className="btn btn-primary"
                         disabled={pending || isOwnRequest}
                         data-testid={`approve-adjustment-${row.id}`}
-                        title={isOwnRequest ? 'Cannot approve your own request' : undefined}
+                        title={
+                          isOwnRequest
+                            ? "Cannot approve your own request"
+                            : undefined
+                        }
                         onClick={() =>
-                          runAction(() => approvePendingAdjustment(citySlug, row.id))
+                          runAction(() =>
+                            approvePendingAdjustment(citySlug, row.id),
+                          )
                         }
                       >
                         Approve
@@ -173,16 +258,16 @@ export function FinanceConsole({
         )}
       </section>
 
-      <section style={{ marginBottom: 'var(--space-8)' }}>
-        <h2 style={{ fontSize: '1.125rem' }}>Settlements</h2>
+      <section hidden={tab !== "settlements"} className="section-gap-b">
+        <h2 className="section-title">Settlements</h2>
         {settlements.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }}>No settlements yet.</p>
+          <p className="empty-inline">No settlements yet.</p>
         ) : (
           <table className="data-table" data-testid="settlements-table">
             <thead>
               <tr>
                 <th>Driver</th>
-                <th>Amount</th>
+                <th className="num">Amount</th>
                 <th>Channel</th>
                 <th>Status</th>
                 <th>Created</th>
@@ -192,10 +277,14 @@ export function FinanceConsole({
               {settlements.map((row) => (
                 <tr key={row.id}>
                   <td>{row.driver_code ?? row.driver_id.slice(0, 8)}</td>
-                  <td>{formatMoney(row.amount, row.currency)}</td>
+                  <td className="num">
+                    {formatMoney(row.amount, row.currency)}
+                  </td>
                   <td>{row.channel}</td>
                   <td>
-                    <span className={`badge badge-${row.status}`}>{row.status}</span>
+                    <span className={`badge badge-${row.status}`}>
+                      {humanize(row.status)}
+                    </span>
                   </td>
                   <td>{new Date(row.created_at).toLocaleString()}</td>
                 </tr>
@@ -205,9 +294,13 @@ export function FinanceConsole({
         )}
       </section>
 
-      <section style={{ marginBottom: 'var(--space-8)' }}>
-        <h2 style={{ fontSize: '1.125rem' }}>Settlement agents</h2>
-        <table className="data-table" data-testid="agents-table" style={{ marginBottom: 'var(--space-4)' }}>
+      <section hidden={tab !== "agents"} className="section-gap-b">
+        <h2 className="section-title">Settlement agents</h2>
+        <table
+          className="data-table"
+          data-testid="agents-table"
+          style={{ marginBottom: "var(--space-4)" }}
+        >
           <thead>
             <tr>
               <th>Business</th>
@@ -219,15 +312,15 @@ export function FinanceConsole({
             {agents.map((agent) => (
               <tr key={agent.id}>
                 <td>{agent.business_name}</td>
-                <td>{agent.phone ?? '—'}</td>
-                <td>{agent.active ? 'Yes' : 'No'}</td>
+                <td>{agent.phone ?? "—"}</td>
+                <td>{agent.active ? "Yes" : "No"}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="card" data-testid="agent-form">
-          <h3 style={{ marginTop: 0 }}>Add agent</h3>
+          <h3 className="sub-title">Add agent</h3>
           <div className="field">
             <label htmlFor="agent-name">Business name</label>
             <input
@@ -257,7 +350,7 @@ export function FinanceConsole({
                   businessName,
                   phone,
                   active: true,
-                })
+                }),
               )
             }
           >
@@ -266,16 +359,16 @@ export function FinanceConsole({
         </div>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: '1.125rem' }}>Payouts</h2>
+      <section hidden={tab !== "settlements"}>
+        <h2 className="section-title">Payouts</h2>
         {payouts.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }}>No payouts yet.</p>
+          <p className="empty-inline">No payouts yet.</p>
         ) : (
           <table className="data-table" data-testid="payouts-table">
             <thead>
               <tr>
                 <th>Driver</th>
-                <th>Amount</th>
+                <th className="num">Amount</th>
                 <th>Status</th>
                 <th>Reference</th>
                 <th>Created</th>
@@ -285,7 +378,9 @@ export function FinanceConsole({
               {payouts.map((row) => (
                 <tr key={row.id}>
                   <td>{row.driver_code ?? row.driver_id.slice(0, 8)}</td>
-                  <td>{formatMoney(row.amount, row.currency)}</td>
+                  <td className="num">
+                    {formatMoney(row.amount, row.currency)}
+                  </td>
                   <td>{row.status}</td>
                   <td>
                     <code>{row.provider_reference}</code>
@@ -296,50 +391,65 @@ export function FinanceConsole({
             </tbody>
           </table>
         )}
-        <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-3)' }}>
-          Paystack daily import reconciliation remains on the settlements pipeline.
+        <p
+          style={{
+            fontSize: "0.8125rem",
+            color: "var(--color-text-muted)",
+            marginTop: "var(--space-3)",
+          }}
+        >
+          Paystack daily import reconciliation remains on the settlements
+          pipeline.
         </p>
       </section>
 
-      <section style={{ marginBottom: 'var(--space-8)' }} data-testid="qr-payments-section">
-        <h2 style={{ fontSize: '1.125rem' }}>QR payments</h2>
+      <section
+        hidden={tab !== "qr"}
+        className="section-gap-b"
+        data-testid="qr-payments-section"
+      >
+        <h2 className="section-title">QR payments</h2>
         {feeBearerReport ? (
-          <div className="card" style={{ marginBottom: 'var(--space-4)' }} data-testid="fee-bearer-report">
-            <h3 style={{ marginTop: 0, fontSize: '1rem' }}>Fee-bearer economics</h3>
+          <div
+            className="card"
+            style={{ marginBottom: "var(--space-4)" }}
+            data-testid="fee-bearer-report"
+          >
+            <h3 className="sub-title">Fee-bearer economics</h3>
             <dl
               style={{
                 margin: 0,
-                display: 'grid',
-                gridTemplateColumns: 'max-content 1fr',
-                gap: 'var(--space-2) var(--space-4)',
-                fontSize: '0.875rem',
+                display: "grid",
+                gridTemplateColumns: "max-content 1fr",
+                gap: "var(--space-2) var(--space-4)",
+                fontSize: "0.875rem",
               }}
             >
-              <dt style={{ color: 'var(--color-text-muted)' }}>Config</dt>
-              <dd style={{ margin: 0 }}>{feeBearerReport.fee_bearer}</dd>
-              <dt style={{ color: 'var(--color-text-muted)' }}>Succeeded QR payments</dt>
-              <dd style={{ margin: 0 }}>{feeBearerReport.payment_count}</dd>
-              <dt style={{ color: 'var(--color-text-muted)' }}>Commission collected</dt>
-              <dd style={{ margin: 0 }}>
-                {formatMoney(feeBearerReport.commission_total, 'NGN')}
-              </dd>
-              <dt style={{ color: 'var(--color-text-muted)' }}>Provider fees recorded</dt>
-              <dd style={{ margin: 0 }}>
-                {formatMoney(feeBearerReport.provider_fee_total, 'NGN')}
-              </dd>
+              <dt>Config</dt>
+              <dd>{feeBearerReport.fee_bearer}</dd>
+              <dt>Succeeded QR payments</dt>
+              <dd>{feeBearerReport.payment_count}</dd>
+              <dt>Commission collected</dt>
+              <dd>{formatMoney(feeBearerReport.commission_total, "NGN")}</dd>
+              <dt>Provider fees recorded</dt>
+              <dd>{formatMoney(feeBearerReport.provider_fee_total, "NGN")}</dd>
             </dl>
           </div>
         ) : null}
 
-        <h3 style={{ fontSize: '1rem' }}>Attributed</h3>
+        <h3 className="sub-title">Attributed</h3>
         {attributed.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }}>No attributed QR payments.</p>
+          <p className="empty-inline">No attributed QR payments.</p>
         ) : (
-          <table className="data-table" data-testid="qr-payments-attributed" style={{ marginBottom: 'var(--space-4)' }}>
+          <table
+            className="data-table"
+            data-testid="qr-payments-attributed"
+            style={{ marginBottom: "var(--space-4)" }}
+          >
             <thead>
               <tr>
                 <th>Driver</th>
-                <th>Amount</th>
+                <th className="num">Amount</th>
                 <th>Source</th>
                 <th>Status</th>
                 <th>Created</th>
@@ -349,7 +459,9 @@ export function FinanceConsole({
               {attributed.map((row) => (
                 <tr key={row.id}>
                   <td>{row.driver_code ?? row.driver_id.slice(0, 8)}</td>
-                  <td>{formatMoney(row.amount, row.currency)}</td>
+                  <td className="num">
+                    {formatMoney(row.amount, row.currency)}
+                  </td>
                   <td>{row.source}</td>
                   <td>{row.status}</td>
                   <td>{new Date(row.created_at).toLocaleString()}</td>
@@ -359,15 +471,15 @@ export function FinanceConsole({
           </table>
         )}
 
-        <h3 style={{ fontSize: '1rem' }}>Unattributed</h3>
+        <h3 className="sub-title">Unattributed</h3>
         {unattributed.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }}>No unattributed QR payments.</p>
+          <p className="empty-inline">No unattributed QR payments.</p>
         ) : (
           <table className="data-table" data-testid="qr-payments-unattributed">
             <thead>
               <tr>
                 <th>Driver</th>
-                <th>Amount</th>
+                <th className="num">Amount</th>
                 <th>Source</th>
                 <th>Status</th>
                 <th>Created</th>
@@ -377,7 +489,9 @@ export function FinanceConsole({
               {unattributed.map((row) => (
                 <tr key={row.id}>
                   <td>{row.driver_code ?? row.driver_id.slice(0, 8)}</td>
-                  <td>{formatMoney(row.amount, row.currency)}</td>
+                  <td className="num">
+                    {formatMoney(row.amount, row.currency)}
+                  </td>
                   <td>{row.source}</td>
                   <td>{row.status}</td>
                   <td>{new Date(row.created_at).toLocaleString()}</td>
@@ -388,16 +502,21 @@ export function FinanceConsole({
         )}
       </section>
 
-      <section data-testid="sticker-batch-section">
-        <h2 style={{ fontSize: '1.125rem' }}>Sticker batches (preview)</h2>
-        <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-          Export QR + plate + code labels marked STAGING — not for production vehicles.
+      <section hidden={tab !== "qr"} data-testid="sticker-batch-section">
+        <h2 className="section-title">Sticker batches (preview)</h2>
+        <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
+          Export QR + plate + code labels marked STAGING. Not for production
+          vehicles.
         </p>
         {stickerDrivers.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)' }}>No drivers with codes in this city.</p>
+          <p className="empty-inline">No drivers with codes in this city.</p>
         ) : (
           <>
-            <table className="data-table" data-testid="sticker-batch-drivers" style={{ marginBottom: 'var(--space-4)' }}>
+            <table
+              className="data-table"
+              data-testid="sticker-batch-drivers"
+              style={{ marginBottom: "var(--space-4)" }}
+            >
               <thead>
                 <tr>
                   <th />
@@ -417,7 +536,7 @@ export function FinanceConsole({
                       />
                     </td>
                     <td>{driver.driver_code}</td>
-                    <td>{driver.plate ?? '—'}</td>
+                    <td>{driver.plate ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -425,7 +544,9 @@ export function FinanceConsole({
             <button
               type="button"
               className="btn btn-primary"
-              disabled={pending || exportingPdf || selectedStickerDrivers.size === 0}
+              disabled={
+                pending || exportingPdf || selectedStickerDrivers.size === 0
+              }
               data-testid="export-sticker-batch"
               onClick={() => void exportStickerBatch()}
             >

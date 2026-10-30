@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useTransition } from 'react';
+import { shortId } from "@/lib/ui/label";
+import { useState, useTransition } from "react";
 import type {
   AnonymizedExportRow,
   ApiKeyRow,
@@ -9,14 +10,14 @@ import type {
   RevenueOperatorAccountRow,
   RevenueTab,
   SponsoredPlacementRow,
-} from '@/lib/revenue/types';
+} from "@/lib/revenue/types";
 import {
   createApiKey,
   createCorporateAccount,
   createOperatorAccount,
   createSponsoredPlacement,
   revokeApiKey,
-} from './actions';
+} from "./actions";
 
 interface RevenueConsoleProps {
   citySlug: string;
@@ -30,10 +31,10 @@ interface RevenueConsoleProps {
 }
 
 const TABS: { id: RevenueTab; label: string }[] = [
-  { id: 'placements', label: 'Sponsored placements' },
-  { id: 'api-keys', label: 'API keys' },
-  { id: 'accounts', label: 'Accounts' },
-  { id: 'exports', label: 'Anonymized exports' },
+  { id: "placements", label: "Sponsored placements" },
+  { id: "api-keys", label: "API keys" },
+  { id: "accounts", label: "Accounts" },
+  { id: "exports", label: "Anonymized exports" },
 ];
 
 export function RevenueConsole({
@@ -46,46 +47,59 @@ export function RevenueConsole({
   exports,
   exportK,
 }: RevenueConsoleProps) {
-  const [tab, setTab] = useState<RevenueTab>('placements');
+  const [tab, setTab] = useState<RevenueTab>("placements");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [plaintextKey, setPlaintextKey] = useState<string | null>(null);
 
-  const [deploymentId, setDeploymentId] = useState(deployments[0]?.id ?? '');
-  const [contextType, setContextType] = useState<'destination' | 'park' | 'corridor'>('park');
-  const [targetReference, setTargetReference] = useState('');
-  const [advertiser, setAdvertiser] = useState('');
-  const [contentJson, setContentJson] = useState('{"headline":"Along partner"}');
-  const [activeFrom, setActiveFrom] = useState('');
-  const [activeTo, setActiveTo] = useState('');
+  const [deploymentId, setDeploymentId] = useState(deployments[0]?.id ?? "");
+  const [contextType, setContextType] = useState<
+    "destination" | "park" | "corridor"
+  >("park");
+  const [targetReference, setTargetReference] = useState("");
+  const [advertiser, setAdvertiser] = useState("");
+  const [contentJson, setContentJson] = useState(
+    '{"headline":"Along partner"}',
+  );
+  const [activeFrom, setActiveFrom] = useState("");
+  const [activeTo, setActiveTo] = useState("");
 
-  const [apiOrg, setApiOrg] = useState('');
+  const [apiOrg, setApiOrg] = useState("");
   const [apiScopeOd, setApiScopeOd] = useState(true);
   const [apiScopePlacement, setApiScopePlacement] = useState(false);
-  const [apiRateLimit, setApiRateLimit] = useState('60');
+  const [apiRateLimit, setApiRateLimit] = useState("60");
 
-  const [corpName, setCorpName] = useState('');
-  const [corpEmail, setCorpEmail] = useState('');
-  const [corpBudget, setCorpBudget] = useState('');
+  const [corpName, setCorpName] = useState("");
+  const [corpEmail, setCorpEmail] = useState("");
+  const [corpBudget, setCorpBudget] = useState("");
 
-  const [opName, setOpName] = useState('');
-  const [opType, setOpType] = useState<'park' | 'union' | 'vehicle_owner' | 'corporate'>('park');
+  const [opName, setOpName] = useState("");
+  const [opType, setOpType] = useState<
+    "park" | "union" | "vehicle_owner" | "corporate"
+  >("park");
 
-  function runAction(action: () => Promise<{ ok: boolean; message?: string; error?: string; payload?: Record<string, unknown> }>) {
+  function runAction(
+    action: () => Promise<{
+      ok: boolean;
+      message?: string;
+      error?: string;
+      payload?: Record<string, unknown>;
+    }>,
+  ) {
     setMessage(null);
     setError(null);
     setPlaintextKey(null);
     startTransition(async () => {
       const result = await action();
       if (result.ok) {
-        setMessage(result.message ?? 'Done.');
+        setMessage(result.message ?? "Done.");
         const key = result.payload?.api_key;
-        if (typeof key === 'string') {
+        if (typeof key === "string") {
           setPlaintextKey(key);
         }
       } else {
-        setError(result.error ?? 'Action failed.');
+        setError(result.error ?? "Action failed.");
       }
     });
   }
@@ -98,24 +112,39 @@ export function RevenueConsole({
         </div>
       ) : null}
       {message ? (
-        <div className="card" role="status" data-testid="revenue-success" style={{ marginBottom: 'var(--space-4)' }}>
+        <div
+          className="card"
+          role="status"
+          data-testid="revenue-success"
+          style={{ marginBottom: "var(--space-4)" }}
+        >
           {message}
         </div>
       ) : null}
       {plaintextKey ? (
-        <div className="card" data-testid="revenue-api-key-plaintext" style={{ marginBottom: 'var(--space-4)' }}>
+        <div
+          className="card"
+          data-testid="revenue-api-key-plaintext"
+          style={{ marginBottom: "var(--space-4)" }}
+        >
           <strong>API key (shown once):</strong>
-          <code style={{ display: 'block', marginTop: 'var(--space-2)', wordBreak: 'break-all' }}>
+          <code
+            style={{
+              display: "block",
+              marginTop: "var(--space-2)",
+              wordBreak: "break-all",
+            }}
+          >
             {plaintextKey}
           </code>
         </div>
       ) : null}
 
       <div
-        className="nav-links"
+        className="seg"
         role="tablist"
         aria-label="Revenue hooks"
-        style={{ marginBottom: 'var(--space-4)' }}
+        style={{ marginBottom: "var(--space-4)" }}
       >
         {TABS.map(({ id, label }) => (
           <button
@@ -123,7 +152,7 @@ export function RevenueConsole({
             type="button"
             role="tab"
             aria-selected={tab === id}
-            className={tab === id ? 'nav-link-active' : undefined}
+            className={tab === id ? "nav-link-active" : undefined}
             data-testid={`revenue-tab-${id}`}
             onClick={() => setTab(id)}
           >
@@ -132,11 +161,11 @@ export function RevenueConsole({
         ))}
       </div>
 
-      {tab === 'placements' ? (
-        <section data-testid="revenue-placements">
-          <p style={{ color: 'var(--color-text-muted)' }}>
-            Contextual placements only — keyed to destination, park, or corridor (FM39). No rider
-            targeting.
+      {tab === "placements" ? (
+        <section className="card" data-testid="revenue-placements">
+          <p className="note" style={{ marginTop: 0 }}>
+            Contextual placements only, keyed to destination, park, or corridor.
+            No rider targeting.
           </p>
           <div className="field">
             <label htmlFor="revenue-placement-deployment">Deployment</label>
@@ -159,7 +188,9 @@ export function RevenueConsole({
               id="revenue-placement-context"
               data-testid="revenue-placement-context"
               value={contextType}
-              onChange={(e) => setContextType(e.target.value as typeof contextType)}
+              onChange={(e) =>
+                setContextType(e.target.value as typeof contextType)
+              }
             >
               <option value="destination">Destination</option>
               <option value="park">Park</option>
@@ -167,7 +198,9 @@ export function RevenueConsole({
             </select>
           </div>
           <div className="field">
-            <label htmlFor="revenue-placement-target">Target reference (UUID)</label>
+            <label htmlFor="revenue-placement-target">
+              Target reference (UUID)
+            </label>
             <input
               id="revenue-placement-target"
               data-testid="revenue-placement-target"
@@ -218,7 +251,12 @@ export function RevenueConsole({
             type="button"
             className="btn btn-primary"
             data-testid="revenue-placement-submit"
-            disabled={pending || !deploymentId || !targetReference.trim() || !advertiser.trim()}
+            disabled={
+              pending ||
+              !deploymentId ||
+              !targetReference.trim() ||
+              !advertiser.trim()
+            }
             onClick={() =>
               runAction(() =>
                 createSponsoredPlacement(citySlug, {
@@ -229,14 +267,14 @@ export function RevenueConsole({
                   contentJson,
                   activeFrom: new Date(activeFrom).toISOString(),
                   activeTo: new Date(activeTo).toISOString(),
-                })
+                }),
               )
             }
           >
             Create placement
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Placements</h2>
+          <h2 className="section-title section-gap">Placements</h2>
           <table className="data-table" data-testid="revenue-placements-table">
             <thead>
               <tr>
@@ -244,8 +282,8 @@ export function RevenueConsole({
                 <th>Context</th>
                 <th>Target</th>
                 <th>Schedule</th>
-                <th>Impressions</th>
-                <th>Taps</th>
+                <th className="num">Impressions</th>
+                <th className="num">Taps</th>
               </tr>
             </thead>
             <tbody>
@@ -253,13 +291,15 @@ export function RevenueConsole({
                 <tr key={row.id}>
                   <td>{row.advertiser}</td>
                   <td>{row.context_type}</td>
-                  <td>{row.target_reference.slice(0, 8)}…</td>
+                  <td className="mono" title={row.target_reference}>
+                    {shortId(row.target_reference)}
+                  </td>
                   <td>
-                    {new Date(row.active_from).toLocaleDateString()} –{' '}
+                    {new Date(row.active_from).toLocaleDateString()} –{" "}
                     {new Date(row.active_to).toLocaleDateString()}
                   </td>
-                  <td>{row.impressions}</td>
-                  <td>{row.taps}</td>
+                  <td className="num">{row.impressions}</td>
+                  <td className="num">{row.taps}</td>
                 </tr>
               ))}
             </tbody>
@@ -267,8 +307,8 @@ export function RevenueConsole({
         </section>
       ) : null}
 
-      {tab === 'api-keys' ? (
-        <section data-testid="revenue-api-keys">
+      {tab === "api-keys" ? (
+        <section className="card" data-testid="revenue-api-keys">
           <div className="field">
             <label htmlFor="revenue-api-org">Owner organization</label>
             <input
@@ -286,7 +326,7 @@ export function RevenueConsole({
                 data-testid="revenue-api-scope-od"
                 checked={apiScopeOd}
                 onChange={(e) => setApiScopeOd(e.target.checked)}
-              />{' '}
+              />{" "}
               od_cells
             </label>
             <label>
@@ -295,7 +335,7 @@ export function RevenueConsole({
                 data-testid="revenue-api-scope-placement"
                 checked={apiScopePlacement}
                 onChange={(e) => setApiScopePlacement(e.target.checked)}
-              />{' '}
+              />{" "}
               placement_stats
             </label>
           </fieldset>
@@ -313,24 +353,26 @@ export function RevenueConsole({
             type="button"
             className="btn btn-primary"
             data-testid="revenue-api-create"
-            disabled={pending || !apiOrg.trim() || (!apiScopeOd && !apiScopePlacement)}
+            disabled={
+              pending || !apiOrg.trim() || (!apiScopeOd && !apiScopePlacement)
+            }
             onClick={() => {
               const scope: string[] = [];
-              if (apiScopeOd) scope.push('od_cells');
-              if (apiScopePlacement) scope.push('placement_stats');
+              if (apiScopeOd) scope.push("od_cells");
+              if (apiScopePlacement) scope.push("placement_stats");
               runAction(() =>
                 createApiKey(citySlug, {
                   ownerOrganization: apiOrg.trim(),
                   scope,
                   rateLimitPerMin: Number(apiRateLimit) || undefined,
-                })
+                }),
               );
             }}
           >
             Create API key
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Keys</h2>
+          <h2 className="section-title section-gap">Keys</h2>
           <table className="data-table" data-testid="revenue-api-keys-table">
             <thead>
               <tr>
@@ -346,10 +388,10 @@ export function RevenueConsole({
               {apiKeys.map((key) => (
                 <tr key={key.id}>
                   <td>{key.owner_organization}</td>
-                  <td>{key.scope.join(', ')}</td>
+                  <td>{key.scope.join(", ")}</td>
                   <td>{key.rate_limit_per_min}/min</td>
                   <td>{key.total_calls}</td>
-                  <td>{key.revoked_at ? 'Revoked' : 'Active'}</td>
+                  <td>{key.revoked_at ? "Revoked" : "Active"}</td>
                   <td>
                     {!key.revoked_at ? (
                       <button
@@ -357,7 +399,9 @@ export function RevenueConsole({
                         className="btn"
                         data-testid={`revenue-api-revoke-${key.id}`}
                         disabled={pending}
-                        onClick={() => runAction(() => revokeApiKey(citySlug, key.id))}
+                        onClick={() =>
+                          runAction(() => revokeApiKey(citySlug, key.id))
+                        }
                       >
                         Revoke
                       </button>
@@ -370,9 +414,9 @@ export function RevenueConsole({
         </section>
       ) : null}
 
-      {tab === 'accounts' ? (
-        <section data-testid="revenue-accounts">
-          <h2 style={{ fontSize: '1.125rem' }}>Create corporate account</h2>
+      {tab === "accounts" ? (
+        <section className="card" data-testid="revenue-accounts">
+          <h2 className="section-title">Create corporate account</h2>
           <div className="field">
             <label htmlFor="revenue-corp-deployment">Deployment</label>
             <select
@@ -429,14 +473,14 @@ export function RevenueConsole({
                   name: corpName.trim(),
                   billingEmail: corpEmail.trim(),
                   monthlyBudget: corpBudget ? Number(corpBudget) : undefined,
-                })
+                }),
               )
             }
           >
             Create corporate account
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Create operator account</h2>
+          <h2 className="section-title section-gap">Create operator account</h2>
           <div className="field">
             <label htmlFor="revenue-op-name">Name</label>
             <input
@@ -471,20 +515,23 @@ export function RevenueConsole({
                   deploymentId,
                   type: opType,
                   name: opName.trim(),
-                })
+                }),
               )
             }
           >
             Create operator account
           </button>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Corporate accounts</h2>
-          <table className="data-table" data-testid="revenue-corporate-accounts-table">
+          <h2 className="section-title section-gap">Corporate accounts</h2>
+          <table
+            className="data-table"
+            data-testid="revenue-corporate-accounts-table"
+          >
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Budget</th>
+                <th className="num">Budget</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -493,15 +540,18 @@ export function RevenueConsole({
                 <tr key={row.id}>
                   <td>{row.name}</td>
                   <td>{row.billing_email}</td>
-                  <td>{row.monthly_budget ?? '—'}</td>
+                  <td className="num">{row.monthly_budget ?? "—"}</td>
                   <td>{row.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <h2 style={{ fontSize: '1.125rem', marginTop: 'var(--space-8)' }}>Operator accounts</h2>
-          <table className="data-table" data-testid="revenue-operator-accounts-table">
+          <h2 className="section-title section-gap">Operator accounts</h2>
+          <table
+            className="data-table"
+            data-testid="revenue-operator-accounts-table"
+          >
             <thead>
               <tr>
                 <th>Name</th>
@@ -524,8 +574,8 @@ export function RevenueConsole({
         </section>
       ) : null}
 
-      {tab === 'exports' ? (
-        <section data-testid="revenue-exports">
+      {tab === "exports" ? (
+        <section className="card" data-testid="revenue-exports">
           <p data-testid="revenue-export-k-threshold">
             k-anonymity threshold (export.k): <strong>{exportK}</strong>
           </p>
@@ -545,7 +595,7 @@ export function RevenueConsole({
                 <tr key={row.id}>
                   <td>{new Date(row.created_at).toLocaleString()}</td>
                   <td>
-                    {new Date(row.period_start).toLocaleDateString()} –{' '}
+                    {new Date(row.period_start).toLocaleDateString()} –{" "}
                     {new Date(row.period_end).toLocaleDateString()}
                   </td>
                   <td>{row.k_threshold}</td>

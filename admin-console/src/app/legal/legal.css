@@ -99,3 +99,10 @@
   font-size: 0.875rem;
   color: var(--color-ink-500);
 }
+
+/* Readable long-form on phones. */
+.w03-main { font-size: 16px; padding-left: 20px; padding-right: 20px; }
+.w03-section p, .w03-section li { font-size: 16px; line-height: 1.6; }
+.w03-section h2 { font-size: 19px; letter-spacing: -0.01em; }
+.w03-title { letter-spacing: -0.02em; line-height: 1.15; }
+.w03-draft { border-radius: 8px; }

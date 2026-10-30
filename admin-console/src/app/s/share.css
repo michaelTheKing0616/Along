@@ -92,3 +92,23 @@
   text-align: center;
   color: var(--color-ink-500);
 }
+
+/* Rider-app bar: mobile-first type scale, squared chips, timeline legs. */
+.w01-main { font-size: 15px; line-height: 1.45; padding: 20px 20px 32px; }
+.w01-brand { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; margin: 0 0 20px; }
+.w01-rider { font-size: 15px; font-weight: 500; color: var(--color-ink-500); margin: 0 0 4px; }
+.w01-plate { font-size: 34px; line-height: 1.05; letter-spacing: 0.01em; margin: 0 0 12px; }
+.w01-meta { gap: 6px; margin-bottom: 24px; }
+.w01-chip { border-radius: 6px; padding: 4px 8px; font-size: 13px; font-weight: 600; }
+.w01-chip-live { gap: 6px; }
+.w01-chip-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: w01-pulse 1.6s ease-in-out infinite; }
+@keyframes w01-pulse { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .w01-chip-live::before { animation: none; } }
+.w01-row { padding: 14px 0; font-size: 15px; }
+.w01-row-value { font-weight: 650; }
+.w01-legs { margin-top: 20px; padding-left: 18px; position: relative; }
+.w01-legs::before { content: ''; position: absolute; left: 4px; top: 18px; bottom: 18px; width: 2px; background: var(--color-ink-100); }
+.w01-leg { position: relative; padding: 10px 0; font-size: 15px; }
+.w01-leg::before { content: ''; position: absolute; left: -18px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--color-surface-0); border: 2px solid var(--color-ink-300, #bbb); box-sizing: border-box; }
+.w01-leg:first-child::before { background: var(--color-brand-yellow); border-color: var(--color-brand-yellow); }
+.w01-footer { font-size: 13px; margin-top: 32px; }

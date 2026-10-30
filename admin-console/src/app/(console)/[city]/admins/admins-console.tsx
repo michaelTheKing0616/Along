@@ -16,7 +16,7 @@ interface AdminsConsoleProps {
 
 function totpStatusLabel(row: AdminUserRow): string {
   if (!row.totp_required) return 'Not required';
-  return row.totp_enrolled ? 'Enrolled' : 'Required — missing';
+  return row.totp_enrolled ? 'Enrolled' : 'Required, missing';
 }
 
 export function AdminsConsole({
@@ -106,7 +106,7 @@ export function AdminsConsole({
       ) : null}
 
       <section className="card" style={{ marginBottom: 'var(--space-4)' }}>
-        <h2 style={{ marginTop: 0, fontSize: '1rem' }}>Invite admin</h2>
+        <h2 className="section-title">Invite admin</h2>
         <div
           style={{
             display: 'grid',
@@ -191,15 +191,15 @@ export function AdminsConsole({
           alignItems: 'start',
         }}
       >
-        <div className="card" style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="data-table">
             <thead>
               <tr>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Email</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Role</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Deployment</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>TOTP</th>
-                <th style={{ textAlign: 'left', padding: 'var(--space-2)' }}>Status</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Deployment</th>
+                <th>TOTP</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -211,18 +211,18 @@ export function AdminsConsole({
                   style={{
                     cursor: 'pointer',
                     background:
-                      selectedId === row.id ? 'var(--color-surface-muted, #f4f4f5)' : undefined,
+                      selectedId === row.id ? 'var(--a-accent-tint)' : undefined,
                   }}
                 >
-                  <td style={{ padding: 'var(--space-2)' }}>{row.email ?? row.id}</td>
-                  <td style={{ padding: 'var(--space-2)' }}>{row.role}</td>
-                  <td style={{ padding: 'var(--space-2)' }}>
+                  <td>{row.email ?? row.id}</td>
+                  <td>{row.role.replace(/_/g, ' ')}</td>
+                  <td>
                     {row.deployment_name ?? row.deployment_id ?? '—'}
                   </td>
-                  <td style={{ padding: 'var(--space-2)' }} data-testid="admin-totp-status">
+                  <td data-testid="admin-totp-status">
                     {totpStatusLabel(row)}
                   </td>
-                  <td style={{ padding: 'var(--space-2)' }}>
+                  <td>
                     {row.disabled_at ? 'Disabled' : 'Active'}
                   </td>
                 </tr>
@@ -241,7 +241,7 @@ export function AdminsConsole({
         </div>
 
         <aside className="card" aria-label="Admin detail">
-          <h2 style={{ marginTop: 0, fontSize: '1rem' }}>Role & scope</h2>
+          <h2 className="section-title">Role & scope</h2>
           {!selected ? (
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
               Select an admin to edit role, deployment, or city scope.
@@ -249,7 +249,7 @@ export function AdminsConsole({
           ) : (
             <>
               <p style={{ fontSize: '0.875rem', marginTop: 0 }}>
-                {selected.email} — TOTP: {totpStatusLabel(selected)}
+                {selected.email} · TOTP: {totpStatusLabel(selected)}
               </p>
               <label style={{ display: 'grid', gap: 'var(--space-1)', fontSize: '0.875rem' }}>
                 Role

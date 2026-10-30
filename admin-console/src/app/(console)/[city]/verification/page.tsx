@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { AuditDrawer } from '@/components/along/AuditDrawer';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { maskPhoneE164, sortVerificationQueue } from '@/lib/verification/format';
@@ -146,8 +145,7 @@ export default async function VerificationPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Verification</h1>
         <p>
-          Driver document review queue for <strong>{city?.name ?? citySlug}</strong> — pending
-          first, oldest age.
+          Driver documents waiting for review in <strong>{city?.name ?? citySlug}</strong>, oldest first.
         </p>
       </div>
       {!city ? (
@@ -155,7 +153,6 @@ export default async function VerificationPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <VerificationQueue
         citySlug={citySlug}
         initialRows={queue}

@@ -1,4 +1,3 @@
-import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { getCityBySlug } from '@/lib/city/resolve';
 import type { OperatorOverview } from '@/lib/operator/types';
 import { checkAdminRole, createClient } from '@/lib/supabase/server';
@@ -44,8 +43,7 @@ export default async function OperatorPage({ params }: PageProps) {
       <div className="page-header">
         <h1>Operator overview</h1>
         <p>
-          Aggregate driver metrics for your park or union in <strong>{city?.name ?? citySlug}</strong>{' '}
-          — no per-rider data.
+          Driver totals for your park or union in <strong>{city?.name ?? citySlug}</strong>. No rider-level data.
         </p>
       </div>
       {!city ? (
@@ -53,7 +51,6 @@ export default async function OperatorPage({ params }: PageProps) {
           City &quot;{citySlug}&quot; was not found in the database.
         </div>
       ) : null}
-      <ConsoleNav city={citySlug} />
       <OperatorConsole initialOverview={overview} isOperatorViewer={isOperatorViewer} />
     </>
   );
