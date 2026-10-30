@@ -26,6 +26,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Along uses your location to find your pickup and show your driver where to meet you.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Along uses the camera to read the vehicle plate, which stays on the phone, and to take photos you choose to attach to a safety report.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

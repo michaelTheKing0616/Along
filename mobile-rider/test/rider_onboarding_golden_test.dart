@@ -1,0 +1,251 @@
+import 'dart:convert';
+
+import 'package:along_data/along_data.dart';
+import 'package:along_design/along_design.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_rider/config/app_config.dart';
+import 'package:mobile_rider/di/providers.dart';
+import 'package:mobile_rider/features/onboarding/presentation/name_screen.dart';
+import 'package:mobile_rider/features/onboarding/presentation/onboarding_controller.dart';
+import 'package:mobile_rider/features/onboarding/presentation/otp_screen.dart';
+import 'package:mobile_rider/features/onboarding/presentation/permissions_screen.dart';
+import 'package:mobile_rider/features/onboarding/presentation/phone_entry_screen.dart';
+import 'package:mobile_rider/l10n/app_localizations.dart';
+import 'package:mobile_rider/testing/fakes/fake_ambient_channel.dart';
+import 'package:mobile_rider/testing/fakes/fake_along_supabase.dart';
+
+class _Seeded extends OnboardingController {
+  _Seeded(this.seed);
+
+  final OnboardingState seed;
+
+  @override
+  OnboardingState build() => seed;
+
+  void reseed() => state = seed;
+}
+
+/// Launch, phone, code, name and permission priming: every state,
+/// light/dark/1.3x.
+void main() {
+  setUpAll(() async {
+    final manifest = await rootBundle.loadStructuredData<List<dynamic>>(
+      'FontManifest.json',
+      (s) async => json.decode(s) as List<dynamic>,
+    );
+    for (final entry in manifest) {
+      final loader = FontLoader(entry['family'] as String);
+      for (final font in entry['fonts'] as List<dynamic>) {
+        loader.addFont(rootBundle.load(font['asset'] as String));
+      }
+      await loader.load();
+    }
+    await AlongFonts.ensureLoaded();
+  });
+
+  const phone = '+2348012345678';
+  const sent = OnboardingState(phoneE164: phone, resendSecondsRemaining: 24);
+
+  final cases = <(String, Widget, OnboardingState, bool, String?)>[
+    (
+      'phone_empty',
+      const PhoneEntryScreen(),
+      const OnboardingState(),
+      true,
+      null,
+    ),
+    (
+      'phone_filled',
+      const PhoneEntryScreen(),
+      const OnboardingState(),
+      true,
+      '8012345678',
+    ),
+    (
+      'phone_invalid',
+      const PhoneEntryScreen(),
+      const OnboardingState(errorMessage: 'invalid_phone'),
+      true,
+      '1112223333',
+    ),
+    (
+      'phone_sending',
+      const PhoneEntryScreen(),
+      const OnboardingState(isSubmitting: true),
+      true,
+      '8012345678',
+    ),
+    (
+      'phone_rate_limited',
+      const PhoneEntryScreen(),
+      const OnboardingState(
+        errorMessage: 'rate_limited',
+        rateLimitRetrySeconds: 45,
+      ),
+      true,
+      '8012345678',
+    ),
+    (
+      'phone_error',
+      const PhoneEntryScreen(),
+      const OnboardingState(errorMessage: 'generic'),
+      true,
+      '8012345678',
+    ),
+    (
+      'phone_offline',
+      const PhoneEntryScreen(),
+      const OnboardingState(),
+      false,
+      '8012345678',
+    ),
+    ('otp_sent', const OtpScreen(), sent, true, null),
+    ('otp_partial', const OtpScreen(), sent, true, '123'),
+    (
+      'otp_checking',
+      const OtpScreen(),
+      const OnboardingState(
+        phoneE164: phone,
+        isSubmitting: true,
+        resendSecondsRemaining: 20,
+      ),
+      true,
+      '123456',
+    ),
+    (
+      'otp_wrong',
+      const OtpScreen(),
+      const OnboardingState(
+        phoneE164: phone,
+        errorMessage: 'wrong_otp',
+        resendSecondsRemaining: 12,
+      ),
+      true,
+      null,
+    ),
+    (
+      'otp_expired',
+      const OtpScreen(),
+      const OnboardingState(phoneE164: phone, errorMessage: 'expired_otp'),
+      true,
+      null,
+    ),
+    (
+      'otp_resend_ready',
+      const OtpScreen(),
+      const OnboardingState(phoneE164: phone),
+      true,
+      null,
+    ),
+    (
+      'otp_rate_limited',
+      const OtpScreen(),
+      const OnboardingState(
+        phoneE164: phone,
+        errorMessage: 'rate_limited',
+        rateLimitRetrySeconds: 60,
+      ),
+      true,
+      null,
+    ),
+    ('otp_offline', const OtpScreen(), sent, false, null),
+    ('name_empty', const NameScreen(), const OnboardingState(), true, null),
+    ('name_filled', const NameScreen(), const OnboardingState(), true, 'Ada'),
+    (
+      'permissions',
+      const PermissionsScreen(),
+      const OnboardingState(),
+      true,
+      null,
+    ),
+  ];
+
+  for (final (name, brightness, scale) in [
+    ('light', Brightness.light, 1.0),
+    ('dark', Brightness.dark, 1.0),
+    ('light_1_3x', Brightness.light, 1.3),
+  ]) {
+    for (final (state, screen, seed, online, typed) in cases) {
+      testWidgets('rider onboarding $state $name', (tester) async {
+        await tester.binding.setSurfaceSize(const Size(360, 800));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final supabase = FakeAlongSupabase();
+        addTearDown(supabase.dispose);
+        final container = ProviderContainer(
+          overrides: [
+            ...buildProviderOverrides(
+              config: const AppConfig(
+                flavor: 'dev',
+                supabaseUrl: 'https://test.supabase.co',
+                supabaseAnonKey: 'test-key',
+              ),
+              supabase: supabase,
+              ambientChannel: FakeAmbientChannel(),
+              onboardingPreferences: FakeOnboardingPreferences(),
+              connectionSource: FakeConnectionSource(online: online),
+            ),
+            onboardingControllerProvider.overrideWith(() => _Seeded(seed)),
+          ],
+        );
+        addTearDown(container.dispose);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: alongTheme(brightness: brightness),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: TextScaler.linear(scale),
+                  disableAnimations: true,
+                  padding: const EdgeInsets.only(top: 24, bottom: 16),
+                  viewPadding: const EdgeInsets.only(top: 24, bottom: 16),
+                ),
+                child: child!,
+              ),
+              home: screen,
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 50));
+        await tester.pump(const Duration(milliseconds: 50));
+        await tester.runAsync(
+          () => precacheImage(
+            const AssetImage(
+              'assets/photos/onboarding-fleet.jpg',
+              package: 'along_design',
+            ),
+            tester.element(find.byType(Scaffold).first),
+          ),
+        );
+        if (typed != null) {
+          final field = find.byType(TextField).first;
+          final ctrl = tester.widget<TextField>(field).controller!;
+          // Seed without the change callback so seeded errors survive.
+          ctrl.value = TextEditingValue(
+            text: screen is PhoneEntryScreen
+                ? AlongPhoneGroupFormatter.group(typed)
+                : typed,
+          );
+          (container.read(onboardingControllerProvider.notifier) as _Seeded)
+              .reseed();
+          await tester.pump();
+        }
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.takeException(), isNull);
+        await expectLater(
+          find.byType(MaterialApp),
+          matchesGoldenFile('goldens/rider_onboarding_${state}_$name.png'),
+        );
+        // Let the splash timer and any countdown finish before teardown.
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(seconds: 1));
+      });
+    }
+  }
+}

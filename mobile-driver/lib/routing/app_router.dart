@@ -11,6 +11,7 @@ import 'package:mobile_driver/features/home/presentation/home_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/auth_controller.dart';
 import 'package:mobile_driver/features/onboarding/presentation/launch_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/otp_screen.dart';
+import 'package:mobile_driver/features/onboarding/presentation/permissions_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_driver/features/profile/presentation/profile_screen.dart';
 import 'package:mobile_driver/features/routes/presentation/draw_route_controller.dart';
@@ -51,6 +52,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.otp,
         builder: (context, state) => const OtpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.permissions,
+        builder: (context, state) => const PermissionsScreen(),
       ),
       GoRoute(
         path: AppRoutes.profile,

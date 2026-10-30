@@ -15,6 +15,7 @@ export 'src/flows/city_map.dart';
 export 'src/flows/delights.dart';
 export 'src/flows/demo_adapter.dart';
 export 'src/flows/driver_portrait.dart';
+export 'src/flows/auth_kit.dart';
 export 'src/flows/flow_stages.dart';
 export 'src/flows/home_sheet.dart';
 export 'src/flows/route_preview.dart';

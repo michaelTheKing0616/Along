@@ -6,6 +6,7 @@ import 'package:mobile_driver/config/app_config.dart';
 import 'package:mobile_driver/di/providers.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
 import 'package:mobile_driver/features/onboarding/presentation/auth_controller.dart';
+import 'package:mobile_driver/features/onboarding/presentation/permissions_screen.dart';
 import 'package:mobile_driver/features/onboarding/presentation/phone_entry_screen.dart';
 import 'package:mobile_driver/features/profile/presentation/profile_screen.dart';
 import 'package:mobile_driver/features/vehicle/presentation/vehicle_screen.dart';
@@ -75,10 +76,14 @@ void main() {
       expect(find.byType(PhoneEntryScreen), findsOneWidget);
 
       await tester.enterText(find.byType(TextField).first, '8012345678');
+      await tester.pump();
       await tester.tap(find.byKey(const Key('phone_continue_button')));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), '123456');
+      await tester.pumpAndSettle();
+      expect(find.byType(PermissionsScreen), findsOneWidget);
+      await tester.tap(find.byKey(const Key('permissions_later')));
       await tester.pumpAndSettle();
       expect(find.byType(ProfileScreen), findsOneWidget);
 

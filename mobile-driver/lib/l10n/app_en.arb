@@ -1145,5 +1145,27 @@
       }
     }
   },
-  "homeOnlineNoSignal": "Online · no signal"
+  "homeOnlineNoSignal": "Online · no signal",
+  "authYourNumber": "Your number",
+  "authSendCode": "Text me the code",
+  "otpCheckTitle": "Check your texts",
+  "otpChecking": "Checking the code…",
+  "otpAutofillHint": "The code fills in by itself when the text arrives.",
+  "authOffline": "You are offline. Connect to get your code.",
+  "permSubtitle": "Along asks once. You can change this any time in Settings.",
+  "permLocationTitle": "Location",
+  "permNotifTitle": "Notifications",
+  "permCameraTitle": "Camera",
+  "permAllow": "Allow access",
+  "permLater": "Not now",
+  "authStory1H": "Drive with Along.",
+  "authStory1B": "Riders find you at the park and on the road.",
+  "authStory2H": "Your price, your route.",
+  "authStory2B": "Set fares by stop and get paid straight away.",
+  "authStory3H": "Safe on every trip.",
+  "authStory3B": "Verified riders and SOS one hold away.",
+  "permTitle": "Ready to drive",
+  "permLocationBody": "Show riders where you are while you are online.",
+  "permNotifBody": "Hear about new requests and payouts.",
+  "permCameraBody": "Photograph your documents and scan QR codes."
 }

@@ -2288,4 +2288,81 @@ class AppLocalizationsHa extends AppLocalizations {
   String optionCardRouteLine(String board, String alight) {
     return 'Hau a $board → $alight';
   }
+
+  @override
+  String get authYourNumber => 'Lambar wayarka';
+
+  @override
+  String get authSendCode => 'Tura min lambar sirri';
+
+  @override
+  String get otpCheckTitle => 'Duba saƙonninka';
+
+  @override
+  String get otpChecking => 'Ana duba lambar…';
+
+  @override
+  String get otpAutofillHint => 'Lambar za ta cika da kanta idan saƙon ya iso.';
+
+  @override
+  String get authOffline => 'Ba ka da intanet. Haɗa don samun lambarka.';
+
+  @override
+  String get authBack => 'Koma';
+
+  @override
+  String get permSubtitle =>
+      'Along zai tambaya sau ɗaya. Za ka iya canza wannan a Saituna.';
+
+  @override
+  String get permLocationTitle => 'Wuri';
+
+  @override
+  String get permNotifTitle => 'Sanarwa';
+
+  @override
+  String get permCameraTitle => 'Kyamara';
+
+  @override
+  String get permAllow => 'Ba da izini';
+
+  @override
+  String get permLater => 'Ba yanzu ba';
+
+  @override
+  String get authStory1H => 'Yi tafiya. Yadda kake so.';
+
+  @override
+  String get authStory1B => 'Keke, okada, danfo da tasi a manhaja ɗaya.';
+
+  @override
+  String get authStory2H => 'Kuɗin hawa mai adalci, kowane lokaci.';
+
+  @override
+  String get authStory2B => 'Ga farashi kafin ka tafi. Babu ciniki.';
+
+  @override
+  String get authStory3H => 'Wani koyaushe yana sani.';
+
+  @override
+  String get authStory3B =>
+      'Raba tafiyarka, ka riƙe SOS idan kana buƙatar taimako.';
+
+  @override
+  String get nameSubtitle =>
+      'Direbobi suna ganin sunanka na farko kawai. Za ka iya tsallake.';
+
+  @override
+  String get permTitle => 'Shirye don hawanka na farko';
+
+  @override
+  String get permLocationBody =>
+      'Nemo wurin ɗaukar ka kuma nuna wa direba inda kake.';
+
+  @override
+  String get permNotifBody => 'San lokacin da direbanka ya iso.';
+
+  @override
+  String get permCameraBody =>
+      'Duba don biya kuma ka duba lambar mota kafin ka hau.';
 }

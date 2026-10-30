@@ -3169,6 +3169,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Online · no signal'**
   String get homeOnlineNoSignal;
+
+  /// No description provided for @authYourNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Your number'**
+  String get authYourNumber;
+
+  /// No description provided for @authSendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Text me the code'**
+  String get authSendCode;
+
+  /// No description provided for @otpCheckTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your texts'**
+  String get otpCheckTitle;
+
+  /// No description provided for @otpChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the code…'**
+  String get otpChecking;
+
+  /// No description provided for @otpAutofillHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The code fills in by itself when the text arrives.'**
+  String get otpAutofillHint;
+
+  /// No description provided for @authOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'You are offline. Connect to get your code.'**
+  String get authOffline;
+
+  /// No description provided for @permSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Along asks once. You can change this any time in Settings.'**
+  String get permSubtitle;
+
+  /// No description provided for @permLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get permLocationTitle;
+
+  /// No description provided for @permNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get permNotifTitle;
+
+  /// No description provided for @permCameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get permCameraTitle;
+
+  /// No description provided for @permAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access'**
+  String get permAllow;
+
+  /// No description provided for @permLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get permLater;
+
+  /// No description provided for @authStory1H.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive with Along.'**
+  String get authStory1H;
+
+  /// No description provided for @authStory1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Riders find you at the park and on the road.'**
+  String get authStory1B;
+
+  /// No description provided for @authStory2H.
+  ///
+  /// In en, this message translates to:
+  /// **'Your price, your route.'**
+  String get authStory2H;
+
+  /// No description provided for @authStory2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Set fares by stop and get paid straight away.'**
+  String get authStory2B;
+
+  /// No description provided for @authStory3H.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe on every trip.'**
+  String get authStory3H;
+
+  /// No description provided for @authStory3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified riders and SOS one hold away.'**
+  String get authStory3B;
+
+  /// No description provided for @permTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to drive'**
+  String get permTitle;
+
+  /// No description provided for @permLocationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show riders where you are while you are online.'**
+  String get permLocationBody;
+
+  /// No description provided for @permNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hear about new requests and payouts.'**
+  String get permNotifBody;
+
+  /// No description provided for @permCameraBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Photograph your documents and scan QR codes.'**
+  String get permCameraBody;
 }
 
 class _AppLocalizationsDelegate

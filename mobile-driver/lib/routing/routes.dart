@@ -3,6 +3,7 @@ abstract final class AppRoutes {
   static const launch = '/';
   static const phone = '/phone';
   static const otp = '/otp';
+  static const permissions = '/permissions';
   static const profile = '/profile';
   static const vehicle = '/vehicle';
   static const documents = '/documents';

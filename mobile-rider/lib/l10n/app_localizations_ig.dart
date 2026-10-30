@@ -2278,4 +2278,81 @@ class AppLocalizationsIg extends AppLocalizations {
   String optionCardRouteLine(String board, String alight) {
     return 'Banye na $board → $alight';
   }
+
+  @override
+  String get authYourNumber => 'Nọmba gị';
+
+  @override
+  String get authSendCode => 'Ziga m koodu ahụ';
+
+  @override
+  String get otpCheckTitle => 'Lelee ozi gị';
+
+  @override
+  String get otpChecking => 'Na-elele koodu…';
+
+  @override
+  String get otpAutofillHint => 'Koodu ga-ejupụta onwe ya mgbe ozi ruru.';
+
+  @override
+  String get authOffline => 'Ịnọghị n\'ịntanetị. Jikọọ ka ị nweta koodu gị.';
+
+  @override
+  String get authBack => 'Laghachi';
+
+  @override
+  String get permSubtitle =>
+      'Along na-ajụ otu ugboro. Ị nwere ike ịgbanwe ya na Ntọala.';
+
+  @override
+  String get permLocationTitle => 'Ebe ị nọ';
+
+  @override
+  String get permNotifTitle => 'Ọkwa';
+
+  @override
+  String get permCameraTitle => 'Igwefoto';
+
+  @override
+  String get permAllow => 'Nye ikike';
+
+  @override
+  String get permLater => 'Ọ bụghị ugbu a';
+
+  @override
+  String get authStory1H => 'Gaa ebe ọ bụla. N\'ụzọ gị.';
+
+  @override
+  String get authStory1B => 'Keke, okada, danfo na tagzi n\'otu ngwa.';
+
+  @override
+  String get authStory2H => 'Ụgwọ ziri ezi, oge ọ bụla.';
+
+  @override
+  String get authStory2B => 'Hụ ọnụahịa tupu ị gaa. Enweghị ịkpa.';
+
+  @override
+  String get authStory3H => 'Mmadụ na-ama mgbe niile.';
+
+  @override
+  String get authStory3B =>
+      'Kesaa njem gị, jide SOS ma ọ bụrụ na ịchọrọ enyemaka.';
+
+  @override
+  String get nameSubtitle =>
+      'Ndị ọkwọ ụgbọ na-ahụ naanị aha mbụ gị. Ị nwere ike ịwụfe ya.';
+
+  @override
+  String get permTitle => 'Dị njikere maka njem mbụ gị';
+
+  @override
+  String get permLocationBody =>
+      'Chọta ebe a ga-ebu gị, gosi onye ọkwọ ebe ị nọ.';
+
+  @override
+  String get permNotifBody => 'Mara oge onye ọkwọ gị ruru.';
+
+  @override
+  String get permCameraBody =>
+      'Nyochaa ịkwụ ụgwọ, lelee nọmba ụgbọ tupu ị banye.';
 }

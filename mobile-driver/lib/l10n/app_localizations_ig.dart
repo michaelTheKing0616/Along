@@ -1747,4 +1747,72 @@ class AppLocalizationsIg extends AppLocalizations {
 
   @override
   String get homeOnlineNoSignal => 'Nọ n\'ịntanetị · enweghị signal';
+
+  @override
+  String get authYourNumber => 'Nọmba gị';
+
+  @override
+  String get authSendCode => 'Ziga m koodu ahụ';
+
+  @override
+  String get otpCheckTitle => 'Lelee ozi gị';
+
+  @override
+  String get otpChecking => 'Na-elele koodu…';
+
+  @override
+  String get otpAutofillHint => 'Koodu ga-ejupụta onwe ya mgbe ozi ruru.';
+
+  @override
+  String get authOffline => 'Ịnọghị n\'ịntanetị. Jikọọ ka ị nweta koodu gị.';
+
+  @override
+  String get permSubtitle =>
+      'Along na-ajụ otu ugboro. Ị nwere ike ịgbanwe ya na Ntọala.';
+
+  @override
+  String get permLocationTitle => 'Ebe ị nọ';
+
+  @override
+  String get permNotifTitle => 'Ọkwa';
+
+  @override
+  String get permCameraTitle => 'Igwefoto';
+
+  @override
+  String get permAllow => 'Nye ikike';
+
+  @override
+  String get permLater => 'Ọ bụghị ugbu a';
+
+  @override
+  String get authStory1H => 'Kwọọ ụgbọ na Along.';
+
+  @override
+  String get authStory1B => 'Ndị njem na-achọta gị n\'ogige na n\'okporo ụzọ.';
+
+  @override
+  String get authStory2H => 'Ọnụahịa gị, ụzọ gị.';
+
+  @override
+  String get authStory2B => 'Tọọ ụgwọ n\'ọdụ ọ bụla, nweta ego ozugbo.';
+
+  @override
+  String get authStory3H => 'Nchekwa na njem ọ bụla.';
+
+  @override
+  String get authStory3B => 'Ndị njem a kwadoro na SOS n\'otu njide.';
+
+  @override
+  String get permTitle => 'Dị njikere ịkwọ ụgbọ';
+
+  @override
+  String get permLocationBody =>
+      'Gosi ndị njem ebe ị nọ mgbe ị nọ n\'ịntanetị.';
+
+  @override
+  String get permNotifBody => 'Nụ maka arịrịọ ọhụrụ na ịkwụ ụgwọ.';
+
+  @override
+  String get permCameraBody => 'See foto akwụkwọ gị, nyochaa koodu QR.';
 }
