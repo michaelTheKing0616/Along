@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:along_data/along_data.dart';
 import 'package:along_design/along_design.dart';
@@ -152,6 +153,17 @@ void main() {
   ]) {
     for (final (state, screen, seed, online, typed) in cases) {
       testWidgets('driver onboarding $state $name', (tester) async {
+        if (state.startsWith('phone_')) {
+          // The decoded hero photo resamples a few pixels differently on
+          // CI's Skia; allow 0.1% on the photo shots only.
+          final strict = goldenFileComparator;
+          goldenFileComparator = _Tolerant(
+            Uri.parse(
+              '${Directory.current.path}/test/driver_onboarding_golden_test.dart',
+            ),
+          );
+          addTearDown(() => goldenFileComparator = strict);
+        }
         await tester.binding.setSurfaceSize(const Size(360, 800));
         addTearDown(() => tester.binding.setSurfaceSize(null));
         final supabase = FakeAlongSupabase();
@@ -229,5 +241,19 @@ void main() {
         await tester.pump(const Duration(seconds: 1));
       });
     }
+  }
+}
+
+class _Tolerant extends LocalFileComparator {
+  _Tolerant(super.testFile);
+
+  @override
+  Future<bool> compare(Uint8List imageBytes, Uri golden) async {
+    final result = await GoldenFileComparator.compareLists(
+      imageBytes,
+      await getGoldenBytes(golden),
+    );
+    if (result.passed || result.diffPercent <= 0.001) return true;
+    throw FlutterError(await generateFailureOutput(result, golden, basedir));
   }
 }
