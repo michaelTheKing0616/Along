@@ -315,9 +315,9 @@ class AlongCityMap extends StatelessWidget {
           children: [
             // Baked dark tiles pulled down to the matte-black page: land
             // #16171A -> #0B0B0C, roads stay bright enough to read.
-            ColorFiltered(
-              colorFilter: dark ? _matte : _identity,
-              child: TileLayer(
+            _matteIf(
+              dark,
+              TileLayer(
                 urlTemplate:
                     '${assetPackage == null ? '' : 'packages/$assetPackage/'}assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
                 tileProvider: AssetTileProvider(),
@@ -1913,12 +1913,9 @@ class _RoutePainter extends CustomPainter {
   }
 }
 
-const _identity = ColorFilter.matrix(<double>[
-  1, 0, 0, 0, 0, //
-  0, 1, 0, 0, 0, //
-  0, 0, 1, 0, 0, //
-  0, 0, 0, 1, 0, //
-]);
+// Light tiles are left untouched: no filter layer at all.
+Widget _matteIf(bool dark, Widget tiles) =>
+    dark ? ColorFiltered(colorFilter: _matte, child: tiles) : tiles;
 
 const _matte = ColorFilter.matrix(<double>[
   0.9, 0, 0, 0, -10, //
