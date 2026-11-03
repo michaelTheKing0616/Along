@@ -80,13 +80,18 @@ class _AlongValueStoryState extends State<AlongValueStory> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
+                    // Top: light veil for the mark. Lower band: an eased
+                    // navy scrim under the story text and dots so white type
+                    // holds >=4.5:1 over the hazy sky (measured on goldens).
                     colors: [
                       Color(0x80101828),
                       Color(0x00101828),
-                      Color(0x33101828),
-                      Color(0xCC101828),
+                      Color(0x73101828),
+                      Color(0xB3101828),
+                      Color(0xD9101828),
+                      Color(0xEB101828),
                     ],
-                    stops: [0, 0.3, 0.5, 1],
+                    stops: [0, 0.2, 0.36, 0.5, 0.74, 1],
                   ),
                 ),
               ),

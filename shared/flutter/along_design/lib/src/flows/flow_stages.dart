@@ -1876,12 +1876,16 @@ class _Poster extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                // Navy veil under the white mark and headline, fading out
+                // over the mountain; a light floor keeps the dots legible.
                 colors: [
-                  Color(0xB3101828),
-                  Color(0x00000000),
-                  Color(0x00000000),
+                  Color(0xD9101828),
+                  Color(0x99101828),
+                  Color(0x00101828),
+                  Color(0x00101828),
+                  Color(0x80101828),
                 ],
-                stops: [0, 0.42, 1],
+                stops: [0, 0.3, 0.55, 0.8, 1],
               ),
             ),
           ),
