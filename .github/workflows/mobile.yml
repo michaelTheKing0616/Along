@@ -37,7 +37,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: golden-failures
-          path: '**/test/golden/failures/*.png'
+          path: |
+            **/test/golden/failures/*.png
+            **/test/failures/*.png
           if-no-files-found: ignore
 
       - name: Release APK analyze-size gate
