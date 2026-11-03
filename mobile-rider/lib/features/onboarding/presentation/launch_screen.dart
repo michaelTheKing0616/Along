@@ -58,7 +58,7 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width * 0.5;
+    final width = MediaQuery.sizeOf(context).width * 0.4;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final duration = still ? Duration.zero : _handoff;
 

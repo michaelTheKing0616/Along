@@ -97,7 +97,7 @@ class _AlongValueStoryState extends State<AlongValueStory> {
                   child: Transform.scale(
                     scale: 0.72,
                     alignment: Alignment.topLeft,
-                    child: const AlongWordmark(color: ink),
+                    child: const AlongWordmark(),
                   ),
                 ),
               ),

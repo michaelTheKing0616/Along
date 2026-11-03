@@ -1,12 +1,8 @@
 /// Committed brand asset paths under [package:along_design] `assets/`.
 library;
 
-/// SVG wordmark — ink on transparent/white.
+/// The one Along brand mark: black-car wordmark, always on pure white.
 const String alongLogoBlackSvg = 'assets/logos/main_logo_along_black.svg';
-
-/// SVG wordmark — brand yellow fill. Legacy: not the brand mark (icon and
-/// launch use [alongLogoBlackSvg] on white); kept for asset tests only.
-const String alongLogoYellowSvg = 'assets/logos/main_logo_along_yellow.svg';
 
 /// Splash branding image (ink wordmark).
 const String alongSplashLogo = 'assets/splash/splash_logo.png';

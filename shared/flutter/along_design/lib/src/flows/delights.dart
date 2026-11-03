@@ -4,9 +4,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../brand_assets.dart';
 import '../craft.dart';
 import '../elevation.dart';
 import '../tokens.g.dart';
@@ -405,109 +407,40 @@ class AlongTabBarState extends State<AlongTabBar>
   }
 }
 
+/// The one Along brand mark: the black-car wordmark on a pure white plate,
+/// identical in light and dark mode and on photographs. [color] is kept for
+/// call-site compatibility and ignored; [progress] fades the mark in.
 class AlongWordmark extends StatelessWidget {
-  const AlongWordmark({super.key, required this.color, this.progress = 1});
+  const AlongWordmark({super.key, this.color, this.progress = 1});
 
-  final Color color;
+  final Color? color;
   final double progress;
 
   @override
   Widget build(BuildContext context) {
     final t = progress.clamp(0.0, 1.0);
-    final palette = AlongPalette.of(context);
     return Opacity(
-      opacity: t < 0.15 ? t / 0.15 : 1,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: AlongCraft.fill(
-              const Color(0xFFF7F4EF),
-              corner: AlongRadius.card.x,
-            ),
-            child: CustomPaint(
-              size: const Size(56, 56),
-              painter: _MarkPainter(color: color, progress: t),
+      opacity: t < 0.3 ? t / 0.3 : 1,
+      child: Semantics(
+        label: 'Along',
+        image: true,
+        child: DecoratedBox(
+          decoration: AlongCraft.fill(
+            const Color(0xFFFFFFFF),
+            corner: AlongRadius.control.x,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: SvgPicture.asset(
+              alongLogoBlackSvg,
+              package: 'along_design',
+              width: 132,
             ),
           ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Along',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.display(palette).copyWith(
-                  color: color,
-                  fontSize: 28,
-                  height: 1,
-                  letterSpacing: -1.0,
-                ),
-              ),
-              Text(
-                'ABUJA',
-                maxLines: 1,
-                softWrap: false,
-                style: AlongType.caption(palette).copyWith(
-                  color: color.withValues(alpha: 0.82),
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2.2,
-                  height: 1.1,
-                ),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
-}
-
-class _MarkPainter extends CustomPainter {
-  _MarkPainter({required this.color, required this.progress});
-
-  final Color color;
-  final double progress;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final ink = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.062
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..color = const Color(0xFF111111);
-    final path = Path()
-      ..moveTo(size.width * 0.22, size.height * 0.68)
-      ..quadraticBezierTo(
-        size.width * 0.42,
-        size.height * 0.28,
-        size.width * 0.58,
-        size.height * 0.52,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.70,
-        size.height * 0.70,
-        size.width * 0.80,
-        size.height * 0.36,
-      );
-    final metric = path.computeMetrics().first;
-    final drawn = metric.extractPath(0, metric.length * progress);
-    canvas.drawPath(drawn, ink);
-    canvas.drawCircle(
-      Offset(size.width * 0.80, size.height * 0.36),
-      size.width * 0.07,
-      Paint()..color = const Color(0xFFF7D117),
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _MarkPainter oldDelegate) =>
-      oldDelegate.progress != progress;
 }
 
 /// Splash mark that settles, then hands off to onboarding.
@@ -556,14 +489,13 @@ class AlongSplashState extends State<AlongSplash>
 
   @override
   Widget build(BuildContext context) {
-    final palette = AlongPalette.of(context);
     return ColoredBox(
-      color: palette.bg,
+      color: const Color(0xFFFFFFFF),
       child: Center(
         child: AnimatedBuilder(
           animation: _draw,
           builder: (context, _) {
-            return AlongWordmark(color: palette.ink, progress: _draw.value);
+            return AlongWordmark(progress: _draw.value);
           },
         ),
       ),
