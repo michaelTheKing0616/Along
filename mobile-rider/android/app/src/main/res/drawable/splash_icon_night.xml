@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ dark splash icon: the one Along mark, tinted off-white. -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:src="@drawable/splash_icon"
+    android:tint="#F2EFEA" />

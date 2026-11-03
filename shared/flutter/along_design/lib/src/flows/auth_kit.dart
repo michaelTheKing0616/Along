@@ -94,10 +94,12 @@ class _AlongValueStoryState extends State<AlongValueStory> {
                 padding: EdgeInsets.fromLTRB(20, top + 12, 20, 0),
                 child: Align(
                   alignment: Alignment.topLeft,
+                  // Hazy sky behind the mark: black ink measures ~9:1 there;
+                  // white was ~2:1. Same transparent artwork, ink by contrast.
                   child: Transform.scale(
                     scale: 0.72,
                     alignment: Alignment.topLeft,
-                    child: const AlongWordmark(),
+                    child: const AlongWordmark(color: Color(0xFF0A0A0A)),
                   ),
                 ),
               ),

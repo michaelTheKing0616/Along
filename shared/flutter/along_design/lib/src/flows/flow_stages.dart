@@ -1877,7 +1877,7 @@ class _Poster extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0x66101828),
+                  Color(0xB3101828),
                   Color(0x00000000),
                   Color(0x00000000),
                 ],
@@ -1892,7 +1892,7 @@ class _Poster extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AlongWordmark(),
+                const AlongWordmark(color: Color(0xFFFFFFFF)),
                 const SizedBox(height: 12),
                 Text(
                   'Move around.',

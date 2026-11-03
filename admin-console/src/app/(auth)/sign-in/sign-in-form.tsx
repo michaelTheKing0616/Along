@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { AlongLogo } from "@/components/along/along-logo";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -46,14 +47,7 @@ export default function SignInForm() {
             gap: 10,
           }}
         >
-          <span className="brand-plate brand-plate-lg">
-            <img
-              src="/brand/along-logo.svg"
-              alt="Along"
-              width={110}
-              height={28}
-            />
-          </span>
+          <AlongLogo width={118} className="brand-logo" />
           Admin
         </h1>
         <p

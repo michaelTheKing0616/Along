@@ -5,6 +5,7 @@ import { RowKeyboard } from "@/components/along/RowKeyboard";
 import { ThemeToggle } from "@/components/along/ThemeToggle";
 import { getCityBySlug } from "@/lib/city/resolve";
 import { createClient } from "@/lib/supabase/server";
+import { AlongLogo } from "@/components/along/along-logo";
 
 interface LayoutProps {
   children: ReactNode;
@@ -31,14 +32,7 @@ export default async function CityShellLayout({
       <aside className="shell-side">
         <div>
           <Link href={`/${citySlug}/dashboard`} className="shell-brand">
-            <span className="brand-plate">
-              <img
-                src="/brand/along-logo.svg"
-                alt="Along"
-                width={78}
-                height={20}
-              />
-            </span>
+            <AlongLogo width={84} className="brand-logo" />
             Admin
           </Link>
           <div className="shell-city">{city?.name ?? citySlug}</div>

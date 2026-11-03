@@ -407,43 +407,42 @@ class AlongTabBarState extends State<AlongTabBar>
   }
 }
 
-/// The one Along brand mark: the black-car wordmark on a pure white plate,
-/// identical in light and dark mode and on photographs. [color] is kept for
-/// call-site compatibility and ignored; [progress] fades the mark in.
+/// The one Along brand mark: the black-car wordmark drawn straight on the
+/// surface (transparent, no plate). Ink follows contrast: [color] when given
+/// (e.g. white over a dark photo), else the palette ink — near-black on
+/// light surfaces, off-white on matte black. [progress] fades the mark in.
 class AlongWordmark extends StatelessWidget {
-  const AlongWordmark({super.key, this.color, this.progress = 1});
+  const AlongWordmark({
+    super.key,
+    this.color,
+    this.progress = 1,
+    this.width = 132,
+  });
 
   final Color? color;
   final double progress;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     final t = progress.clamp(0.0, 1.0);
+    final ink = color ?? AlongPalette.of(context).ink;
     return Opacity(
       opacity: t < 0.3 ? t / 0.3 : 1,
       child: Semantics(
         label: 'Along',
         image: true,
-        child: DecoratedBox(
-          decoration: AlongCraft.fill(
-            const Color(0xFFFFFFFF),
-            corner: AlongRadius.control.x,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            child: SvgPicture.asset(
-              alongLogoBlackSvg,
-              package: 'along_design',
-              width: 132,
-            ),
-          ),
+        child: SvgPicture.asset(
+          alongLogoBlackSvg,
+          package: 'along_design',
+          width: width,
+          colorFilter: ColorFilter.mode(ink, BlendMode.srcIn),
         ),
       ),
     );
   }
 }
 
-/// Splash mark that settles, then hands off to onboarding.
 class AlongSplash extends StatefulWidget {
   const AlongSplash({super.key, required this.onDone});
 
@@ -489,8 +488,9 @@ class AlongSplashState extends State<AlongSplash>
 
   @override
   Widget build(BuildContext context) {
+    final palette = AlongPalette.of(context);
     return ColoredBox(
-      color: const Color(0xFFFFFFFF),
+      color: palette.bg,
       child: Center(
         child: AnimatedBuilder(
           animation: _draw,

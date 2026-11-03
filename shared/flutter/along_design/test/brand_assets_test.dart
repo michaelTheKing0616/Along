@@ -19,6 +19,9 @@ void main() {
 
       final black = await rootBundle.loadString(alongLogoBlackSvg);
       expect(black, contains('#0A0A0A'));
+      // One transparent mark: no background rect/plate baked into the art.
+      expect(black, isNot(contains('<rect')));
+      expect(black, isNot(contains('#FFFFFF')));
     });
 
     test('Android legacy launcher icons exist at all densities', () async {

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,20 +60,23 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width * 0.4;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final duration = still ? Duration.zero : _handoff;
 
+    // Launch follows the theme: pure white + black ink in light, matte black
+    // + off-white ink in dark. One transparent logo, ink follows contrast.
+    final palette = AlongPalette.of(context);
+    final dark = palette.brightness == Brightness.dark;
+    final launchBg = dark ? palette.bg : const Color(0xFFFFFFFF);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: launchBg,
         body: AnimatedContainer(
           duration: duration,
           curve: Curves.easeOut,
-          color: _leaving
-              ? AlongPalette.of(context).bg
-              : const Color(0xFFFFFFFF),
+          color: _leaving ? palette.bg : launchBg,
           alignment: Alignment.center,
           child: AnimatedOpacity(
             opacity: _leaving ? 0 : 1,
@@ -79,10 +84,15 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
             curve: Curves.easeOut,
             child: Semantics(
               label: 'along_logo',
-              child: SvgPicture.asset(
-                alongLogoBlackSvg,
-                package: 'along_design',
-                width: width,
+              child: LayoutBuilder(
+                builder: (context, box) => SvgPicture.asset(
+                  alongLogoBlackSvg,
+                  package: 'along_design',
+                  // Same 180dp as the native splash, so the hand-off from
+                  // the OS splash to this screen does not jump.
+                  width: math.min(180, box.maxWidth * 0.5),
+                  colorFilter: ColorFilter.mode(palette.ink, BlendMode.srcIn),
+                ),
               ),
             ),
           ),

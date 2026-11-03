@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { AlongLogo } from "@/components/along/along-logo";
 
 export default function AgentLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,14 +14,7 @@ export default function AgentLayout({ children }: { children: ReactNode }) {
           }}
         >
           <strong className="agent-brand">
-            <span className="brand-plate">
-              <img
-                src="/brand/along-logo.svg"
-                alt="Along"
-                width={78}
-                height={20}
-              />
-            </span>
+            <AlongLogo width={84} className="brand-logo" />
             Agent
           </strong>
           <Link
