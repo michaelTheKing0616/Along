@@ -71,24 +71,27 @@ class AlongPalette extends ThemeExtension<AlongPalette> {
     fontFamily: 'Geist',
   );
 
+  /// Matte black. The page sits just above #000 so OLED rows never smear
+  /// and the elevation ladder still has rungs: page, recessed, surface step
+  /// up by luminance alone. Text is off-white, never #FFF, to stop halation.
   static const dark = AlongPalette(
     brightness: Brightness.dark,
-    bg: Color(0xFF100F0D),
-    surface: Color(0xFF26231F),
-    recessed: Color(0xFF1A1815),
-    ink: Color(0xFFF3EEE8),
-    onInk: Color(0xFF100F0D),
-    muted: Color(0xFFE4DCD2),
-    line: Color(0xFF9A9188),
+    bg: Color(0xFF050505),
+    surface: Color(0xFF141414),
+    recessed: Color(0xFF0C0C0C),
+    ink: Color(0xFFF2EFEA),
+    onInk: Color(0xFF050505),
+    muted: Color(0xFFCFC9C1),
+    line: Color(0xFF8A857F),
     accent: Color(0xFFF7D117),
     accentInk: Color(0xFF141210),
     danger: Color(0xFFF0A8A0),
-    dangerOn: Color(0xFF100F0D),
+    dangerOn: Color(0xFF050505),
     success: Color(0xFF8FCBAA),
-    mapLand: Color(0xFF16171A),
-    mapWater: Color(0xFF1A2A36),
-    mapPark: Color(0xFF1A2620),
-    mapRoad: Color(0xFFC9CCD2),
+    mapLand: Color(0xFF0B0B0C),
+    mapWater: Color(0xFF0F1B24),
+    mapPark: Color(0xFF0E1712),
+    mapRoad: Color(0xFFB9BCC2),
     fontFamily: 'Geist',
   );
 

@@ -104,11 +104,19 @@ class AlongButton extends StatelessWidget {
         : AlongRadius.button.x;
     final shape = AlongCraft.border(radius, side: style.borderSide);
     final yellow = variant == AlongButtonVariant.yellow;
+    // Dark mode: filled buttons get the polished rim and a faint top lift.
+    final shine =
+        palette.brightness == Brightness.dark &&
+        !_isDisabled &&
+        style.backgroundColor.a > 0.5 &&
+        style.borderSide == BorderSide.none;
     final button = DecoratedBox(
       decoration: ShapeDecoration(
-        color: yellow ? null : style.backgroundColor,
-        gradient: yellow ? AlongCraft.cta(style.backgroundColor) : null,
-        shape: shape,
+        color: yellow || shine ? null : style.backgroundColor,
+        gradient: yellow || shine
+            ? AlongCraft.cta(style.backgroundColor)
+            : null,
+        shape: shine ? AlongSpecularBorder(shape, strength: 1.6) : shape,
       ),
       child: Material(
         type: MaterialType.transparency,

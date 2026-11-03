@@ -27,6 +27,22 @@ abstract final class AlongElevation {
     double ambientY,
     double ambientBlur,
   ) {
+    // On matte black a light shadow reads as grey haze. Dark mode lifts by
+    // luminance and the specular edge, so its shadow is pure black and deeper.
+    if (ink.computeLuminance() > 0.5) {
+      return [
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.6),
+          offset: Offset(0, contactY),
+          blurRadius: 1.5,
+        ),
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.5),
+          offset: Offset(0, ambientY),
+          blurRadius: ambientBlur,
+        ),
+      ];
+    }
     final warm = Color.alphaBlend(
       const Color(0xFF8A5A32).withValues(alpha: 0.45),
       ink,

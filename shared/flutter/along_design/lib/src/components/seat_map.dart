@@ -461,7 +461,7 @@ class _CabinOutlinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final dark = palette.brightness == Brightness.dark;
-    final fill = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
+    final fill = dark ? const Color(0xFF1C1C1C) : const Color(0xFFF4F1EB);
     final line = dark ? const Color(0xFFE4DCD2) : const Color(0xFF141210);
     final path = _cabinOutline(size);
     final stroke = Paint()

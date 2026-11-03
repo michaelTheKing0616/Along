@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import '../components/along_button.dart';
 import '../craft.dart';
 import '../components/seat_map.dart';
+import '../components/shimmer_sheen.dart';
 import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
@@ -3776,6 +3777,14 @@ class AlongWalletCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     const paper = Color(0xFFF7F4EF);
+    return AlongShimmer(
+      corner: AlongRadius.card.x,
+      rim: true,
+      child: _card(palette, paper),
+    );
+  }
+
+  Widget _card(AlongPalette palette, Color paper) {
     return AspectRatio(
       aspectRatio: 1.586,
       child: AlongCraft.clip(

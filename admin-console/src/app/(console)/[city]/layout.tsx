@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ConsoleNav } from '@/components/along/ConsoleNav';
 import { RowKeyboard } from '@/components/along/RowKeyboard';
+import { ThemeToggle } from '@/components/along/ThemeToggle';
 import { getCityBySlug } from '@/lib/city/resolve';
 import { createClient } from '@/lib/supabase/server';
 
@@ -37,6 +38,7 @@ export default async function CityShellLayout({ children, params }: LayoutProps)
         <ConsoleNav city={citySlug} />
         <div className="shell-foot">
           <span className="shell-user">{user?.email ?? ''}</span>
+          <ThemeToggle />
           <Link href="/sign-in">Sign out</Link>
         </div>
       </aside>

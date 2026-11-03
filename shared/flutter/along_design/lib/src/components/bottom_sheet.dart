@@ -83,12 +83,19 @@ class _AlongBottomSheetState extends State<AlongBottomSheet>
           child: Align(
             alignment: Alignment.bottomCenter,
             child: DecoratedBox(
-              decoration: AlongCraft.fill(
-                palette.surface,
-                corner: AlongRadius.sheet.x,
-                shadow: AlongElevation.sheet(palette.ink),
-                top: true,
-              ),
+              decoration: palette.brightness == Brightness.dark
+                  ? AlongCraft.mirror(
+                      palette,
+                      radius: AlongRadius.sheet.x,
+                      shadow: AlongElevation.sheet(palette.ink),
+                      top: true,
+                    )
+                  : AlongCraft.fill(
+                      palette.surface,
+                      corner: AlongRadius.sheet.x,
+                      shadow: AlongElevation.sheet(palette.ink),
+                      top: true,
+                    ),
               child: Material(
                 // Gives ListTile/InkWell in sheet content their own ink surface
                 // above the decorated background.
