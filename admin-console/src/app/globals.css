@@ -681,8 +681,8 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
   --a-info-tint: #0f1730;
   --a-shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.6);
   /* Mirror finish: static diagonal sheen + 1px specular top edge. */
-  --a-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.08) 100%);
-  --a-rim: inset 0 1px 0 rgba(255, 255, 255, 0.09), inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+  --a-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.045) 42%, rgba(255, 255, 255, 0) 54%, rgba(0, 0, 0, 0.12) 100%);
+  --a-rim: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.045), inset 0 14px 24px -18px rgba(255, 255, 255, 0.08);
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -710,8 +710,8 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
   --a-info-tint: #0f1730;
   --a-shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.6);
   /* Mirror finish: static diagonal sheen + 1px specular top edge. */
-  --a-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.08) 100%);
-  --a-rim: inset 0 1px 0 rgba(255, 255, 255, 0.09), inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+  --a-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.045) 42%, rgba(255, 255, 255, 0) 54%, rgba(0, 0, 0, 0.12) 100%);
+  --a-rim: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.045), inset 0 14px 24px -18px rgba(255, 255, 255, 0.08);
   color-scheme: dark;
   }
 }
@@ -719,12 +719,20 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
   :root:not([data-theme='light']) :is(.card, .kpi, .data-table-wrap, .empty-state, .btn-primary) { background-image: var(--a-sheen); }
   :root:not([data-theme='light']) :is(.card, .kpi, .data-table-wrap) { box-shadow: var(--a-rim); }
   :root:not([data-theme='light']) .drawer { background-image: var(--a-sheen); box-shadow: var(--a-rim), var(--a-shadow-pop); }
+  :root:not([data-theme='light']) .btn-primary { background-image: linear-gradient(180deg, #fbf9f5 0%, #ece8e1 46%, #d9d4cb 54%, #f1ede6 100%); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.7); }
+  :root:not([data-theme='light']) .btn-primary:hover:not(:disabled) { background-image: linear-gradient(180deg, #fff 0%, #f2eee8 46%, #e0dbd2 54%, #f5f2ec 100%); }
+  :root:not([data-theme='light']) :is(.btn-secondary, .btn-danger) { background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 60%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+  :root:not([data-theme='light']) .btn:disabled { opacity: 1; background: transparent; background-image: none; border-color: #2b2b2b; color: #8f8a84; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05); }
   :root:not([data-theme='light']) .btn-danger { border-color: #5a2a26; }
 }
 :root[data-theme='dark'] :is(.card, .kpi, .data-table-wrap, .empty-state, .btn-primary) { background-image: var(--a-sheen); }
 :root[data-theme='dark'] :is(.card, .kpi, .data-table-wrap) { box-shadow: var(--a-rim); }
 :root[data-theme='dark'] .drawer { background-image: var(--a-sheen); box-shadow: var(--a-rim), var(--a-shadow-pop); }
 :root[data-theme='dark'] .btn-danger { border-color: #5a2a26; }
+:root[data-theme='dark'] .btn-primary { background-image: linear-gradient(180deg, #fbf9f5 0%, #ece8e1 46%, #d9d4cb 54%, #f1ede6 100%); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.7); }
+:root[data-theme='dark'] .btn-primary:hover:not(:disabled) { background-image: linear-gradient(180deg, #fff 0%, #f2eee8 46%, #e0dbd2 54%, #f5f2ec 100%); }
+:root[data-theme='dark'] :is(.btn-secondary, .btn-danger) { background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 60%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+:root[data-theme='dark'] .btn:disabled { opacity: 1; background: transparent; background-image: none; border-color: #2b2b2b; color: #8f8a84; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05); }
 .theme-toggle {
   font: inherit; font-size: 12px; color: var(--a-muted); background: transparent;
   border: 1px solid var(--a-line); border-radius: 8px; padding: 2px 8px; cursor: pointer;

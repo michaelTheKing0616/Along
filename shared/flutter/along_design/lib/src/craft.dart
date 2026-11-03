@@ -167,8 +167,30 @@ abstract final class AlongCraft {
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      stops: const [0, 0.45, 1],
-      colors: [shift(base, 0.025), base, shift(base, -0.01)],
+      stops: const [0, 0.3, 0.42, 0.54, 1],
+      colors: [
+        shift(base, 0.05),
+        base,
+        shift(base, 0.03),
+        base,
+        shift(base, -0.012),
+      ],
+    );
+  }
+
+  /// Polished metal for dark-mode filled buttons: bright crown, a soft
+  /// horizon just under the middle, a little bounce light at the foot.
+  static LinearGradient chrome(Color color) {
+    return LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: const [0, 0.42, 0.62, 1],
+      colors: [
+        shift(color, 0.05),
+        shift(color, 0.0),
+        shift(color, -0.035),
+        shift(color, -0.015),
+      ],
     );
   }
 
@@ -544,14 +566,32 @@ class AlongSpecularBorder extends ShapeBorder {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        stops: const [0, 0.35, 1],
+        stops: const [0, 0.3, 1],
         colors: [
-          white.withValues(alpha: 0.16 * strength),
-          white.withValues(alpha: 0.05 * strength),
-          white.withValues(alpha: 0.025 * strength),
+          white.withValues(alpha: (0.3 * strength).clamp(0.0, 1.0)),
+          white.withValues(alpha: (0.08 * strength).clamp(0.0, 1.0)),
+          white.withValues(alpha: (0.03 * strength).clamp(0.0, 1.0)),
         ],
       ).createShader(rect);
     canvas.drawPath(path, paint);
+    // Inner highlight: a second, fainter line just inside the crown.
+    final inside = rect.deflate(1.5);
+    if (inside.isEmpty) return;
+    canvas.drawPath(
+      inner.getOuterPath(inside),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0, 0.22],
+          colors: [
+            white.withValues(alpha: (0.06 * strength).clamp(0.0, 1.0)),
+            white.withValues(alpha: 0),
+          ],
+        ).createShader(rect),
+    );
   }
 
   @override
