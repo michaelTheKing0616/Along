@@ -40,6 +40,7 @@ jobs:
           path: |
             **/test/golden/failures/*.png
             **/test/failures/*.png
+            **/test/goldens/failures/*.png
           if-no-files-found: ignore
 
       - name: Release APK analyze-size gate
