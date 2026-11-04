@@ -2009,31 +2009,55 @@ class _PosterRoutePainter extends CustomPainter {
 
   final double progress;
 
+  // Source pixels of onboarding-fleet.jpg (720x1280). The route is laid on
+  // the near lane: it runs toward the road's vanishing point (about
+  // -318, 784, where the lane dashes and the kerb converge), parallel to
+  // the dashes, then changes lane and pulls in to the kerb by the keke.
+  static const _photo = Size(720, 1280);
+  static const _pickup = Offset(580, 1142);
+  static const _c1 = Offset(372, 1086);
+  static const _c2 = Offset(250, 1046);
+  static const _dropoff = Offset(170, 868);
+
+  /// Maps a photo pixel into the box the way BoxFit.cover with
+  /// Alignment.topCenter places the image.
+  static Offset _map(Offset p, Size size) {
+    final scale = math.max(
+      size.width / _photo.width,
+      size.height / _photo.height,
+    );
+    final dx = (size.width - _photo.width * scale) / 2;
+    return Offset(dx + p.dx * scale, p.dy * scale);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
+    final a = _map(_pickup, size);
+    final c1 = _map(_c1, size);
+    final c2 = _map(_c2, size);
+    final b = _map(_dropoff, size);
     final path = Path()
-      ..moveTo(size.width * 0.08, size.height * 0.62)
-      ..quadraticBezierTo(
-        size.width * 0.32,
-        size.height * 0.48,
-        size.width * 0.52,
-        size.height * 0.58,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.72,
-        size.height * 0.68,
-        size.width * 0.90,
-        size.height * 0.46,
-      );
+      ..moveTo(a.dx, a.dy)
+      ..cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, b.dx, b.dy);
+    final t = progress.clamp(0.0, 1.0);
     final metric = path.computeMetrics().first;
-    final drawn = metric.extractPath(0, metric.length * progress.clamp(0, 1));
+    final drawn = metric.extractPath(0, metric.length * t);
+    const navy = Color(0xFF101828);
+
+    // Pickup: a ringed origin dot sitting on the asphalt.
+    canvas.drawCircle(a, 9, Paint()..color = navy.withValues(alpha: 0.55));
+    canvas.drawCircle(a, 7, Paint()..color = const Color(0xFFFFFFFF));
+    canvas.drawCircle(a, 3, Paint()..color = navy);
+
+    // Route: one weight, round caps, with a navy casing for contrast.
     canvas.drawPath(
       drawn,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 7
         ..strokeCap = StrokeCap.round
-        ..color = const Color(0x660E0E10),
+        ..strokeJoin = StrokeJoin.round
+        ..color = navy.withValues(alpha: 0.6),
     );
     canvas.drawPath(
       drawn,
@@ -2041,15 +2065,47 @@ class _PosterRoutePainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round
-        ..color = const Color(0xF2FFFFFF),
+        ..strokeJoin = StrokeJoin.round
+        ..color = const Color(0xFFFFFFFF),
     );
-    if (progress > 0.98) {
-      canvas.drawCircle(
-        Offset(size.width * 0.90, size.height * 0.46),
-        5,
-        Paint()..color = const Color(0xFFF7D117),
-      );
-    }
+
+    // Drop-off: pin and ground glow arrive once the line lands.
+    final arrive = ((t - 0.85) / 0.15).clamp(0.0, 1.0);
+    if (arrive <= 0) return;
+    canvas.drawOval(
+      Rect.fromCenter(center: b, width: 34, height: 11),
+      Paint()
+        ..shader = RadialGradient(
+          colors: [
+            const Color(0xFFFFFFFF).withValues(alpha: 0.55 * arrive),
+            const Color(0x00FFFFFF),
+          ],
+        ).createShader(Rect.fromCenter(center: b, width: 34, height: 11)),
+    );
+    final head = b.translate(0, -16 - 4 * (1 - arrive));
+    final pin = Path()
+      ..moveTo(b.dx, b.dy - 2)
+      ..lineTo(head.dx - 6, head.dy + 4)
+      ..arcToPoint(
+        Offset(head.dx + 6, head.dy + 4),
+        radius: const Radius.circular(8),
+        largeArc: true,
+      )
+      ..close();
+    canvas.drawPath(pin, Paint()..color = navy.withValues(alpha: arrive));
+    canvas.drawPath(
+      pin,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5
+        ..strokeJoin = StrokeJoin.round
+        ..color = const Color(0xFFFFFFFF).withValues(alpha: arrive),
+    );
+    canvas.drawCircle(
+      head.translate(0, 1),
+      2.5,
+      Paint()..color = const Color(0xFFFFFFFF).withValues(alpha: arrive),
+    );
   }
 
   @override
