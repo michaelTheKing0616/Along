@@ -13,6 +13,7 @@ export 'src/fonts.dart';
 export 'src/flows/batch_stages.dart';
 export 'src/flows/city_map.dart';
 export 'src/flows/delights.dart';
+export 'src/flows/launch_art.dart';
 export 'src/flows/demo_adapter.dart';
 export 'src/flows/driver_portrait.dart';
 export 'src/flows/auth_kit.dart';

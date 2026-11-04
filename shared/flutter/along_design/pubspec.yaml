@@ -45,6 +45,7 @@ flutter:
     - assets/icons/android/drawable-xxxhdpi/
     - assets/icons/ios/AppIcon.appiconset/
     - assets/splash/
+    - assets/illustrations/
     - assets/map/
     - assets/map/tiles/light/
     - assets/map/tiles/dark/

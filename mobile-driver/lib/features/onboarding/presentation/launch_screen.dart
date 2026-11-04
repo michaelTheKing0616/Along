@@ -1,10 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:along_design/along_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_driver/features/onboarding/data/driver_onboarding_preferences.dart';
 import 'package:mobile_driver/features/onboarding/presentation/auth_controller.dart';
@@ -69,7 +66,7 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
     final duration = still ? Duration.zero : _handoff;
 
     // Launch follows the theme: pure white + black ink in light, matte black
-    // + off-white ink in dark. One transparent logo, ink follows contrast.
+    // + off-white ink in dark. Logo is the one mark; the taxi art sits below.
     final palette = AlongPalette.of(context);
     final dark = palette.brightness == Brightness.dark;
     final launchBg = dark ? palette.bg : const Color(0xFFFFFFFF);
@@ -87,19 +84,7 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
             opacity: _leaving ? 0 : 1,
             duration: duration,
             curve: Curves.easeOut,
-            child: Semantics(
-              label: 'along_logo',
-              child: LayoutBuilder(
-                builder: (context, box) => SvgPicture.asset(
-                  alongLogoBlackSvg,
-                  package: 'along_design',
-                  // Same 180dp as the native splash, so the hand-off from
-                  // the OS splash to this screen does not jump.
-                  width: math.min(180, box.maxWidth * 0.5),
-                  colorFilter: ColorFilter.mode(palette.ink, BlendMode.srcIn),
-                ),
-              ),
-            ),
+            child: const AlongLaunchArt(illustration: alongTaxiMapFront),
           ),
         ),
       ),

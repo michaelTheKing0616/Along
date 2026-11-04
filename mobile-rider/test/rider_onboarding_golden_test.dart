@@ -237,6 +237,15 @@ void main() {
             tester.element(find.byType(Scaffold).first),
           ),
         );
+        if (screen is LaunchScreen) {
+          await tester.runAsync(
+            () => precacheImage(
+              const AssetImage(alongTaxiMapSide, package: 'along_design'),
+              tester.element(find.byType(Scaffold).first),
+            ),
+          );
+          await tester.pump();
+        }
         if (typed != null) {
           final field = find.byType(TextField).first;
           final ctrl = tester.widget<TextField>(field).controller!;
