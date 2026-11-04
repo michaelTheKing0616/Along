@@ -10,9 +10,9 @@ import '../palette.dart';
 /// at the native splash position and size, with a map-filled taxi drawing
 /// below it. The drawing rises in once; reduce-motion shows it at rest.
 class AlongLaunchArt extends StatefulWidget {
-  const AlongLaunchArt({required this.illustration, super.key});
+  const AlongLaunchArt({this.illustration = alongTaxiMapSide, super.key});
 
-  /// One of [alongTaxiMapSide] or [alongTaxiMapFront].
+  /// Defaults to [alongTaxiMapSide].
   final String illustration;
 
   @override
@@ -83,13 +83,11 @@ class _AlongLaunchArtState extends State<AlongLaunchArt>
                       ),
                     );
                   },
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     widget.illustration,
                     package: 'along_design',
                     width: artWidth,
-                    filterQuality: FilterQuality.high,
-                    color: palette.ink.withValues(alpha: 0.82),
-                    colorBlendMode: BlendMode.srcIn,
+                    colorFilter: ColorFilter.mode(palette.ink, BlendMode.srcIn),
                   ),
                 ),
               ),

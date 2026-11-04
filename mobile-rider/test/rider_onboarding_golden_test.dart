@@ -238,11 +238,9 @@ void main() {
           ),
         );
         if (screen is LaunchScreen) {
+          // Let the taxi SVG finish loading off the fake clock.
           await tester.runAsync(
-            () => precacheImage(
-              const AssetImage(alongTaxiMapSide, package: 'along_design'),
-              tester.element(find.byType(Scaffold).first),
-            ),
+            () => Future<void>.delayed(const Duration(milliseconds: 300)),
           );
           await tester.pump();
         }

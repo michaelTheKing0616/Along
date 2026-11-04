@@ -62,7 +62,7 @@ const List<String> iosAppIconAssets = [
   'assets/icons/ios/AppIcon.appiconset/Contents.json',
 ];
 
-/// Map-filled taxi line art (Tope's references, cleaned to transparent ink).
-/// Tint with a ColorFilter so the ink follows the theme.
-const String alongTaxiMapSide = 'assets/illustrations/taxi_map_side.png';
-const String alongTaxiMapFront = 'assets/illustrations/taxi_map_front.png';
+/// Map-filled side-view taxi (Tope's reference), traced to one SVG path in
+/// currentColor with hairlines thickened; tint with a ColorFilter so the ink
+/// follows the theme.
+const String alongTaxiMapSide = 'assets/illustrations/taxi_map_side.svg';

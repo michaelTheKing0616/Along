@@ -2009,15 +2009,15 @@ class _PosterRoutePainter extends CustomPainter {
 
   final double progress;
 
-  // Source pixels of onboarding-fleet.jpg (720x1280). The route is laid on
-  // the near lane: it runs toward the road's vanishing point (about
-  // -318, 784, where the lane dashes and the kerb converge), parallel to
-  // the dashes, then changes lane and pulls in to the kerb by the keke.
+  // Source pixels of onboarding-fleet.jpg (720x1280). The route leaves the
+  // pickup in the near lane parallel to the lane dashes (slope 0.27), then
+  // one tangent-continuous bend carries it to the kerb by the keke.
   static const _photo = Size(720, 1280);
-  static const _pickup = Offset(580, 1142);
-  static const _c1 = Offset(372, 1086);
-  static const _c2 = Offset(250, 1046);
-  static const _dropoff = Offset(170, 868);
+  static const _pickup = Offset(612, 1108);
+  static const _bend = Offset(356, 1039);
+  static const _c1 = Offset(232, 1006);
+  static const _c2 = Offset(186, 946);
+  static const _dropoff = Offset(178, 868);
 
   /// Maps a photo pixel into the box the way BoxFit.cover with
   /// Alignment.topCenter places the image.
@@ -2033,11 +2033,13 @@ class _PosterRoutePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final a = _map(_pickup, size);
+    final bend = _map(_bend, size);
     final c1 = _map(_c1, size);
     final c2 = _map(_c2, size);
     final b = _map(_dropoff, size);
     final path = Path()
       ..moveTo(a.dx, a.dy)
+      ..lineTo(bend.dx, bend.dy)
       ..cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, b.dx, b.dy);
     final t = progress.clamp(0.0, 1.0);
     final metric = path.computeMetrics().first;
@@ -2054,10 +2056,10 @@ class _PosterRoutePainter extends CustomPainter {
       drawn,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 7
+        ..strokeWidth = 9
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
-        ..color = navy.withValues(alpha: 0.6),
+        ..color = navy.withValues(alpha: 0.8),
     );
     canvas.drawPath(
       drawn,

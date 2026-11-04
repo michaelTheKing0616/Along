@@ -79,7 +79,7 @@ class _LaunchScreenState extends ConsumerState<LaunchScreen> {
             opacity: _leaving ? 0 : 1,
             duration: duration,
             curve: Curves.easeOut,
-            child: const AlongLaunchArt(illustration: alongTaxiMapSide),
+            child: const AlongLaunchArt(),
           ),
         ),
       ),
