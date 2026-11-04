@@ -29,21 +29,8 @@ select is(
 \ir ../seed/seed_testcity_fixture/00_zaria_test.sql
 select ensure_partitions();
 
--- ensure_partitions() only creates current + 2 future months; backfill August for 10-day fixture
-do $$
-declare
-  v_month date := date '2026-08-01';
-  v_end date := date '2026-09-01';
-  v_part text := 'driver_presence_history_y2026_m08';
-begin
-  if to_regclass('public.' || v_part) is null then
-    execute format(
-      'create table %I partition of driver_presence_history for values from (%L) to (%L)',
-      v_part, v_month, v_end
-    );
-  end if;
-end;
-$$;
+-- ensure_partitions() keeps the previous month too, so the now()-relative
+-- 10-day backfill below always has a partition (no hard-coded month).
 
 -- Remote location — not near existing Zaria-Test parks/stages
 -- FM26 false positive: 1 driver idling 10 days at home → no candidate

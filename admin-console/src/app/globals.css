@@ -20,6 +20,7 @@
   --a-line: #e7e6e1;
   --a-line-strong: #d4d3cd;
   --a-ink: #0a0a0a;
+  --a-on-ink: #ffffff;
   --a-ink-2: #3d3d3d;
   --a-muted: #6b6b68;
   --a-faint: #9a9994;
@@ -124,7 +125,7 @@ code, pre, .mono { font-family: var(--font-mono); font-size: 12.5px; }
 .btn:hover:not(:disabled), .shell-content button:not([class]):not([role]):hover:not(:disabled) { background: var(--a-hover); border-color: var(--a-faint); }
 .btn:active:not(:disabled), .shell-content button:not([class]):not([role]):active:not(:disabled) { transform: scale(0.98); }
 .btn:disabled, .shell-content button:not([class]):not([role]):disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-primary { background: var(--a-ink); border-color: var(--a-ink); color: #fff; }
+.btn-primary { background: var(--a-ink); border-color: var(--a-ink); color: var(--a-on-ink); }
 .btn-primary:hover:not(:disabled) { background: var(--a-ink-2); border-color: var(--a-ink-2); }
 .btn-secondary { background: var(--a-surface); }
 .btn-danger { background: var(--a-surface); border-color: #f0b9b9; color: var(--a-bad); }
@@ -301,7 +302,8 @@ legend { font-size: 12.5px; font-weight: 600; padding: 0 4px; }
   padding: 18px 12px 16px; display: flex; flex-direction: column; gap: 18px;
 }
 .shell-brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px; font-weight: 650; letter-spacing: -0.02em; font-size: 15px; text-decoration: none; }
-.shell-mark { width: 22px; height: 22px; border-radius: 7px; background: var(--a-accent); display: inline-grid; place-items: center; font-size: 12px; font-weight: 750; color: var(--a-ink); }
+/* The one Along brand mark: transparent artwork, ink = currentColor (follows theme). */
+.brand-logo { display: block; flex: none; color: var(--a-ink, currentColor); }
 .shell-city { padding: 0 8px; font-size: 12px; color: var(--a-muted); }
 .nav-group { display: flex; flex-direction: column; gap: 1px; }
 .nav-group-label { font-size: 11px; font-weight: 600; color: var(--a-faint); padding: 0 8px 4px; letter-spacing: 0.02em; }
@@ -339,7 +341,8 @@ legend { font-size: 12.5px; font-weight: 600; padding: 0 4px; }
 }
 
 .agent-brand {
-  color: var(--color-ink-900);
+  display: inline-flex; align-items: center; gap: 10px;
+  color: var(--a-ink, var(--color-ink-900));
   letter-spacing: -0.02em;
 }
 
@@ -563,7 +566,7 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
 /* Row actions stay quiet until hovered so a column of buttons does not shout. */
 .data-table .btn { height: 28px; padding: 0 10px; font-size: 12.5px; }
 .data-table .btn-primary { background: var(--a-surface); color: var(--a-ink); border: 1px solid var(--a-line-strong); }
-.data-table .btn-primary:hover:not(:disabled) { background: var(--a-ink); color: #fff; border-color: var(--a-ink); }
+.data-table .btn-primary:hover:not(:disabled) { background: var(--a-ink); color: var(--a-on-ink); border-color: var(--a-ink); }
 .config-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: var(--space-6); align-items: start; margin-bottom: var(--space-6); }
 @media (max-width: 1000px) { .config-layout { grid-template-columns: 1fr; } }
 .key-item { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; text-align: left; border: 0; background: transparent; padding: 6px 10px; border-radius: 8px; color: var(--a-ink-2); cursor: pointer; font-size: 12.5px; }
@@ -653,3 +656,87 @@ textarea.csv-input, .csv-input { width: 100%; font-family: var(--font-geist-mono
   .playbook-steps > .playbook-step:first-child { grid-column: 1; grid-row: 1 / span 3; position: sticky; top: 16px; }
   .playbook-steps > .playbook-step:not(:first-child) { grid-column: 2; }
 }
+
+/* Matte black. Page sits just above #000; surfaces climb by luminance and a
+   specular rim, never by grey haze. Text is off-white (AA+ on every step). */
+:root[data-theme='dark'] {
+  --a-bg: #050505;
+  --a-surface: #141414;
+  --a-sunken: #0c0c0c;
+  --a-hover: #1b1b1b;
+  --a-line: #262626;
+  --a-line-strong: #3a3a3a;
+  --a-ink: #f2efea;
+  --a-on-ink: #050505;
+  --a-ink-2: #e2ddd6;
+  --a-muted: #b9b3ab;
+  --a-faint: #8f8a84;
+  --a-accent-tint: #2a2410;
+  --a-focus: 0 0 0 2px var(--a-bg), 0 0 0 4px #f2efea;
+  --a-ok: #8fcbaa;
+  --a-ok-tint: #0f1f16;
+  --a-warn: #e7c98a;
+  --a-warn-tint: #241c0c;
+  --a-bad: #f0a8a0;
+  --a-bad-tint: #2a1210;
+  --a-info: #9db8f5;
+  --a-info-tint: #0f1730;
+  --a-shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.6);
+  /* Mirror finish: static diagonal sheen + 1px specular top edge. */
+  --a-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.045) 42%, rgba(255, 255, 255, 0) 54%, rgba(0, 0, 0, 0.12) 100%);
+  --a-rim: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.045), inset 0 14px 24px -18px rgba(255, 255, 255, 0.08);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+  --a-bg: #050505;
+  --a-surface: #141414;
+  --a-sunken: #0c0c0c;
+  --a-hover: #1b1b1b;
+  --a-line: #262626;
+  --a-line-strong: #3a3a3a;
+  --a-ink: #f2efea;
+  --a-on-ink: #050505;
+  --a-ink-2: #e2ddd6;
+  --a-muted: #b9b3ab;
+  --a-faint: #8f8a84;
+  --a-accent-tint: #2a2410;
+  --a-focus: 0 0 0 2px var(--a-bg), 0 0 0 4px #f2efea;
+  --a-ok: #8fcbaa;
+  --a-ok-tint: #0f1f16;
+  --a-warn: #e7c98a;
+  --a-warn-tint: #241c0c;
+  --a-bad: #f0a8a0;
+  --a-bad-tint: #2a1210;
+  --a-info: #9db8f5;
+  --a-info-tint: #0f1730;
+  --a-shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.6);
+  /* Mirror finish: static diagonal sheen + 1px specular top edge. */
+  --a-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.045) 42%, rgba(255, 255, 255, 0) 54%, rgba(0, 0, 0, 0.12) 100%);
+  --a-rim: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.045), inset 0 14px 24px -18px rgba(255, 255, 255, 0.08);
+  color-scheme: dark;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) :is(.card, .kpi, .data-table-wrap, .empty-state, .btn-primary) { background-image: var(--a-sheen); }
+  :root:not([data-theme='light']) :is(.card, .kpi, .data-table-wrap) { box-shadow: var(--a-rim); }
+  :root:not([data-theme='light']) .drawer { background-image: var(--a-sheen); box-shadow: var(--a-rim), var(--a-shadow-pop); }
+  :root:not([data-theme='light']) .btn-primary { background-image: linear-gradient(180deg, #fbf9f5 0%, #ece8e1 46%, #d9d4cb 54%, #f1ede6 100%); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.7); }
+  :root:not([data-theme='light']) .btn-primary:hover:not(:disabled) { background-image: linear-gradient(180deg, #fff 0%, #f2eee8 46%, #e0dbd2 54%, #f5f2ec 100%); }
+  :root:not([data-theme='light']) :is(.btn-secondary, .btn-danger) { background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 60%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+  :root:not([data-theme='light']) .btn:disabled { opacity: 1; background: transparent; background-image: none; border-color: #2b2b2b; color: #8f8a84; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+  :root:not([data-theme='light']) .btn-danger { border-color: #5a2a26; }
+}
+:root[data-theme='dark'] :is(.card, .kpi, .data-table-wrap, .empty-state, .btn-primary) { background-image: var(--a-sheen); }
+:root[data-theme='dark'] :is(.card, .kpi, .data-table-wrap) { box-shadow: var(--a-rim); }
+:root[data-theme='dark'] .drawer { background-image: var(--a-sheen); box-shadow: var(--a-rim), var(--a-shadow-pop); }
+:root[data-theme='dark'] .btn-danger { border-color: #5a2a26; }
+:root[data-theme='dark'] .btn-primary { background-image: linear-gradient(180deg, #fbf9f5 0%, #ece8e1 46%, #d9d4cb 54%, #f1ede6 100%); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.7); }
+:root[data-theme='dark'] .btn-primary:hover:not(:disabled) { background-image: linear-gradient(180deg, #fff 0%, #f2eee8 46%, #e0dbd2 54%, #f5f2ec 100%); }
+:root[data-theme='dark'] :is(.btn-secondary, .btn-danger) { background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 60%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+:root[data-theme='dark'] .btn:disabled { opacity: 1; background: transparent; background-image: none; border-color: #2b2b2b; color: #8f8a84; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+.theme-toggle {
+  font: inherit; font-size: 12px; color: var(--a-muted); background: transparent;
+  border: 1px solid var(--a-line); border-radius: 8px; padding: 2px 8px; cursor: pointer;
+}
+.theme-toggle:hover { color: var(--a-ink); border-color: var(--a-line-strong); }

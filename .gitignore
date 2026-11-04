@@ -22,6 +22,8 @@ admin-console/.env.local
 admin-console/.env.staging.local
 mobile-rider/android/app/src/*/google-services.json
 mobile-driver/android/app/src/*/google-services.json
+mobile-rider/android/app/google-services.json
+mobile-driver/android/app/google-services.json
 
 # Supabase CLI local state (never commit)
 supabase/.temp/

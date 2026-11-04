@@ -237,6 +237,13 @@ void main() {
             tester.element(find.byType(Scaffold).first),
           ),
         );
+        if (screen is LaunchScreen) {
+          // Let the taxi SVG finish loading off the fake clock.
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 300)),
+          );
+          await tester.pump();
+        }
         if (typed != null) {
           final field = find.byType(TextField).first;
           final ctrl = tester.widget<TextField>(field).controller!;

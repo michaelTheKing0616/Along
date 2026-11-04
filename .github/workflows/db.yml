@@ -7,7 +7,7 @@ on:
 
 jobs:
   db:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +38,7 @@ jobs:
         run: bash backend/db/scripts/run_pgtap.sh
 
       - name: Lint database
-        run: supabase db lint
+        run: bash backend/db/scripts/run_db_lint.sh
 
       - name: RLS coverage check
         run: bash backend/db/scripts/run_rls_coverage.sh

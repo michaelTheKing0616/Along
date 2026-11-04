@@ -20,7 +20,7 @@ Stitch produced two conflicting `DESIGN.md` files (copied to `docs/design/stitch
 | Mode colours | car black, keke yellow, okada blue, minibus purple | same | **car deep-teal, keke yellow, okada blue, minibus purple** | Car = black collides with the primary button; a black chip *looks tappable*. Teal nods to Abuja's green cabs without pretending vehicle paint is universal |
 | Decorative elements | rocket icons, AI illustration banner, gradients | fewer | **None** (spec §5.2 "no decorative elements") | |
 
-Brand mark: the *real* logo is `docs/design/logos/main_logo_along_black.png` / `_yellow.png` (italic wordmark, speed slashes, car). It is raster today; task P0-D-01 vectorises it (SVG + adaptive Android icon + iOS asset catalog). The Stitch "geometric sharp" logo is rejected (generic); "path-through" rejected (strikethrough reads as deletion).
+Brand mark: the *real* logo is `docs/design/logos/main_logo_along_black.png` (italic wordmark, speed slashes, car) — the **only** brand mark: black on pure white everywhere (icons, splash, launch, favicon, admin, emails), light and dark mode alike; the yellow variant is retired. It is raster today; task P0-D-01 vectorises it (SVG + adaptive Android icon + iOS asset catalog). The Stitch "geometric sharp" logo is rejected (generic); "path-through" rejected (strikethrough reads as deletion).
 
 ---
 

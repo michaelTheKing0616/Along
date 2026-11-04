@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../branding/branding_overrides.dart';
 import '../craft.dart';
+import 'shimmer_sheen.dart';
 import '../motion.dart';
 import '../palette.dart';
 import '../type.dart';
@@ -55,7 +56,24 @@ class AlongButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final branding = alongBrandingOf(context);
     final palette = AlongPalette.of(context);
-    final style = _styleForVariant(branding, palette);
+    final dark = palette.brightness == Brightness.dark;
+    final base = _styleForVariant(branding, palette);
+    // Dark disabled: a recessed matte well with an outline, not a grey block.
+    final matteOff =
+        dark &&
+        _isDisabled &&
+        base.backgroundColor.a > 0.5 &&
+        base.borderSide == BorderSide.none;
+    final style = matteOff
+        ? _ButtonStyle(
+            backgroundColor: palette.recessed,
+            foregroundColor: palette.muted,
+            borderSide: BorderSide(
+              color: palette.line.withValues(alpha: 0.5),
+              width: 1,
+            ),
+          )
+        : base;
     final roomy = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     final caption = subtitle;
     final child = _isLoading
@@ -104,11 +122,25 @@ class AlongButton extends StatelessWidget {
         : AlongRadius.button.x;
     final shape = AlongCraft.border(radius, side: style.borderSide);
     final yellow = variant == AlongButtonVariant.yellow;
+    // Dark mode: filled buttons get the polished rim and a faint top lift.
+    final shine =
+        dark &&
+        !_isDisabled &&
+        style.backgroundColor.a > 0.5 &&
+        style.borderSide == BorderSide.none;
     final button = DecoratedBox(
       decoration: ShapeDecoration(
-        color: yellow ? null : style.backgroundColor,
-        gradient: yellow ? AlongCraft.cta(style.backgroundColor) : null,
-        shape: shape,
+        color: yellow || shine ? null : style.backgroundColor,
+        gradient: shine
+            ? AlongCraft.chrome(style.backgroundColor)
+            : yellow
+            ? AlongCraft.cta(style.backgroundColor)
+            : null,
+        shape: shine
+            ? AlongSpecularBorder(shape, strength: 1.6)
+            : matteOff
+            ? AlongSpecularBorder(shape, strength: 0.5)
+            : shape,
       ),
       child: Material(
         type: MaterialType.transparency,
@@ -145,13 +177,16 @@ class AlongButton extends StatelessWidget {
       ),
     );
 
+    final sheened = shine && size == AlongButtonSize.primary
+        ? AlongShimmer(corner: radius, strength: 1.6, child: button)
+        : button;
     return AlongPressable(
       child: Opacity(
-        opacity: _isDisabled ? 0.38 : 1,
+        opacity: _isDisabled && !matteOff ? 0.38 : 1,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            button,
+            sheened,
             if (_isPressed)
               Positioned.fill(
                 child: IgnorePointer(

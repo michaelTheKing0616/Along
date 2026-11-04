@@ -309,23 +309,28 @@ class AlongCityMap extends StatelessWidget {
               flags: InteractiveFlag.none,
             ),
             backgroundColor: dark
-                ? const Color(0xFF16171A)
+                ? const Color(0xFF0B0B0C)
                 : const Color(0xFFE6E7EA),
           ),
           children: [
-            TileLayer(
-              urlTemplate:
-                  '${assetPackage == null ? '' : 'packages/$assetPackage/'}assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
-              tileProvider: AssetTileProvider(),
-              userAgentPackageName: 'app.along.design',
-              tileDisplay: const TileDisplay.instantaneous(),
-              retinaMode: false,
-              minNativeZoom: 12,
-              maxNativeZoom: 16,
-              // Zoom 17 sits on the edge of the extract. An extra tile ring
-              // asks for files that were never baked.
-              keepBuffer: initialZoom >= 17 ? 0 : 1,
-              panBuffer: 0,
+            // Baked dark tiles pulled down to the matte-black page: land
+            // #16171A -> #0B0B0C, roads stay bright enough to read.
+            _matteIf(
+              dark,
+              TileLayer(
+                urlTemplate:
+                    '${assetPackage == null ? '' : 'packages/$assetPackage/'}assets/map/tiles/${dark ? 'dark' : 'light'}/{z}_{x}_{y}.png',
+                tileProvider: AssetTileProvider(),
+                userAgentPackageName: 'app.along.design',
+                tileDisplay: const TileDisplay.instantaneous(),
+                retinaMode: false,
+                minNativeZoom: 12,
+                maxNativeZoom: 16,
+                // Zoom 17 sits on the edge of the extract. An extra tile ring
+                // asks for files that were never baked.
+                keepBuffer: initialZoom >= 17 ? 0 : 1,
+                panBuffer: 0,
+              ),
             ),
             if (tint != null)
               Positioned.fill(
@@ -1394,7 +1399,7 @@ const _placeRects = <(double, double, double, double)>[
 
 List<Polygon> _placeBlocks(AlongPalette palette) {
   final dark = palette.brightness == Brightness.dark;
-  final fill = dark ? const Color(0xFF2C2A26) : const Color(0xFFF4F0E6);
+  final fill = dark ? const Color(0xFF1C1C1C) : const Color(0xFFF4F0E6);
   final edge = dark ? const Color(0xFFB7AFA4) : const Color(0xFF6A5C48);
   return [
     for (final rect in _placeRects)
@@ -1660,7 +1665,7 @@ const _navRects = <(double, double, double, double)>[
 
 List<Polygon> _navBlocks(AlongPalette palette) {
   final dark = palette.brightness == Brightness.dark;
-  final fill = dark ? const Color(0xFF2C2A26) : const Color(0xFFF4F0E6);
+  final fill = dark ? const Color(0xFF1C1C1C) : const Color(0xFFF4F0E6);
   final edge = dark ? const Color(0xFFB7AFA4) : const Color(0xFF6A5C48);
   return [
     for (final rect in _navRects)
@@ -1907,3 +1912,14 @@ class _RoutePainter extends CustomPainter {
         oldDelegate.palette.brightness != palette.brightness;
   }
 }
+
+// Light tiles are left untouched: no filter layer at all.
+Widget _matteIf(bool dark, Widget tiles) =>
+    dark ? ColorFiltered(colorFilter: _matte, child: tiles) : tiles;
+
+const _matte = ColorFilter.matrix(<double>[
+  0.9, 0, 0, 0, -10, //
+  0, 0.9, 0, 0, -10, //
+  0, 0, 0.9, 0, -10, //
+  0, 0, 0, 1, 0, //
+]);

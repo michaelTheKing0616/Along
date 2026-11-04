@@ -10,7 +10,7 @@ void main() {
 
   group('P0-E-06 brand assets', () {
     test('SVG wordmarks load and contain vector paths', () async {
-      for (final path in [alongLogoBlackSvg, alongLogoYellowSvg]) {
+      for (final path in [alongLogoBlackSvg]) {
         final svg = await rootBundle.loadString(path);
         expect(svg, contains('<svg'));
         expect(svg, contains('<path'));
@@ -19,9 +19,9 @@ void main() {
 
       final black = await rootBundle.loadString(alongLogoBlackSvg);
       expect(black, contains('#0A0A0A'));
-
-      final yellow = await rootBundle.loadString(alongLogoYellowSvg);
-      expect(yellow, contains('#F7D117'));
+      // One transparent mark: no background rect/plate baked into the art.
+      expect(black, isNot(contains('<rect')));
+      expect(black, isNot(contains('#FFFFFF')));
     });
 
     test('Android legacy launcher icons exist at all densities', () async {

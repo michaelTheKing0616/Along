@@ -80,13 +80,18 @@ class _AlongValueStoryState extends State<AlongValueStory> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
+                    // Top: light veil for the mark. Lower band: an eased
+                    // navy scrim under the story text and dots so white type
+                    // holds >=4.5:1 over the hazy sky (measured on goldens).
                     colors: [
                       Color(0x80101828),
                       Color(0x00101828),
-                      Color(0x33101828),
-                      Color(0xCC101828),
+                      Color(0x73101828),
+                      Color(0xB3101828),
+                      Color(0xD9101828),
+                      Color(0xEB101828),
                     ],
-                    stops: [0, 0.3, 0.5, 1],
+                    stops: [0, 0.2, 0.36, 0.5, 0.74, 1],
                   ),
                 ),
               ),
@@ -94,10 +99,12 @@ class _AlongValueStoryState extends State<AlongValueStory> {
                 padding: EdgeInsets.fromLTRB(20, top + 12, 20, 0),
                 child: Align(
                   alignment: Alignment.topLeft,
+                  // Hazy sky behind the mark: black ink measures ~9:1 there;
+                  // white was ~2:1. Same transparent artwork, ink by contrast.
                   child: Transform.scale(
                     scale: 0.72,
                     alignment: Alignment.topLeft,
-                    child: const AlongWordmark(color: ink),
+                    child: const AlongWordmark(color: Color(0xFF0A0A0A)),
                   ),
                 ),
               ),

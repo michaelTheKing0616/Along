@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 TYPES_FILE="$ROOT/shared/contracts/db.types.ts"
 
 if [ ! -f "$TYPES_FILE" ]; then
-  echo "FAIL: shared/contracts/db.types.ts is missing (generate with: supabase gen types typescript --local > shared/contracts/db.types.ts)."
+  echo "FAIL: shared/contracts/db.types.ts is missing (generate with: supabase gen types typescript --local | python3 backend/db/scripts/strip_partition_types.py > shared/contracts/db.types.ts)."
   exit 1
 fi
 
@@ -18,9 +18,11 @@ fi
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
 
-supabase gen types typescript --local >"$TMP"
+# Month partition children roll with the calendar; exclude them (see script).
+STRIP="$ROOT/backend/db/scripts/strip_partition_types.py"
+supabase gen types typescript --local | python3 "$STRIP" >"$TMP"
 
-if ! diff -u "$TYPES_FILE" "$TMP"; then
+if ! diff -u <(python3 "$STRIP" <"$TYPES_FILE") "$TMP"; then
   echo "FAIL: shared/contracts/db.types.ts is stale — regenerate and commit."
   exit 1
 fi

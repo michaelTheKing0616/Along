@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import '../components/along_button.dart';
 import '../craft.dart';
 import '../components/seat_map.dart';
+import '../components/shimmer_sheen.dart';
 import '../elevation.dart';
 import '../icons.dart';
 import '../motion.dart';
@@ -1875,12 +1876,16 @@ class _Poster extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                // Navy veil under the white mark and headline, fading out
+                // over the mountain; a light floor keeps the dots legible.
                 colors: [
-                  Color(0x66101828),
-                  Color(0x00000000),
-                  Color(0x00000000),
+                  Color(0xD9101828),
+                  Color(0x99101828),
+                  Color(0x00101828),
+                  Color(0x00101828),
+                  Color(0x80101828),
                 ],
-                stops: [0, 0.42, 1],
+                stops: [0, 0.3, 0.55, 0.8, 1],
               ),
             ),
           ),
@@ -2004,31 +2009,57 @@ class _PosterRoutePainter extends CustomPainter {
 
   final double progress;
 
+  // Source pixels of onboarding-fleet.jpg (720x1280). The route leaves the
+  // pickup in the near lane parallel to the lane dashes (slope 0.27), then
+  // one tangent-continuous bend carries it to the kerb by the keke.
+  static const _photo = Size(720, 1280);
+  static const _pickup = Offset(612, 1108);
+  static const _bend = Offset(356, 1039);
+  static const _c1 = Offset(232, 1006);
+  static const _c2 = Offset(186, 946);
+  static const _dropoff = Offset(178, 868);
+
+  /// Maps a photo pixel into the box the way BoxFit.cover with
+  /// Alignment.topCenter places the image.
+  static Offset _map(Offset p, Size size) {
+    final scale = math.max(
+      size.width / _photo.width,
+      size.height / _photo.height,
+    );
+    final dx = (size.width - _photo.width * scale) / 2;
+    return Offset(dx + p.dx * scale, p.dy * scale);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
+    final a = _map(_pickup, size);
+    final bend = _map(_bend, size);
+    final c1 = _map(_c1, size);
+    final c2 = _map(_c2, size);
+    final b = _map(_dropoff, size);
     final path = Path()
-      ..moveTo(size.width * 0.08, size.height * 0.62)
-      ..quadraticBezierTo(
-        size.width * 0.32,
-        size.height * 0.48,
-        size.width * 0.52,
-        size.height * 0.58,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.72,
-        size.height * 0.68,
-        size.width * 0.90,
-        size.height * 0.46,
-      );
+      ..moveTo(a.dx, a.dy)
+      ..lineTo(bend.dx, bend.dy)
+      ..cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, b.dx, b.dy);
+    final t = progress.clamp(0.0, 1.0);
     final metric = path.computeMetrics().first;
-    final drawn = metric.extractPath(0, metric.length * progress.clamp(0, 1));
+    final drawn = metric.extractPath(0, metric.length * t);
+    const navy = Color(0xFF101828);
+
+    // Pickup: a ringed origin dot sitting on the asphalt.
+    canvas.drawCircle(a, 9, Paint()..color = navy.withValues(alpha: 0.55));
+    canvas.drawCircle(a, 7, Paint()..color = const Color(0xFFFFFFFF));
+    canvas.drawCircle(a, 3, Paint()..color = navy);
+
+    // Route: one weight, round caps, with a navy casing for contrast.
     canvas.drawPath(
       drawn,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 7
+        ..strokeWidth = 9
         ..strokeCap = StrokeCap.round
-        ..color = const Color(0x660E0E10),
+        ..strokeJoin = StrokeJoin.round
+        ..color = navy.withValues(alpha: 0.8),
     );
     canvas.drawPath(
       drawn,
@@ -2036,15 +2067,47 @@ class _PosterRoutePainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round
-        ..color = const Color(0xF2FFFFFF),
+        ..strokeJoin = StrokeJoin.round
+        ..color = const Color(0xFFFFFFFF),
     );
-    if (progress > 0.98) {
-      canvas.drawCircle(
-        Offset(size.width * 0.90, size.height * 0.46),
-        5,
-        Paint()..color = const Color(0xFFF7D117),
-      );
-    }
+
+    // Drop-off: pin and ground glow arrive once the line lands.
+    final arrive = ((t - 0.85) / 0.15).clamp(0.0, 1.0);
+    if (arrive <= 0) return;
+    canvas.drawOval(
+      Rect.fromCenter(center: b, width: 34, height: 11),
+      Paint()
+        ..shader = RadialGradient(
+          colors: [
+            const Color(0xFFFFFFFF).withValues(alpha: 0.55 * arrive),
+            const Color(0x00FFFFFF),
+          ],
+        ).createShader(Rect.fromCenter(center: b, width: 34, height: 11)),
+    );
+    final head = b.translate(0, -16 - 4 * (1 - arrive));
+    final pin = Path()
+      ..moveTo(b.dx, b.dy - 2)
+      ..lineTo(head.dx - 6, head.dy + 4)
+      ..arcToPoint(
+        Offset(head.dx + 6, head.dy + 4),
+        radius: const Radius.circular(8),
+        largeArc: true,
+      )
+      ..close();
+    canvas.drawPath(pin, Paint()..color = navy.withValues(alpha: arrive));
+    canvas.drawPath(
+      pin,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5
+        ..strokeJoin = StrokeJoin.round
+        ..color = const Color(0xFFFFFFFF).withValues(alpha: arrive),
+    );
+    canvas.drawCircle(
+      head.translate(0, 1),
+      2.5,
+      Paint()..color = const Color(0xFFFFFFFF).withValues(alpha: arrive),
+    );
   }
 
   @override
@@ -3776,6 +3839,14 @@ class AlongWalletCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AlongPalette.of(context);
     const paper = Color(0xFFF7F4EF);
+    return AlongShimmer(
+      corner: AlongRadius.card.x,
+      rim: true,
+      child: _card(palette, paper),
+    );
+  }
+
+  Widget _card(AlongPalette palette, Color paper) {
     return AspectRatio(
       aspectRatio: 1.586,
       child: AlongCraft.clip(

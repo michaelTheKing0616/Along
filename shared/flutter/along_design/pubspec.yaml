@@ -17,6 +17,7 @@ dependencies:
   flutter_map: ^8.3.2
   latlong2: ^0.10.1
   lottie: ^3.6.1
+  flutter_svg: 2.0.17
   phosphor_flutter: ^2.1.0
   sensors_plus: ^6.1.1
 
@@ -44,6 +45,7 @@ flutter:
     - assets/icons/android/drawable-xxxhdpi/
     - assets/icons/ios/AppIcon.appiconset/
     - assets/splash/
+    - assets/illustrations/
     - assets/map/
     - assets/map/tiles/light/
     - assets/map/tiles/dark/

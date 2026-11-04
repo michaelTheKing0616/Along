@@ -125,11 +125,72 @@ abstract final class AlongCraft {
     List<BoxShadow>? shadow,
     Gradient? gradient,
   }) {
+    if (palette.brightness == Brightness.dark && gradient == null) {
+      return mirror(
+        palette,
+        radius: radius,
+        color: color ?? palette.surface,
+        shadow: shadow,
+      );
+    }
     return ShapeDecoration(
       color: gradient == null ? (color ?? palette.surface) : null,
       gradient: gradient,
       shadows: shadow,
       shape: border(radius, side: hairline ? _hair(palette) : BorderSide.none),
+    );
+  }
+
+  /// Dark-mode mirror finish: a static diagonal sheen (+2.5% lightness at the
+  /// top-left, -1% at the bottom-right) under a 1px specular rim that is
+  /// bright on the top edge and fades down the sides. No blur, no shader,
+  /// so it costs the same as a flat fill inside lists.
+  static ShapeDecoration mirror(
+    AlongPalette palette, {
+    double radius = 16,
+    Color? color,
+    List<BoxShadow>? shadow,
+    bool top = false,
+  }) {
+    final base = color ?? palette.surface;
+    return ShapeDecoration(
+      gradient: sheen(base),
+      shadows: shadow,
+      shape: AlongSpecularBorder(
+        top ? borderVertical(top: radius) : border(radius),
+      ),
+    );
+  }
+
+  /// Soft diagonal sheen over [base].
+  static LinearGradient sheen(Color base) {
+    return LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      stops: const [0, 0.3, 0.42, 0.54, 1],
+      colors: [
+        shift(base, 0.05),
+        base,
+        shift(base, 0.03),
+        base,
+        shift(base, -0.012),
+      ],
+    );
+  }
+
+  /// Polished metal for dark-mode filled buttons: bright crown, a soft
+  /// horizon just under the middle, a little bounce light at the foot.
+  static LinearGradient chrome(Color color) {
+    return LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: const [0, 0.42, 0.62, 1],
+      colors: [
+        shift(color, 0.05),
+        shift(color, 0.0),
+        shift(color, -0.035),
+        shift(color, -0.015),
+      ],
     );
   }
 
@@ -472,4 +533,68 @@ class _SpotPainter extends CustomPainter {
     return oldDelegate.kind != kind ||
         oldDelegate.palette.brightness != palette.brightness;
   }
+}
+
+/// Wraps a squircle with a 1px specular rim: white at 16% along the top
+/// edge, 5% by a third of the way down, 2.5% at the foot. Reads as light
+/// catching a polished edge without a visible outline.
+class AlongSpecularBorder extends ShapeBorder {
+  const AlongSpecularBorder(this.inner, {this.strength = 1});
+
+  final OutlinedBorder inner;
+  final double strength;
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
+      inner.getInnerPath(rect, textDirection: textDirection);
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
+      inner.getOuterPath(rect, textDirection: textDirection);
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    if (rect.isEmpty) return;
+    final path = inner.getOuterPath(rect.deflate(0.5));
+    final white = const Color(0xFFFFFFFF);
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        stops: const [0, 0.3, 1],
+        colors: [
+          white.withValues(alpha: (0.3 * strength).clamp(0.0, 1.0)),
+          white.withValues(alpha: (0.08 * strength).clamp(0.0, 1.0)),
+          white.withValues(alpha: (0.03 * strength).clamp(0.0, 1.0)),
+        ],
+      ).createShader(rect);
+    canvas.drawPath(path, paint);
+    // Inner highlight: a second, fainter line just inside the crown.
+    final inside = rect.deflate(1.5);
+    if (inside.isEmpty) return;
+    canvas.drawPath(
+      inner.getOuterPath(inside),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0, 0.22],
+          colors: [
+            white.withValues(alpha: (0.06 * strength).clamp(0.0, 1.0)),
+            white.withValues(alpha: 0),
+          ],
+        ).createShader(rect),
+    );
+  }
+
+  @override
+  ShapeBorder scale(double t) =>
+      AlongSpecularBorder(inner.scale(t) as OutlinedBorder, strength: strength);
 }

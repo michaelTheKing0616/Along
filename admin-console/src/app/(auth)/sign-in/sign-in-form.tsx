@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { FormEvent, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { AlongLogo } from "@/components/along/along-logo";
 
 export default function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get('next') ?? '/';
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const next = searchParams.get("next") ?? "/";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,7 @@ export default function SignInForm() {
     setLoading(false);
 
     if (signInError) {
-      setError('Invalid email or password.');
+      setError("Invalid email or password.");
       return;
     }
 
@@ -37,9 +38,24 @@ export default function SignInForm() {
 
   return (
     <main className="page-center">
-      <div className="card" style={{ width: '100%', maxWidth: '24rem' }}>
-        <h1 style={{ marginTop: 0 }}>Along Admin</h1>
-        <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-6)' }}>
+      <div className="card" style={{ width: "100%", maxWidth: "24rem" }}>
+        <h1
+          style={{
+            marginTop: 0,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <AlongLogo width={118} className="brand-logo" />
+          Admin
+        </h1>
+        <p
+          style={{
+            color: "var(--color-text-muted)",
+            marginBottom: "var(--space-6)",
+          }}
+        >
           Sign in with your admin credentials.
         </p>
         {error ? <div className="error-banner">{error}</div> : null}
@@ -66,8 +82,13 @@ export default function SignInForm() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Signing in…' : 'Sign in'}
+          <button
+            className="btn btn-primary"
+            type="submit"
+            disabled={loading}
+            style={{ width: "100%" }}
+          >
+            {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
       </div>

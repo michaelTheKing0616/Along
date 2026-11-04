@@ -1,11 +1,8 @@
 /// Committed brand asset paths under [package:along_design] `assets/`.
 library;
 
-/// SVG wordmark — ink on transparent/white.
+/// The one Along brand mark: black-car wordmark, always on pure white.
 const String alongLogoBlackSvg = 'assets/logos/main_logo_along_black.svg';
-
-/// SVG wordmark — brand yellow fill.
-const String alongLogoYellowSvg = 'assets/logos/main_logo_along_yellow.svg';
 
 /// Splash branding image (ink wordmark).
 const String alongSplashLogo = 'assets/splash/splash_logo.png';
@@ -64,3 +61,8 @@ const List<String> iosAppIconAssets = [
   'assets/icons/ios/AppIcon.appiconset/Icon-App-1024x1024@1x.png',
   'assets/icons/ios/AppIcon.appiconset/Contents.json',
 ];
+
+/// Map-filled side-view taxi (Tope's reference), traced to one SVG path in
+/// currentColor with hairlines thickened; tint with a ColorFilter so the ink
+/// follows the theme.
+const String alongTaxiMapSide = 'assets/illustrations/taxi_map_side.svg';

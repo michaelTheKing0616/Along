@@ -3042,7 +3042,7 @@ class _HullPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final dark = palette.brightness == Brightness.dark;
     final fill = Paint()
-      ..color = dark ? const Color(0xFF2A2824) : const Color(0xFFF4F1EB);
+      ..color = dark ? const Color(0xFF1C1C1C) : const Color(0xFFF4F1EB);
     final stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5

@@ -212,7 +212,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 800));
     expect(done, isTrue);
-    expect(find.text('Along'), findsOneWidget);
+    expect(find.bySemanticsLabel('Along'), findsOneWidget);
   });
 
   testWidgets('container transform opens onto the next screen', (tester) async {
